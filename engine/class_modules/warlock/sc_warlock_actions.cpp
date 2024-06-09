@@ -4122,6 +4122,71 @@ namespace actions
     }
   };
 
+  struct avatar_of_destruction_t : public warlock_spell_t
+  {
+    struct infernal_awakening_proc_t : public warlock_spell_t
+    {
+      infernal_awakening_proc_t( warlock_t* p )
+        : warlock_spell_t( "Infernal Awakening (Blasphemy)", p, p->talents.infernal_awakening )
+      {
+        background = dual = true;
+        aoe = -1;
+      }
+    };
+
+    infernal_awakening_proc_t* infernal_awakening;
+
+    avatar_of_destruction_t( warlock_t* p )
+      : warlock_spell_t( "Avatar of Destruction", p, p->talents.summon_blasphemy )
+    {
+      background = dual = true;
+      infernal_awakening = new infernal_awakening_proc_t( p );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->warlock_pet_list.blasphemy.active_pet() )
+      {
+        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
+        p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
+      }
+      else
+      {
+        p()->warlock_pet_list.blasphemy.spawn( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
+        infernal_awakening->execute_on_target( target );
+      }
+    }
+  };
+
+  struct channel_demonfire_tier_t : public warlock_spell_t
+  {
+    channel_demonfire_tier_t( warlock_t* p )
+      : warlock_spell_t( "Channel Demonfire (Tier)", p, p->tier.channel_demonfire )
+    {
+      background = dual = false;
+      aoe = -1;
+      travel_speed = p->talents.channel_demonfire_travel->missile_speed();
+      
+      affected_by.chaotic_energies = true;
+
+      spell_power_mod.direct = p->tier.channel_demonfire->effectN( 1 ).sp_coeff();
+      base_aoe_multiplier = p->tier.channel_demonfire->effectN( 2 ).sp_coeff() / p->tier.channel_demonfire->effectN( 1 ).sp_coeff();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+        td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
+        p()->buffs.umbrafire_embers->trigger();
+    }
+  };
+
   // Destruction Actions End
 }
 }
