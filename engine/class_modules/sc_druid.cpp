@@ -10018,6 +10018,7 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
+    ->apply_affecting_aura( talent.stellar_amplification )
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
