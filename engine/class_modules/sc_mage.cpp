@@ -272,7 +272,6 @@ public:
     buff_t* enlightened_mana;
     buff_t* evocation;
     buff_t* impetus;
-    buff_t* invigorating_powder;
     buff_t* nether_precision;
     buff_t* presence_of_mind;
     buff_t* siphon_storm;
@@ -357,7 +356,6 @@ public:
   struct gains_t
   {
     gain_t* arcane_surge;
-    gain_t* mana_gem;
     gain_t* arcane_barrage;
   } gains;
 
@@ -448,10 +446,8 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
-    int mana_gem_charges;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
-    player_t* last_bomb_target;
     bool trigger_cc_channel;
     double spent_mana;
     timespan_t gained_full_icicles;
@@ -1411,7 +1407,6 @@ struct mage_spell_t : public spell_t
     bool icicles_st = false;
     bool improved_scorch = true;
     bool incanters_flow = true;
-    bool invigorating_powder = true;
     bool numbing_blast = true;
     bool savant = false;
     bool unleashed_inferno = false;
@@ -1554,9 +1549,6 @@ public:
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
-
-    if ( affected_by.invigorating_powder )
-      m *= 1.0 + p()->buffs.invigorating_powder->check_value();
 
     if ( affected_by.unleashed_inferno && p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 1 ).percent();
@@ -6457,8 +6449,6 @@ void mage_t::create_buffs()
   buffs.impetus              = make_buff( this, "impetus", find_spell( 393939 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.invigorating_powder  = make_buff( this, "invigorating_powder", find_spell( 384280 ) )
-                                 ->set_default_value_from_effect( 1 );
   buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                  ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                  ->set_chance( talents.nether_precision.ok() );
@@ -6638,7 +6628,6 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains.arcane_surge   = get_gain( "Arcane Surge"   );
-  gains.mana_gem       = get_gain( "Mana Gem"       );
   gains.arcane_barrage = get_gain( "Arcane Barrage" );
 }
 
@@ -7116,12 +7105,6 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
 
 std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
 {
-  if ( util::str_compare_ci( name, "mana_gem_charges" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return state.mana_gem_charges; } );
-  }
-
   if ( util::str_compare_ci( name, "bugged_clearcasting" ) )
   {
     return make_fn_expr( name, [ this ]
@@ -7580,7 +7563,6 @@ void mage_t::trigger_arcane_charge( int stacks )
   if ( !spec.arcane_charge->ok() || stacks <= 0 )
     return;
 
-  int before = buffs.arcane_charge->check();
   buffs.arcane_charge->trigger( stacks );
 }
 
