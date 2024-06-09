@@ -196,7 +196,7 @@ jobs:
       - name: "Log Debug"
         if: always()
         run: |
-          locale -a \
+          locale -a
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
