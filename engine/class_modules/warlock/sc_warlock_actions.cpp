@@ -769,6 +769,19 @@ namespace actions
     }
   };
 
+  struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
+  {
+    grimoire_of_sacrifice_damage_t( warlock_t* p )
+      : warlock_spell_t( "Grimoire of Sacrifice (Proc)", p, p->talents.grimoire_of_sacrifice_proc )
+    {
+      background = true;
+      proc = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 2 ).percent();
+    }
+  };
+
   struct soulburn_t : public warlock_spell_t
   {
     soulburn_t( warlock_t* p, util::string_view options_str )
@@ -4188,7 +4201,8 @@ namespace actions
   };
 
   // Destruction Actions End
-}
+}  // namespace actions
+  
   // Action Creation Begin
 
   action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )
@@ -4448,19 +4462,8 @@ namespace actions
           else cb->deactivate();
         } );
     }
-
-    if ( talents.grimoire_of_synergy->ok() )
-    {
-      auto const syn_effect = new special_effect_t( this );
-      syn_effect->name_str = "demonic_synergy_effect";
-      syn_effect->spell_id = talents.grimoire_of_synergy->id();
-      special_effects.push_back( syn_effect );
-
-      auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
-
-      cb->initialize();
-    }
   }
 
   // Action Creation End
-}
+
+} //namespace warlock
