@@ -1374,7 +1374,7 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
 void print_html_( report::sc_html_stream& os, sim_t& sim )
 {
   // Set global locale to en-US for consistent number formatting
-  std::locale::global( std::locale( "en-US" ) );
+  std::locale::global( std::locale( "en_us.utf8" ) );
 
   // Set floating point formatting
   os.precision( sim.report_precision );
