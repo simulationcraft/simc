@@ -1181,6 +1181,7 @@ void malfunctioning_ethereum_module( special_effect_t& effect )
 //  e2: trigger heal
 // TODO: confirm heal coeff is for entire hot
 // TODO: determine magnitude of increase for missing health. currently assumed 100%
+// TODO: confirm cast time is hasted
 void mad_queens_mandate( special_effect_t& effect )
 {
   unsigned coeff_id = 443128;
@@ -2444,7 +2445,7 @@ void harvesters_edict( special_effect_t& effect )
 void condutors_wax_whistle( special_effect_t& effect )
 {
   // TODO: confirm damage does not increase per extra target
-  auto damage = create_proc_action<generic_proc_t>( "collision", effect, 450429 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "collision", effect, 450429 );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
   // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
   damage->travel_speed = 7.5;
@@ -2452,6 +2453,24 @@ void condutors_wax_whistle( special_effect_t& effect )
   effect.execute_action = damage;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 443337 driver
+//  e1: damage coeff
+//  e2: cast time?
+//  e3: unknown
+// 448892 damage
+// TODO: determine if cast time changes
+// TODO: confirm damage does not increase per extra target
+void charged_stormrook_plume( special_effect_t& effect )
+{
+  // TODO: confirm damage does not increase per extra target
+  auto damage = create_proc_action<generic_aoe_proc_t>( "charged_stormrook_plume", effect, 448892 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  // TODO: determine if cast time changes
+  damage->base_execute_time = effect.driver()->cast_time();
+
+  effect.execute_action = damage;
 }
 
 // Weapons
@@ -2804,6 +2823,8 @@ void register_special_effects()
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   register_special_effect( 451055, items::harvesters_edict );
   register_special_effect( 443525, items::condutors_wax_whistle );
+  register_special_effect( 443337, items::charged_stormrook_plume );
+
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
