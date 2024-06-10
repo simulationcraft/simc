@@ -4025,7 +4025,7 @@ struct living_flame_t : public evoker_spell_t
       if ( !td )
         return 0;
 
-      double pool = std::reduce( td->chrono_tracker.damage_buckets.begin(), td->chrono_tracker.damage_buckets.end() ) *
+      double pool = std::accumulate( td->chrono_tracker.damage_buckets.begin(), td->chrono_tracker.damage_buckets.end(), 0.0 ) *
                     chrono_mult;
 
       return pool;
