@@ -9,14 +9,11 @@ namespace death_knight_apl
 
 std::string potion( const player_t* p )
 {
-  std::string frost_potion =
-      ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
+  std::string frost_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 
-  std::string unholy_potion =
-      ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
+  std::string unholy_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 
-  std::string blood_potion =
-      ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_strength";
+  std::string blood_potion = ( p->true_level >= 71 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 
   switch ( p->specialization() )
   {
@@ -75,14 +72,15 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string frost_temporary_enchant = ( p->true_level >= 61 )
-                                            ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3"
-                                            : "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone";
+  std::string frost_temporary_enchant = ( p->true_level >= 71 )
+                                            ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
+                                            : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 61 ) ? "main_hand:howling_rune_3" : "main_hand:shaded_sharpening_stone";
+      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
 
-  std::string blood_temporary_enchant = ( p->true_level >= 60 ) ? "main_hand:howling_rune_3" : "disabled";
+  std::string blood_temporary_enchant =
+      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
 
   switch ( p->specialization() )
   {
