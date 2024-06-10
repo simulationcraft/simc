@@ -106,6 +106,33 @@ double role_mult( const special_effect_t& e )
   return mult;
 }
 
+void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
+                            std::function<void( stat_e, buff_t* )> add_fn )
+{
+  auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
+
+  for ( const auto& eff : buff_data->effects() )
+  {
+    if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
+      continue;
+
+    auto stats = util::translate_all_rating_mod( eff.misc_value1() );
+    if ( stats.size() != 1 )
+    {
+      effect.player->sim->error( "buff data {} effect {} has multiple stats", buff_data->id(), eff.index() );
+      continue;
+    }
+
+    auto stat_str = util::stat_type_abbrev( stats.front() );
+
+    auto buff = create_buff<stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_str ), buff_data )
+      ->add_stat( stats.front(), amount ? amount : eff.average( effect.item ) )
+      ->set_name_reporting( stat_str );
+
+    add_fn( stats.front(), buff );
+  }
+}
+
 namespace consumables
 {
 // Food
@@ -390,6 +417,29 @@ void secondary_weapon_enchant( special_effect_t& effect )
 
 namespace embellishments
 {
+// 443743 driver, trigger buff
+// 447005 buff
+void blessed_weapon_grip( special_effect_t& effect )
+{
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  create_all_stat_buffs( effect, effect.trigger(), effect.trigger()->effectN( 6 ).average( effect.item ),
+    [ &buffs ]( stat_e s, buff_t* b ) { buffs[ s ] = b->set_reverse( true ); } );
+
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+    [ buffs ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* ) {
+      auto stat = util::highest_stat( cb->listener, secondary_ratings );
+      for ( auto [ s, b ] : buffs )
+      {
+        if ( s == stat )
+          b->trigger();
+        else
+          b->expire();
+      }
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -2146,27 +2196,22 @@ void empowering_crystal_of_anubikkaj( special_effect_t& effect )
 {
   std::vector<buff_t*> buffs;
 
-  auto add_buff = [ & ]( size_t i, std::string_view n ) {
-    auto name = fmt::format( "{}_{}", util::tokenize_fn( effect.trigger()->name_cstr() ), n );
-    auto b = create_buff<stat_buff_t>( effect.player, name, effect.trigger() )
-      ->add_stat_from_effect( i, effect.trigger()->effectN( i ).average( effect.item ) )
-      ->set_name_reporting( n );
-
-    buffs.push_back( b );
-  };
-
-  add_buff( 1, "Crit" );
-  add_buff( 2, "Haste" );
-  add_buff( 3, "Mastery" );
-  add_buff( 4, "Vers" );
+  create_all_stat_buffs( effect, effect.trigger(), 0,
+    [ &buffs ]( stat_e, buff_t* b ) { buffs.push_back( b ); } );
 
   // TODO: confirm refreshing proc can change stat
   // TODO: confirm refreshing proc can pick same stat
   // TODO: confirm refreshing proc doesn't stack stats (cannot be confirmed via tooltip)
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-      range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
-      buffs[ cb->listener->rng().range( 0U, as<unsigned>( buffs.size() ) ) ]->trigger();
+      auto buff = buffs[ cb->listener->rng().range( 0U, as<unsigned>( buffs.size() ) ) ];
+      for ( auto b : buffs )
+      {
+        if ( b == buff )
+          b->trigger();
+        else
+          b->expire();
+      }
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -2329,32 +2374,11 @@ void signet_of_the_priory( special_effect_t& effect )
         party_use( e.player->thewarwithin_opts.signet_of_the_priory_party_use_cooldown,
                    e.player->thewarwithin_opts.signet_of_the_priory_party_use_stddev, e.driver()->cooldown() )
     {
-      auto buff_data  = e.driver();
-      auto buff_name  = util::tokenize_fn( buff_data->name_cstr() );
-      auto buff_amt   = data->effectN( 2 ).average( e.item );
-      auto party_data = e.player->find_spell( 450882 );
-      auto party_name = util::tokenize_fn( party_data->name_cstr() );
-      auto party_amt  = data->effectN( 1 ).average( e.item );
+      create_all_stat_buffs( e, e.driver(), data->effectN( 2 ).average( e.item ),
+        [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
-      auto add_buff = [ &, this ]( size_t i, stat_e stat ) {
-        auto stat_str = util::stat_type_abbrev( stat );
-
-        auto buff = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", buff_name, stat_str ), buff_data )
-          ->add_stat_from_effect( i + 2, buff_amt )
-          ->set_name_reporting( stat_str );
-
-        auto party = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", party_name, stat_str ), party_data )
-          ->add_stat_from_effect( i + 2, party_amt )
-          ->set_name_reporting( stat_str );
-
-        buffs[ stat ] = buff;
-        party_buffs[ stat ] = party;
-      };
-
-      add_buff( 1, STAT_CRIT_RATING );
-      add_buff( 2, STAT_HASTE_RATING );
-      add_buff( 3, STAT_MASTERY_RATING );
-      add_buff( 4, STAT_VERSATILITY_RATING );
+      create_all_stat_buffs( e, e.player->find_spell( 450882 ), data->effectN( 1 ).average( e.item ),
+        [ this ]( stat_e s, buff_t* b ) { party_buffs[ s ] = b; } );
     }
 
     void execute() override
@@ -2843,6 +2867,7 @@ void register_special_effects()
 
 
   // Embellishments
+  register_special_effect( 443743, embellishments::blessed_weapon_grip );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
