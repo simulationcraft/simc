@@ -1104,6 +1104,7 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> echoing_strike;
     propagate_const<proc_t*> overwritten_leaping_flames;
     propagate_const<proc_t*> diverted_power;
+    propagate_const<proc_t*> destroyers_scarred_wards;
     
   } proc;
 
@@ -3422,6 +3423,17 @@ struct eternity_surge_t : public empowered_charge_spell_t
   {
     create_release_spell<eternity_surge_damage_t>( "eternity_surge_damage" );
   }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW1, B4 ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.destroyers_scarred_wards->occur();
+    }
+  }
 };
 
 // Spells ===================================================================
@@ -5348,6 +5360,8 @@ public:
     background                        = true;
     aoe                               = -1;
     split_aoe_damage                  = true;
+
+    base_dd_multiplier = 1.85; // Bug?
   }
 
   // TODO: MELT ARMOR
@@ -5373,6 +5387,28 @@ public:
     cooldown_objects[ e ] = cd;
 
     return cd;
+  }
+
+  
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = base::composite_target_multiplier( t );
+
+    if ( evoker )
+    {
+      auto td = evoker->get_target_data( t );
+      if ( td && td->debuffs.melt_armor->check() )
+      {
+        tm *= 1 + td->debuffs.melt_armor->check_value();
+      }
+
+      if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
+      {
+        tm *= 1 + evoker->talent.scalecommander.might_of_the_black_dragonflight->effectN( 1 ).percent();
+      }
+    }
+    
+    return tm;
   }
 
   void impact( action_state_t* s ) override
@@ -5930,7 +5966,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor", evoker->talent.scalecommander.melt_armor_debuff );
 
   debuffs.bombardments = make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
-                                                                   evoker->talent.scalecommander.bombardments_debuff );
+                                                      evoker->talent.scalecommander.bombardments_debuff )
+          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
                                                          evoker->find_spell( 403275 ), evoker->naszuro ? evoker->naszuro->item : nullptr );
@@ -6643,6 +6680,7 @@ void evoker_t::init_procs()
   proc.echoing_strike             = get_proc( "Echoing Strike" );
   proc.overwritten_leaping_flames = get_proc( "Overwritten Leaping Flames" );
   proc.diverted_power             = get_proc( "Diverted Power" );
+  proc.destroyers_scarred_wards   = get_proc( "Evoker Devastation 11.0 Class Set 4pc" );
 }
 
 void evoker_t::init_base_stats()
@@ -7422,6 +7460,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.volcanism );
   action.apply_affecting_aura( talent.interwoven_threads );
   action.apply_affecting_aura( talent.arcane_reach );
+  action.apply_affecting_aura( sets->set( EVOKER_AUGMENTATION, TWW1, B2 ) );
 
   // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );
@@ -7436,6 +7475,8 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.event_horizon );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
+  action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, TWW1, B2 ) );
+  action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, TWW1, B4 ) );
 
   // Flameshaper
   action.apply_affecting_aura( talent.flameshaper.red_hot );
