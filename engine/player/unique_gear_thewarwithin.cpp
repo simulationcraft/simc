@@ -2156,7 +2156,7 @@ struct pickup_entropic_skardyn_core_t : public action_t
     action_t::execute();
 
     buff->trigger();
-    tracker->expire();
+    tracker->decrement();
   }
 };
 
@@ -2167,7 +2167,7 @@ struct pickup_entropic_skardyn_core_t : public action_t
 // TODO: determine reasonable default values for core pickup delay
 void entropic_skardyn_core( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "entropic_skardyn_core" } ) )
+  if ( create_fallback_buffs( effect, { "entropic_skardyn_core", "entropic_reclamation" } ) )
     return;
 
   struct entropic_skardyn_core_cb_t : public dbc_proc_callback_t
@@ -2186,7 +2186,9 @@ void entropic_skardyn_core( special_effect_t& effect )
       buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449254 ) )
         ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) );
 
-      tracker = create_buff<buff_t>( e.player, e.trigger()->effectN( 1 ).trigger() );
+      tracker = create_buff<buff_t>( e.player, e.trigger()->effectN( 1 ).trigger() )
+        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+        ->set_max_stack( 6 );  // TODO: 'safe' value for 2 rppm. increase if necessary.
 
       if ( auto action =
              dynamic_cast<pickup_entropic_skardyn_core_t*>( e.player->find_action( "pickup_entropic_skardyn_core" ) ) )
@@ -2204,7 +2206,7 @@ void entropic_skardyn_core( special_effect_t& effect )
           if ( tracker->check() )                                      // check hasn't been picked up via action
           {
             buff->trigger();
-            tracker->expire();
+            tracker->decrement();
           }
         } );
       } );
