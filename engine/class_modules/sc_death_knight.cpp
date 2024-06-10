@@ -5412,7 +5412,7 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
 
   void execute_damage()
   {
-    damage->base_dd_min = damage->base_dd_max = last_period;
+    damage->base_dd_min = damage->base_dd_max = last_period * p()->talent.unholy.decomposition->effectN( 1 ).percent();
     damage->execute_on_target( tar );
   }
 
@@ -5910,7 +5910,7 @@ struct virulent_plague_t final : public death_knight_disease_t
     {
       auto td = get_td( d->target );
       debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
-          d->state->result_amount * p()->talent.unholy.decomposition->effectN( 1 ).percent();
+          d->state->result_amount;
     }
   }
 
