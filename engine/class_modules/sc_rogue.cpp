@@ -496,6 +496,8 @@ public:
     buff_t* t30_assassination_4pc;
     buff_t* t30_outlaw_4pc;
     damage_buff_t* t31_assassination_2pc;
+    damage_buff_t* tww1_assassination_2pc;
+    damage_buff_t* tww1_assassination_4pc;
 
   } buffs;
 
@@ -795,6 +797,8 @@ public:
     const spell_data_t* t31_subtlety_2pc_black_powder;
     const spell_data_t* t31_subtlety_2pc_eviscerate;
     const spell_data_t* t31_subtlety_2pc_rupture;
+    const spell_data_t* tww_assassination_2pc_buff;
+    const spell_data_t* tww_assassination_4pc_buff;
 
   } spec;
 
@@ -1189,6 +1193,13 @@ public:
     const spell_data_t* t31_outlaw_4pc;
     const spell_data_t* t31_subtlety_2pc;
     const spell_data_t* t31_subtlety_4pc;
+
+    const spell_data_t* tww1_assassination_2pc;
+    const spell_data_t* tww1_assassination_4pc;
+    const spell_data_t* tww1_outlaw_2pc;
+    const spell_data_t* tww1_outlaw_4pc;
+    const spell_data_t* tww1_subtlety_2pc;
+    const spell_data_t* tww1_subtlety_4pc;
   } set_bonuses;
 
   // Options
@@ -2025,6 +2036,8 @@ public:
     register_damage_buff( p()->buffs.t29_subtlety_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc_black_powder );
     register_damage_buff( p()->buffs.t31_assassination_2pc );
+    register_damage_buff( p()->buffs.tww1_assassination_2pc );
+    register_damage_buff( p()->buffs.tww1_assassination_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2399,6 +2412,7 @@ public:
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_nimble_flurry( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
+  void trigger_tww1_assassination_set_bonus( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2890,6 +2904,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_dashing_scoundrel( d->state );
     trigger_caustic_spatter( d->state );
     trigger_cloud_cover( d->state );
+    trigger_tww1_assassination_set_bonus( d->state );
   }
 };
 
@@ -9554,6 +9569,22 @@ bool actions::rogue_action_t<Base>::trigger_t31_subtlety_set_bonus( const action
   return ( num_clones > 0 );
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_tww1_assassination_set_bonus( const action_state_t* state )
+{
+  if ( !p()->set_bonuses.tww1_assassination_2pc->ok() )
+    return;
+
+  if ( state->result_type != result_amount_type::DMG_OVER_TIME )
+    return;
+
+  // ALPHA TOCHECK -- Does this require more specific whitelisting?
+  if ( ab::school != SCHOOL_PHYSICAL )
+    return;
+
+  p()->buffs.tww1_assassination_2pc->trigger();
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -11206,6 +11237,13 @@ void rogue_t::init_spells()
   set_bonuses.t31_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T31, B2 );
   set_bonuses.t31_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T31, B4 );
 
+  set_bonuses.tww1_assassination_2pc  = sets->set( ROGUE_ASSASSINATION, TWW1, B2 );
+  set_bonuses.tww1_assassination_4pc  = sets->set( ROGUE_ASSASSINATION, TWW1, B4 );
+  set_bonuses.tww1_outlaw_2pc         = sets->set( ROGUE_OUTLAW, TWW1, B2 );
+  set_bonuses.tww1_outlaw_4pc         = sets->set( ROGUE_OUTLAW, TWW1, B4 );
+  set_bonuses.tww1_subtlety_2pc       = sets->set( ROGUE_SUBTLETY, TWW1, B2 );
+  set_bonuses.tww1_subtlety_4pc       = sets->set( ROGUE_SUBTLETY, TWW1, B4 );
+
   spec.t30_assassination_2pc_tick = set_bonuses.t30_assassination_2pc->ok() ? find_spell( 409483 ) : spell_data_t::not_found();
   spec.t30_assassination_4pc_buff = set_bonuses.t30_assassination_4pc->ok() ? find_spell( 409587 ) : spell_data_t::not_found();
   spec.t30_outlaw_2pc_attack = set_bonuses.t30_outlaw_2pc->ok() ? find_spell( 409604 ) : spell_data_t::not_found();
@@ -11217,6 +11255,8 @@ void rogue_t::init_spells()
   spec.t31_subtlety_2pc_black_powder = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424492 ) : spell_data_t::not_found();
   spec.t31_subtlety_2pc_eviscerate = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424491 ) : spell_data_t::not_found();
   spec.t31_subtlety_2pc_rupture = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424493 ) : spell_data_t::not_found();
+  spec.tww_assassination_2pc_buff = set_bonuses.tww1_assassination_2pc->ok() ? find_spell( 458475 ) : spell_data_t::not_found();
+  spec.tww_assassination_4pc_buff = set_bonuses.tww1_assassination_4pc->ok() ? find_spell( 458476 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -12083,6 +12123,25 @@ void rogue_t::create_buffs()
   buffs.t31_assassination_2pc->set_default_value_from_effect_type( A_MOD_MELEE_AUTO_ATTACK_SPEED )
     ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.tww1_assassination_2pc = make_buff<damage_buff_t>( this, "vile_tincture", spec.tww_assassination_2pc_buff );
+  if ( spec.tww_assassination_2pc_buff->ok() )
+  {
+    buffs.tww1_assassination_2pc->set_chance( set_bonuses.tww1_assassination_2pc->proc_chance() );
+    if ( set_bonuses.tww1_assassination_4pc->ok() )
+    {
+      const int trigger_stacks = as<int>( set_bonuses.tww1_assassination_4pc->effectN( 1 ).base_value() );
+      buffs.tww1_assassination_2pc->set_stack_change_callback( [ this, trigger_stacks ]( buff_t*, int, int new_ ) {
+        if ( new_ >= trigger_stacks )
+          buffs.tww1_assassination_4pc->trigger();
+        else
+          buffs.tww1_assassination_4pc->expire();
+      } );
+    }
+  }
+  buffs.tww1_assassination_4pc = make_buff<damage_buff_t>( this, "thrombotic_tincture", spec.tww_assassination_4pc_buff );
+  buffs.tww1_assassination_4pc->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
 }
 
 // rogue_t::invalidate_cache =========================================
