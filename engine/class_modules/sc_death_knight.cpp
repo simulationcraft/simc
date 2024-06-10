@@ -1489,7 +1489,6 @@ public:
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
     real_ppm_t* blood_beast;
-    real_ppm_t* decomposition;
     real_ppm_t* tww1_fdk_4pc;
   } rppm;
 
@@ -1506,7 +1505,8 @@ public:
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> army_magus;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> apoc_magus;
-    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> doomed_bidding_magus;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> doomed_bidding_magus_coil;
+    spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> doomed_bidding_magus_epi;
     spawner::pet_spawner_t<pets::blood_beast_pet_t, death_knight_t> blood_beast;
     spawner::pet_spawner_t<pets::mograine_pet_t, death_knight_t> mograine;
     spawner::pet_spawner_t<pets::whitemane_pet_t, death_knight_t> whitemane;
@@ -1525,7 +1525,8 @@ public:
         bloodworms( "bloodworm", p ),
         army_magus( "army_magus", p ),
         apoc_magus( "apoc_magus", p ),
-        doomed_bidding_magus( "doomed_bidding_magus", p ),
+        doomed_bidding_magus_coil( "doomed_bidding_magus_coil", p ),
+        doomed_bidding_magus_epi( "doomed_bidding_magus_epi", p ),
         blood_beast( "blood_beast", p ),
         mograine( "mograine", p ),
         whitemane( "whitemane", p ),
@@ -5355,19 +5356,64 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
       stored_damage( 0 ),
       last_period( 0 ),
       damage( nullptr ),
-      target( td.target )
+      tar( td.target ),
+      decomposition_extend_duration( 0_s )
   {
     damage = p()->active_spells.decomposition_damage;
+    decomposition_extend_duration =
+        timespan_t::from_millis( p()->talent.unholy.decomposition->effectN( 2 ).base_value() );
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       last_period   = stored_damage;
       stored_damage = 0;
+      if ( rng().roll( 0.25 ) )
+      {
+        execute_damage();
+        // Cant use the main `active_pets` vector here, breaks non dk pets.
+        for ( auto& pet : p()->pets.apoc_ghouls.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.army_ghouls.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.army_magus.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.apoc_magus.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.doomed_bidding_magus_coil.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.doomed_bidding_magus_epi.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.abomination.active_pets() )
+        {
+          extend_pet( pet );
+        }
+      }
     } );
+  }
+
+  void extend_pet( pets::death_knight_pet_t* pet )
+  {
+    if ( pet->decomposition_can_extend && pet->decomposition_extend_limit > pet->decomposition_extended )
+    {
+      pet->adjust_duration( decomposition_extend_duration );
+      pet->decomposition_extended += decomposition_extend_duration;
+    }
   }
 
   void execute_damage()
   {
     damage->base_dd_min = damage->base_dd_max = last_period;
-    damage->execute_on_target( target );
+    damage->execute_on_target( tar );
   }
 
   void reset() override
@@ -5397,7 +5443,8 @@ public:
 private:
   double last_period;
   action_t* damage;
-  player_t* target;
+  player_t* tar;
+  timespan_t decomposition_extend_duration;
 };
 }  // namespace debuffs
 
@@ -5852,23 +5899,8 @@ struct virulent_plague_t final : public death_knight_disease_t
   virulent_plague_t( util::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.virulent_plague ),
       ff( get_action<frost_fever_t>( "frost_fever", p ) ),
-      bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
-      decomposition_extend_duration( 0_s )
+      bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {
-    if ( p->talent.unholy.decomposition.ok() )
-    {
-      decomposition_extend_duration =
-          timespan_t::from_millis( p->talent.unholy.decomposition->effectN( 2 ).base_value() );
-    }
-  }
-
-  void extend_pet( pets::death_knight_pet_t* pet )
-  {
-    if ( pet->decomposition_can_extend && pet->decomposition_extend_limit > pet->decomposition_extended )
-    {
-      pet->adjust_duration( decomposition_extend_duration );
-      pet->decomposition_extended += decomposition_extend_duration;
-    }
   }
 
   void tick( dot_t* d ) override
@@ -5879,36 +5911,6 @@ struct virulent_plague_t final : public death_knight_disease_t
       auto td = get_td( d->target );
       debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->stored_damage +=
           d->state->result_amount * p()->talent.unholy.decomposition->effectN( 1 ).percent();
-      if ( p()->rppm.decomposition->trigger() )
-      {
-        debug_cast<debuffs::decomposition_debuff_t*>( td->debuff.decomposition )->execute_damage();
-
-        // Cant use the main `active_pets` vector here, breaks non dk pets.
-        for ( auto& pet : p()->pets.apoc_ghouls.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.army_ghouls.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.army_magus.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.apoc_magus.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.doomed_bidding_magus.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.abomination.active_pets() )
-        {
-          extend_pet( pet );
-        }
-      }
     }
   }
 
@@ -5923,24 +5925,13 @@ struct virulent_plague_t final : public death_knight_disease_t
     if ( p()->talent.unholy.decomposition.ok() )
     {
       auto td = get_td( s->target );
-      td->debuff.decomposition->trigger();
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    death_knight_disease_t::last_tick( d );
-    if ( p()->talent.unholy.decomposition.ok() )
-    {
-      auto td = get_td( d->target );
-      td->debuff.decomposition->expire();
+      td->debuff.decomposition->trigger( td->dot.virulent_plague->duration() );
     }
   }
 
 private:
   propagate_const<action_t*> ff;
   propagate_const<action_t*> bp;
-  timespan_t decomposition_extend_duration;
 };
 
 // Unholy Blight DoT ====================================================
@@ -7626,7 +7617,7 @@ struct death_coil_t final : public death_knight_spell_t
     
     if ( p->talent.unholy.doomed_bidding.ok() )
     {
-      p->pets.doomed_bidding_magus.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
   }
 
@@ -7643,7 +7634,7 @@ struct death_coil_t final : public death_knight_spell_t
     if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
     {
       timespan_t duration = timespan_t::from_millis( p()->talent.unholy.doomed_bidding->effectN( 1 ).base_value() );
-      p()->pets.doomed_bidding_magus.spawn( timespan_t::from_seconds( duration.total_seconds() ), 1 );
+      p()->pets.doomed_bidding_magus_coil.spawn( timespan_t::from_seconds( duration.total_seconds() ), 1 );
     }
 
     p()->buffs.sudden_doom->decrement();
@@ -8042,6 +8033,10 @@ struct epidemic_t final : public death_knight_spell_t
 
     add_child( impact_action );
     add_child( impact_action->impact_action );
+    if ( p->talent.unholy.doomed_bidding.ok() )
+    {
+      p->pets.doomed_bidding_magus_epi.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -8069,7 +8064,7 @@ struct epidemic_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
     {
-      p()->pets.doomed_bidding_magus.spawn( p()->talent.unholy.doomed_bidding->effectN( 1 ).time_value(), 1 );
+      p()->pets.doomed_bidding_magus_epi.spawn( p()->talent.unholy.doomed_bidding->effectN( 1 ).time_value(), 1 );
     }
 
     p()->buffs.sudden_doom->decrement();
@@ -11322,6 +11317,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
     if ( vp_td->is_ticking() )
     {
       vp_td->adjust_duration( extension );
+      if ( talent.unholy.decomposition.ok() )
+      {
+        base_td->debuff.decomposition->extend_duration( target, extension );
+      }
     }
     if ( bp_td->is_ticking() )
     {
@@ -11334,6 +11333,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
     if ( vp_td->is_ticking() )
     {
       vp_td->cancel();
+      if ( talent.unholy.decomposition.ok() )
+      {
+        base_td->debuff.decomposition->expire();
+      }
     }
     if ( bp_td->is_ticking() )
     {
@@ -12020,8 +12023,10 @@ void death_knight_t::create_pets()
 
     if ( talent.unholy.doomed_bidding.ok() )
     {
-      pets.doomed_bidding_magus.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::magus_pet_t( p, "doomed_bidding_magus" ); } );
+      pets.doomed_bidding_magus_coil.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::magus_pet_t( p, "doomed_bidding_magus_coil" ); } );
+      pets.doomed_bidding_magus_epi.set_creation_callback(
+        []( death_knight_t* p ) { return new pets::magus_pet_t( p, "doomed_bidding_magus_epi" ); } );
     }
 
     if ( talent.unholy.raise_abomination.ok() )
@@ -12064,8 +12069,6 @@ void death_knight_t::init_rng()
   rppm.bloodworms        = get_rppm( "bloodworms", talent.blood.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
   rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
-  rppm.decomposition     = get_rppm( "decomposition", spell.decomposition_buff );
-  rppm.decomposition->set_frequency( 15 );
   rppm.tww1_fdk_4pc      = get_rppm( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
 }
 
