@@ -131,6 +131,12 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* unbound_surge;
   } buffs;
 
+  struct chrono_tracker_t
+  {
+    std::array<double, 5> damage_buckets = { 0, 0, 0, 0, 0 };
+    time_t last_accessed_second          = LLONG_MIN;
+  } chrono_tracker;
+
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
@@ -1147,6 +1153,7 @@ struct evoker_t : public player_t
   void init_items() override;
   void init_spells() override;
   void init_special_effects() override;
+  void init_assessors() override;
   // void init_finished() override;
   void create_actions() override;
   void create_buffs() override;
@@ -5870,6 +5877,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     : evoker_buff_t<buff_t>( td, name, s )
   {
     buff_period = 0_s;
+
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
     set_cooldown( 0_s );
     set_chance( 1 );
 
@@ -5967,9 +5977,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                            evoker->talent.scalecommander.melt_armor_debuff )
                            ->set_default_value_from_effect( 2, 0.01 );
 
-  debuffs.bombardments = make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
-                                                      evoker->talent.scalecommander.bombardments_debuff )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  debuffs.bombardments =
+      make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
+                                                      evoker->talent.scalecommander.bombardments_debuff );
+
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
                                                          evoker->find_spell( 403275 ), evoker->naszuro ? evoker->naszuro->item : nullptr );
@@ -7013,6 +7024,39 @@ void evoker_t::init_special_effects()
   player_t::init_special_effects();
 }
 
+void evoker_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( talent.chronowarden.chrono_flame.enabled() )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* state ) {
+      auto td       = get_target_data( state->target );
+      auto& tracker = td->chrono_tracker;
+
+      time_t accessed_second = sim->current_time().total_millis() / 1000;
+      size_t current_bucket  = as<size_t>( accessed_second % 5 );
+
+      if ( accessed_second > tracker.last_accessed_second )
+      {
+        size_t old_bucket = as<size_t>( tracker.last_accessed_second % 5 );
+
+        while ( old_bucket != current_bucket )
+        {
+          old_bucket                           = ( old_bucket + 1 ) % 5;
+          tracker.damage_buckets[ old_bucket ] = 0;
+        }
+
+        tracker.last_accessed_second = accessed_second;
+      }
+
+      tracker.damage_buckets[ current_bucket ] += state->result_amount;
+
+      return assessor::CONTINUE;
+    } );
+  }
+}
+
 void evoker_t::create_actions()
 {
   using namespace spells;
@@ -7377,6 +7421,23 @@ void evoker_t::reset()
   allied_ebons_on_me.clear();
   last_scales_target = nullptr;
   was_empowering = false;
+
+  // Reset Chrono Flame Buckets
+  if ( talent.chronowarden.chrono_flame.enabled() )
+  {
+    for ( evoker_td_t* td : target_data.get_entries() )
+    {
+      if ( !td )
+        continue;
+
+      td->chrono_tracker.last_accessed_second = LLONG_MIN;
+
+      for ( auto& bucket : td->chrono_tracker.damage_buckets )
+      {
+        bucket = 0;
+      }
+    }
+  }
 }
 
 void evoker_t::copy_from( player_t* source )
