@@ -1444,6 +1444,14 @@ void judgment_t::execute()
         p()->buffs.sentinel_decay->extend_duration( p(), extension );
       }
     }
+    // if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
+    }
   }
 
 //      if ( p()->talents.higher_calling->ok() )
@@ -2039,6 +2047,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       p()->buffs.final_verdict->expire();
     }
+         // if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
+    }
+
   }
 
   void impact( action_state_t* s ) override
@@ -2742,7 +2759,11 @@ void paladin_t::create_buffs()
                                  } );
   buffs.undisputed_ruling    = make_buff( this, "undisputed_ruling", find_spell( 432629 ) );
   // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
-  buffs.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) );
+  buffs.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
+                                ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                  this->trigger_empyrean_hammer( target, 1, 0_ms );
+                                }
+  );
 }
 
 // paladin_t::default_potion ================================================

@@ -577,6 +577,14 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         }
       }
     }
+    // if ( p()->talents.higher_calling->ok() )
+    {
+      auto extension = 1000_ms;
+      if ( p()->buffs.shake_the_heavens->up() )
+      {
+        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+      }
+    }
   }
 };
 
