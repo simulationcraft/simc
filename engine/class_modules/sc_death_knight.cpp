@@ -5111,7 +5111,7 @@ struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_
         p->buffs.essence_of_the_blood_queen_damage->increment();
       }
     } );
-    set_expire_callback( [ p ]( buff_t* b, double, timespan_t ) { p->buffs.essence_of_the_blood_queen_damage->expire(); } );
+    set_expire_callback( [ p ]( buff_t*, double, timespan_t ) { p->buffs.essence_of_the_blood_queen_damage->expire(); } );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
