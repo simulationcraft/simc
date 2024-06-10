@@ -4762,11 +4762,11 @@ struct eruption_t : public essence_spell_t
       p()->cooldown.upheaval->adjust( upheaval_cdr );
     }
 
-    if ( p()->talent.motes_of_possibility.ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
+    /* if ( p()->talent.motes_of_possibility.ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
     {
       p()->cooldown.breath_of_eons->adjust(
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
-    }
+    }*/
 
     if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
          p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
