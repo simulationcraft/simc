@@ -4284,10 +4284,11 @@ struct ferocious_bite_base_t : public cat_finisher_t
   {
     cat_finisher_t::impact( s );
 
-    if ( !result_is_hit( s->result ) )
+    if ( s->chain_target || !result_is_hit( s->result ) )  // the rest only procs on main target
       return;
 
-    td( s->target )->debuff.sabertooth->trigger( this, cp( s ) );
+    if ( p()->talent.sabertooth.ok() )
+      td( s->target )->debuff.sabertooth->trigger( this, cp( s ) );
 
     if ( p()->talent.bursting_growth.ok() )
       p()->active.bursting_growth->execute_on_target( s->target );
