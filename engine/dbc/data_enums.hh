@@ -806,7 +806,7 @@ enum effect_type_t : unsigned {
     E_TALENT_SPEC_SELECT = 162,
     E_163 = 163,
     E_CANCEL_AURA = 164,
-    E_165 = 165,
+    E_DAMAGE_TAKEN_PCT_MAX_HEALTH = 165,
     E_166 = 166,
     E_167 = 167,
     E_168 = 168,

@@ -2587,6 +2587,68 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
+// 455534 equip
+//  e1: trigger cycle
+//  e2: buff coeff
+// 455535 cycle
+// 455536 buff
+// 455537 self damage
+// TODO: determine if self damage procs anything
+// TODO: confirm buff value once scaling is fixed
+void darkmoon_deck_symbiosis( special_effect_t& effect )
+{
+  struct symbiosis_buff_t : public stat_buff_t
+  {
+    event_t* ev = nullptr;
+    action_t* self_damage;
+    timespan_t period;
+    double self_damage_pct;
+
+    symbiosis_buff_t( const special_effect_t& e )
+      : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
+        period( e.trigger()->effectN( 1 ).period() )
+    {
+      // TODO: confirm buff value once scaling is fixed. currently bugged to be -1 with no ilevel scaling
+      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+
+      self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
+      // TODO: determine if self damage procs anything
+      self_damage->callbacks = false;
+      self_damage->target = player;
+      self_damage_pct = self_damage->data().effectN( 1 ).percent();
+    }
+
+    void start_symbiosis()
+    {
+      ev = make_event( *player->sim, period, [ this ] { tick_symbiosis(); } );
+    }
+
+    void tick_symbiosis()
+    {
+      self_damage->execute_on_target( player, player->resources.max[ RESOURCE_HEALTH ] * self_damage_pct );
+      trigger();
+      ev = make_event( *player->sim, period, [ this ] { tick_symbiosis(); } );
+    }
+
+    void cancel_symbiosis()
+    {
+      if ( ev )
+        event_t::cancel( ev );
+    }
+  };
+
+  if ( !buff_t::find( effect.player, "symbiosis" ) )
+  {
+    auto buff = make_buff<symbiosis_buff_t>( effect );
+    effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
+      if ( c )
+        buff->start_symbiosis();
+      else
+        buff->cancel_symbiosis();
+    } );
+  }
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -2896,7 +2958,7 @@ void register_special_effects()
                              449120, 449118, 449117 }, enchants::secondary_weapon_enchant );  // oathsworn tenacity (vers)
 
 
-  // Embellishments
+  // Embellishments & Tinkers
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
 
@@ -2942,6 +3004,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
+  register_special_effect( 455534, items::darkmoon_deck_symbiosis );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
