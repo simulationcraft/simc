@@ -358,7 +358,7 @@ void modified_spell_data_t::parse_effect( pack_t<modify_effect_t>& tmp, const sp
     default:         return;
   }
 
-  if ( !_spell.affected_by_all( eff ) )
+  if ( !_spell.affected_by_all( eff ) || idx >= effects.size() )
     return;
 
   auto& effN = effects[ idx ];
