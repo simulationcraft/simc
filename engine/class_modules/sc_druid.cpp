@@ -1444,8 +1444,10 @@ struct force_of_nature_t : public treant_base_t
   {
     bool first_attack = true;
 
-    fon_melee_t( pet_t* pet, const char* name = "Melee" ) : melee_attack_t( name, pet, spell_data_t::nil() )
+    fon_melee_t( pet_t* pet ) : melee_attack_t( "melee", pet, spell_data_t::nil() )
     {
+      name_str_reporting = "Melee";
+
       school            = SCHOOL_PHYSICAL;
       weapon            = &( pet->main_hand_weapon );
       weapon_multiplier = 1.0;
@@ -8914,7 +8916,10 @@ struct druid_melee_t : public Base
 // Caster Melee Attack ======================================================
 struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
 {
-  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p ) {}
+  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p )
+  {
+    name_str_reporting = "Caster Melee";
+  }
 };
 
 // Bear Melee Attack ========================================================
@@ -8924,6 +8929,8 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
 
   bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
   {
+    name_str_reporting = "Bear Melee";
+
     form_mask = form_e::BEAR_FORM;
 
     energize_type = action_energize::ON_HIT;
@@ -8950,6 +8957,8 @@ struct cat_melee_t : public druid_melee_t<cat_attack_t>
 {
   cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
   {
+    name_str_reporting = "Cat Melee";
+
     form_mask = form_e::CAT_FORM;
     snapshots.tigers_fury = true;
   }
