@@ -440,6 +440,34 @@ void blessed_weapon_grip( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 453503 equip, trigger driver
+//  e1: damage coeff?
+// 453508 driver, trigger missile
+//  e1: damage coeff?
+// 453510 missile, trigger damage
+// 453782 damage
+// TODO: determine which coeff is the correct one. assuming driver is correct.
+// TODO: confirm damage doesn't increase per extra target
+void pouch_of_pocket_grenades( special_effect_t& effect )
+{
+  auto driver = effect.trigger();
+  auto missile = driver->effectN( 1 ).trigger();
+  auto damage = missile->effectN( 1 ).trigger();
+  // TODO: determine which coeff is the correct one. assuming driver is correct.
+  auto amount = driver->effectN( 1 ).average( effect.item );
+
+  effect.spell_id = driver->id();
+
+  // TODO: confirm damage doesn't increase per extra target
+  auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
+  grenade->base_dd_min = grenade->base_dd_max = amount;
+  grenade->travel_speed = missile->missile_speed();
+
+  effect.execute_action = grenade;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -2868,6 +2896,7 @@ void register_special_effects()
 
   // Embellishments
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
+  register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -2911,15 +2940,18 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
+
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
+
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
 }
