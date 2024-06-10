@@ -134,7 +134,7 @@ struct evoker_td_t : public actor_target_data_t
   struct chrono_tracker_t
   {
     std::array<double, 5> damage_buckets = { 0, 0, 0, 0, 0 };
-    time_t last_accessed_second          = LLONG_MIN;
+    time_t last_accessed_second          = std::numeric_limits<time_t>::min();
   } chrono_tracker;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -4001,16 +4001,53 @@ struct landslide_t : public evoker_spell_t
 
 struct living_flame_t : public evoker_spell_t
 {
-  template <class Base>
+  struct chrono_flame_damage_t : public evoker_spell_t
+  {
+    double chrono_mult;
+    double chrono_cap;
+    chrono_flame_damage_t( evoker_t* p )
+      : evoker_spell_t( "chrono_flame", p, p->talent.chronowarden.chrono_flame_damage ),
+        chrono_mult( p->talent.chronowarden.chrono_flame->effectN( p->specialization() == EVOKER_AUGMENTATION ? 3 : 1 )
+                         .percent() ),
+        chrono_cap( 2.5 ) // TODO: Parse from variable
+    {
+      travel_speed = 40;
+      may_crit     = false;
+    }
 
+
+    double get_damage( const action_state_t* s ) const
+    {
+      auto td = p()->find_target_data( s->target );
+            
+      if ( !td )
+        return 0;
+
+      double pool = std::reduce( td->chrono_tracker.damage_buckets.begin(), td->chrono_tracker.damage_buckets.end() ) *
+                    chrono_mult;
+
+      return pool;
+    }
+
+    void impact( action_state_t* s )
+    {
+      s->result_total = s->result_raw = s->result_amount =
+          std::min( get_damage( s ), composite_versatility( s ) * composite_total_spell_power() * chrono_cap );
+
+      evoker_spell_t::impact( s );
+    }
+  };
+
+  template <class Base>
   struct living_flame_base_t : public Base
   {
     using base_t = living_flame_base_t<Base>;
 
     timespan_t prepull_timespent;
+    bool st_only;
 
-    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
-      : Base( n, p, s ), prepull_timespent( timespan_t::zero() )
+    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
+      : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
     {
       base_t::dual         = true;
       base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
@@ -4018,6 +4055,9 @@ struct living_flame_t : public evoker_spell_t
 
     int n_targets() const override
     {
+      if ( st_only )
+        return 1;
+
       if ( auto n = base_t::p()->buff.leaping_flames->check() )
         return 1 + n;
       else
@@ -4060,8 +4100,14 @@ struct living_flame_t : public evoker_spell_t
 
   struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
   {
-    living_flame_damage_t( evoker_t* p ) : base_t( "living_flame_damage", p, p->spec.living_flame_damage )
+    chrono_flame_damage_t* chrono_flame;
+    living_flame_damage_t( evoker_t* p )
+      : base_t( "living_flame_damage", p, p->spec.living_flame_damage ), chrono_flame( nullptr )
     {
+      if ( p->talent.chronowarden.chrono_flame.enabled() )
+      {
+        chrono_flame = p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame" );
+      }
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -4080,6 +4126,16 @@ struct living_flame_t : public evoker_spell_t
       da *= 1.0 + p()->buff.iridescence_red->check_value();
 
       return da;
+    }
+
+    void impact( action_state_t* state )
+    {
+      base_t::impact( state );
+
+      if ( chrono_flame )
+      {
+        chrono_flame->execute_on_target( state->target );
+      }
     }
   };
 
@@ -4111,6 +4167,11 @@ struct living_flame_t : public evoker_spell_t
   {
     damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
     damage->stats = stats;
+
+    if ( p->talent.chronowarden.chrono_flame.enabled() )
+    {
+      add_child( p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame" ) );
+    }
 
     // TODO: implement option to cast heal instead
     heal = p->get_secondary_action<living_flame_heal_t>( "living_flame_heal" );
@@ -7430,7 +7491,7 @@ void evoker_t::reset()
       if ( !td )
         continue;
 
-      td->chrono_tracker.last_accessed_second = LLONG_MIN;
+      td->chrono_tracker.last_accessed_second = std::numeric_limits<time_t>::min();
 
       for ( auto& bucket : td->chrono_tracker.damage_buckets )
       {
