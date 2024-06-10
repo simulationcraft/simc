@@ -151,7 +151,7 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
 
 bool use_small_table( const player_t* p )
 {
-  double cutoff = 1000000;
+  static constexpr double cutoff = 1000000;
 
   return p->collected_data.dps.max() >= cutoff || p->collected_data.hps.max() >= cutoff;
 }
@@ -434,6 +434,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   std::string count_str;
   std::string critpct_str;
   std::string uppct_str;
+  bool show_uppct = player_has_tick_results( p, stats_mask ) && result_type == 1;
 
   // Create Merged Stat
   if ( !s.children.empty() )
@@ -456,8 +457,21 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                                  { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
     critpct_str = fmt::format( "&#160;({:.1f}%)", compound_critpct );
 
-    if ( player_has_tick_results( p, stats_mask ) && result_type == 1 )
-      uppct_str = fmt::format( "&#160;({:.1f}%)", 100 * compound_tick_time / target_fight_length( p.sim ) );
+    if ( show_uppct )
+    {
+      auto pct = 100 * s.total_tick_time.mean() / target_fight_length( p.sim );
+      auto cmp_pct = 100 * compound_tick_time / target_fight_length( p.sim );
+
+      if ( pct == cmp_pct )
+        uppct_str = fmt::format( "{:.1f}%", pct );
+      else if ( !pct && s.children.size() > 1 )
+        uppct_str = fmt::format( "({:.1f}%)", cmp_pct );
+    }
+  }
+  else
+  {
+    if ( show_uppct )
+      uppct_str = fmt::format( "{:.1f}%", 100 * s.total_tick_time.mean() / target_fight_length( p.sim ) );
   }
 
   // Result type and count
@@ -503,19 +517,10 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
           { FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK, FULLTYPE_GLANCE_BLOCK,
             FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
-  if ( player_has_tick_results( p, stats_mask ) )
-  {
-    if ( result_type == 1 )
-    {
-      os.format( R"(<td class="right">{:.1f}%{}</td>)",
-                 100 * s.total_tick_time.mean() / target_fight_length( p.sim ),
-                 uppct_str );
-    }
-    else
-    {
-      os.printf( "<td class=\"right\"></td>\n" );
-    }
-  }
+  if ( show_uppct )
+    os.format( R"(<td class="right">{}</td>)", uppct_str );
+  else
+    os.printf( R"(<td class="right"></td>)" );
 }
 
 void collect_aps( const stats_t* stats, double& caps, double& capspct )
