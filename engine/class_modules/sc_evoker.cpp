@@ -994,6 +994,8 @@ struct evoker_t : public player_t
     player_talent_t overlord;
     player_talent_t fate_mirror;
     const spell_data_t* fate_mirror_damage;
+    player_talent_t rumbling_earth;
+    player_talent_t burning_embers;
 
     struct chronowarden_t
     {
@@ -4779,14 +4781,63 @@ struct eruption_t : public essence_spell_t
 
 struct upheaval_t : public empowered_charge_spell_t
 {
-  struct upheaval_damage_t : public empowered_release_spell_t
+  using periodic_base_t = residual_action::residual_periodic_action_t<evoker_spell_t>;
+  struct reverberations_t : public periodic_base_t
   {
-    upheaval_damage_t( evoker_t* p, std::string_view name ) : base_t( name, p, p->find_spell( 396288 ) )
+    reverberations_t( evoker_t* p )
+      : residual_action_t( "upheaval_dot", p, p->talent.chronowarden.reverberations_upheaval )
     {
-      aoe = -1;
     }
 
-    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage" )
+    // Return Spell_t's multiplier as evoker's contains our mastery amp.
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      return spell_t::composite_target_multiplier( t );
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      periodic_base_t::trigger_dot( s );
+
+      p()->buff.primacy->trigger();
+    }
+  };
+
+  struct upheaval_damage_t : public empowered_release_spell_t
+  {
+    reverberations_t* reverberations;
+    upheaval_damage_t* rumbling_earth;
+    bool is_rumbling_earth;
+    double reverb_mul;
+    size_t repeats;
+
+    upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth )
+      : base_t( name, p, p->find_spell( 396288 ) ),
+        reverberations( nullptr ),
+        reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
+        repeats( as<size_t>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
+        rumbling_earth( nullptr )
+    {
+      aoe = -1;
+
+      if ( p->talent.chronowarden.reverberations.enabled() )
+      {
+        reverberations = p->get_secondary_action<reverberations_t>( "upheaval_dot" );
+      }
+
+      if ( is_rumbling_earth )
+      {
+        sands = nullptr;
+        base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
+      }
+      else if ( p->talent.rumbling_earth.enabled() )
+      {
+        rumbling_earth =
+            p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true );
+      }
+    }
+
+    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage", false )
     {
     }
 
@@ -4801,11 +4852,59 @@ struct upheaval_t : public empowered_charge_spell_t
 
       return da;
     }
+
+    void impact( action_state_t* s )
+    {
+      empowered_release_spell_t::impact( s );
+
+      if ( reverberations )
+      {
+        residual_action::trigger( reverberations, s->target, s->result_amount * reverb_mul );
+      }
+    }
+
+    void execute()
+    {
+      if ( rumbling_earth )
+      {
+        empower_e empower_level  = cast_state( pre_execute_state )->empower;
+        player_t* current_target = pre_execute_state->target;
+
+        for ( int i = 0; i < repeats; i++ )
+        {
+          // First repeat is 200ms, 2nd repeat was 400ms delay from the first. Maybe triangular?
+          make_event( sim, 200_ms * ( i + 1 ) * ( i + 2 ) / 2, [ this, current_target, empower_level ] {
+            auto emp_state         = rumbling_earth->get_state();
+            emp_state->target      = current_target;
+            rumbling_earth->target = current_target;
+            rumbling_earth->snapshot_state( emp_state, rumbling_earth->amount_type( emp_state ) );
+            rumbling_earth->cast_state( emp_state )->empower = empower_level;
+
+            rumbling_earth->schedule_execute( emp_state );
+          } );
+        }
+
+      }
+
+      empowered_release_spell_t::execute();
+    }
   };
 
-  upheaval_t( evoker_t* p, std::string_view options_str ) : base_t( "upheaval", p, p->talent.upheaval, options_str )
+  upheaval_t( evoker_t* p, std::string_view options_str )
+    : base_t( "upheaval", p, p->talent.upheaval, options_str )
   {
     create_release_spell<upheaval_damage_t>( "upheaval_damage" );
+
+    if ( p->talent.chronowarden.reverberations.enabled() )
+    {
+      add_child( p->get_secondary_action<reverberations_t>( "upheaval_dot" ) );
+    }
+
+    if ( p->talent.rumbling_earth.enabled() )
+    {
+      add_child(
+          p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true ) );
+    }
   }
 };
 
@@ -6959,6 +7058,8 @@ void evoker_t::init_spells()
   talent.overlord           = ST( "Overlord" );
   talent.fate_mirror        = ST( "Fate Mirror" );
   talent.fate_mirror_damage = find_spell( 404908 );
+  talent.rumbling_earth     = ST( "Rumbling Earth" );
+  talent.burning_embers     = ST( "Burning Embers" );
 
   // Set up Essence Bursts for Preservation and Augmentation
   if ( talent.essence_burst.ok() )
@@ -7128,7 +7229,7 @@ void evoker_t::create_actions()
 
   if ( talent.flameshaper.enkindle.ok() )
     action.enkindle = get_secondary_action<enkindle_t>( "enkindle" );
-
+    
   if ( talent.volatility.ok() )
   {
     auto vol                = get_secondary_action<pyre_t>( "pyre_volatility", "pyre_volatility", talent.pyre );
