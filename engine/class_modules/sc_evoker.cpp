@@ -5963,7 +5963,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                              ->set_max_stack( 20 )
                              ->set_duration( 0_ms );
 
-  debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor", evoker->talent.scalecommander.melt_armor_debuff );
+  debuffs.melt_armor = make_buff_fallback( evoker->talent.scalecommander.melt_armor.ok(), *this, "melt_armor",
+                                           evoker->talent.scalecommander.melt_armor_debuff )
+                           ->set_default_value_from_effect( 2, 0.01 );
 
   debuffs.bombardments = make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
                                                       evoker->talent.scalecommander.bombardments_debuff )
