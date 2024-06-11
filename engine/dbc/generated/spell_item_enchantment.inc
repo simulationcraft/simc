@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.0.0.55000
-static const std::array<item_enchantment_data_t, 5028> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.0.55087
+static const std::array<item_enchantment_data_t, 5032> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -5028,5 +5028,9 @@ static const std::array<item_enchantment_data_t, 5028> __spell_item_ench_data { 
   { 7552,      0, -7,  71,  80, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {      7,      0,      0 }, {  0.2020f,  0.0000f,  0.0000f },      0, "Sanctified Belt Clasp"             },
   { 7553,      0, -7,  71,  80, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {      7,      0,      0 }, {  0.2450f,  0.0000f,  0.0000f },      0, "Sanctified Belt Clasp"             },
   { 7554,      0, -7,  71,  80, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {      7,      0,      0 }, {  0.2880f,  0.0000f,  0.0000f },      0, "Sanctified Belt Clasp"             },
+  { 7556, 227445, -7,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11314,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Inscrutable Fragrance"             },
+  { 7557, 227447, -7,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11315,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Invigorating Fragrance"            },
+  { 7558, 227449, -7,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11317,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Robust Fragrance"                  },
+  { 7559, 227448, -7,   0,  60, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11316,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Volatile Fragrance"                },
 } };
 

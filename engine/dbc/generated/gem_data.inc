@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.0.0.55000
-static const std::array<gem_property_data_t, 2267> __gem_property_data { {
+// Gem properties, wow build 11.0.0.55087
+static const std::array<gem_property_data_t, 2271> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2267,5 +2267,9 @@ static const std::array<gem_property_data_t, 2267> __gem_property_data { {
   { 4245,  7523, 0x01000000 }, // Refurbished Plane Displacer
   { 4246,  7524, 0x01000000 }, // Refurbished Supercollide-O-Tron
   { 4247,  7525, 0x01000000 }, // Refurbished Shadowflame Rockets
+  { 4248,  7556, 0x04000000 }, // Inscrutable Fragrance
+  { 4249,  7557, 0x04000000 }, // Invigorating Fragrance
+  { 4250,  7559, 0x04000000 }, // Volatile Fragrance
+  { 4251,  7558, 0x04000000 }, // Robust Fragrance
 } };
 
