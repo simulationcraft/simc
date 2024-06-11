@@ -2250,6 +2250,29 @@ struct ravage_base_t : public BASE
   }
 };
 
+// TODO: entirely guessing, almost certainly wrong
+template <size_t IDX, typename BASE>
+struct trigger_thriving_growth_t : public BASE
+{
+private:
+  double pct;
+
+public:
+  using base_t = trigger_thriving_growth_t<IDX, BASE>;
+
+  trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), pct( p->talent.thriving_growth->effectN( IDX ).base_value() * 0.001 )
+  {}
+
+  void tick( dot_t* d ) override
+  {
+    BASE::tick( d );
+
+    if ( BASE::p()->active.bloodseeker_vines && BASE::rng().roll( pct ) )
+      BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
+  }
+};
+
 template <typename BASE>
 struct trigger_waning_twilight_t : public BASE
 {
@@ -4431,7 +4454,7 @@ struct maim_t : public cat_finisher_t
 // Rake =====================================================================
 struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 {
-  struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
+  struct rake_bleed_t : public trigger_thriving_growth_t<2, trigger_waning_twilight_t<cat_attack_t>>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
@@ -4531,7 +4554,7 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 };
 
 // Rip ======================================================================
-struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
+struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat_finisher_t>>
 {
   struct tear_t : public druid_residual_action_t<cat_attack_t, true>
   {
