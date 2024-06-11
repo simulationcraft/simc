@@ -365,6 +365,10 @@ public:
       actions::rogue_attack_t* unseen_blade = nullptr;
     } trickster;
     
+    struct
+    {
+      actions::rogue_attack_t* ethereal_rampage = nullptr;
+    } tww1;
   } active;
 
   // Autoattacks
@@ -500,6 +504,7 @@ public:
     damage_buff_t* tww1_assassination_4pc;
     damage_buff_t* tww1_subtlety_2pc;
     damage_buff_t* tww1_subtlety_4pc;
+    damage_buff_t* tww1_outlaw_4pc;
 
   } buffs;
 
@@ -801,6 +806,8 @@ public:
     const spell_data_t* t31_subtlety_2pc_rupture;
     const spell_data_t* tww1_assassination_2pc_buff;
     const spell_data_t* tww1_assassination_4pc_buff;
+    const spell_data_t* tww1_outlaw_2pc_spell;
+    const spell_data_t* tww1_outlaw_4pc_buff;
 
   } spec;
 
@@ -2040,6 +2047,7 @@ public:
     register_damage_buff( p()->buffs.tww1_assassination_4pc );
     register_damage_buff( p()->buffs.tww1_subtlety_2pc );
     register_damage_buff( p()->buffs.tww1_subtlety_4pc );
+    register_damage_buff( p()->buffs.tww1_outlaw_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2080,6 +2088,7 @@ public:
                                                         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
     register_consume_buff( p()->buffs.tww1_subtlety_2pc, p()->buffs.tww1_subtlety_2pc->is_affecting( &ab::data() ),
                            nullptr, 1.31_s ); // ALPHA TOCHECK -- Does this work on clone attacks?
+    register_consume_buff( p()->buffs.tww1_outlaw_4pc, p()->buffs.tww1_outlaw_4pc->is_affecting( &ab::data() ) );
   }
 
   // Type Wrappers ============================================================
@@ -2403,6 +2412,7 @@ public:
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
   void trigger_fate_intertwined( const action_state_t* );
+  void trigger_ethereal_rampage( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_blindside( const action_state_t* );
   void trigger_shadow_blades_attack( const action_state_t* );
@@ -3663,6 +3673,12 @@ struct ambush_t : public rogue_attack_t
       trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ambush );
     }
 
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+      trigger_ethereal_rampage( execute_state );
+    }
+
     bool procs_main_gauche() const override
     { return true; }
 
@@ -3719,6 +3735,7 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
+    trigger_ethereal_rampage( execute_state );
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
@@ -5252,6 +5269,8 @@ struct pistol_shot_t : public rogue_attack_t
     p()->buffs.opportunity->decrement();
     p()->buffs.greenskins_wickers->expire();
 
+    trigger_ethereal_rampage( execute_state );
+
     // Fan the Hammer
     if ( p()->active.fan_the_hammer && !is_secondary_action() )
     {
@@ -6461,6 +6480,12 @@ struct sinister_strike_t : public rogue_attack_t
       trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
     }
 
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+      trigger_ethereal_rampage( execute_state );
+    }
+
     bool procs_main_gauche() const override
     { return true; }
 
@@ -6497,6 +6522,12 @@ struct sinister_strike_t : public rogue_attack_t
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    trigger_ethereal_rampage( execute_state );
   }
 
   bool procs_main_gauche() const override
@@ -7415,6 +7446,16 @@ struct nimble_flurry_t : public rogue_attack_t
   {
     // ALPHA TOCHECK -- Talent has a value of 7, but AoE targets on damage spell is 5
     aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
+  }
+};
+
+// TWW1 Set Bonus ===========================================================
+
+struct ethereal_rampage_t : public rogue_attack_t
+{
+  ethereal_rampage_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.tww1_outlaw_2pc_spell )
+  {
   }
 };
 
@@ -9091,6 +9132,22 @@ void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state
   // ALPHA TOCHECK -- Double-check target modifiers in the future
   const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
   p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier, false );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_ethereal_rampage( const action_state_t* state )
+{
+  if ( !p()->set_bonuses.tww1_outlaw_2pc->ok() )
+    return;
+
+  if ( !p()->rng().roll( p()->set_bonuses.tww1_outlaw_2pc->effectN( 1 ).percent() ) )
+    return;
+
+  // ALPHA TOCHECK -- Double-check target modifiers in the future
+  p()->active.tww1.ethereal_rampage->trigger_residual_action( state, p()->set_bonuses.tww1_outlaw_2pc->effectN( 2 ).percent() );
+
+  if ( p()->set_bonuses.tww1_outlaw_4pc->ok() )
+    p()->buffs.tww1_outlaw_4pc->increment();
 }
 
 template <typename Base>
@@ -11289,6 +11346,8 @@ void rogue_t::init_spells()
   spec.t31_subtlety_2pc_rupture = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424493 ) : spell_data_t::not_found();
   spec.tww1_assassination_2pc_buff = set_bonuses.tww1_assassination_2pc->ok() ? find_spell( 458475 ) : spell_data_t::not_found();
   spec.tww1_assassination_4pc_buff = set_bonuses.tww1_assassination_4pc->ok() ? find_spell( 458476 ) : spell_data_t::not_found();
+  spec.tww1_outlaw_2pc_spell = set_bonuses.tww1_outlaw_2pc->ok() ? find_spell( 459002 ) : spell_data_t::not_found();
+  spec.tww1_outlaw_4pc_buff = set_bonuses.tww1_outlaw_4pc->ok() ? find_spell( 458826 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -11469,6 +11528,12 @@ void rogue_t::init_spells()
   if ( talent.trickster.nimble_flurry->ok() )
   {
     active.trickster.nimble_flurry = get_background_action<actions::nimble_flurry_t>( "nimble_flurry" );
+  }
+
+  // TWW1 Set Bonus
+  if ( set_bonuses.tww1_outlaw_2pc->ok() )
+  {
+    active.tww1.ethereal_rampage = get_background_action<actions::ethereal_rampage_t>( "ethereal_rampage" );
   }
 }
 
@@ -12177,6 +12242,8 @@ void rogue_t::create_buffs()
   buffs.tww1_subtlety_2pc = make_buff<damage_buff_t>( this, "poised_shadows", set_bonuses.tww1_subtlety_2pc->effectN( 1 ).trigger() );
   buffs.tww1_subtlety_4pc = make_buff<damage_buff_t>( this, "bolstering_shadows", set_bonuses.tww1_subtlety_4pc->effectN( 1 ).trigger() );
 
+  buffs.tww1_outlaw_4pc = make_buff<damage_buff_t>( this, "ethereal_rampage", spec.tww1_outlaw_4pc_buff );
+  buffs.tww1_outlaw_4pc->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 }
 
 // rogue_t::invalidate_cache =========================================
