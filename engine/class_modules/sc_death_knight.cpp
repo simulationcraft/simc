@@ -747,7 +747,6 @@ public:
     propagate_const<buff_t*> ghoulish_frenzy;
     propagate_const<buff_t*> plaguebringer;
     propagate_const<buff_t*> commander_of_the_dead;
-    propagate_const<buff_t*> defile_buff;
     propagate_const<buff_t*> festering_scythe;
     propagate_const<buff_t*> festering_scythe_stacks;
     // Tier Sets
@@ -763,6 +762,7 @@ public:
     propagate_const<buff_t*> essence_of_the_blood_queen_damage;
     propagate_const<buff_t*> gift_of_the_sanlayn;
     propagate_const<buff_t*> vampiric_strike;
+    propagate_const<buff_t*> infliction_of_sorrow;
 
     // Deathbringer
     propagate_const<buff_t*> grim_reaper;
@@ -1369,7 +1369,6 @@ public:
     const spell_data_t* festermight_buff;
     const spell_data_t* unholy_blight_dot;
     const spell_data_t* commander_of_the_dead;
-    const spell_data_t* defile_buff;
     const spell_data_t* ruptured_viscera_chance;
     const spell_data_t* apocalypse_duration;
     const spell_data_t* apocalypse_rune_gen;
@@ -1404,10 +1403,12 @@ public:
 
     // San'layn non-talent spells
     const spell_data_t* vampiric_strike;
+    const spell_data_t* vampiric_strike_buff;
     const spell_data_t* essence_of_the_blood_queen_buff;
     const spell_data_t* gift_of_the_sanlayn_buff;
     const spell_data_t* vampiric_strike_heal;
     const spell_data_t* infliction_of_sorrow_damage;
+    const spell_data_t* infliction_of_sorrow_buff;
     const spell_data_t* blood_beast_summon;
     const spell_data_t* vampiric_strike_clawing_shadows;
     const spell_data_t* incite_terror_debuff;
@@ -2965,6 +2966,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration             = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    decomposition_can_extend          = true;
     tww1_4pc_proc                     = true;
   }
 
@@ -5024,10 +5026,6 @@ struct dark_transformation_buff_t final : public death_knight_buff_t
         p()->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
       }
     }
-    if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-    {
-      p()->buffs.gift_of_the_sanlayn->expire();
-    }
   }
 };
 
@@ -5394,6 +5392,10 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
           extend_pet( pet );
         }
         for ( auto& pet : p()->pets.abomination.active_pets() )
+        {
+          extend_pet( pet );
+        }
+        for ( auto& pet : p()->pets.gargoyle.active_pets() )
         {
           extend_pet( pet );
         }
@@ -6449,7 +6451,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td->debuff.festering_wound->check() );
 
     p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse );
-    p()->pets.apoc_ghouls.spawn( summon_duration, n_wounds );
+    p()->pets.apoc_ghouls.spawn( summon_duration, as<int>( data().effectN( 2 ).base_value() ) );
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
@@ -7346,8 +7348,6 @@ struct defile_damage_t final : public death_and_decay_damage_base_t
     if ( hit_any_target )
     {
       active_defile_multiplier *= defile_tick_multiplier;
-
-      p()->buffs.defile_buff->trigger();
     }
   }
 
@@ -8794,6 +8794,7 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
   void impact( action_state_t* s ) override
   {
     heart_strike_base_t::impact( s );
+
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
       p()->trigger_infliction_of_sorrow( s->target );
@@ -8837,6 +8838,15 @@ struct heart_strike_t : public heart_strike_base_t
     }
     heart_strike_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    heart_strike_base_t::impact( s );
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
+    {
+      p()->trigger_infliction_of_sorrow( s->target );
+    }
   }
 
 private:
@@ -9747,6 +9757,7 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
   void impact( action_state_t* s ) override
   {
     wound_spender_base_t::impact( s );
+
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
       p()->trigger_infliction_of_sorrow( s->target );
@@ -9790,6 +9801,16 @@ struct clawing_shadows_t final : public wound_spender_base_t
     }
     wound_spender_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    wound_spender_base_t::impact( s );
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
+    {
+      p()->trigger_infliction_of_sorrow( s->target );
+    }
   }
 
 private:
@@ -9865,6 +9886,16 @@ struct scourge_strike_t final : public wound_spender_base_t
     }
     wound_spender_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    wound_spender_base_t::impact( s );
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
+    {
+      p()->trigger_infliction_of_sorrow( s->target );
+    }
   }
 
 private:
@@ -11298,16 +11329,17 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
 
 void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
 {
-  auto base_td            = get_target_data( target );
-  auto vp_td              = base_td->dot.virulent_plague;
-  auto bp_td              = base_td->dot.blood_plague;
-  double remaining_damage = 0;
-  double mod              = 0;
+  auto base_td               = get_target_data( target );
+  auto vp_td                 = base_td->dot.virulent_plague;
+  auto bp_td                 = base_td->dot.blood_plague;
+  double vp_remaining_damage = 0;
+  double bp_remaining_damage = 0;
+  double mod                 = 0;
 
-  remaining_damage += tick_damage_over_time( vp_td->remains(), vp_td );
-  remaining_damage += tick_damage_over_time( bp_td->remains(), bp_td );
+  vp_remaining_damage += tick_damage_over_time( vp_td->remains(), vp_td );
+  bp_remaining_damage += tick_damage_over_time( bp_td->remains(), bp_td );
 
-  if ( remaining_damage == 0 )
+  if ( vp_remaining_damage + bp_remaining_damage == 0 )
     return;
 
   if ( buffs.gift_of_the_sanlayn->check() )
@@ -11330,6 +11362,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
   else
   {
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    buffs.infliction_of_sorrow->expire();
     if ( vp_td->is_ticking() )
     {
       vp_td->cancel();
@@ -11344,9 +11377,18 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
     }
   }
 
-  active_spells.infliction_of_sorrow->base_dd_min = active_spells.infliction_of_sorrow->base_dd_max =
-      remaining_damage * mod;
-  active_spells.infliction_of_sorrow->execute_on_target( target );
+  if ( vp_remaining_damage > 0 )
+  {
+    active_spells.infliction_of_sorrow->base_dd_min = active_spells.infliction_of_sorrow->base_dd_max =
+        vp_remaining_damage * mod;
+    active_spells.infliction_of_sorrow->execute_on_target( target );
+  }
+  if ( bp_remaining_damage > 0 )
+  {
+    active_spells.infliction_of_sorrow->base_dd_min = active_spells.infliction_of_sorrow->base_dd_max =
+        bp_remaining_damage * mod;
+    active_spells.infliction_of_sorrow->execute_on_target( target );
+  }
 }
 
 void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
@@ -12524,7 +12566,6 @@ void death_knight_t::init_spells()
   spell.festermight_buff               = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
   spell.unholy_blight_dot              = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
   spell.commander_of_the_dead          = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
-  spell.defile_buff                    = conditional_spell_lookup( talent.unholy.defile.ok(), 218100 );
   spell.ruptured_viscera_chance        = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
   spell.apocalypse_duration            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
   spell.apocalypse_rune_gen            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
@@ -12559,10 +12600,12 @@ void death_knight_t::init_spells()
 
   // San'layn Spells
   spell.vampiric_strike                 = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433895 );
+  spell.vampiric_strike_buff            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434674 );
   spell.essence_of_the_blood_queen_buff = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433925 );
   spell.gift_of_the_sanlayn_buff        = conditional_spell_lookup( talent.sanlayn.gift_of_the_sanlayn.ok(), 434153 );
   spell.vampiric_strike_heal            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434422 );
   spell.infliction_of_sorrow_damage     = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 434144 );
+  spell.infliction_of_sorrow_buff       = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 460049 );
   spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
   spell.vampiric_strike_clawing_shadows =
       conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
@@ -13017,9 +13060,18 @@ void death_knight_t::create_buffs()
 
   buffs.gift_of_the_sanlayn = make_fallback( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
                                              spell.gift_of_the_sanlayn_buff )
-                                  ->set_duration( 0_ms )
+                                  ->set_duration( specialization() == DEATH_KNIGHT_BLOOD
+                                                      ? spell.gift_of_the_sanlayn_buff->duration()
+                                                      : 15_s )  // Unholy duration doesnt appear to be in data
                                   ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
                                   ->add_invalidate( CACHE_HASTE )
+                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                    buffs.vampiric_strike->expire();
+                                    if ( talent.sanlayn.infliction_of_sorrow.ok() )
+                                    {
+                                      buffs.infliction_of_sorrow->trigger();
+                                    }
+                                  } )
                                   ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                                     if ( new_ )
                                     {
@@ -13029,14 +13081,13 @@ void death_knight_t::create_buffs()
                                       }
                                       buffs.vampiric_strike->trigger();
                                     }
-                                    else
-                                    {
-                                      buffs.vampiric_strike->expire();
-                                    }
                                   } );
 
   buffs.vampiric_strike =
-      make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "vampiric_strike", talent.sanlayn.vampiric_strike );
+      make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "vampiric_strike", spell.vampiric_strike_buff );
+
+  buffs.infliction_of_sorrow = make_fallback( talent.sanlayn.infliction_of_sorrow, this, "infliction_of_sorrow",
+                                              spell.infliction_of_sorrow_buff );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
@@ -13148,7 +13199,6 @@ void death_knight_t::create_buffs()
                     "{} loses Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}", name(),
                     health_change * 100.0, old_health, resources.current[ RESOURCE_HEALTH ], old_max_health,
                     resources.max[ RESOURCE_HEALTH ] );
-                buffs.gift_of_the_sanlayn->expire();
               }
             } );
 
@@ -13314,9 +13364,6 @@ void death_knight_t::create_buffs()
 
   buffs.commander_of_the_dead = make_fallback( talent.unholy.commander_of_the_dead.ok(), this, "commander_of_the_dead",
                                                spell.commander_of_the_dead );
-
-  buffs.defile_buff = make_fallback( talent.unholy.defile.ok(), this, "defile", spell.defile_buff )
-                          ->set_default_value( spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
 
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
@@ -13997,7 +14044,6 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.unholy_assault, talent.unholy.unholy_assault );
     parse_effects( buffs.ghoulish_frenzy, talent.unholy.ghoulish_frenzy );
     parse_effects( buffs.festermight, talent.unholy.festermight );
-    parse_effects( buffs.defile_buff, spell.defile_buff->effectN( 1 ).base_value() / 1.8 );
     parse_effects( buffs.unholy_commander );
     parse_effects( sets->set( DEATH_KNIGHT_UNHOLY, TWW1, B2 ) );
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff,

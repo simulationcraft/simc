@@ -394,7 +394,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=2&!buff.death_and_decay.up" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1" );
 
-  aoe->add_action( "any_dnd,if=(!talent.bursting_sores|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5)&(!talent.defile|talent.defile&buff.defile.remains<gcd)", "AOE" );
+  aoe->add_action( "any_dnd,if=(!talent.bursting_sores|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5)", "AOE" );
   aoe->add_action( "epidemic,if=buff.sudden_doom.react&talent.doomed_bidding&talent.menacing_magus" );
   aoe->add_action( "festering_strike,if=debuff.festering_wound.stack<4&(buff.festering_scythe.react|cooldown.apocalypse.remains<variable.apoc_timing)" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>variable.apoc_timing" );
@@ -409,7 +409,6 @@ void unholy( player_t* p )
 
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead)|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "raise_abomination,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<gcd*2|!talent.commander_of_the_dead)|fight_remains<30" );
-  cooldowns->add_action( "defile,if=(variable.st_planning|variable.adds_remain)&(buff.defile.remains<gcd&(pet.gargoyle.active|pet.army_ghoul.active|pet.apoc_ghoul.active|pet.abomination.active))" );
   cooldowns->add_action( "unholy_blight,if=(variable.st_planning|variable.adds_remain)" );
   cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&(talent.gift_of_the_sanlayn&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|!talent.gift_of_the_sanlayn&talent.apocalypse&cooldown.apocalypse.remains<8|!talent.apocalypse)" );
   cooldowns->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead)&runic_power>=40" );
