@@ -10059,10 +10059,16 @@ void druid_t::create_buffs()
       {
         auto d = b->remains();
 
+        // advance eclipse manually if refreshing as stack_change_callback is not called
+        auto in_lunar = eclipse_handler.in_lunar();
+        auto in_solar = eclipse_handler.in_solar();
+
         buff.eclipse_lunar->trigger( d );
+        if ( in_lunar ) eclipse_handler.advance_eclipse( eclipse_e::LUNAR, true );
         eclipse_handler.update_eclipse( eclipse_e::LUNAR );
 
         buff.eclipse_solar->trigger( d );
+        if ( in_solar ) eclipse_handler.advance_eclipse( eclipse_e::SOLAR, true );
         eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
         if ( active.orbital_strike )
