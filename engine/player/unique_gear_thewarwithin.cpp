@@ -573,14 +573,16 @@ void void_reapers_chime( special_effect_t& effect )
     {
       auto damage_spell = effect.player->find_spell( 448669 );
       auto damage_name = std::string( damage_spell->name_cstr() );
-      auto damage_amount = effect.driver()->effectN( 1 ).average( effect.item ) * role_mult( effect );
+      auto damage_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
       major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
       major->base_dd_min = major->base_dd_max = damage_amount;
+      major->base_multiplier *= role_mult( effect );
       major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
 
       minor = create_proc_action<generic_aoe_proc_t>( damage_name + "_echo", effect, damage_spell );
       minor->base_dd_min = minor->base_dd_max = damage_amount * effect.driver()->effectN( 3 ).percent();
+      minor->base_multiplier *= role_mult( effect );
       minor->name_str_reporting = "Echo";
       major->add_child( minor );
     }
@@ -683,7 +685,8 @@ void aberrant_spellforge( special_effect_t& effect )
     aberrant_shadows_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
       : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
     {
-      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item ) * role_mult( e );
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item );
+      base_multiplier *= role_mult( e );
 
       for ( auto a : player->action_list )
       {
@@ -819,8 +822,8 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
 
       // setup flourish
       auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
-      f_dam->base_td =
-        data->effectN( 1 ).average( e.item ) * ( f_dam->base_tick_time / f_dam->dot_duration ) * role_mult( e );
+      f_dam->base_td = data->effectN( 1 ).average( e.item ) * f_dam->base_tick_time / f_dam->dot_duration;
+      f_dam->base_multiplier *= role_mult( e );
       add_child( f_dam );
 
       auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
@@ -833,6 +836,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_decimation", e, 448090 );
       // TODO: confirm there is no standard +15% per target up to five
       d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e.item ) * role_mult( e );
+      d_dam->base_multiplier *= role_mult( e );
       add_child( d_dam );
 
       auto d_shield = create_proc_action<generic_proc_t>( "surekian_brutality", e, 448519 );
@@ -872,6 +876,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e.item ) * role_mult( e );
+      b_dam->base_multiplier *= role_mult( e );
       add_child( b_dam );
 
       auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
@@ -1282,6 +1287,7 @@ void mad_queens_mandate( special_effect_t& effect )
         hp_mul( data->effectN( 3 ).percent() )
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e.item ) * role_mult( e );
+      base_multiplier *= role_mult( e );
 
       heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_gluttony_heal",
                                                  e.trigger()->effectN( 2 ).trigger() );
@@ -1689,7 +1695,8 @@ void void_pactstone( special_effect_t& e )
 
   auto damage         = create_proc_action<generic_aoe_proc_t>( "void_pulse", e, 450960 );
   damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
-  damage->split_aoe_damage                  = true;
+  damage->base_multiplier *= role_mult( e );
+  damage->split_aoe_damage = true;
 
   e.custom_buff    = buff;
   e.execute_action = damage;
@@ -1702,7 +1709,8 @@ void void_pactstone( special_effect_t& e )
 void ravenous_honey_buzzer( special_effect_t& e )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "ravenous_honey_buzzer", e, 448909 );
-  damage -> split_aoe_damage = true;
+  damage->split_aoe_damage = true;
+  damage->base_multiplier *= role_mult( e );
 
   e.execute_action = damage;
 }
@@ -1725,7 +1733,8 @@ void overclocked_geararang_launcher( special_effect_t& e )
       buff( buff ), overclock_strike( nullptr )
     {
       overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
-      overclock_strike -> base_dd_min = overclock_strike -> base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+      overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+      overclock_strike->base_multiplier *= role_mult( e );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -1810,6 +1819,7 @@ void remnant_of_darkness( special_effect_t& e )
 {
   auto damage         = create_proc_action<generic_aoe_proc_t>( "dark_swipe", e, 452032 );
   damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+  damage->base_multiplier *= role_mult( e );
 
   auto transform_buff = create_buff<buff_t>( e.player, e.player->find_spell( 451602 ) )
                             ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
@@ -1844,6 +1854,7 @@ void opressive_orators_larynx( special_effect_t& e )
     {
       background  = true;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+      base_multiplier = role_mult( e );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -1922,6 +1933,7 @@ void arakara_sacbrood( special_effect_t& e )
     {
       damage                 = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
       damage->base_td        = e.player->find_spell( 443541 )->effectN( 2 ).average( e.item );
+      damage->base_multiplier = role_mult( e );
       missile                = create_proc_action<generic_proc_t>( "spiderfling", e, e.player->find_spell( 452227 ) );
       missile->impact_action = damage;
     }
@@ -1987,6 +1999,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
       aoe              = data().max_targets();
       split_aoe_damage = false;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e.item ) * role_mult( e );
+      base_multiplier *= role_mult( e );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -2069,6 +2082,7 @@ void high_speakers_accretion( special_effect_t& effect )
         : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets( tl )
       {
         base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+        base_multiplier *= role_mult( e );
       }
 
       void impact( action_state_t* s ) override
@@ -2281,7 +2295,7 @@ void mereldars_toll( special_effect_t& effect )
       target_debuff = e.trigger();
 
       impact_action = create_proc_action<generic_proc_t>( "mereldars_toll_damage", e, e.trigger() );
-      impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e.item );
+      impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e.item ) * role_mult( e );
       // TODO: confirm 950ms delay in damage
       impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
       impact_action->stats = stats;
@@ -2468,7 +2482,8 @@ void harvesters_edict( special_effect_t& effect )
 {
   // TODO: confirm damage doesn't increase per extra target
   auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver() );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->base_dd_min = damage->base_dd_max =
+    effect.driver()->effectN( 1 ).average( effect.item ) * role_mult( effect );
   // TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
   damage->travel_speed = 5.0; 
 
@@ -2496,11 +2511,12 @@ void harvesters_edict( special_effect_t& effect )
 // 450460 unknown, cart travel path?
 // TODO: confirm damage does not increase per extra target
 // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
-void condutors_wax_whistle( special_effect_t& effect )
+void conductors_wax_whistle( special_effect_t& effect )
 {
   // TODO: confirm damage does not increase per extra target
   auto damage = create_proc_action<generic_aoe_proc_t>( "collision", effect, 450429 );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->base_multiplier *= role_mult( effect );
   // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
   damage->travel_speed = 7.5;
 
@@ -2521,6 +2537,7 @@ void charged_stormrook_plume( special_effect_t& effect )
   // TODO: confirm damage does not increase per extra target
   auto damage = create_proc_action<generic_aoe_proc_t>( "charged_stormrook_plume", effect, 448892 );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->base_multiplier *= role_mult( effect );
   // TODO: determine if cast time changes
   damage->base_execute_time = effect.driver()->cast_time();
 
@@ -2560,6 +2577,7 @@ void twin_fang_instruments( special_effect_t& effect )
     {
       melee = create_proc_action<generic_aoe_proc_t>( "nxs_shadow_strike", e, e.player->find_spell( 450119 ) );
       melee->base_dd_min = melee->base_dd_max = data->effectN( 1 ).average( e.item ) * 0.5;
+      melee->base_multiplier *= role_mult( e );
       // TODO: confirm melee damage does not split
       melee->split_aoe_damage = false;
       add_child( melee );
@@ -2567,6 +2585,7 @@ void twin_fang_instruments( special_effect_t& effect )
       // TODO: confirm range damage does not increase per extra target
       range = create_proc_action<generic_aoe_proc_t>( "vxs_frost_slash", e, e.player->find_spell( 450158 ) );
       range->base_dd_min = range->base_dd_max = data->effectN( 1 ).average( e.item );
+      range->base_multiplier *= role_mult( e );
       range->travel_speed = range->data().effectN( 3 ).trigger()->missile_speed();
       add_child( range );
     }
@@ -2658,7 +2677,8 @@ void void_reapers_claw( special_effect_t& effect )
   effect.duration_ = effect.trigger()->duration();
   effect.tick = effect.trigger()->effectN( 1 ).period();
   // TODO: confirm effect value is for the entire dot and not per tick
-  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item ) * effect.tick / effect.duration_;
+  effect.discharge_amount =
+    effect.driver()->effectN( 1 ).average( effect.item ) * effect.tick / effect.duration_ * role_mult( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2689,6 +2709,7 @@ void fateweaved_needle( special_effect_t& effect )
       // TODO: damage spell data is shadowfrost and not cosmic
       damage = create_proc_action<generic_proc_t>( "fated_pain", e, 443585 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      damage->base_multiplier *= role_mult( e );
     }
 
     buff_t* create_debuff( player_t* t ) override
@@ -2743,6 +2764,7 @@ void befoulers_syringe( special_effect_t& effect )
       : generic_proc_t( e, "befouled_blood", e.trigger() ), bloodlust( b )
     {
       base_td = e.driver()->effectN( 1 ).average( e.item );
+      base_multiplier *= role_mult( e );
       // TODO: confirm it uses psuedo-async behavior found in other similarly worded dots
       dot_max_stack = 1;
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
@@ -2787,6 +2809,7 @@ void befoulers_syringe( special_effect_t& effect )
       : generic_proc_t( e, "befouling_strike", e.player->find_spell( 442280 ) )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      base_multiplier *= role_mult( e );
     }
   };
 
@@ -2832,7 +2855,7 @@ void voltaic_stormcaller( special_effect_t& effect )
 
     voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, true )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item ) * role_mult( e );
 
       buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 456652 ) );
       buff->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
@@ -2859,6 +2882,7 @@ void harvesters_interdiction( special_effect_t& effect )
 {
   auto dot = create_proc_action<generic_proc_t>( "interdictive_injection", effect, 455821 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect.item );
+  dot->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
 
@@ -2880,6 +2904,7 @@ void seal_of_the_poisoned_pact( special_effect_t& effect )
   auto dot = create_proc_action<generic_proc_t>( "venom_shock", effect, 457928 );
   // TODO: confirm coeff is for entire dot and not per tick
   dot->base_td = effect.driver()->effectN( 1 ).average( effect.item ) * dot->base_tick_time / dot->dot_duration;
+  dot->base_multiplier *= role_mult( effect );
 
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 457925 ) )
     ->set_expire_at_max_stack( true )
@@ -3000,7 +3025,7 @@ void register_special_effects()
   register_special_effect( 443531, items::signet_of_the_priory );
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   register_special_effect( 451055, items::harvesters_edict );
-  register_special_effect( 443525, items::condutors_wax_whistle );
+  register_special_effect( 443525, items::conductors_wax_whistle );
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
