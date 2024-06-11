@@ -1950,10 +1950,17 @@ struct empyrean_hammer_t : public paladin_spell_t
     void execute() override
     {
         paladin_spell_t::execute();
-        /* Flutt fix pls
-        if ( p()->talents.lights_deliverance->ok() )*/
+        if ( p()->talents.lights_deliverance->ok() )
         {
             p()->buffs.lights_deliverance->trigger();
+        }
+        if (p()->talents.endless_wrath->ok())
+        {
+            if ( rng().roll( p()->talents.endless_wrath->effectN( 1 ).percent() ) )
+            {
+        p()->cooldowns.hammer_of_wrath->reset( true );
+        p()->buffs.endless_wrath->trigger();
+            }
         }
     }
 };
@@ -2046,6 +2053,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     if ( p()->buffs.final_verdict->up() )
     {
       p()->buffs.final_verdict->expire();
+    }
+
+    if ( p()->buffs.endless_wrath->up() )
+    {
+      p()->buffs.endless_wrath->expire();
     }
          // if ( p()->talents.higher_calling->ok() )
     {
@@ -2764,6 +2776,7 @@ void paladin_t::create_buffs()
                                   this->trigger_empyrean_hammer( target, 1, 0_ms );
                                 }
   );
+  buffs.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) );
 }
 
 // paladin_t::default_potion ================================================
@@ -3048,6 +3061,7 @@ void paladin_t::init_spells()
   talents.undisputed_ruling      = find_talent_spell( talent_tree::HERO, "Undisputed Ruling" );
   talents.shake_the_heavens      = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
   talents.zealous_vindication    = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
+  talents.endless_wrath          = find_talent_spell( talent_tree::HERO, "Endless Wrath" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -3762,7 +3776,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
   // Maybe ToDo: Do the same for Avenging Wrath: Might
   // Moved Hammer of Wrath Check to return value
   bool buffs_ok = talents.avenging_wrath->ok() && (buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
-  buffs_ok      = buffs_ok || buffs.final_verdict->up();
+  buffs_ok = buffs_ok || buffs.final_verdict->up() || buffs.endless_wrath->up();
   // Health threshold has to be hardcoded :peepocri:
   return ( buffs_ok || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
 }

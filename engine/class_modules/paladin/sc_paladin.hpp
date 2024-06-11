@@ -215,6 +215,7 @@ public:
     buff_t* lights_deliverance;
     buff_t* shake_the_heavens;
     buff_t* undisputed_ruling;
+    buff_t* endless_wrath;
 
   } buffs;
 
@@ -599,6 +600,7 @@ public:
     const spell_data_t* shake_the_heavens;
     const spell_data_t* higher_calling;
     const spell_data_t* zealous_vindication;
+    const spell_data_t* endless_wrath;
   } talents;
 
   struct tier_sets_t
