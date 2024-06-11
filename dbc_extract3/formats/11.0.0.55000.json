@@ -376,7 +376,8 @@
       { "data_type": "i", "field": "api_season" },
       { "data_type": "i", "field": "expansion_season" },
       { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "i", "field": "unk_2" }
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" }
     ]
   },
   "ExpectedStat": {
@@ -1917,7 +1918,7 @@
         { "data_type": "S", "field": "name" },
         { "data_type": "S", "field": "desc" },
         { "data_type": "i", "field": "id" },
-        { "data_type": "i", "field": "id_texture" },
+        { "data_type": "i", "field": "id_texture", "ref": "UiTextureAtlasElement" },
         { "data_type": "i", "field": "id_trait_tree", "ref": "TraitTree" }
     ]
   },
