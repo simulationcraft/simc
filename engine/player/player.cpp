@@ -2599,10 +2599,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       else
       {
         player->player_traits.push_back( entry );
+        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
+                                  trait_obj->name );
       }
 
       if ( tree == talent_tree::HERO )
+      {
         player->player_sub_traits.push_back( id_entry );
+
+        if( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+        {
+          player->player_sub_trees.insert( trait_obj->id_sub_tree );
+          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                    trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
+                                    trait_obj->id_sub_tree );
+        }
+      }
     }
   }
 
@@ -2644,6 +2656,17 @@ static bool generate_tree_nodes( player_t* player,
 static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
 {
   auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
+    if ( t->selection_index == -1 )
+    {
+      // Voidweaver Devour Matter / Darkening Horizon clash resolution
+      // Darkening Horizon data was not fully removed after being moved out of the node
+      // The lower ID trait is the correct one; return lower index to get it sorted first
+      if ( t->id_trait_node_entry == 117271 )
+        return 1;
+      else if ( t->id_trait_node_entry == 117298 )
+        return 2;
+    }
+
     return t->selection_index;
   };
 
@@ -3058,9 +3081,23 @@ void player_t::init_talents()
     }
   }
 
+  auto parsed_sub_trees = player_sub_trees;
+
   parse_traits( talent_tree::CLASS, class_talents_str, this );
   parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
   parse_traits( talent_tree::HERO, hero_talents_str, this );
+
+  // Add selection traits for any manually added hero traits from new trees
+  if ( player_sub_trees.size() > parsed_sub_trees.size() )
+  {
+    std::vector<unsigned> diff;
+    std::set_difference( player_sub_trees.begin(), player_sub_trees.end(),
+                        parsed_sub_trees.begin(), parsed_sub_trees.end(), std::back_inserter( diff ) );
+
+    for ( const auto& trait : trait_data_t::data( util::class_id( type ), talent_tree::SELECTION, is_ptr() ) )
+      if ( range::contains( trait.id_spec, specialization() ) && range::contains( diff, trait.id_sub_tree ) )
+        player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, 1 );
+  }
 
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )
