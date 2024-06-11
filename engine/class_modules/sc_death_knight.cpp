@@ -3674,9 +3674,9 @@ struct blood_beast_pet_t : public death_knight_pet_t
     }
   };
 
-  struct blood_eruption_t : public pet_spell_t<blood_beast_pet_t>
+  struct the_blood_is_life_t : public pet_spell_t<blood_beast_pet_t>
   {
-    blood_eruption_t( util::string_view n, blood_beast_pet_t* p )
+    the_blood_is_life_t( util::string_view n, blood_beast_pet_t* p )
       : pet_spell_t( p, n, p->dk()->pet_spell.blood_eruption )
     {
       background = true;
@@ -3729,7 +3729,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   void init_spells() override
   {
     death_knight_pet_t::init_spells();
-    blood_eruption = get_action<blood_eruption_t>( "blood_eruption", this );
+    blood_eruption = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
   }
 
   void init_action_list() override
