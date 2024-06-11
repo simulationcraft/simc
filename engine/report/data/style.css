@@ -546,7 +546,6 @@ table.sc tr.small th,
 table.sc tr.small td,
 table.sc th.small,
 table.sc td.small {
-    vertical-align: middle;
     font-size: 12px;
 }
 table.sc tr.odd,
