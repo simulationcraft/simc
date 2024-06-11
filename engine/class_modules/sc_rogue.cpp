@@ -498,6 +498,8 @@ public:
     damage_buff_t* t31_assassination_2pc;
     damage_buff_t* tww1_assassination_2pc;
     damage_buff_t* tww1_assassination_4pc;
+    damage_buff_t* tww1_subtlety_2pc;
+    damage_buff_t* tww1_subtlety_4pc;
 
   } buffs;
 
@@ -797,8 +799,8 @@ public:
     const spell_data_t* t31_subtlety_2pc_black_powder;
     const spell_data_t* t31_subtlety_2pc_eviscerate;
     const spell_data_t* t31_subtlety_2pc_rupture;
-    const spell_data_t* tww_assassination_2pc_buff;
-    const spell_data_t* tww_assassination_4pc_buff;
+    const spell_data_t* tww1_assassination_2pc_buff;
+    const spell_data_t* tww1_assassination_4pc_buff;
 
   } spec;
 
@@ -2038,6 +2040,8 @@ public:
     register_damage_buff( p()->buffs.t31_assassination_2pc );
     register_damage_buff( p()->buffs.tww1_assassination_2pc );
     register_damage_buff( p()->buffs.tww1_assassination_4pc );
+    register_damage_buff( p()->buffs.tww1_subtlety_2pc );
+    register_damage_buff( p()->buffs.tww1_subtlety_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2076,6 +2080,8 @@ public:
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) &&
                                                         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
+    register_consume_buff( p()->buffs.tww1_subtlety_2pc, p()->buffs.tww1_subtlety_2pc->is_affecting( &ab::data() ),
+                           nullptr, 1.31_s ); // ALPHA TOCHECK -- Does this work on clone attacks?
   }
 
   // Type Wrappers ============================================================
@@ -2232,7 +2238,7 @@ public:
 
   // Residual Trigger Functions ===============================================
 
-  virtual void trigger_residual_action( const action_state_t* s, double multiplier = 1.0, bool unmitigated = true, bool reverse_target_da_multiplier = true, player_t* override_target = nullptr )
+  virtual void trigger_residual_action( const action_state_t* s, double multiplier = 1.0, bool unmitigated = true, bool reverse_target_da_multiplier = true, player_t* override_target = nullptr, bool trigger_event = true )
   {
     // Depending on the ability, may use unmitigated or mitigated results
     const double base_damage = unmitigated ? s->result_total : s->result_amount;
@@ -2248,23 +2254,37 @@ public:
     p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage ({:.2f} * {} * {:.3f}) on {}",
                            *p(), *this, amount, base_damage, multiplier, target_da_multiplier, *primary_target );
 
-    // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-    make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+    if ( !ab::callbacks || !trigger_event )
+    {
       ab::execute_on_target( primary_target, amount );
-    } );
+    }
+    else
+    {
+      // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+      make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+        ab::execute_on_target( primary_target, amount );
+      } );
+    }
   }
 
-  virtual void trigger_residual_action( player_t* primary_target, double amount )
+  virtual void trigger_residual_action( player_t* primary_target, double amount, bool trigger_event = true )
   {
     if ( amount <= 0 )
       return;
 
     p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage on {}", *p(), *this, amount, *primary_target );
 
-    // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
-    make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+    if ( !ab::callbacks || !trigger_event )
+    {
       ab::execute_on_target( primary_target, amount );
-    } );
+    }
+    else
+    {
+      // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+      make_event( *p()->sim, 0_ms, [ this, amount, primary_target ]() {
+        ab::execute_on_target( primary_target, amount );
+      } );
+    }
   }
 
   // Helper Functions =========================================================
@@ -3963,7 +3983,7 @@ struct between_the_eyes_t : public rogue_attack_t
           auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( tdata->dots.soulrip->state );
           double amount = dot_state->tick_amount * tdata->dots.soulrip->ticks_left();
           amount *= p()->set_bonuses.t30_outlaw_4pc->effectN( 1 ).percent();
-          soulreave_attack->trigger_residual_action( t, amount );
+          soulreave_attack->trigger_residual_action( t, amount, false );
           tdata->dots.soulrip->cancel();
         }
       }
@@ -5831,9 +5851,9 @@ struct secret_technique_t : public rogue_attack_t
     clone_attack->snapshot_internal( clone_state, clone_attack->snapshot_flags, clone_attack->amount_type( clone_state ) );
     auto clone_state_2 = clone_attack->get_state( clone_state );
 
-    p()->buffs.secret_technique->trigger( 1.3_s );
     clone_attack->trigger_secondary_action( clone_state, 1_s );
     clone_attack->trigger_secondary_action( clone_state_2, 1.3_s );
+    p()->buffs.secret_technique->trigger( 1.3_s );
 
     // Manually expire Cold Blood due to special handling above
     if ( p()->buffs.cold_blood->check() )
@@ -5851,6 +5871,8 @@ struct secret_technique_t : public rogue_attack_t
     {
       p()->buffs.disorienting_strikes->trigger();
     }
+
+    p()->buffs.tww1_subtlety_4pc->trigger();
   }
 };
 
@@ -6574,6 +6596,7 @@ struct symbols_of_death_t : public rogue_spell_t
     p()->buffs.symbols_of_death->trigger();
     p()->buffs.the_rotten->trigger( as<int>( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
     p()->buffs.symbolic_victory->trigger();
+    p()->buffs.tww1_subtlety_2pc->trigger();
   }
 };
 
@@ -7286,6 +7309,7 @@ struct singular_focus_t : public rogue_attack_t
   singular_focus_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.singular_focus_damage )
   {
+    callbacks = false;
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
@@ -9100,7 +9124,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( const action_s
   if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !procs_shadow_blades_damage() )
     return;
 
-  p()->active.shadow_blades_attack->trigger_residual_action( state, p()->buffs.shadow_blades->check_value(), false );
+  p()->active.shadow_blades_attack->trigger_residual_action( state, p()->buffs.shadow_blades->check_value(),
+                                                             false, true, nullptr, false );
 }
 
 template <typename Base>
@@ -11255,8 +11280,8 @@ void rogue_t::init_spells()
   spec.t31_subtlety_2pc_black_powder = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424492 ) : spell_data_t::not_found();
   spec.t31_subtlety_2pc_eviscerate = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424491 ) : spell_data_t::not_found();
   spec.t31_subtlety_2pc_rupture = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424493 ) : spell_data_t::not_found();
-  spec.tww_assassination_2pc_buff = set_bonuses.tww1_assassination_2pc->ok() ? find_spell( 458475 ) : spell_data_t::not_found();
-  spec.tww_assassination_4pc_buff = set_bonuses.tww1_assassination_4pc->ok() ? find_spell( 458476 ) : spell_data_t::not_found();
+  spec.tww1_assassination_2pc_buff = set_bonuses.tww1_assassination_2pc->ok() ? find_spell( 458475 ) : spell_data_t::not_found();
+  spec.tww1_assassination_4pc_buff = set_bonuses.tww1_assassination_4pc->ok() ? find_spell( 458476 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -12124,8 +12149,8 @@ void rogue_t::create_buffs()
     ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buffs.tww1_assassination_2pc = make_buff<damage_buff_t>( this, "vile_tincture", spec.tww_assassination_2pc_buff );
-  if ( spec.tww_assassination_2pc_buff->ok() )
+  buffs.tww1_assassination_2pc = make_buff<damage_buff_t>( this, "vile_tincture", spec.tww1_assassination_2pc_buff );
+  if ( spec.tww1_assassination_2pc_buff->ok() )
   {
     buffs.tww1_assassination_2pc->set_chance( set_bonuses.tww1_assassination_2pc->proc_chance() );
     if ( set_bonuses.tww1_assassination_4pc->ok() )
@@ -12139,8 +12164,11 @@ void rogue_t::create_buffs()
       } );
     }
   }
-  buffs.tww1_assassination_4pc = make_buff<damage_buff_t>( this, "thrombotic_tincture", spec.tww_assassination_4pc_buff );
+  buffs.tww1_assassination_4pc = make_buff<damage_buff_t>( this, "thrombotic_tincture", spec.tww1_assassination_4pc_buff );
   buffs.tww1_assassination_4pc->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  buffs.tww1_subtlety_2pc = make_buff<damage_buff_t>( this, "poised_shadows", set_bonuses.tww1_subtlety_2pc->effectN( 1 ).trigger() );
+  buffs.tww1_subtlety_4pc = make_buff<damage_buff_t>( this, "bolstering_shadows", set_bonuses.tww1_subtlety_4pc->effectN( 1 ).trigger() );
 
 }
 
