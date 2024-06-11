@@ -6459,7 +6459,7 @@ public:
 
   void schedule_execute( action_state_t* s ) override
   {
-    dreamstate = p()->buff.dreamstate->up();
+    dreamstate = p()->buff.dreamstate->check();
 
     druid_spell_t::schedule_execute( s );
   }
@@ -6496,7 +6496,7 @@ public:
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
 
-    if ( p()->active.dream_burst && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
+    if ( p()->buff.dream_burst->check() && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
     {
       p()->active.dream_burst->execute_on_target( s->target );
       p()->buff.dream_burst->decrement();
@@ -6674,8 +6674,10 @@ struct dream_burst_t : public druid_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
 
-    // TODO: tooltip suggests only affected by passive mastery and not dot mastery
+    // eclipse and mastery applied via script
+    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
     force_effect( p->mastery.astral_invocation, 3 );
+    force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), p->spec.sunfire_dmg, 4U, p->mastery.astral_invocation );
   }
 };
 
