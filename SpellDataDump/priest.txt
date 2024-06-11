@@ -532,6 +532,7 @@ Description      : Blasts the target's mind for $s1 Shadow damage$?s424509[ and 
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
+Hotfixed         : Proc Flags 1 (2148147880 -> 2148182696)
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -543,8 +544,8 @@ Cooldown         : 45 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Mechanic         : Flee
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Improved Psychic Scream (44297 effect#1), Petrifying Scream (55676 effect#1), Psychic Voice (196704 effect#1)
 Family Flags     : 16
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
