@@ -1105,7 +1105,7 @@ public:
 
       player_talent_t disorienting_strikes;
       player_talent_t cloud_cover;
-      player_talent_t no_scruples;
+      player_talent_t no_scruples;        // NYI?? (Dummy effect, no proper spell data)
       player_talent_t nimble_flurry;
 
       player_talent_t coup_de_grace;
@@ -9404,7 +9404,7 @@ void actions::rogue_action_t<Base>::trigger_shadowcraft( const action_state_t* )
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state_t* state )
 {
-  if ( !p()->spell.cut_to_the_chase->ok() || !ab::hit_any_target )
+  if ( !p()->spell.cut_to_the_chase->ok() || !ab::result_is_hit( state->result ) )
     return;
 
   if ( !p()->buffs.slice_and_dice->check() )
