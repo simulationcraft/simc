@@ -1115,15 +1115,24 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
 
   if ( data_type == static_cast<expr_data_e>( -1 ) )
   {
-    std::vector<std::string> valid_types;
-    valid_types.reserve(expr_map.size());
-
-    for(const auto& entry : expr_map)
+    // Try with unsplit token
+    try
     {
-      valid_types.push_back(std::string(entry.name));
+      return std::make_unique<spell_data_expr_t>( dbc, name_str, name_str );
     }
+    catch ( const std::exception& )
+    {
+      std::vector<std::string> valid_types;
+      valid_types.reserve(expr_map.size());
 
-    throw std::invalid_argument(fmt::format("Unable to decode spell expression type '{}'. Valid types are {{{}}}", splits[ 0 ], util::string_join(valid_types, ", ")));
+      for(const auto& entry : expr_map)
+      {
+        valid_types.push_back(std::string(entry.name));
+      }
+
+      throw std::invalid_argument( fmt::format( "Unable to decode spell expression type '{}'. Valid types are {{{}}}",
+                                                splits[ 0 ], util::string_join( valid_types, ", " ) ) );
+    }
   }
 
   // Effect handling, set flag and remove effect keyword from tokens
