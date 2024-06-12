@@ -849,21 +849,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           base_dd_max = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player->level() );
           radius      = spelleffect_data.radius_max();
           break;
-        case A_ADD_FLAT_MODIFIER:
-          switch ( spelleffect_data.misc_value1() )
-          case E_APPLY_AURA:
-            switch ( spelleffect_data.subtype() )
-            {
-              case A_MOD_CRIT_PERCENT:
-                base_crit += 0.01 * spelleffect_data.base_value();
-                break;
-              case A_MOD_COOLDOWN:
-                cooldown->duration += spelleffect_data.time_value();
-                break;
-              default:
-                break;
-            }
-          break;
         default:
           break;
       }
