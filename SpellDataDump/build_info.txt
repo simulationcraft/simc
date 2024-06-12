@@ -1,1 +1,1 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live (hotfix 2024-06-04/54988, git build dragonflight 030eff50a9, no-networking)
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live (hotfix 2024-06-11/54988, git build data-update-live-54988 d835b06)
