@@ -177,7 +177,7 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
-    buff_t* sanctification; // T31 2pc building
+    buff_t* sanctification_tier; // T31 2pc building
     buff_t* sanctification_empower;  // T31 2pc consecration effect
 
     // Ret
@@ -216,6 +216,7 @@ public:
     buff_t* shake_the_heavens;
     buff_t* undisputed_ruling;
     buff_t* endless_wrath;
+    buff_t* sanctification;
 
   } buffs;
 
@@ -601,6 +602,7 @@ public:
     const spell_data_t* higher_calling;
     const spell_data_t* zealous_vindication;
     const spell_data_t* endless_wrath;
+    const spell_data_t* sanctification;
   } talents;
 
   struct tier_sets_t

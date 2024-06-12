@@ -450,9 +450,9 @@ struct consecration_t : public paladin_spell_t
       event_t::cancel( p()->active_searing_light_cons );
     }
 
-    if (p()->buffs.sanctification->at_max_stacks())
+    if (p()->buffs.sanctification_tier->at_max_stacks())
     {
-      p()->buffs.sanctification->expire();
+      p()->buffs.sanctification_tier->expire();
       p()->buffs.sanctification_empower->execute();
     }
 
@@ -1415,6 +1415,11 @@ void judgment_t::impact( action_state_t* s )
   {
     p()->trigger_hammer_and_anvil( s );
   }
+
+  if (p()->talents.sanctification->ok())
+  {
+    p()->buffs.sanctification->trigger();
+  }
 }
 
 void judgment_t::execute()
@@ -1962,7 +1967,19 @@ struct empyrean_hammer_t : public paladin_spell_t
         p()->buffs.endless_wrath->trigger();
             }
         }
+        p()->buffs.sanctification->expire();
     }
+
+    double action_multiplier() const override
+    {
+        double am = paladin_spell_t::action_multiplier();
+        if (p()->buffs.sanctification->up())
+        {
+            am *= 1.0 + p()->buffs.sanctification->stack_value();
+        }
+        return am;
+    }
+
 };
 
 void paladin_t::trigger_laying_down_arms()
@@ -2777,6 +2794,8 @@ void paladin_t::create_buffs()
                                 }
   );
   buffs.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) );
+  buffs.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
+                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 // paladin_t::default_potion ================================================
@@ -3062,6 +3081,7 @@ void paladin_t::init_spells()
   talents.shake_the_heavens      = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
   talents.zealous_vindication    = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
   talents.endless_wrath          = find_talent_spell( talent_tree::HERO, "Endless Wrath" );
+  talents.sanctification         = find_talent_spell( talent_tree::HERO, "Sanctification" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );

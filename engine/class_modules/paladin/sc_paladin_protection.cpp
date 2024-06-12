@@ -692,7 +692,7 @@ struct judgment_prot_t : public judgment_t
       }
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B2 ) && !p()->buffs.sanctification_empower->up() )
       {
-        p()->buffs.sanctification->trigger();
+        p()->buffs.sanctification_tier->trigger();
       }
     }
   }
@@ -1007,9 +1007,9 @@ void paladin_t::target_mitigation( school_e school,
   }
 
 
-  if ( buffs.sanctification->up() )
+  if ( buffs.sanctification_tier->up() )
   {
-    s->result_amount *= 1.0 + buffs.sanctification->data().effectN( 1 ).percent() * buffs.sanctification->stack();
+    s->result_amount *= 1.0 + buffs.sanctification_tier->data().effectN( 1 ).percent() * buffs.sanctification_tier->stack();
   }
   if ( buffs.sanctification_empower->up() )
   {
@@ -1338,7 +1338,7 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
+  buffs.sanctification_tier = make_buff( this, "sanctification", find_spell( 424616 ) );
 
   buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
 }
