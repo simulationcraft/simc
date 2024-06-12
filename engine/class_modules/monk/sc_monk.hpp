@@ -227,7 +227,7 @@ inline int sef_spell_index( int x )
 struct monk_td_t : public actor_target_data_t
 {
 public:
-  struct
+  struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> enveloping_mist;
@@ -235,9 +235,9 @@ public:
     propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
-  } dots;
+  } dot;
 
-  struct
+  struct debuff_t
   {
     // Brewmaster
     propagate_const<buff_t *> keg_smash;
@@ -271,6 +271,40 @@ public:
   monk_t &monk;
   monk_td_t( player_t *target, monk_t *p );
 };
+
+// utility to create target_effect_t compatible functions from monk_td_t member references
+// adapted from sc_death_knight.cpp
+template <typename T>
+static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, monk_td_t::debuff_t> )
+  {
+    if ( stack )
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->debuff )->check();
+      };
+    else
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, monk_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->dot )->current_stack();
+      };
+    else
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->dot )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of monk_td_t" );
+    return nullptr;
+  }
+}
 
 struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
@@ -452,6 +486,7 @@ public:
     propagate_const<buff_t *> spinning_crane_kick;
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
+    propagate_const<buff_t *> windwalking_movement_aura;
 
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
@@ -608,7 +643,7 @@ public:
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
     propagate_const<proc_t *> rsk_reset_totm;
-    propagate_const<proc_t *> salsalabim_bof_reset;
+    propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
     propagate_const<proc_t *> xuens_battlegear_reduction;
@@ -1066,6 +1101,7 @@ public:
     } windwalker;
   } spec;
 
+  // new spell data holders
   struct
   {
     struct
@@ -1080,6 +1116,12 @@ public:
 
     struct
     {
+      // row 1
+      player_talent_t keg_smash;
+      // row 7
+      player_talent_t scalding_brew;
+      // row 9
+      player_talent_t stormstouts_last_keg;
     } brewmaster;
 
     struct
@@ -1136,6 +1178,24 @@ public:
       const spell_data_t *aura;
     } windwalker;
   } baseline;
+
+  // struct
+  // {
+  //   struct
+  //   {} general;
+
+  //   struct
+  //   {
+  //   } brewmaster;
+
+  //   struct
+  //   {} mistweaver;
+
+  //   struct
+  //   {} windwalker;
+  // } buffs;
+
+  // end
 
   struct mastery_spells_t
   {

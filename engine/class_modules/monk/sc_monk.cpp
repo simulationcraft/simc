@@ -952,7 +952,7 @@ double monk_heal_t::action_multiplier() const
 
       if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
       {
-        if ( td->dots.enveloping_mist->is_ticking() )
+        if ( td->dot.enveloping_mist->is_ticking() )
         {
           if ( p()->talent.mistweaver.mist_wrap->ok() )
             am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent() +
@@ -1482,7 +1482,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
-        m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
+      m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
 
     return m;
   }
@@ -2275,9 +2275,9 @@ struct blackout_kick_t : public monk_melee_attack_t
 
       p()->proc.charred_passions_bok->occur();
 
-      if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
+      if ( get_td( s->target )->dot.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
       {
-        get_td( s->target )->dots.breath_of_fire->refresh_duration();
+        get_td( s->target )->dot.breath_of_fire->refresh_duration();
 
         p()->cooldown.charred_passions->start(
             p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
@@ -2505,9 +2505,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
       p()->proc.charred_passions_sck->occur();
 
-      if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
+      if ( get_td( s->target )->dot.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
       {
-        get_td( s->target )->dots.breath_of_fire->refresh_duration();
+        get_td( s->target )->dot.breath_of_fire->refresh_duration();
 
         p()->cooldown.charred_passions->start(
             p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
@@ -3375,6 +3375,72 @@ struct auto_attack_t : public monk_melee_attack_t
 // ==========================================================================
 // Keg Smash
 // ==========================================================================
+struct keg_smash_n_t : monk_melee_attack_t
+{
+  keg_smash_n_t( monk_t *player, std::string_view options_str, std::string_view name )
+    : monk_melee_attack_t( name, player, player->talents.brewmaster.keg_smash )
+  {
+    parse_options( options_str );
+    // TODO: can cast_during_sck be automated?
+    cast_during_sck = true;
+
+    // No auto-parsing is presently possible.
+    reduced_aoe_targets = data().effectN( 7 ).base_value();
+    aoe                 = -1;
+
+    apply_affecting_aura( player->talents.brewmaster.stormstouts_last_keg );
+    parse_effects( player->buff.hit_scheme );
+
+    // TODO: If conditional application functors are supported along with value overriding, do this instead
+    // parse_target_effects( td_fn( &monk_td_t::dots_t::breath_of_fire ), [ player ](){ return
+    // player->talent.brewmaster.scalding_brew->ok(); } );
+
+    if ( player->talent.brewmaster.press_the_advantage->ok() )
+      add_child( player->active_actions.keg_smash_press_the_advantage );
+  }
+
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = monk_melee_attack_t::composite_target_multiplier( target );
+
+    if ( get_td( target )->dot.breath_of_fire->is_ticking() )
+      m *= 1.0 + p()->talents.brewmaster.scalding_brew->effectN( 1 ).percent();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.hit_scheme->expire();
+
+    if ( p()->talent.brewmaster.salsalabims_strength->ok() )
+    {
+      p()->cooldown.breath_of_fire->reset( true );
+      p()->proc.salsalabims_strength->occur();
+    }
+
+    if ( p()->buff.press_the_advantage->stack() == 10 )
+    {
+      p()->active_actions.keg_smash_press_the_advantage->schedule_execute();
+      p()->buff.press_the_advantage->expire();
+    }
+
+    // trigger_shuffle( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
+
+    timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
+    if ( p()->buff.blackout_combo->up() )
+    {
+      reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
+      p()->buff.blackout_combo->expire();
+      p()->proc.blackout_combo_keg_smash->occur();
+    }
+
+    // brew_cooldown_reduction( time_reduction );
+  }
+};
+
 struct keg_smash_t : public monk_melee_attack_t
 {
   bool is_base_ks;
@@ -3411,7 +3477,7 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    if ( get_td( target )->dots.breath_of_fire->is_ticking() )
+    if ( get_td( target )->dot.breath_of_fire->is_ticking() )
       m *= 1 + p()->talent.brewmaster.scalding_brew->effectN( 1 ).percent();
 
     return m;
@@ -3435,7 +3501,7 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( p()->talent.brewmaster.salsalabims_strength->ok() && is_base_ks )
     {
       p()->cooldown.breath_of_fire->reset( true, 1 );
-      p()->proc.salsalabim_bof_reset->occur();
+      p()->proc.salsalabims_strength->occur();
     }
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
@@ -3467,7 +3533,7 @@ struct keg_smash_t : public monk_melee_attack_t
     {
       if ( auto *td = this->get_td( s->target ) )
       {
-        if ( td->dots.breath_of_fire->is_ticking() )
+        if ( td->dot.breath_of_fire->is_ticking() )
           p()->proc.keg_smash_scalding_brew->occur();
       }
     }
@@ -6793,7 +6859,7 @@ namespace monk
 // ==========================================================================
 
 // Debuffs ==================================================================
-monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dots(), debuff(), monk( *p )
+monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( target, p ), dot(), debuff(), monk( *p )
 {
   // Windwalker
   debuff.acclamation = make_buff( *this, "acclamation", p->find_spell( 451433 ) )
@@ -6872,12 +6938,12 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                          ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
                                          ->set_default_value_from_effect( 1 );
 
-  dots.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
-  dots.enveloping_mist   = target->get_dot( "enveloping_mist", p );
-  dots.renewing_mist     = target->get_dot( "renewing_mist", p );
-  dots.rushing_jade_wind = target->get_dot( "rushing_jade_wind", p );
-  dots.soothing_mist     = target->get_dot( "soothing_mist", p );
-  dots.touch_of_karma    = target->get_dot( "touch_of_karma", p );
+  dot.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
+  dot.enveloping_mist   = target->get_dot( "enveloping_mist", p );
+  dot.renewing_mist     = target->get_dot( "renewing_mist", p );
+  dot.rushing_jade_wind = target->get_dot( "rushing_jade_wind", p );
+  dot.soothing_mist     = target->get_dot( "soothing_mist", p );
+  dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
@@ -7045,7 +7111,7 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "invoke_niuzao_the_black_ox" )
     return new niuzao_spell_t( this, options_str );
   if ( name == "keg_smash" )
-    return new keg_smash_t( this, options_str );
+    return new keg_smash_n_t( this, options_str, "keg_smash" );
   if ( name == "purifying_brew" )
     return new purifying_brew_t( *this, options_str );
   if ( name == "provoke" )
@@ -7410,7 +7476,11 @@ void monk_t::init_spells()
   talents.monk.expeditious_fortification = _CT( "Expeditious Fortification" );
   talents.monk.chi_proficiency           = _CT( "Chi Proficiency" );
   talents.monk.martial_instincts         = _CT( "Martial Instincts" );
+
   // monk_t::talent::brewmaster
+  talents.brewmaster.keg_smash            = _ST( "Keg Smash" );
+  talents.brewmaster.scalding_brew        = _ST( "Scalding Brew" );
+  talents.brewmaster.stormstouts_last_keg = _ST( "Stormstout's Last Keg" );
   // monk_t::talent::mistweaver
   // monk_t::talent::windwalker
   // monk_t::talent::conduit_of_the_celestials
@@ -8620,7 +8690,7 @@ void monk_t::init_procs()
   proc.keg_smash_scalding_brew        = get_proc( "Keg Smash - Scalding Brew" );
   proc.quick_sip                      = get_proc( "Quick Sip" );
   proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
-  proc.salsalabim_bof_reset           = get_proc( "Sal'salabim Breath of Fire Reset" );
+  proc.salsalabims_strength           = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
   proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
@@ -9615,7 +9685,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + buff.diffuse_magic->value();  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( target_data->dots.breath_of_fire->is_ticking() )
+  if ( target_data->dot.breath_of_fire->is_ticking() )
   {
     // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
