@@ -1823,8 +1823,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
-    ab::apply_affecting_aura( p->talent.deathstalker.corrupt_the_blood );
-
     ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
 
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
@@ -5588,6 +5586,12 @@ struct rupture_t : public rogue_attack_t
   {
     const auto rs = cast_state( s );
     timespan_t duration = data().duration() * ( 1 + rs->get_combo_points() );
+    if ( p()->talent.deathstalker.corrupt_the_blood->ok() )
+    {
+      auto extra = p()->talent.deathstalker.corrupt_the_blood->effectN( 1 ).time_value();
+      p()->sim->print_debug("{} duration adjusted from {} to {}", *this, duration, duration + extra);
+      duration += extra;
+    }
     duration *= 1.0 / rs->get_exsanguinated_rate();
     return duration;
   }
@@ -5602,6 +5606,9 @@ struct rupture_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+
+    if ( !is_secondary_action() && p()->talent.deathstalker.corrupt_the_blood->ok() && result_is_hit( execute_state->result ) )
+      td( execute_state->target )->debuffs.corrupt_the_blood->expire(); // remove and reset existing corrupt the blood stacks
 
     trigger_scent_of_blood();
     trigger_hand_of_fate( execute_state );
