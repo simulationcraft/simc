@@ -1482,7 +1482,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
-        m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
+      m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
 
     return m;
   }
@@ -8134,6 +8134,30 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     apply_affecting_aura( player->talent.brewmaster.high_tolerance );
+    set_stack_change_callback( [ player ]( buff_t *, int old_, int new_ ) {
+      if ( old_ )
+        player->buff.training_of_niuzao->expire();
+      if ( new_ )
+        player->buff.training_of_niuzao->trigger();
+    } );
+  }
+};
+
+struct training_of_niuzao_buff : actions::monk_buff_t
+{
+  using actions::monk_buff_t::trigger;
+  training_of_niuzao_buff( monk_t &player )
+    : actions::monk_buff_t( player, "training_of_niuzao", player.talent.brewmaster.training_of_niuzao )
+  {
+    add_invalidate( CACHE_MASTERY );
+    set_default_value( 0.0 );
+    set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+  }
+
+  virtual bool trigger()
+  {
+    double value = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
+    return actions::monk_buff_t::trigger( 1, value );
   }
 };
 
@@ -8272,6 +8296,8 @@ void monk_t::create_buffs()
   buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
 
   // Brewmaster
+  buff.training_of_niuzao = make_buff<training_of_niuzao_buff>( *this );
+
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
 
   buff.call_to_arms_invoke_niuzao =
