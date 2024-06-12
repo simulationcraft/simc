@@ -1749,7 +1749,7 @@ public:
   void trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
   void start_a_feast_of_souls();
   // San'layn
-  void trigger_infliction_of_sorrow( player_t* target );
+  void trigger_infliction_of_sorrow( player_t* target, bool is_vampiric );
   void trigger_vampiric_strike_proc( player_t* target );
   void trigger_sanlayn_execute_talents( bool is_vampiric );
   // Deathbringer
@@ -8797,7 +8797,7 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
 
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
-      p()->trigger_infliction_of_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -8845,7 +8845,7 @@ struct heart_strike_t : public heart_strike_base_t
     heart_strike_base_t::impact( s );
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
     {
-      p()->trigger_infliction_of_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target, false );
     }
   }
 
@@ -9760,7 +9760,7 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
 
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
     {
-      p()->trigger_infliction_of_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -9809,7 +9809,7 @@ struct clawing_shadows_t final : public wound_spender_base_t
 
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
     {
-      p()->trigger_infliction_of_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target, false );
     }
   }
 
@@ -9894,7 +9894,7 @@ struct scourge_strike_t final : public wound_spender_base_t
 
     if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
     {
-      p()->trigger_infliction_of_sorrow( s->target );
+      p()->trigger_infliction_of_sorrow( s->target, false );
     }
   }
 
@@ -11327,7 +11327,7 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
   return total_damage;
 }
 
-void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
+void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vampiric )
 {
   auto base_td               = get_target_data( target );
   auto vp_td                 = base_td->dot.virulent_plague;
@@ -11342,7 +11342,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
   if ( vp_remaining_damage + bp_remaining_damage == 0 )
     return;
 
-  if ( buffs.gift_of_the_sanlayn->check() )
+  if ( is_vampiric )
   {
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
     mod                  = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
@@ -11359,7 +11359,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target )
       bp_td->adjust_duration( extension );
     }
   }
-  else
+  else if( buffs.infliction_of_sorrow->check() )
   {
     mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     buffs.infliction_of_sorrow->expire();
