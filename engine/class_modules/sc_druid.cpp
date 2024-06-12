@@ -2621,21 +2621,20 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
         persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
         ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
-
         p()->sim->print_debug( "persistent-effects: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
                                persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
       else  // values are different
       {
-        persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
         persistent_direct_effects.push_back( da_multiplier_effects.back() );
-        ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
-
-        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
-                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
         p()->sim->print_debug( "persistent-effects: {} ({}) direct damage modified by {}% with buff {} ({})", name(),
                                id, persistent_direct_effects.back().value * 100.0, buff->name(), buff->data().id() );
+
+        persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
+        ta_multiplier_effects.pop_back();
+        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
+                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
 
       return true;
@@ -8875,20 +8874,9 @@ struct druid_melee_t : public Base
     // Auto attack mods
     ab::parse_effects( p->spec_spell );
     ab::parse_effects( p->talent.killer_instinct );
-
-    if ( p->talent.tigers_fury.ok() )
-    {
-      // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-      const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
-      auto val = eff.percent();
-      // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
-      val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
-
-      add_parse_entry( ab::da_multiplier_effects )
-        .set_buff( p->buff.tigers_fury )
-        .set_value( val )
-        .set_eff( &eff );
-    }
+    ab::parse_effects( p->buff.tigers_fury,
+                       p->talent.carnivorous_instinct,
+                       p->talent.tigers_tenacity );
 
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
@@ -9319,6 +9307,18 @@ void druid_t::create_pets()
 // druid_t::init_spells =====================================================
 void druid_t::init_spells()
 {
+  // Carnivorous Instinct is missing trait definitions for effect#2 and effect#3, so we manually add it into
+  // dbc_override here, before any talent pointers are initialized.
+  if ( auto ci = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Instinct" ).spell(); ci->ok() )
+  {
+    auto val = ci->effectN( 1 ).base_value();
+    // manual validation
+    assert( ci->effectN( 2 ).base_value() == 6.0 );
+    assert( ci->effectN( 3 ).base_value() == 6.0 );
+    const_cast<dbc_override_t*>( dbc_override )->register_effect( *dbc, ci->effectN( 2 ).id(), "base_value", val );
+    const_cast<dbc_override_t*>( dbc_override )->register_effect( *dbc, ci->effectN( 3 ).id(), "base_value", val );
+  }
+
   auto check = [ this ]( auto check, auto arg ) {
     bool b;
 
