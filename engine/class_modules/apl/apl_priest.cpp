@@ -33,7 +33,7 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "main_hand:howling_rune_3" : "main_hand:howling_rune_3";
+  return ( p->true_level > 70 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
 }
 
 //shadow_apl_start
