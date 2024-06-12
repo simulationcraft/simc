@@ -16838,7 +16838,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1109519)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 215969 | Misc Value 2: 0x16b4 | Radius: 8 yards | Target: Unknown(43)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 228575 | Misc Value 2: 0x1786 | Radius: 8 yards | Target: Unknown(43)
+Hotfixed         : Misc Value (215969 -> 228575), Misc Value 2 (5812 -> 6022)
 Description      : $@spelldesc428517
 
 Name             : Soul-Etched Circles (id=428911) [Spell Family (5), Passive, Hidden] 
@@ -17536,7 +17537,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1124675)  : Summon (28)
-                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 217429 | Misc Value 2: 0x16b4 | Radius: 5 yards | Target: Unknown(85)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 217429 | Misc Value 2: 0x1788 | Radius: 5 yards | Target: Unknown(85)
+Hotfixed         : Misc Value 2 (5812 -> 6024)
 Description      : Generates $457578s1 Soul Shard Fragment every $457578t1 sec and casts Chaos Bolt at $456975s1% effectiveness at its summoner's target.
 
 Name             : Ruination (id=434635) [Spell Family (5)] 

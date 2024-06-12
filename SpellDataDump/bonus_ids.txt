@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55087 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4773,7 +4773,7 @@ bonus_id={ 9152 }, quality={ uncommon }, effects={ Fists of Earthen Fury (id=398
 bonus_id={ 9153 }, quality={ rare }, effects={ Fists of Earthen Fury (id=398383, index=0, type=equip) }
 bonus_id={ 9154 }, quality={ epic }, effects={ Fists of Earthen Fury (id=398389, index=0, type=equip) }
 bonus_id={ 9155 }, quality={ common }, effects={ Shadow Barrage (id=395758, index=0, type=equip) }
-bonus_id={ 9156 }, ilevel={ 206 @plvl 45 - 327 @plvl 80 }
+bonus_id={ 9156 }, ilevel={ 10 @plvl 1 - 371 @plvl 70 }
 bonus_id={ 9157 }, quality={ common }, effects={ Death Grip (id=361126, index=0, type=equip) }
 bonus_id={ 9159 }, quality={ uncommon }, effects={ Snowdrift (id=398735, index=0, type=equip) }
 bonus_id={ 9160 }, quality={ rare }, effects={ Snowdrift (id=398737, index=0, type=equip) }
@@ -5998,8 +5998,8 @@ bonus_id={ 10836 }, socket={ 2 }
 bonus_id={ 10838 }, socket={ 3 }
 bonus_id={ 10839 }, effects={ Oblivion Sphere (id=435854, index=0, type=equip) }
 bonus_id={ 10840 }, base_ilevel={ 545 }, quality={ uncommon }
-bonus_id={ 10841 }, base_ilevel={ 580 }, quality={ rare }
-bonus_id={ 10842 }, base_ilevel={ 577 }, quality={ epic }
+bonus_id={ 10841 }, base_ilevel={ 558 }, quality={ rare }
+bonus_id={ 10842 }, base_ilevel={ 597 }, quality={ epic }
 bonus_id={ 10843 }, effects={ Thundering Orb (id=436789, index=0, type=equip) }
 bonus_id={ 10845 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 450 @plvl 70 }
 bonus_id={ 10846 }, effects={ Lifestorm (id=437014, index=0, type=equip) }
@@ -6111,8 +6111,8 @@ bonus_id={ 11047 }, effects={ Dark Pact (id=441744, index=0, type=equip) }
 bonus_id={ 11048 }, effects={ Death's Advance (id=441751, index=0, type=equip) }
 bonus_id={ 11049 }, effects={ Soulshape (id=441765, index=0, type=equip) }
 bonus_id={ 11053 }
-bonus_id={ 11054 }, quality={ rare }, ilevel={ 219 @plvl 45 - 340 @plvl 80 }
-bonus_id={ 11055 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
+bonus_id={ 11054 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
+bonus_id={ 11055 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11061 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11062 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
 bonus_id={ 11065 }, quality={ uncommon }
@@ -6239,7 +6239,7 @@ bonus_id={ 11225 }, ilevel={ 70 @plvl 70 - 90 @plvl 90 }
 bonus_id={ 11226 }, effects={ Energy Redistribution Beacon (id=455147, index=0, type=equip) }
 bonus_id={ 11227 }, ilevel={ 5 @plvl 1 - 366 @plvl 70 }
 bonus_id={ 11228 }, effects={ Excavation (id=455799, index=0, type=equip) }
-bonus_id={ 11229 }, ilevel={ 1 @plvl 1 - 400 @plvl 80 }
+bonus_id={ 11229 }, ilevel={ 70 @plvl 50 - 73 @plvl 90 }
 bonus_id={ 11230 }, desc={ Rank 1/4 }, effects={ Adding (id=456535, index=0, type=use) }
 bonus_id={ 11231 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=456957, index=0, type=use) }
 bonus_id={ 11232 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=456979, index=0, type=use) }
@@ -6307,3 +6307,8 @@ bonus_id={ 11309 }, quality={ epic }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
 bonus_id={ 11310 }, quality={ rare }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
 bonus_id={ 11312 }, quality={ rare }
 bonus_id={ 11313 }, mod_to_stat={ unknown (100) }
+bonus_id={ 11314 }, stats={ 100% Mastery [0.3333] }
+bonus_id={ 11315 }, stats={ 100% Haste [0.3333] }
+bonus_id={ 11316 }, stats={ 100% Crit [0.3333] }
+bonus_id={ 11317 }, stats={ 100% Vers [0.3333] }
+bonus_id={ 11318 }, base_ilevel={ 545 }
