@@ -1,5 +1,5 @@
 // Spell text, wow build 10.2.7.54988
-static const std::array<spelltext_data_t, 21153> __spelltext_data { {
+static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21153,6 +21153,7 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 447598, "Channel the Bulwark of the Black Ox for $447599d. Charge an enemy removing all stuns and roots, gain a shield absorbing damage, and taunt enemies within $447595A1 yards. Every $447595t3 sec inflict Physical damage to enemies within $447595A1 yards plus $447592s3% of damage taken by the shield.", 0, 0 },
   { 447599, "$@spelldesc447598", "Absorbs $w2 damage.\r\nMovement speed decreased by $s3%.\r\nImmune to stuns and roots.", 0 },
   { 453445, "$@spelldesc429007", 0, 0 },
+  { 459337, 0, "Bronze earned from Bronze Caches increased by $s1%.\r\nThreads earned from Spools of Eternal Thread increased by $s2%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.2.7.54988
