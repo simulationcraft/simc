@@ -4463,15 +4463,6 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 
       dot_name = "rake";
     }
-
-    void tick( dot_t* d ) override
-    {
-      base_t::tick( d );
-
-      // TODO: placeholder value
-      if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
-        p()->active.bloodseeker_vines->execute_on_target( d->target );
-    }
   };
 
   rake_bleed_t* bleed;
@@ -4628,10 +4619,6 @@ struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
-
-    // TODO: placeholder value
-    if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
-      p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
 
