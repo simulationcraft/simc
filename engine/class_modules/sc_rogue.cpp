@@ -2833,7 +2833,7 @@ public:
     }
 
     // Debugging
-    if ( p()->sim->log )
+    if ( p()->sim->log && ab::execute_state )
     {
       const auto rs = cast_state( ab::execute_state );
       if ( rs->get_exsanguinated_rate() != 1.0 )
@@ -9602,6 +9602,9 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
 
   // Outlaw gains a bonus to Blade Flurry instead of triggering this effect
   if ( p()->specialization() != ROGUE_SUBTLETY )
+    return;
+
+  if ( p()->sim->active_enemies == 1 )
     return;
 
   if ( !p()->buffs.flawless_form->check() )
