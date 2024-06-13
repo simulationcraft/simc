@@ -24470,7 +24470,7 @@ static const std::array<spelltext_data_t, 26197> __spelltext_data { {
   { 450184, "$?s394013[Incarnation: Chosen of Elune][Celestial Alignment] lasts $s1% longer.\r\n\r\nDuring $?s394013[Incarnation: Chosen of Elune][Celestial Alignment], Solar Eclipse increases Nature damage done by an additional $s2% and Lunar Eclipse increases Arcane damage done by an additional $s2%.", 0, 0 },
   { 450193, "$@spelldesc447444", 0, 0 },
   { 450206, "When your Magi's Spark or your Improved Touch of the Magi detonates, it increases the damage all affected targets take from you by $454004s1% for $454004d.", 0, 0 },
-  { 450212, "Starsurge increases the damage the target takes from your periodic effects and Shooting Stars by $450214s1% for  $450214d. Reapplying this effect extends its duration, up to ${$s2/1000} sec.", 0, 0 },
+  { 450212, "Starsurge increases the damage the target takes from your periodic effects and Shooting Stars by $450214s1% for  $450214d. Reapplying this effect extends its duration, up to ${$s1/1000} sec.", 0, 0 },
   { 450214, "$@spelldesc450212", "Damage over time from $@auracaster increased by $w1%.", 0 },
   { 450215, "Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[\r\n\r\n|cFFFFFFFFGenerates ${$c/100*-1} Insanity.|r][]", 0, 0 },
   { 450325, "Flamestrike and Living Bomb apply Mastery: Ignite at $s1% increased effectiveness.", 0, 0 },
@@ -26200,7 +26200,8 @@ static const std::array<spelltext_data_t, 26197> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.0.55120
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  450212,  0, "Starsurge increases the damage the target takes from your periodic effects and Shooting Stars by $450214s1% for  $450214d. Reapplying this effect extends its duration, up to ${$s2/1000} sec.", "Starsurge increases the damage the target takes from your periodic effects and Shooting Stars by $450214s1% for  $450214d. Reapplying this effect extends its duration, up to ${$s1/1000} sec." },
   {  458580,  1, "Ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%.", "Attacks ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%." },
 } };
 

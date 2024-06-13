@@ -18058,7 +18058,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161653)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.2 -> 0.4)
 Description      : Slice and Dice causes your $?a137037 [Mutilate][Backstab] to deal an additional $s1 Plague damage.
 
 Name             : Ethereal Cloak (id=457022) [Spell Family (8), Passive] 
@@ -18125,7 +18126,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161714)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 2)
 #2 (id=1161759)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?c1[Ambush][Shadowstrike] from Stealth$?c3[ or Shadow Dance][] applies $s1 stacks of Deathstalker's Mark to your target. When you spend $s2 or more combo points on attacks against a Marked target you consume an application of Deathstalker's Mark, dealing $457157s1 Plague damage and increasing the damage of your next $?c1[Ambush or Mutilate]?s200758[Gloomblade or Shadowstrike][Backstab or Shadowstrike] by $457160s1%.
@@ -18445,7 +18447,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1161932)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.3 -> 0.6)
 Description      : $@spelldesc457052
 
 Name             : Deathstalker's Mark (id=457160) [Spell Family (8)] 
@@ -18467,9 +18470,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1161935)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Mutilate (5374), Ambush (8676), Mutilate (27576), Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121), Ambush (385897), Ambush (430023)
                    Family Flags: 2, 9, 33, 34, 104, 109
+Hotfixed         : Base Value (10 -> 20)
 Description      : $@spelldesc457052
 Tooltip          : Your next $?c1[Ambush or Mutilate]?s200758[Gloomblade or Shadowstrike][Backstab or Shadowstrike] deals $w1% additional damage.
 
@@ -18558,7 +18562,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1162066)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.1 -> 0.2)
 Description      : Autoattacks against Marked targets deal additional 15% haste+15% mastery Plague damage.
 
 Name             : Singular Focus (id=457236) [Spell Family (8)] 
@@ -18584,7 +18589,7 @@ Name             : Lingering Darkness (id=457273) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 3 seconds
+Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18620,11 +18625,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1162176)  : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
+Hotfixed         : Base Value (60 -> 40)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 60)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 2)
 #4 (id=1162179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc457058
