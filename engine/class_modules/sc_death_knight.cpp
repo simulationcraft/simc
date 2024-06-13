@@ -799,6 +799,8 @@ public:
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
     cooldown_t* blood_tap;
+    cooldown_t* blooddrinker;
+    cooldown_t* consumption;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
     // Frost
@@ -1485,6 +1487,7 @@ public:
   struct rppm_t
   {
     real_ppm_t* bloodworms;
+    real_ppm_t* carnage;
     real_ppm_t* runic_attenuation;
     real_ppm_t* blood_beast;
     real_ppm_t* decomposition;
@@ -1541,6 +1544,7 @@ public:
     propagate_const<proc_t*> ready_rune;
 
     propagate_const<proc_t*> bloodworms;
+    propagate_const<proc_t*> carnage;
 
     // Killing Machine spent on
     propagate_const<proc_t*> killing_machine_oblit;
@@ -1638,7 +1642,9 @@ public:
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.blood_tap           = get_cooldown( "blood_tap" );
+    cooldown.blooddrinker        = get_cooldown( "blooddrinker" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
+    cooldown.consumption         = get_cooldown( "consumption" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay_dynamic =
@@ -4641,12 +4647,151 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   }
 };
 
+struct blood_shield_buff_t final : public absorb_buff_t
+{
+  blood_shield_buff_t( death_knight_t* p ) : absorb_buff_t( p, "blood_shield", p->spell.blood_shield )
+  {
+    set_absorb_school( SCHOOL_PHYSICAL );
+    set_absorb_source( p->get_stats( "blood_shield" ) );
+    modify_duration( p->talent.blood.iron_heart->effectN( 1 ).time_value() );
+  }
+
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    absorb_buff_t::absorb_used( absorbed, source );
+
+    death_knight_t* dk = debug_cast<death_knight_t*>( blood_shield_buff_t::source );
+
+    if ( dk->rppm.carnage->trigger() )
+    {
+      dk->procs.carnage->occur();
+      if ( dk->talent.blood.blooddrinker.ok() )
+        dk->cooldown.blooddrinker->reset( true );
+      if ( dk->talent.blood.consumption.ok() )
+        dk->cooldown.consumption->reset( true );
+    }
+
+  }
+};
+
+struct blood_shield_t final : public absorb_t
+{
+  blood_shield_t( util::string_view name, death_knight_t* p ) : absorb_t( name, p, p->spell.blood_shield )
+  {
+    may_miss = may_crit = callbacks = false;
+    background = proc = true;
+  }
+
+  // Self only so we can do this in a simple way
+  absorb_buff_t* create_buff( const action_state_t* ) override
+  {
+    return debug_cast<death_knight_t*>( player )->buffs.blood_shield;
+  }
+
+  void init() override
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
 {
   death_knight_heal_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : death_knight_action_t( n, p, s )
+    : death_knight_action_t( n, p, s ),
+    blood_shield( p->specialization() == DEATH_KNIGHT_BLOOD ? get_action<blood_shield_t>( "blood_shield", p ) : nullptr )
   {
   }
+
+  void trigger_blood_shield( action_state_t* state )
+  {
+    if ( p()->specialization() != DEATH_KNIGHT_BLOOD )
+      return;
+
+    double current_value = 0;
+    blood_shield_t* blood_shield_lookup = debug_cast<blood_shield_t*>( blood_shield );
+
+    if ( blood_shield_lookup->target_specific[ state->target ] )
+      current_value = blood_shield_lookup->target_specific[ state->target ]->current_value;
+
+    double amount = state->result_raw;
+
+    if ( p()->mastery.blood_shield->ok() )
+      amount *= p()->cache.mastery_value();
+
+    if ( p()->buffs.vampiric_blood->up() )
+      amount *= 1.0 + p()->talent.blood.vampiric_blood->effectN( 3 ).percent();
+
+    amount *= 1.0 + p()->talent.blood.iron_heart->effectN( 2 ).percent();
+
+    amount *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
+
+    auto final_amount = amount + current_value;
+
+    // Blood Shield caps at max health
+    if ( final_amount > player->resources.max[ RESOURCE_HEALTH ] )
+      final_amount = player->resources.max[ RESOURCE_HEALTH ];
+
+    sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})", player->name(),
+                      current_value, amount, final_amount, name(), this->data().id() );
+
+    blood_shield->base_dd_min = blood_shield->base_dd_max = final_amount;
+    blood_shield->execute();
+  }
+
+  private:
+    action_t* blood_shield;
+};
+
+struct death_knight_leech_damage_heal_t : public death_knight_heal_t
+// Leech tick damage and leech direct damage such as blood plague, consumption, and blood drinker
+// do not include a bunch of the damage modifiers, and need to be based off the actual damage of the ability
+// so we strip out the mods here.
+{
+  death_knight_leech_damage_heal_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : death_knight_heal_t( n, p, s )
+  {
+    da_value_mod = 1.0;
+    ta_value_mod = 1.0;
+
+    for ( auto effect : this->data().effects() )
+    {
+      if ( effect.type() == E_HEALTH_LEECH )
+      {
+        da_value_mod = effect.m_value();
+      }
+      if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_LEECH )
+      {
+        ta_value_mod = effect.m_value();
+      }
+    }
+  }
+
+  double composite_versatility ( const action_state_t* /* s */ ) const override
+  {
+    return 1.0;
+  }
+
+  // This ensures that bloodshot does not affect the results, as consumption is a physical attack
+  double composite_player_multiplier( const action_state_t* ) const override
+  {
+    return 1.0;
+  }
+
+  double composite_da_multiplier( const action_state_t* /* s */ ) const override
+  {
+    return 1.0 * da_value_mod;
+  }
+
+  double composite_ta_multiplier( const action_state_t* /* s */ ) const override
+  {
+    return 1.0 * ta_value_mod;
+  }
+
+  private:
+    double da_value_mod;
+    double ta_value_mod;
 };
 
 // ==========================================================================
@@ -5613,10 +5758,10 @@ struct death_knight_disease_t : public death_knight_spell_t
 };
 
 // Blood Plague ============================================
-struct blood_plague_heal_t final : public death_knight_heal_t
+struct blood_plague_heal_t final : public death_knight_leech_damage_heal_t
 {
   blood_plague_heal_t( util::string_view name, death_knight_t* p )
-    : death_knight_heal_t( name, p, p->spell.blood_plague )
+    : death_knight_leech_damage_heal_t( name, p, p->spell.blood_plague )
   {
     callbacks  = false;
     background = true;
@@ -6702,10 +6847,10 @@ private:
 
 // Blooddrinker =============================================================
 
-struct blooddrinker_heal_t final : public death_knight_heal_t
+struct blooddrinker_heal_t final : public death_knight_leech_damage_heal_t
 {
   blooddrinker_heal_t( util::string_view name, death_knight_t* p )
-    : death_knight_heal_t( name, p, p->talent.blood.blooddrinker )
+    : death_knight_leech_damage_heal_t( name, p, p->talent.blood.blooddrinker )
   {
     background = true;
     callbacks = may_crit = may_miss = false;
@@ -6715,6 +6860,15 @@ struct blooddrinker_heal_t final : public death_knight_heal_t
     target                          = p;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     dot_duration = base_tick_time = 0_ms;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_leech_damage_heal_t::impact( state );
+
+    if ( p()->talent.blood.carnage.ok() )
+      trigger_blood_shield( state );
+
   }
 };
 
@@ -7029,16 +7183,49 @@ private:
 
 // Consumption ==============================================================
 
+struct consumption_heal_t final : public death_knight_leech_damage_heal_t
+{
+  consumption_heal_t( util::string_view name, death_knight_t* p )
+    : death_knight_leech_damage_heal_t( name, p, p->talent.blood.consumption )
+  {
+    background = true;
+    harmful = false;
+    callbacks = may_crit = may_miss = false;
+    energize_type                   = action_energize::NONE;
+    cooldown->duration              = 0_ms;
+    target                          = p;
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_leech_damage_heal_t::impact( state );
+
+    if ( p()->talent.blood.carnage.ok() )
+      trigger_blood_shield( state );
+  }
+};
+
 struct consumption_t final : public death_knight_melee_attack_t
 {
   consumption_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_melee_attack_t( "consumption", p, p->talent.blood.consumption )
+    : death_knight_melee_attack_t( "consumption", p, p->talent.blood.consumption ),
+    heal( get_action<consumption_heal_t>( "consumption_heal", p ) )
   {
-    // TODO: Healing from damage done
-
     parse_options( options_str );
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    if ( state->result_amount > 0 )
+    {
+      heal->base_dd_min = heal->base_dd_max = state->result_amount;
+      heal->execute();
+    }
   }
 
   void execute() override
@@ -7061,6 +7248,8 @@ struct consumption_t final : public death_knight_melee_attack_t
       }
     }
   }
+  private:
+    propagate_const<action_t*> heal;
 };
 
 // Dancing Rune Weapon ======================================================
@@ -7581,43 +7770,10 @@ struct death_coil_t final : public death_knight_spell_t
 
 // Death Strike =============================================================
 
-struct blood_shield_buff_t final : public absorb_buff_t
-{
-  blood_shield_buff_t( death_knight_t* player ) : absorb_buff_t( player, "blood_shield", player->spell.blood_shield )
-  {
-    set_absorb_school( SCHOOL_PHYSICAL );
-    set_absorb_source( player->get_stats( "blood_shield" ) );
-    modify_duration( player->talent.blood.iron_heart->effectN( 1 ).time_value() );
-  }
-};
-
-struct blood_shield_t final : public absorb_t
-{
-  blood_shield_t( death_knight_t* p ) : absorb_t( "blood_shield", p, p->spell.blood_shield )
-  {
-    may_miss = may_crit = callbacks = false;
-    background = proc = true;
-  }
-
-  // Self only so we can do this in a simple way
-  absorb_buff_t* create_buff( const action_state_t* ) override
-  {
-    return debug_cast<death_knight_t*>( player )->buffs.blood_shield;
-  }
-
-  void init() override
-  {
-    absorb_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
-
 struct death_strike_heal_t final : public death_knight_heal_t
 {
   death_strike_heal_t( util::string_view name, death_knight_t* p )
     : death_knight_heal_t( name, p, p->spell.death_strike_heal ),
-      blood_shield( p->specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
       interval( timespan_t::from_seconds( p->talent.death_strike->effectN( 4 ).base_value() ) ),
       min_heal_multiplier( p->talent.death_strike->effectN( 3 ).percent() ),
       max_heal_multiplier( p->talent.death_strike->effectN( 2 ).percent() )
@@ -7678,40 +7834,7 @@ struct death_strike_heal_t final : public death_knight_heal_t
     trigger_blood_shield( state );
   }
 
-  void trigger_blood_shield( action_state_t* state )
-  {
-    if ( p()->specialization() != DEATH_KNIGHT_BLOOD )
-      return;
-
-    double current_value = 0;
-    if ( blood_shield->target_specific[ state->target ] )
-      current_value = blood_shield->target_specific[ state->target ]->current_value;
-
-    double amount = state->result_total;  // Total heal, including hemostasis
-
-    // We first have to remove hemostasis from the heal, as blood shield does not include it
-    amount /= 1.0 + p()->buffs.hemostasis->stack_value();
-
-    if ( p()->mastery.blood_shield->ok() )
-      amount *= p()->cache.mastery_value();
-
-    amount *= 1.0 + p()->talent.blood.iron_heart->effectN( 2 ).percent();
-
-    amount *= 1.0 + p()->talent.gloom_ward->effectN( 1 ).percent();
-
-    // Blood Shield caps at max health
-    if ( amount > player->resources.max[ RESOURCE_HEALTH ] )
-      amount = player->resources.max[ RESOURCE_HEALTH ];
-
-    sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={}", player->name(),
-                      current_value, state->result_amount * p()->cache.mastery_value(), amount );
-
-    blood_shield->base_dd_min = blood_shield->base_dd_max = amount;
-    blood_shield->execute();
-  }
-
 private:
-  blood_shield_t* blood_shield;
   timespan_t interval;
   double min_heal_multiplier;
   double max_heal_multiplier;
@@ -11973,6 +12096,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   rppm.bloodworms        = get_rppm( "bloodworms", talent.blood.bloodworms );
+  rppm.carnage           = get_rppm( "carnage", talent.blood.carnage );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
   rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
   rppm.decomposition     = get_rppm( "decomposition", spell.decomposition_buff );
@@ -13302,6 +13426,7 @@ void death_knight_t::init_procs()
   procs.sr_runic_corruption = get_proc( "Runic Corruption from Soul Reaper" );
 
   procs.bloodworms = get_proc( "Bloodworms" );
+  procs.carnage    = get_proc( "Carnage" );
 
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
