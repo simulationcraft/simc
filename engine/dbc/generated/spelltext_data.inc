@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55120
-static const std::array<spelltext_data_t, 26190> __spelltext_data { {
+static const std::array<spelltext_data_t, 26197> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7065,6 +7065,7 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
   { 205769, "$@spelldesc186265", 0, 0 },
   { 205797, "Agony deals its full damage $s3% faster.", 0, 0 },
   { 205816, "Bone Shield grants an additional $s2% armor and increases your maximum Runic Power by ${$216140s1/10}.", 0, 0 },
+  { 206150, 0, "Health increased by $w1%.\r\nDamage increased by $w2%.$?$w3!=0[\r\nEnrages when injured.][]$?$w4!=0[\r\nBolsters nearby allies upon death.][]$?$w5!=0[\r\nEspecially dangerous boss enemy.][]$?$w8!=0[\r\nCauses flames to erupt beneath distant foes.][]$?$w9!=0[\r\nSuccessful melee attacks inflict necrotic rot.][]$?$w10!=0[\r\nFortified non-boss enemy with additional health and damage.][]$?$w11!=0[\r\nLeaves behind a pool of ichor upon death.][]$?$w13!=0[\r\nSummons an Explosive Orb that will detonate if not destroyed.][]$?$w14!=0[\r\nBursts violently upon death.][]\r\n$?$w15!=0[\r\nWill seek vengeance from beyond the grave.][]$?$w17!=0[\r\nSummons malevolent fiends upon death.][]$?$w18!=0[\r\nCausing storms to appear nearby.][]", 0 },
   { 206315, "$?a317320[Condemn][Execute] is now usable on targets below $s2% health, and its cooldown is reduced by ${$s3/1000}.1 sec.", 0, 0 },
   { 206332, "Reduces the cooldown of all Aspects by $s1%.", 0, 0 },
   { 206338, "$?s231895[Crusade][Avenging Wrath] increases healing done by an additional $?s137029[$281573s1%][$281573s2%] and increases damage done by an additional $281573s3%.", 0, 0 },
@@ -8344,6 +8345,7 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
   { 228287, "$@spelldesc101546", "Increases the damage of the Monk's Spinning Crane Kick by $220358s1%.", 0 },
   { 228290, "Enter your Personal Egg.\r\n", "Incubating.", 0 },
   { 228312, "$@spelldesc348", 0, 0 },
+  { 228318, "Immune to crowd control effects.", "Immune to crowd control effects.", 0 },
   { 228323, "Absorbs up to $s1 damage for $d. Only works outdoors in the Broken Isles.", "Absorbs $w1 damage.", 0 },
   { 228354, "$@spelldesc44614", "Movement slowed by $w1%.", 0 },
   { 228358, "$@spelldesc44614", "Taking damage from the Mage's spells as if frozen.", 0 },
@@ -25867,10 +25869,13 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
   { 458266, "$@spelldesc445025", 0, 0 },
   { 458267, "Hurl a bolt of lightning at your Surging Totem that rebounds at your target, zapping them for $s1 Nature damage.", 0, 0 },
   { 458269, "$@spelldesc445025", "Surging Totem damage increased by $w1%.", 0 },
+  { 458322, "Haste increased by $206150s19%.\r\nFire damage taken increased by $206150s20%.\r\nFrost damage taken increased by $206150s20%. \r\n", "Haste increased by $206150s19%.\r\nFire damage taken increased by $206150s20%.\r\nFrost damage taken increased by $206150s20%.", 0 },
   { 458352, "$@spelldesc445025", 0, 0 },
   { 458357, "Heals the friendly target for $s1, then jumps up to $s3 yards to heal the $<jumps> most injured nearby allies. Healing is reduced by $s2% with each jump.", 0, 0 },
   { 458359, "Wake of Ashes activates $?s384392[Crusade for $454373d][Avenging Wrath for $454351d].\r\n\r\nEach Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].", 0, 0 },
+  { 458372, "When attacked, inflicts Physical damage to the attacker. \r\nHoly damage takne increased by $206150s21%. \r\nShadow damage taken increased by $206150s21%. ", "When attacked, inflicts Physical damage to the attacker.\r\nHoly damage taken increased by $206150s21%.\r\nShadow damage taken increased by $206150s21%.", 0 },
   { 458375, "$@spelldesc450206", 0, 0 },
+  { 458376, "$@spelldesc458372", 0, 0 },
   { 458386, "$@spelldesc444776", "Relentless Pursuit will not remove movement impairing effects.", 0 },
   { 458388, "$@spelldesc453600", "Building up to an Aether Attunement.", 0 },
   { 458411, "$@spelldesc444986", "$?c1[Arcane Orb][Frozen Orb] damage increased by 50%.", 0 },
@@ -25913,6 +25918,7 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
   { 458525, "$@spelldesc453572", "Mastery increased by $w1.", 0 },
   { 458572, "When you would pull an enemy generate $s1 charge of Bone Shield.\r\n\r\n$@spellicon195181 |cFFFFFFFF$@spellname195181|r\r\n$@spelldesc195181", 0, 0 },
   { 458573, "$@spelldesc453575", 0, 0 },
+  { 458580, "Ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%.", "Attacks ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%.", 0 },
   { 458619, "Your Hearthstone cooldown is reduced by $s2 min and gains an additional charge.", 0, "Racial Passive" },
   { 458623, "Critical Strike chance increased by $s1%. This effect is increased by $s2% while Xuen, the White Tiger is active.", 0, 0 },
   { 458624, "$@spelldesc408711", 0, 0 },
@@ -26084,6 +26090,7 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
   { 459148, "$@spelldesc459150", 0, 0 },
   { 459149, "$@spelldesc459150", "$@spelldesc459150", 0 },
   { 459150, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459145 upon walking through them.\r\n\r\n$@spellicon459145 $@spellname459145\r\n$@spelldesc459145", 0, "Rank 4/4" },
+  { 459158, "Magic damage done increased by $206150s25%.\r\nNature damage taken increased by $206150s26%.\r\nBleed damage taken increased by $206150s27%.", "Magic damage done increased by $206150s25%.\r\nNature damage taken increased by $206150s26%.\r\nBleed damage taken increased by $206150s27%.", 0 },
   { 459187, "Add a socket to a War Within Season $s2 item that does not already have one. Can be used on Helms, Bracers, or Belts.", 0, 0 },
   { 459206, "Apply a thick coating of reinforced-Wax to your armor granting you $s1 damage reduction.", "Damage taken reduced by $w1.", 0 },
   { 459222, "Your harmful attacks and abilities have a high chance to build momentum, granting $459224s1% bonus movement speed per stack.\r\n\r\nAt 5 stacks you reach full momentum increasing your movement speed bonus to $459228s1% for $459228d. While at full momentum, your attacks hit the target at high velocity dealing an additional ${$<rolemult>*$s1} Nature damage scaling up with your current movement speed.", 0, 0 },
@@ -26193,7 +26200,8 @@ static const std::array<spelltext_data_t, 26190> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.0.55120
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  458580,  1, "Ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%.", "Attacks ignore $206150s22% armor.\r\nArmor reduced by $206150s23%.\r\nArcane damage taken increased by $206150s24%." },
 } };
 
 // Spell description variables, wow build 11.0.0.55120
