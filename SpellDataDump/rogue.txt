@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -3727,10 +3727,10 @@ Attributes       : ........ ........ ..x..... ...x....   ....x... ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), No Aura Icon (60), No Aura Log (202), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+                 : Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), No Aura Icon (60), No Aura Log (202), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=220706)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
@@ -7297,10 +7297,10 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ..x..... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16057,10 +16057,10 @@ Attributes       : ....x... ........ x....... .....x.x   .....x.. ..x..... .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ x....... 
-                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Not an Attack (194), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291), Ignore Caster Healing Modifiers (312), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+                 : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Not an Attack (194), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1105254)  : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16508,7 +16508,7 @@ Effects          :
                    Family Flags: 32, 55
 #2 (id=1166333)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137036[Killing Spree][Secret Technique] deals $s1% has $s2% reduced cooldown and allows your next $s2 strikes of Unseen Blade to ignore its normal cooldown.
+Description      : $?a137036[Killing Spree][Secret Technique] has $s1% reduced cooldown and allows your next $s2 strikes of Unseen Blade to ignore its cooldown.
 
 Name             : Flawless Form (id=441321) [Spell Family (8), Passive] 
 Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
@@ -16656,7 +16656,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1135822)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Finishing moves have $s1% increased chance to critically strike Distracted targets.
+Description      : Finishing moves have $s1% increased chance to critically strike Fazed targets.
 
 Name             : So Tricky (id=441403) [Spell Family (8), Passive] 
 Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
@@ -16733,7 +16733,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After $441786s1 strikes with Unseen Blade, your next $?a137036[Dispatch][Eviscerate] will be performed as a Coup de Grace, functioning as if it had consumed $s3 additional combo points.
 
-If the primary target is Distracted, gain $s2 stacks of Flawless Form.
+If the primary target is Fazed, gain $s2 stacks of Flawless Form.
 
 Name             : Cloud Cover (id=441429) [Spell Family (8), Passive] 
 Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
@@ -16863,8 +16863,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1136476)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1136477)  : Trigger Spell (64): (184963)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 184963 | Target: Self (1)
 Description      : $@spelldesc441423
 
 Name             : Escalating Blade (id=441786) [Spell Family (8)] 
@@ -18800,6 +18798,25 @@ Effects          :
                    Family Flags: 111
 Description      : Your Sinister Strike, Pistol Shot, and Ambush have a $s1% chance to Ethereal Rampage, dealing $s2% increased damage as Shadow.
 Tooltip          : Your Sinister Strike, Pistol Shot, and Ambush have a $w1% chance to Ethereal Rampage, dealing $w2% increased damage as Shadow.
+
+Name             : Ethereal Rampage (id=459002) [Spell Family (8)] 
+Class            : Rogue
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ..x...x. 
+                 : ........ x....... ........ ........   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Can Proc From Procs (122), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Do Not Display Duration (170), No Cooldown On Tooltip (192), Ignore Caster Damage Modifiers (221), Do Not Display Power Cost (303), Can Proc from Suppressed Caster Procs (385), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1165397)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+Description      : Deals $s1 Shadow damage.
 
 Name             : Unseen Blade (id=459485) [Spell Family (8), Hidden] 
 Class            : Rogue

@@ -417,8 +417,9 @@ chart_t& chart_t::add_yplotline( double value, std::string_view name,
 
     if ( rapidjson::Value* text_v = path_value( "subtitle.text" ) )
     {
-      auto mean_str = fmt::format( "<span style=\"color: {};\">{}{}</span>", *color,
-                                   name.empty() ? "" : fmt::format( "{}=", name ), value );
+      auto mean_str =
+        fmt::format( "<span style=\"color: {};\">{}</span>", *color,
+                     name.empty() ? fmt::format( "{}", value ) : fmt::format( "{}={:.2Lf}", name, value ) );
 
       if ( text_v->GetType() == rapidjson::kStringType )
         mean_str = std::string( text_v->GetString() ) + ", " + mean_str;

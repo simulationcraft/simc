@@ -849,21 +849,6 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           base_dd_max = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player->level() );
           radius      = spelleffect_data.radius_max();
           break;
-        case A_ADD_FLAT_MODIFIER:
-          switch ( spelleffect_data.misc_value1() )
-          case E_APPLY_AURA:
-            switch ( spelleffect_data.subtype() )
-            {
-              case A_MOD_CRIT_PERCENT:
-                base_crit += 0.01 * spelleffect_data.base_value();
-                break;
-              case A_MOD_COOLDOWN:
-                cooldown->duration += spelleffect_data.time_value();
-                break;
-              default:
-                break;
-            }
-          break;
         default:
           break;
       }
@@ -2218,19 +2203,21 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     cooldown->start( this, cd_duration, delay );
 
-    sim->print_debug(
-          "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. Will "
-          "be ready at {}",
-          *player, *this, *cooldown, cooldown->current_charge, cooldown->charges,
-          cd_duration, delay, cooldown->ready );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. {}.", *player, *this, *cooldown,
+                        cooldown->current_charge, cooldown->charges,
+                        cd_duration == timespan_t::min() ? cooldown_duration() : cd_duration, delay,
+                        cooldown->ready > sim->current_time() ? fmt::format( "Will be ready at {}", cooldown->ready )
+                                                              : "Ready now" );
+    }
 
     if ( internal_cooldown->duration > 0_ms )
     {
       internal_cooldown->start( this );
 
-      sim->print_debug("{} starts internal_cooldown for {} ({}). Will be ready at {}",
-          *player, *this, *internal_cooldown, internal_cooldown->ready );
-
+      sim->print_debug( "{} starts internal_cooldown for {} ({}). Will be ready at {}", *player, *this,
+                        *internal_cooldown, internal_cooldown->ready );
     }
   }
 }

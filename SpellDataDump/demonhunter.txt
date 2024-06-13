@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13886,7 +13886,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1137766)  : Apply Aura (6) | Proc Trigger Spell (42): Warblade's Hunger
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 442503 | Target: Self (1)
-Description      : Consuming a Soul Fragment causes your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] to deal $442507s1 bonus damage.
+Description      : Consuming a Soul Fragment causes your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] to deal $442507s1 additional damage.
 
 Name             : Warblade's Hunger (id=442503) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -13973,7 +13973,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138061)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting an enhanced ability reduces the remaining cooldown of The Hunt by ${$s1/1000} sec.
+Description      : Casting The Hunt allows you to cast Reaver's Glaive.
 
 Name             : Aldrachi Tactics (id=442683) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -14011,16 +14011,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138069)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After consuming both enhancements, gain Thrill of the Fight, increasing your attack speed by $442695s1% for $442695d and causing your next ability to deal $442688s1% increased damage and healing.
+Description      : After consuming both enhancements, gain Thrill of the Fight, increasing your attack speed by $442695s1% for $442695d and your damage and healing by $442688s1% for $442688d.
 
 Name             : Thrill of the Fight (id=442688) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 30 seconds
-Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14036,7 +14033,7 @@ Effects          :
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Wounded Quarry (442808), Demonsurge (451266), Burning Blades (453177)
                    Family Flags: 16, 70
 Description      : @spelldesc442686
-Tooltip          : Damage and healing of next ability increased by $w1%.
+Tooltip          : Damage and healing increased by $w1%.
 
 Name             : Thrill of the Fight (id=442695) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -14075,9 +14072,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138115)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Felblade surrounds you with a Blade Ward, reducing physical damage taken by $442715s1% for $442715d.
+Description      : Felblade surrounds you with a Blade Ward, reducing damage taken by $442715s1% for $442715d.
 
-Name             : Army Unto Oneself (id=442715) [Spell Family (107)] 
+Name             : Blade Ward (id=442715) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14092,10 +14089,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1138116)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
-                   Affected School(s): Physical
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : @spelldesc442714
-Tooltip          : Physical damage taken reduced by $s1%.
+Tooltip          : Damage taken reduced by $s1%.
 
 Name             : Escalation (id=442718) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
@@ -14157,7 +14154,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1138289)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While $@spellname442624 is on your target, melee attacks strike with an additional glaive slash for $12345s1 damage and have a chance to shatter a soul.
+Description      : While $@spellname442624 is on your target, melee attacks strike with an additional glaive slash for $442808s1 damage and have a chance to shatter a soul.
 
 Name             : Wounded Quarry (id=442808) [Spell Family (107)] 
 Class            : Demon Hunter

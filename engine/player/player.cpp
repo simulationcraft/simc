@@ -1161,6 +1161,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     // Reporting
     quiet( false ),
     report_extension(),
+    mixin_reports(),
     arise_time( timespan_t::min() ),
     iteration_fight_length(),
     iteration_waiting_time(),
@@ -2598,10 +2599,22 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       else
       {
         player->player_traits.push_back( entry );
+        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
+                                  trait_obj->name );
       }
 
       if ( tree == talent_tree::HERO )
+      {
         player->player_sub_traits.push_back( id_entry );
+
+        if( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+        {
+          player->player_sub_trees.insert( trait_obj->id_sub_tree );
+          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                    trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
+                                    trait_obj->id_sub_tree );
+        }
+      }
     }
   }
 
@@ -2637,12 +2650,23 @@ static bool generate_tree_nodes( player_t* player,
   return true;
 }
 
-// Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
-// random which node becomes the first choice. Manually resolve such conflicts here.
+// Different entries within the same node are allowed to have non-unique selection indices.
+// Manually resolve such conflicts here.
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
 {
-  auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
+  auto get_index = [ = ]( const trait_data_t* t ) -> short {
+    if ( t->selection_index == -1 )
+    {
+      // Voidweaver Devour Matter / Darkening Horizon clash resolution
+      // Darkening Horizon data was not fully removed after being moved out of the node
+      // The lower ID trait is the correct one; return lower index to get it sorted first
+      if ( t->id_trait_node_entry == 117271 )
+        return 1;
+      else if ( t->id_trait_node_entry == 117298 )
+        return 2;
+    }
+
     return t->selection_index;
   };
 
@@ -2867,8 +2891,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      // it is possible to have multiple entries per node that are not choice node, in which case the higher trait node
-      // entry id seems to take precedence
+      // it is possible to have multiple entries per node that are not choice node.
+      // default assumption is that the higher trait entry id is used.
+      // if this is not the case, clashes must be resolved manually in sort_node_entries().
       if ( node.size() > 1 )
       {
         range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
@@ -3057,9 +3082,23 @@ void player_t::init_talents()
     }
   }
 
+  auto parsed_sub_trees = player_sub_trees;
+
   parse_traits( talent_tree::CLASS, class_talents_str, this );
   parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
   parse_traits( talent_tree::HERO, hero_talents_str, this );
+
+  // Add selection traits for any manually added hero traits from new trees
+  if ( player_sub_trees.size() > parsed_sub_trees.size() )
+  {
+    std::vector<unsigned> diff;
+    std::set_difference( player_sub_trees.begin(), player_sub_trees.end(),
+                        parsed_sub_trees.begin(), parsed_sub_trees.end(), std::back_inserter( diff ) );
+
+    for ( const auto& trait : trait_data_t::data( util::class_id( type ), talent_tree::SELECTION, is_ptr() ) )
+      if ( range::contains( trait.id_spec, specialization() ) && range::contains( diff, trait.id_sub_tree ) )
+        player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, 1 );
+  }
 
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )
@@ -11759,8 +11798,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
       {
-        return make_fn_expr( expression_str, [ this ] { 
-          return dragonflight_opts.rallied_to_victory_ally_estimate; 
+        return make_fn_expr( expression_str, [ this ] {
+          return dragonflight_opts.rallied_to_victory_ally_estimate;
         } );
       }
 
@@ -13112,8 +13151,16 @@ void player_t::create_options()
   add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_time", thewarwithin_opts.entropic_skardyn_core_pickup_time, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_time_stddev", thewarwithin_opts.entropic_skardyn_core_pickup_time_stddev, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay", thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_stddev", thewarwithin_opts.entropic_skardyn_core_pickup_stddev, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_delay", thewarwithin_opts.carved_blazikon_wax_enter_light_delay, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_stddev", thewarwithin_opts.carved_blazikon_wax_enter_light_stddev, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_duration", thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_stddev", thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev, 0_ms, 15_s ) );
+  add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats", thewarwithin_opts.signet_of_the_priory_party_stats ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown", thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev", thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
+  add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance", thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

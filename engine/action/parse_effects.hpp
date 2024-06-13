@@ -490,14 +490,8 @@ public:
     pack_t<player_effect_t> pack;
     const spell_data_t* spell = resolve_parse_data( data, pack );
 
-    if ( !spell || !spell->ok() )
+    if ( !spell || !spell->ok() || !can_force( spell->effectN( idx ) ) )
       return;
-
-    if ( spell->affected_by_all( spell->effectN( idx ) ) )
-    {
-      assert( false && "Effect already affects player, no need to force" );
-      return;
-    }
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
@@ -555,14 +549,8 @@ public:
   {
     pack_t<target_effect_t> pack;
 
-    if ( !spell || !spell->ok() )
+    if ( !spell || !spell->ok() || !can_force( spell->effectN( idx ) ) )
       return;
-
-    if ( spell->affected_by_all( spell->effectN( idx ) ) )
-    {
-      assert( false && "Effect already affects player, no need to force" );
-      return;
-    }
 
     pack.data.func = std::move( fn );
 
@@ -573,6 +561,8 @@ public:
   }
 
   double get_target_effect_value( const target_effect_t&, actor_target_data_t* ) const;
+
+  virtual bool can_force( const spelleffect_data_t& ) const { return true; }
 };
 
 struct parse_player_effects_t : public player_t, public parse_effects_t
@@ -713,6 +703,8 @@ public:
                                                           std::string&, bool&, bool ) override;
 
   void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+
+  bool can_force( const spelleffect_data_t& ) const override;
 
   void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
 

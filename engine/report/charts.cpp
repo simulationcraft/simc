@@ -783,26 +783,26 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
     if ( i == 0 )
     {
       tick_indices.push_back( i );
-      e.set( "name", "min=" + util::to_string( util::round( min * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
+      e.set( "name", fmt::format( "min={:.{}Lf}", min * ( percent ? 100.0 : 1.0 ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else if ( avg >= begin && avg <= end )
     {
       mean_bucket = i;
       tick_indices.push_back( i );
-      e.set( "name", "mean=" + util::to_string( util::round( avg * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
+      e.set( "name", fmt::format( "mean={:.{}Lf}", avg * ( percent ? 100.0 : 1.0 ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
-    else if ( i == max_buckets - 1 )
+    else if ( i == max_buckets - 5 )
     {
       tick_indices.push_back( i );
-      e.set( "name", "max=" + util::to_string( util::round( max * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
+      e.set( "name", fmt::format( "max={:.{}Lf}", max * ( percent ? 100.0 : 1.0 ), sig ) );
       e.set( "color", color::YELLOW.dark().str() );
     }
     else
     {
-      e.set( "name", util::to_string( util::round( begin * ( percent ? 100.0 : 1.0 ), sig ), sig ) + " to " +
-                     util::to_string( util::round( end * ( percent ? 100.0 : 1.0 ), sig ), sig ) );
+      e.set( "name", fmt::format( "{:.{}Lf} to {:.{}Lf}",
+              begin * ( percent ? 100.0 : 1.0 ), sig, end * ( percent ? 100.0 : 1.0 ), sig ) );
     }
 
     hc.add( "series.0.data", e );

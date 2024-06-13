@@ -1,8 +1,8 @@
-// Racial abilities, wow build 11.0.0.55000
+// Racial abilities, wow build 11.0.0.55120
 static const std::array<racial_spell_entry_t, 168> __racial_spell_data { {
+  { 0x0000000000000001, 0x00000000, 458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
-  { 0x0000000000000001, 0x00000000, 458619, "[NYI] No Place Like Home"           },
   { 0x0000000000000002, 0x00000240,  33697, "Blood Fury"                         },
   { 0x0000000000000002, 0x00000190,  33702, "Blood Fury"                         },
   { 0x0000000000000002, 0x0000002d,  20572, "Blood Fury"                         },

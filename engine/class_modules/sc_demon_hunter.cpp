@@ -299,6 +299,9 @@ public:
     buff_t* art_of_the_glaive;
     buff_t* glaive_flurry;
     buff_t* rending_strike;
+    buff_t* warblades_hunger;
+    buff_t* thrill_of_the_fight_attack_speed;
+    buff_t* thrill_of_the_fight_damage;
 
     // Fel-scarred
     buff_t* monster_rising;
@@ -686,6 +689,10 @@ public:
     const spell_data_t* rending_strike;
     const spell_data_t* art_of_the_glaive_buff;
     const spell_data_t* art_of_the_glaive_damage;
+    const spell_data_t* warblades_hunger_buff;
+    const spell_data_t* warblades_hunger_damage;
+    const spell_data_t* thrill_of_the_fight_attack_speed_buff;
+    const spell_data_t* thrill_of_the_fight_damage_buff;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -909,6 +916,7 @@ public:
     // Aldrachi Reaver
     attack_t* art_of_the_glaive = nullptr;
     attack_t* preemptive_strike = nullptr;
+    attack_t* warblades_hunger  = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -981,6 +989,8 @@ public:
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
+  double composite_melee_auto_attack_speed() const override;
+  double composite_weapon_attack_power_by_type( attack_power_type type ) const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -1303,7 +1313,7 @@ struct soul_fragment_t
       }
       // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
       //               with some slight variance
-      return dh->rng().gauss<760,120>();
+      return dh->rng().gauss<760, 120>();
     }
 
     double distance = get_distance( dh );
@@ -1421,6 +1431,11 @@ struct soul_fragment_t
             dh->set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value();
       }
     }
+
+    dh->buff.painbringer->trigger();
+    dh->buff.art_of_the_glaive->trigger();
+    dh->buff.tww1_vengeance_4pc->trigger();
+    dh->buff.warblades_hunger->trigger();
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
@@ -1721,6 +1736,8 @@ public:
     ab::parse_effects( p()->buff.t31_vengeance_2pc );
 
     // Aldrachi Reaver
+    ab::parse_effects( p()->buff.warblades_hunger );
+    ab::parse_effects( p()->buff.thrill_of_the_fight_damage );
 
     // Fel-scarred
     ab::parse_effects( p()->buff.enduring_torment );
@@ -4201,7 +4218,7 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
     {
       demon_hunter_sigil_t::execute();
       p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
-      for ( int i = 0; i < soul_fragments_to_spawn; i++ )
+      for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
       {
         p()->proc.soul_fragment_from_sigil_of_spite->occur();
       }
@@ -4936,6 +4953,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       p()->active.art_of_the_glaive->execute_on_target( target );
 
       p()->buff.glaive_flurry->expire();
+      if ( !p()->buff.rending_strike->up() )
+      {
+        p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        p()->buff.thrill_of_the_fight_damage->trigger();
+      }
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
         p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
@@ -5180,6 +5202,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       // TOCHECK -- Does this proc from Relentless Onslaught?
       td( s->target )->trigger_burning_blades( s );
+
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
+      {
+        p()->active.warblades_hunger->execute_on_target( target );
+        p()->buff.warblades_hunger->expire();
+      }
     }
   };
 
@@ -5224,6 +5252,16 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       p()->buff.rending_strike->expire();
       td( target )->debuffs.reavers_mark->trigger();
+
+      if ( !p()->buff.glaive_flurry->up() )
+      {
+        p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        p()->buff.thrill_of_the_fight_damage->trigger();
+      }
+      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+      {
+        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+      }
     }
 
     // Create Strike Events
@@ -5788,8 +5826,24 @@ struct fracture_t : public demon_hunter_attack_t
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
       {
-        td( target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
+        td( target )->debuffs.reavers_mark->trigger();
+
+        if ( !p()->buff.glaive_flurry->up() )
+        {
+          p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          p()->buff.thrill_of_the_fight_damage->trigger();
+        }
+        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+        {
+          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+        }
+      }
+
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
+      {
+        p()->active.warblades_hunger->execute_on_target( target );
+        p()->buff.warblades_hunger->expire();
       }
     }
   }
@@ -5849,8 +5903,24 @@ struct shear_t : public demon_hunter_attack_t
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
       {
-        td( target )->debuffs.reavers_mark->trigger();
         p()->buff.rending_strike->expire();
+        td( target )->debuffs.reavers_mark->trigger();
+
+        if ( !p()->buff.glaive_flurry->up() )
+        {
+          p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          p()->buff.thrill_of_the_fight_damage->trigger();
+        }
+        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+        {
+          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
+        }
+      }
+
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
+      {
+        p()->active.warblades_hunger->execute_on_target( target );
+        p()->buff.warblades_hunger->expire();
       }
     }
   }
@@ -6054,6 +6124,11 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
     {
       p()->active.art_of_the_glaive->execute_on_target( target );
       p()->buff.glaive_flurry->expire();
+      if ( !p()->buff.rending_strike->up() )
+      {
+        p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        p()->buff.thrill_of_the_fight_damage->trigger();
+      }
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
         p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
@@ -6570,6 +6645,15 @@ struct preemptive_strike_t : public demon_hunter_attack_t
 {
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
+  {
+    background = dual = true;
+  }
+};
+
+struct warblades_hunger_t : public demon_hunter_attack_t
+{
+  warblades_hunger_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_attack_t( name, p, p->hero_spec.warblades_hunger_damage )
   {
     background = dual = true;
   }
@@ -7458,6 +7542,14 @@ void demon_hunter_t::create_buffs()
   buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
   buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike    = make_buff( this, "rending_strike", hero_spec.rending_strike );
+  buff.warblades_hunger  = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
+  buff.thrill_of_the_fight_attack_speed =
+      make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
+          ->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
+          ->add_invalidate( CACHE_WEAPON_DPS );
+  buff.thrill_of_the_fight_damage =
+      make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
 
   // Fel-scarred ============================================================
 
@@ -8341,6 +8433,14 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
   hero_spec.art_of_the_glaive_damage =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
+  hero_spec.warblades_hunger_buff =
+      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442503 ) : spell_data_t::not_found();
+  hero_spec.warblades_hunger_damage =
+      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442507 ) : spell_data_t::not_found();
+  hero_spec.thrill_of_the_fight_attack_speed_buff =
+      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
+  hero_spec.thrill_of_the_fight_damage_buff =
+      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442688 ) : spell_data_t::not_found();
   hero_spec.burning_blades_debuff =
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =
@@ -8528,6 +8628,10 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.preemptive_strike->ok() )
   {
     active.preemptive_strike = get_background_action<preemptive_strike_t>( "preemptive_strike" );
+  }
+  if ( talent.aldrachi_reaver.warblades_hunger->ok() )
+  {
+    active.warblades_hunger = get_background_action<warblades_hunger_t>( "warblades_hunger" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
@@ -8835,6 +8939,31 @@ double demon_hunter_t::composite_armor_multiplier() const
   }
 
   return am;
+}
+
+double demon_hunter_t::composite_melee_auto_attack_speed() const
+{
+  double h = base_t::composite_melee_auto_attack_speed();
+
+  // Due to a bug in the aura type used, the effect on the buff lowers AP contribution from WDPS
+  // Can be removed if the aura is changed from A_MOD_ATTACKSPEED_NORMALIZED to A_MOD_RANGED_AND_MELEE_ATTACK_SPEED
+  h *= 1.0 / ( 1.0 + buff.thrill_of_the_fight_attack_speed->check_stack_value() );
+
+  return h;
+}
+
+double demon_hunter_t::composite_weapon_attack_power_by_type( attack_power_type type ) const
+{
+  double ap = base_t::composite_weapon_attack_power_by_type( type );
+
+  // Due to a bug in the aura type used, the effect on the buff lowers AP contribution from WDPS
+  // Can be removed if the aura is changed from A_MOD_ATTACKSPEED_NORMALIZED to A_MOD_RANGED_AND_MELEE_ATTACK_SPEED
+  if ( talent.aldrachi_reaver.thrill_of_the_fight->ok() && buff.thrill_of_the_fight_attack_speed->check() )
+  {
+    ap /= ( 1.0 + buff.thrill_of_the_fight_attack_speed->check_stack_value() );
+  }
+
+  return ap;
 }
 
 // demon_hunter_t::composite_melee_haste  ===================================
@@ -9331,13 +9460,6 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
                            get_total_soul_fragments( type ) );
   }
 
-  if ( souls_consumed > 0 )
-  {
-    buff.painbringer->trigger( souls_consumed );
-    buff.art_of_the_glaive->trigger( souls_consumed );
-    buff.tww1_vengeance_4pc->trigger( souls_consumed );
-  }
-
   return souls_consumed;
 }
 
@@ -9553,6 +9675,7 @@ void demon_hunter_t::parse_player_effects()
   }
 
   // Aldrachi Reaver
+  parse_effects( buff.thrill_of_the_fight_damage );
 
   // Fel-scarred
 }

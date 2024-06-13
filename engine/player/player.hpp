@@ -347,6 +347,7 @@ struct player_t : public actor_t
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
+  std::vector<std::unique_ptr<player_report_extension_t>> mixin_reports;
   timespan_t arise_time;
   timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
@@ -829,8 +830,19 @@ struct player_t : public actor_t
     int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
     int ovinaxs_mercurial_egg_initial_secondary_stacks = 0;
     // time to pick up Entropic Skardyn Core fragment
-    timespan_t entropic_skardyn_core_pickup_time = 4_s;
-    timespan_t entropic_skardyn_core_pickup_time_stddev = 1_s;
+    timespan_t entropic_skardyn_core_pickup_delay = 4_s;
+    timespan_t entropic_skardyn_core_pickup_stddev = 1_s;
+    // when to enter and how long to stay in light for carved blazikon wax
+    timespan_t carved_blazikon_wax_enter_light_delay = 4_s;
+    timespan_t carved_blazikon_wax_enter_light_stddev = 1_s;
+    timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
+    timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
+    // allies with signet of the priory
+    player_option_t<std::string> signet_of_the_priory_party_stats;
+    timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
+    timespan_t signet_of_the_priory_party_use_stddev = 6_s;
+    // harvester's edict chance to intercept
+    double harvesters_edict_intercept_chance = 0.5;
   } thewarwithin_opts;
 
 private:

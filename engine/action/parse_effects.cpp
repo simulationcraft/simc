@@ -358,7 +358,7 @@ void modified_spell_data_t::parse_effect( pack_t<modify_effect_t>& tmp, const sp
     default:         return;
   }
 
-  if ( !_spell.affected_by_all( eff ) )
+  if ( !_spell.affected_by_all( eff ) || idx >= as<int>( effects.size() ) )
     return;
 
   auto& effN = effects[ idx ];
@@ -1364,6 +1364,17 @@ void parse_action_base_t::target_debug_message( std::string_view type_str, std::
 {
   _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
                              _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+}
+
+bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const
+{
+  if ( _action->data().affected_by_all( eff ) )
+  {
+    assert( false && "Effect already affects action, no need to force" );
+    return false;
+  }
+
+  return true;
 }
 
 void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )

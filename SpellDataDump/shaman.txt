@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55000 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1787,7 +1787,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Lava Lash (id=60103) [Spell Family (11)] 
-Talent Entry     : Enhancement [tree=spec, row=2, col=2, max_rank=1, req_points=0]
+Talent Entry     : Enhancement [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Fire
 Spell Type       : Melee
@@ -3801,11 +3801,11 @@ Effects          :
 #13 (id=1032431)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 15.5 | Scaled Value: 15.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=1039898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
                    Family Flags: 28, 31
 #15 (id=1039899)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
                    Family Flags: 28, 31
 #16 (id=1039993)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -3837,6 +3837,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
+#24 (id=1166446)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Lightning (188443)
+                   Family Flags: 1
 
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
@@ -4514,7 +4518,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=274038)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike, Ice Strike, and Lava Lash to also deal ${$195592s1*$<CAP>/$AP} Nature damage to all targets in front of you. Damage reduced beyond $s2 targets.$?s384363[
@@ -4753,7 +4757,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #24), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 1, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10609,7 +10613,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=829633)   : School Damage (2): flamestrike
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.39400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.43340 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc333974
 
 Name             : Molten Assault (id=334033) [Spell Family (11), Passive] 
@@ -12973,7 +12977,7 @@ Effects          :
 #3 (id=1002732)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #4 (id=1002733)  : Dummy (3)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Any Target (25)
+                   Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 0.42857 | Target: Any Target (25)
 #5 (id=1033574)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.
@@ -13915,7 +13919,7 @@ Effects          :
 Description      : Increases the critical strike chance of your Nature spells and abilities by $s1%.
 
 Name             : Focused Insight (id=381666) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Enhancement [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
                  : Elemental [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=300]
 Class            : Shaman
 School           : Physical
@@ -14050,7 +14054,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1012683)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Maximum health increased by $s1%, and while you are at full health, Reincarnation cools down $381684s1% faster.
 
 
@@ -16929,7 +16933,7 @@ Effects          :
 Description      : Your critical heals have ${200+$s1}% effectiveness instead of the usual 200%.
 
 Name             : Refreshing Waters (id=393905) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Enhancement [tree=spec, row=2, col=1, max_rank=1, req_points=0, select_idx=0]
+Talent Entry     : Enhancement [tree=spec, row=2, col=2, max_rank=1, req_points=0, select_idx=0]
 Class            : Shaman
 School           : Physical
 Spell Type       : None

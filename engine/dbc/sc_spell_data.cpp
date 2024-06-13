@@ -605,25 +605,33 @@ struct spell_list_expr_t : public spell_data_expr_t
 
 struct sd_expr_binary_t : public spell_list_expr_t
 {
-  int                operation;
+  int operation;
   std::unique_ptr<spell_data_expr_t> left;
   std::unique_ptr<spell_data_expr_t> right;
 
-  sd_expr_binary_t( dbc_t& dbc, util::string_view n, int o,
-                    std::unique_ptr<spell_data_expr_t> l, std::unique_ptr<spell_data_expr_t> r ) :
-    spell_list_expr_t( dbc, n ), operation( o ), left( std::move( l ) ), right( std::move( r ) ) { }
+  sd_expr_binary_t( dbc_t& dbc, util::string_view n, int o, std::unique_ptr<spell_data_expr_t> l,
+                    std::unique_ptr<spell_data_expr_t> r )
+    : spell_list_expr_t( dbc, n ), operation( o ), left( std::move( l ) ), right( std::move( r ) )
+  {}
 
   int evaluate() override
   {
-    int left_result = left -> evaluate();
+    int left_result = left->evaluate();
 
-    right -> evaluate();
+    right->evaluate();
     result_tok = expression::TOK_UNKNOWN;
 
     if ( left_result != expression::TOK_SPELL_LIST )
     {
-      throw std::invalid_argument(fmt::format("Inconsistent input types ('{}' and '{}') for binary operator '{}', left must always be a spell list.\n",
-                     left -> name(), right -> name(), name() ));
+      std::vector<std::string> valid_types;
+      valid_types.reserve( expr_map.size() );
+
+      for ( const auto& entry : expr_map )
+        valid_types.push_back( std::string( entry.name ) );
+
+      throw std::invalid_argument(
+        fmt::format( "Invalid input type '{}' for binary operator '{}' with '{}'.\nValid types are: {}",
+                     left->name(), name(), right->name(), util::string_join( valid_types ) ) );
     }
 
     result_tok = expression::TOK_SPELL_LIST;
@@ -1104,27 +1112,12 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
 
   expr_data_e data_type = parse_data_type( splits[ 0 ] );
 
-  if ( splits.size() == 1 )
-  {
-    // No split, access raw list or create a normal expression
-    if ( data_type == static_cast<expr_data_e>( -1 ) )
-      return std::make_unique<spell_data_expr_t>( dbc, name_str, name_str );
-    else
-      return std::make_unique<spell_list_expr_t>( dbc, splits[ 0 ], data_type );
-  }
-
+  // If we can't parse the data type, try to parse it as normal expression
   if ( data_type == static_cast<expr_data_e>( -1 ) )
-  {
-    std::vector<std::string> valid_types;
-    valid_types.reserve(expr_map.size());
+    return std::make_unique<spell_data_expr_t>( dbc, name_str, name_str );
 
-    for(const auto& entry : expr_map)
-    {
-      valid_types.push_back(std::string(entry.name));
-    }
-
-    throw std::invalid_argument(fmt::format("Unable to decode spell expression type '{}'. Valid types are {{{}}}", splits[ 0 ], util::string_join(valid_types, ", ")));
-  }
+  if ( splits.size() == 1 )
+    return std::make_unique<spell_list_expr_t>( dbc, splits[ 0 ], data_type );
 
   // Effect handling, set flag and remove effect keyword from tokens
   bool effect_query = false;

@@ -1492,6 +1492,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
+         458322, 458376, 458580, 459158, # new M+ affixes
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -1503,6 +1504,10 @@ class SpellDataGenerator(DataGenerator):
          452226, # Ara-Kara Sacbrood
          455910, # voltaic stormcaller
          450921, 451247, # high speaker's accretion
+         450882, # signet of the priory
+         451303, 451991, # harvester's edict
+         450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
+         450204, # twin fang instruments
         ),
 
         # Warrior:
@@ -1739,6 +1744,7 @@ class SpellDataGenerator(DataGenerator):
             ( 452923, 0 ),          # Fatebound coin (heads) buff
             ( 452562, 0 ),          # Lucky Coin buff
             ( 457236, 0 ),          # Singular Focus damage spell
+            ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
         ),
 
         # Priest:
@@ -1917,6 +1923,8 @@ class SpellDataGenerator(DataGenerator):
           ( 443404, 0 ), # Wave of Souls debuff
           ( 442664, 0 ), # Wave of Souls area dummy
           ( 440005, 0 ), # Blood Fever damage
+          # Tier TWW1
+          ( 457506, 0 ), # Blood TWW1 set, Piledriver
         ),
 
         # Shaman:

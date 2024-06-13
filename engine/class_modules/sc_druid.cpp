@@ -1444,8 +1444,10 @@ struct force_of_nature_t : public treant_base_t
   {
     bool first_attack = true;
 
-    fon_melee_t( pet_t* pet, const char* name = "Melee" ) : melee_attack_t( name, pet, spell_data_t::nil() )
+    fon_melee_t( pet_t* pet ) : melee_attack_t( "melee", pet, spell_data_t::nil() )
     {
+      name_str_reporting = "Melee";
+
       school            = SCHOOL_PHYSICAL;
       weapon            = &( pet->main_hand_weapon );
       weapon_multiplier = 1.0;
@@ -2248,6 +2250,29 @@ struct ravage_base_t : public BASE
   }
 };
 
+// TODO: entirely guessing, almost certainly wrong
+template <size_t IDX, typename BASE>
+struct trigger_thriving_growth_t : public BASE
+{
+private:
+  double pct;
+
+public:
+  using base_t = trigger_thriving_growth_t<IDX, BASE>;
+
+  trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f ), pct( p->talent.thriving_growth->effectN( IDX ).base_value() * 0.001 )
+  {}
+
+  void tick( dot_t* d ) override
+  {
+    BASE::tick( d );
+
+    if ( BASE::p()->active.bloodseeker_vines && BASE::rng().roll( pct ) )
+      BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
+  }
+};
+
 template <typename BASE>
 struct trigger_waning_twilight_t : public BASE
 {
@@ -2544,7 +2569,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
-      // TODO: confirm moc no longer buffs thrash ticks
+      // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
       snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
                                                          p->talent.moment_of_clarity );
     }
@@ -2596,21 +2621,20 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
         persistent_multiplier_effects.push_back( ta_multiplier_effects.back() );
         ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
-
         p()->sim->print_debug( "persistent-effects: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
                                persistent_multiplier_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
       else  // values are different
       {
-        persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
         persistent_direct_effects.push_back( da_multiplier_effects.back() );
-        ta_multiplier_effects.pop_back();
         da_multiplier_effects.pop_back();
-
-        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
-                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
         p()->sim->print_debug( "persistent-effects: {} ({}) direct damage modified by {}% with buff {} ({})", name(),
                                id, persistent_direct_effects.back().value * 100.0, buff->name(), buff->data().id() );
+
+        persistent_periodic_effects.push_back( ta_multiplier_effects.back() );
+        ta_multiplier_effects.pop_back();
+        p()->sim->print_debug( "persistent-effects: {} ({}) periodic damage modified by {}% with buff {} ({})", name(),
+                               id, persistent_periodic_effects.back().value * 100.0, buff->name(), buff->data().id() );
       }
 
       return true;
@@ -4282,12 +4306,11 @@ struct ferocious_bite_base_t : public cat_finisher_t
   {
     cat_finisher_t::impact( s );
 
-    if ( !result_is_hit( s->result ) )
+    if ( s->chain_target || !result_is_hit( s->result ) )  // the rest only procs on main target
       return;
 
-    auto _td = td( s->target );
-
-    _td->debuff.sabertooth->trigger( cp( s ) );
+    if ( p()->talent.sabertooth.ok() )
+      td( s->target )->debuff.sabertooth->trigger( this, cp( s ) );
 
     if ( p()->talent.bursting_growth.ok() )
       p()->active.bursting_growth->execute_on_target( s->target );
@@ -4430,7 +4453,7 @@ struct maim_t : public cat_finisher_t
 // Rake =====================================================================
 struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 {
-  struct rake_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
+  struct rake_bleed_t : public trigger_thriving_growth_t<2, trigger_waning_twilight_t<cat_attack_t>>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
@@ -4439,15 +4462,6 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
       form_mask = 0;
 
       dot_name = "rake";
-    }
-
-    void tick( dot_t* d ) override
-    {
-      base_t::tick( d );
-
-      // TODO: placeholder value
-      if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
-        p()->active.bloodseeker_vines->execute_on_target( d->target );
     }
   };
 
@@ -4530,7 +4544,7 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 };
 
 // Rip ======================================================================
-struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
+struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat_finisher_t>>
 {
   struct tear_t : public druid_residual_action_t<cat_attack_t, true>
   {
@@ -4605,10 +4619,6 @@ struct rip_t : public trigger_waning_twilight_t<cat_finisher_t>
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
-
-    // TODO: placeholder value
-    if ( p()->active.bloodseeker_vines && rng().roll( 0.2 ) )
-      p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
 
@@ -4785,6 +4795,16 @@ struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL, cp_generator_t>
       dual = background = true;
 
       dot_name = "thrash_cat";
+
+      // NOTE: thrash dot snapshot data is missing, so manually add here
+      if ( !p->buff.clearcasting_cat->is_fallback && p->talent.moment_of_clarity.ok() )
+      {
+        add_parse_entry( persistent_periodic_effects )
+          .set_buff( p->buff.clearcasting_cat )
+          .set_use_stacks( false )
+          .set_value( p->talent.moment_of_clarity->effectN( 4 ).percent() )
+          .set_eff( &p->buff.clearcasting_cat->data().effectN( 4 ) );
+      }
     }
 
     void trigger_dot( action_state_t* s ) override
@@ -6435,10 +6455,7 @@ public:
 
   void schedule_execute( action_state_t* s ) override
   {
-    dreamstate = p()->buff.dreamstate->up();
-
-    if ( dreamstate )
-      p()->buff.dreamstate->decrement();
+    dreamstate = p()->buff.dreamstate->check();
 
     druid_spell_t::schedule_execute( s );
   }
@@ -6450,9 +6467,13 @@ public:
       set_school_override( SCHOOL_ASTRAL );
 
     druid_spell_t::execute();
+
+    if ( dreamstate && p()->buff.dreamstate->can_expire( this ) )
+      p()->buff.dreamstate->decrement();
+
     dreamstate = false;
 
-    if ( embrace )
+    if ( embrace && p()->buff.umbral_embrace->can_expire( this ) )
     {
       clear_school_override();
       p()->buff.umbral_embrace->expire();
@@ -6471,7 +6492,7 @@ public:
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
 
-    if ( p()->active.dream_burst && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
+    if ( p()->buff.dream_burst->check() && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
     {
       p()->active.dream_burst->execute_on_target( s->target );
       p()->buff.dream_burst->decrement();
@@ -6593,9 +6614,6 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
 
     p()->buff.harmony_of_the_heavens_lunar->expire();
     p()->buff.harmony_of_the_heavens_solar->expire();
-
-    if ( p()->eclipse_handler.in_eclipse() )
-      p()->buff.dreamstate->trigger();
   }
 };
 
@@ -6652,8 +6670,10 @@ struct dream_burst_t : public druid_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
 
-    // TODO: tooltip suggests only affected by passive mastery and not dot mastery
+    // eclipse and mastery applied via script
+    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
     force_effect( p->mastery.astral_invocation, 3 );
+    force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), p->spec.sunfire_dmg, 4U, p->mastery.astral_invocation );
   }
 };
 
@@ -6933,7 +6953,7 @@ struct moon_base_t : public druid_spell_t
 
   void init() override
   {
-    if ( !has_flag( flag_e::FOREGROUND ) )
+    if ( has_flag( flag_e::FOREGROUND ) )
     {
       cooldown = p()->cooldown.moon_cd;
       track_cd_waste = true;
@@ -7997,7 +8017,7 @@ struct starsurge_t : public ap_spender_t
     base_t::impact( s );
 
     if ( p()->talent.stellar_amplification.ok() )
-      td( s->target )->debuff.stellar_amplification->trigger();
+      td( s->target )->debuff.stellar_amplification->trigger( this );
   }
 };
 
@@ -8851,20 +8871,9 @@ struct druid_melee_t : public Base
     // Auto attack mods
     ab::parse_effects( p->spec_spell );
     ab::parse_effects( p->talent.killer_instinct );
-
-    if ( p->talent.tigers_fury.ok() )
-    {
-      // Manually add to da_multiplier as Tiger's Fury + Carnivorious Instinct effect on auto attacks is scripted
-      const auto& eff = find_effect( p->buff.tigers_fury, A_MOD_AUTO_ATTACK_PCT );
-      auto val = eff.percent();
-      // Carnivorous Instinct has no curvepoint for effect#3 which modifies AA, so we use effect#1 value instead
-      val += p->talent.carnivorous_instinct->effectN( 1 ).percent();
-
-      add_parse_entry( ab::da_multiplier_effects )
-        .set_buff( p->buff.tigers_fury )
-        .set_value( val )
-        .set_eff( &eff );
-    }
+    ab::parse_effects( p->buff.tigers_fury,
+                       p->talent.carnivorous_instinct,
+                       p->talent.tigers_tenacity );
 
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
@@ -8918,7 +8927,10 @@ struct druid_melee_t : public Base
 // Caster Melee Attack ======================================================
 struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
 {
-  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p ) {}
+  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p )
+  {
+    name_str_reporting = "Caster Melee";
+  }
 };
 
 // Bear Melee Attack ========================================================
@@ -8928,6 +8940,8 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
 
   bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
   {
+    name_str_reporting = "Bear Melee";
+
     form_mask = form_e::BEAR_FORM;
 
     energize_type = action_energize::ON_HIT;
@@ -8954,6 +8968,8 @@ struct cat_melee_t : public druid_melee_t<cat_attack_t>
 {
   cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
   {
+    name_str_reporting = "Cat Melee";
+
     form_mask = form_e::CAT_FORM;
     snapshots.tigers_fury = true;
   }
@@ -9288,6 +9304,18 @@ void druid_t::create_pets()
 // druid_t::init_spells =====================================================
 void druid_t::init_spells()
 {
+  // Carnivorous Instinct is missing trait definitions for effect#2 and effect#3, so we manually add it into
+  // dbc_override here, before any talent pointers are initialized.
+  if ( auto ci = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Instinct" ).spell(); ci->ok() )
+  {
+    auto val = ci->effectN( 1 ).base_value();
+    // manual validation
+    assert( ci->effectN( 2 ).base_value() == 6.0 );
+    assert( ci->effectN( 3 ).base_value() == 6.0 );
+    const_cast<dbc_override_t*>( dbc_override )->register_effect( *dbc, ci->effectN( 2 ).id(), "base_value", val );
+    const_cast<dbc_override_t*>( dbc_override )->register_effect( *dbc, ci->effectN( 3 ).id(), "base_value", val );
+  }
+
   auto check = [ this ]( auto check, auto arg ) {
     bool b;
 
@@ -10022,15 +10050,22 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
+    ->apply_affecting_aura( talent.stellar_amplification )
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
         auto d = b->remains();
 
+        // advance eclipse manually if refreshing as stack_change_callback is not called
+        auto in_lunar = eclipse_handler.in_lunar();
+        auto in_solar = eclipse_handler.in_solar();
+
         buff.eclipse_lunar->trigger( d );
+        if ( in_lunar ) eclipse_handler.advance_eclipse( eclipse_e::LUNAR, true );
         eclipse_handler.update_eclipse( eclipse_e::LUNAR );
 
         buff.eclipse_solar->trigger( d );
+        if ( in_solar ) eclipse_handler.advance_eclipse( eclipse_e::SOLAR, true );
         eclipse_handler.update_eclipse( eclipse_e::SOLAR );
 
         if ( active.orbital_strike )
@@ -12633,10 +12668,12 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     ->apply_affecting_aura( source.talent.circle_of_life_and_death );
 
   debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth_debuff", source.spec.sabertooth )
+    ->set_trigger_spell( source.talent.sabertooth )
     ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
     *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
+      ->set_trigger_spell( source.talent.stellar_amplification )
       ->set_refresh_duration_callback(
         [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]( const buff_t* b, timespan_t d ) {
           return std::min( dur, b->remains() + d );

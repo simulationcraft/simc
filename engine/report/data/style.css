@@ -546,9 +546,7 @@ table.sc tr.small th,
 table.sc tr.small td,
 table.sc th.small,
 table.sc td.small {
-    vertical-align: middle;
-    padding: 2px 2px 3px 2px;
-    font-size: 11px;
+    font-size: 12px;
 }
 table.sc tr.odd,
 table.sc tr.odd + tr.childrow:not(.toprow),

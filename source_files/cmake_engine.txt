@@ -28,6 +28,7 @@ class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
 class_modules/monk/sc_monk.hpp
+class_modules/monk/sc_stagger.hpp
 class_modules/paladin/sc_paladin.hpp
 class_modules/priest/sc_priest.hpp
 class_modules/warlock/sc_warlock.hpp
@@ -223,6 +224,7 @@ class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp
 class_modules/monk/sc_monk_pets.cpp
+class_modules/monk/sc_stagger.cpp
 class_modules/paladin/sc_paladin.cpp
 class_modules/paladin/sc_paladin_holy.cpp
 class_modules/paladin/sc_paladin_protection.cpp
@@ -243,9 +245,7 @@ class_modules/sc_rogue.cpp
 class_modules/sc_shaman.cpp
 class_modules/sc_warrior.cpp
 class_modules/warlock/sc_warlock.cpp
-class_modules/warlock/sc_warlock_affliction.cpp
-class_modules/warlock/sc_warlock_demonology.cpp
-class_modules/warlock/sc_warlock_destruction.cpp
+class_modules/warlock/sc_warlock_actions.cpp
 class_modules/warlock/sc_warlock_init.cpp
 class_modules/warlock/sc_warlock_pets.cpp
 dbc/active_spells.cpp
