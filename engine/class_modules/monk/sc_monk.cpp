@@ -1640,14 +1640,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     return am;
   }
 
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(),
-                        p()->gain.glory_of_the_dawn );
-  }
-
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -8014,8 +8006,7 @@ void monk_t::init_base_stats()
     case MONK_BREWMASTER:
     {
       // base_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-      base.attack_power_per_agility = 1.0;
-      // base.spell_power_per_attack_power                  = spec.brewmaster_monk->effectN( 18 ).percent();
+      base.attack_power_per_agility                      = 1.0;
       resources.base[ RESOURCE_ENERGY ]                  = 100;
       resources.base[ RESOURCE_MANA ]                    = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
@@ -8025,8 +8016,7 @@ void monk_t::init_base_stats()
     }
     case MONK_MISTWEAVER:
     {
-      base.spell_power_per_intellect = 1.0;
-      // base.attack_power_per_spell_power                  = baseline.mistweaver.aura->effectN( 4 ).percent();
+      base.spell_power_per_intellect                     = 1.0;
       resources.base[ RESOURCE_ENERGY ]                  = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
@@ -8037,14 +8027,13 @@ void monk_t::init_base_stats()
       if ( base.distance < 1 )
         base.distance = 5;
       // base_gcd += baseline.windwalker.aura->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-      base.attack_power_per_agility = 1.0;
-      // base.spell_power_per_attack_power = baseline.windwalker.aura->effectN( 13 ).percent();
+      base.attack_power_per_agility     = 1.0;
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      // resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
+      resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;
@@ -8604,7 +8593,6 @@ void monk_t::init_gains()
   gain.energy_refund            = get_gain( "energy_refund" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
-  gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
   gain.ordered_elements         = get_gain( "ordered_elements" );
   gain.power_strikes            = get_gain( "power_strikes" );
