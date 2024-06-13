@@ -10050,7 +10050,6 @@ void druid_t::create_buffs()
   buff.ca_inc->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.greater_alignment )
     ->apply_affecting_aura( talent.potent_enchantments )
-    ->apply_affecting_aura( talent.stellar_amplification )
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
@@ -12675,7 +12674,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
       ->set_trigger_spell( source.talent.stellar_amplification )
       ->set_refresh_duration_callback(
-        [ dur = source.talent.stellar_amplification->effectN( 2 ).time_value() ]( const buff_t* b, timespan_t d ) {
+        [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
           return std::min( dur, b->remains() + d );
         } );
 
