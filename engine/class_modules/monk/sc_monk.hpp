@@ -139,7 +139,7 @@ public:
   bool is_combo_break();
   void combo_strikes_trigger();
   void brew_cooldown_reduction( double time_reduction );
-  void trigger_shuffle( double time_extension );
+  void trigger_shuffle( timespan_t time_extension );
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
@@ -217,7 +217,18 @@ struct summon_pet_t : public monk_spell_t
   void execute() override;
   bool ready() override;
 };
+
+struct shuffle_t : monk_buff_t
+{
+  using monk_buff_t::trigger;
+  shuffle_t( monk_t &monk );
+  void trigger( timespan_t duration );
+};
 }  // namespace actions
+
+namespace buffs
+{
+}
 
 inline int sef_spell_index( int x )
 {
@@ -354,9 +365,13 @@ public:
     propagate_const<heal_t *> gift_of_the_ox_expire;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
-    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
-    propagate_const<action_t *> keg_smash_press_the_advantage;
     propagate_const<action_t *> chi_surge;
+    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
+    struct
+    {
+      propagate_const<action_t *> keg_smash;
+      propagate_const<action_t *> rising_sun_kick;
+    } press_the_advantage;
 
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
@@ -380,7 +395,7 @@ public:
   std::vector<action_t *> combo_strike_actions;
   double squirm_timer;
   double spiritual_focus_count;
-  double shuffle_count_secs;
+  timespan_t shuffle_count_secs;
 
   double gift_of_the_ox_proc_chance;
 
@@ -507,7 +522,7 @@ public:
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> purified_chi;
-    propagate_const<buff_t *> shuffle;
+    propagate_const<actions::shuffle_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> weapons_of_order;
     propagate_const<buff_t *> zen_meditation;
