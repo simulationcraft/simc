@@ -8593,7 +8593,6 @@ void monk_t::init_gains()
   gain.energy_refund            = get_gain( "energy_refund" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
-  gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
   gain.ordered_elements         = get_gain( "ordered_elements" );
   gain.power_strikes            = get_gain( "power_strikes" );
