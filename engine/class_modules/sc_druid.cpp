@@ -1249,9 +1249,11 @@ public:
   void init_items() override;
   void init_scaling() override;
   void init_finished() override;
-  void create_buffs() override;
   void parse_player_effects();
+  void create_buffs() override;
+  void apply_affecting_auras( buff_t& );
   void create_actions() override;
+  void apply_affecting_auras( action_t& ) override;
   std::string default_flask() const override;
   std::string default_potion() const override;
   std::string default_food() const override;
@@ -1291,7 +1293,6 @@ public:
   druid_td_t* get_target_data( player_t* target ) const override;
   void copy_from( player_t* ) override;
   void moving() override;
-  void apply_affecting_auras( action_t& ) override;
 
   // utility functions
   form_e get_form() const { return form; }
@@ -3009,8 +3010,6 @@ struct blood_frenzy_buff_t : public druid_buff_t
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       trigger_blood_frenzy();
     } );
-
-    apply_affecting_aura( p->talent.circle_of_life_and_death );
   }
 
   void trigger_blood_frenzy()
@@ -3206,7 +3205,6 @@ struct shooting_stars_buff_t : public druid_buff_t
   {
     set_quiet( true );
     set_tick_zero( true );
-    apply_affecting_aura( p->talent.cosmic_rapidity );
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_shooting_stars(); } );
   }
 
@@ -6041,9 +6039,6 @@ struct rejuvenation_base_t : public druid_heal_t
       cult_pct( p->talent.cultivation->effectN( 1 ).base_value() ),
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
   {
-    apply_affecting_aura( p->talent.improved_rejuvenation );
-    apply_affecting_aura( p->talent.germination );
-
     affected_by.soul_of_the_forest = true;
 
     if ( p->talent.cultivation.ok() )
@@ -9885,11 +9880,7 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_behavior( buff_tick_behavior::NONE )
-    ->apply_affecting_aura( talent.improved_barkskin )
-    ->apply_affecting_aura( talent.oakskin )
-    ->apply_affecting_aura( talent.reinforced_fur )
-    ->apply_affecting_aura( talent.ursocs_endurance );
+    ->set_tick_behavior( buff_tick_behavior::NONE );
   if ( talent.brambles.ok() )
     buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
 
@@ -9906,7 +9897,6 @@ void druid_t::create_buffs()
   // Class
   buff.forestwalk =
     make_fallback( talent.forestwalk.ok(), this, "forestwalk", find_trigger( talent.forestwalk ).trigger() )
-      ->apply_affecting_aura( talent.forestwalk )
       ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS, P_MAX, 0.0, E_APPLY_AREA_AURA_PARTY );
 
   buff.heart_of_the_wild =
@@ -9929,10 +9919,6 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_cooldown( 0_ms )
-    ->apply_affecting_aura( talent.master_shapeshifter )
-    ->apply_affecting_aura( talent.reinforced_fur )
-    ->apply_affecting_aura( spec.ursine_adept )
-    ->apply_affecting_aura( talent.ursocs_endurance )
     ->add_invalidate( CACHE_AGILITY )
     ->add_invalidate( CACHE_ARMOR );
 
@@ -10048,8 +10034,6 @@ void druid_t::create_buffs()
 
   buff.ca_inc = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
   buff.ca_inc->set_cooldown( 0_ms )
-    ->apply_affecting_aura( talent.greater_alignment )
-    ->apply_affecting_aura( talent.potent_enchantments )
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
@@ -10295,7 +10279,6 @@ void druid_t::create_buffs()
   buff.clearcasting_cat = make_fallback( talent.omen_of_clarity_cat.ok(),
     this, "clearcasting_cat", find_trigger( talent.omen_of_clarity_cat ).trigger() )
       ->set_cooldown( 1.05_s )
-      ->apply_affecting_aura( talent.moment_of_clarity )
       ->set_name_reporting( "clearcasting" );
 
   buff.coiled_to_spring = make_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
@@ -10344,12 +10327,7 @@ void druid_t::create_buffs()
       ->set_trigger_spell( talent.sudden_ambush );
 
   buff.tigers_fury = make_fallback( talent.tigers_fury.ok(), this, "tigers_fury", talent.tigers_fury )
-    ->set_cooldown( 0_ms )
-    ->apply_affecting_aura( talent.predator )
-    ->apply_affecting_aura( talent.raging_fury )
-    // TODO: hack for bug where frenzied assault ignores benefit from tigers fury
-    ->set_default_value_from_effect( 1 )
-    ->apply_affecting_aura( talent.carnivorous_instinct );
+    ->set_cooldown( 0_ms );
 
   buff.tigers_tenacity = make_fallback( talent.tigers_tenacity.ok(),
     this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
@@ -10427,7 +10405,6 @@ void druid_t::create_buffs()
   if ( talent.berserk_unchecked_aggression.ok() )
   {
     buff.b_inc_bear->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->apply_affecting_aura( talent.berserk_unchecked_aggression )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
@@ -10472,9 +10449,7 @@ void druid_t::create_buffs()
   buff.lunar_beam = make_fallback( talent.lunar_beam.ok(), this, "lunar_beam", talent.lunar_beam )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-    ->apply_affecting_aura( talent.boundless_moonlight )  // TODO: hidden buff?
-    ->apply_affecting_aura( talent.the_eternal_moon );
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buff.rage_of_the_sleeper =
     make_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
@@ -10542,7 +10517,6 @@ void druid_t::create_buffs()
       ->set_name_reporting( "soul_of_the_forest" );
 
   buff.yseras_gift = make_fallback( talent.yseras_gift.ok(), this, "yseras_gift_driver", talent.yseras_gift )
-    ->apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() )
     ->set_quiet( true )
     ->set_tick_zero( true )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
@@ -10702,6 +10676,10 @@ void druid_t::create_buffs()
 
   buff.wildshape_mastery =
     make_fallback( talent.wildshape_mastery.ok(), this, "wildshape_mastery", find_spell( 441685 ) );
+
+  for ( auto b : buff_list )
+    if ( b->data().ok() )
+      apply_affecting_auras( *b );
 
   // call this here to ensure all buffs have been created
   parse_player_effects();
@@ -13295,6 +13273,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.cenarius_guidance );
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.improved_ironbark );
+  action.apply_affecting_aura( talent.boundless_moonlight );
   action.apply_affecting_aura( talent.inner_peace );
   action.apply_affecting_aura( talent.liveliness );
   action.apply_affecting_aura( talent.master_shapeshifter );
@@ -13320,6 +13299,39 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.tear_down_the_mighty );
   action.apply_affecting_aura( talent.the_eternal_moon );
   action.apply_affecting_aura( talent.wildstalkers_power );
+}
+
+void druid_t::apply_affecting_auras( buff_t& buff )
+{
+  // Class
+  buff.apply_affecting_aura( talent.forestwalk );
+  buff.apply_affecting_aura( talent.improved_barkskin );
+  buff.apply_affecting_aura( talent.oakskin );
+
+  // Balance
+  buff.apply_affecting_aura( talent.cosmic_rapidity );
+  buff.apply_affecting_aura( talent.greater_alignment );
+
+  // Feral
+  buff.apply_affecting_aura( talent.moment_of_clarity );
+  buff.apply_affecting_aura( talent.predator );
+  buff.apply_affecting_aura( talent.raging_fury );
+
+  // Guardian
+  buff.apply_affecting_aura( spec.ursine_adept );
+  buff.apply_affecting_aura( talent.berserk_unchecked_aggression );
+  buff.apply_affecting_aura( talent.circle_of_life_and_death );
+  buff.apply_affecting_aura( talent.reinforced_fur );
+  buff.apply_affecting_aura( talent.ursocs_endurance );
+
+  // Restoration
+  buff.apply_affecting_aura( talent.master_shapeshifter );
+  buff.apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() );
+
+  // Hero talents
+  buff.apply_affecting_aura( talent.boundless_moonlight );
+  buff.apply_affecting_aura( talent.potent_enchantments );
+  buff.apply_affecting_aura( talent.the_eternal_moon );
 }
 
 template <class Base>
