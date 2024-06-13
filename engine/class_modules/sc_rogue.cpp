@@ -2412,7 +2412,6 @@ public:
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
   void trigger_fate_intertwined( const action_state_t* );
-  void trigger_ethereal_rampage( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_blindside( const action_state_t* );
   void trigger_shadow_blades_attack( const action_state_t* );
@@ -2441,6 +2440,7 @@ public:
   void trigger_nimble_flurry( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
   void trigger_tww1_assassination_set_bonus( const action_state_t* state );
+  void trigger_tww1_outlaw_set_bonus( const action_state_t* );
 
   // General Methods ==========================================================
 
@@ -3676,7 +3676,8 @@ struct ambush_t : public rogue_attack_t
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-      trigger_ethereal_rampage( execute_state );
+      trigger_unseen_blade( state ); // ALPHA TOCHECK
+      trigger_tww1_outlaw_set_bonus( execute_state );
     }
 
     bool procs_main_gauche() const override
@@ -3735,7 +3736,7 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_ethereal_rampage( execute_state );
+    trigger_tww1_outlaw_set_bonus( execute_state );
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
@@ -5266,7 +5267,7 @@ struct pistol_shot_t : public rogue_attack_t
     p()->buffs.opportunity->decrement();
     p()->buffs.greenskins_wickers->expire();
 
-    trigger_ethereal_rampage( execute_state );
+    trigger_tww1_outlaw_set_bonus( execute_state );
 
     // Fan the Hammer
     if ( p()->active.fan_the_hammer && !is_secondary_action() )
@@ -6467,6 +6468,8 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
 
+      trigger_unseen_blade( execute_state );
+
       // Triple Threat procs do not appear to be able to chain-proc based on testing
       if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE &&
            p()->active.triple_threat_oh && p()->rng().roll( triple_threat_chance ) )
@@ -6480,7 +6483,7 @@ struct sinister_strike_t : public rogue_attack_t
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-      trigger_ethereal_rampage( execute_state );
+      trigger_tww1_outlaw_set_bonus( execute_state );
     }
 
     bool procs_main_gauche() const override
@@ -6524,7 +6527,7 @@ struct sinister_strike_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    trigger_ethereal_rampage( execute_state );
+    trigger_tww1_outlaw_set_bonus( execute_state );
   }
 
   bool procs_main_gauche() const override
@@ -9136,22 +9139,6 @@ void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_ethereal_rampage( const action_state_t* state )
-{
-  if ( !p()->set_bonuses.tww1_outlaw_2pc->ok() )
-    return;
-
-  if ( !p()->rng().roll( p()->set_bonuses.tww1_outlaw_2pc->effectN( 1 ).percent() ) )
-    return;
-
-  // ALPHA TOCHECK -- Double-check target modifiers in the future
-  p()->active.tww1.ethereal_rampage->trigger_residual_action( state, p()->set_bonuses.tww1_outlaw_2pc->effectN( 2 ).percent() );
-
-  if ( p()->set_bonuses.tww1_outlaw_4pc->ok() )
-    p()->buffs.tww1_outlaw_4pc->increment();
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_relentless_strikes( const action_state_t* state )
 {
   if ( !p()->talent.subtlety.relentless_strikes->ok() || !affected_by.relentless_strikes )
@@ -9673,6 +9660,23 @@ void actions::rogue_action_t<Base>::trigger_tww1_assassination_set_bonus( const 
     return;
 
   p()->buffs.tww1_assassination_2pc->trigger();
+}
+
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_tww1_outlaw_set_bonus( const action_state_t* state )
+{
+  if ( !p()->set_bonuses.tww1_outlaw_2pc->ok() )
+    return;
+
+  if ( !p()->rng().roll( p()->set_bonuses.tww1_outlaw_2pc->effectN( 1 ).percent() ) )
+    return;
+
+  // ALPHA TOCHECK -- Double-check target modifiers in the future
+  p()->active.tww1.ethereal_rampage->trigger_residual_action( state, p()->set_bonuses.tww1_outlaw_2pc->effectN( 2 ).percent() );
+
+  if ( p()->set_bonuses.tww1_outlaw_4pc->ok() )
+    p()->buffs.tww1_outlaw_4pc->increment();
 }
 
 // ==========================================================================
