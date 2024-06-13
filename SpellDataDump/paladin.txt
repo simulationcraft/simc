@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55087 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
