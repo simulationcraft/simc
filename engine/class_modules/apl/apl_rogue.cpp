@@ -5,7 +5,8 @@ namespace rogue_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
+  return ( ( p->true_level >= 71 ) ? "tempered_potion_3" :
+           ( p->true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
            ( p->true_level >= 51 ) ? "potion_of_spectral_agility" :
            ( p->true_level >= 40 ) ? "potion_of_unbridled_fury" :
            ( p->true_level >= 35 ) ? "draenic_agility" :
@@ -14,7 +15,8 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
+  return ( ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
+           ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
            ( p->true_level >= 35 ) ? "greater_draenic_agility_flask" :
@@ -23,7 +25,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "fated_fortune_cookie" :
+  return ( ( p->true_level >= 71 ) ? "feast_of_the_divine_day" :
+           ( p->true_level >= 61 ) ? "fated_fortune_cookie" :
            ( p->true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
            ( p->true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
            ( p->true_level >= 40 ) ? "lavish_suramar_feast" :
@@ -32,7 +35,8 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( ( p->true_level >= 70 ) ? "draconic" :
+  return ( ( p->true_level >= 80 ) ? "crystallized" :
+           ( p->true_level >= 70 ) ? "draconic" :
            ( p->true_level >= 60 ) ? "veiled" :
            ( p->true_level >= 50 ) ? "battle_scarred" :
            ( p->true_level >= 45 ) ? "defiled" :
@@ -42,7 +46,8 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" :
+  return ( ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3" :
+           ( p->true_level >= 61 ) ? "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3" :
            ( p->true_level >= 51 ) ? "main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone" :
            "disabled" );
 }
