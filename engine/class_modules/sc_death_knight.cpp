@@ -5471,6 +5471,11 @@ struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
     return death_knight_absorb_buff_t::consume( actual_consumed, s );
   }
 
+  void start( int stacks, double, timespan_t duration ) override
+  {
+    death_knight_absorb_buff_t::start( stacks, calc_absorb(), duration );
+  };
+
   double calc_absorb()
   {
     // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
