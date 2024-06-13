@@ -9736,6 +9736,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
     ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
+  debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
+  } );
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
