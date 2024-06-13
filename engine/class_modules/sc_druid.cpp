@@ -2569,7 +2569,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
-      // TODO: confirm moc no longer buffs thrash ticks
+      // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
       snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
                                                          p->talent.moment_of_clarity );
     }
@@ -4795,6 +4795,16 @@ struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL, cp_generator_t>
       dual = background = true;
 
       dot_name = "thrash_cat";
+
+      // NOTE: thrash dot snapshot data is missing, so manually add here
+      if ( !p->buff.clearcasting_cat->is_fallback && p->talent.moment_of_clarity.ok() )
+      {
+        add_parse_entry( persistent_periodic_effects )
+          .set_buff( p->buff.clearcasting_cat )
+          .set_use_stacks( false )
+          .set_value( p->talent.moment_of_clarity->effectN( 4 ).percent() )
+          .set_eff( &p->buff.clearcasting_cat->data().effectN( 4 ) );
+      }
     }
 
     void trigger_dot( action_state_t* s ) override
