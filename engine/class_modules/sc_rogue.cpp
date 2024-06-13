@@ -4068,10 +4068,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
+    range::erase_remove( tl, target ); // Cannot hit the primary target
     return tl.size();
   }
 
@@ -6881,10 +6878,7 @@ struct caustic_spatter_t : public rogue_attack_t
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
+    range::erase_remove( tl, target ); // Cannot hit the primary target
     return tl.size();
   }
 
@@ -7446,6 +7440,13 @@ struct nimble_flurry_t : public rogue_attack_t
   {
     // ALPHA TOCHECK -- Talent has a value of 7, but AoE targets on damage spell is 5
     aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+    range::erase_remove( tl, target ); // Cannot hit the primary target
+    return tl.size();
   }
 };
 
