@@ -130,6 +130,8 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
+  apply_affecting_aura( p()->spec.blackout_kick_2 );
+
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
@@ -2052,11 +2054,6 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        if ( p->spec.blackout_kick_2 )
-          // Saved as -2
-          base_costs[ RESOURCE_CHI ] +=
-              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
-
         apply_dual_wield_two_handed_scaling();
         break;
       }
@@ -3092,7 +3089,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     p()->buff.tigers_ferocity->trigger();
 
     if ( p()->talent.windwalker.darting_hurricane.ok() )
-      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value() );
+      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value(),
+                                            p()->buff.darting_hurricane->data().effectN( 1 ).percent(), 1,
+                                            p()->buff.darting_hurricane->base_buff_duration );
   }
 };
 
@@ -8396,6 +8395,7 @@ void monk_t::create_buffs()
 
   buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
                                ->set_trigger_spell( talent.windwalker.darting_hurricane )
+                               ->set_rppm( rppm_scale_e::RPPM_DISABLE ) // Disable so that Strike of the Windlord can properly proc outside of the RPPM.
                                ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
@@ -8619,6 +8619,9 @@ void monk_t::init_assessors()
 void monk_t::init_rng()
 {
   base_t::init_rng();
+
+  if ( talent.windwalker.darting_hurricane->ok() )
+    rppm.darting_hurricane = get_rppm( "darting_hurricane", talent.windwalker.darting_hurricane );
 
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
     rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
@@ -8856,6 +8859,27 @@ void monk_t::init_special_effects()
           return true;
         },
         active_actions.flurry_of_xuen );
+  }
+
+  // ======================================
+  // Darting Hurricane ( Windwalker Talent )
+  // ======================================
+  
+  if ( talent.windwalker.darting_hurricane.ok() )
+  {
+    create_proc_callback(
+        talent.windwalker.darting_hurricane.spell(),
+        []( monk_t *p, action_state_t *state ) {
+          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() )
+            return false;
+
+          if ( p->rppm.darting_hurricane->trigger() )
+            p->buff.darting_hurricane->trigger(
+                (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
+
+          return true;
+        },
+        PF2_CAST );
   }
 
   // ======================================
