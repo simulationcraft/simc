@@ -1390,7 +1390,7 @@ const char* util::proc_type_string( proc_types type )
 {
   switch ( type )
   {
-    case PROC1_KILLED:                 return "Killed";
+    case PROC1_HEARTBEAT:              return "Heartbeat";
     case PROC1_KILLING_BLOW:           return "KillingBlow";
     case PROC1_MELEE:                  return "MeleeSwing";
     case PROC1_MELEE_TAKEN:            return "MeleeSwingTaken";

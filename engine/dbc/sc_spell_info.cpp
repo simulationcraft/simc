@@ -216,7 +216,7 @@ struct proc_map_entry_t
   util::string_view proc;
 };
 static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
-  { PF_KILLED,                 "Killed"                      },
+  { PF_HEARTBEAT,              "Heartbeat"                   },
   { PF_KILLING_BLOW,           "Killing Blow"                },
   { PF_MELEE,                  "White Melee"                 },
   { PF_MELEE_TAKEN,            "White Melee Taken"           },

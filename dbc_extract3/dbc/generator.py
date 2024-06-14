@@ -3437,7 +3437,7 @@ class SpellDataGenerator(DataGenerator):
 
             aura_opt_entry = spell.child('SpellAuraOptions')
             fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges')
-            fields.append('%d' % (aura_opt_entry.proc_flags_1 | aura_opt_entry.proc_flags_2 << 32))
+            fields.append(f'{(aura_opt_entry.proc_flags_1 | aura_opt_entry.proc_flags_2 << 32):#018x}')
             fields += aura_opt_entry.field('internal_cooldown')
             hotfix.add(aura_opt_entry,
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),

@@ -94,7 +94,7 @@ enum item_bonus_type
 
 enum proc_types
 {
-  PROC1_KILLED = 0,
+  PROC1_HEARTBEAT = 0,
   PROC1_KILLING_BLOW,
   PROC1_MELEE,
   PROC1_MELEE_TAKEN,
@@ -169,7 +169,7 @@ enum item_raid_type
 // Mangos data types for various DBC-related enumerations
 enum proc_flag : uint64_t
 {
-  PF_KILLED                 = uint64_t( 1 ) << PROC1_KILLED,
+  PF_HEARTBEAT              = uint64_t( 1 ) << PROC1_HEARTBEAT,
   PF_KILLING_BLOW           = uint64_t( 1 ) << PROC1_KILLING_BLOW,
   PF_MELEE                  = uint64_t( 1 ) << PROC1_MELEE,
   PF_MELEE_TAKEN            = uint64_t( 1 ) << PROC1_MELEE_TAKEN,
