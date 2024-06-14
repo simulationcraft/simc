@@ -1713,6 +1713,7 @@ public:
     bool danse_macabre = false;         // Trigger
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
+    bool destiny_defined = false;       // Proc Increase
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
     bool fazed_damage = false;
@@ -1830,8 +1831,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
-    ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
-
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
 
@@ -1844,6 +1843,11 @@ public:
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
       affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+    }
+
+    if ( p->talent.fatebound.destiny_defined->ok() )
+    {
+      affected_by.destiny_defined = ab::data().affected_by( p->talent.fatebound.destiny_defined->effectN( 1 ) );
     }
     
     // Assassination
@@ -2988,6 +2992,11 @@ struct rogue_poison_t : public rogue_attack_t
 
     double chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
+
+    if ( affected_by.destiny_defined )
+    {
+      chance += p()->talent.fatebound.destiny_defined->effectN( 1 ).percent();
+    }
 
     // Applies as a percent modifier, not a flat modifier
     if ( affected_by.dragon_tempered_blades )
