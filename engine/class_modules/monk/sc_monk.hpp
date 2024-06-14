@@ -98,7 +98,8 @@ private:
 public:
   using base_t = parse_action_effects_t<Base>;
 
-  monk_action_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
+  template <typename... Args>
+  monk_action_t( Args &&...args );
   std::string full_name() const;
   monk_t *p();
   const monk_t *p() const;
@@ -229,7 +230,7 @@ struct shuffle_t : actions::monk_buff_t
   const timespan_t max_duration;
 
   using monk_buff_t::trigger;
-  shuffle_t( monk_t &monk );
+  shuffle_t( monk_t *monk );
   void trigger( timespan_t duration );
 };
 }  // namespace buffs
