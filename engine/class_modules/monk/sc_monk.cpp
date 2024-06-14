@@ -3089,9 +3089,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     p()->buff.tigers_ferocity->trigger();
 
     if ( p()->talent.windwalker.darting_hurricane.ok() )
-      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value(),
-                                            p()->buff.darting_hurricane->data().effectN( 1 ).percent(), 1,
-                                            p()->buff.darting_hurricane->base_buff_duration );
+      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value() );
   }
 };
 
@@ -8621,7 +8619,7 @@ void monk_t::init_rng()
   base_t::init_rng();
 
   if ( talent.windwalker.darting_hurricane->ok() )
-    rppm.darting_hurricane = get_rppm( "darting_hurricane", talent.windwalker.darting_hurricane );
+    rppm.darting_hurricane = get_rppm( "darting_hurricane", find_spell( 459839 ) );
 
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
     rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
@@ -8796,6 +8794,13 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
 
 void monk_t::init_special_effects()
 {
+  struct monk_cb_t : public dbc_proc_callback_t
+  {
+    monk_cb_t( monk_t *p, const special_effect_t &e ) : dbc_proc_callback_t( p, e ) {}
+
+    monk_t *p() { return static_cast<monk_t *>( listener ); }
+  };
+
   // ======================================
   // Exploding Keg Talent
   // ======================================
@@ -8870,7 +8875,11 @@ void monk_t::init_special_effects()
     create_proc_callback(
         talent.windwalker.darting_hurricane.spell(),
         []( monk_t *p, action_state_t *state ) {
-          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() )
+          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
+               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
+               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
+               state->action->id == p->passives.dual_threat_kick->id()
+             )
             return false;
 
           if ( p->rppm.darting_hurricane->trigger() )
@@ -8879,7 +8888,7 @@ void monk_t::init_special_effects()
 
           return true;
         },
-        PF2_CAST );
+        PF2_ALL_HIT );
   }
 
   // ======================================
