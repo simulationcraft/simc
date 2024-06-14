@@ -6514,7 +6514,16 @@ struct astral_smolder_t
   {
     proc = true;
 
-    // double dips and snapshots eclipes via script
+    // eclipse snapshot script seems to be overriding all damage modifications including standard whitelists
+    if ( p->bugs )
+    {
+      da_multiplier_effects.clear();
+      ta_multiplier_effects.clear();
+      target_multiplier_effects.clear();
+      persistent_multiplier_effects.clear();
+    }
+
+    // double dips and snapshots eclipse via script
     add_parse_entry( persistent_multiplier_effects )
       .set_buff( p->buff.eclipse_lunar )
       .set_type( USE_CURRENT )
