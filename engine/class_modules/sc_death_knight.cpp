@@ -8753,7 +8753,11 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    get_td( state->target )->debuff.razorice->trigger();
+    if ( p()->talent.frost.glacial_advance.ok() || p()->talent.frost.avalanche.ok() ||
+         p()->runeforge.rune_of_razorice_mh || p()->runeforge.rune_of_razorice_oh )
+    {
+      get_td( state->target )->debuff.razorice->trigger();
+    }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
          p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
