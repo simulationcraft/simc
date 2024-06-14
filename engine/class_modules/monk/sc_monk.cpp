@@ -8794,13 +8794,6 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
 
 void monk_t::init_special_effects()
 {
-  struct monk_cb_t : public dbc_proc_callback_t
-  {
-    monk_cb_t( monk_t *p, const special_effect_t &e ) : dbc_proc_callback_t( p, e ) {}
-
-    monk_t *p() { return static_cast<monk_t *>( listener ); }
-  };
-
   // ======================================
   // Exploding Keg Talent
   // ======================================
@@ -8887,8 +8880,7 @@ void monk_t::init_special_effects()
                 (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
 
           return true;
-        },
-        PF2_ALL_HIT );
+        });
   }
 
   // ======================================
