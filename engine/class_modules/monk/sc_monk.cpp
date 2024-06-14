@@ -431,45 +431,6 @@ void monk_action_t<Base>::brew_cooldown_reduction( double time_reduction )
 }
 
 template <class Base>
-void monk_action_t<Base>::trigger_shuffle( timespan_t extension )
-{
-  if ( !p()->talent.brewmaster.shuffle->ok() )
-    return;
-
-  if ( extension <= 0_s )
-    return;
-
-  if ( p()->talent.brewmaster.quick_sip->ok() )
-  {
-    p()->shuffle_count_secs += extension;
-
-    timespan_t quick_sip_threshold =
-        timespan_t::from_seconds( p()->talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
-    while ( p()->shuffle_count_secs >= quick_sip_threshold )
-    {
-      p()->stagger[ "Stagger" ]->purify_percent( p()->talent.brewmaster.quick_sip->effectN( 1 ).percent(),
-                                                 "quick_sip" );
-      p()->proc.quick_sip->occur();
-      p()->shuffle_count_secs -= quick_sip_threshold;
-    }
-  }
-
-  if ( p()->buff.shuffle->up() )
-  {
-    timespan_t max_time     = p()->buff.shuffle->buff_duration();
-    timespan_t old_duration = p()->buff.shuffle->remains();
-    timespan_t new_length   = std::min( max_time, extension + old_duration );
-    p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
-  }
-  else
-  {
-    p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, extension );
-  }
-
-  p()->cooldown.invoke_niuzao->adjust( p()->talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value() );
-}
-
-template <class Base>
 void monk_action_t<Base>::consume_resource()
 {
   base_t::consume_resource();
@@ -2173,7 +2134,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    trigger_shuffle( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+    p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2487,7 +2448,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    trigger_shuffle( timespan_t::from_seconds( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() ) );
+    p()->buff.shuffle->trigger(
+        timespan_t::from_seconds( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() ) );
   }
 
   void impact( action_state_t *s ) override
@@ -3418,8 +3380,7 @@ struct keg_smash_n_t : monk_melee_attack_t
       p()->active_actions.press_the_advantage.keg_smash->schedule_execute();
     }
 
-    trigger_shuffle( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
-    p()->buff.shuffle->trigger( 3_s );
+    p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
 
     timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
     if ( p()->buff.blackout_combo->up() )
@@ -3431,97 +3392,66 @@ struct keg_smash_n_t : monk_melee_attack_t
 
     // brew_cooldown_reduction( time_reduction );
   }
+
+  void impact( action_state_t *state ) override
+  {
+    monk_melee_attack_t::impact( state );
+    get_td( state->target )->debuff.keg_smash->trigger();
+    if ( p()->buff.weapons_of_order->up() )
+      get_td( state->target )->debuff.weapons_of_order->trigger();
+  }
 };
-}  // namespace attacks
-
-shuffle_t::shuffle_t( monk_t &player ) : monk_buff_t( player, "shuffle", player.passives.shuffle )
-{
-  set_trigger_spell( player.talent.brewmaster.shuffle );
-}
-
-void shuffle_t::trigger( timespan_t duration )
-{
-  monk_buff_t::trigger( duration );
-  p().sim->print_debug( "ZXCV_APPLY_SHUFFLE" );
-}
-namespace attacks
-{
-
-// struct shuffle_t : monk_buff_t
-// {
-//   shuffle_t( monk_t &player )
-//     : monk_buff_t( player, "shuffle", player.talent.brewmaster.shuffle )
-//   {}
-//   // buff.shuffle = make_buff<actions::shuffle_t>( *this/* , "shuffle", passives.shuffle */ );
-//   //                    // ->set_trigger_spell( talent.brewmaster.shuffle )
-//   //                    // ->set_duration_multiplier( 3 )
-//   //                    // ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
-//   using monk_buff_t::trigger;
-
-//   void trigger( timespan_t duration )
-//   {
-//     monk_buff_t::trigger( duration );
-//     p().sim->print_debug( "ZXCV_APPLY_SHUFFLE" );
-//   }
-// };
 
 template <class base_action_t>
 struct press_the_advantage_action_t : base_action_t
 {
-  press_the_advantage_action_t( monk_t *player, std::string_view name ) : base_action_t( player, "", name )
+  using base_t = base_action_t;
+  const double mod;
+  bool face_palm;
+
+  press_the_advantage_action_t( monk_t *player, std::string_view name )
+    : base_action_t( player, "", name ),
+      mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() )
   {
-    this->proc        = true;
-    this->trigger_gcd = 0_s;
-    this->background = this->dual = true;
+    base_t::proc        = true;
+    base_t::trigger_gcd = 0_s;
+    base_t::background  = true;
+    base_t::dual        = true;
+  }
+
+  void execute() override
+  {
+    face_palm = base_t::rng().roll( base_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
+    base_t::execute();
+
+    // if ( face_palm )
+    //   brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+    base_t::p()->buff.counterstrike->expire();
+    base_t::p()->buff.blackout_combo->expire();
+
+    if ( base_t::p()->talent.brewmaster.chi_surge->ok() )
+      base_t::p()->active_actions.chi_surge->execute();
+
+    if ( base_t::p()->talent.brewmaster.call_to_arms->ok() && base_t::rng().roll( 0.3 ) )
+      base_t::p()->active_actions.niuzao_call_to_arms_summon->execute();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( face_palm )
+      am *= 1.0 + ( base_t::p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1.0 ) * mod;
+
+    if ( base_t::p()->buff.counterstrike->check() )
+      am *= 1.0 * base_t::p()->buff.counterstrike->data().effectN( 1 ).percent() * mod;
+
+    if ( base_t::p()->buff.blackout_combo->check() )
+      am *= 1.0 * base_t::p()->buff.blackout_combo->data().effectN( 1 ).percent() * mod;
+
+    return am;
   }
 };
-// void impact( action_state_t *s ) override
-// {
-//   monk_melee_attack_t::impact( s );
-
-//   get_td( s->target )->debuff.keg_smash->trigger();
-
-//   if ( p()->buff.weapons_of_order->up() )
-//     get_td( s->target )->debuff.weapons_of_order->trigger();
-// }
-
-//   double action_multiplier() const override
-//   {
-//     double am = keg_smash_t::action_multiplier();
-
-//     auto pta_modifier = 1.0 - p()->talent.brewmaster.press_the_advantage->effectN( 3 ).percent();
-
-//     if ( face_palm )
-//       am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1 ) * pta_modifier;
-//     if ( counterstrike )
-//       am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * pta_modifier;
-
-//     return am;
-//   }
-
-//   void execute() override
-//   {
-//     face_palm      = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
-//     blackout_combo = p()->buff.blackout_combo->up();
-//     counterstrike  = p()->buff.counterstrike->up();
-
-//     keg_smash_t::execute();
-
-//     p()->buff.counterstrike->expire();
-//     p()->buff.blackout_combo->expire();
-
-//     if ( face_palm )
-//       brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
-
-//     if ( p()->talent.brewmaster.chi_surge->ok() )
-//       p()->active_actions.chi_surge->execute();
-
-//     // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
-//     if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
-//       p()->active_actions.niuzao_call_to_arms_summon->execute();
-//   }
-// };
 
 // ==========================================================================
 // Touch of Death
@@ -6193,6 +6123,34 @@ using namespace absorbs;
 
 namespace buffs
 {
+shuffle_t::shuffle_t( monk_t &player )
+  : monk_buff_t( player, "shuffle", player.passives.shuffle ),
+    accumulator( 0_s ),
+    max_duration( 3.0 * base_buff_duration )
+{
+  set_trigger_spell( player.talent.brewmaster.shuffle );
+}
+
+void shuffle_t::trigger( timespan_t duration )
+{
+  accumulator += duration;
+
+  duration = std::min( duration + remains(), max_duration );
+  monk_buff_t::extend_duration_or_trigger( duration );
+
+  p().cooldown.invoke_niuzao->adjust( p().talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value() );
+
+  if ( !p().talent.brewmaster.quick_sip->ok() )
+    return;
+
+  timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
+  while ( accumulator >= threshold )
+  {
+    p().stagger[ "Stagger" ]->purify_percent( p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
+    p().proc.quick_sip->occur();
+    accumulator -= threshold;
+  }
+}
 using namespace actions;
 // ==========================================================================
 // Monk Buffs
@@ -8310,7 +8268,7 @@ void monk_t::create_buffs()
                           ->set_trigger_spell( talent.brewmaster.improved_celestial_brew )
                           ->set_default_value_from_effect( 1 );
 
-  buff.shuffle = make_buff<actions::shuffle_t>( *this /* , "shuffle", passives.shuffle */ );
+  buff.shuffle = make_buff<buffs::shuffle_t>( *this /* , "shuffle", passives.shuffle */ );
   // ->set_trigger_spell( talent.brewmaster.shuffle )
   // ->set_duration_multiplier( 3 )
   // ->set_refresh_behavior( buff_refresh_behavior::DURATION );

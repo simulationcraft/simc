@@ -139,7 +139,6 @@ public:
   bool is_combo_break();
   void combo_strikes_trigger();
   void brew_cooldown_reduction( double time_reduction );
-  void trigger_shuffle( timespan_t time_extension );
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
@@ -217,18 +216,20 @@ struct summon_pet_t : public monk_spell_t
   void execute() override;
   bool ready() override;
 };
-
-struct shuffle_t : monk_buff_t
-{
-  using monk_buff_t::trigger;
-  shuffle_t( monk_t &monk );
-  void trigger( timespan_t duration );
-};
 }  // namespace actions
 
 namespace buffs
 {
-}
+struct shuffle_t : actions::monk_buff_t
+{
+  timespan_t accumulator;
+  const timespan_t max_duration;
+
+  using monk_buff_t::trigger;
+  shuffle_t( monk_t &monk );
+  void trigger( timespan_t duration );
+};
+}  // namespace buffs
 
 inline int sef_spell_index( int x )
 {
@@ -522,7 +523,7 @@ public:
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> purified_chi;
-    propagate_const<actions::shuffle_t *> shuffle;
+    propagate_const<buffs::shuffle_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> weapons_of_order;
     propagate_const<buff_t *> zen_meditation;
