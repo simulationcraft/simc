@@ -3539,22 +3539,17 @@ class SpellDataGenerator(DataGenerator):
             #if index % 20 == 0:
             #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
-            # MAX hotfix id 28
+            # MAX hotfix id 29
             hotfix = HotfixDataRecord()
 
             fields = effect.field('id', 'id_parent', 'index', 'type', 'sub_type')
             hotfix.add(effect, ('index', 3), ('type', 4), ('sub_type', 5))
 
-            # Effect scaling changes in 9.1.0 to be effect specific, change Simulationcraft to
-            # support "both worlds" (<9.1.0, >=9.1.0) by adjusting how data is
-            # generated for the former.
-            if self._options.build >= dbc.WowVersion(9, 1, 0, 0):
-                fields += effect.field('id_scaling_class')
-                hotfix.add(effect, ('id_scaling_class', 28))
-            else:
-                fields += effect.parent_record().child_ref('SpellScaling').field('id_class')
-                hotfix.add(effect.parent_record().child_ref('SpellScaling'),
-                        ('id_class', 28))
+            fields += effect.field('id_scaling_class')
+            hotfix.add(effect, ('id_scaling_class', 28))
+
+            fields += [f'{effect.attribute:#010x}']
+            hotfix.add(effect, ('attribute', 29))
 
             fields += effect.field('coefficient', 'delta', 'bonus', 'sp_coefficient',
                     'ap_coefficient', 'amplitude')
