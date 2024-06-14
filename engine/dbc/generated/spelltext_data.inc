@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.7.54988
-static const std::array<spelltext_data_t, 21153> __spelltext_data { {
+// Spell text, wow build 10.2.7.55142
+static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21153,15 +21153,14 @@ static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   { 447598, "Channel the Bulwark of the Black Ox for $447599d. Charge an enemy removing all stuns and roots, gain a shield absorbing damage, and taunt enemies within $447595A1 yards. Every $447595t3 sec inflict Physical damage to enemies within $447595A1 yards plus $447592s3% of damage taken by the shield.", 0, 0 },
   { 447599, "$@spelldesc447598", "Absorbs $w2 damage.\r\nMovement speed decreased by $s3%.\r\nImmune to stuns and roots.", 0 },
   { 453445, "$@spelldesc429007", 0, 0 },
+  { 459337, 0, "Bronze earned from Bronze Caches increased by $s1%.\r\nThreads earned from Spools of Eternal Thread increased by $s2%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.54988
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {  390994,  0, "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s1 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s1 sec.", "Circle of Healing reduces the cooldown of Holy Word: Sanctify by $s1 sec.\r\n\r\nPrayer of Mending reduces the cooldown of Holy Word: Serenity by $s2 sec.\r\n\r\nHoly Fire and Holy Nova reduce the cooldown of Holy Word: Chastise by $s3 sec." },
-  {  432777,  0, "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your targets location dealing up too ${$s1*1.1} Arcane damage to all enemies in the area.", "Your harmful spells have a chance to create 1 to 3 Arcane Illusions of yourself that channel for 3 sec before unleashing Arcane Barrage at your target's location dealing up to ${$s1*1.1} Arcane damage to all enemies in the area." },
+// spelltext hotfix entries, wow build 10.2.7.55142
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.7.54988
+// Spell description variables, wow build 10.2.7.55142
 static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21615,7 +21614,7 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.54988
+// spelldesc_vars hotfix entries, wow build 10.2.7.55142
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
