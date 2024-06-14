@@ -2387,6 +2387,16 @@ public:
   virtual bool consumes_escalating_blade() const
   { return false; }
 
+  double parry_chance( double exp, player_t* target ) const override
+  {
+    auto chance = ab::parry_chance(exp, target);
+    if ( chance > 0.0 && td( target )->debuffs.fazed->up() )
+    {
+      chance += td( target )->debuffs.fazed->data().effectN( 2 ).percent();
+    }
+    return std::max(0.0, chance);
+  }
+
 public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
