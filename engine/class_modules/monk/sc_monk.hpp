@@ -216,6 +216,13 @@ struct summon_pet_t : public monk_spell_t
   void execute() override;
   bool ready() override;
 };
+
+template <class base_action_t>
+struct brew_t : base_action_t
+{
+  template <typename... Args>
+  brew_t( monk_t *player, Args &&...args );
+};
 }  // namespace actions
 
 namespace buffs
@@ -230,6 +237,25 @@ struct shuffle_t : actions::monk_buff_t
   void trigger( timespan_t duration );
 };
 }  // namespace buffs
+
+struct brews_t
+{
+  std::vector<action_t *> brew_actions;
+
+  void push_back( action_t *action )
+  {
+    brew_actions.push_back( action );
+  }
+
+  void adjust( timespan_t reduction )
+  {
+    for ( action_t *action : brew_actions )
+    {
+      action->cooldown->adjust( reduction );
+      action->player->sim->print_debug( "REDUCING COOLDOWN OF {} BY {}", action->name(), reduction );
+    }
+  }
+};
 
 inline int sef_spell_index( int x )
 {
@@ -1181,6 +1207,8 @@ public:
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
+
+      brews_t *brews;
     } brewmaster;
 
     struct

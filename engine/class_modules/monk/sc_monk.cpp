@@ -3390,7 +3390,7 @@ struct keg_smash_n_t : monk_melee_attack_t
       p()->proc.blackout_combo_keg_smash->occur();
     }
 
-    // brew_cooldown_reduction( time_reduction );
+    p()->baseline.brewmaster.brews->adjust( reduction );
   }
 
   void impact( action_state_t *state ) override
@@ -6113,6 +6113,13 @@ struct life_cocoon_t : public monk_absorb_t
 };
 }  // namespace absorbs
 
+template <class base_action_t>
+template <typename... Args>
+brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
+{
+  player->baseline.brewmaster.brews->push_back( this );
+}
+
 using namespace pets;
 using namespace pet_summon;
 using namespace attacks;
@@ -7332,6 +7339,8 @@ void monk_t::init_spells()
   baseline.brewmaster.light_stagger    = find_specialization_spell( "Light Stagger" );
   baseline.brewmaster.moderate_stagger = find_specialization_spell( "Moderate Stagger" );
   baseline.brewmaster.heavy_stagger    = find_specialization_spell( "Heavy Stagger" );
+
+  baseline.brewmaster.brews = new brews_t();
 
   // monk_t::baseline::mistweaver
   baseline.mistweaver.aura   = find_specialization_spell( "Mistweaver Monk" );
