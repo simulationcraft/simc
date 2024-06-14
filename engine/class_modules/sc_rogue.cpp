@@ -1362,7 +1362,7 @@ public:
     return resources.current[ RESOURCE_COMBO_POINT ];
   }
 
-  // Current number of effective combo points, considering Echoing Reprimand
+  // Current number of effective combo points, considering Echoing Reprimand and Escalating Blade
   double current_effective_cp( bool use_echoing_reprimand = true, bool use_escalating_blade = false, bool react = false ) const
   {
     double current_cp = this->current_cp( react );
@@ -1711,6 +1711,7 @@ public:
     bool broadside_cp = false;
     bool cold_blood = false;
     bool danse_macabre = false;         // Trigger
+    bool darkest_night = false;
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
     bool destiny_defined = false;       // Proc Increase
@@ -2536,6 +2537,15 @@ public:
       }
     }
 
+    // Darkest Night
+    if ( affected_by.darkest_night )
+    {
+      if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+      {
+        m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent();
+      }
+    }
+
     // Set Bonuses
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
@@ -2664,6 +2674,15 @@ public:
     if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
     {
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.darkest_night )
+    {
+      // No CP state available this early as crit chance is calculated during state creation
+      if ( p()->buffs.darkest_night->up() && p()->current_effective_cp( true ) >= p()->consume_cp_max() )
+      {
+        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
+      }
     }
 
     return c;
@@ -4509,6 +4528,7 @@ struct envenom_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
+    affected_by.darkest_night = true;
 
     if ( p->set_bonuses.t31_assassination_4pc->ok() )
     {
@@ -4672,6 +4692,7 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr ), shadow_eviscerate_attack( nullptr )
   {
     affected_by.t31_subtlety_4pc = true;
+    affected_by.darkest_night = true; // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -9532,10 +9553,11 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( p()->buffs.darkest_night->check() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire();
+    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
     return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
   }
 
@@ -9575,9 +9597,12 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() && debuff->player != state->target )
     debuff->expire();
 
+  const int stacks = as<int>( from_darkest_night ? p()->spell.darkest_night_buff->effectN( 3 ).base_value() :
+                              p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() );
+
   debuff = p()->get_target_data( state->target )->debuffs.deathstalkers_mark;
-  debuff->trigger( as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() ) );
-  
+  debuff->trigger( stacks );
+
   p()->buffs.clear_the_witnesses->trigger();
 }
 
