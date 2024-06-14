@@ -498,6 +498,7 @@ public:
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
+    propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> jadefire_brand;
@@ -853,9 +854,9 @@ public:
       player_talent_t touch_of_the_tiger;
       player_talent_t hardened_soles;
       player_talent_t ascension;
-      player_talent_t dual_threat;
+      player_talent_t ferociousness;
       // Row 4
-      player_talent_t mark_of_the_crane;
+      player_talent_t crane_vortex;
       player_talent_t teachings_of_the_monastery;
       player_talent_t glory_of_the_dawn;
       // 8 Required
@@ -886,7 +887,7 @@ public:
       player_talent_t sequenced_strikes;
       player_talent_t rising_star;
       player_talent_t invokers_delight;
-      player_talent_t crane_vortex;
+      player_talent_t dual_threat;
       player_talent_t gale_force;
       // Row 9
       player_talent_t last_emperors_capacitor;
@@ -894,9 +895,11 @@ public:
       player_talent_t xuens_bond;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;
+      player_talent_t jadefire_fists;
       player_talent_t jadefire_stomp;
       player_talent_t communion_with_wind;
       // Row 10
+      player_talent_t power_of_the_thunder_king;
       player_talent_t revolving_whirl;
       player_talent_t knowledge_of_the_broken_temple;
       player_talent_t memory_of_the_monastery;
@@ -904,6 +907,7 @@ public:
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
       player_talent_t jadefire_harmony;
+      player_talent_t darting_hurricane;
     } windwalker;
 
     // Master of Harmony
@@ -1056,6 +1060,7 @@ public:
     const spell_data_t *expel_harm_2_ww;
     const spell_data_t *flying_serpent_kick;
     const spell_data_t *leather_specialization_ww;
+    const spell_data_t *mark_of_the_crane;
     const spell_data_t *spinning_crane_kick_2_ww;
     const spell_data_t *touch_of_death_3_ww;
     const spell_data_t *touch_of_karma;

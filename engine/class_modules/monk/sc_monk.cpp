@@ -145,6 +145,7 @@ void monk_action_t<Base>::apply_buff_effects()
    */
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
+  parse_effects( p()->buff.darting_hurricane );
 
   // T33 Set Effects
   parse_effects( p()->buff.tiger_strikes );
@@ -1583,6 +1584,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->buff.combat_wisdom->expire();
     }
 
+    p()->buff.darting_hurricane->decrement();
+
     // T33 Windwalker Set Bonus
     p()->buff.tigers_ferocity->expire();
 
@@ -2417,7 +2420,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->specialization() != MONK_WINDWALKER )
       return 0;
 
-    if ( !p()->talent.windwalker.mark_of_the_crane->ok() )
+    if ( !p()->spec.mark_of_the_crane->ok() )
       return 0;
 
     if ( p()->user_options.motc_override > 0 )
@@ -3125,8 +3128,10 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
       p()->buff.rushing_jade_wind->trigger();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
+
+    if ( p()->talent.windwalker.darting_hurricane.ok() )
+      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value() );
   }
 };
 
@@ -6810,7 +6815,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_default_value( 0 );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                 ->set_trigger_spell( p->talent.windwalker.mark_of_the_crane )
+                                 ->set_trigger_spell( p->spec.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
@@ -7151,7 +7156,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 {
-  if ( !talent.windwalker.mark_of_the_crane->ok() )
+  if ( !spec.mark_of_the_crane->ok() )
     return;
 
   if ( !action_t::result_is_hit( s->result ) )
@@ -7222,7 +7227,7 @@ int monk_t::mark_of_the_crane_counter()
   if ( specialization() != MONK_WINDWALKER )
     return 0;
 
-  if ( !talent.windwalker.mark_of_the_crane->ok() )
+  if ( !spec.mark_of_the_crane->ok() )
     return 0;
 
   if ( user_options.motc_override > 0 )
@@ -7245,7 +7250,7 @@ int monk_t::mark_of_the_crane_counter()
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
-  if ( !talent.windwalker.mark_of_the_crane->ok() )
+  if ( !spec.mark_of_the_crane->ok() )
     return true;
 
   int count   = mark_of_the_crane_counter();
@@ -7636,9 +7641,9 @@ void monk_t::init_spells()
   talent.windwalker.touch_of_the_tiger = _ST( "Touch of the Tiger" );
   talent.windwalker.hardened_soles     = _ST( "Hardened Soles" );
   talent.windwalker.ascension          = _ST( "Ascension" );  // TODO: NYI: EFFECT 2 ENERGY REGEN
-  talent.windwalker.dual_threat        = _ST( "Dual Threat" );
+  talent.windwalker.ferociousness      = _ST( "Ferociousness" );
   // Row 4
-  talent.windwalker.mark_of_the_crane          = _ST( "Mark of the Crane" );
+  talent.windwalker.crane_vortex               = _ST( "Crane Vortex" );
   talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
   talent.windwalker.glory_of_the_dawn          = _ST( "Glory of the Dawn" );
   // 8 Required
@@ -7669,7 +7674,7 @@ void monk_t::init_spells()
   talent.windwalker.sequenced_strikes = _ST( "Sequenced Strikes" );
   talent.windwalker.rising_star       = _ST( "Rising Star" );
   talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
-  talent.windwalker.crane_vortex      = _ST( "Crane Vortex" );
+  talent.windwalker.dual_threat       = _ST( "Dual Threat" );
   talent.windwalker.gale_force        = _ST( "Gale Force" );
   // Row 9
   talent.windwalker.last_emperors_capacitor = _ST( "Last Emperor's Capacitor" );
@@ -7677,15 +7682,18 @@ void monk_t::init_spells()
   talent.windwalker.xuens_bond              = _ST( "Xuen's Bond" );
   talent.windwalker.xuens_battlegear        = _ST( "Xuen's Battlegear" );
   talent.windwalker.transfer_the_power      = _ST( "Transfer the Power" );
+  talent.windwalker.jadefire_fists          = _ST( "Jadefire Fists" );
   talent.windwalker.jadefire_stomp          = _ST( "Jadefire Stomp" );
   talent.windwalker.communion_with_wind     = _ST( "Communion With Wind" );
   // Row 10
+  talent.windwalker.power_of_the_thunder_king      = _ST( "Power of the Thunder King" );
   talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
   talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
   talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
+  talent.windwalker.darting_hurricane              = _ST( "Darting Hurricane" );
 
   // =================================================================================================
   // Master of Harmony
@@ -7801,6 +7809,7 @@ void monk_t::init_spells()
   spec.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
   spec.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
+  spec.mark_of_the_crane         = find_specialization_spell( "Mark of the Crane" );
   spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
   spec.touch_of_death_3_ww       = find_spell( 344361 );
   spec.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
@@ -8434,6 +8443,10 @@ void monk_t::create_buffs()
                                    ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true );
+
+  buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
+                               ->set_trigger_spell( talent.windwalker.darting_hurricane )
+                               ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
                             ->set_trigger_spell( talent.windwalker.jadefire_harmony )
