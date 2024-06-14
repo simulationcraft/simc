@@ -175,7 +175,8 @@ static constexpr auto spelleffect_data_fields = std::make_tuple(
   data_field( "points_per_level",        &spelleffect_data_t::_real_ppl ),
   data_field( "radius",                  &spelleffect_data_t::_radius ),
   data_field( "max_radius",              &spelleffect_data_t::_radius_max ),
-  data_field( "chain_target",            &spelleffect_data_t::_chain_target )
+  data_field( "chain_target",            &spelleffect_data_t::_chain_target ),
+  data_field( "attribute",               &spelleffect_data_t::_attribute )
 );
 
 static constexpr auto spelleffect_data_bit_array_fields = std::make_tuple(

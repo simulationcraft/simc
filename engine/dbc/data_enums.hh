@@ -1362,6 +1362,25 @@ enum spell_attribute : unsigned
   SX_REFRESH_EXTENDS_DURATION       = 436u,
 };
 
+// spelleffect attributes, indicates bit position
+enum spelleffect_attribute : unsigned
+{
+  EX_NO_IMMUNITY             = 1u,
+  EX_EXCLUDE_PARTY           = 5u,
+  EX_ALWAYS_AOE_LOS          = 6u,
+  EX_SUPPRESS_STACKING       = 7u,
+  EX_CHAIN_FROM_INITIAL      = 8u,
+  EX_AURA_STACK              = 10u,
+  EX_ADD_TARGET_REACH_TO_AOE = 12u,
+  EX_IS_HARMFUL              = 13u,
+  EX_PLAYERS_ONLY            = 15u,
+  EX_COMPUTE_ON_CAST         = 16u,
+  EX_ENFORCE_LOS_ON_CHAIN    = 17u,
+  EX_AOE_USE_TARGET_RADIUS   = 18u,
+  EX_ALWAYS_HIT              = 23u,
+  EX_ONLY_AFFECTS_ABSORBS    = 27u,
+};
+
 enum spell_label : unsigned
 {
   LABEL_COVENANT                   = 976u,
