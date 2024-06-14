@@ -130,6 +130,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
+  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
   apply_affecting_aura( p()->spec.blackout_kick_2 );
 
   // Shado-Pan
