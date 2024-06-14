@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.55142 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3644,12 +3644,10 @@ Effects          :
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
                    Family Flags: 28, 31
-Hotfixed         : Base Value (-17 -> -9)
 #15 (id=1039899)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
                    Family Flags: 28, 31
-Hotfixed         : Base Value (-17 -> -9)
 #16 (id=1039993)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
@@ -3683,7 +3681,6 @@ Hotfixed         : Base Value (-17 -> -9)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
@@ -4305,7 +4302,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=274038)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
-Hotfixed         : AP Coefficient (0.24 -> 0.264)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Electrocutes all enemies in front of you, dealing ${$s1*$<CAP>/$AP} Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike, Ice Strike, and Lava Lash to also deal ${$195592s1*$<CAP>/$AP} Nature damage to all targets in front of you. Damage reduced beyond $s2 targets.$?s384363[
@@ -11647,7 +11643,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=829633)   : School Damage (2): flamestrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.43340 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.394 -> 0.4334)
 Description      : $@spelldesc333974
 
 Name             : Molten Assault (id=334033) [Spell Family (11), Passive] 
@@ -13652,7 +13647,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=1002733)  : Dummy (3)
                    Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 0.42857 | Target: Unknown(25)
-Hotfixed         : Base Value (150 -> 175), PvP Coefficient (0.5 -> 0.42857)
 #5 (id=1033574)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and applying Flame Shock to them.
@@ -14665,7 +14659,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1012683)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 10)
 Description      : Maximum health increased by $s1%, and while you are at full health, Reincarnation cools down $381684s1% faster.
 
 
