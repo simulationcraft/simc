@@ -8579,12 +8579,12 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
       {
         if ( weapon_hand->slot == SLOT_MAIN_HAND )
         {
-          trigger_shattered_frost( s->result_amount, p()->off_hand_weapon.type == WEAPON_NONE );
+          trigger_shattered_frost( s->result_amount, true /* TODO-TWW check if still bugged p()->off_hand_weapon.type == WEAPON_NONE */ );
         }
-        if ( weapon_hand->slot == SLOT_OFF_HAND )
+        /*if ( weapon_hand->slot == SLOT_OFF_HAND )
         {
           trigger_shattered_frost( s->result_amount, true );
-        }
+        }*/
       }
     }
 
