@@ -296,6 +296,7 @@ public:
     buff_t* soul_fragments;
 
     // Aldrachi Reaver
+    buff_t* reavers_glaive;
     buff_t* art_of_the_glaive;
     buff_t* glaive_flurry;
     buff_t* rending_strike;
@@ -684,6 +685,7 @@ public:
   {
     // Aldrachi Reaver
     const spell_data_t* reavers_glaive;
+    const spell_data_t* reavers_glaive_buff;
     const spell_data_t* reavers_mark;
     const spell_data_t* glaive_flurry;
     const spell_data_t* rending_strike;
@@ -4306,6 +4308,8 @@ struct the_hunt_t : public demon_hunter_spell_t
     {
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
+
+    p()->buff.reavers_glaive->trigger();
   }
 
   timespan_t travel_time() const override
@@ -6389,6 +6393,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( p()->active.preemptive_strike )
       p()->active.preemptive_strike->execute_on_target( target );
   }
+
+  bool ready() override
+  {
+    if ( source == glaive_source::THROWN && p()->buff.reavers_glaive->up() )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
+  }
 };
 
 // Reaver's Glaive ==========================================================
@@ -6424,22 +6438,20 @@ struct reavers_glaive_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    p()->buff.reavers_glaive->expire();
+
     demon_hunter_attack_t::execute();
 
     if ( p()->active.preemptive_strike )
       p()->active.preemptive_strike->execute_on_target( target );
 
-    p()->buff.art_of_the_glaive->expire();
     p()->buff.glaive_flurry->trigger();
     p()->buff.rending_strike->trigger();
   }
 
   bool ready() override
   {
-    auto target_stacks = p()->specialization() == DEMON_HUNTER_HAVOC
-                             ? p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value()
-                             : p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value();
-    if ( p()->buff.art_of_the_glaive->current_stack < static_cast<int>( target_stacks ) )
+    if ( !p()->buff.reavers_glaive->up() )
     {
       return false;
     }
@@ -7539,10 +7551,23 @@ void demon_hunter_t::create_buffs()
 
   // Aldrachi Reaver ========================================================
 
-  buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff );
-  buff.glaive_flurry     = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
-  buff.rending_strike    = make_buff( this, "rending_strike", hero_spec.rending_strike );
-  buff.warblades_hunger  = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
+  buff.reavers_glaive   = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )
+      ->set_quiet( true );
+  buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff )
+                               ->set_default_value( specialization() == DEMON_HUNTER_HAVOC ? talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value() : talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value() )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+                                 // applying Reaver's Glaive only occurs upon gaining new stack on Art of the Glaive
+                                 if (new_ > old) {
+                                   int target_stacks = static_cast<int>(b->default_value);
+                                   if ( b->current_stack >= target_stacks ) {
+                                     b->decrement( target_stacks );
+                                     buff.reavers_glaive->trigger();
+                                   }
+                                 }
+                               } );
+  buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
+  buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
+  buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
   buff.thrill_of_the_fight_attack_speed =
       make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
           ->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
@@ -8459,6 +8484,16 @@ void demon_hunter_t::init_spells()
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
   hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
   hero_spec.spirit_burst       = talent.felscarred.demonsurge->ok() ? find_spell( 452437 ) : spell_data_t::not_found();
+
+  if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
+  {
+    hero_spec.reavers_glaive_buff =
+        specialization() == DEMON_HUNTER_HAVOC ? find_spell( 444686 ) : find_spell( 444764 );
+  }
+  else
+  {
+    hero_spec.reavers_glaive_buff = spell_data_t::not_found();
+  }
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
