@@ -1466,11 +1466,9 @@ public:
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  void pre_analyze_hook() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
-  void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t *s ) override;
   void assess_heal( school_e, result_amount_type, action_state_t *s ) override;
   void invalidate_cache( cache_e ) override;
   void init_action_list() override;
@@ -1496,7 +1494,6 @@ public:
                                               const spell_data_t *affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-  void merge( player_t &other ) override;
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
