@@ -433,7 +433,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 18461 | Target: Self (1)
 #3 (id=271221)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
-#4 (id=354085)   : Unknown(93)
+#4 (id=354085)   : Unknown(93) | Attributes: Exclude Own Party (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to vanish from sight, entering stealth while in combat. For the first $11327d after vanishing, damage and harmful effects received will not break stealth. Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
@@ -4544,15 +4544,15 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=287160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=287160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
-#2 (id=294100)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#2 (id=294100)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
-#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
@@ -4674,11 +4674,11 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=289127)   : Energize Power (30)
+#1 (id=289127)   : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
-#2 (id=368528)   : Energize Power (30)
+#2 (id=368528)   : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
-#3 (id=1105230)  : Apply Aura (6) | Dummy (4)
+#3 (id=1105230)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc196912
 Tooltip          : Combo points stored.
@@ -6870,7 +6870,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Do Not Display Duration (170), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=735068)   : Apply Aura (6) | Modify Rating (189)
+#1 (id=735068)   : Apply Aura (6) | Modify Rating (189) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Self (1)
 #2 (id=735070)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 278681
@@ -7004,7 +7004,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=738432)   : School Damage (2): physical
+#1 (id=738432)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17640 | PvP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc280719
 
@@ -7846,9 +7846,9 @@ Attributes       : ....x... ........ x.x..x.. .......x   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=812721)   : School Damage (2): shadow
+#1 (id=812721)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=812722)   : Apply Aura (6) | Dummy (4)
+#2 (id=812722)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=812729)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -8595,7 +8595,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
 Effects          :
-#1 (id=840291)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
+#1 (id=840291)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -9753,7 +9753,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=871056)   : School Damage (2): shadow
+#1 (id=871056)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc323654
 
@@ -11375,7 +11375,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
 Effects          :
-#1 (id=1012663)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
+#1 (id=1012663)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -12514,9 +12514,9 @@ Attributes       : ....x... ........ x.x..x.. .......x   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1017353)  : School Damage (2): shadow
+#1 (id=1017353)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1017354)  : Apply Aura (6) | Dummy (4)
+#2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.80000 | Target: Self (1)
@@ -13177,7 +13177,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Dispatch (2098)
                    Family Flags: 112
-#2 (id=1021253)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#2 (id=1021253)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Aura Points Stack (9)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Dispatch (2098)
                    Family Flags: 112
@@ -13584,7 +13584,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033344)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
+#1 (id=1033344)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -13934,19 +13934,19 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Include In Advanced Combat Log (72), Aura Points On Client (268), Do Not Log Aura Refresh (291)
 Effects          :
-#1 (id=1033679)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#1 (id=1033679)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121)
                    Family Flags: 104, 109
-#2 (id=1033680)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+#2 (id=1033680)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53)
                    Family Flags: 2
-#3 (id=1033681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=1033681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Echoing Reprimand (385616), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
-#4 (id=1035123)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+#4 (id=1035123)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Echoing Reprimand (385616), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -13973,7 +13973,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Sitting (27), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1033744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Echoing Reprimand (385616), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -14290,7 +14290,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1034706)  : School Damage (2): shadow
+#1 (id=1034706)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc384631
 
@@ -15969,9 +15969,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), Requires Off-Hand Weapon (120), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1105226)  : Energize Power (30)
+#1 (id=1105226)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
-#2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Slice and Dice (5171), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Kidney Shot (426589)
                    Family Flags: 17, 18, 20, 21, 32, 44, 92
@@ -16038,7 +16038,7 @@ Attributes       : .......x x....... ........ ...x...x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Do Not Display Range (126), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1105249)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1105249)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Echoing Reprimand (385616), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Goremaw's Bite (426591), Goremaw's Bite (426592)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -16883,7 +16883,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1136489)  : Apply Aura (6) | Dummy (4)
+#1 (id=1136489)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441423
 Tooltip          : Building to a Coup de Grace.
@@ -17205,7 +17205,7 @@ Effects          :
                    Family Flags: 25
 #2 (id=1156762)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1160700)  : Apply Aura (6) | Modify Min Speed% (305)
+#3 (id=1160700)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc452536
 Tooltip          : Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]
@@ -17229,17 +17229,17 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
-#1 (id=1154414)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1154414)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 54
-#2 (id=1156707)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#2 (id=1156707)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), wSerrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 54
 #3 (id=1156709)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1156710)  : Apply Aura (6) | Modify Min Speed% (305)
+#4 (id=1156710)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc452536
 Tooltip          : Damage increased by $W1%.$?a454300[ Leech increased by ${$W3}.1%.][]
@@ -18009,11 +18009,11 @@ Attributes       : .......x x....... ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
-#1 (id=1160701)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+#1 (id=1160701)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3) | Attributes: Aura Points Stack (9)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Heads) (452923)
                    Family Flags: 56
-#2 (id=1160702)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+#2 (id=1160702)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Aura Points Stack (9)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Heads) (452923)
                    Family Flags: 56
@@ -18744,11 +18744,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1164498)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1164498)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Aura Points Stack (9)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Leeching Poison (108211), Deadly Poison (113780), Crippling Poison (115196), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Atrophic Poison (392388), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 14, 16, 28, 45, 68, 73, 74, 83, 86, 97
-#2 (id=1164499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#2 (id=1164499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Aura Points Stack (9)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Leeching Poison (108211), Deadly Poison (113780), Crippling Poison (115196), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Atrophic Poison (392388), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559)
                    Family Flags: 14, 16, 28, 45, 68, 73, 74, 83, 86, 97

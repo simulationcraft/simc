@@ -1485,7 +1485,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       if ( e->_attribute & ( 1 << flag ) )
         attr_str.push_back( map_string( _effect_attribute_strings, flag ) );
 
-    s << " | " << util::string_join( attr_str );
+    s << " | Attributes: " << util::string_join( attr_str );
   }
 
   s << std::endl;

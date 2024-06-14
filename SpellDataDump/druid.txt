@@ -1043,7 +1043,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
-#2 (id=356840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=356840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
@@ -1427,7 +1427,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xf | Target: Self (1)
 #3 (id=13025)    : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1005832)  : Apply Aura (6) | Modify Healing Received% (118)
+#4 (id=1005832)  : Apply Aura (6) | Modify Healing Received% (118) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #5 (id=1105558)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1462,9 +1462,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Extra Initial Period (169), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+#1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62600 | Target: Self (1)
-#2 (id=815630)   : Apply Aura (6) | Modify Healing Received% (118)
+#2 (id=815630)   : Apply Aura (6) | Modify Healing Received% (118) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #3 (id=1138013)  : Apply Party Aura (35) | Unknown(145)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2664,7 +2664,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook (143), Treat as Area Effect (175), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=68168)    : School Damage (2): physical
+#1 (id=68168)    : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
@@ -3148,7 +3148,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=91242)    : School Damage (2): nature
+#1 (id=91242)    : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #2 (id=1031624)  : Dummy (3)
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000
@@ -3863,11 +3863,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=117201)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
-#2 (id=222211)   : Dummy (3)
+#2 (id=222211)   : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
-#3 (id=222212)   : School Damage (2): physical
+#3 (id=222212)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65470 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
-#4 (id=819579)   : Dummy (3)
+#4 (id=819579)   : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #5 (id=1031978)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
@@ -3926,7 +3926,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook (143), Treat as Area Effect (175), Always AOE Line of Sight (186), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=117262)   : School Damage (2): physical
+#1 (id=117262)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=117263)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
@@ -4802,11 +4802,11 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), No Threat (42), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=176510)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=176510)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254), Ravage (441605)
                    Family Flags: 11
-#2 (id=870292)   : Apply Aura (6) | Proc Trigger Spell (42): Tooth and Claw
+#2 (id=870292)   : Apply Aura (6) | Proc Trigger Spell (42): Tooth and Claw | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 135601 | Target: Self (1)
 #3 (id=1041475)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -4895,11 +4895,11 @@ Effects          :
                    Family Flags: 15, 74, 99, 126
 #2 (id=356844)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=356845)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shred (5221), Swipe (106785), Thrash (106830), Brutal Slash (202028), Thrash (405233)
                    Family Flags: 15, 74, 99, 126
-#4 (id=476583)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#4 (id=476583)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (106830), Thrash (405233)
                    Family Flags: 126
@@ -5414,7 +5414,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#1 (id=195368)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
@@ -5754,11 +5754,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
-#2 (id=887033)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#2 (id=887033)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Entangling Roots (339)
                    Family Flags: 9
-#3 (id=887034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#3 (id=887034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Cyclone (33786)
                    Family Flags: 37
@@ -7405,7 +7405,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=297726)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
-#2 (id=297727)   : School Damage (2): physical
+#2 (id=297727)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.47600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #3 (id=819590)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
@@ -7649,7 +7649,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
-#2 (id=736418)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+#2 (id=736418)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
@@ -8650,9 +8650,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312147)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05124 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=312148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+#2 (id=312148)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-#3 (id=335909)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+#3 (id=335909)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05124 | PvP Coefficient: 1.00000 | Mechanic: Bleed
 #4 (id=364769)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -8904,7 +8904,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=317223)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=317224)   : Dummy (3)
+#2 (id=317224)   : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #3 (id=317225)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
@@ -9038,7 +9038,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), Aura Never Bounces (148), Taps immediately (215), Ignore Caster Damage Modifiers (221), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=335879)   : Apply Aura (6) | Periodic Damage (3): shadow every 1.33 seconds
+#1 (id=335879)   : Apply Aura (6) | Periodic Damage (3): shadow every 1.33 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=335880)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -9885,7 +9885,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12500 | PvP Coefficient: 0.85500 | Target: Enemy (6)
 #2 (id=727436)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 0.85500 | Mechanic: Bleed | Target: Enemy (6)
-#3 (id=727440)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+#3 (id=727440)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 0.85500 | Mechanic: Bleed
 #4 (id=727443)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
@@ -10915,7 +10915,7 @@ Effects          :
                    Family Flags: 18, 77, 98, 118
 #8 (id=832370)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Party in Area (20)
-#9 (id=841732)   : Apply Aura (6) | Dummy (4)
+#9 (id=841732)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : For $d, Druid spells you cast increase your damage and healing by $s1%, and haste by $s3%, stacking.
 
@@ -11048,9 +11048,9 @@ Attributes       : ........ ........ .......x x.......   .....x.x ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), DoT Stacking Rule (103), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Allow Proc While Sitting (147), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=816184)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
+#1 (id=816184)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-#2 (id=816651)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#2 (id=816651)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Starfall (50286), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Thrash (192090), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Overgrowth (203651), Fury of Elune (211545), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Starfall (359399), Fury of Elune (365640), Fury of Elune (394111), Thrash (405233), Crashing Star (408310)
                    Family Flags: 9, 12, 23, 40, 54, 55, 66, 85, 92, 94, 105, 116, 120, 126, 127
@@ -11080,9 +11080,9 @@ Attributes       : ........ ........ .......x .......x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not an Action (92), DoT Stacking Rule (103), Not a Proc (105), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Aura Is Buff (140), Allow Proc While Sitting (147), Spell Haste Affects Periodic (173), AI Doesn't Face Target (179), Not an Attack (194), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=816206)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
+#1 (id=816206)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-#2 (id=816652)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+#2 (id=816652)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Any Target (25)
                    Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Spring Blossoms (207386), Grove Tending (279793), Grove Tending (383193), Minor Cenarion Ward (429222)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
@@ -11913,7 +11913,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
-#1 (id=837688)   : Apply Aura (6) | Dummy (4)
+#1 (id=837688)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc338668
 Tooltip          : ${$w1~} Arcane Power collected by Primordial Arcanic Pulsar.
@@ -13737,7 +13737,7 @@ Attributes       : .......x ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113)
 Effects          :
-#1 (id=892528)   : Apply Aura (6) | Dummy (4)
+#1 (id=892528)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc24858
 
@@ -13848,9 +13848,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=902897)   : Apply Aura (6) | Dummy (4)
+#1 (id=902897)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=910977)   : Dummy (3)
+#2 (id=910977)   : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $s1 casts of Swiftmend grants you Incarnation: Tree of Life for $s2 sec.
 
@@ -13983,7 +13983,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=903446)   : Apply Aura (6) | Dummy (4)
+#1 (id=903446)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc363495
 Tooltip          : $@spelldesc363495
@@ -16014,7 +16014,7 @@ Attributes       : ........ ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Active Defense (21), Always Hit (114), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Aura Never Bounces (148), Ignore Caster Damage Modifiers (221), Periodic Can Crit (265), Aura Points On Client (268), No Level Up Toast (281), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1028821)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+#1 (id=1028821)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc391347
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
@@ -16202,7 +16202,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Suppress Target Procs (113), Aura Points On Client (268)
 Effects          :
-#1 (id=1029392)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#1 (id=1029392)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Thrash (192090), Feral Frenzy (274837), Feral Frenzy (274838), Adaptive Swarm (325733), Adaptive Swarm (325748), Tear (391356), Adaptive Swarm (391889), Adaptive Swarm (391891), Thrash (405233)
                    Family Flags: 9, 12, 22, 40, 66, 80, 85, 92, 94, 120, 126, 127
@@ -16333,7 +16333,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1029637)  : Energize Power (30)
+#1 (id=1029637)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc391872
 
@@ -16490,19 +16490,19 @@ Attributes       : ........ ........ .......x x.......   .....x.x ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), DoT Stacking Rule (103), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Allow Proc While Sitting (147), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1029658)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
+#1 (id=1029658)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-#2 (id=1029659)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#2 (id=1029659)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Thrash (192090), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233)
                    Family Flags: 9, 12, 40, 66, 85, 92, 94, 120, 126, 127
-#3 (id=1149652)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#3 (id=1149652)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2403 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Frenzied Assault (391140)
-#4 (id=1158529)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#4 (id=1158529)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3245 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Bloodseeker Vines (439531)
-#5 (id=1158530)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#5 (id=1158530)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3345 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Dreadful Wound (441812), Dreadful Wound (451177)
 Description      : $@spelldesc391888
@@ -16531,9 +16531,9 @@ Attributes       : ........ ........ .......x .......x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not an Action (92), DoT Stacking Rule (103), Not a Proc (105), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Aura Is Buff (140), Allow Proc While Sitting (147), Spell Haste Affects Periodic (173), AI Doesn't Face Target (179), Not an Attack (194), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1029661)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
+#1 (id=1029661)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-#2 (id=1029662)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+#2 (id=1029662)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Any Target (25)
                    Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Spring Blossoms (207386), Grove Tending (279793), Grove Tending (383193), Minor Cenarion Ward (429222)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
@@ -17185,9 +17185,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1030499)  : Apply Aura (6) | Dummy (4)
+#1 (id=1030499)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1030500)  : Dummy (3)
+#2 (id=1030500)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $s1 casts of Swiftmend grants you Incarnation: Tree of Life for $s2 sec.
 
@@ -17210,7 +17210,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1030506)  : Apply Aura (6) | Dummy (4)
+#1 (id=1030506)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc392356
 Tooltip          : $@spelldesc392356
@@ -18033,7 +18033,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
-#1 (id=1033230)  : Apply Aura (6) | Dummy (4)
+#1 (id=1033230)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc393960
 Tooltip          : ${$w1~} Arcane Power collected by Primordial Arcanic Pulsar.
@@ -19276,7 +19276,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1053352)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
+#1 (id=1053352)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09730 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc106830
 Tooltip          : $?a429523[Suffering $w1 Arcane][Bleeding for $w1] damage every $t1 sec.
@@ -20640,15 +20640,15 @@ Attributes       : ........ ........ ........ .....x..   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Immunities (29), Do Not Consume if Gained During Cast (79), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1100829)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1100829)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-#2 (id=1100830)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+#2 (id=1100830)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-#3 (id=1100831)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=1100831)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
@@ -21890,7 +21890,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123420)  : Apply Aura (6) | Proc Trigger Spell (42): Dream Burst
+#1 (id=1123420)  : Apply Aura (6) | Proc Trigger Spell (42): Dream Burst | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 433850 | Target: Any Target (25)
 Description      : $@spellaura433831
 Tooltip          : Wrath or Starfire explode with a Dream Burst on the target, dealing $433850s1 Nature damage to nearby enemies.
@@ -21913,7 +21913,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : No Redirection (35), No Reflection (39), Allow Dead Target (64), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123446)  : School Damage (2): nature
+#1 (id=1123446)  : School Damage (2): nature | Attributes: Always AOE Line of Sight (5), Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1123447)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
@@ -21939,7 +21939,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123890)  : Apply Aura (6) | Dummy (4)
+#1 (id=1123890)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spellaura433831
 Tooltip          : Your next targeted heal creates $433831w2 Dream Petals near the target, healing up to $434141s2 nearby allies for $434141s1.
@@ -21962,9 +21962,9 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123932)  : Direct Heal (10)
+#1 (id=1123932)  : Direct Heal (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 4 yards | Target: At Target Random (74) -> At Friendly in Area (31)
-#2 (id=1123933)  : Dummy (3)
+#2 (id=1123933)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Blooms near your heal target, restoring $s1 health to $s2 injured allies within $A1 yds.
 
@@ -22974,7 +22974,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1136317)  : Apply Aura (6) | Dummy (4)
+#1 (id=1136317)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441691
 Tooltip          : When you have $s1 stacks, the next time you transform into Bear Form, your next Mangle deals $441698s1% increased damage or your next $?s202028[Brutal Slash][Swipe] deals $441698s2% increased damage. Either generates ${$442562s1/10} extra Rage.
@@ -22998,11 +22998,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1136320)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1136320)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
-#2 (id=1137908)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1137908)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Brutal Slash (202028), Swipe (213771)
                    Family Flags: 52, 99
@@ -23028,7 +23028,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1136324)  : Apply Aura (6) | Dummy (4)
+#1 (id=1136324)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441691
 Tooltip          : When you have $s1 stacks, the next time you transform into Cat Form, gain $441704s1 combo points and your next Ferocious Bite or Rip deals $441702s1% increased damage for its full duration.
@@ -23052,7 +23052,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1136325)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1136325)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
@@ -23076,7 +23076,7 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1136327)  : Energize Power (30)
+#1 (id=1136327)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc441701
 
@@ -23170,7 +23170,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
-#1 (id=1136544)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
+#1 (id=1136544)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441814
 Tooltip          : Auto-attack rate increased by $w1%.
@@ -23215,7 +23215,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
-#1 (id=1136554)  : Apply Aura (6) | Modify Attribute% (80)
+#1 (id=1136554)  : Apply Aura (6) | Modify Attribute% (80) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=1136556)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -23243,7 +23243,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Casting (135)
 Effects          :
-#1 (id=1136557)  : Apply Aura (6) | Dummy (4)
+#1 (id=1136557)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc441824
 Tooltip          : Your next $?a137011[Tiger's Fury][Mangle] makes your next $?a137011[Ferocious Bite][Maul] become Ravage.
@@ -23829,14 +23829,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Suppress Target Procs (113), Aura Points On Client (268)
 Effects          :
-#1 (id=1150047)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#1 (id=1150047)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Starfall (50286), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Stellar Flare (202347), Shooting Stars (202497), Starfall (359399), Crashing Star (408310)
                    Family Flags: 55, 92, 105, 116, 127
-#2 (id=1150049)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#2 (id=1150049)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 3041 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Fungal Growth (81281)
-#3 (id=1150050)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#3 (id=1150050)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 3529 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Astral Smolder (394061)
 Description      : $@spelldesc450212
@@ -23861,15 +23861,15 @@ Attributes       : ........ ........ ........ .....x..   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Immunities (29), Do Not Consume if Gained During Cast (79), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1150195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1150195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-#2 (id=1150199)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+#2 (id=1150199)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-#3 (id=1150200)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=1150200)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
