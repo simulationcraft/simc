@@ -148,7 +148,7 @@ void monk_action_t<Base>::apply_buff_effects()
    */
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
-  parse_effects( p()->buff.darting_hurricane, IGNORE_STACKS );
+  parse_effects( p()->buff.darting_hurricane );
 
   // T33 Set Effects
   parse_effects( p()->buff.tiger_strikes );
