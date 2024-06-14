@@ -1228,22 +1228,6 @@ public:
     } windwalker;
   } baseline;
 
-  // struct
-  // {
-  //   struct
-  //   {} general;
-
-  //   struct
-  //   {
-  //   } brewmaster;
-
-  //   struct
-  //   {} mistweaver;
-
-  //   struct
-  //   {} windwalker;
-  // } buffs;
-
   // end
 
   struct mastery_spells_t

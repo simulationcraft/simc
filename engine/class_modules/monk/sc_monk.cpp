@@ -8301,10 +8301,7 @@ void monk_t::create_buffs()
                           ->set_trigger_spell( talent.brewmaster.improved_celestial_brew )
                           ->set_default_value_from_effect( 1 );
 
-  buff.shuffle = make_buff<buffs::shuffle_t>( *this /* , "shuffle", passives.shuffle */ );
-  // ->set_trigger_spell( talent.brewmaster.shuffle )
-  // ->set_duration_multiplier( 3 )
-  // ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.shuffle = make_buff<buffs::shuffle_t>( *this );
 
   buff.tiger_strikes = make_buff( this, "tiger_strikes", find_spell( 454485 ) )
                            ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B2 ) );
