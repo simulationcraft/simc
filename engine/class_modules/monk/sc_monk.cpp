@@ -64,8 +64,9 @@ namespace actions
 // Template for common monk action code. See priest_action_t.
 
 template <class Base>
-monk_action_t<Base>::monk_action_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : parse_action_effects_t<Base>( name, player, spell ),
+monk_action_t<Base>::monk_action_t( monk_t *player, std::string_view name,
+                                    const spell_data_t *spell_data = spell_data_t::nil() )
+  : parse_action_effects_t<Base>( name, player, spell_data ),
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
@@ -820,8 +821,9 @@ void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
   }
 }
 
-monk_spell_t::monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : monk_action_t<spell_t>( name, player, spell )
+monk_spell_t::monk_spell_t( monk_t *player, std::string_view name,
+                            const spell_data_t *spell_data = spell_data_t::nil() )
+  : monk_action_t<spell_t>( name, player spell_data )
 {
   ap_type = attack_power_type::WEAPON_MAINHAND;
 
@@ -861,8 +863,8 @@ double monk_spell_t::action_multiplier() const
   return am;
 }
 
-monk_heal_t::monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell )
-  : monk_action_t<heal_t>( name, &player, spell )
+monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() )
+  : monk_action_t<heal_t>( name, *player, spell_data )
 {
   harmful = false;
   ap_type = attack_power_type::WEAPON_MAINHAND;
@@ -948,14 +950,16 @@ double monk_heal_t::action_multiplier() const
   return am;
 }
 
-monk_absorb_t::monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell )
-  : monk_action_t<absorb_t>( name, &player, spell )
+monk_absorb_t::monk_absorb_t( monk_t *player, std::string_view name,
+                              const spell_data_t *spell_data = spell_data_t::nil() )
+  : monk_action_t<absorb_t>( name, *player, spell_data )
 {
   track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
-monk_melee_attack_t::monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell )
-  : monk_action_t<melee_attack_t>( name, player, spell )
+monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
+                                          const spell_data_t *spell_data = spell_data_t::nil() )
+  : monk_action_t<melee_attack_t>( name, player, spell_data )
 {
   special    = true;
   may_glance = false;
@@ -1024,13 +1028,15 @@ void monk_melee_attack_t::apply_dual_wield_two_handed_scaling()
   }
 }
 
-monk_buff_t::monk_buff_t( monk_td_t &target, util::string_view name, const spell_data_t *spell, const item_t *item )
-  : buff_t( target, name, spell, item )
+monk_buff_t::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
+                          const item_t *item = nullptr )
+  : buff_t( player, name, spell_data, item )
 {
 }
 
-monk_buff_t::monk_buff_t( monk_t &player, util::string_view name, const spell_data_t *spell, const item_t *item )
-  : buff_t( &player, name, spell, item )
+monk_buff_t::monk_buff_t( monk_td_t *player, std::string_view name,
+                          const spell_data_t *spell_data = spell_data_t::nil(), const item_t *item = nullptr )
+  : buff_t( *target, name, spell_data, item )
 {
 }
 
@@ -1054,8 +1060,12 @@ const monk_t &monk_buff_t::p() const
   return *debug_cast<monk_t *>( buff_t::source );
 }
 
-summon_pet_t::summon_pet_t( util::string_view name, util::string_view pname, monk_t *player, const spell_data_t *spell )
-  : monk_spell_t( name, player, spell ), summoning_duration( timespan_t::zero() ), pet_name( pname ), pet( nullptr )
+summon_pet_t::summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
+                            const spell_data_t *spell_data = spell_data_t::nil() )
+  : monk_spell_t( name, player, spell_data ),
+    summoning_duration( timespan_t::zero() ),
+    pet_name( pname ),
+    pet( nullptr )
 {
   harmful = false;
 }
