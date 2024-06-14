@@ -2566,12 +2566,13 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( data().ok() )
     {
+      // effect data missing stack suppress flag for effect #2, manually override
       snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
       // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, IGNORE_STACKS,
+      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat,
                                                          p->talent.moment_of_clarity );
     }
   }
@@ -6406,7 +6407,7 @@ public:
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
-    parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; }, IGNORE_STACKS );
+    parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; } );
 
     const spell_data_t* other_ecl;
     dot_t* druid_td_t::dots_t::* other_dot;
@@ -7792,7 +7793,7 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
     }
 
     // parse this last as it's percent bonus
-    m_data->parse_effects( p->buff.warrior_of_elune, IGNORE_STACKS );
+    m_data->parse_effects( p->buff.warrior_of_elune );
 
     if ( p->specialization() == DRUID_BALANCE )
       aoe_eff = &m_data->effectN( 3 );
@@ -13383,7 +13384,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.touch_the_cosmos_starfall, CONSUME_BUFF );
   parse_effects( p()->buff.touch_the_cosmos_starsurge, CONSUME_BUFF );
   parse_effects( p()->buff.umbral_inspiration );
-  parse_effects( p()->buff.warrior_of_elune, IGNORE_STACKS );
+  parse_effects( p()->buff.warrior_of_elune );
 
   // Feral
   parse_effects( p()->mastery.razor_claws );
@@ -13438,7 +13439,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.gory_fur, CONSUME_BUFF );
   parse_effects( p()->buff.rage_of_the_sleeper );
   parse_effects( p()->talent.reinvigoration, effect_mask_t( true ).disable( p()->talent.innate_resolve.ok() ? 1 : 2 ) );
-  parse_effects( p()->buff.tooth_and_claw, IGNORE_STACKS );
+  parse_effects( p()->buff.tooth_and_claw );
   parse_effects( p()->buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
   parse_effects( p()->buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
 
