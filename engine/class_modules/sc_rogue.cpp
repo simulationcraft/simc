@@ -5139,12 +5139,17 @@ struct killing_spree_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per tick?
+      p()->buffs.flawless_form->trigger();
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
     {
       p()->buffs.disorienting_strikes->trigger();
+    }
+
+    if ( p()->talent.trickster.devious_distraction->ok() )
+    {
+      p()->get_target_data( execute_state->target )->debuffs.fazed->trigger();
     }
   }
 
@@ -5156,12 +5161,6 @@ struct killing_spree_t : public rogue_attack_t
     attack_oh->set_target( d->target );
     attack_mh->execute();
     attack_oh->execute();
-
-    // ALPHA TOCHECK -- Once or refreshing per impact?
-    if ( p()->talent.trickster.devious_distraction->ok() )
-    {
-      p()->get_target_data( d->target )->debuffs.fazed->trigger();
-    }
   }
 };
 
