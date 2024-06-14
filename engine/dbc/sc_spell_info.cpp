@@ -53,6 +53,8 @@ static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util:
   { 25, "Target 2" },
   { 26, "Value Multiplier" },
   { 27, "PvP Coefficient" },
+  { 28, "Scaling Class" },
+  { 29, "Attribute" },
 } );
 
 static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
