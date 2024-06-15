@@ -139,7 +139,6 @@ public:
   bool is_combo_strike();
   bool is_combo_break();
   void combo_strikes_trigger();
-  void brew_cooldown_reduction( double time_reduction );
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
@@ -220,6 +219,14 @@ struct brew_t : base_action_t
   template <typename... Args>
   brew_t( monk_t *player, Args &&...args );
 };
+
+struct brews_t
+{
+  std::unordered_map<unsigned, cooldown_t *> cooldowns;
+
+  void insert_cooldown( action_t *action );
+  void adjust( timespan_t reduction );
+};
 }  // namespace actions
 
 namespace buffs
@@ -234,25 +241,6 @@ struct shuffle_t : actions::monk_buff_t
   void trigger( timespan_t duration );
 };
 }  // namespace buffs
-
-struct brews_t
-{
-  std::vector<action_t *> brew_actions;
-
-  void push_back( action_t *action )
-  {
-    brew_actions.push_back( action );
-  }
-
-  void adjust( timespan_t reduction )
-  {
-    for ( action_t *action : brew_actions )
-    {
-      action->cooldown->adjust( reduction );
-      action->player->sim->print_debug( "REDUCING COOLDOWN OF {} BY {}", action->name(), reduction );
-    }
-  }
-};
 
 inline int sef_spell_index( int x )
 {
@@ -1210,7 +1198,7 @@ public:
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
 
-      brews_t *brews;
+      actions::brews_t *brews;
     } brewmaster;
 
     struct
@@ -1239,10 +1227,7 @@ public:
   {
     propagate_const<cooldown_t *> anvil_and_stave;
     propagate_const<cooldown_t *> blackout_kick;
-    propagate_const<cooldown_t *> black_ox_brew;
-    propagate_const<cooldown_t *> bonedust_brew;
     propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> celestial_brew;
     propagate_const<cooldown_t *> charred_passions;
     propagate_const<cooldown_t *> chi_torpedo;
     propagate_const<cooldown_t *> drinking_horn_cover;
@@ -1250,13 +1235,11 @@ public:
     propagate_const<cooldown_t *> jadefire_stomp;
     propagate_const<cooldown_t *> fists_of_fury;
     propagate_const<cooldown_t *> flying_serpent_kick;
-    propagate_const<cooldown_t *> fortifying_brew;
     propagate_const<cooldown_t *> healing_elixir;
     propagate_const<cooldown_t *> invoke_niuzao;
     propagate_const<cooldown_t *> invoke_xuen;
     propagate_const<cooldown_t *> invoke_yulon;
     propagate_const<cooldown_t *> keg_smash;
-    propagate_const<cooldown_t *> purifying_brew;
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
@@ -1508,7 +1491,6 @@ public:
   bool mark_of_the_crane_max();
   double sck_modifier();
   double calculate_last_stagger_tick_damage( int n ) const;
-  void brew_cooldown_reduction( double );
   bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic
