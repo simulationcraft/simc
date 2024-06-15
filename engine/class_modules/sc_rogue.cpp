@@ -9076,6 +9076,9 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
 
+  if ( is_secondary_action() )
+    return; // You have to actually spend the CP to get the coin - no secondary action finishers grant flips
+
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
