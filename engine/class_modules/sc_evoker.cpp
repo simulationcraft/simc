@@ -1884,9 +1884,8 @@ public:
     {
       add_parse_entry( ab::target_multiplier_effects )
           .set_func( d_fn( &evoker_td_t::dots_t::fire_breath ) )
-          .set_type( USE_DEFAULT )
-          .set_use_stacks( false )
-          .set_value( p()->talent.molten_embers->effectN( 1 ).percent() );
+          .set_value( p()->talent.molten_embers->effectN( 1 ).percent() )
+          .set_eff( &p()->talent.molten_embers->effectN( 1 ) );
     }
   }
 
@@ -5365,6 +5364,12 @@ struct breath_of_eons_t : public evoker_spell_t
       stats->iteration_total_execute_time += delay;
     }
 
+    
+    if ( p()->talent.imminent_destruction.ok() )
+    {
+      p()->buff.imminent_destruction->trigger();
+    }
+
     if ( p()->talent.plot_the_future.ok() )
     {
       make_event( sim, player->gcd_ready - sim->current_time(), [ this ] {
@@ -7643,8 +7648,8 @@ void evoker_t::create_buffs()
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction =
-      MBF( talent.imminent_destruction.ok(), this, "imminent_destruction", find_spell( 411055 ) );
+  buff.imminent_destruction = MBF( talent.imminent_destruction.ok(), this, "imminent_destruction",
+                                   find_spell( specialization() == EVOKER_AUGMENTATION ? 459574 : 411055 ) );
 
   buff.iridescence_blue = MBF( talent.iridescence.ok(), this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_default_value_from_effect( 1 );
