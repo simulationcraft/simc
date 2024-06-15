@@ -426,9 +426,9 @@ struct blessed_hammer_t : public paladin_spell_t
     if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
-      if ( p()->buffs.shake_the_heavens->up() )
+      if ( p()->buffs.templar.shake_the_heavens->up() )
       {
-        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
 
@@ -571,18 +571,18 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( p()->talents.templar.higher_calling->ok() )
       {
         auto extension = timespan_t::from_millis( p()->talents.templar.higher_calling->ok() );
-        if ( p()->buffs.shake_the_heavens->up() )
+        if ( p()->buffs.templar.shake_the_heavens->up() )
         {
-          p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+          p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
         }
       }
     }
     if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
-      if ( p()->buffs.shake_the_heavens->up() )
+      if ( p()->buffs.templar.shake_the_heavens->up() )
       {
-        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
   }
@@ -629,7 +629,7 @@ struct eye_of_tyr_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    p()->buffs.hammer_of_light_ready->trigger();
+    p()->buffs.templar.hammer_of_light_ready->trigger();
     if (p()->talents.templar.undisputed_ruling->ok())
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
@@ -692,7 +692,7 @@ struct judgment_prot_t : public judgment_t
       }
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B2 ) && !p()->buffs.sanctification_empower->up() )
       {
-        p()->buffs.sanctification_tier->trigger();
+        p()->buffs.sanctification->trigger();
       }
     }
   }
@@ -999,7 +999,7 @@ void paladin_t::target_mitigation( school_e school,
   {//todo 
       
     double devoRed = buffs.devotion_aura->value();
-    /* if ( talents.shared_resolve->ok() && ( buffs.sacred_weapon->up() || buffs.holy_bulwark->up() ) )
+    /* if ( talents.shared_resolve->ok() && ( buffs.lightsmith.sacred_weapon->up() || buffs.lightsmith.holy_bulwark->up() ) )
     {
       devoRed *= 1 + talents.shared_resolve->effectN( 1 ).percent();
     }*/
@@ -1007,9 +1007,9 @@ void paladin_t::target_mitigation( school_e school,
   }
 
 
-  if ( buffs.sanctification_tier->up() )
+  if ( buffs.sanctification->up() )
   {
-    s->result_amount *= 1.0 + buffs.sanctification_tier->data().effectN( 1 ).percent() * buffs.sanctification_tier->stack();
+    s->result_amount *= 1.0 + buffs.sanctification->data().effectN( 1 ).percent() * buffs.sanctification->stack();
   }
   if ( buffs.sanctification_empower->up() )
   {
@@ -1338,7 +1338,7 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification_tier = make_buff( this, "sanctification", find_spell( 424616 ) );
+  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
 
   buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
 }

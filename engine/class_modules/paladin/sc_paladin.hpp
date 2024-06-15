@@ -183,7 +183,7 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light;       // T29 2pc
     buff_t* deflecting_light;        // T29 4pc
-    buff_t* sanctification_tier;     // T31 2pc building
+    buff_t* sanctification;     // T31 2pc building
     buff_t* sanctification_empower;  // T31 2pc consecration effect
 
     // Ret
@@ -210,19 +210,26 @@ public:
     buff_t* echoes_of_wrath;  // T31 4pc
 
     // TWW Hero Talents
-    buff_t* blessed_assurance;
-    buff_t* divine_guidance;
-    buff_t* rite_of_sanctification;
-    buff_t* rite_of_adjuration;
-    buff_t* holy_bulwark;
-    buff_t* sacred_weapon;
-    buff_t* hammer_of_light_ready;
-    buff_t* hammer_of_light_free;
-    buff_t* lights_deliverance;
-    buff_t* shake_the_heavens;
-    buff_t* undisputed_ruling;
-    buff_t* endless_wrath;
-    buff_t* sanctification;
+    struct
+    {
+      buff_t* blessed_assurance;
+      buff_t* divine_guidance;
+      buff_t* rite_of_sanctification;
+      buff_t* rite_of_adjuration;
+      buff_t* holy_bulwark;
+      buff_t* sacred_weapon;
+    } lightsmith;
+
+    struct
+    {
+      buff_t* hammer_of_light_ready;
+      buff_t* hammer_of_light_free;
+      buff_t* lights_deliverance;
+      buff_t* shake_the_heavens;
+      buff_t* undisputed_ruling;
+      buff_t* endless_wrath;
+      buff_t* sanctification;
+    } templar;
 
   } buffs;
 
@@ -1173,7 +1180,7 @@ public:
           {
             // Sacred Weapon
             p()->active.armament[ 1 ]->execute();
-            // player()->buffs.sacred_weapon->trigger();
+            // player()->buffs.lightsmith.sacred_weapon->trigger();
           }
           else
           {
@@ -1633,7 +1640,7 @@ public:
     }
     if ( p->talents.lightsmith.divine_guidance->ok() )
     {
-      p->buffs.divine_guidance->trigger();
+      p->buffs.lightsmith.divine_guidance->trigger();
     }
   }
 };
