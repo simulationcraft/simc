@@ -486,7 +486,7 @@ struct consecration_t : public paladin_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if( p()->talents.divine_guidance->ok() )
+    if( p()->talents.lightsmith.divine_guidance->ok() )
     {
       p()->trigger_divine_guidance( s );
     }
@@ -1076,7 +1076,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     double m = paladin_melee_attack_t::action_multiplier();
     if (p()->buffs.blessed_assurance->up())
     {
-      m *= 1.0 + (p()->talents.blessed_assurance->effectN(1)).percent();
+      m *= 1.0 + (p()->talents.lightsmith.blessed_assurance->effectN(1)).percent();
     }
     return m;
   }
@@ -1116,7 +1116,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       p()->t29_4p_prot();
     }
-    //      if ( p()->talents.higher_calling->ok() )
+    if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
       if ( p()->buffs.shake_the_heavens->up() )
@@ -1241,9 +1241,9 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       }
     }
     
-    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.valiance->ok()  && p()->buffs.shining_light_free->up() )
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.lightsmith.valiance->ok()  && p()->buffs.shining_light_free->up() )
     {
-      timespan_t increase = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
+      timespan_t increase = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
       if ( p()->buffs.holy_bulwark->up() )
       {
         p()->buffs.holy_bulwark->extend_duration( p(), increase );
@@ -1254,7 +1254,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       }
       if ( !p()->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
       {
-        timespan_t reduction = timespan_t::from_seconds( p()->talents.valiance->effectN( 1 ).base_value() );
+        timespan_t reduction = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
         p()->cooldowns.holy_armaments->adjust( reduction );
       }
     }
@@ -1411,12 +1411,12 @@ void judgment_t::impact( action_state_t* s )
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );
   }
-  if ( p()->talents.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
+  if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
   {
     p()->trigger_hammer_and_anvil( s );
   }
 
-  if (p()->talents.sanctification->ok())
+  if (p()->talents.templar.sanctification->ok())
   {
     p()->buffs.sanctification->trigger();
   }
@@ -1449,17 +1449,9 @@ void judgment_t::execute()
         p()->buffs.sentinel_decay->extend_duration( p(), extension );
       }
     }
-    // if ( p()->talents.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.shake_the_heavens->up() )
-      {
-        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
-      }
-    }
   }
 
-//      if ( p()->talents.higher_calling->ok() )
+  if ( p()->talents.templar.higher_calling->ok() )
   {
     auto extension = 1000_ms;
     if ( p()->buffs.shake_the_heavens->up() )
@@ -1796,8 +1788,8 @@ struct holy_armaments_t : public paladin_spell_t
     harmful = false;
     hasted_gcd = true;
     name_str_reporting = "Holy Armaments";
-    if ( p->talents.forewarning->ok() )
-      apply_affecting_aura( p->talents.forewarning );
+    if ( p->talents.lightsmith.forewarning->ok() )
+      apply_affecting_aura( p->talents.lightsmith.forewarning );
    }
 
    timespan_t execute_time() const override
@@ -1816,7 +1808,7 @@ void paladin_t::trigger_hammer_and_anvil( action_state_t* s )
 {
    
    // escape if we don't have Hammer and Anvil
-   if ( !talents.hammer_and_anvil->ok() )
+   if ( !talents.lightsmith.hammer_and_anvil->ok() )
     return;
    
    active.hammer_and_anvil->set_target( s->target );
@@ -1828,7 +1820,7 @@ void paladin_t::trigger_hammer_and_anvil( action_state_t* s )
 struct hammer_and_anvil_t : public paladin_spell_t
 { 
    hammer_and_anvil_t( paladin_t* p )
-     :  paladin_spell_t( "hammer_and_anvil", p, p->talents.hammer_and_anvil->effectN( 1 ).trigger() )
+     :  paladin_spell_t( "hammer_and_anvil", p, p->talents.lightsmith.hammer_and_anvil->effectN( 1 ).trigger() )
    {
     background = proc = may_crit = true;
     may_miss                     = false;
@@ -1911,16 +1903,16 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p()->buffs.hammer_of_light_ready->expire();
       p()->buffs.hammer_of_light_free->expire();
     }
-    if ( p()->talents.undisputed_ruling->ok() )
+    if ( p()->talents.templar.undisputed_ruling->ok() )
     {
       p()->buffs.undisputed_ruling->trigger();
     }
-    if (p()->talents.shake_the_heavens->ok())
+    if (p()->talents.templar.shake_the_heavens->ok())
     {
      // needs spelldata help
       p()->buffs.shake_the_heavens->trigger();
     }
-    if (p()->talents.zealous_vindication->ok())
+    if (p()->talents.templar.zealous_vindication->ok())
     {
       p()->trigger_empyrean_hammer( target, 2, 0_ms );
     }
@@ -1929,7 +1921,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    void impact( action_state_t* s ) override
    {
    holy_power_consumer_t::impact( s );
-    if ( p()->talents.undisputed_ruling->ok() )
+    if ( p()->talents.templar.undisputed_ruling->ok() )
     {
       if ( p()->talents.greater_judgment->ok() )
       {
@@ -1955,13 +1947,13 @@ struct empyrean_hammer_t : public paladin_spell_t
     void execute() override
     {
         paladin_spell_t::execute();
-        if ( p()->talents.lights_deliverance->ok() )
+        if ( p()->talents.templar.lights_deliverance->ok() )
         {
             p()->buffs.lights_deliverance->trigger();
         }
-        if (p()->talents.endless_wrath->ok())
+        if (p()->talents.templar.endless_wrath->ok())
         {
-            if ( rng().roll( p()->talents.endless_wrath->effectN( 1 ).percent() ) )
+            if ( rng().roll( p()->talents.templar.endless_wrath->effectN( 1 ).percent() ) )
             {
         p()->cooldowns.hammer_of_wrath->reset( true );
         p()->buffs.endless_wrath->trigger();
@@ -2076,7 +2068,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       p()->buffs.endless_wrath->expire();
     }
-         // if ( p()->talents.higher_calling->ok() )
+    if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
       if ( p()->buffs.shake_the_heavens->up() )
@@ -2136,15 +2128,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
     {
       td( s->target )->debuff.judgment->trigger();
-    }
-
-//      if ( p()->talents.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.shake_the_heavens->up() )
-      {
-        p()->buffs.shake_the_heavens->extend_duration( p(), extension );
-      }
     }
   }
 
@@ -2401,7 +2384,7 @@ void paladin_t::create_actions()
   }
   // Hero Talents
   //Lightsmith
-  if ( talents.hammer_and_anvil->ok() )
+  if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
     active.divine_guidance_damage  = new divine_guidance_damage_t( this );
@@ -3057,31 +3040,48 @@ void paladin_t::init_spells()
   talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
 
   // Hero Talents
-  talents.holy_armaments         = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
-  talents.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctification" );
-  talents.rite_of_adjuration     = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
-  talents.laying_down_arms       = find_talent_spell( talent_tree::HERO, "Laying Down Arms" );
-  talents.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
-  talents.solidarity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
-  talents.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
-  talents.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
-  talents.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
-  talents.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
-  talents.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
-  talents.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
-  talents.excoriation            = find_talent_spell( talent_tree::HERO, "Excoriation" );
-  talents.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
-  talents.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
+  talents.lightsmith.holy_armaments         = find_talent_spell( talent_tree::HERO, "Holy Armaments" );
+
+  talents.lightsmith.rite_of_sanctification = find_talent_spell( talent_tree::HERO, "Rite of Sanctification" );
+  talents.lightsmith.rite_of_adjuration     = find_talent_spell( talent_tree::HERO, "Rite of Adjuration" );
+  talents.lightsmith.solidarity             = find_talent_spell( talent_tree::HERO, "Solidarity" );
+  talents.lightsmith.divine_guidance        = find_talent_spell( talent_tree::HERO, "Divine Guidance" );
+  talents.lightsmith.blessed_assurance      = find_talent_spell( talent_tree::HERO, "Blessed Assurance" );
+
+  talents.lightsmith.laying_down_arms       = find_talent_spell( talent_tree::HERO, "Laying Down Arms" );
+  talents.lightsmith.divine_inspiration     = find_talent_spell( talent_tree::HERO, "Divine Inspiration" );
+  talents.lightsmith.forewarning            = find_talent_spell( talent_tree::HERO, "Forewarning" );
+  talents.lightsmith.fear_no_evil           = find_talent_spell( talent_tree::HERO, "Fear No Evil" );
+  talents.lightsmith.excoriation            = find_talent_spell( talent_tree::HERO, "Excoriation" );
+
+  talents.lightsmith.shared_resolve         = find_talent_spell( talent_tree::HERO, "Shared Resolve" );
+  talents.lightsmith.valiance               = find_talent_spell( talent_tree::HERO, "Valiance" );
+  talents.lightsmith.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
+
+  talents.lightsmith.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
   // Child spell of blessing of the forge, triggered by casting shield of the righteous
-  spells.forges_reckoning       = find_spell( 447258 );
-  talents.lights_guidance       = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
-  talents.empyrean_hammer        = find_spell( 431398 );
-  talents.lights_deliverance     = find_talent_spell( talent_tree::HERO, "Light's Deliverance" );
-  talents.undisputed_ruling      = find_talent_spell( talent_tree::HERO, "Undisputed Ruling" );
-  talents.shake_the_heavens      = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
-  talents.zealous_vindication    = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
-  talents.endless_wrath          = find_talent_spell( talent_tree::HERO, "Endless Wrath" );
-  talents.sanctification         = find_talent_spell( talent_tree::HERO, "Sanctification" );
+  spells.lightsmith.forges_reckoning        = find_spell( 447258 );
+
+  spells.templar.empyrean_hammer          = find_spell( 431398 );
+
+  talents.templar.lights_guidance         = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
+  
+  talents.templar.zealous_vindication     = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
+  talents.templar.for_whom_the_bell_tolls = find_talent_spell( talent_tree::HERO, "For Whom the Bell Tolls" );
+  talents.templar.shake_the_heavens       = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
+  talents.templar.wrathful_descent        = find_talent_spell( talent_tree::HERO, "Wrathful Descent" );
+
+  talents.templar.sacrosanct_crusade      = find_talent_spell( talent_tree::HERO, "Sacrosanct Crusade" );
+  talents.templar.higher_calling          = find_talent_spell( talent_tree::HERO, "Higher Calling" );
+  talents.templar.bonds_of_fellowship     = find_talent_spell( talent_tree::HERO, "Bonds of Fellowship" );
+  talents.templar.unrelenting_charger     = find_talent_spell( talent_tree::HERO, "Unrelenting Charger" );
+
+  talents.templar.endless_wrath           = find_talent_spell( talent_tree::HERO, "Endless Wrath" );
+  talents.templar.sanctification          = find_talent_spell( talent_tree::HERO, "Sanctification" );
+  talents.templar.hammerfall              = find_talent_spell( talent_tree::HERO, "Hammerfall" );
+  talents.templar.undisputed_ruling       = find_talent_spell( talent_tree::HERO, "Undisputed Ruling" );
+
+  talents.templar.lights_deliverance      = find_talent_spell( talent_tree::HERO, "Light's Deliverance" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -4191,8 +4191,9 @@ struct paladin_module_t : public module_t
 
       // This needs further testing, these values are wrong for sure, they're hidden in spell data, though (previous iteration of spell data said 10 RPPM Hasted)
       // It is currently proccing around 5 times too much
-      sacred_weapon_effect->ppm_           = 10.0;
-      sacred_weapon_effect->rppm_scale_    = RPPM_HASTE;
+      /*sacred_weapon_effect->ppm_           = 10.0;
+      sacred_weapon_effect->rppm_scale_    = RPPM_HASTE;*/
+      
 
       sacred_weapon_effect->execute_action = sacred_weapon_proc;
       p->special_effects.push_back( sacred_weapon_effect );

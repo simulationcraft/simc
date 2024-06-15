@@ -332,7 +332,7 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
 
 struct forges_reckoning_t : public paladin_spell_t
 {
-  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.forges_reckoning )
+  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
   {
     background = proc = may_crit = true;
     may_miss                     = false;
@@ -423,7 +423,7 @@ struct blessed_hammer_t : public paladin_spell_t
       p()->t29_4p_prot();
     }
 
-//      if ( p()->talents.higher_calling->ok() )
+    if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
       if ( p()->buffs.shake_the_heavens->up() )
@@ -568,16 +568,16 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       {
         p()->t29_4p_prot();
       }
-      if ( p()->talents.higher_calling->ok() )
+      if ( p()->talents.templar.higher_calling->ok() )
       {
-        auto extension = timespan_t::from_millis( p()->talents.higher_calling->ok() );
+        auto extension = timespan_t::from_millis( p()->talents.templar.higher_calling->ok() );
         if ( p()->buffs.shake_the_heavens->up() )
         {
           p()->buffs.shake_the_heavens->extend_duration( p(), extension );
         }
       }
     }
-    // if ( p()->talents.higher_calling->ok() )
+    if ( p()->talents.templar.higher_calling->ok() )
     {
       auto extension = 1000_ms;
       if ( p()->buffs.shake_the_heavens->up() )
@@ -630,9 +630,9 @@ struct eye_of_tyr_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     p()->buffs.hammer_of_light_ready->trigger();
-    if (p()->talents.undisputed_ruling->ok())
+    if (p()->talents.templar.undisputed_ruling->ok())
     {
-      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.undisputed_ruling->effectN( 2 ).base_value(),
+      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
                           p()->gains.eye_of_tyr );
     }
   }
@@ -886,7 +886,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     p()->buffs.bulwark_of_righteous_fury->expire();
 
-    if (p()->talents.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+    if (p()->talents.lightsmith.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       p()->active.forges_reckoning->execute_on_target(target);
     }
