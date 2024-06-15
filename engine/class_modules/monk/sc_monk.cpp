@@ -2003,10 +2003,12 @@ struct blackout_kick_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     may_combo_strike = true;
     trigger_chiji    = true;
-    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+    cast_during_sck  = p->specialization() != MONK_WINDWALKER;
 
-    aoe = 1 + (int)p->shared.shadowboxing_treads->effectN( 1 ).base_value();
-    cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
+    apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
+    apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
+    apply_affecting_aura( p->talent.windwalker.shadowboxing_treads );
+    apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
 
     if ( p->talent.brewmaster.charred_passions->ok() )
     {
@@ -2020,35 +2022,19 @@ struct blackout_kick_t : public monk_melee_attack_t
       add_child( bok_totm_proc );
     }
 
-    switch ( p->specialization() )
-    {
-      case MONK_BREWMASTER:
-      {
-        apply_dual_wield_two_handed_scaling();
+    if ( p->specialization() == MONK_BREWMASTER || p->specialization() == MONK_WINDWALKER )
+      apply_dual_wield_two_handed_scaling();
 
-        break;
-      }
-      case MONK_WINDWALKER:
-      {
-        if ( p->spec.blackout_kick_2->ok() )
-          // Saved as -2
-          base_costs[ RESOURCE_CHI ] +=
-              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
-        apply_dual_wield_two_handed_scaling();
-        break;
-      }
-      default:
-        break;
-    }
+    if ( p->specialization() == MONK_WINDWALKER && p->spec.blackout_kick_2->ok() )
+      base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
   double composite_target_multiplier( player_t *target ) const override
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    if ( p()->talent.windwalker.shadowboxing_treads.ok() )
-      if ( target != p()->target )
-        m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
+    if ( target != p()->target )
+      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
 
     return m;
   }
@@ -2084,12 +2070,6 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
-
-    am *= 1 + p()->talent.brewmaster.fluidity_of_motion->effectN( 2 ).percent();
-
-    am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
-
     am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
     am *= 1 + p()->buff.blackout_reinforcement->check_value();
@@ -2120,8 +2100,6 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
 
       p()->buff.blackout_combo->trigger();
-
-      p()->buff.hit_scheme->trigger();
 
       if ( p()->spec.blackout_kick_3->ok() )
       {
@@ -2161,6 +2139,8 @@ struct blackout_kick_t : public monk_melee_attack_t
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
+
+    p()->buff.hit_scheme->trigger();
 
     // Teachings of the Monastery
     // Used by both Windwalker and Mistweaver
@@ -3923,10 +3903,10 @@ struct chi_torpedo_t : public monk_spell_t
 // ==========================================================================
 // Crackling Jade Lightning
 // ==========================================================================
-// Power of the Thunder King TODO: Either 
+// Power of the Thunder King TODO: Either
 // a) Copy Warlock's Soul Rot implementation for Drain Soul.
-// b)  channel do 0 damage and use a fake tick_action to do a single instance 
-// of aoe damage on each tick, and on the tick_action override 
+// b)  channel do 0 damage and use a fake tick_action to do a single instance
+// of aoe damage on each tick, and on the tick_action override
 // action_t::amount_type() to return result_amount_type::DMG_OVER_TIME
 
 struct crackling_jade_lightning_t : public monk_spell_t
@@ -8726,8 +8706,8 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.darting_hurricane.ok() )
   {
-    create_proc_callback( 
-        talent.windwalker.darting_hurricane.spell(), 
+    create_proc_callback(
+        talent.windwalker.darting_hurricane.spell(),
         []( monk_t *p, action_state_t *state ) {
           if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
                state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
