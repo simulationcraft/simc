@@ -98,7 +98,8 @@ private:
 public:
   using base_t = parse_action_effects_t<Base>;
 
-  monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
+  template <typename... Args>
+  monk_action_t( Args &&...args );
   std::string full_name() const;
   monk_t *p();
   const monk_t *p() const;
@@ -158,7 +159,7 @@ public:
 
 struct monk_spell_t : public monk_action_t<spell_t>
 {
-  monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+  monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
   double action_multiplier() const override;
@@ -166,8 +167,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
 struct monk_heal_t : public monk_action_t<heal_t>
 {
-  monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+  monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_multiplier( player_t *target ) const override;
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *action_state ) const override;
@@ -176,13 +176,12 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
-  monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+  monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
 };
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
-  monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+  monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double action_multiplier() const override;
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
@@ -192,10 +191,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct monk_buff_t : public buff_t
 {
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY IF POSSIBLE
-  monk_buff_t( monk_td_t &target, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
-  monk_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
   monk_td_t &get_td( player_t *target );
   const monk_td_t *find_td( player_t *target ) const;
@@ -209,9 +207,8 @@ struct summon_pet_t : public monk_spell_t
   std::string_view pet_name;
   pet_t *pet;
 
-  summon_pet_t( std::string_view name, std::string_view pname, monk_t *player,
-                const spell_data_t *spell = spell_data_t::nil() );
-
+  summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
+                const spell_data_t *spell_data = spell_data_t::nil() );
   void init_finished() override;
   void execute() override;
   bool ready() override;
@@ -233,7 +230,7 @@ struct shuffle_t : actions::monk_buff_t
   const timespan_t max_duration;
 
   using monk_buff_t::trigger;
-  shuffle_t( monk_t &monk );
+  shuffle_t( monk_t *monk );
   void trigger( timespan_t duration );
 };
 }  // namespace buffs
@@ -1471,11 +1468,9 @@ public:
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  void pre_analyze_hook() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
-  void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t *s ) override;
   void assess_heal( school_e, result_amount_type, action_state_t *s ) override;
   void invalidate_cache( cache_e ) override;
   void init_action_list() override;
@@ -1501,7 +1496,6 @@ public:
                                               const spell_data_t *affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-  void merge( player_t &other ) override;
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
