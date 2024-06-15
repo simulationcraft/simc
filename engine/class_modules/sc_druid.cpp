@@ -862,7 +862,6 @@ public:
     player_talent_t wild_growth;
 
     // Multi-spec
-    player_talent_t circle_of_life_and_death;
     player_talent_t convoke_the_spirits;
     player_talent_t survival_instincts;
 
@@ -921,6 +920,7 @@ public:
     player_talent_t bloodtalons;
     player_talent_t brutal_slash;
     player_talent_t carnivorous_instinct;
+    player_talent_t circle_of_life_and_death_cat;
     player_talent_t coiled_to_spring;
     player_talent_t doubleclawed_rake;
     player_talent_t dreadful_bleeding;
@@ -962,6 +962,7 @@ public:
     player_talent_t blood_frenzy;
     player_talent_t brambles;
     player_talent_t bristling_fur;
+    player_talent_t circle_of_life_and_death_bear;
     player_talent_t dream_of_cenarius_bear;
     player_talent_t earthwarden;
     player_talent_t elunes_favored;
@@ -4148,7 +4149,7 @@ struct feral_frenzy_t : public cat_attack_t
       dot_name = "feral_frenzy_tick";
     }
 
-    // Small hack to properly distinguish instant ticks from the driver, from actual periodic ticks from the bleed
+    // Small hack to properly report instant ticks from the driver, from actual periodic ticks from the bleed
     result_amount_type report_amount_type( const action_state_t* s ) const override
     {
       return is_direct_damage ? result_amount_type::DMG_DIRECT : s->result_type;
@@ -4636,7 +4637,7 @@ struct primal_wrath_t : public cat_finisher_t
     snapshots.bloodtalons = true;
 
     auto m_data = p->get_modified_spell( &data() )
-      ->parse_effects( p->talent.circle_of_life_and_death )
+      ->parse_effects( p->talent.circle_of_life_and_death_cat )
       ->parse_effects( p->talent.veinripper );
 
     if ( data().ok() )
@@ -9408,7 +9409,6 @@ void druid_t::init_spells()
 
   // Multi-Spec
   sim->print_debug( "Initializing multi-spec talents..." );
-  talent.circle_of_life_and_death       = ST( "Circle of Life and Death" );
   talent.convoke_the_spirits            = ST( "Convoke the Spirits" );
   talent.survival_instincts             = ST( "Survival Instincts" );
 
@@ -9469,6 +9469,7 @@ void druid_t::init_spells()
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.brutal_slash                   = ST( "Brutal Slash" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
+  talent.circle_of_life_and_death_cat   = STS( "Circle of Life and Death", DRUID_FERAL );
   talent.coiled_to_spring               = ST( "Coiled to Spring" );
   talent.doubleclawed_rake              = ST( "Double-Clawed Rake" );
   talent.dreadful_bleeding              = ST( "Dreadful Bleeding" );
@@ -9511,6 +9512,7 @@ void druid_t::init_spells()
   talent.blood_frenzy                   = ST( "Blood Frenzy" );
   talent.brambles                       = ST( "Brambles" );
   talent.bristling_fur                  = ST( "Bristling Fur" );
+  talent.circle_of_life_and_death_bear  = STS( "Circle of Life and Death", DRUID_GUARDIAN );
   talent.dream_of_cenarius_bear         = STS( "Dream of Cenarius", DRUID_GUARDIAN );
   talent.earthwarden                    = ST( "Earthwarden" );
   talent.elunes_favored                 = ST( "Elune's Favored" );
@@ -12652,7 +12654,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     ->set_cooldown( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-    ->apply_affecting_aura( source.talent.circle_of_life_and_death );
+    ->apply_affecting_aura( source.talent.circle_of_life_and_death_bear );
 
   debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth_debuff", source.spec.sabertooth )
     ->set_trigger_spell( source.talent.sabertooth )
@@ -13241,9 +13243,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.primal_fury );
   action.apply_affecting_aura( talent.starlight_conduit );
 
-  // Multi-spec
-  action.apply_affecting_aura( talent.circle_of_life_and_death );
-
   // Balance
   action.apply_affecting_aura( talent.cosmic_rapidity );
   action.apply_affecting_aura( talent.elunes_guidance );
@@ -13259,6 +13258,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Feral 
   action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.berserk_heart_of_the_lion );
+  action.apply_affecting_aura( talent.circle_of_life_and_death_cat );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
@@ -13267,6 +13267,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.wild_slashes );
 
   // Guardian
+  action.apply_affecting_aura( talent.circle_of_life_and_death_bear );
   action.apply_affecting_aura( talent.flashing_claws );
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
@@ -13330,7 +13331,7 @@ void druid_t::apply_affecting_auras( buff_t& buff )
   // Guardian
   buff.apply_affecting_aura( spec.ursine_adept );
   buff.apply_affecting_aura( talent.berserk_unchecked_aggression );
-  buff.apply_affecting_aura( talent.circle_of_life_and_death );
+  buff.apply_affecting_aura( talent.circle_of_life_and_death_bear );
   buff.apply_affecting_aura( talent.reinforced_fur );
   buff.apply_affecting_aura( talent.ursocs_endurance );
 
