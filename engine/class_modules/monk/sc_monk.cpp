@@ -3311,9 +3311,9 @@ struct auto_attack_t : public monk_melee_attack_t
 // ==========================================================================
 // Keg Smash
 // ==========================================================================
-struct keg_smash_n_t : monk_melee_attack_t
+struct keg_smash_t : monk_melee_attack_t
 {
-  keg_smash_n_t( monk_t *player, std::string_view options_str, std::string_view name )
+  keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name )
     : monk_melee_attack_t( player, name, player->talents.brewmaster.keg_smash )
   {
     parse_options( options_str );
@@ -3815,27 +3815,20 @@ namespace spells
 // ==========================================================================
 // Special Delivery
 // ==========================================================================
-
 struct special_delivery_t : public monk_spell_t
 {
-  special_delivery_t( monk_t *p ) : monk_spell_t( p, "special_delivery", p->passives.special_delivery )
+  special_delivery_t( monk_t *player )
+    : monk_spell_t( player, "special_delivery", player->passives.special_delivery->effectN( 1 ).trigger() )
   {
-    may_block = may_dodge = may_parry = true;
-    background                        = true;
-    trigger_gcd                       = timespan_t::zero();
-    aoe                               = -1;
-    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
-    radius                            = data().effectN( 1 ).radius();
+    background   = true;
+    travel_delay = player->passives.special_delivery->missile_speed();
   }
 
-  timespan_t travel_time() const override
+  void execute() override
   {
-    return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
-  }
-
-  double cost() const override
-  {
-    return 0;
+    if ( !p()->talent.brewmaster.special_delivery->ok() )
+      return;
+    monk_spell_t::execute();
   }
 };
 
@@ -3845,10 +3838,9 @@ struct special_delivery_t : public monk_spell_t
 
 struct black_ox_brew_t : public brew_t<monk_spell_t>
 {
-  special_delivery_t *delivery;
+  // special_delivery_t *delivery;
   black_ox_brew_t( monk_t *player, util::string_view options_str )
-    : brew_t<monk_spell_t>( player, "black_ox_brew", player->talent.brewmaster.black_ox_brew ),
-      delivery( new special_delivery_t( player ) )
+    : brew_t<monk_spell_t>( player, "black_ox_brew", player->talent.brewmaster.black_ox_brew )
   {
     parse_options( options_str );
 
@@ -3872,12 +3864,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
 
-    if ( p()->talent.brewmaster.special_delivery->ok() )
-    {
-      delivery->set_target( target );
-      delivery->execute();
-    }
-
+    p()->active_actions.special_delivery->execute();
     p()->buff.celestial_flames->trigger();
   }
 };
@@ -4191,11 +4178,8 @@ struct breath_of_fire_t : public monk_spell_t
 
 struct fortifying_brew_t : brew_t<monk_spell_t>
 {
-  special_delivery_t *delivery;
-
   fortifying_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talents.monk.fortifying_brew.find_override_spell() ),
-      delivery( new special_delivery_t( p ) )
+    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talents.monk.fortifying_brew.find_override_spell() )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
@@ -4211,13 +4195,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     monk_spell_t::execute();
 
     p()->buff.fortifying_brew->trigger();
-
-    if ( p()->talent.brewmaster.special_delivery->ok() )
-    {
-      delivery->set_target( target );
-      delivery->execute();
-    }
-
+    p()->active_actions.special_delivery->execute();
     p()->buff.celestial_flames->trigger();
   }
 };
@@ -4289,33 +4267,23 @@ struct exploding_keg_t : public monk_spell_t
 // ==========================================================================
 // Purifying Brew
 // ==========================================================================
-
-// Gai Plin's Imperial Brew Heal ============================================
-struct gai_plins_imperial_brew_heal_t : public monk_heal_t
-{
-  gai_plins_imperial_brew_heal_t( monk_t *p )
-    : monk_heal_t( p, "gai_plins_imperial_brew_heal", p->passives.gai_plins_imperial_brew_heal )
-  {
-    background = true;
-  }
-
-  void init() override
-  {
-    monk_heal_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
-
 struct purifying_brew_t : public brew_t<monk_spell_t>
 {
-  special_delivery_t *delivery;
-  gai_plins_imperial_brew_heal_t *gai_plin;
+  struct gai_plins_imperial_brew_t : monk_heal_t
+  {
+    gai_plins_imperial_brew_t( monk_t *player )
+      : monk_heal_t( player, "gai_plins_imperial_brew", player->passives.gai_plins_imperial_brew_heal )
+    {
+      background     = true;
+      snapshot_flags = update_flags = 0;
+    }
+  };
 
-  purifying_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_spell_t>( p, "purifying_brew", p->talent.brewmaster.purifying_brew ),
-      delivery( new special_delivery_t( p ) ),
-      gai_plin( new gai_plins_imperial_brew_heal_t( p ) )
+  gai_plins_imperial_brew_t *gai_plins;
+
+  purifying_brew_t( monk_t *player, util::string_view options_str )
+    : brew_t<monk_spell_t>( player, "purifying_brew", player->talent.brewmaster.purifying_brew ),
+      gai_plins( new gai_plins_imperial_brew_t( player ) )
   {
     parse_options( options_str );
 
@@ -4323,9 +4291,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     cast_during_sck = true;
     use_off_gcd     = true;
 
-    cooldown->charges += (int)p->talent.brewmaster.improved_purifying_brew->effectN( 1 ).base_value();
-
-    cooldown->duration *= 1 + p->talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
+    apply_affecting_aura( p()->talent.brewmaster.light_brewing );
   }
 
   bool ready() override
@@ -4340,14 +4306,24 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     monk_spell_t::execute();
 
     p()->buff.pretense_of_instability->trigger();
-
-    if ( p()->talent.brewmaster.special_delivery->ok() )
-    {
-      delivery->set_target( target );
-      delivery->execute();
-    }
-
     p()->buff.celestial_flames->trigger();
+    p()->active_actions.special_delivery->execute();
+
+    double stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
+    if ( stacks > 0 )
+      p()->buff.purified_chi->trigger( stacks );
+
+    double purify_percent = data().effectN( 1 ).percent();
+    double cleared        = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
+    p()->buff.recent_purifies->trigger( 1, cleared );
+
+    double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
+    if ( healed )
+    {
+      gai_plins->base_dd_min = gai_plins->base_dd_max = healed;
+      gai_plins->target                               = p();
+      gai_plins->execute();
+    }
 
     if ( p()->buff.blackout_combo->up() )
     {
@@ -4355,29 +4331,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       p()->stagger[ "Stagger" ]->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
       p()->buff.blackout_combo->expire();
-    }
-
-    if ( p()->talent.brewmaster.improved_celestial_brew->ok() )
-    {
-      double stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
-      if ( stacks > 0 )
-        p()->buff.purified_chi->trigger( stacks );
-    }
-
-    // Reduce stagger damage
-    auto purifying_percent = data().effectN( 1 ).percent();
-    purifying_percent +=
-        p()->buff.brewmasters_rhythm->stack() * p()->sets->set( MONK_BREWMASTER, T29, B4 )->effectN( 1 ).percent();
-
-    double cleared = p()->stagger[ "Stagger" ]->purify_percent( purifying_percent, "purifying_brew" );
-    p()->buff.recent_purifies->trigger( 1, cleared );
-
-    if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
-    {
-      auto healed           = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
-      gai_plin->base_dd_min = gai_plin->base_dd_max = healed;
-      gai_plin->target                              = p();
-      gai_plin->execute();
     }
   }
 };
@@ -5919,30 +5872,6 @@ namespace absorbs
 // ==========================================================================
 // Celestial Brew
 // ==========================================================================
-
-struct special_delivery_t : public monk_spell_t
-{
-  special_delivery_t( monk_t *p ) : monk_spell_t( p, "special_delivery", p->passives.special_delivery )
-  {
-    may_block = may_dodge = may_parry = true;
-    background                        = true;
-    trigger_gcd                       = timespan_t::zero();
-    aoe                               = -1;
-    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
-    radius                            = data().effectN( 1 ).radius();
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-};
-
 struct celestial_brew_t : public brew_t<monk_absorb_t>
 {
   struct celestial_brew_t_state_t : public action_state_t
@@ -5958,11 +5887,9 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       return PROC2_CAST_HEAL;
     }
   };
-  special_delivery_t *delivery;
 
   celestial_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_absorb_t>( p, "celestial_brew", p->talent.brewmaster.celestial_brew ),
-      delivery( new special_delivery_t( p ) )
+    : brew_t<monk_absorb_t>( p, "celestial_brew", p->talent.brewmaster.celestial_brew )
   {
     parse_options( options_str );
     harmful = may_crit = false;
@@ -6005,16 +5932,9 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     monk_absorb_t::execute();
 
     p()->buff.purified_chi->expire();
-
     p()->buff.pretense_of_instability->trigger();
-
-    if ( p()->talent.brewmaster.special_delivery->ok() )
-    {
-      delivery->set_target( target );
-      delivery->execute();
-    }
-
     p()->buff.celestial_flames->trigger();
+    p()->active_actions.special_delivery->execute();
   }
 };
 
@@ -6926,7 +6846,7 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "invoke_niuzao_the_black_ox" )
     return new niuzao_spell_t( this, options_str );
   if ( name == "keg_smash" )
-    return new keg_smash_n_t( this, options_str, "keg_smash" );
+    return new keg_smash_t( this, options_str, "keg_smash" );
   if ( name == "purifying_brew" )
     return new purifying_brew_t( this, options_str );
   if ( name == "provoke" )
@@ -7733,7 +7653,7 @@ void monk_t::init_spells()
   passives.shuffle                      = find_spell( 215479 );
   passives.keg_smash_buff               = find_spell( 196720 );
   passives.shaohaos_might               = find_spell( 337570 );
-  passives.special_delivery             = find_spell( 196733 );
+  passives.special_delivery             = find_spell( 196732 );
   passives.stagger_self_damage          = find_spell( 124255 );
   passives.heavy_stagger                = find_spell( 124273 );
   passives.stomp                        = find_spell( 227291 );
@@ -7846,6 +7766,7 @@ void monk_t::init_spells()
   // Brewmaster
   if ( spec_tree == MONK_BREWMASTER )
   {
+    active_actions.special_delivery           = new actions::special_delivery_t( this );
     active_actions.breath_of_fire             = new actions::spells::breath_of_fire_dot_t( this );
     active_actions.charred_passions           = new actions::attacks::charred_passions_sck_t( this );
     active_actions.celestial_fortune          = new actions::heals::celestial_fortune_t( this );
@@ -7857,9 +7778,9 @@ void monk_t::init_spells()
     active_actions.rising_sun_kick_press_the_advantage =
         new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
     active_actions.press_the_advantage.keg_smash =
-        new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_n_t>( this, "keg_smash_pta" );
+        new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_t>( this, "keg_smash_pta" );
     // active_actions.press_the_advantage.rising_sun_kick =
-    //     new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_n_t>( this, "keg_smash" );
+    //     new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_t>( this, "keg_smash" );
     active_actions.chi_surge = new actions::spells::chi_surge_t( this );
     if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
       active_actions.charred_dreams_dmg_2p = new actions::attacks::charred_dreams_dmg_2p_t( this );

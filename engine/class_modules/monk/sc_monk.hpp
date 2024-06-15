@@ -369,6 +369,7 @@ public:
     propagate_const<action_t *> flurry_strikes;
 
     // Brewmaster
+    propagate_const<action_t *> special_delivery;
     propagate_const<action_t *> breath_of_fire;
     propagate_const<action_t *> charred_passions;
     propagate_const<heal_t *> celestial_fortune;
