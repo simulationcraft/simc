@@ -4350,8 +4350,9 @@ struct purifying_brew_t : public monk_spell_t
 
   bool ready() override
   {
-    // Irrealistic of in-game, but let's make sure stagger is actually present
-    return p()->stagger[ "Stagger" ]->is_ticking();
+    if ( p()->stagger[ "Stagger" ]->is_ticking() )
+      return monk_spell_t::ready();
+    return false;
   }
 
   void execute() override
@@ -7906,12 +7907,9 @@ void monk_t::init_spells()
   // Active Action Spells
 
   // General
-  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( this );
-  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( this );
-  active_actions.bountiful_brew     = new actions::spells::bountiful_brew_t( this );
-  active_actions.chi_wave           = new actions::chi_wave_t( this );
-  active_actions.rushing_jade_wind  = new actions::rjw_tick_action_t( this );
-  windwalking_aura                  = new actions::windwalking_aura_t( this );
+  active_actions.chi_wave          = new actions::chi_wave_t( this );
+  active_actions.rushing_jade_wind = new actions::rjw_tick_action_t( this );
+  windwalking_aura                 = new actions::windwalking_aura_t( this );
 
   // Shado-Pan
   active_actions.flurry_strikes = new actions::flurry_strikes_t( this );

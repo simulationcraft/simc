@@ -25,7 +25,6 @@ actions.igcd+=/weapons_of_order
 actions.igcd+=/touch_of_death
 actions.igcd+=/exploding_keg
 actions.igcd+=/celestial_brew
-actions.igcd+=/bonedust_brew
 
 actions.rota+=/chi_burst
 actions.rota+=/blackout_kick
