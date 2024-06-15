@@ -1867,6 +1867,7 @@ struct rite_of_adjuration_t : public weapon_enchant_t
   {
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_adjuration->execute();
+    p()->adjust_health_percent();
   }
 };
 
@@ -2830,8 +2831,11 @@ void paladin_t::create_buffs()
   buffs.lightsmith.holy_bulwark          = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
   buffs.lightsmith.sacred_weapon         = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.lightsmith.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
-  buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell(433550) );
-  buffs.lightsmith.rite_of_adjuration = make_buff( this, "rite_of_adjuration", find_spell( 433584 ) );
+  buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell( 433550 ) )
+    ->add_invalidate(CACHE_STRENGTH)
+    ->add_invalidate(CACHE_ARMOR);
+  buffs.lightsmith.rite_of_adjuration     = make_buff( this, "rite_of_adjuration", find_spell( 433584 ) )
+    ->add_invalidate( CACHE_STAMINA );
 
 
   buffs.templar.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
@@ -3333,6 +3337,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 
     if ( buffs.sentinel->up() )
       m *= 1.0 + buffs.sentinel->get_health_bonus();
+
+    if ( buffs.lightsmith.rite_of_adjuration->up() )
+      m *= 1.0 + buffs.lightsmith.rite_of_adjuration->data().effectN(1).percent();
   }
 
   if ( attr == ATTR_STRENGTH )
@@ -3342,6 +3349,8 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
       m *= 1.0 + buffs.redoubt->stack_value();
+    if ( buffs.lightsmith.rite_of_sanctification->up() )
+      m *= 1.0 + buffs.lightsmith.rite_of_sanctification->data().effectN( 1 ).percent();
   }
 
   return m;
@@ -3429,6 +3438,9 @@ double paladin_t::composite_base_armor_multiplier() const
 
   if ( talents.faiths_armor->ok() && buffs.faiths_armor->up() )
     a *= 1.0 + buffs.faiths_armor->default_value;
+
+  if ( buffs.lightsmith.rite_of_sanctification->up() )
+    a *= 1.0 + buffs.lightsmith.rite_of_sanctification->data().effectN( 2 ).percent();
 
   return a;
 }
