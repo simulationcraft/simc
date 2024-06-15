@@ -126,6 +126,7 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* infernos_blessing;
     buff_t* ebon_might;
     buff_t* shifting_sands;
+    buff_t* thread_of_fate;
 
     // Legendary
     buff_t* unbound_surge;
@@ -232,18 +233,18 @@ struct simple_timed_buff_t : public buff_t
   bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
-    bool b = false;
+    bool trigger_buff = false;
 
     for ( auto* p : sim->target_non_sleeping_list )
     {
       if ( !p->is_sleeping() && !( p->debuffs.invulnerable && p->debuffs.invulnerable->check() ) )
       {
-        b = true;
+        trigger_buff = true;
         break;
       }
     }
 
-    if ( !b )
+    if ( !trigger_buff )
     {
       timespan_t next = timespan_t::max();
 
@@ -259,24 +260,24 @@ struct simple_timed_buff_t : public buff_t
       }
 
       next = next < timespan_t::max() ? next : 1_s;
-      next += rng().gauss<100,25>();
+      next += rng().gauss<100, 25>();
 
       register_next_trigger( next );
 
       return false;
     }
 
-    b = buff_t::trigger( stacks, value, chance, duration );
+    trigger_buff = buff_t::trigger( stacks, value, chance, duration );
 
-    if ( b )
+    if ( trigger_buff )
     {
       if ( cooldown && cooldown->remains() > 0_s )
       {
-        register_next_trigger( cooldown->remains() + rng().gauss<100,25>() );
+        register_next_trigger( cooldown->remains() + rng().gauss<100, 25>() );
       }
     }
 
-    return b;
+    return trigger_buff;
   }
 };
 
@@ -697,7 +698,7 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
-  vector_with_callback<player_t*> allies_with_my_thread_of_fate;
+  vector_with_callback<buff_t*> allied_thread_of_fate_buffs;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::map<player_t*, buff_t*> allied_major_cds;
   player_t* last_scales_target;
@@ -996,7 +997,7 @@ struct evoker_t : public player_t
     player_talent_t fate_mirror;
     const spell_data_t* fate_mirror_damage;
     player_talent_t rumbling_earth;
-    player_talent_t burning_embers;
+    player_talent_t molten_embers;
 
     struct chronowarden_t
     {
@@ -1878,6 +1879,15 @@ public:
           },
           p()->spec.fire_breath_damage );
     }
+
+    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
+    {
+      add_parse_entry( ab::target_multiplier_effects )
+          .set_func( d_fn( &evoker_td_t::dots_t::fire_breath ) )
+          .set_type( USE_DEFAULT )
+          .set_use_stacks( false )
+          .set_value( p()->talent.molten_embers->effectN( 1 ).percent() );
+    }
   }
 
   template <typename... Ts>
@@ -1941,13 +1951,16 @@ struct essence_base_t : public BASE
   double titanic_mul;
   double obsidian_shards_mul;
   double enkindle_mul;
+  timespan_t master_of_destiny_duration;
 
   essence_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : BASE( n, p, s, o ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
       obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() ),
-      enkindle_mul( p->talent.flameshaper.enkindle->effectN( 1 ).percent() )
+      enkindle_mul( p->talent.flameshaper.enkindle->effectN( 1 ).percent() ),
+      master_of_destiny_duration(
+          timespan_t::from_seconds( p->talent.chronowarden.master_of_destiny->effectN( 1 ).base_value() ) )
   {
   }
 
@@ -1966,6 +1979,22 @@ struct essence_base_t : public BASE
       }
       if ( !BASE::rng().roll( hoarded_pct ) )
         BASE::p()->buff.essence_burst->decrement();
+    }
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( BASE::p()->talent.chronowarden.master_of_destiny.ok() && BASE::base_costs[ RESOURCE_ESSENCE ] > 0 )
+    {
+      for ( auto& b : BASE::p()->allied_thread_of_fate_buffs )
+      {
+        if ( b->check() )
+        {
+          b->extend_duration( BASE::player, master_of_destiny_duration );
+        }
+      }
     }
   }
 };
@@ -2029,6 +2058,126 @@ public:
 template <class BASE>
 struct empowered_release_t : public empowered_base_t<BASE>
 {
+  struct threads_of_fate_t : public evoker_augment_t
+  {
+    threads_of_fate_t( evoker_t* p ) : evoker_augment_t( "threads_of_fate", p, p->talent.chronowarden.thread_of_fate_buff )
+    {
+      background   = true;
+
+      if ( aoe == 0 )
+        aoe = 1;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      evoker_augment_t::impact( s );
+
+      p()->get_target_data( s->target )->buffs.thread_of_fate->trigger();
+    }
+
+    size_t available_targets( std::vector<player_t*>& target_list ) const override
+    {
+      std::vector<player_t*> helper_list;
+
+      target_list.clear();
+
+      if ( as<int>( sim->player_no_pet_list.size() ) <= n_targets() )
+      {
+        for ( const auto& t : sim->player_no_pet_list )
+        {
+          if ( !t->is_sleeping() )
+            target_list.push_back( t );
+        }
+
+        return target_list.size();
+      }
+
+      for ( const auto& t : sim->player_no_pet_list )
+      {
+        if ( !t->is_sleeping() && t != player )
+        {
+          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+               t->specialization() != EVOKER_AUGMENTATION && p()->get_target_data( t )->buffs.ebon_might->check() &&
+               !p()->get_target_data( t )->buffs.thread_of_fate->check() )
+          {
+            target_list.push_back( t );
+          }
+          else
+          {
+            helper_list.push_back( t );
+          }
+        }
+      }
+
+      if ( as<int>( target_list.size() ) >= n_targets() )
+      {
+        if ( as<int>( target_list.size() ) > n_targets() )
+        {
+          rng().shuffle( target_list.begin(), target_list.end() );
+        }
+        return target_list.size();
+      }
+
+      std::vector<std::function<bool( player_t* )>> lambdas = {
+          [ this ]( player_t* t ) {
+            return p()->get_target_data( t )->buffs.ebon_might->check() &&
+                   !p()->get_target_data( t )->buffs.thread_of_fate->check();
+          },
+          [ this ]( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   t->specialization() != EVOKER_AUGMENTATION &&
+                   !p()->get_target_data( t )->buffs.thread_of_fate->check();
+          },
+          [ this ]( player_t* t ) {
+            return !p()->get_target_data( t )->buffs.thread_of_fate->check();
+          },
+          []( player_t* t ) {
+            return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+                   t->specialization() != EVOKER_AUGMENTATION;
+          },
+          []( player_t* ) { return true; } };
+
+      for ( auto& fn : lambdas )
+      {
+        auto pos = target_list.size();
+
+        for ( size_t i = 0; i < helper_list.size(); )
+        {
+          if ( fn( helper_list[ i ] ) )
+          {
+            target_list.push_back( helper_list[ i ] );
+            erase_unordered( helper_list, helper_list.begin() + i );
+          }
+          else
+          {
+            i++;
+          }
+        }
+
+        if ( as<int>( target_list.size() ) >= n_targets() )
+        {
+          if ( target_list.size() - pos > 1 )
+          {
+            rng().shuffle( target_list.begin() + pos + 1, target_list.end() );
+          }
+
+          return target_list.size();
+        }
+      }
+
+      return target_list.size();
+    }
+
+    // No point caching using basic cache, cache would be ruined by every cast.
+    // TODO: If noticable lag caused by this target list implement custom cache.
+    std::vector<player_t*>& target_list() const override
+    {
+      available_targets( target_cache.list );
+
+      return target_cache.list;
+    }
+  };
+
   struct shifting_sands_t : public evoker_augment_t
   {
     shifting_sands_t( evoker_t* p ) : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) )
@@ -2164,11 +2313,15 @@ struct empowered_release_t : public empowered_base_t<BASE>
   timespan_t extend_tier29_4pc;
   timespan_t extend_ebon;
   action_t* sands;
+  action_t* threads_of_fate;
 
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : ab( name, p, spell ),
       extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
       sands( p->specialization() == EVOKER_AUGMENTATION ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
+                                                        : nullptr ),
+      threads_of_fate( p->talent.chronowarden.threads_of_fate.enabled()
+                           ? p->get_secondary_action<threads_of_fate_t>( "threads_of_fate" )
                                                         : nullptr )
   {
     ab::dual = true;
@@ -2204,6 +2357,10 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
     if ( sands )
       sands->execute();
+
+    if ( threads_of_fate && ab::p()->buff.temporal_burst->check() )
+      threads_of_fate->execute();
+
   }
 };
 
@@ -2726,11 +2883,13 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 {
   using base_t = empowered_release_spell_t;
 
-
   timespan_t animosity_extend;
   timespan_t animosity_max_duration;
+
   empowered_release_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s )
-    : empowered_release_t( n, p, s ), animosity_extend(), animosity_max_duration()
+    : empowered_release_t( n, p, s ),
+      animosity_extend(),
+      animosity_max_duration()
   {
     animosity_extend     = p->talent.animosity->effectN( 1 ).time_value();
     animosity_max_duration = p->talent.dragonrage->duration() + p->talent.animosity->effectN( 2 ).time_value();
@@ -4829,6 +4988,7 @@ struct upheaval_t : public empowered_charge_spell_t
       if ( is_rumbling_earth )
       {
         sands = nullptr;
+        threads_of_fate = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
       }
       else if ( p->talent.rumbling_earth.enabled() )
@@ -5707,13 +5867,15 @@ public:
     evoker_t* source;
     spells::thread_of_fate_damage_t* thread_of_fate_damage;
     spells::thread_of_fate_heal_t* thread_of_fate_heal;
+    buff_t* source_buff;
 
     double mult;
 
-    thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+    thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, buff_t* source_buff_ )
       : dbc_proc_callback_t( p, e ),
         source( source ),
-        mult( source->talent.chronowarden.thread_of_fate_buff->effectN( 1 ).percent() )
+        mult( source->talent.chronowarden.thread_of_fate_buff->effectN( 1 ).percent() ),
+        source_buff( source_buff_ )
     {
       allow_pet_procs = true;
       deactivate();
@@ -5736,6 +5898,8 @@ public:
       double da = s->result_amount;
       if ( da > 0 )
       {
+        da *= source_buff->value();
+
         if ( s->target->is_enemy() )
         {
           thread_of_fate_damage->evoker = source;
@@ -5757,7 +5921,7 @@ public:
     : bb( td, "thread_of_fate", static_cast<evoker_t*>( td.source )->talent.chronowarden.thread_of_fate_buff ),
       thread_callback( nullptr )
   {
-    set_default_value( data().effectN(1).percent() );
+    set_default_value( data().effectN( 1 ).percent() );
     set_chance( 1.0 );
 
     auto thread_effect          = new special_effect_t( td.target );
@@ -5768,20 +5932,20 @@ public:
 
     td.target->special_effects.push_back( thread_effect );
 
-    thread_callback = new thread_of_fate_cb_t( td.target, *thread_effect, static_cast<evoker_t*>( td.source ) );
+    thread_callback = new thread_of_fate_cb_t( td.target, *thread_effect, static_cast<evoker_t*>( td.source ), this );
     thread_callback->initialize();
     thread_callback->deactivate();
 
-    set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
         thread_callback->activate();
-        p()->allies_with_my_thread_of_fate.push_back( player );
+        p()->allied_thread_of_fate_buffs.push_back( b );
       }
       else if ( !new_ )
       {
         thread_callback->deactivate();
-        p()->allies_with_my_thread_of_fate.find_and_erase_unordered( player );
+        p()->allied_thread_of_fate_buffs.find_and_erase_unordered( b );
       }
     } );
   };
@@ -6348,6 +6512,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.temporal_wound = make_buff_fallback<temporal_wound_buff_t>( make_temporal_wound, *this, "temporal_wound",
                                                                       evoker->talent.temporal_wound );
 
+  buffs.thread_of_fate = make_buff_fallback<thread_of_fate_buff_t>( is_ally, *this, "thread_of_fate_" + evoker->name_str );
+
   buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands_" + evoker->name_str,
                                                        evoker->find_spell( 413984 ) );
   if ( is_ally )
@@ -6472,7 +6638,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
     allies_with_my_ebon(),
     allies_with_my_prescience(),
-    allies_with_my_thread_of_fate(),
+    allied_thread_of_fate_buffs(),
     allied_ebons_on_me(),
     allied_major_cds(),
     last_scales_target( nullptr ),
@@ -7197,7 +7363,7 @@ void evoker_t::init_spells()
   talent.fate_mirror        = ST( "Fate Mirror" );
   talent.fate_mirror_damage = find_spell( 404908 );
   talent.rumbling_earth     = ST( "Rumbling Earth" );
-  talent.burning_embers     = ST( "Burning Embers" );
+  talent.molten_embers      = ST( "Molten Embers" );
 
   // Set up Essence Bursts for Preservation and Augmentation
   if ( talent.essence_burst.ok() )
@@ -7717,7 +7883,7 @@ void evoker_t::reset()
   // clear runtime variables
   allies_with_my_ebon.clear_without_callbacks();
   allies_with_my_prescience.clear_without_callbacks();
-  allies_with_my_thread_of_fate.clear_without_callbacks();
+  allied_thread_of_fate_buffs.clear_without_callbacks();
   allied_ebons_on_me.clear();
   last_scales_target = nullptr;
   was_empowering = false;
@@ -8033,7 +8199,7 @@ double evoker_t::composite_player_target_crit_chance( player_t* target ) const
   {
     if ( target->health_percentage() > talent.flameshaper.conduit_of_flame->effectN( 2 ).base_value() )
     {
-      m += talent.flameshaper.conduit_of_flame->effectN(1).percent();
+      m += talent.flameshaper.conduit_of_flame->effectN( 1 ).percent();
     }
   }
 
