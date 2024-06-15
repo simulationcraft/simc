@@ -131,7 +131,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
-  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
+//  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
   apply_affecting_aura( p()->spec.blackout_kick_2 );
 
   // Shado-Pan
@@ -3933,6 +3933,11 @@ struct chi_torpedo_t : public monk_spell_t
 // ==========================================================================
 // Crackling Jade Lightning
 // ==========================================================================
+// Power of the Thunder King TODO: Either 
+// a) Copy Warlock's Soul Rot implementation for Drain Soul.
+// b)  channel do 0 damage and use a fake tick_action to do a single instance 
+// of aoe damage on each tick, and on the tick_action override 
+// action_t::amount_type() to return result_amount_type::DMG_OVER_TIME
 
 struct crackling_jade_lightning_t : public monk_spell_t
 {
