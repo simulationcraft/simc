@@ -4188,11 +4188,8 @@ struct paladin_module_t : public module_t
       sacred_weapon_effect->name_str       = "sacred_weapon_cb";
       sacred_weapon_effect->type           = SPECIAL_EFFECT_EQUIP;
       sacred_weapon_effect->spell_id       = 432502;
-
-      // This needs further testing, these values are wrong for sure, they're hidden in spell data, though (previous iteration of spell data said 10 RPPM Hasted)
-      // It is currently proccing around 5 times too much
-      /*sacred_weapon_effect->ppm_           = 10.0;
-      sacred_weapon_effect->rppm_scale_    = RPPM_HASTE;*/
+      // From testing, this chance seems to be 10%
+      sacred_weapon_effect->proc_chance_ = .1;
       
 
       sacred_weapon_effect->execute_action = sacred_weapon_proc;
