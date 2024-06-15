@@ -72,11 +72,11 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e )
   return spell_data_t::nil();
 }
 
-double role_mult( const special_effect_t& e )
+double role_mult( const special_effect_t& effect )
 {
   double mult = 1.0;
 
-  if ( auto vars = e.player->dbc->spell_desc_vars( e.driver()->id() ).desc_vars() )
+  if ( auto vars = effect.player->dbc->spell_desc_vars( effect.driver()->id() ).desc_vars() )
   {
     std::cmatch m;
     std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
@@ -93,9 +93,9 @@ double role_mult( const special_effect_t& e )
         std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
         for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
         {
-          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == e.player->spec_spell->id() )
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == effect.player->spec_spell->id() )
           {
-            e.player->sim->print_debug( "parsed role multiplier for special effect '{}': {}", e.name(), mult );
+            effect.player->sim->print_debug( "parsed role multiplier for effect '{}': {}", effect.name(), mult );
             return mult;
           }
         }
@@ -131,6 +131,36 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
 
     add_fn( stats.front(), buff );
   }
+}
+
+unsigned unique_gem_count( const special_effect_t& effect )
+{
+  // from item_naming.inc
+  static constexpr std::array<unsigned, 5> algari_gem_desc = { 14110,    // ruby
+                                                               14111,    // amber
+                                                               14113,    // emerald
+                                                               14114,    // sapphire
+                                                               14115 };  // onyx
+  std::set<unsigned> gems;
+
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        const auto& _gem = effect.player->dbc->item( gem_id );
+        const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
+        if ( auto _desc = _prop.desc_id; range::contains( algari_gem_desc, _desc ) )
+          gems.insert( _desc );
+      }
+    }
+  }
+
+  auto count = as<unsigned>( gems.size() );
+  effect.player->sim->print_debug( "unique gem count for effect '{}': {}", effect.name(), count );
+
+  return count;
 }
 
 namespace consumables
@@ -412,6 +442,15 @@ void secondary_weapon_enchant( special_effect_t& effect )
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 435500 driver
+void culminating_blasphemite( special_effect_t& effect )
+{
+  auto gem_count = unique_gem_count( effect );
+
+  effect.player->base.crit_damage_multiplier *= 1.0 + effect.driver()->effectN( 1 ).percent() * gem_count;
+  effect.player->base.crit_healing_multiplier *= 1.0 + effect.driver()->effectN( 1 ).percent() * gem_count;
 }
 }  // namespace enchants
 
@@ -2974,13 +3013,14 @@ void register_special_effects()
   // Oils
   register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
 
-  // Enchants
+  // Enchants & gems
   register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );
   register_special_effect( { 449221, 449223, 449222 }, enchants::authority_of_the_depths );
   register_special_effect( { 449055, 449056, 449059,                                          // council's guile (crit)
                              449095, 449096, 449097,                                          // stormrider's fury (haste)
                              449112, 449113, 449114,                                          // stonebound artistry (mastery)
                              449120, 449118, 449117 }, enchants::secondary_weapon_enchant );  // oathsworn tenacity (vers)
+  register_special_effect( 435500, enchants::culminating_blasphemite );
 
 
   // Embellishments & Tinkers
