@@ -551,11 +551,11 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double health_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 1 ).percent() * p()->max_health();
+        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
 
-        if ( p()->flurry_strikes_damage >= health_threshold )
+        if ( p()->flurry_strikes_damage >= ap_threshold )
         {
-          p()->flurry_strikes_damage -= health_threshold;
+          p()->flurry_strikes_damage -= ap_threshold;
           p()->buff.flurry_charge->trigger();
         }
       }
@@ -8802,18 +8802,20 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.darting_hurricane.ok() )
   {
-    create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
-      if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
-           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
-           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
-           state->action->id == p->passives.dual_threat_kick->id() )
-        return false;
+    create_proc_callback( 
+        talent.windwalker.darting_hurricane.spell(), 
+        []( monk_t *p, action_state_t *state ) {
+          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
+               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
+               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
+               state->action->id == p->passives.dual_threat_kick->id() )
+            return false;
 
-      if ( p->rppm.darting_hurricane->trigger() )
-        p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
+          if ( p->rppm.darting_hurricane->trigger() )
+            p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
 
-      return true;
-    } );
+          return true;
+        } );
   }
 
   // ======================================
