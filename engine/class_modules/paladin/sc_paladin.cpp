@@ -2558,6 +2558,10 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new holy_armaments_t( this, options_str );
   if ( name == "hammer_of_light" )
     return new hammer_of_light_t( this, options_str );
+  if ( name == "rite_of_adjuration" )
+    return new rite_of_adjuration_t( this, options_str );
+  if ( name == "rite_of_sanctification" )
+    return new rite_of_sanctification_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2826,6 +2830,10 @@ void paladin_t::create_buffs()
   buffs.lightsmith.holy_bulwark          = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
   buffs.lightsmith.sacred_weapon         = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.lightsmith.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell(433550) );
+  buffs.lightsmith.rite_of_adjuration = make_buff( this, "rite_of_adjuration", find_spell( 433584 ) );
+
+
   buffs.templar.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
   buffs.templar.hammer_of_light_free  = make_buff( this, "hammer_of_light_free", find_spell(433015) );
   buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
