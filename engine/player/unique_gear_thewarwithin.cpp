@@ -447,10 +447,13 @@ void secondary_weapon_enchant( special_effect_t& effect )
 // 435500 driver
 void culminating_blasphemite( special_effect_t& effect )
 {
-  auto gem_count = unique_gem_count( effect );
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_count( effect );;
+  // check for prismatic null stone
+  if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
+    pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
 
-  effect.player->base.crit_damage_multiplier *= 1.0 + effect.driver()->effectN( 1 ).percent() * gem_count;
-  effect.player->base.crit_healing_multiplier *= 1.0 + effect.driver()->effectN( 1 ).percent() * gem_count;
+  effect.player->base.crit_damage_multiplier *= 1.0 + pct;
+  effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
 }  // namespace enchants
 
@@ -3026,6 +3029,7 @@ void register_special_effects()
   // Embellishments & Tinkers
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
+  register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
