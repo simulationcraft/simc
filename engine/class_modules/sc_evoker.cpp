@@ -3336,6 +3336,160 @@ public:
 };
 
 
+  struct chrono_flame_damage_t : public evoker_spell_t
+{
+  double chrono_mult;
+  double chrono_cap;
+  chrono_flame_damage_t( evoker_t* p, std::string_view suffix = "" )
+    : evoker_spell_t( fmt::format( "chrono_flame{}", suffix ), p, p->talent.chronowarden.chrono_flame_damage ),
+      chrono_mult( p->talent.chronowarden.chrono_flame->effectN( p->specialization() == EVOKER_AUGMENTATION ? 3 : 1 )
+                       .percent() ),
+      chrono_cap( 2.5 )  // TODO: Parse from variable
+  {
+    travel_speed = 40;
+    may_crit     = false;
+  }
+
+  double get_damage( const action_state_t* s ) const
+  {
+    auto td = p()->find_target_data( s->target );
+
+    if ( !td )
+      return 0;
+
+    double pool =
+        std::accumulate( td->chrono_tracker.damage_buckets.begin(), td->chrono_tracker.damage_buckets.end(), 0.0 ) *
+        chrono_mult;
+
+    return pool;
+  }
+
+  void impact( action_state_t* s )
+  {
+    s->result_total = s->result_raw = s->result_amount =
+        std::min( get_damage( s ), composite_versatility( s ) * composite_total_spell_power() * chrono_cap );
+
+    evoker_spell_t::impact( s );
+  }
+};
+
+template <class Base>
+struct living_flame_base_t : public Base
+{
+  using base_t = living_flame_base_t<Base>;
+
+  timespan_t prepull_timespent;
+  bool st_only;
+
+  living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
+    : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
+  {
+    base_t::dual         = true;
+    base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
+  }
+
+  int n_targets() const override
+  {
+    if ( st_only )
+      return 1;
+
+    if ( auto n = base_t::p()->buff.leaping_flames->check() )
+      return 1 + n;
+    else
+      return Base::n_targets();
+  }
+
+  timespan_t travel_time() const override
+  {
+    if ( prepull_timespent == timespan_t::zero() )
+      return Base::travel_time();
+
+    // for each additional spell in precombat apl, reduce the travel time by the cast time
+    base_t::player->invalidate_cache( CACHE_SPELL_HASTE );
+    return std::max( 1_ms, Base::travel_time() - prepull_timespent * base_t::composite_haste() );
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    auto& tl = Base::target_list();
+
+    if ( base_t::is_aoe() && as<int>( tl.size() ) > base_t::n_targets() )
+    {
+      // always hit the target, so if it exists make sure it's first
+      auto start_it = tl.begin() + ( tl[ 0 ] == base_t::target ? 1 : 0 );
+
+      // randomize remaining targets
+      base_t::rng().shuffle( start_it, tl.end() );
+    }
+
+    return tl;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    Base::impact( s );
+
+    base_t::p()->buff.snapfire->trigger();
+  }
+};
+
+struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
+{
+  chrono_flame_damage_t* chrono_flame;
+  living_flame_damage_t( evoker_t* p, std::string_view name = "living_flame", bool st_only = false )
+    : base_t( std::string( name ) + "_damage", p, p->spec.living_flame_damage, st_only ), chrono_flame( nullptr )
+  {
+    if ( p->talent.chronowarden.chrono_flame.enabled() )
+    {
+      chrono_flame = p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame", "_" + std::string( name ) );
+      if ( name != "living_flame" )
+      {
+        add_child( chrono_flame );
+      }
+    }
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    auto da = base_t::bonus_da( s );
+
+    da += p()->buff.scarlet_adaptation->check_value();
+
+    return da;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = base_t::composite_da_multiplier( s );
+
+    da *= 1.0 + p()->buff.iridescence_red->check_value();
+
+    return da;
+  }
+
+  void impact( action_state_t* state )
+  {
+    base_t::impact( state );
+
+    if ( chrono_flame )
+    {
+      chrono_flame->execute_on_target( state->target );
+    }
+  }
+};
+
+struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
+{
+  living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->spec.living_flame_heal )
+  {
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+  }
+};
+
 struct fire_breath_traveling_flame_t : public empowered_release_spell_t
 {
   using base_t = empowered_release_spell_t;
@@ -3405,21 +3559,30 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
   }
 };
 
-
 struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
   {
     timespan_t dot_dur_per_emp;
+    action_t* chrono_flames;
+    size_t max_afterimage_targets;
 
     fire_breath_damage_t( evoker_t* p )
-      : base_t( "fire_breath_damage", p, p->spec.fire_breath_damage ), dot_dur_per_emp( 6_s )
+      : base_t( "fire_breath_damage", p, p->spec.fire_breath_damage ),
+        dot_dur_per_emp( 6_s ),
+        chrono_flames( nullptr ),
+        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
     {
       aoe                 = -1;  // TODO: actually a cone so we need to model it if possible
       reduced_aoe_targets = 5.0;
 
       dot_duration = 20_s;  // base * 10? or hardcoded to 20s?
       dot_duration += timespan_t::from_seconds( p->talent.blast_furnace->effectN( 1 ).base_value() );
+
+      if ( p->talent.chronowarden.afterimage.enabled() )
+      {
+        chrono_flames = p->get_secondary_action<living_flame_damage_t>( "afterimage_fire_breath", "afterimage_fire_breath", true );
+      }
     }
 
     timespan_t reduction_from_empower( const action_state_t* s ) const
@@ -3505,6 +3668,16 @@ struct fire_breath_t : public empowered_charge_spell_t
       // triggered on check, not success
       p()->buff.burnout->trigger();
     }
+
+    void impact(action_state_t* s)
+    {
+      empowered_release_spell_t::impact( s );
+
+      if ( chrono_flames && s->chain_target < max_afterimage_targets )
+      {
+        chrono_flames->execute_on_target( s->target );
+      }
+    }
   };
 
   fire_breath_t( evoker_t* p, std::string_view options_str )
@@ -3515,6 +3688,12 @@ struct fire_breath_t : public empowered_charge_spell_t
     if ( p->talent.flameshaper.traveling_flame.ok() )
     {
       add_child( p->get_secondary_action<fire_breath_traveling_flame_t>( "fire_breath_traveling_flame" ) );
+    }
+
+    if ( p->talent.chronowarden.afterimage.enabled() )
+    {
+      add_child(
+          p->get_secondary_action<living_flame_damage_t>( "afterimage_fire_breath", "afterimage_fire_breath", true ) );
     }
   }
 
@@ -4162,155 +4341,6 @@ struct landslide_t : public evoker_spell_t
 
 struct living_flame_t : public evoker_spell_t
 {
-  struct chrono_flame_damage_t : public evoker_spell_t
-  {
-    double chrono_mult;
-    double chrono_cap;
-    chrono_flame_damage_t( evoker_t* p )
-      : evoker_spell_t( "chrono_flame", p, p->talent.chronowarden.chrono_flame_damage ),
-        chrono_mult( p->talent.chronowarden.chrono_flame->effectN( p->specialization() == EVOKER_AUGMENTATION ? 3 : 1 )
-                         .percent() ),
-        chrono_cap( 2.5 ) // TODO: Parse from variable
-    {
-      travel_speed = 40;
-      may_crit     = false;
-    }
-
-
-    double get_damage( const action_state_t* s ) const
-    {
-      auto td = p()->find_target_data( s->target );
-            
-      if ( !td )
-        return 0;
-
-      double pool = std::accumulate( td->chrono_tracker.damage_buckets.begin(), td->chrono_tracker.damage_buckets.end(), 0.0 ) *
-                    chrono_mult;
-
-      return pool;
-    }
-
-    void impact( action_state_t* s )
-    {
-      s->result_total = s->result_raw = s->result_amount =
-          std::min( get_damage( s ), composite_versatility( s ) * composite_total_spell_power() * chrono_cap );
-
-      evoker_spell_t::impact( s );
-    }
-  };
-
-  template <class Base>
-  struct living_flame_base_t : public Base
-  {
-    using base_t = living_flame_base_t<Base>;
-
-    timespan_t prepull_timespent;
-    bool st_only;
-
-    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
-      : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
-    {
-      base_t::dual         = true;
-      base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
-    }
-
-    int n_targets() const override
-    {
-      if ( st_only )
-        return 1;
-
-      if ( auto n = base_t::p()->buff.leaping_flames->check() )
-        return 1 + n;
-      else
-        return Base::n_targets();
-    }
-
-    timespan_t travel_time() const override
-    {
-      if ( prepull_timespent == timespan_t::zero() )
-        return Base::travel_time();
-
-      // for each additional spell in precombat apl, reduce the travel time by the cast time
-      base_t::player->invalidate_cache( CACHE_SPELL_HASTE );
-      return std::max( 1_ms, Base::travel_time() - prepull_timespent * base_t::composite_haste() );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      auto& tl = Base::target_list();
-
-      if ( base_t::is_aoe() && as<int>( tl.size() ) > base_t::n_targets() )
-      {
-        // always hit the target, so if it exists make sure it's first
-        auto start_it = tl.begin() + ( tl[ 0 ] == base_t::target ? 1 : 0 );
-
-        // randomize remaining targets
-        base_t::rng().shuffle( start_it, tl.end() );
-      }
-
-      return tl;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      Base::impact( s );
-
-      base_t::p()->buff.snapfire->trigger();
-    }
-  };
-
-  struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
-  {
-    chrono_flame_damage_t* chrono_flame;
-    living_flame_damage_t( evoker_t* p )
-      : base_t( "living_flame_damage", p, p->spec.living_flame_damage ), chrono_flame( nullptr )
-    {
-      if ( p->talent.chronowarden.chrono_flame.enabled() )
-      {
-        chrono_flame = p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame" );
-      }
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      auto da = base_t::bonus_da( s );
-
-      da += p()->buff.scarlet_adaptation->check_value();
-
-      return da;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      auto da = base_t::composite_da_multiplier( s );
-
-      da *= 1.0 + p()->buff.iridescence_red->check_value();
-
-      return da;
-    }
-
-    void impact( action_state_t* state )
-    {
-      base_t::impact( state );
-
-      if ( chrono_flame )
-      {
-        chrono_flame->execute_on_target( state->target );
-      }
-    }
-  };
-
-  struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
-  {
-    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->spec.living_flame_heal )
-    {
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-    }
-  };
 
   action_t* damage;
   action_t* heal;
@@ -4331,7 +4361,7 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p->talent.chronowarden.chrono_flame.enabled() )
     {
-      add_child( p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame" ) );
+      add_child( p->get_secondary_action<chrono_flame_damage_t>( "chrono_flame_living_flame" ) );
     }
 
     // TODO: implement option to cast heal instead
@@ -4965,6 +4995,8 @@ struct upheaval_t : public empowered_charge_spell_t
   struct upheaval_damage_t : public empowered_release_spell_t
   {
     reverberations_t* reverberations;
+    action_t* chrono_flames;
+    size_t max_afterimage_targets;
     upheaval_damage_t* rumbling_earth;
     bool is_rumbling_earth;
     double reverb_mul;
@@ -4975,7 +5007,9 @@ struct upheaval_t : public empowered_charge_spell_t
         reverberations( nullptr ),
         reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
         repeats( as<size_t>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
-        rumbling_earth( nullptr )
+        rumbling_earth( nullptr ),
+        chrono_flames( nullptr ),
+        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
     {
       aoe = -1;
 
@@ -4994,6 +5028,11 @@ struct upheaval_t : public empowered_charge_spell_t
       {
         rumbling_earth =
             p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true );
+      }
+
+      if ( p->talent.chronowarden.afterimage.enabled() && !is_rumbling_earth )
+      {
+        chrono_flames = p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval", "afterimage_upheaval", true );
       }
     }
 
@@ -5020,6 +5059,11 @@ struct upheaval_t : public empowered_charge_spell_t
       if ( reverberations )
       {
         residual_action::trigger( reverberations, s->target, s->result_amount * reverb_mul );
+      }
+
+      if ( chrono_flames && s->chain_target < max_afterimage_targets )
+      {
+        chrono_flames->execute_on_target( s->target );
       }
     }
 
@@ -5064,6 +5108,11 @@ struct upheaval_t : public empowered_charge_spell_t
     {
       add_child(
           p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true ) );
+    }
+
+    if ( p->talent.chronowarden.afterimage.enabled() )
+    {
+      add_child( p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval", "afterimage_upheaval", true ) );
     }
   }
 };
