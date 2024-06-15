@@ -1788,6 +1788,7 @@ struct holy_armaments_t : public paladin_spell_t
     harmful = false;
     hasted_gcd = true;
     name_str_reporting = "Holy Armaments";
+    target             = p;
     if ( p->talents.lightsmith.forewarning->ok() )
       apply_affecting_aura( p->talents.lightsmith.forewarning );
    }
