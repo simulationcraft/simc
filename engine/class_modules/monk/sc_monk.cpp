@@ -408,33 +408,6 @@ void monk_action_t<Base>::combo_strikes_trigger()
   p()->combo_strike_actions.push_back( this );
 }
 
-// Reduces Brewmaster Brew cooldowns by the time given
-template <class Base>
-void monk_action_t<Base>::brew_cooldown_reduction( double time_reduction )
-{
-  if ( p()->specialization() != MONK_BREWMASTER )
-    return;
-
-  // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-  time_reduction *= -1;
-
-  if ( p()->cooldown.purifying_brew->down() )
-    p()->cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  if ( p()->cooldown.celestial_brew->down() )
-    p()->cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  if ( p()->cooldown.fortifying_brew->down() )
-    p()->cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  if ( p()->cooldown.black_ox_brew->down() )
-    p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  if ( p()->talent.brewmaster.bonedust_brew && p()->talent.brewmaster.bonedust_brew->ok() &&
-       p()->cooldown.bonedust_brew->down() )
-    p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-}
-
 template <class Base>
 void monk_action_t<Base>::consume_resource()
 {
@@ -1542,10 +1515,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
 
     // Reduces the remaining cooldown on your Brews by 1 sec
-    brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
+    p()->baseline.brewmaster.brews->adjust(
+        timespan_t::from_seconds( p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
 
     if ( face_palm )
-      brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).base_value() / 1000.0 );
+      p()->baseline.brewmaster.brews->adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( combat_wisdom )
     {
@@ -1570,10 +1544,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
-
-    // Bonedust Brew
-    if ( get_td( s->target )->debuff.bonedust_brew->up() )
-      brew_cooldown_reduction( p()->talent.brewmaster.bonedust_brew->effectN( 3 ).base_value() );
 
     p()->buff.brewmasters_rhythm->trigger();
   }
@@ -3220,7 +3190,8 @@ struct melee_t : public monk_melee_attack_t
         if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
         {
           // Reduce Brew cooldown by 0.5 seconds
-          brew_cooldown_reduction( p()->talent.brewmaster.press_the_advantage->effectN( 1 ).base_value() / 1000 );
+          p()->baseline.brewmaster.brews->adjust(
+              p()->talent.brewmaster.press_the_advantage->effectN( 1 ).time_value() );
 
           // Trigger the Press the Advantage damage proc
           p()->passive_actions.press_the_advantage->target = s->target;
@@ -3425,8 +3396,9 @@ struct press_the_advantage_action_t : base_action_t
     face_palm = base_t::rng().roll( base_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
     base_t::execute();
 
-    // if ( face_palm )
-    //   brew_cooldown_reduction( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+    if ( face_palm )
+      base_t::p()->baseline.brewmaster.brews->adjust(
+          base_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
     base_t::p()->buff.counterstrike->expire();
     base_t::p()->buff.blackout_combo->expire();
 
@@ -3868,11 +3840,11 @@ struct special_delivery_t : public monk_spell_t
 // Black Ox Brew
 // ==========================================================================
 
-struct black_ox_brew_t : public monk_spell_t
+struct black_ox_brew_t : public brew_t<monk_spell_t>
 {
   special_delivery_t *delivery;
   black_ox_brew_t( monk_t *player, util::string_view options_str )
-    : monk_spell_t( player, "black_ox_brew", player->talent.brewmaster.black_ox_brew ),
+    : brew_t<monk_spell_t>( player, "black_ox_brew", player->talent.brewmaster.black_ox_brew ),
       delivery( new special_delivery_t( player ) )
   {
     parse_options( options_str );
@@ -3886,11 +3858,13 @@ struct black_ox_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    // Refill Purifying Brew charges.
-    p()->cooldown.purifying_brew->reset( true, -1 );
-
-    // Refills Celestial Brew charges
-    p()->cooldown.celestial_brew->reset( true, -1 );
+    for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
+    {
+      if ( key == p()->talent.brewmaster.purifying_brew->id() )
+        cooldown->reset( true, -1 );
+      if ( key == p()->talent.brewmaster.celestial_brew->id() )
+        cooldown->reset( true, 1 );
+    }
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
@@ -4207,12 +4181,12 @@ struct breath_of_fire_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
-struct fortifying_brew_t : public monk_spell_t
+struct fortifying_brew_t : brew_t<monk_spell_t>
 {
   special_delivery_t *delivery;
 
   fortifying_brew_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "fortifying_brew", p->talents.monk.fortifying_brew.find_override_spell() ),
+    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talents.monk.fortifying_brew.find_override_spell() ),
       delivery( new special_delivery_t( p ) )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
@@ -4325,13 +4299,13 @@ struct gai_plins_imperial_brew_heal_t : public monk_heal_t
   }
 };
 
-struct purifying_brew_t : public monk_spell_t
+struct purifying_brew_t : public brew_t<monk_spell_t>
 {
   special_delivery_t *delivery;
   gai_plins_imperial_brew_heal_t *gai_plin;
 
   purifying_brew_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "purifying_brew", p->talent.brewmaster.purifying_brew ),
+    : brew_t<monk_spell_t>( p, "purifying_brew", p->talent.brewmaster.purifying_brew ),
       delivery( new special_delivery_t( p ) ),
       gai_plin( new gai_plins_imperial_brew_heal_t( p ) )
   {
@@ -4954,67 +4928,6 @@ struct bonedust_brew_t : public monk_spell_t
     if ( td )
       td->debuff.bonedust_brew->extend_duration_or_trigger(
           std::min( max_duration - td->debuff.bonedust_brew->remains(), new_duration ) );
-  }
-};
-
-// ==========================================================================
-// Bonedust Brew - Damage
-// ==========================================================================
-
-struct bonedust_brew_damage_t : public monk_spell_t
-{
-  bonedust_brew_damage_t( monk_t *p ) : monk_spell_t( p, "bonedust_brew_dmg", p->passives.bonedust_brew_dmg )
-  {
-    background = true;
-    proc       = true;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p()->talent.brewmaster.attenuation->ok() )
-    {
-      if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
-      {
-        p()->cooldown.bonedust_brew->adjust( p()->talent.brewmaster.attenuation->effectN( 2 ).time_value(), true );
-
-        p()->buff.bonedust_brew_attenuation_hidden->decrement();
-        p()->proc.attenuation->occur();
-      }
-    }
-  }
-};
-
-// ==========================================================================
-// Bonedust Brew -  Heal
-// ==========================================================================
-
-struct bonedust_brew_heal_t : public monk_heal_t
-{
-  bonedust_brew_heal_t( monk_t *p ) : monk_heal_t( p, "bonedust_brew_heal", p->passives.bonedust_brew_heal )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    auto attenuation = p()->talent.brewmaster.attenuation;
-
-    if ( attenuation && attenuation->ok() )
-    {
-      auto cooldown_reduction = attenuation->effectN( 2 ).time_value();
-
-      if ( p()->buff.bonedust_brew_attenuation_hidden->up() )
-      {
-        p()->cooldown.bonedust_brew->adjust( cooldown_reduction, true );
-
-        p()->buff.bonedust_brew_attenuation_hidden->decrement();
-        p()->proc.attenuation->occur();
-      }
-    }
   }
 };
 
@@ -6022,7 +5935,7 @@ struct special_delivery_t : public monk_spell_t
   }
 };
 
-struct celestial_brew_t : public monk_absorb_t
+struct celestial_brew_t : public brew_t<monk_absorb_t>
 {
   struct celestial_brew_t_state_t : public action_state_t
   {
@@ -6040,7 +5953,8 @@ struct celestial_brew_t : public monk_absorb_t
   special_delivery_t *delivery;
 
   celestial_brew_t( monk_t *p, util::string_view options_str )
-    : monk_absorb_t( p, "celestial_brew", p->talent.brewmaster.celestial_brew ), delivery( new special_delivery_t( p ) )
+    : brew_t<monk_absorb_t>( p, "celestial_brew", p->talent.brewmaster.celestial_brew ),
+      delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
     harmful = may_crit = false;
@@ -6123,7 +6037,21 @@ template <class base_action_t>
 template <typename... Args>
 brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
 {
-  player->baseline.brewmaster.brews->push_back( this );
+  player->baseline.brewmaster.brews->insert_cooldown( this );
+}
+
+void brews_t::insert_cooldown( action_t *action )
+{
+  cooldowns[ action->id ] = action->player->get_cooldown( action->name() );
+}
+
+void brews_t::adjust( timespan_t reduction )
+{
+  for ( auto &[ key, cooldown ] : cooldowns )
+  {
+    cooldown->adjust( reduction );
+    cooldown->sim.print_debug( "reducing cooldown of brew ({}) by {}", cooldown->name(), reduction );
+  }
 }
 
 using namespace pets;
@@ -6858,10 +6786,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
 
   cooldown.anvil_and_stave        = get_cooldown( "anvil_and_stave" );
   cooldown.blackout_kick          = get_cooldown( "blackout_kick" );
-  cooldown.black_ox_brew          = get_cooldown( "black_ox_brew" );
-  cooldown.bonedust_brew          = get_cooldown( "bonedust_brew" );
   cooldown.breath_of_fire         = get_cooldown( "breath_of_fire" );
-  cooldown.celestial_brew         = get_cooldown( "celestial_brew" );
   cooldown.charred_passions       = get_cooldown( "charred_passions" );
   cooldown.chi_torpedo            = get_cooldown( "chi_torpedo" );
   cooldown.drinking_horn_cover    = get_cooldown( "drinking_horn_cover" );
@@ -6869,13 +6794,11 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.jadefire_stomp         = get_cooldown( "jadefire_stomp" );
   cooldown.fists_of_fury          = get_cooldown( "fists_of_fury" );
   cooldown.flying_serpent_kick    = get_cooldown( "flying_serpent_kick" );
-  cooldown.fortifying_brew        = get_cooldown( "fortifying_brew" );
   cooldown.healing_elixir         = get_cooldown( "healing_elixir" );
   cooldown.invoke_niuzao          = get_cooldown( "invoke_niuzao_the_black_ox" );
   cooldown.invoke_xuen            = get_cooldown( "invoke_xuen_the_white_tiger" );
   cooldown.invoke_yulon           = get_cooldown( "invoke_yulon_the_jade_serpent" );
   cooldown.keg_smash              = get_cooldown( "keg_smash" );
-  cooldown.purifying_brew         = get_cooldown( "purifying_brew" );
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
@@ -7346,7 +7269,7 @@ void monk_t::init_spells()
   baseline.brewmaster.moderate_stagger = find_specialization_spell( "Moderate Stagger" );
   baseline.brewmaster.heavy_stagger    = find_specialization_spell( "Heavy Stagger" );
 
-  baseline.brewmaster.brews = new brews_t();
+  baseline.brewmaster.brews = new actions::brews_t();
 
   // monk_t::baseline::mistweaver
   baseline.mistweaver.aura   = find_specialization_spell( "Mistweaver Monk" );
@@ -8401,7 +8324,8 @@ void monk_t::create_buffs()
 
   buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
                                ->set_trigger_spell( talent.windwalker.darting_hurricane )
-                               ->set_rppm( rppm_scale_e::RPPM_DISABLE ) // Disable so that Strike of the Windlord can properly proc outside of the RPPM.
+                               ->set_rppm( rppm_scale_e::RPPM_DISABLE )  // Disable so that Strike of the Windlord can
+                                                                         // properly proc outside of the RPPM.
                                ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
@@ -8870,25 +8794,21 @@ void monk_t::init_special_effects()
   // ======================================
   // Darting Hurricane ( Windwalker Talent )
   // ======================================
-  
+
   if ( talent.windwalker.darting_hurricane.ok() )
   {
-    create_proc_callback(
-        talent.windwalker.darting_hurricane.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
-               state->action->id == p->passives.dual_threat_kick->id()
-             )
-            return false;
+    create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
+      if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
+           state->action->id == p->passives.dual_threat_kick->id() )
+        return false;
 
-          if ( p->rppm.darting_hurricane->trigger() )
-            p->buff.darting_hurricane->trigger(
-                (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
+      if ( p->rppm.darting_hurricane->trigger() )
+        p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
 
-          return true;
-        });
+      return true;
+    } );
   }
 
   // ======================================
@@ -9151,26 +9071,6 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
 
   range::for_each( pet->action_list,
                    [ pet ]( action_t *a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
-}
-
-// Reduces Brewmaster Brew cooldowns by the time given
-void monk_t::brew_cooldown_reduction( double time_reduction )
-{
-  if ( specialization() != MONK_BREWMASTER )
-    return;
-
-  // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-  time_reduction *= -1;
-
-  cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
-
-  cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 }
 
 // monk_t::composite_melee_auto_attack_speed =====================================
@@ -9535,7 +9435,8 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       {
         cooldown.anvil_and_stave->start( talent.brewmaster.anvil_and_stave->internal_cooldown() );
         proc.anvil_and_stave->occur();
-        brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
+        baseline.brewmaster.brews->adjust(
+            timespan_t::from_seconds( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 ) );
       }
 
       buff.counterstrike->trigger();

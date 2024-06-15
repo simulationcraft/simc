@@ -13,6 +13,9 @@ load_default_gear=1
 # spec_talents=press_the_advantage:0
 
 actions.ogcd+=/fortifying_brew
+actions.ogcd+=/fortifying_brew
+actions.ogcd+=/fortifying_brew
+actions.ogcd+=/fortifying_brew
 actions.ogcd+=/dampen_harm
 actions.ogcd+=/diffuse_magic
 actions.ogcd+=/black_ox_brew
