@@ -472,7 +472,7 @@ void monk_action_t<Base>::consume_resource()
     {
       if ( p()->buff.storm_earth_and_fire->up() )
       {
-        auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
+        auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 100;
         time_extend *= base_t::cost();
 
         p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
