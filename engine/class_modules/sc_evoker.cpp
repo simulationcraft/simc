@@ -697,6 +697,7 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   vector_with_callback<player_t*> allies_with_my_ebon;
   vector_with_callback<player_t*> allies_with_my_prescience;
+  vector_with_callback<player_t*> allies_with_my_thread_of_fate;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::map<player_t*, buff_t*> allied_major_cds;
   player_t* last_scales_target;
@@ -4958,6 +4959,45 @@ public:
   }
 };
 
+
+struct thread_of_fate_damage_t : public evoker_external_action_t<spell_t>
+{
+protected:
+  using base = evoker_external_action_t<spell_t>;
+
+public:
+  thread_of_fate_damage_t( player_t* p ) : base( "thread_of_fate_damage", p, p->find_spell( 432895 ) )
+  {
+    may_dodge = may_parry = may_block = may_crit = false;
+    background                                   = true;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
+  }
+};
+
+struct thread_of_fate_heal_t : public evoker_external_action_t<heal_t>
+{
+protected:
+  using base = evoker_external_action_t<heal_t>;
+
+public:
+  thread_of_fate_heal_t( player_t* p ) : base( "thread_of_fate_heal", p, p->find_spell( 432896 ) )
+  {
+    may_dodge = may_parry = may_block = may_crit = false;
+    background                                   = true;
+  }
+
+  void init() override
+  {
+    base::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
+  }
+};
+
 struct infernos_blessing_t : public evoker_external_action_t<spell_t>
 {
 protected:
@@ -5656,6 +5696,103 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
   }
 };
 
+struct thread_of_fate_buff_t : public evoker_buff_t<buff_t>
+{
+protected:
+  using bb = evoker_buff_t<buff_t>;
+
+public:
+  struct thread_of_fate_cb_t : public dbc_proc_callback_t
+  {
+    evoker_t* source;
+    spells::thread_of_fate_damage_t* thread_of_fate_damage;
+    spells::thread_of_fate_heal_t* thread_of_fate_heal;
+
+    double mult;
+
+    thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+      : dbc_proc_callback_t( p, e ),
+        source( source ),
+        mult( source->talent.chronowarden.thread_of_fate_buff->effectN( 1 ).percent() )
+    {
+      allow_pet_procs = true;
+      deactivate();
+      initialize();
+
+      thread_of_fate_damage = debug_cast<spells::thread_of_fate_damage_t*>( p->find_action( "thread_of_fate_damage" ) );
+      thread_of_fate_heal   = debug_cast<spells::thread_of_fate_heal_t*>( p->find_action( "thread_of_fate_heal" ) );
+    }
+
+    evoker_t* p()
+    {
+      return source;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      double da = s->result_amount;
+      if ( da > 0 )
+      {
+        if ( s->target->is_enemy() )
+        {
+          thread_of_fate_damage->evoker = source;
+          thread_of_fate_damage->execute_on_target( s->target, da );
+        }
+        else
+        {
+          // Assuming identical to Fate Mirror
+          thread_of_fate_heal->evoker = source;
+          thread_of_fate_heal->execute_on_target( s->target, da );
+        }
+      }
+    }
+  };
+
+  thread_of_fate_cb_t* thread_callback;
+
+  thread_of_fate_buff_t( evoker_td_t& td )
+    : bb( td, "thread_of_fate", static_cast<evoker_t*>( td.source )->talent.chronowarden.thread_of_fate_buff ),
+      thread_callback( nullptr )
+  {
+    set_default_value( data().effectN(1).percent() );
+    set_chance( 1.0 );
+
+    auto thread_effect          = new special_effect_t( td.target );
+    thread_effect->name_str     = "thread_of_fate_" + td.source->name_str;
+    thread_effect->type         = SPECIAL_EFFECT_EQUIP;
+    thread_effect->spell_id     = data().id();
+    thread_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+
+    td.target->special_effects.push_back( thread_effect );
+
+    thread_callback = new thread_of_fate_cb_t( td.target, *thread_effect, static_cast<evoker_t*>( td.source ) );
+    thread_callback->initialize();
+    thread_callback->deactivate();
+
+    set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+      if ( !old_ )
+      {
+        thread_callback->activate();
+        p()->allies_with_my_thread_of_fate.push_back( player );
+      }
+      else if ( !new_ )
+      {
+        thread_callback->deactivate();
+        p()->allies_with_my_thread_of_fate.find_and_erase_unordered( player );
+      }
+    } );
+  };
+
+  void reset()
+  {
+    bb::reset();
+    thread_callback->deactivate();
+  }
+};
+
 struct infernos_blessing_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
@@ -6335,6 +6472,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   : player_t( sim, EVOKER, name, r ),
     allies_with_my_ebon(),
     allies_with_my_prescience(),
+    allies_with_my_thread_of_fate(),
     allied_ebons_on_me(),
     allied_major_cds(),
     last_scales_target( nullptr ),
@@ -7109,10 +7247,9 @@ void evoker_t::init_spells()
   talent.chronowarden.double_time                     = HT( "Double-time" );
   talent.chronowarden.time_convergence                = HT( "Time Convergence" );
   talent.chronowarden.time_convergence_intellect_buff = find_spell( 431991 );
-  talent.chronowarden.time_convergence_stamina_buff   = find_spell( 431993 );
   talent.chronowarden.master_of_destiny               = HT( "Master of Destiny" );
-  talent.chronowarden.golden_opportunity              = HT( "Golden Opportunity" );
   talent.chronowarden.instability_matrix              = HT( "Instability Matrix" );
+  talent.chronowarden.golden_opportunity              = HT( "Golden Opportunity" );
   talent.chronowarden.afterimage                      = HT( "Afterimage" );
 
   // flameshaper
@@ -7462,10 +7599,10 @@ void evoker_t::create_buffs()
   buff.temporal_burst = make_buff_fallback<temporal_burst_t>( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst" );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
-                                         talent.chronowarden.time_convergence_intellect_buff );
-  buff.time_convergence_stamina   = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_stamina",
-                                         talent.chronowarden.time_convergence_stamina_buff );
-  // Flameshaper
+                                         talent.chronowarden.time_convergence_intellect_buff )
+                                        ->set_default_value_from_effect( 1 )
+                                        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+
   buff.burning_adrenaline = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline",
                                  talent.flameshaper.burning_adrenaline_buff );
   buff.burning_adrenaline_channel = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline_channel",
@@ -7580,6 +7717,7 @@ void evoker_t::reset()
   // clear runtime variables
   allies_with_my_ebon.clear_without_callbacks();
   allies_with_my_prescience.clear_without_callbacks();
+  allies_with_my_thread_of_fate.clear_without_callbacks();
   allied_ebons_on_me.clear();
   last_scales_target = nullptr;
   was_empowering = false;
@@ -8167,6 +8305,8 @@ struct evoker_module_t : public module_t
     new spells::blistering_scales_damage_t( p );
     new spells::fate_mirror_damage_t( p );
     new spells::fate_mirror_heal_t( p );
+    new spells::thread_of_fate_damage_t( p );
+    new spells::thread_of_fate_heal_t( p );
     new spells::breath_of_eons_damage_t( p );
     new spells::bombardments_damage_t( p );
   }
