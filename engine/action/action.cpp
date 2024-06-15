@@ -2620,6 +2620,17 @@ void action_t::init()
     update_flags &= ~STATE_HASTE;
   }
 
+  // If any of the periodic effects have EX_COMPUTE_ON_CAST (i.e. snapshot) remove damage update flags
+  // NOTE: Only player-scoped damage modifiers are snapshotted, target-scoped modifiers are still dynamic.
+  for ( const auto& eff : data().effects() )
+  {
+    if ( is_periodic_damage_effect( eff ) && eff.flags( spelleffect_attribute::EX_COMPUTE_ON_CAST ) )
+    {
+      update_flags &= ~( STATE_AP | STATE_SP | STATE_MUL_TA | STATE_VERSATILITY );
+      break;
+    }
+  }
+
   // Figure out BfA attack power mode based on information assigned to the action object. Note that
   // this only defines the ap type, the ability may not necessarily use attack power at all, however
   // that is not possible to know at init time with 100% accuracy.
