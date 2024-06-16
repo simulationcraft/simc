@@ -131,7 +131,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
-//  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
+  //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
 
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
@@ -550,7 +550,8 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
+        double ap_threshold =
+            p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
@@ -559,19 +560,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
         }
       }
 
-      if ( p()->talent.shado_pan.veterans_eye->ok() )
-      {
-        auto td = p()->get_target_data( s->target );
-        if ( td )
-        {
-          td->debuff.veterans_eye->trigger();
-          if ( td->debuff.veterans_eye->at_max_stacks() )
-          {
-            p()->buff.veterans_eye->trigger();
-            td->debuff.veterans_eye->reset();
-          }
-        }
-      }
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
       {
         if ( s->action->school == SCHOOL_SHADOWFLAME )
@@ -1372,6 +1360,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
         strike->set_target( p()->target );
         strike->schedule_execute();
       }
+
+      p()->buff.flurry_charge->expire();
     }
 
     p()->buff.vigilant_watch->expire();
@@ -2517,7 +2507,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->increment();
+          p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
       }
     }
 
@@ -2872,7 +2862,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // TODO: Check if this can proc without being talented into DoCJ
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-      p()->buff.dance_of_chiji->increment();
+      p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
@@ -3032,7 +3022,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     p()->buff.tigers_ferocity->trigger();
 
     if ( p()->talent.windwalker.darting_hurricane.ok() )
-      p()->buff.darting_hurricane->trigger( (int)p()->talent.windwalker.darting_hurricane->effectN( 2 ).base_value() );
+      p()->buff.darting_hurricane->increment(
+          as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
+                       .base_value() ) );  // increment is used to not incur the rppm cooldown
   }
 };
 
@@ -4883,11 +4875,10 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     attack_power_mod.direct = p->passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
-    
+
     // apply_affecting_effect isn't working for whatever reason, manually setting for now
     base_dd_multiplier *= 1.0 + p->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
     // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
-
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -6618,6 +6609,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 
   debuff.veterans_eye = make_buff( *this, "veterans_eye_debuff", p->find_spell( 451071 ) )
                             ->set_trigger_spell( p->talent.shado_pan.veterans_eye )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_quiet( true );
 
   // Covenant Abilities
@@ -8216,12 +8208,12 @@ void monk_t::create_buffs()
   buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
+
                                    ->set_quiet( true );
 
   buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
                                ->set_trigger_spell( talent.windwalker.darting_hurricane )
-                               ->set_rppm( rppm_scale_e::RPPM_DISABLE )  // Disable so that Strike of the Windlord can
-                                                                         // properly proc outside of the RPPM.
+                               ->set_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
                                ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
@@ -8444,9 +8436,6 @@ void monk_t::init_assessors()
 void monk_t::init_rng()
 {
   base_t::init_rng();
-
-  if ( talent.windwalker.darting_hurricane->ok() )
-    rppm.darting_hurricane = get_rppm( "darting_hurricane", find_spell( 459839 ) );
 
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
     rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
@@ -8692,20 +8681,39 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.darting_hurricane.ok() )
   {
+    create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
+      if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
+           state->action->id == p->passives.dual_threat_kick->id() )
+        return false;
+
+      return true;
+    } );
+  }
+
+  // ======================================
+  // Veteran's Eye ( Shado-pan Talent )
+  // ======================================
+
+  if ( talent.shado_pan.veterans_eye->ok() )
+  {
     create_proc_callback(
-        talent.windwalker.darting_hurricane.spell(),
+        talent.shado_pan.veterans_eye.spell(),
         []( monk_t *p, action_state_t *state ) {
-          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
-               state->action->id == p->passives.dual_threat_kick->id() )
-            return false;
-
-          if ( p->rppm.darting_hurricane->trigger() )
-            p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
-
+          auto td = p->get_target_data( state->target );
+          if ( td )
+          {
+            td->debuff.veterans_eye->trigger();
+            if ( td->debuff.veterans_eye->at_max_stacks() )
+            {
+              p->buff.veterans_eye->trigger();
+              td->debuff.veterans_eye->reset();
+            }
+          }
           return true;
-        } );
+        },
+        PF2_ALL_HIT );
   }
 
   // ======================================
