@@ -865,6 +865,11 @@ public:
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
 
+    // Aldrachi Reaver
+    proc_t* soul_fragment_from_aldrachi_tactics;
+
+    // Fel-scarred
+
     // Set Bonuses
     proc_t* soul_fragment_from_t29_2pc;
     proc_t* soul_fragment_from_t31_4pc;
@@ -4961,6 +4966,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       {
         p()->buff.thrill_of_the_fight_attack_speed->trigger();
         p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+        {
+          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+          p()->spawn_soul_fragment( soul_fragment::LESSER );
+        }
       }
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
@@ -5261,6 +5271,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       {
         p()->buff.thrill_of_the_fight_attack_speed->trigger();
         p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+        {
+          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+          p()->spawn_soul_fragment( soul_fragment::LESSER );
+        }
       }
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
@@ -5837,6 +5852,11 @@ struct fracture_t : public demon_hunter_attack_t
         {
           p()->buff.thrill_of_the_fight_attack_speed->trigger();
           p()->buff.thrill_of_the_fight_damage->trigger();
+          if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+          {
+            p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+            p()->spawn_soul_fragment( soul_fragment::LESSER );
+          }
         }
         if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
         {
@@ -5914,6 +5934,11 @@ struct shear_t : public demon_hunter_attack_t
         {
           p()->buff.thrill_of_the_fight_attack_speed->trigger();
           p()->buff.thrill_of_the_fight_damage->trigger();
+          if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+          {
+            p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+            p()->spawn_soul_fragment( soul_fragment::LESSER );
+          }
         }
         if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
         {
@@ -6132,6 +6157,11 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       {
         p()->buff.thrill_of_the_fight_attack_speed->trigger();
         p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+        {
+          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+          p()->spawn_soul_fragment( soul_fragment::LESSER );
+        }
       }
       if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
       {
@@ -7551,23 +7581,27 @@ void demon_hunter_t::create_buffs()
 
   // Aldrachi Reaver ========================================================
 
-  buff.reavers_glaive   = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )
-      ->set_quiet( true );
-  buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff )
-                               ->set_default_value( specialization() == DEMON_HUNTER_HAVOC ? talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value() : talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value() )
-                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-                                 // applying Reaver's Glaive only occurs upon gaining new stack on Art of the Glaive
-                                 if (new_ > old) {
-                                   int target_stacks = static_cast<int>(b->default_value);
-                                   if ( b->current_stack >= target_stacks ) {
-                                     // using an event
-                                     make_event(*sim, 0_ms, [b, target_stacks, this]() {
-                                       b->decrement( target_stacks );
-                                       buff.reavers_glaive->trigger();
-                                     });
-                                   }
-                                 }
-                               } );
+  buff.reavers_glaive = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )->set_quiet( true );
+  buff.art_of_the_glaive =
+      make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff )
+          ->set_default_value( specialization() == DEMON_HUNTER_HAVOC
+                                   ? talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value()
+                                   : talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value() )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+            // applying Reaver's Glaive only occurs upon gaining new stack on Art of the Glaive
+            if ( new_ > old )
+            {
+              int target_stacks = static_cast<int>( b->default_value );
+              if ( b->current_stack >= target_stacks )
+              {
+                // using an event
+                make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
+                  b->decrement( target_stacks );
+                  buff.reavers_glaive->trigger();
+                } );
+              }
+            }
+          } );
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
   buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
@@ -8012,6 +8046,11 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_sigil_of_spite = get_proc( "soul_fragment_from_sigil_of_spite" );
   proc.soul_fragment_from_fallout        = get_proc( "soul_fragment_from_fallout" );
   proc.soul_fragment_from_meta           = get_proc( "soul_fragment_from_meta" );
+
+  // Aldrachi Reaver
+  proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
+
+  // Fel-scarred
 
   // Set Bonuses
   proc.soul_fragment_from_t29_2pc   = get_proc( "soul_fragment_from_t29_2pc" );
