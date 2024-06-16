@@ -4964,8 +4964,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       p()->buff.glaive_flurry->expire();
       if ( !p()->buff.rending_strike->up() )
       {
-        p()->buff.thrill_of_the_fight_attack_speed->trigger();
-        p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+        {
+          p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          p()->buff.thrill_of_the_fight_damage->trigger();
+        }
         if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
         {
           p()->proc.soul_fragment_from_aldrachi_tactics->occur();
@@ -5269,8 +5272,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( !p()->buff.glaive_flurry->up() )
       {
-        p()->buff.thrill_of_the_fight_attack_speed->trigger();
-        p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+        {
+          p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          p()->buff.thrill_of_the_fight_damage->trigger();
+        }
         if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
         {
           p()->proc.soul_fragment_from_aldrachi_tactics->occur();
@@ -5850,8 +5856,11 @@ struct fracture_t : public demon_hunter_attack_t
 
         if ( !p()->buff.glaive_flurry->up() )
         {
-          p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          p()->buff.thrill_of_the_fight_damage->trigger();
+          if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+          {
+            p()->buff.thrill_of_the_fight_attack_speed->trigger();
+            p()->buff.thrill_of_the_fight_damage->trigger();
+          }
           if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
           {
             p()->proc.soul_fragment_from_aldrachi_tactics->occur();
@@ -5932,8 +5941,11 @@ struct shear_t : public demon_hunter_attack_t
 
         if ( !p()->buff.glaive_flurry->up() )
         {
-          p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          p()->buff.thrill_of_the_fight_damage->trigger();
+          if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+          {
+            p()->buff.thrill_of_the_fight_attack_speed->trigger();
+            p()->buff.thrill_of_the_fight_damage->trigger();
+          }
           if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
           {
             p()->proc.soul_fragment_from_aldrachi_tactics->occur();
@@ -6155,8 +6167,11 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       p()->buff.glaive_flurry->expire();
       if ( !p()->buff.rending_strike->up() )
       {
-        p()->buff.thrill_of_the_fight_attack_speed->trigger();
-        p()->buff.thrill_of_the_fight_damage->trigger();
+        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+        {
+          p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          p()->buff.thrill_of_the_fight_damage->trigger();
+        }
         if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
         {
           p()->proc.soul_fragment_from_aldrachi_tactics->occur();
