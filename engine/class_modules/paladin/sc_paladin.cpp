@@ -2533,7 +2533,10 @@ void paladin_t::create_actions()
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
-    active.divine_guidance_damage  = new divine_guidance_damage_t( this );
+  }
+  if (talents.lightsmith.divine_guidance->ok() )
+  {
+    active.divine_guidance_damage = new divine_guidance_damage_t( this );
   }
   //Templar
  // if (talents.lights_guidance->ok())
