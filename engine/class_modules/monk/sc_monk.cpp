@@ -2626,7 +2626,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->trigger();
+          p()->buff.bok_proc->increment();
       }
     }
 
@@ -5137,7 +5137,7 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     // apply_affecting_effect isn't working for whatever reason, manually setting for now
     base_dd_multiplier *= 1.0 + p.talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
-    //apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
+    // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
