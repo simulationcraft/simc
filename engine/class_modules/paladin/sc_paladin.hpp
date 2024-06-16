@@ -76,6 +76,12 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* heartfire;  // T30 2p Prot
   } debuff;
 
+  struct
+  {
+    buff_t* holy_bulwark;
+    buff_t* sacred_weapon;
+  } buffs;
+
   paladin_td_t( player_t* target, paladin_t* paladin );
 
   bool standing_in_consecration();
@@ -216,8 +222,6 @@ public:
       buff_t* divine_guidance;
       buff_t* rite_of_sanctification;
       buff_t* rite_of_adjuration;
-      buff_t* holy_bulwark;
-      buff_t* sacred_weapon;
     } lightsmith;
 
     struct
@@ -804,6 +808,7 @@ public:
   {
     return !( talents.crusading_strikes->ok() );
   }
+  dbc_proc_callback_t* create_sacred_weapon_callback;
 };
 
 namespace buffs

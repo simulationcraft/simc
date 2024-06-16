@@ -521,7 +521,6 @@ struct player_t : public actor_t
     buff_t* blessing_of_winter; // Night Fae Paladin spell
     buff_t* blessing_of_spring; // Night Fae Paladin spell
     buff_t* conquerors_banner; // Necrolord Warrior spell
-    buff_t* sacred_weapon;     
 
     // 9.0 Soulbinds
     buff_t* wild_hunt_tactics;  // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
@@ -569,6 +568,8 @@ struct player_t : public actor_t
     // 11.0 The War Within
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
+    buff_t* sacred_weapon;   // Lightsmith Paladin externals
+    buff_t* holy_bulwark;    // Lightsmith Paladin externals (dummy only)
   } buffs;
 
   struct debuffs_t

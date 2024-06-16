@@ -1244,15 +1244,15 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.lightsmith.valiance->ok()  && p()->buffs.shining_light_free->up() )
     {
       timespan_t increase = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
-      if ( p()->buffs.lightsmith.holy_bulwark->up() )
+      if ( player->buffs.holy_bulwark->up() )
       {
-        p()->buffs.lightsmith.holy_bulwark->extend_duration( p(), increase );
+        player->buffs.holy_bulwark->extend_duration( p(), increase );
       }
       if ( player->buffs.sacred_weapon->up() )
       {
         player->buffs.sacred_weapon->extend_duration( p(), increase );
       }
-      if ( !p()->buffs.lightsmith.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
+      if ( !player->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
       {
         timespan_t reduction = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
         p()->cooldowns.holy_armaments->adjust( reduction );
@@ -1739,73 +1739,6 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
   }
 };
 
-// Holy Armaments
-//Sacred Weapon Driver 
-template <typename Base, typename Player>
-struct sacred_weapon_proc_t : public Base
-{
-  sacred_weapon_proc_t( Player* p ) : Base( "sacred_weapon_proc", p, p->find_spell( 432616 ) )
-  {
-    Base::background                                               = true;
-    Base::callbacks                                                = false;
-
-  }
-};
-    // Sacred Weapon Buff
-struct sacred_weapon_t : public paladin_spell_t
-{
-   sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
-   {
-   }
-   void execute() override
-   {
-    paladin_spell_t::execute();
-    player->buffs.sacred_weapon->execute();
-   }
-};
-
-struct holy_bulwark_t : public paladin_spell_t
-{
-   holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
-   {
-    }
-   void execute() override
-   {
-    paladin_spell_t::execute();
-    p()->buffs.lightsmith.holy_bulwark->trigger();
-   }
-};
-
-// Holy Armaments
-
-struct holy_armaments_t : public paladin_spell_t
-{
-   holy_armaments_t( paladin_t* p, util::string_view options_str ) :
-      //paladin_spell_t( "holy_armaments", p, spell_data_t::nil()) 
-      paladin_spell_t( "holy_armaments", p, p->find_spell( 432459 ) )
-   {
-    parse_options( options_str );
-    harmful = false;
-    hasted_gcd = true;
-    name_str_reporting = "Holy Armaments";
-    target             = p;
-    if ( p->talents.lightsmith.forewarning->ok() )
-      apply_affecting_aura( p->talents.lightsmith.forewarning );
-   }
-
-   timespan_t execute_time() const override
-   {
-    return p()->active.armament[ p()->next_armament ]->execute_time();
-   }
-   void execute() override
-   {
-    paladin_spell_t::execute();
-    p()->active.armament[ p()->next_armament ]->execute();
-    p()->next_armament = armament( ( p()->next_armament + 1 ) % NUM_ARMAMENT );
-   }
-};
-
-
 struct weapon_enchant_t : public paladin_spell_t
 {
   buff_t* enchant;
@@ -2044,17 +1977,150 @@ struct empyrean_hammer_t : public paladin_spell_t
 
 };
 
+// Holy Armaments
+// Sacred Weapon Driver
+template <typename Base, typename Player>
+struct sacred_weapon_proc_t : public Base
+{
+  sacred_weapon_proc_t( Player* p ) : Base( "sacred_weapon_proc", p, p->find_spell( 432616 ) )
+  {
+    Base::background = true;
+    Base::callbacks  = false;
+  }
+};
+// Sacred Weapon Buff
+struct sacred_weapon_t : public paladin_spell_t
+{
+  sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
+  {
+  }
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() != target )
+      p()->get_target_data( target )->buffs.sacred_weapon->execute();
+    else
+      target->buffs.sacred_weapon->execute();
+    sim->print_debug( "{} executes Holy Armament Sacred Weapon on {}", p()->name(), target->name() );
+  }
+};
+
+struct holy_bulwark_t : public paladin_spell_t
+{
+  holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
+  {
+  }
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() != target )
+      p()->get_target_data( target )->buffs.holy_bulwark->execute();
+    else
+      target->buffs.holy_bulwark->execute();
+    sim->print_debug( "{} executes Holy Armament Holy Bulwark on {}", p()->name(), target->name() );
+  }
+};
+
+// Holy Armaments
+
+struct holy_armaments_t : public paladin_spell_t
+{
+  holy_armaments_t( paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( "holy_armaments", p, p->find_spell( 432459 ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+    hasted_gcd         = true;
+    name_str_reporting = "Holy Armaments";
+    if ( p->talents.lightsmith.forewarning->ok() )
+      apply_affecting_aura( p->talents.lightsmith.forewarning );
+  }
+
+  timespan_t execute_time() const override
+  {
+    return p()->active.armament[ p()->next_armament ]->execute_time();
+  }
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    auto nextArmament = p()->active.armament[ p()->next_armament ];
+
+    if ( p() == target )
+      nextArmament->execute();
+    else
+      nextArmament->execute_on_target( target );
+    sim->print_debug( "Player {} cast Holy Armaments on {}", p()->name(), target->name() );
+
+    if ( p()->talents.lightsmith.solidarity->ok() )
+    {
+      if ( target != p() )
+      {
+        nextArmament->execute();
+        sim->print_debug( "Player {} cast Holy Armaments on self via Solidarity", p()->name() );
+      }
+      else
+      {
+        // ToDo: Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
+        // actor. It could also target pets
+        for ( auto& _p : sim->player_no_pet_list )
+        {
+          if ( _p->is_sleeping() || _p == p() )
+            continue;
+          nextArmament->execute_on_target( _p );
+          sim->print_debug( "Player {} cast Holy Armaments on {} via Solidarity", p()->name(), _p->name() );
+          break;
+        }
+      }
+    }
+    p()->next_armament = armament( ( p()->next_armament + 1 ) % NUM_ARMAMENT );
+  }
+};
+
+dbc_proc_callback_t* create_sacred_weapon_callback( player_t* p )
+{
+  action_t* sacred_weapon_proc;
+  if ( p->type == PALADIN )
+    // Some Paladin auras affect this spell and are handled in paladin_spell_t.
+    sacred_weapon_proc = new sacred_weapon_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
+  else
+  {
+    sacred_weapon_proc = new sacred_weapon_proc_t<spell_t, player_t>( p );
+    sacred_weapon_proc->init(); // Why is this needed ??? The above works without, too D:
+  }
+
+  auto sacred_weapon_effect      = new special_effect_t( p );
+  sacred_weapon_effect->name_str = "sacred_weapon_cb";
+  sacred_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
+  sacred_weapon_effect->spell_id = 432502;
+  // From testing, this chance seems to be 10%
+  sacred_weapon_effect->proc_chance_ = .1;
+
+  sacred_weapon_effect->execute_action = sacred_weapon_proc;
+  p->special_effects.push_back( sacred_weapon_effect );
+
+  auto sacred_weapon_cb = new dbc_proc_callback_t( p, *sacred_weapon_effect );
+  sacred_weapon_cb->deactivate();
+  sacred_weapon_cb->initialize();
+
+  return sacred_weapon_cb;
+}
+
 void paladin_t::trigger_laying_down_arms()
-{ 
-   if ( specialization() == PALADIN_PROTECTION )
-   {
+{
+  if ( !talents.lightsmith.laying_down_arms->ok() )
+    return;
+
+  if ( specialization() == PALADIN_PROTECTION )
+  {
     buffs.shining_light_stacks->expire();
+    buffs.shining_light_free->expire();
     buffs.shining_light_free->trigger(); 
-   }
-   if (specialization() == PALADIN_HOLY) 
-   {
+  }
+  else if (specialization() == PALADIN_HOLY) 
+  {
     buffs.infusion_of_light->trigger();
-   }
+  }
 };
 
 void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay )
@@ -2399,6 +2465,16 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
+
+
+  buffs.holy_bulwark  = make_buff( *this, "holy_bulwark", paladin->find_spell( 432496 ) )->set_cooldown( 0_s );
+  buffs.sacred_weapon = make_buff( *this, "sacred_weapon", paladin->find_spell( 432502 ) );
+
+  if ( !target->is_enemy() )
+  {
+    auto cb = create_sacred_weapon_callback( target );
+    cb->activate_with_buff( buffs.sacred_weapon );
+  }
 
   dots.expurgation = target->get_dot( "expurgation", paladin );
 }
@@ -2815,22 +2891,10 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->set_target( this->target );
             this->active.divine_resonance->schedule_execute();
           } );
-  buffs.lightsmith.holy_bulwark = make_buff( this, "holy_bulwark", find_spell( 432496 ) )
-                            ->set_cooldown( 0_s )
-                            ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                              if ( !new_ )
-                              {
-                                buffs.shining_light_stacks->expire();
-                                buffs.shining_light_free->trigger();
-                              }
-                            } );
-//  buffs.lightsmith.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
 
   buffs.lightsmith.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.lightsmith.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
                          -> set_max_stack( 5 );
-  buffs.lightsmith.holy_bulwark          = make_buff( this, "holy_bulwark", find_spell( 432496 ) );
-  buffs.lightsmith.sacred_weapon         = make_buff( this, "sacred_weapon", find_spell( 432502 ) );
   buffs.lightsmith.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell( 433550 ) )
     ->add_invalidate(CACHE_STRENGTH)
@@ -4178,125 +4242,94 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    p->buffs.holy_bulwark = make_buff( p, "holy_bulwark", p->find_spell( 432496 ) )
+                                        ->set_cooldown( 0_s )
+                                        ->set_stack_change_callback( [ this ]( buff_t* buff, int, int new_ ) {
+                                          if ( !new_ && buff->source )
+                                            debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                        } );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
-                                 ->set_stack_change_callback( []( buff_t* buff, int old, int )
+                                 ->set_stack_change_callback( []( buff_t* buff, int, int new_)
                                    {
-                                   if ( old && buff->source )
-                                   {
-                                     //paladin_t* source = debug_cast<paladin_t*>( buff->source );
-                                    // source->trigger_laying_down_arms();
-                                     auto paladin = debug_cast<paladin_t*>( buff->source );
-                                     if ( paladin  )
-                                     {
-                                       paladin_t* source = debug_cast<paladin_t*>( buff->source );
-                                       source->trigger_laying_down_arms();
-                                     }
-                                   }
+                                     if ( !new_ && buff->source )
+                                       debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
                                    }
     );
   }
 
-  void create_actions( player_t* p ) const override
+  void create_actions(player_t* p) const override
   {
-    if ( p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet() )
+    if (p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet())
       return;
 
     // 9.0 Paladin Night Fae
 
     // Only create these if the player sets the option to get the buff.
-    if ( !p->external_buffs.blessing_of_summer.empty() )
+    if (!p->external_buffs.blessing_of_summer.empty())
     {
-      action_t* summer_proc           = new blessing_of_summer_proc_t( p );
-      const spell_data_t* summer_data = p->find_spell( 328620 );
+      action_t* summer_proc = new blessing_of_summer_proc_t(p);
+      const spell_data_t* summer_data = p->find_spell(328620);
 
       // This effect can proc on almost any damage, including many actions in simc that have callbacks = false.
       // Using an assessor here will cause this to have the chance to proc on damage from any action.
       // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
       p->assessor_out_damage.add(
-          assessor::CALLBACKS, [ p, summer_proc, summer_data ]( result_amount_type, action_state_t* s ) {
-            if ( !(p->buffs.blessing_of_summer->up()) )
-              return assessor::CONTINUE;
-
-            double proc_chance = summer_data->proc_chance();
-
-            if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
-                 summer_data->proc_flags() & ( UINT64_C( 1 ) << s->proc_type() ) && p->rng().roll( proc_chance ) )
-            {
-              double da = s->result_amount * summer_data->effectN( 1 ).percent();
-              make_event( p->sim, [ t = s->target, summer_proc, da ] {
-                summer_proc->set_target( t );
-                summer_proc->base_dd_min = summer_proc->base_dd_max = da;
-                summer_proc->execute();
-              } );
-            }
-
+        assessor::CALLBACKS, [p, summer_proc, summer_data](result_amount_type, action_state_t* s) {
+          if (!(p->buffs.blessing_of_summer->up()))
             return assessor::CONTINUE;
-          } );
+
+          double proc_chance = summer_data->proc_chance();
+
+          if (s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
+            summer_data->proc_flags() & (UINT64_C(1) << s->proc_type()) && p->rng().roll(proc_chance))
+          {
+            double da = s->result_amount * summer_data->effectN(1).percent();
+            make_event(p->sim, [t = s->target, summer_proc, da] {
+              summer_proc->set_target(t);
+              summer_proc->base_dd_min = summer_proc->base_dd_max = da;
+              summer_proc->execute();
+              });
+          }
+
+          return assessor::CONTINUE;
+        });
     }
 
-    //if ( !p->external_buffs.blessing_of_winter.empty() )
-    if (true)
+    if (!p->external_buffs.blessing_of_winter.empty())
     {
       action_t* winter_proc;
-      if ( p->type == PALADIN )
+      if (p->type == PALADIN)
         // Some Paladin auras affect this spell and are handled in paladin_spell_t.
-        winter_proc = new blessing_of_winter_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
+        winter_proc = new blessing_of_winter_proc_t<paladin_spell_t, paladin_t>(debug_cast<paladin_t*>(p));
       else
-        winter_proc = new blessing_of_winter_proc_t<spell_t, player_t>( p );
+        winter_proc = new blessing_of_winter_proc_t<spell_t, player_t>(p);
 
-      auto winter_effect            = new special_effect_t( p );
-      winter_effect->name_str       = "blessing_of_winter_cb";
-      winter_effect->type           = SPECIAL_EFFECT_EQUIP;
-      winter_effect->spell_id       = 328281;
-      winter_effect->cooldown_      = p->find_spell( 328281 )->internal_cooldown();
+      auto winter_effect = new special_effect_t(p);
+      winter_effect->name_str = "blessing_of_winter_cb";
+      winter_effect->type = SPECIAL_EFFECT_EQUIP;
+      winter_effect->spell_id = 328281;
+      winter_effect->cooldown_ = p->find_spell(328281)->internal_cooldown();
       winter_effect->execute_action = winter_proc;
-      p->special_effects.push_back( winter_effect );
+      p->special_effects.push_back(winter_effect);
 
-      auto winter_cb = new dbc_proc_callback_t( p, *winter_effect );
+      auto winter_cb = new dbc_proc_callback_t(p, *winter_effect);
       winter_cb->deactivate();
       winter_cb->initialize();
 
-      p->buffs.blessing_of_winter->set_stack_change_callback( [ winter_cb ]( buff_t*, int, int new_ ) {
-        if ( new_ )
+      p->buffs.blessing_of_winter->set_stack_change_callback([winter_cb](buff_t*, int, int new_) {
+        if (new_)
           winter_cb->activate();
         else
           winter_cb->deactivate();
-      } );
+        });
     }
-    if ( p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
-         p->specialization() == PALADIN_PROTECTION )
+    if (!p->external_buffs.sacred_weapon.empty() || p->specialization() == PALADIN_HOLY ||
+      p->specialization() == PALADIN_PROTECTION)
     {
-      action_t* sacred_weapon_proc;
-      if ( p->type == PALADIN )
-        // Some Paladin auras affect this spell and are handled in paladin_spell_t.
-        sacred_weapon_proc = new sacred_weapon_proc_t<paladin_spell_t, paladin_t>( debug_cast<paladin_t*>( p ) );
-      else
-        sacred_weapon_proc = new sacred_weapon_proc_t<spell_t, player_t>( p );
-
-      auto sacred_weapon_effect            = new special_effect_t( p );
-      sacred_weapon_effect->name_str       = "sacred_weapon_cb";
-      sacred_weapon_effect->type           = SPECIAL_EFFECT_EQUIP;
-      sacred_weapon_effect->spell_id       = 432502;
-      // From testing, this chance seems to be 10%
-      sacred_weapon_effect->proc_chance_ = .1;
-      
-
-      sacred_weapon_effect->execute_action = sacred_weapon_proc;
-      p->special_effects.push_back( sacred_weapon_effect );
-
-      auto sacred_weapon_cb = new dbc_proc_callback_t( p, *sacred_weapon_effect );
-      sacred_weapon_cb->deactivate();
-      sacred_weapon_cb->initialize();
-
-       p->buffs.sacred_weapon->set_stack_change_callback( [ sacred_weapon_cb ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          sacred_weapon_cb->activate();
-      else
-          sacred_weapon_cb->deactivate();
-      } );
+      auto cb = create_sacred_weapon_callback(p);
+      cb->activate_with_buff(p->buffs.sacred_weapon);
     }
   }
-
 
   void register_hotfixes() const override
   {
