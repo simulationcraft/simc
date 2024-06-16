@@ -3620,6 +3620,8 @@ struct auto_melee_attack_t : public action_t
     if ( !p->melee_main_hand )
       p->melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
 
+    add_child( p->melee_main_hand );
+
     p->main_hand_attack = p->melee_main_hand;
     p->main_hand_attack->weapon = &( p->main_hand_weapon );
     p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
@@ -3629,6 +3631,8 @@ struct auto_melee_attack_t : public action_t
       p->melee_off_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_oh" ) );
       if ( !p->melee_off_hand )
         p->melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+
+      add_child( p->melee_off_hand );
 
       p->off_hand_attack = p->melee_off_hand;
       p->off_hand_attack->weapon = &( p->off_hand_weapon );
@@ -7371,6 +7375,7 @@ struct hunt_them_down_t : public rogue_attack_t
   hunt_them_down_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.hunt_them_down_damage )
   {
+    p->find_action( "auto_attack" )->add_child( this );
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
