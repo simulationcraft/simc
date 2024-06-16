@@ -1998,7 +1998,7 @@ struct charred_passions_t : base_action_t
 
     double action_da_multipier() const
     {
-      return data().effecN( 1 ).trigger()->effectN( 1 ).percent();
+      return data().effectN( 1 ).trigger()->effectN( 1 ).percent();
     }
   };
 
