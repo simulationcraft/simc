@@ -2981,7 +2981,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // TODO: Check if this can proc without being talented into DoCJ
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-      p()->buff.dance_of_chiji->trigger();
+      p()->buff.dance_of_chiji->increment();
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
@@ -5199,8 +5199,6 @@ struct jadefire_stomp_t : public monk_spell_t
 
     if ( p.specialization() == MONK_WINDWALKER )
     {
-      apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 1 ) );
-
       ww_damage = new jadefire_stomp_ww_damage_t( p );
 
       add_child( ww_damage );
