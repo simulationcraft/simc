@@ -5471,6 +5471,11 @@ struct antimagic_zone_buff_t final : public death_knight_absorb_buff_t
     return death_knight_absorb_buff_t::consume( actual_consumed, s );
   }
 
+  void start( int stacks, double, timespan_t duration ) override
+  {
+    death_knight_absorb_buff_t::start( stacks, calc_absorb(), duration );
+  };
+
   double calc_absorb()
   {
     // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052
@@ -8574,12 +8579,12 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
       {
         if ( weapon_hand->slot == SLOT_MAIN_HAND )
         {
-          trigger_shattered_frost( s->result_amount, p()->off_hand_weapon.type == WEAPON_NONE );
+          trigger_shattered_frost( s->result_amount, true /* TODO-TWW check if still bugged p()->off_hand_weapon.type == WEAPON_NONE */ );
         }
-        if ( weapon_hand->slot == SLOT_OFF_HAND )
+        /*if ( weapon_hand->slot == SLOT_OFF_HAND )
         {
           trigger_shattered_frost( s->result_amount, true );
-        }
+        }*/
       }
     }
 
@@ -8748,7 +8753,11 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    get_td( state->target )->debuff.razorice->trigger();
+    if ( p()->talent.frost.glacial_advance.ok() || p()->talent.frost.avalanche.ok() ||
+         p()->runeforge.rune_of_razorice_mh || p()->runeforge.rune_of_razorice_oh )
+    {
+      get_td( state->target )->debuff.razorice->trigger();
+    }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
          p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )

@@ -1362,7 +1362,7 @@ public:
     return resources.current[ RESOURCE_COMBO_POINT ];
   }
 
-  // Current number of effective combo points, considering Echoing Reprimand
+  // Current number of effective combo points, considering Echoing Reprimand and Escalating Blade
   double current_effective_cp( bool use_echoing_reprimand = true, bool use_escalating_blade = false, bool react = false ) const
   {
     double current_cp = this->current_cp( react );
@@ -1711,8 +1711,10 @@ public:
     bool broadside_cp = false;
     bool cold_blood = false;
     bool danse_macabre = false;         // Trigger
+    bool darkest_night = false;
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
+    bool destiny_defined = false;       // Proc Increase
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
     bool fazed_damage = false;
@@ -1830,8 +1832,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
-    ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
-
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
 
@@ -1844,6 +1844,11 @@ public:
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
       affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+    }
+
+    if ( p->talent.fatebound.destiny_defined->ok() )
+    {
+      affected_by.destiny_defined = ab::data().affected_by( p->talent.fatebound.destiny_defined->effectN( 1 ) );
     }
     
     // Assassination
@@ -2387,6 +2392,16 @@ public:
   virtual bool consumes_escalating_blade() const
   { return false; }
 
+  double parry_chance( double exp, player_t* target ) const override
+  {
+    auto chance = ab::parry_chance(exp, target);
+    if ( chance > 0.0 && td( target )->debuffs.fazed->up() )
+    {
+      chance += td( target )->debuffs.fazed->data().effectN( 2 ).percent();
+    }
+    return std::max(0.0, chance);
+  }
+
 public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
@@ -2522,6 +2537,15 @@ public:
       }
     }
 
+    // Darkest Night
+    if ( affected_by.darkest_night )
+    {
+      if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+      {
+        m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent();
+      }
+    }
+
     // Set Bonuses
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
@@ -2650,6 +2674,15 @@ public:
     if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
     {
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.darkest_night )
+    {
+      // No CP state available this early as crit chance is calculated during state creation
+      if ( p()->buffs.darkest_night->up() && p()->current_effective_cp( true ) >= p()->consume_cp_max() )
+      {
+        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
+      }
     }
 
     return c;
@@ -2978,6 +3011,11 @@ struct rogue_poison_t : public rogue_attack_t
 
     double chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
+
+    if ( affected_by.destiny_defined )
+    {
+      chance += p()->talent.fatebound.destiny_defined->effectN( 1 ).percent();
+    }
 
     // Applies as a percent modifier, not a flat modifier
     if ( affected_by.dragon_tempered_blades )
@@ -4490,6 +4528,7 @@ struct envenom_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
+    affected_by.darkest_night = true;
 
     if ( p->set_bonuses.t31_assassination_4pc->ok() )
     {
@@ -4653,6 +4692,7 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr ), shadow_eviscerate_attack( nullptr )
   {
     affected_by.t31_subtlety_4pc = true;
+    affected_by.darkest_night = true; // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -5129,12 +5169,17 @@ struct killing_spree_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per tick?
+      p()->buffs.flawless_form->trigger();
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
     {
       p()->buffs.disorienting_strikes->trigger();
+    }
+
+    if ( p()->talent.trickster.devious_distraction->ok() )
+    {
+      p()->get_target_data( execute_state->target )->debuffs.fazed->trigger();
     }
   }
 
@@ -5146,12 +5191,6 @@ struct killing_spree_t : public rogue_attack_t
     attack_oh->set_target( d->target );
     attack_mh->execute();
     attack_oh->execute();
-
-    // ALPHA TOCHECK -- Once or refreshing per impact?
-    if ( p()->talent.trickster.devious_distraction->ok() )
-    {
-      p()->get_target_data( d->target )->debuffs.fazed->trigger();
-    }
   }
 };
 
@@ -9037,6 +9076,9 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
 
+  if ( is_secondary_action() )
+    return; // You have to actually spend the CP to get the coin - no secondary action finishers grant flips
+
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
@@ -9514,10 +9556,11 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( p()->buffs.darkest_night->check() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire();
+    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
     return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
   }
 
@@ -9557,9 +9600,12 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() && debuff->player != state->target )
     debuff->expire();
 
+  const int stacks = as<int>( from_darkest_night ? p()->spell.darkest_night_buff->effectN( 3 ).base_value() :
+                              p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() );
+
   debuff = p()->get_target_data( state->target )->debuffs.deathstalkers_mark;
-  debuff->trigger( as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() ) );
-  
+  debuff->trigger( stacks );
+
   p()->buffs.clear_the_witnesses->trigger();
 }
 

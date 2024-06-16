@@ -11,7 +11,11 @@ race=tauren
 load_default_gear=1
 
 # spec_talents=press_the_advantage:0
+# spec_talents=special_delivery:0
 
+actions.ogcd+=/fortifying_brew
+actions.ogcd+=/fortifying_brew
+actions.ogcd+=/fortifying_brew
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/dampen_harm
 actions.ogcd+=/diffuse_magic
@@ -25,7 +29,6 @@ actions.igcd+=/weapons_of_order
 actions.igcd+=/touch_of_death
 actions.igcd+=/exploding_keg
 actions.igcd+=/celestial_brew
-actions.igcd+=/bonedust_brew
 
 actions.rota+=/chi_burst
 actions.rota+=/blackout_kick

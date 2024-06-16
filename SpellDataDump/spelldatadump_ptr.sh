@@ -30,3 +30,7 @@ convert_line_ending $FILE
 FILE=SpellDataDump/build_info_ptr.txt
 ./engine/simc display_build="2" > $FILE.unix
 convert_line_ending $FILE
+
+FILE=SpellDataDump/bonus_ids_ptr.txt
+./engine/simc display_build="0" $PTR show_bonus_ids="1" > $FILE.unix
+convert_line_ending $FILE

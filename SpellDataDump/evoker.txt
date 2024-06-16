@@ -1110,18 +1110,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=891597)   : School Damage (2): fire
+#1 (id=891597)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13400 | PvP Coefficient: 0.70000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
-#2 (id=893576)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+#2 (id=893576)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27400 | PvP Coefficient: 1.00000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
-#3 (id=997861)   : Apply Aura (6) | Silence (27)
+#3 (id=997861)   : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
-#4 (id=1015129)  : Dispel (38)
+#4 (id=1015129)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
-#5 (id=1161081)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#5 (id=1161081)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.27400 | PvP Coefficient: 1.00000 | Misc Value: 1464 (Label) | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
                    Affected Spells (Label): Fire Breath (357208), Fire Breath (357209), Pyre (357211), Pyre (357212), Living Flame (361469), Living Flame (361500), Living Flame (361509), Fire Breath (366903), Fire Breath (366904), Fire Breath (366905), Firestorm (368847), Firestorm (369372), Firestorm (369374), Engulfing Blaze (370837), Life-Giver's Flame (371441), Cauterizing Flame (374251), Renewing Blaze (374348), Renewing Blaze (374349), Dragonrage (375087), Fire Breath (382266), Chrono Flames (431443), Chrono Flame (431483), Chrono Flame (431582), Chrono Flame (431583), Chrono Flame (431584), Engulf (443328), Engulf (443329), Engulf (443330), Burning Adrenaline (444019), Burning Adrenaline (444020), Consume Flame (444089), Fire Breath (444249), Firestorm (456657)
-#6 (id=1166934)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#6 (id=1166934)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.27400 | PvP Coefficient: 1.00000 | Misc Value: 1468 (Label) | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
                    Affected Spells (Label): Deep Breath (353759), Landslide (355689), Deep Breath (357210), Landslide (358385), Blistering Scales (360827), Blistering Scales (360828), Deep Breath (362010), Deep Breath (362019), Landslide (363800), Obsidian Scales (363916), Oppressing Roar (372048), Terror of the Skies (372245), Ebon Might (395152), Eruption (395160), Upheaval (396286), Upheaval (396288), Black Attunement (403264), Oppressing Roar (406971), Upheaval (408092), Eruption (424428), Upheaval (431620), Deep Breath (433874), Bombardments (434481), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Aerial Bombardment (440263), Aerial Bombardment (440283), Melt Armor (441172)
 Description      : $@spelldesc357208
@@ -1217,7 +1217,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=891602)   : School Damage (2): fire
+#1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20750 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc357211
 
@@ -1486,7 +1486,7 @@ Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
-#1 (id=894877)   : Apply Aura (6) | Dummy (4)
+#1 (id=894877)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=894878)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -1522,7 +1522,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=894883)   : School Damage (2): spellfrost
+#2 (id=894883)   : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc359073
 
@@ -1618,7 +1618,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=896464)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=915976)   : Dummy (3)
+#2 (id=915976)   : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 Description      : Emerald Blossom sends out flying seedlings when it bursts, healing $s1 $Lally:allies; up to $s2 yds away for $361361s1.
 
@@ -1768,9 +1768,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Implied Targeting (171), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=898191)   : Apply Aura (6) | Resistance (22)
+#1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
-#2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142)
+#2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
 Description      : Protect an ally with $n explosive dragonscales, increasing their Armor by $<perc>% of your own.
 
@@ -1798,7 +1798,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Active Threat (94), Do Not Display Range (126), Reactive Damage Proc (142), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=898193)   : School Damage (2): firestorm
+#1 (id=898193)   : School Damage (2): firestorm | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc360827
 
@@ -2776,7 +2776,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
+#1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34200 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=1003140)  : Apply Aura (6) | Modify Healing Taken% from Caster' (504)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
@@ -3005,7 +3005,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=911002)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
+#1 (id=911002)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34200 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=1003141)  : Apply Aura (6) | Modify Healing Taken% from Caster' (504)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
@@ -3123,7 +3123,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=912826)   : School Damage (2): spellfrost
+#1 (id=912826)   : School Damage (2): spellfrost | Attributes: Damage Only Affects Absorbs (26)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Sunder an enemy's protective magic, dealing $s1 Spellfrost damage to absorb shields.
 
@@ -3317,7 +3317,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Field of Dreams (370062), Emerald Blossom (373766)
                    Family Flags: 6, 10, 11
-#3 (id=1139070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+#3 (id=1139070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Echo (364343), Field of Dreams (370062)
                    Family Flags: 11
@@ -3720,9 +3720,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=981816)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1019175)  : School Damage (2): spellfrost
+#2 (id=1019175)  : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-#3 (id=1020208)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#3 (id=1020208)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Consume Flame (444089), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
@@ -5317,7 +5317,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Fail on all targets immune (85), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
-#1 (id=999378)   : Apply Aura (6) | Absorb Damage (69)
+#1 (id=999378)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 Description      : $@spelldesc373861
@@ -5349,7 +5349,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
 #2 (id=999973)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
-#3 (id=999974)   : Apply Aura (6) | Levitate (106)
+#3 (id=999974)   : Apply Aura (6) | Levitate (106) | Attributes: Players Only (14)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Conjure an updraft to lift you and your $s3 nearest allies within $A1 yds into the air, reducing damage taken from area-of-effect attacks by $s1% and increasing movement speed by $s2% for $d.
 Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.
@@ -5569,7 +5569,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292)
 Effects          :
-#1 (id=1001316)  : Dummy (3)
+#1 (id=1001316)  : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc375087
 
@@ -6540,11 +6540,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1002422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1002422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1089730)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+#2 (id=1089730)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc375801
@@ -7878,7 +7878,7 @@ Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... .....
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
-#2 (id=1014218)  : Dummy (3)
+#2 (id=1014218)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : Divert spiritual energy, healing an ally for $367230s1. Splits to injured allies within $<range> yards when empowered.
 
@@ -8109,7 +8109,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1020361)  : Apply Aura (6) | Dummy (4)
+#1 (id=1020361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Red spell deals $s1% more damage.
@@ -8132,7 +8132,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1020432)  : Apply Aura (6) | Dummy (4)
+#1 (id=1020432)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
@@ -8851,11 +8851,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160)
                    Family Flags: 10, 54
-#2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Eruption (395160)
                    Family Flags: 54
-#3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+#3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Eruption (395160)
                    Family Flags: 54
@@ -9100,15 +9100,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1034313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1034313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6), Players Only (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1034314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1034314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
-#3 (id=1089731)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+#3 (id=1089731)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc393645
@@ -9230,7 +9230,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1035409)  : School Damage (2): firestorm
+#1 (id=1035409)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.43750 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[
 
@@ -9474,7 +9474,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
 Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1037395)  : School Damage (2): firestorm
+#2 (id=1037395)  : School Damage (2): firestorm | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.30000 | PvP Coefficient: 1.12500 | Radius: 0 - 2 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=1052932)  : Unknown(144)
                    Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Knockback | Target: At Enemy (53) -> At Enemy in Area (16)
@@ -9521,7 +9521,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1040646)  : Apply Aura (6) | Dummy (4)
+#1 (id=1040646)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 7.5 | Scaled Value: 7.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Essence Burst increases the damage of affected spells by ${$s1}.1%.
 
@@ -9543,7 +9543,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1043306)  : Apply Aura (6) | Dummy (4)
+#1 (id=1043306)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
@@ -10395,7 +10395,7 @@ Effects          :
 #7 (id=1083267)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2695 (Label) | Target: Self (1)
                    Affected Spells (Label): Deep Breath (357210), Dream Flight (359816), Rescue (370665), Breath of Eons (403631), Spatial Paradox (406732), Deep Breath (433874), Breath of Eons (442204)
-#8 (id=1083748)  : Dummy (3)
+#8 (id=1083748)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #9 (id=1085170)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10879,7 +10879,7 @@ Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
-#1 (id=1072015)  : Apply Aura (6) | Dummy (4)
+#1 (id=1072015)  : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1072016)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -11055,9 +11055,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Only On Player (104), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1074054)  : Dummy (3)
+#1 (id=1074054)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 26.5 yards | Target: At Self (18) -> At Friendly in Area (31)
-#2 (id=1080811)  : Dummy (3)
+#2 (id=1080811)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : Grant an ally the gift of foresight, increasing their critical strike chance by $410089s1% $?s412774[and occasionally copying their damage and healing spells at $412774s1% power ][]for $410089d.
 
@@ -11237,7 +11237,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Aura Points On Client (268), Ignore Caster Absorb Modifiers (370)
 Effects          :
-#1 (id=1074705)  : Apply Aura (6) | Absorb Damage (69)
+#1 (id=1074705)  : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 Description      : $@spelldesc409676
@@ -11260,7 +11260,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1074767)  : Apply Aura (6) | Dummy (4)
+#1 (id=1074767)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1075264)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409990 | Target: Enemy (6)
@@ -11449,7 +11449,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075265)  : Apply Aura (6) | Dummy (4)
+#1 (id=1075265)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1075266)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409990 | Target: Enemy (6)
@@ -11473,7 +11473,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075267)  : Apply Aura (6) | Dummy (4)
+#1 (id=1075267)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1075268)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409990 | Target: Enemy (6)
@@ -11497,7 +11497,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075269)  : Apply Aura (6) | Dummy (4)
+#1 (id=1075269)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1075270)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409990 | Target: Enemy (6)
@@ -12381,7 +12381,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1080428)  : Apply Aura (6) | Dummy (4)
+#1 (id=1080428)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Prescience grants the ally a chance for their spells and abilities to echo their damage or healing, dealing $s1% of the amount again.
 Variables        : $doses=${50}
@@ -12501,7 +12501,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Only On Player (104), Do Not Display Range (126), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
+#1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34000 | PvP Coefficient: 1.00000 | Misc Value: 6 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
@@ -13109,7 +13109,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1101203)  : School Damage (2): firestorm
+#1 (id=1101203)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc422869
 
@@ -13324,7 +13324,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1118730)  : School Damage (2): fire
+#1 (id=1118730)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 1.2075 | Scaled Value: 1.2075 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 0.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc357211
 
@@ -13363,9 +13363,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1118749)  : School Damage (2): fire
+#1 (id=1118749)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1.134 | Scaled Value: 1.134 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 0.00000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
-#2 (id=1118750)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+#2 (id=1118750)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0.274 | Scaled Value: 0.274 | PvP Coefficient: 1.00000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
 Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
@@ -14469,7 +14469,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1127597)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=1127597)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
@@ -14518,7 +14518,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1131290)  : Apply Aura (6) | Dummy (4)
+#1 (id=1131290)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc438587
 Tooltip          : Next Eruption strikes up to ${$s1+1} targets.
@@ -14542,7 +14542,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1131385)  : School Damage (2): firestorm
+#1 (id=1131385)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | PvP Coefficient: 1.43750 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc422869
 
@@ -15106,15 +15106,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1138905)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1138905)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6), Players Only (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1138906)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1138906)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
-#3 (id=1138907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+#3 (id=1138907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc393645
@@ -15342,14 +15342,14 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1140268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
+#1 (id=1140268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (357302), Hover (357332), Hover (357377), Hover (357379), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Blistering Scales (360827), Blistering Scales (360828), Verdant Embrace (360995), Sense Power (361021), Sense Power (361022), Time Dilation (361029), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Deep Breath (362010), Deep Breath (362019), Dream Flight (362361), Dream Flight (362362), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Light Dilation (363143), Medium Dilation (363144), Heavy Dilation (363145), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Landslide (363800), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Fire Breath (366903), Fire Breath (366904), Fire Breath (366905), Spiritbloom (367226), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Volatility (369090), Volatility (369091), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Source of Magic (369459), Disintegrate (369819), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Stasis (370564), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Scorching Embers (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Emerald Communion (370960), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Dream Catalyst (371258), Punctuality (371270), Life-Giver's Flame (371426), Life-Giver's Flame (371441), Recall (371806), Recall (371807), Recall (371817), Cycle of Life (371832), Recall (371838), Cycle of Life (371871), Cycle of Life (371877), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Hover (372563), Source of Magic (372571), Source of Magic (372581), Lifebind (373267), Lifebind (373268), Lifebind (373270), Emerald Blossom (373766), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Temporal Anomaly (373862), Zephyr (374227), Zephyr (374229), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Time Spiral (375229), Time Spiral (375230), Time Spiral (375234), Time Spiral (375238), Time Spiral (375240), Time Spiral (375252), Time Spiral (375253), Time Spiral (375254), Time Spiral (375255), Time Spiral (375256), Time Spiral (375257), Time Spiral (375258), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Dream Breath (376788), Emerald Blossom (376832), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Golden Hour (378213), Soar (381437), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Renewing Breath (381923), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Divide and Conquer (384691), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Walloping Blow (387344), Ouroboros (387350), Unity (387431), Recall (387642), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Cycle of Life (388973), Flow State (390148), Fury of the Aspects (390386), Essence Burst (392268), Decharge Essence [DNT] (392523), Hover (393271), Soar (393513), Pyre (393568), Hover (394784), Ebon Might (395152), Sands of Time (395153), Eruption (395160), Ebon Might (395296), Close as Clutchmates (396043), Augmentation Evoker (396186), Essence Burst (396187), Upheaval (396286), Upheaval (396288), Tempered Scales (396571), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Draconic Attunements (403208), Black Attunement (403264), Bronze Attunement (403265), Black Attunement (403295), Bronze Attunement (403296), Breath of Eons (403631), Divide and Conquer (403727), Breath of Eons (403755), Breath of Eons (403758), Recall (403760), Defy Fate (404195), Defy Fate (404196), Empty Hourglass (404369), Defy Fate (404381), Fate Mirror (404908), Time Skip (404977), Evoker Devastation 10.1 Class Set 2pc (405518), Evoker Devastation 10.1 Class Set 4pc (405519), Evoker Preservation 10.1 Class Set 2pc (405520), Evoker Preservation 10.1 Class Set 4pc (405522), Imminent Destruction (405651), Imminent Destruction (405652), Feed the Flames (405874), Nourishing Sands (406041), Nourishing Sands (406043), Nourishing Sands (406054), Mastery: Timewalker (406380), Ricocheting Pyroclast (406659), Spatial Paradox (406732), Spatial Paradox (406789), Volcanism (406904), Regenerative Chitin (406907), Oppressing Roar (406971), Aspects' Favor (407243), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Spatial Paradox (407497), Pupil of Alexstrasza (407814), Plot the Future (407866), Anachronism (407869), Accretion (407876), Tectonic Locus (408002), Momentum Shift (408004), Momentum Shift (408005), Font of Magic (408083), Upheaval (408092), Bestow Weyrnstone (408233), Seismic Slam (408543), Seismic Slam (408544), Ignition Rush (408775), Motes of Possibility (409267), Motes of Possibility (409274), Prescience (409311), Reactive Hide (409329), Seismic Slam (409397), Seismic Slam (409438), Temporal Wound (409560), Breath of Eons (409632), Chrono Ward (409676), Chrono Ward (409678), Temporal Wound (409722), Obsidian Shards (409776), Blazing Shards (409848), Spiritbloom (409894), Spiritbloom (409895), Essence Gathering (409896), Essence Rush (409899), Breath of Eons (409990), Temporal Wound (409992), Temporal Wound (409993), Temporal Wound (409994), Prescience (410089), Perilous Fate (410253), Reactive Hide (410256), Overlord (410260), Inferno's Blessing (410261), Inferno's Blessing (410263), Inferno's Blessing (410265), Upheaval (410295), Upheaval (410296), Upheaval (410297), Upheaval (410298), Bestow Weyrnstone (410318), Bestow Weyrnstone (410334), Stretch Time (410352), Stretch Time (410355), Bestow Weyrnstone (410502), Bestow Weyrnstone (410508), Bestow Weyrnstone (410513), Molten Blood (410643), Molten Blood (410651), Symbiotic Bloom (410685), Symbiotic Bloom (410686), Prolong Life (410687), Echoing Strike (410784), Imminent Destruction (411055), Event Horizon (411164), Eye of Infinity (411165), Font of Magic (411212), Feed the Flames (411288), Feed the Flames (411299), Accretion (411932), Ebon Might (412707), Timelessness (412710), Timelessness (412712), Interwoven Threads (412713), Tomorrow, Today (412723), Unyielding Domain (412733), Fate Mirror (412774), Sands of Time (413525), Fate Mirror (413786), Stretch Time (413924), Shifting Sands (413984), Stretch Time (414356), Evoker Augmentation 10.1 Class Set 2pc (414877), Evoker Augmentation 10.1 Class Set 4pc (414878), Dream of Spring (414969), Evoker Augmentation 10.0 Class Set 4pc (415221), Evoker Augmentation 10.0 Class Set 2pc (415222), Essence Burst (417402), Potent Mana (418101), Motes of Possibility (419934), Motes of Possibility (419954), Evoker Augmentation 10.2 Class Set 2pc (422868), Evoker Augmentation 10.2 Class Set 4pc (422869), Evoker Devastation 10.2 Class Set 2pc (422870), Evoker Devastation 10.2 Class Set 4pc (422871), Evoker Preservation 10.2 Class Set 2pc (422872), Evoker Preservation 10.2 Class Set 4pc (422873), Emerald Trance (424155), Fate Weaver (424325), Trembling Earth (424368), Emerald Trance (424402), Eruption (424428), Empowered Soaring (430846), Chrono Flames (431443), Chrono Flame (431483), Chrono Flame (431582), Chrono Flame (431583), Chrono Flame (431584), Upheaval (431620), Sun's Avatar (431910), Thread of Fate (432895), Thread of Fate (432896), Deep Breath (433874), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Perilous Fate (439606), Aerial Bombardment (440263), Aerial Bombardment (440283), Melt Armor (441172), Breath of Eons (442204), Titan's Gift (443264), Engulf (443328), Engulf (443329), Engulf (443330), Enkindle (444016), Enkindle (444017), Burning Adrenaline (444019), Burning Adrenaline (444020), Red Hot (444081), Consume Flame (444088), Consume Flame (444089), Traveling Flame (444140), Fire Breath (444249), Fan the Flames (444318), Lifecinders (444322), Lifecinders (444323), Conduit of Flame (444843), Expanded Lungs (444845), Trailblazer (444849), Shape of Flame (445074), Shape of Flame (445134), Consume Flame (445495), Titanic Precision (445625), Enkindle (445740), Draconic Instincts (445958), Draconic Instincts (445959), Evoker Augmentation 11.0 Class Set 4pc (453671), Evoker Augmentation 11.0 Class Set 2pc (453672), Evoker Preservation 11.0 Class Set 2pc (453673), Evoker Preservation 11.0 Class Set 4pc (453674), Evoker Devastation 11.0 Class Set 4pc (453675), Evoker Devastation 11.0 Class Set 2pc (453676), Arcane Reach (454983), Recall (455962), Recommencement (456058), Epoch Fragment (456083), Volcanic Upsurge (456142), Evoker Augmentation 11.0 Class Set 4pc (456220), Evoker Augmentation 11.0 Class Set 4pc (456221), Firestorm (456657), Rumbling Earth (459120), Imminent Destruction (459537), Imminent Destruction (459574), Molten Embers (459725)
-#2 (id=1140269)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+#2 (id=1140269)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Dream Breath (355936), Disintegrate (356995), Fire Breath (357208), Eternity Surge (359073), Spiritbloom (367226), Emerald Communion (370960), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731)
                    Family Flags: 6, 15, 16, 25, 30, 47
-#3 (id=1140272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+#3 (id=1140272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Disintegrate (356995), Emerald Communion (370960)
                    Family Flags: 6, 47
@@ -15378,7 +15378,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1140270)  : Apply Aura (6) | Dummy (4)
+#1 (id=1140270)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Engulf quickens your pulse, reducing the cast time of your next spell by $444019s1%. Stacks up to $444019u charges.
 
@@ -15501,15 +15501,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1140572)  : School Damage (2): fire
+#1 (id=1140572)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13400 | PvP Coefficient: 0.70000 | Target: Enemy (6)
-#2 (id=1140573)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+#2 (id=1140573)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#3 (id=1140574)  : Apply Aura (6) | Silence (27)
+#3 (id=1140574)  : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
-#4 (id=1140575)  : Dispel (38)
+#4 (id=1140575)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
-#5 (id=1161086)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+#5 (id=1161086)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.27400 | PvP Coefficient: 1.00000 | Misc Value: 1464 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Fire Breath (357208), Fire Breath (357209), Pyre (357211), Pyre (357212), Living Flame (361469), Living Flame (361500), Living Flame (361509), Fire Breath (366903), Fire Breath (366904), Fire Breath (366905), Firestorm (368847), Firestorm (369372), Firestorm (369374), Engulfing Blaze (370837), Life-Giver's Flame (371441), Cauterizing Flame (374251), Renewing Blaze (374348), Renewing Blaze (374349), Dragonrage (375087), Fire Breath (382266), Chrono Flames (431443), Chrono Flame (431483), Chrono Flame (431582), Chrono Flame (431583), Chrono Flame (431584), Engulf (443328), Engulf (443329), Engulf (443330), Burning Adrenaline (444019), Burning Adrenaline (444020), Consume Flame (444089), Fire Breath (444249), Firestorm (456657)
 Description      : $@spelldesc357208
@@ -16079,7 +16079,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Eruption (395160)
                    Family Flags: 54

@@ -150,7 +150,8 @@ struct spelleffect_data_t
   unsigned         _index;           // Effect index for the spell
   unsigned         _type;            // Effect type
   unsigned         _subtype;         // Effect sub-type
-  int              _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
+  int              _scaling_type;    // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
+  unsigned         _attribute;       // Effect attribute
   double           _m_coeff;         // Effect average spell scaling multiplier
   double           _m_delta;         // Effect delta spell scaling multiplier
   double           _m_unk;           // Unused effect scaling multiplier
@@ -210,6 +211,15 @@ struct spelleffect_data_t
 
   property_type_t property_type() const
   { return static_cast<property_type_t>( _misc_value ); }
+
+  unsigned attribute() const
+  { return _attribute; }
+
+  bool flags( spelleffect_attribute attr ) const
+  {
+    uint32_t mask = 1u << ( ( static_cast<unsigned>( attr ) - 1 ) % 32u );
+    return ( _attribute & mask ) != 0;
+  }
 
   double base_value() const
   { return _base_value; }
