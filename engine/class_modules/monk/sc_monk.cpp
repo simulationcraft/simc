@@ -4885,7 +4885,7 @@ struct jadefire_stomp_damage_t : public monk_spell_t
     spell_power_mod.direct  = 0;
     
     // apply_affecting_effect isn't working for whatever reason, manually setting for now
-    base_dd_multiplier *= 1.0 + p.talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+    base_dd_multiplier *= 1.0 + p->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
     // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
 
   }
