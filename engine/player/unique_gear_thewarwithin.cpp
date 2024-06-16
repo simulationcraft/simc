@@ -510,6 +510,58 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 436035 equip
+//  e1: coeff? trigger driver
+// 436039 driver
+//  e1: coeff? this is 10x equip coeff and seems to be the one being used in-game
+// 436043 damage
+// 436044 heal
+// TODO: determine if it can proc with no gems
+// TODO: determine which coeff is actually used
+// TODO: confirm damage amount increase per gem type calculation
+// TODO: confirm rppm decrease per gem type calculation
+// TODO: determine if heal uses same coeff as damage
+// TODO: confirm damage/heal depends on target type, and not triggering action type
+void elemental_focusing_lens( special_effect_t& effect )
+{
+  auto gem_count = unique_gem_count( effect );
+
+  // TODO: determine if it can proc with no gems
+  if ( !gem_count )
+    return;
+
+  // TODO: determine which coeff is actually used. in-game seems to be incorrectly using the driver coeff, which is 10x
+  // the equip coeff.
+  auto amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  // TODO: confirm damage amount increase per gem type calculation
+  amount *= 6 - gem_count;
+
+  // TODO: confirm rppm decrease per gem type calculation
+  effect.rppm_modifier_ = 1.0 / ( 6 - gem_count );
+
+  effect.spell_id = effect.trigger()->id();
+
+  auto damage = create_proc_action<generic_proc_t>( "elemental_focusing_len", effect, 436043 );
+  damage->base_dd_min = damage->base_dd_max = amount;
+
+  // TODO: determine if heal uses same coeff as damage
+  auto heal = create_proc_action<generic_heal_t>( "elemental_focusing_len_heal", effect, 436044 );
+  heal->base_dd_min = heal->base_dd_max = amount;
+  heal->name_str_reporting = "Heal";
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      // TODO: confirm damage/heal depends on target type, and not triggering action type
+      if ( s->target->is_enemy() )
+        damage->execute_on_target( s->target );
+      else
+        heal->execute_on_target( s->target );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -3030,6 +3082,7 @@ void register_special_effects()
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
   register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
+  register_special_effect( 436035, embellishments::elemental_focusing_lens );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
