@@ -1372,6 +1372,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
         strike->set_target( p()->target );
         strike->schedule_execute();
       }
+
+      p()->buff.flurry_charge->expire();
     }
 
     p()->buff.vigilant_watch->expire();
