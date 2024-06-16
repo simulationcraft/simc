@@ -98,7 +98,8 @@ private:
 public:
   using base_t = parse_action_effects_t<Base>;
 
-  monk_action_t( std::string_view name, monk_t *player, const spell_data_t *s = spell_data_t::nil() );
+  template <typename... Args>
+  monk_action_t( Args &&...args );
   std::string full_name() const;
   monk_t *p();
   const monk_t *p() const;
@@ -138,8 +139,6 @@ public:
   bool is_combo_strike();
   bool is_combo_break();
   void combo_strikes_trigger();
-  void brew_cooldown_reduction( double time_reduction );
-  void trigger_shuffle( double time_extension );
   void consume_resource() override;
   void execute() override;
   void impact( action_state_t *state ) override;
@@ -159,7 +158,7 @@ public:
 
 struct monk_spell_t : public monk_action_t<spell_t>
 {
-  monk_spell_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+  monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
   double action_multiplier() const override;
@@ -167,8 +166,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
 struct monk_heal_t : public monk_action_t<heal_t>
 {
-  monk_heal_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+  monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_multiplier( player_t *target ) const override;
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *action_state ) const override;
@@ -177,13 +175,12 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
-  monk_absorb_t( std::string_view name, monk_t &player, const spell_data_t *spell = spell_data_t::nil() );
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY
+  monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
 };
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
-  monk_melee_attack_t( std::string_view name, monk_t *player, const spell_data_t *spell = spell_data_t::nil() );
+  monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double action_multiplier() const override;
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
@@ -193,10 +190,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct monk_buff_t : public buff_t
 {
-  // TODO: FIX TO USE * INSTEAD OF & FOR CONSISTENCY IF POSSIBLE
-  monk_buff_t( monk_td_t &target, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
-  monk_buff_t( monk_t &player, std::string_view name, const spell_data_t *spell = spell_data_t::nil(),
+  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
   monk_td_t &get_td( player_t *target );
   const monk_td_t *find_td( player_t *target ) const;
@@ -210,14 +206,41 @@ struct summon_pet_t : public monk_spell_t
   std::string_view pet_name;
   pet_t *pet;
 
-  summon_pet_t( std::string_view name, std::string_view pname, monk_t *player,
-                const spell_data_t *spell = spell_data_t::nil() );
-
+  summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
+                const spell_data_t *spell_data = spell_data_t::nil() );
   void init_finished() override;
   void execute() override;
   bool ready() override;
 };
+
+template <class base_action_t>
+struct brew_t : base_action_t
+{
+  template <typename... Args>
+  brew_t( monk_t *player, Args &&...args );
+};
+
+struct brews_t
+{
+  std::unordered_map<unsigned, cooldown_t *> cooldowns;
+
+  void insert_cooldown( action_t *action );
+  void adjust( timespan_t reduction );
+};
 }  // namespace actions
+
+namespace buffs
+{
+struct shuffle_t : actions::monk_buff_t
+{
+  timespan_t accumulator;
+  const timespan_t max_duration;
+
+  using monk_buff_t::trigger;
+  shuffle_t( monk_t *monk );
+  void trigger( timespan_t duration );
+};
+}  // namespace buffs
 
 inline int sef_spell_index( int x )
 {
@@ -227,7 +250,7 @@ inline int sef_spell_index( int x )
 struct monk_td_t : public actor_target_data_t
 {
 public:
-  struct
+  struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> enveloping_mist;
@@ -235,9 +258,9 @@ public:
     propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
-  } dots;
+  } dot;
 
-  struct
+  struct debuff_t
   {
     // Brewmaster
     propagate_const<buff_t *> keg_smash;
@@ -271,6 +294,40 @@ public:
   monk_t &monk;
   monk_td_t( player_t *target, monk_t *p );
 };
+
+// utility to create target_effect_t compatible functions from monk_td_t member references
+// adapted from sc_death_knight.cpp
+template <typename T>
+static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, monk_td_t::debuff_t> )
+  {
+    if ( stack )
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->debuff )->check();
+      };
+    else
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, monk_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->dot )->current_stack();
+      };
+    else
+      return [ effect ]( actor_target_data_t *target_data ) {
+        return std::invoke( effect, static_cast<monk_td_t *>( target_data )->dot )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of monk_td_t" );
+    return nullptr;
+  }
+}
 
 struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
@@ -312,17 +369,21 @@ public:
     propagate_const<action_t *> flurry_strikes;
 
     // Brewmaster
+    propagate_const<action_t *> special_delivery;
     propagate_const<action_t *> breath_of_fire;
-    propagate_const<action_t *> charred_passions;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
     propagate_const<heal_t *> gift_of_the_ox_trigger;
     propagate_const<heal_t *> gift_of_the_ox_expire;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
-    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
-    propagate_const<action_t *> keg_smash_press_the_advantage;
     propagate_const<action_t *> chi_surge;
+    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
+    struct
+    {
+      propagate_const<action_t *> keg_smash;
+      propagate_const<action_t *> rising_sun_kick;
+    } press_the_advantage;
 
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
@@ -346,7 +407,7 @@ public:
   std::vector<action_t *> combo_strike_actions;
   double squirm_timer;
   double spiritual_focus_count;
-  double shuffle_count_secs;
+  timespan_t shuffle_count_secs;
 
   double gift_of_the_ox_proc_chance;
 
@@ -452,6 +513,7 @@ public:
     propagate_const<buff_t *> spinning_crane_kick;
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
+    propagate_const<buff_t *> windwalking_movement_aura;
 
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
@@ -472,7 +534,7 @@ public:
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> purified_chi;
-    propagate_const<buff_t *> shuffle;
+    propagate_const<buffs::shuffle_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> weapons_of_order;
     propagate_const<buff_t *> zen_meditation;
@@ -498,6 +560,7 @@ public:
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
+    propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> jadefire_brand;
@@ -597,8 +660,7 @@ public:
     propagate_const<proc_t *> blackout_reinforcement_waste;
     propagate_const<proc_t *> bonedust_brew_reduction;
     propagate_const<proc_t *> bountiful_brew_proc;
-    propagate_const<proc_t *> charred_passions_bok;
-    propagate_const<proc_t *> charred_passions_sck;
+    propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
@@ -608,7 +670,7 @@ public:
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
     propagate_const<proc_t *> rsk_reset_totm;
-    propagate_const<proc_t *> salsalabim_bof_reset;
+    propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
     propagate_const<proc_t *> xuens_battlegear_reduction;
@@ -853,9 +915,9 @@ public:
       player_talent_t touch_of_the_tiger;
       player_talent_t hardened_soles;
       player_talent_t ascension;
-      player_talent_t dual_threat;
+      player_talent_t ferociousness;
       // Row 4
-      player_talent_t mark_of_the_crane;
+      player_talent_t crane_vortex;
       player_talent_t teachings_of_the_monastery;
       player_talent_t glory_of_the_dawn;
       // 8 Required
@@ -886,7 +948,7 @@ public:
       player_talent_t sequenced_strikes;
       player_talent_t rising_star;
       player_talent_t invokers_delight;
-      player_talent_t crane_vortex;
+      player_talent_t dual_threat;
       player_talent_t gale_force;
       // Row 9
       player_talent_t last_emperors_capacitor;
@@ -894,9 +956,11 @@ public:
       player_talent_t xuens_bond;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;
+      player_talent_t jadefire_fists;
       player_talent_t jadefire_stomp;
       player_talent_t communion_with_wind;
       // Row 10
+      player_talent_t power_of_the_thunder_king;
       player_talent_t revolving_whirl;
       player_talent_t knowledge_of_the_broken_temple;
       player_talent_t memory_of_the_monastery;
@@ -904,6 +968,7 @@ public:
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
       player_talent_t jadefire_harmony;
+      player_talent_t darting_hurricane;
     } windwalker;
 
     // Master of Harmony
@@ -1056,6 +1121,7 @@ public:
     const spell_data_t *expel_harm_2_ww;
     const spell_data_t *flying_serpent_kick;
     const spell_data_t *leather_specialization_ww;
+    const spell_data_t *mark_of_the_crane;
     const spell_data_t *spinning_crane_kick_2_ww;
     const spell_data_t *touch_of_death_3_ww;
     const spell_data_t *touch_of_karma;
@@ -1066,6 +1132,7 @@ public:
     } windwalker;
   } spec;
 
+  // new spell data holders
   struct
   {
     struct
@@ -1080,6 +1147,12 @@ public:
 
     struct
     {
+      // row 1
+      player_talent_t keg_smash;
+      // row 7
+      player_talent_t scalding_brew;
+      // row 9
+      player_talent_t stormstouts_last_keg;
     } brewmaster;
 
     struct
@@ -1123,6 +1196,8 @@ public:
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
+
+      actions::brews_t *brews;
     } brewmaster;
 
     struct
@@ -1137,6 +1212,8 @@ public:
     } windwalker;
   } baseline;
 
+  // end
+
   struct mastery_spells_t
   {
     const spell_data_t *combo_strikes;    // Windwalker
@@ -1149,24 +1226,18 @@ public:
   {
     propagate_const<cooldown_t *> anvil_and_stave;
     propagate_const<cooldown_t *> blackout_kick;
-    propagate_const<cooldown_t *> black_ox_brew;
-    propagate_const<cooldown_t *> bonedust_brew;
     propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> celestial_brew;
-    propagate_const<cooldown_t *> charred_passions;
     propagate_const<cooldown_t *> chi_torpedo;
     propagate_const<cooldown_t *> drinking_horn_cover;
     propagate_const<cooldown_t *> expel_harm;
     propagate_const<cooldown_t *> jadefire_stomp;
     propagate_const<cooldown_t *> fists_of_fury;
     propagate_const<cooldown_t *> flying_serpent_kick;
-    propagate_const<cooldown_t *> fortifying_brew;
     propagate_const<cooldown_t *> healing_elixir;
     propagate_const<cooldown_t *> invoke_niuzao;
     propagate_const<cooldown_t *> invoke_xuen;
     propagate_const<cooldown_t *> invoke_yulon;
     propagate_const<cooldown_t *> keg_smash;
-    propagate_const<cooldown_t *> purifying_brew;
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
@@ -1208,7 +1279,6 @@ public:
     const spell_data_t *breath_of_fire_dot;
     const spell_data_t *call_to_arms_invoke_niuzao;
     const spell_data_t *celestial_fortune;
-    const spell_data_t *charred_passions_dmg;
     const spell_data_t *dragonfire_brew;
     const spell_data_t *elusive_brawler;
     const spell_data_t *face_palm;
@@ -1301,6 +1371,7 @@ public:
   // RPPM objects
   struct rppms_t
   {
+    real_ppm_t *darting_hurricane;
     real_ppm_t *spirit_of_the_ox;
   } rppm;
 
@@ -1377,11 +1448,9 @@ public:
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  void pre_analyze_hook() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
-  void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t *s ) override;
   void assess_heal( school_e, result_amount_type, action_state_t *s ) override;
   void invalidate_cache( cache_e ) override;
   void init_action_list() override;
@@ -1407,7 +1476,6 @@ public:
                                               const spell_data_t *affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-  void merge( player_t &other ) override;
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
@@ -1420,7 +1488,6 @@ public:
   bool mark_of_the_crane_max();
   double sck_modifier();
   double calculate_last_stagger_tick_damage( int n ) const;
-  void brew_cooldown_reduction( double );
   bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic

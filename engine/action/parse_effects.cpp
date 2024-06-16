@@ -400,6 +400,9 @@ void modified_spell_data_t::parse_effect( pack_t<modify_effect_t>& tmp, const sp
     tmp.data.flat = flat;
     tmp.data.eff = &eff;
 
+    if ( eff.flags( EX_SUPPRESS_STACKING ) )
+      tmp.data.use_stacks = false;
+
     effN.conditional.push_back( tmp.data );
   }
 }
@@ -526,6 +529,12 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   if ( tmp.data.value != 0.0 )
     val_str = val_str + " (overridden)";
+
+  if constexpr ( is_detected_v<detect_use_stacks, U> )
+  {
+    if ( eff.flags( EX_SUPPRESS_STACKING ) )
+      tmp.data.use_stacks = false;
+  }
 
   if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {

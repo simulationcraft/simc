@@ -2650,12 +2650,12 @@ static bool generate_tree_nodes( player_t* player,
   return true;
 }
 
-// Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
-// random which node becomes the first choice. Manually resolve such conflicts here.
+// Different entries within the same node are allowed to have non-unique selection indices.
+// Manually resolve such conflicts here.
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
 {
-  auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
+  auto get_index = [ = ]( const trait_data_t* t ) -> short {
     if ( t->selection_index == -1 )
     {
       // Voidweaver Devour Matter / Darkening Horizon clash resolution
@@ -2891,8 +2891,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      // it is possible to have multiple entries per node that are not choice node, in which case the higher trait node
-      // entry id seems to take precedence
+      // it is possible to have multiple entries per node that are not choice node.
+      // default assumption is that the higher trait entry id is used.
+      // if this is not the case, clashes must be resolved manually in sort_node_entries().
       if ( node.size() > 1 )
       {
         range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {

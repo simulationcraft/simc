@@ -53,6 +53,8 @@ static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util:
   { 25, "Target 2" },
   { 26, "Value Multiplier" },
   { 27, "PvP Coefficient" },
+  { 28, "Scaling Class" },
+  { 29, "Attribute" },
 } );
 
 static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
@@ -214,7 +216,7 @@ struct proc_map_entry_t
   util::string_view proc;
 };
 static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
-  { PF_KILLED,                 "Killed"                      },
+  { PF_HEARTBEAT,              "Heartbeat"                   },
   { PF_KILLING_BLOW,           "Killing Blow"                },
   { PF_MELEE,                  "White Melee"                 },
   { PF_MELEE_TAKEN,            "White Melee Taken"           },
@@ -1197,6 +1199,32 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 540, "Modify Stat With Support Triggers"            },
 } );
 
+static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned, std::string_view>( {
+  { 0,  "No Immunity"                                  },
+  { 1,  "Position is facing relative"                  },
+  { 2,  "Jump Charge Unit Melee Range"                 },
+  { 3,  "Jump Charge Unit Strict Path Check"           },
+  { 4,  "Exclude Own Party"                            },
+  { 5,  "Always AOE Line of Sight"                     },
+  { 6,  "Suppress Points Stacking"                     },
+  { 7,  "Chain from Initial Target"                    },
+  { 8,  "Uncontrolled No Backwards"                    },
+  { 9,  "Aura Points Stack"                            },
+  { 10, "No Copy Damage Interrupts or Procs"           },
+  { 11, "Add Target (Dest) Combat Reach to AOE"        },
+  { 12, "Is Harmful"                                   },
+  { 13, "Force Scale to Override Camera Min Height"    },
+  { 14, "Players Only"                                 },
+  { 15, "Compute Points Only At Cast Time"             },
+  { 16, "Enforce Line of Sight To Chain Targets"       },
+  { 17, "Area Effects Use Target Radius"               },
+  { 18, "Teleport With Vehicle (during map transfer)"  },
+  { 19, "Scale Points by Challenge Mode Damage Scaler" },
+  { 20, "Don't Fail Spell On Targeting Failure"        },
+  { 22, "Always Hit"                                   },
+  { 26, "Damage Only Affects Absorbs"                  },
+} );
+
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
   { 1,  "Charm"        },
   { 2,  "Disorient"    },
@@ -1448,6 +1476,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->_scaling_type )
   {
     s << " | Scaling Class: " << e->_scaling_type;
+  }
+
+  if ( e->_attribute )
+  {
+    std::vector<std::string> attr_str;
+    for ( unsigned flag = 0; flag < 32; flag++ )
+      if ( e->_attribute & ( 1 << flag ) )
+        attr_str.push_back( map_string( _effect_attribute_strings, flag ) );
+
+    s << " | Attributes: " << util::string_join( attr_str );
   }
 
   s << std::endl;
@@ -2262,8 +2300,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
     range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
-      if ( a.modifier_type == RPPM_MODIFIER_SPEC && b.modifier_type == RPPM_MODIFIER_SPEC )
+      if ( ( a.modifier_type == RPPM_MODIFIER_CLASS && b.modifier_type == RPPM_MODIFIER_CLASS ) ||
+           ( a.modifier_type == RPPM_MODIFIER_SPEC && b.modifier_type == RPPM_MODIFIER_SPEC ) )
+      {
         return a.type < b.type;
+      }
 
       return a.modifier_type < b.modifier_type;
     } );

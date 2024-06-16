@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55087 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -183,7 +183,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=357)      : School Damage (2): physical
+#1 (id=357)      : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00309 | PvP Coefficient: 0.90900 | Radius: 8 yards | Target: Cone to Enemy (104)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
@@ -337,11 +337,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : x....... ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Treat as Area Effect (175), No Jump Pathing (208), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
-#1 (id=512)      : Trigger Spell (64): Whirlwind
+#1 (id=512)      : Trigger Spell (64): Whirlwind | Attributes: Is Harmful (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 199658 | Target: Self (1)
-#2 (id=513)      : Trigger Spell (64): Whirlwind
+#2 (id=513)      : Trigger Spell (64): Whirlwind | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 200 | Trigger Spell: 199850 | Target: Self (1)
-#3 (id=293811)   : Trigger Spell (64): Whirlwind
+#3 (id=293811)   : Trigger Spell (64): Whirlwind | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 411547 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, $?s202316[hitting your primary target with Slam and ][]striking all nearby targets for $<baseDmg> Physical damage. Deals reduced damage beyond $s1 targets.
 Variables        : $baseDmg=${3*$199658s1}
@@ -743,7 +743,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=2316)     : School Damage (2): physical
+#1 (id=2316)     : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52155 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
 Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
 
@@ -1802,7 +1802,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=58626)    : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 64380 | Target: Enemy (6)
-#2 (id=801036)   : Trigger Missiles (32)
+#2 (id=801036)   : Trigger Missiles (32) | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394352 | Target: Enemy (6)
 Description      : Hurl your weapon at the enemy, causing $<damage> Physical damage, ignoring armor, and removing any magical immunities. Deals up to $?s329033[${($329033s3/100+1)*500}][500]% increased damage to absorb shields.
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
@@ -2059,7 +2059,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=86443)    : Dummy (3)
+#1 (id=86443)    : Dummy (3) | Attributes: No Immunity (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=86559)    : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
@@ -2122,13 +2122,13 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=87073)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Rend (772), Slam (1464), Hamstring (1715), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Raging Blow (85384), Raging Blow (96103), Execute Off-Hand (163558), Impending Victory (202168), Execute (260798), Siegebreaker (280772), Siegebreaker (280773), Execute (280849), Onslaught (315720), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Rend (388539), Rend (394062), Rend (394063), Onslaught (396718)
                    Family Flags: 1, 5, 20, 21, 40, 41, 42, 45, 53, 69, 72, 115, 116
-#2 (id=333347)   : Apply Aura (6) | Dummy (4)
+#2 (id=333347)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-#3 (id=349763)   : Apply Aura (6) | Dummy (4)
+#3 (id=349763)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 0.90990 | Target: Self (1)
 Description      : Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next single-target attack strikes up to $w1 additional targets for $w3% damage.
@@ -3981,7 +3981,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=279107)   : Apply Aura (6) | Absorb Damage (69)
+#1 (id=279107)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.37500 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=299580)   : Apply Aura (6) | Dummy (4)
@@ -5500,7 +5500,7 @@ Attributes       : .......x ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=325916)   : Create Area Trigger (179)
+#1 (id=325916)   : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7790 | Radius: 6 yards | Target: Unknown(44)
 Description      : $@spelldesc218826
 
@@ -7466,7 +7466,7 @@ Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=786863)   : Unknown(42)
+#1 (id=786863)   : Unknown(42) | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Knockback | Target: Unknown(87)
 Description      : $@spelldesc307865
 
@@ -7596,7 +7596,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .x...
                  : ........ ........ ........ ........   
                  : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=800084)   : School Damage (2): physical
+#1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 0.77000 | Radius: 0 - 10 yards | Target: Unknown(87) -> Line to Enemy (134)
 #2 (id=818173)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
@@ -8098,7 +8098,7 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Active Defense (21), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=802671)   : Apply Aura (6) | Dummy (4)
+#1 (id=802671)   : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc317349
 Tooltip          : Next $w1 damage dealt to $@auracaster will be prevented.
@@ -8119,7 +8119,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=802679)   : Apply Aura (6) | Absorb Damage (69)
+#1 (id=802679)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc317349
@@ -11073,7 +11073,7 @@ Attributes       : ........ ........ .......x x..x...x   ...x.x.x ..x..... .....
                  : ........ ........ ........ ........   
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002902)  : Unknown(42)
+#1 (id=1002902)  : Unknown(42) | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0xa | Mechanic: Knockback | Target: Unknown(87)
 Description      : $@spelldesc376079
 
@@ -11093,7 +11093,7 @@ Attributes       : ........ x....... ........ ..x.....   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002903)  : Dummy (3)
+#1 (id=1002903)  : Dummy (3) | Attributes: Is Harmful (12)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc376079
 
@@ -12174,7 +12174,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : DoT Stacking Rule (103), Can Proc From Procs (122), No Attack Parry (248), No Attack Miss (249), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1015777)  : Apply Aura (6) | Dummy (4)
+#1 (id=1015777)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc383703
 Tooltip          : Falling below $s1% health will cause Fatal Mark to inflict $383706s1 Physical damage.
@@ -16831,9 +16831,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1099046)  : Apply Aura (6) | Dummy (4)
+#1 (id=1099046)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Self (1)
-#2 (id=1099047)  : Apply Aura (6) | Dummy (4)
+#2 (id=1099047)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1114530)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16992,7 +16992,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
-#1 (id=1104643)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
+#1 (id=1104643)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0.0031 | Scaled Value: 0.0031 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc422924
 Tooltip          : Bleeding for $w1 every $t1 sec.
@@ -17420,7 +17420,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1126347)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1126347)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 435222 | Scaled Value: 435222 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
@@ -17447,7 +17447,7 @@ Attributes       : ........ ........ ..x..... ........   .......x ........ .....
 Effects          :
 #1 (id=1126722)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1126723)  : School Damage (2): nature
+#2 (id=1126723)  : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=1126742)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
@@ -17783,13 +17783,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1128870)  : Apply Aura (6) | Dummy (4)
+#1 (id=1128870)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1160121)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#2 (id=1160121)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
-#3 (id=1160122)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#3 (id=1160122)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
@@ -18004,7 +18004,7 @@ Attributes       : ........ x....... ........ ..x.....   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1134753)  : Dummy (3)
+#1 (id=1134753)  : Dummy (3) | Attributes: Is Harmful (12)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc376079
 
@@ -19484,7 +19484,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1164474)  : School Damage (2): physical
+#1 (id=1164474)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00309 | PvP Coefficient: 0.90900 | Radius: 8 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc845
 

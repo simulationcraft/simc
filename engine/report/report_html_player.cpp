@@ -1951,31 +1951,14 @@ std::string base64_to_url( std::string_view s )
   return str;
 }
 
-// TODO: remove hack when render gets static aspect ratio
+// TODO: update once TWW trees are finalized
 int raidbots_talent_render_width( specialization_e spec, int height )
 {
-  switch ( spec )
+  return height * 49 / 25;
+
+/*switch ( spec )
   {
-    case DEMON_HUNTER_HAVOC:
-    case EVOKER_DEVASTATION:
-    case EVOKER_PRESERVATION:
-    case EVOKER_AUGMENTATION:
-    case HUNTER_BEAST_MASTERY:
-    case HUNTER_MARKSMANSHIP:
-    case HUNTER_SURVIVAL:
-    case MAGE_ARCANE:
-    case MAGE_FROST:
-    case MONK_BREWMASTER:
-    case MONK_WINDWALKER:
-    case PALADIN_PROTECTION:
-    case ROGUE_ASSASSINATION:
-    case ROGUE_SUBTLETY:
-    case WARLOCK_AFFLICTION:
-    case WARLOCK_DESTRUCTION:
-      return height * 59 / 40;
-    default:
-      return height * 5 / 3;
-  }
+  }*/
 }
 
 std::string raidbots_domain( [[maybe_unused]] bool ptr )
@@ -3875,18 +3858,19 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content\">\n"
-     << "<div class=\"flexwrap\">\n";
+  os << "<div class=\"toggle-content\">\n";
 
   if ( p.sim->players_by_name.size() == 1 )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
     os.format(
-      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 10px; margin-top: 5px;"></iframe>)",
+      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
 
     os << "\n";
   }
+
+  os << "<div class=\"flexwrap\">\n";
 
   if ( cd.dps.mean() > 0 )
   {
@@ -3993,18 +3977,18 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   {
     os << "<table class=\"sc\">\n"
        << "<tr>\n"
-       << "<th class=\"help\" data-help=\"#help-rps-out\">RPS Out</th>\n"
-       << "<th class=\"help\" data-help=\"#help-rps-in\">RPS In</th>\n"
        << "<th>Resource</th>\n"
+       << "<th class=\"help\" data-help=\"#help-rps-out\">Out</th>\n"
+       << "<th class=\"help\" data-help=\"#help-rps-in\">In</th>\n"
        << "<th class=\"help\" data-help=\"#help-waiting\">Waiting</th>\n"
        << "<th class=\"help\" data-help=\"#help-apm\">APM</th>\n"
        << "<th>Active</th>\n"
        << "</tr>\n"
        << "<tr>\n";
 
-    os.format( "<td>{:.1Lf}</td><td>{:.1Lf}</td><td>{}</td><td>{:.2f}%</td><td>{:.1Lf}</td><td>{:.1f}%</td>",
-               p.rps_loss, p.rps_gain,
+    os.format( "<td>{}</td><td>{:.1Lf}</td><td>{:.1Lf}</td><td>{:.2f}%</td><td>{:.1Lf}</td><td>{:.1f}%</td>",
                util::inverse_tokenize( util::resource_type_string( p.primary_resource() ) ),
+               p.rps_loss, p.rps_gain,
                cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
                cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
                sim.simulation_length.mean() ? cd.fight_length.mean() / sim.simulation_length.mean() * 100.0 : 0 );

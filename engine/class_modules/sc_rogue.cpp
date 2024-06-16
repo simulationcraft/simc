@@ -365,6 +365,10 @@ public:
       actions::rogue_attack_t* unseen_blade = nullptr;
     } trickster;
     
+    struct
+    {
+      actions::rogue_attack_t* ethereal_rampage = nullptr;
+    } tww1;
   } active;
 
   // Autoattacks
@@ -500,6 +504,7 @@ public:
     damage_buff_t* tww1_assassination_4pc;
     damage_buff_t* tww1_subtlety_2pc;
     damage_buff_t* tww1_subtlety_4pc;
+    damage_buff_t* tww1_outlaw_4pc;
 
   } buffs;
 
@@ -801,6 +806,8 @@ public:
     const spell_data_t* t31_subtlety_2pc_rupture;
     const spell_data_t* tww1_assassination_2pc_buff;
     const spell_data_t* tww1_assassination_4pc_buff;
+    const spell_data_t* tww1_outlaw_2pc_spell;
+    const spell_data_t* tww1_outlaw_4pc_buff;
 
   } spec;
 
@@ -1355,7 +1362,7 @@ public:
     return resources.current[ RESOURCE_COMBO_POINT ];
   }
 
-  // Current number of effective combo points, considering Echoing Reprimand
+  // Current number of effective combo points, considering Echoing Reprimand and Escalating Blade
   double current_effective_cp( bool use_echoing_reprimand = true, bool use_escalating_blade = false, bool react = false ) const
   {
     double current_cp = this->current_cp( react );
@@ -1704,8 +1711,10 @@ public:
     bool broadside_cp = false;
     bool cold_blood = false;
     bool danse_macabre = false;         // Trigger
+    bool darkest_night = false;
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
+    bool destiny_defined = false;       // Proc Increase
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
     bool fazed_damage = false;
@@ -1823,8 +1832,6 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
-    ab::apply_affecting_aura( p->talent.fatebound.destiny_defined );
-
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
 
@@ -1837,6 +1844,11 @@ public:
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
       affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+    }
+
+    if ( p->talent.fatebound.destiny_defined->ok() )
+    {
+      affected_by.destiny_defined = ab::data().affected_by( p->talent.fatebound.destiny_defined->effectN( 1 ) );
     }
     
     // Assassination
@@ -2040,6 +2052,7 @@ public:
     register_damage_buff( p()->buffs.tww1_assassination_4pc );
     register_damage_buff( p()->buffs.tww1_subtlety_2pc );
     register_damage_buff( p()->buffs.tww1_subtlety_4pc );
+    register_damage_buff( p()->buffs.tww1_outlaw_4pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2080,6 +2093,7 @@ public:
                                                         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
     register_consume_buff( p()->buffs.tww1_subtlety_2pc, p()->buffs.tww1_subtlety_2pc->is_affecting( &ab::data() ),
                            nullptr, 1.31_s ); // ALPHA TOCHECK -- Does this work on clone attacks?
+    register_consume_buff( p()->buffs.tww1_outlaw_4pc, p()->buffs.tww1_outlaw_4pc->is_affecting( &ab::data() ) );
   }
 
   // Type Wrappers ============================================================
@@ -2378,6 +2392,16 @@ public:
   virtual bool consumes_escalating_blade() const
   { return false; }
 
+  double parry_chance( double exp, player_t* target ) const override
+  {
+    auto chance = ab::parry_chance(exp, target);
+    if ( chance > 0.0 && td( target )->debuffs.fazed->up() )
+    {
+      chance += td( target )->debuffs.fazed->data().effectN( 2 ).percent();
+    }
+    return std::max(0.0, chance);
+  }
+
 public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
@@ -2431,6 +2455,7 @@ public:
   void trigger_nimble_flurry( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
   void trigger_tww1_assassination_set_bonus( const action_state_t* state );
+  void trigger_tww1_outlaw_set_bonus( const action_state_t* );
 
   // General Methods ==========================================================
 
@@ -2509,6 +2534,15 @@ public:
            as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
       {
         m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+      }
+    }
+
+    // Darkest Night
+    if ( affected_by.darkest_night )
+    {
+      if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+      {
+        m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent();
       }
     }
 
@@ -2640,6 +2674,15 @@ public:
     if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
     {
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.darkest_night )
+    {
+      // No CP state available this early as crit chance is calculated during state creation
+      if ( p()->buffs.darkest_night->up() && p()->current_effective_cp( true ) >= p()->consume_cp_max() )
+      {
+        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
+      }
     }
 
     return c;
@@ -2823,7 +2866,7 @@ public:
     }
 
     // Debugging
-    if ( p()->sim->log )
+    if ( p()->sim->log && ab::execute_state )
     {
       const auto rs = cast_state( ab::execute_state );
       if ( rs->get_exsanguinated_rate() != 1.0 )
@@ -2968,6 +3011,11 @@ struct rogue_poison_t : public rogue_attack_t
 
     double chance = base_proc_chance;
     chance += p()->buffs.envenom->stack_value();
+
+    if ( affected_by.destiny_defined )
+    {
+      chance += p()->talent.fatebound.destiny_defined->effectN( 1 ).percent();
+    }
 
     // Applies as a percent modifier, not a flat modifier
     if ( affected_by.dragon_tempered_blades )
@@ -3663,6 +3711,13 @@ struct ambush_t : public rogue_attack_t
       trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ambush );
     }
 
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+      trigger_unseen_blade( state ); // ALPHA TOCHECK
+      trigger_tww1_outlaw_set_bonus( execute_state );
+    }
+
     bool procs_main_gauche() const override
     { return true; }
 
@@ -3719,6 +3774,7 @@ struct ambush_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
+    trigger_tww1_outlaw_set_bonus( execute_state );
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
     {
@@ -4051,10 +4107,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
+    range::erase_remove( tl, target ); // Cannot hit the primary target
     return tl.size();
   }
 
@@ -4475,6 +4528,7 @@ struct envenom_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
+    affected_by.darkest_night = true;
 
     if ( p->set_bonuses.t31_assassination_4pc->ok() )
     {
@@ -4638,6 +4692,7 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr ), shadow_eviscerate_attack( nullptr )
   {
     affected_by.t31_subtlety_4pc = true;
+    affected_by.darkest_night = true; // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -5114,12 +5169,17 @@ struct killing_spree_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per tick?
+      p()->buffs.flawless_form->trigger();
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
     {
       p()->buffs.disorienting_strikes->trigger();
+    }
+
+    if ( p()->talent.trickster.devious_distraction->ok() )
+    {
+      p()->get_target_data( execute_state->target )->debuffs.fazed->trigger();
     }
   }
 
@@ -5131,12 +5191,6 @@ struct killing_spree_t : public rogue_attack_t
     attack_oh->set_target( d->target );
     attack_mh->execute();
     attack_oh->execute();
-
-    // ALPHA TOCHECK -- Once or refreshing per impact?
-    if ( p()->talent.trickster.devious_distraction->ok() )
-    {
-      p()->get_target_data( d->target )->debuffs.fazed->trigger();
-    }
   }
 };
 
@@ -5251,6 +5305,8 @@ struct pistol_shot_t : public rogue_attack_t
 
     p()->buffs.opportunity->decrement();
     p()->buffs.greenskins_wickers->expire();
+
+    trigger_tww1_outlaw_set_bonus( execute_state );
 
     // Fan the Hammer
     if ( p()->active.fan_the_hammer && !is_secondary_action() )
@@ -6451,6 +6507,8 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
 
+      trigger_unseen_blade( execute_state );
+
       // Triple Threat procs do not appear to be able to chain-proc based on testing
       if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE &&
            p()->active.triple_threat_oh && p()->rng().roll( triple_threat_chance ) )
@@ -6459,6 +6517,12 @@ struct sinister_strike_t : public rogue_attack_t
       }
 
       trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+      trigger_tww1_outlaw_set_bonus( execute_state );
     }
 
     bool procs_main_gauche() const override
@@ -6497,6 +6561,12 @@ struct sinister_strike_t : public rogue_attack_t
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_ss );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    trigger_tww1_outlaw_set_bonus( execute_state );
   }
 
   bool procs_main_gauche() const override
@@ -6850,10 +6920,7 @@ struct caustic_spatter_t : public rogue_attack_t
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     rogue_attack_t::available_targets( tl );
-
-    // Cannot hit the original target.
-    range::erase_remove( tl, target );
-
+    range::erase_remove( tl, target ); // Cannot hit the primary target
     return tl.size();
   }
 
@@ -7415,6 +7482,23 @@ struct nimble_flurry_t : public rogue_attack_t
   {
     // ALPHA TOCHECK -- Talent has a value of 7, but AoE targets on damage spell is 5
     aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+    range::erase_remove( tl, target ); // Cannot hit the primary target
+    return tl.size();
+  }
+};
+
+// TWW1 Set Bonus ===========================================================
+
+struct ethereal_rampage_t : public rogue_attack_t
+{
+  ethereal_rampage_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spec.tww1_outlaw_2pc_spell )
+  {
   }
 };
 
@@ -8992,6 +9076,9 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
 
+  if ( is_secondary_action() )
+    return; // You have to actually spend the CP to get the coin - no secondary action finishers grant flips
+
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
@@ -9469,10 +9556,11 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( p()->buffs.darkest_night->check() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire();
+    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
     return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
   }
 
@@ -9512,9 +9600,12 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() && debuff->player != state->target )
     debuff->expire();
 
+  const int stacks = as<int>( from_darkest_night ? p()->spell.darkest_night_buff->effectN( 3 ).base_value() :
+                              p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() );
+
   debuff = p()->get_target_data( state->target )->debuffs.deathstalkers_mark;
-  debuff->trigger( as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() ) );
-  
+  debuff->trigger( stacks );
+
   p()->buffs.clear_the_witnesses->trigger();
 }
 
@@ -9557,6 +9648,9 @@ void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t*
 
   // Outlaw gains a bonus to Blade Flurry instead of triggering this effect
   if ( p()->specialization() != ROGUE_SUBTLETY )
+    return;
+
+  if ( p()->sim->active_enemies == 1 )
     return;
 
   if ( !p()->buffs.flawless_form->check() )
@@ -9615,6 +9709,23 @@ void actions::rogue_action_t<Base>::trigger_tww1_assassination_set_bonus( const 
     return;
 
   p()->buffs.tww1_assassination_2pc->trigger();
+}
+
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_tww1_outlaw_set_bonus( const action_state_t* state )
+{
+  if ( !p()->set_bonuses.tww1_outlaw_2pc->ok() )
+    return;
+
+  if ( !p()->rng().roll( p()->set_bonuses.tww1_outlaw_2pc->effectN( 1 ).percent() ) )
+    return;
+
+  // ALPHA TOCHECK -- Double-check target modifiers in the future
+  p()->active.tww1.ethereal_rampage->trigger_residual_action( state, p()->set_bonuses.tww1_outlaw_2pc->effectN( 2 ).percent() );
+
+  if ( p()->set_bonuses.tww1_outlaw_4pc->ok() )
+    p()->buffs.tww1_outlaw_4pc->increment();
 }
 
 // ==========================================================================
@@ -9679,6 +9790,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
     ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
+  debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
+  } );
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.garrote_deathmark, dots.internal_bleeding,
@@ -11289,6 +11403,8 @@ void rogue_t::init_spells()
   spec.t31_subtlety_2pc_rupture = set_bonuses.t31_subtlety_2pc->ok() ? find_spell( 424493 ) : spell_data_t::not_found();
   spec.tww1_assassination_2pc_buff = set_bonuses.tww1_assassination_2pc->ok() ? find_spell( 458475 ) : spell_data_t::not_found();
   spec.tww1_assassination_4pc_buff = set_bonuses.tww1_assassination_4pc->ok() ? find_spell( 458476 ) : spell_data_t::not_found();
+  spec.tww1_outlaw_2pc_spell = set_bonuses.tww1_outlaw_2pc->ok() ? find_spell( 459002 ) : spell_data_t::not_found();
+  spec.tww1_outlaw_4pc_buff = set_bonuses.tww1_outlaw_4pc->ok() ? find_spell( 458826 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -11469,6 +11585,12 @@ void rogue_t::init_spells()
   if ( talent.trickster.nimble_flurry->ok() )
   {
     active.trickster.nimble_flurry = get_background_action<actions::nimble_flurry_t>( "nimble_flurry" );
+  }
+
+  // TWW1 Set Bonus
+  if ( set_bonuses.tww1_outlaw_2pc->ok() )
+  {
+    active.tww1.ethereal_rampage = get_background_action<actions::ethereal_rampage_t>( "ethereal_rampage" );
   }
 }
 
@@ -12177,6 +12299,8 @@ void rogue_t::create_buffs()
   buffs.tww1_subtlety_2pc = make_buff<damage_buff_t>( this, "poised_shadows", set_bonuses.tww1_subtlety_2pc->effectN( 1 ).trigger() );
   buffs.tww1_subtlety_4pc = make_buff<damage_buff_t>( this, "bolstering_shadows", set_bonuses.tww1_subtlety_4pc->effectN( 1 ).trigger() );
 
+  buffs.tww1_outlaw_4pc = make_buff<damage_buff_t>( this, "ethereal_rampage", spec.tww1_outlaw_4pc_buff );
+  buffs.tww1_outlaw_4pc->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 }
 
 // rogue_t::invalidate_cache =========================================
