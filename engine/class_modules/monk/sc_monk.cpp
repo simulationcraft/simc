@@ -131,7 +131,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
-//  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
+  //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
 
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
@@ -550,7 +550,8 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
+        double ap_threshold =
+            p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
@@ -559,19 +560,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
         }
       }
 
-      if ( p()->talent.shado_pan.veterans_eye->ok() )
-      {
-        auto td = p()->get_target_data( s->target );
-        if ( td )
-        {
-          td->debuff.veterans_eye->trigger();
-          if ( td->debuff.veterans_eye->at_max_stacks() )
-          {
-            p()->buff.veterans_eye->trigger();
-            td->debuff.veterans_eye->reset();
-          }
-        }
-      }
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
       {
         if ( s->action->school == SCHOOL_SHADOWFLAME )
@@ -4885,11 +4873,10 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     attack_power_mod.direct = p->passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
-    
+
     // apply_affecting_effect isn't working for whatever reason, manually setting for now
     base_dd_multiplier *= 1.0 + p->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
     // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
-
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -6620,6 +6607,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 
   debuff.veterans_eye = make_buff( *this, "veterans_eye_debuff", p->find_spell( 451071 ) )
                             ->set_trigger_spell( p->talent.shado_pan.veterans_eye )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_quiet( true );
 
   // Covenant Abilities
@@ -8694,20 +8682,42 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.darting_hurricane.ok() )
   {
+    create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
+      if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
+           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
+           state->action->id == p->passives.dual_threat_kick->id() )
+        return false;
+
+      if ( p->rppm.darting_hurricane->trigger() )
+        p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
+
+      return true;
+    } );
+  }
+
+  // ======================================
+  // Veteran's Eye ( Shado-pan Talent )
+  // ======================================
+
+  if ( talent.shado_pan.veterans_eye->ok() )
+  {
     create_proc_callback(
-        talent.windwalker.darting_hurricane.spell(),
+        talent.shado_pan.veterans_eye.spell(),
         []( monk_t *p, action_state_t *state ) {
-          if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
-               state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
-               state->action->id == p->passives.dual_threat_kick->id() )
-            return false;
-
-          if ( p->rppm.darting_hurricane->trigger() )
-            p->buff.darting_hurricane->trigger( (int)p->talent.windwalker.darting_hurricane->effectN( 1 ).base_value() );
-
+          auto td = p->get_target_data( state->target );
+          if ( td )
+          {
+            td->debuff.veterans_eye->trigger();
+            if ( td->debuff.veterans_eye->at_max_stacks() )
+            {
+              p->buff.veterans_eye->trigger();
+              td->debuff.veterans_eye->reset();
+            }
+          }
           return true;
-        } );
+        },
+        PF2_ALL_HIT );
   }
 
   // ======================================
