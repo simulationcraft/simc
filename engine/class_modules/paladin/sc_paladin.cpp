@@ -486,7 +486,7 @@ struct consecration_t : public paladin_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if( p()->talents.lightsmith.divine_guidance->ok() )
+    if( p()->buffs.lightsmith.divine_guidance->up() )
     {
       p()->active.divine_guidance_damage->set_target( s->target );
       p()->active.divine_guidance_damage->execute();
@@ -1844,11 +1844,8 @@ struct divine_guidance_damage_t : public paladin_spell_t
 
    double action_multiplier() const override
    {
-      double m = paladin_spell_t::action_multiplier();
-      if (p()->buffs.lightsmith.divine_guidance->up())
-      {
-        m *= p()->buffs.lightsmith.divine_guidance->stack();
-      }
+     double m = paladin_spell_t::action_multiplier();
+     m *= p()->buffs.lightsmith.divine_guidance->stack();
      return m;
    }
     void execute() override
