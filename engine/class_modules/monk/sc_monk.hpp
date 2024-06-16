@@ -369,8 +369,8 @@ public:
     propagate_const<action_t *> flurry_strikes;
 
     // Brewmaster
+    propagate_const<action_t *> special_delivery;
     propagate_const<action_t *> breath_of_fire;
-    propagate_const<action_t *> charred_passions;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
     propagate_const<heal_t *> gift_of_the_ox_trigger;
@@ -660,8 +660,7 @@ public:
     propagate_const<proc_t *> blackout_reinforcement_waste;
     propagate_const<proc_t *> bonedust_brew_reduction;
     propagate_const<proc_t *> bountiful_brew_proc;
-    propagate_const<proc_t *> charred_passions_bok;
-    propagate_const<proc_t *> charred_passions_sck;
+    propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
@@ -1228,7 +1227,6 @@ public:
     propagate_const<cooldown_t *> anvil_and_stave;
     propagate_const<cooldown_t *> blackout_kick;
     propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> charred_passions;
     propagate_const<cooldown_t *> chi_torpedo;
     propagate_const<cooldown_t *> drinking_horn_cover;
     propagate_const<cooldown_t *> expel_harm;
@@ -1281,7 +1279,6 @@ public:
     const spell_data_t *breath_of_fire_dot;
     const spell_data_t *call_to_arms_invoke_niuzao;
     const spell_data_t *celestial_fortune;
-    const spell_data_t *charred_passions_dmg;
     const spell_data_t *dragonfire_brew;
     const spell_data_t *elusive_brawler;
     const spell_data_t *face_palm;

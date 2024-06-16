@@ -11,6 +11,7 @@ race=tauren
 load_default_gear=1
 
 # spec_talents=press_the_advantage:0
+# spec_talents=special_delivery:0
 
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/fortifying_brew
