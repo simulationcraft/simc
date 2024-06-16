@@ -488,7 +488,8 @@ struct consecration_t : public paladin_spell_t
   {
     if( p()->talents.lightsmith.divine_guidance->ok() )
     {
-      p()->trigger_divine_guidance( s );
+      p()->active.divine_guidance_damage->set_target( s->target );
+      p()->active.divine_guidance_damage->execute();
     }
   }
 };
@@ -1830,12 +1831,6 @@ struct hammer_and_anvil_t : public paladin_spell_t
    }
    
 };
-
-void paladin_t::trigger_divine_guidance( action_state_t* s )
-{
-   active.divine_guidance_damage->set_target( s->target );
-   active.divine_guidance_damage->execute();
-}
 
 struct divine_guidance_damage_t : public paladin_spell_t
 {

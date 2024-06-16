@@ -739,7 +739,6 @@ public:
   void trigger_holy_shield( action_state_t* s );
   void trigger_tyrs_enforcer( action_state_t* s );
   void trigger_hammer_and_anvil( action_state_t* s );
-  void trigger_divine_guidance( action_state_t* s );
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay );
   void heartfire( action_state_t* s );
