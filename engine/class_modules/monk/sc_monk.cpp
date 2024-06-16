@@ -132,7 +132,6 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
 //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
-  apply_affecting_aura( p()->spec.blackout_kick_2 );
 
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
@@ -2031,6 +2030,10 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        if ( p->spec.blackout_kick_2->ok() )
+          // Saved as -2
+          base_costs[ RESOURCE_CHI ] +=
+              p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
         apply_dual_wield_two_handed_scaling();
         break;
       }
