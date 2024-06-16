@@ -1371,7 +1371,6 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    real_ppm_t *darting_hurricane;
     real_ppm_t *spirit_of_the_ox;
   } rppm;
 
