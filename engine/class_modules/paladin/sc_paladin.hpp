@@ -99,7 +99,6 @@ public:
     action_t* divine_guidance_damage;
     action_t* forges_reckoning;
     action_t* hammer_and_anvil;
-    action_t* divine_guidance;
     action_t* empyrean_hammer;
     action_t* heartfire;
     action_t* judgment_of_light;
