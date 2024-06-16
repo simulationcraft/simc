@@ -1531,6 +1531,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     // T33 Windwalker Set Bonus
     p()->buff.tigers_ferocity->expire();
 
+    p()->buff.martial_mixture->expire();
+
     face_palm      = false;
     blackout_combo = false;
     counterstrike  = false;
@@ -1996,7 +1998,7 @@ struct charred_passions_t : base_action_t
 
     double action_da_multipier() const
     {
-      return data().effecN( 1 ).trigger()->effectN( 1 ).percent();
+      return data().effectN( 1 ).trigger()->effectN( 1 ).percent();
     }
   };
 
@@ -2515,7 +2517,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->trigger();
+          p()->buff.bok_proc->increment();
       }
     }
 
@@ -2709,7 +2711,10 @@ struct fists_of_fury_t : public monk_melee_attack_t
     p()->buff.transfer_the_power->expire();
 
     if ( p()->talent.windwalker.momentum_boost->ok() )
+    {
+      p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
+    }
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() )
@@ -2867,7 +2872,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // TODO: Check if this can proc without being talented into DoCJ
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-      p()->buff.dance_of_chiji->trigger();
+      p()->buff.dance_of_chiji->increment();
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
@@ -4878,8 +4883,11 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     attack_power_mod.direct = p->passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
+    
+    // apply_affecting_effect isn't working for whatever reason, manually setting for now
+    base_dd_multiplier *= 1.0 + p->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
+    // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
 
-    apply_affecting_effect( p->talent.windwalker.singularly_focused_jade->effectN( 2 ) );
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -4943,8 +4951,6 @@ struct jadefire_stomp_t : public monk_spell_t
 
     if ( p->specialization() == MONK_WINDWALKER )
     {
-      apply_affecting_effect( p->talent.windwalker.singularly_focused_jade->effectN( 1 ) );
-
       ww_damage = new jadefire_stomp_ww_damage_t( p );
 
       add_child( ww_damage );
