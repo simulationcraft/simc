@@ -1974,7 +1974,7 @@ struct charred_passions_t : base_action_t
   struct damage_t : monk_spell_t
   {
     damage_t( monk_t *player, std::string_view name )
-      : monk_spell_t( player, fmt::format( "{}_charred_passions", name ), player->talent.brewmaster.charred_passions )
+      : monk_spell_t( player, fmt::format( "charred_passions_{}", name ), player->talent.brewmaster.charred_passions )
     {
       background = dual = proc = true;
       may_crit                 = false;
@@ -1986,7 +1986,7 @@ struct charred_passions_t : base_action_t
       update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_DA;
     }
 
-    double action_da_multipier() const
+    double action_da_multiplier() const override
     {
       return data().effectN( 1 ).trigger()->effectN( 1 ).percent();
     }
@@ -2006,6 +2006,7 @@ struct charred_passions_t : base_action_t
   void impact( action_state_t *state ) override
   {
     base_action_t::impact( state );
+
     if ( !base_action_t::p()->buff.charred_passions->up() )
       return;
 
@@ -2032,10 +2033,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
           p, "blackout_kick",
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
-    ww_mastery = true;
-
     parse_options( options_str );
     sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
+    ww_mastery       = true;
     may_combo_strike = true;
     trigger_chiji    = true;
     cast_during_sck  = p->specialization() != MONK_WINDWALKER;
@@ -2054,7 +2054,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     if ( p->specialization() == MONK_BREWMASTER || p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
 
-    if ( p->specialization() == MONK_WINDWALKER && p->spec.blackout_kick_2->ok() )
+    if ( p->spec.blackout_kick_2->ok() )
       base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
@@ -3964,166 +3964,97 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // ==========================================================================
 // Breath of Fire
 // ==========================================================================
-
-// Dragonfire Brew ==========================================================
-struct dragonfire_brew_t : public monk_spell_t
-{
-  dragonfire_brew_t( monk_t *p ) : monk_spell_t( p, "dragonfire_brew", p->passives.dragonfire_brew )
-  {
-    background = true;
-    aoe        = -1;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
-    {
-      double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
-      p()->active_actions.charred_dreams_dmg_2p->target      = s->target;
-      p()->active_actions.charred_dreams_dmg_2p->base_dd_min = p()->active_actions.charred_dreams_dmg_2p->base_dd_max =
-          amt;
-      p()->active_actions.charred_dreams_dmg_2p->execute();
-      p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
-    }
-  }
-};
-
 struct breath_of_fire_dot_t : public monk_spell_t
 {
-  bool blackout_combo;
-
-  breath_of_fire_dot_t( monk_t *p )
-    : monk_spell_t( p, "breath_of_fire_dot", p->passives.breath_of_fire_dot ), blackout_combo( false )
+  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->passives.breath_of_fire_dot )
   {
     background    = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t *state ) const override
   {
-    double am = monk_spell_t::action_multiplier();
+    double cpm = monk_spell_t::composite_persistent_multiplier( state );
 
-    if ( blackout_combo )
-      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+    if ( p()->buff.blackout_combo->check() )
+      cpm *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
-    return am;
-  }
-
-  void execute() override
-  {
-    blackout_combo = p()->buff.blackout_combo->up();
-
-    monk_spell_t::execute();
-  }
-
-  void tick( dot_t *d ) override
-  {
-    monk_spell_t::tick( d );
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( d->state->result ) )
-    {
-      double amt = d->state->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
-      p()->active_actions.charred_dreams_dmg_2p->target      = d->state->target;
-      p()->active_actions.charred_dreams_dmg_2p->base_dd_min = p()->active_actions.charred_dreams_dmg_2p->base_dd_max =
-          amt;
-      p()->active_actions.charred_dreams_dmg_2p->execute();
-      p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
-    }
+    return cpm;
   }
 };
 
 struct breath_of_fire_t : public monk_spell_t
 {
-  dragonfire_brew_t *dragonfire;
+  struct dragonfire_brew_t : monk_spell_t
+  {
+    dragonfire_brew_t( monk_t *player ) : monk_spell_t( player, "dragonfire_brew", player->passives.dragonfire_brew )
+    {
+      background = true;
+      aoe        = -1;
+      parse_effects( player->buff.blackout_combo );
+    }
+
+    void execute() override
+    {
+      for ( size_t i = 0; i < p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+        monk_spell_t::execute();
+    }
+  };
+
+  dragonfire_brew_t *dragonfire_brew;
   bool no_bof_hit;
-  bool blackout_combo;
 
   breath_of_fire_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "breath_of_fire", p->talent.brewmaster.breath_of_fire ),
-      dragonfire( new dragonfire_brew_t( p ) ),
-      no_bof_hit( false ),
-      blackout_combo( false )
+      dragonfire_brew( new dragonfire_brew_t( p ) ),
+      no_bof_hit( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
-    aoe                 = -1;
+    // aoe                 = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     cast_during_sck     = true;
 
+    parse_effects( p->buff.blackout_combo );
+
     add_child( p->active_actions.breath_of_fire );
+    add_child( dragonfire_brew );
   }
 
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
-
-    if ( no_bof_hit )
-      return 0;
-
-    if ( p()->bugs && blackout_combo )
-      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-
-    if ( p()->talent.brewmaster.dragonfire_brew->ok() )
-    {
-      // Currently value is saved as 100% and each of the values is a divisable of 33%
-      // TODO: Use parse_effect
-      // double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
-      // am *= 1.0 + ( p()->stagger->level_index() / 3.0 ) * bof_stagger_bonus;
-    }
+    // Currently value is saved as 100% and each of the values is stagger_index / 3 * base_value
+    double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
+    am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
 
     return am;
   }
 
   void execute() override
   {
-    blackout_combo = p()->buff.blackout_combo->up();
+    p()->buff.charred_passions->trigger();
+    if ( no_bof_hit )
+      return;
 
     monk_spell_t::execute();
+    dragonfire_brew->execute();
 
-    p()->buff.charred_passions->trigger();
-
-    if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    {
-      dragonfire->execute();
-      dragonfire->execute();
-    }
-    if ( blackout_combo )
-    {
+    if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
+    p()->buff.blackout_combo->expire();
   }
 
-  void impact( action_state_t *s ) override
+  void impact( action_state_t *state ) override
   {
-    if ( no_bof_hit == true )
-      s->result_amount = 0;
+    monk_spell_t::impact( state );
 
-    monk_spell_t::impact( s );
-
-    monk_td_t &td = *this->get_td( s->target );
-
-    if ( no_bof_hit == false && td.debuff.keg_smash->up() )
-    {
-      p()->active_actions.breath_of_fire->target = s->target;
-      p()->active_actions.breath_of_fire->execute();
-    }
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) && !result_is_miss( s->result ) )
-    {
-      double amt = s->result_amount * p()->sets->set( MONK_BREWMASTER, T31, B2 )->effectN( 1 ).percent();
-      p()->active_actions.charred_dreams_dmg_2p->target      = s->target;
-      p()->active_actions.charred_dreams_dmg_2p->base_dd_min = p()->active_actions.charred_dreams_dmg_2p->base_dd_max =
-          amt;
-      p()->active_actions.charred_dreams_dmg_2p->execute();
-      p()->sim->print_debug( "triggering charred dreams 2p for: {}", amt );
-    }
+    if ( get_td( state->target )->debuff.keg_smash->up() )
+      p()->active_actions.breath_of_fire->execute_on_target( state->target );
   }
 };
 
@@ -7287,7 +7218,7 @@ void monk_t::init_spells()
   talent.brewmaster.zen_meditation   = _ST( "Zen Meditation" );
   talent.brewmaster.clash            = _ST( "Clash" );
   // Row 6
-  talent.brewmaster.breath_of_fire          = _STID( 12278 );
+  talent.brewmaster.breath_of_fire          = _ST( "Breath of Fire" );
   talent.brewmaster.improved_celestial_brew = _ST( "Improved Celestial Brew" );
   talent.brewmaster.improved_purifying_brew = _ST( "Improved Purifying Brew" );
   talent.brewmaster.tranquil_spirit         = _ST( "Tranquil Spirit" );
@@ -8687,7 +8618,6 @@ void monk_t::init_special_effects()
            state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
            state->action->id == p->passives.dual_threat_kick->id() )
         return false;
-
       return true;
     } );
   }
