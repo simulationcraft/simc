@@ -1586,6 +1586,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     // T33 Windwalker Set Bonus
     p()->buff.tigers_ferocity->expire();
 
+    p()->buff.martial_mixture->expire();
+
     face_palm      = false;
     blackout_combo = false;
     counterstrike  = false;
@@ -2818,7 +2820,10 @@ struct fists_of_fury_t : public monk_melee_attack_t
     p()->buff.transfer_the_power->expire();
 
     if ( p()->talent.windwalker.momentum_boost->ok() )
+    {
+      p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
+    }
 
     // If Fists of Fury went the full duration
     if ( dot->current_tick == dot->num_ticks() )
