@@ -1844,12 +1844,12 @@ struct divine_guidance_damage_t : public paladin_spell_t
 
    double action_multiplier() const override
    {
-    double m = paladin_spell_t::action_multiplier();
-       if (p()->buffs.lightsmith.divine_guidance->up())
-       {
-      m *= 1.0 + ( 1.0 * (p()->buffs.lightsmith.divine_guidance->stack()-1) );
-    }
-       return m;
+      double m = paladin_spell_t::action_multiplier();
+      if (p()->buffs.lightsmith.divine_guidance->up())
+      {
+        m *= p()->buffs.lightsmith.divine_guidance->stack();
+      }
+     return m;
    }
     void execute() override
    {
