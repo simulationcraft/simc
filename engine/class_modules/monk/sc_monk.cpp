@@ -1976,24 +1976,67 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 };
 
 // Charred Passions ============================================================
-struct charred_passions_bok_t : public monk_spell_t
+template <class base_action_t>
+struct charred_passions_t : base_action_t
 {
-  charred_passions_bok_t( monk_t *p ) : monk_spell_t( p, "charred_passions_bok", p->passives.charred_passions_dmg )
+  struct damage_t : monk_spell_t
   {
-    background = dual = true;
-    proc              = true;
-    may_crit          = false;
+    damage_t( monk_t *player, std::string_view name )
+      : monk_spell_t( player, fmt::format( "{}_charred_passions", name ), player->talent.brewmaster.charred_passions )
+    {
+      background = dual = proc = true;
+      may_crit                 = false;
+    }
+
+    void init() override
+    {
+      monk_spell_t::init();
+      update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_DA;
+    }
+
+    double action_da_multipier() const
+    {
+      return data().effecN( 1 ).trigger()->effectN( 1 ).percent();
+    }
+  };
+
+  damage_t *damage;
+  cooldown_t *cooldown;
+
+  template <typename... Args>
+  charred_passions_t( monk_t *player, std::string_view name, Args &&...args )
+    : base_action_t( player, name, std::forward<Args>( args )... ), damage( new damage_t( player, name ) )
+  {
+    cooldown = player->get_cooldown( "charred_passions" );
+    base_action_t::add_child( damage );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    base_action_t::impact( state );
+    if ( !base_action_t::p()->buff.charred_passions->up() )
+      return;
+
+    base_action_t::p()->proc.charred_passions->occur();
+    damage->base_dd_min = damage->base_dd_max = state->result_amount;
+    damage->execute();
+
+    monk_td_t *td = base_action_t::get_td( state->target );
+    if ( td->dot.breath_of_fire->is_ticking() && cooldown->up() )
+    {
+      td->dot.breath_of_fire->refresh_duration();
+      cooldown->start( damage->data().effectN( 1 ).trigger()->internal_cooldown() );
+    }
   }
 };
 
 // Blackout Kick Baseline ability =======================================
-struct blackout_kick_t : public monk_melee_attack_t
+struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 {
   blackout_kick_totm_proc_t *bok_totm_proc;
-  charred_passions_bok_t *charred_passions;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t(
+    : charred_passions_t<monk_melee_attack_t>(
           p, "blackout_kick",
           ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
@@ -2009,12 +2052,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
     apply_affecting_aura( p->talent.windwalker.shadowboxing_treads );
     apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
-
-    if ( p->talent.brewmaster.charred_passions->ok() )
-    {
-      charred_passions = new charred_passions_bok_t( p );
-      add_child( charred_passions );
-    }
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -2177,25 +2214,6 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     p()->trigger_mark_of_the_crane( s );
 
-    if ( p()->buff.charred_passions->up() )
-    {
-      double dmg_percent = p()->buff.charred_passions->value();
-
-      charred_passions->base_dd_min = s->result_amount * dmg_percent;
-      charred_passions->base_dd_max = s->result_amount * dmg_percent;
-      charred_passions->execute();
-
-      p()->proc.charred_passions_bok->occur();
-
-      if ( get_td( s->target )->dot.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
-      {
-        get_td( s->target )->dot.breath_of_fire->refresh_duration();
-
-        p()->cooldown.charred_passions->start(
-            p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
-      }
-    }
-
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
@@ -2298,21 +2316,10 @@ struct chi_explosion_t : public monk_spell_t
   }
 };
 
-// Charred Passions ============================================================
-struct charred_passions_sck_t : public monk_spell_t
+struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 {
-  charred_passions_sck_t( monk_t *p ) : monk_spell_t( p, "charred_passions_sck", p->passives.charred_passions_dmg )
-  {
-    background = dual = true;
-    proc              = true;
-    may_crit          = false;
-  }
-};
-
-struct sck_tick_action_t : public monk_melee_attack_t
-{
-  sck_tick_action_t( util::string_view name, monk_t *p, const spell_data_t *data )
-    : monk_melee_attack_t( p, name, data )
+  sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
+    : charred_passions_t<monk_melee_attack_t>( p, name, data )
   {
     ww_mastery    = true;
     trigger_chiji = true;
@@ -2403,32 +2410,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
     p()->buff.shuffle->trigger(
         timespan_t::from_seconds( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() ) );
   }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->buff.charred_passions->up() )
-    {
-      double dmg_percent = p()->buff.charred_passions->value();
-
-      p()->active_actions.charred_passions->base_dd_min = s->result_amount * dmg_percent;
-      p()->active_actions.charred_passions->base_dd_max = s->result_amount * dmg_percent;
-      p()->active_actions.charred_passions->execute();
-
-      p()->proc.charred_passions_sck->occur();
-
-      if ( get_td( s->target )->dot.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
-      {
-        get_td( s->target )->dot.breath_of_fire->refresh_duration();
-
-        p()->cooldown.charred_passions->start(
-            p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
-      }
-    }
-
-    p()->buff.brewmasters_rhythm->trigger();
-  }
 };
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
@@ -2469,16 +2450,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     tick_action =
-        new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
+        new sck_tick_action_t( p, "spinning_crane_kick_tick", p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
 
     // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
-
-      if ( p->talent.brewmaster.charred_passions->ok() )
-        add_child( p->active_actions.charred_passions );
     }
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
@@ -4254,8 +4232,13 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     gai_plins_imperial_brew_t( monk_t *player )
       : monk_heal_t( player, "gai_plins_imperial_brew", player->passives.gai_plins_imperial_brew_heal )
     {
-      background     = true;
-      snapshot_flags = update_flags = 0;
+      background = true;
+    }
+
+    void init() override
+    {
+      monk_heal_t::init();
+      snapshot_flags = update_flags = STATE_NO_MULTIPLIER;
     }
   };
 
@@ -5992,13 +5975,14 @@ void shuffle_t::trigger( timespan_t duration )
   if ( !p().talent.brewmaster.quick_sip->ok() )
     return;
 
+  // when you apply a shuffle refresh/application, quick sip's value is multiplied
+  // by threshold // accumulator, where // refers to integer division
   timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
-  while ( accumulator >= threshold )
-  {
-    p().stagger[ "Stagger" ]->purify_percent( p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
-    p().proc.quick_sip->occur();
-    accumulator -= threshold;
-  }
+  int count            = timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold );
+  if ( count > 0 )
+    p().stagger[ "Stagger" ]->purify_percent(
+        as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
+  accumulator -= threshold * count;
 }
 using namespace actions;
 // ==========================================================================
@@ -6695,7 +6679,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.anvil_and_stave        = get_cooldown( "anvil_and_stave" );
   cooldown.blackout_kick          = get_cooldown( "blackout_kick" );
   cooldown.breath_of_fire         = get_cooldown( "breath_of_fire" );
-  cooldown.charred_passions       = get_cooldown( "charred_passions" );
   cooldown.chi_torpedo            = get_cooldown( "chi_torpedo" );
   cooldown.drinking_horn_cover    = get_cooldown( "drinking_horn_cover" );
   cooldown.expel_harm             = get_cooldown( "expel_harm" );
@@ -7625,7 +7608,6 @@ void monk_t::init_spells()
   // Brewmaster
   passives.breath_of_fire_dot           = find_spell( 123725 );
   passives.call_to_arms_invoke_niuzao   = find_spell( 395267 );
-  passives.charred_passions_dmg         = find_spell( 386959 );
   passives.dragonfire_brew              = find_spell( 387621 );
   passives.elusive_brawler              = find_spell( 195630 );
   passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
@@ -7748,7 +7730,6 @@ void monk_t::init_spells()
   {
     active_actions.special_delivery           = new actions::special_delivery_t( this );
     active_actions.breath_of_fire             = new actions::spells::breath_of_fire_dot_t( this );
-    active_actions.charred_passions           = new actions::attacks::charred_passions_sck_t( this );
     active_actions.celestial_fortune          = new actions::heals::celestial_fortune_t( this );
     active_actions.exploding_keg              = new actions::spells::exploding_keg_proc_t( this );
     active_actions.gift_of_the_ox_trigger     = new actions::gift_of_the_ox_trigger_t( this );
@@ -8425,8 +8406,7 @@ void monk_t::init_procs()
   proc.blackout_reinforcement_waste   = get_proc( "Blackout Reinforcement Waste" );
   proc.bonedust_brew_reduction        = get_proc( "Bonedust Brew SCK Reduction" );
   proc.bountiful_brew_proc            = get_proc( "Bountiful Brew Trigger" );
-  proc.charred_passions_bok           = get_proc( "Charred Passions - Blackout Kick" );
-  proc.charred_passions_sck           = get_proc( "Charred Passions - Spinning Crane Kick" );
+  proc.charred_passions               = get_proc( "Charred Passions" );
   proc.chi_surge                      = get_proc( "Chi Surge CDR" );
   proc.counterstrike_tp               = get_proc( "Counterstrike - Tiger Palm" );
   proc.counterstrike_sck              = get_proc( "Counterstrike - Spinning Crane Kick" );
