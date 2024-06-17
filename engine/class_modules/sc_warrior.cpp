@@ -246,8 +246,6 @@ public:
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
-    buff_t* hurricane;
-    buff_t* hurricane_driver;
     buff_t* ignore_pain;
     buff_t* in_for_the_kill;
     buff_t* intercept_movement;
@@ -607,7 +605,6 @@ public:
       player_talent_t fatality;
       player_talent_t dance_of_death;
       player_talent_t unhinged;
-      player_talent_t hurricane;
       player_talent_t merciless_bonegrinder;
       player_talent_t executioners_precision;
     } arms;
@@ -667,7 +664,6 @@ public:
       player_talent_t depths_of_insanity;
       player_talent_t tenderize;
       player_talent_t storm_of_steel;
-      player_talent_t hurricane;
     } fury;
 
     struct protection_talents_t
@@ -733,7 +729,6 @@ public:
 
     struct shared_talents_t
     {
-      player_talent_t hurricane;
       player_talent_t ravager;
       player_talent_t bloodsurge;
 
@@ -2140,11 +2135,6 @@ struct bladestorm_t : public warrior_attack_t
       action_t* torment_ability = p()->active.torment_avatar;
       torment_ability->schedule_execute();
     }
-
-    if ( p()->talents.arms.hurricane->ok() || p()->talents.fury.hurricane->ok() )
-    {
-      p()->buff.hurricane_driver->trigger();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -2236,11 +2226,6 @@ struct torment_bladestorm_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.bladestorm->trigger();
-
-    if ( p()->talents.arms.hurricane->ok() )
-    {
-      p()->buff.hurricane_driver->trigger();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -4629,11 +4614,6 @@ struct ravager_t : public warrior_attack_t
 
   void execute() override
   {
-    if ( p()->talents.shared.hurricane->ok() )
-    {
-      p()->buff.hurricane_driver->trigger();
-    }
-
     warrior_attack_t::execute();
 
     if ( p()->talents.arms.merciless_bonegrinder->ok() )
@@ -6542,8 +6522,7 @@ void warrior_t::init_spells()
 
   talents.arms.fatality                            = find_talent_spell( talent_tree::SPECIALIZATION, "Fatality" );
   talents.arms.dance_of_death                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_ARMS );
-  talents.arms.unhinged                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged" );
-  talents.arms.hurricane                           = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_ARMS );
+  talents.arms.unhinged                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged", WARRIOR_ARMS );
   talents.arms.merciless_bonegrinder               = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Bonegrinder" );
   talents.arms.executioners_precision              = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Precision" );
 
@@ -6601,7 +6580,6 @@ void warrior_t::init_spells()
   talents.fury.depths_of_insanity   = find_talent_spell( talent_tree::SPECIALIZATION, "Depths of Insanity" );
   talents.fury.tenderize            = find_talent_spell( talent_tree::SPECIALIZATION, "Tenderize" );
   talents.fury.storm_of_steel       = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_FURY );
-  talents.fury.hurricane            = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_FURY ); 
 
   // Protection Talents
   talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
@@ -6661,7 +6639,7 @@ void warrior_t::init_spells()
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
-  // Shared Talents - needed when using the same spell data with a spec check (hurricane)
+  // Shared Talents - needed when using the same spell data with a spec check (ravager)
 
   auto find_shared_talent = []( std::vector<player_talent_t*> talents ) {
     for ( const auto t : talents )
@@ -6674,7 +6652,6 @@ void warrior_t::init_spells()
     return *talents[ 0 ];
   };
 
-  talents.shared.hurricane = find_shared_talent( { &talents.arms.hurricane, &talents.fury.hurricane } );
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
 
@@ -7298,19 +7275,6 @@ void warrior_t::create_buffs()
                               ->set_trigger_spell( test_of_might_tracker );
 
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
-
-  const spell_data_t* hurricane_trigger = specialization() == WARRIOR_FURY ? find_spell( 390719 ) : find_spell( 390577 );
-  const spell_data_t* hurricane_buff   = find_spell( 390581 );
-  buff.hurricane_driver =
-      make_buff( this, "hurricane_driver", hurricane_trigger )
-          ->set_quiet( true )
-          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buff.hurricane->trigger(); } );
-
-  buff.hurricane = make_buff( this, "hurricane", hurricane_buff )
-    ->set_trigger_spell( hurricane_trigger )
-    ->set_default_value( talents.shared.hurricane->effectN( 1 ).percent() )
-    ->add_invalidate( CACHE_STRENGTH );
 
   //buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
     //->set_chance( talents.vengeance->ok() )
@@ -8013,7 +7977,6 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + buff.hurricane->check_stack_value();
     m *= 1.0 + talents.protection.focused_vigor->effectN( 1 ).percent();
   }
 
