@@ -1265,6 +1265,7 @@ public:
     const spell_data_t *chi_burst_damage;
     const spell_data_t *chi_burst_energize;
     const spell_data_t *chi_burst_heal;
+    const spell_data_t *chi_wave_driver;
     const spell_data_t *chi_wave_damage;
     const spell_data_t *chi_wave_heal;
     const spell_data_t *claw_of_the_white_tiger;

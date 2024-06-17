@@ -1736,7 +1736,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( rng().roll( gotd_chance ) )
     {
-      gotd->target = p()->target;
+      gotd->target = target;
       gotd->execute();
     }
 
@@ -1758,7 +1758,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.chi_wave->up() )
     {
-      p()->active_actions.chi_wave->set_target( this->execute_state->target );
+      p()->active_actions.chi_wave->set_target( target );
       p()->active_actions.chi_wave->schedule_execute();
       p()->buff.chi_wave->expire();
     }
@@ -1985,10 +1985,15 @@ struct charred_passions_t : base_action_t
 
   template <typename... Args>
   charred_passions_t( monk_t *player, std::string_view name, Args &&...args )
-    : base_action_t( player, name, std::forward<Args>( args )... ), damage( new damage_t( player, name ) )
+    : base_action_t( player, name, std::forward<Args>( args )... )
   {
     cooldown = player->get_cooldown( "charred_passions" );
-    base_action_t::add_child( damage );
+
+    if ( player->talent.brewmaster.charred_passions->ok() )
+    {
+      damage = new damage_t( player, name );
+      base_action_t::add_child( damage );
+    }
   }
 
   void impact( action_state_t *state ) override
@@ -5518,12 +5523,16 @@ struct chi_wave_t : public monk_spell_t
 {
   heal_t *heal;
   spell_t *damage;
+
+  int bounces;
   bool dmg;
+
   chi_wave_t( monk_t *player )
-    : monk_spell_t( player, "chi_wave", player->talent.general.chi_wave ),
+    : monk_spell_t( player, "chi_wave", player->passives.chi_wave_driver ),
       heal( new chi_wave_heal_tick_t( player, "chi_wave_heal" ) ),
       damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
-      dmg( true )
+      dmg( true ),
+      bounces( data().effectN( 1 ).base_value() )
   {
     sef_ability = actions::sef_ability_e::SEF_CHI_WAVE;
 
@@ -5533,8 +5542,11 @@ struct chi_wave_t : public monk_spell_t
     tick_zero              = true;
     may_combo_strike       = false;
 
-    dot_duration   = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
-    base_tick_time = dot_duration / 8;
+    int total_ticks = 1 + bounces;
+    dot_duration    = timespan_t::from_seconds( bounces );
+    base_tick_time  = dot_duration / total_ticks;
+
+    gcd_type = gcd_haste_type::NONE;
 
     add_child( heal );
     add_child( damage );
@@ -7509,6 +7521,7 @@ void monk_t::init_spells()
   passives.bonedust_brew_attenuation = find_spell( 394514 );
   passives.chi_burst_energize        = find_spell( 261682 );
   passives.chi_burst_heal            = find_spell( 130654 );
+  passives.chi_wave_driver           = find_spell( 115098 );
   passives.chi_wave_damage           = find_spell( 132467 );
   passives.chi_wave_heal             = find_spell( 132463 );
   passives.claw_of_the_white_tiger   = find_spell( 389541 );
