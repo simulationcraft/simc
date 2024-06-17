@@ -80,8 +80,6 @@ public:
   {
     return *debug_cast<demon_hunter_t*>( source );
   }
-
-  void trigger_burning_blades( action_state_t* state );
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
@@ -4559,9 +4557,35 @@ struct demonsurge_t : public demon_hunter_spell_t
 namespace attacks
 {
 
+template <typename BASE>
+struct burning_blades_trigger_t : public BASE
+{
+  using base_t = burning_blades_trigger_t<BASE>;
+
+  burning_blades_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.felscarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.felscarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
 // Auto Attack ==============================================================
 
-struct auto_attack_damage_t : public demon_hunter_attack_t
+struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
 {
   enum class aa_contact
   {
@@ -4577,7 +4601,7 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
 
   auto_attack_damage_t( util::string_view name, demon_hunter_t* p, weapon_t* w,
                         const spell_data_t* s = spell_data_t::nil() )
-    : demon_hunter_attack_t( name, p, s )
+    : base_t( name, p, s )
   {
     school     = SCHOOL_PHYSICAL;
     special    = false;
@@ -4598,7 +4622,7 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
 
   double action_multiplier() const override
   {
-    double m = demon_hunter_attack_t::action_multiplier();
+    double m = base_t::action_multiplier();
 
     // Class Passives
     m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
@@ -4609,7 +4633,7 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
 
   void reset() override
   {
-    demon_hunter_attack_t::reset();
+    base_t::reset();
 
     status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
   }
@@ -4646,10 +4670,9 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
 
   void impact( action_state_t* s ) override
   {
-    demon_hunter_attack_t::impact( s );
+    base_t::impact( s );
 
     trigger_demon_blades( s );
-    td( s->target )->trigger_burning_blades( s );
     if ( p()->talent.aldrachi_reaver.wounded_quarry->ok() && td( s->target )->debuffs.reavers_mark->up() )
     {
       p()->active.wounded_quarry->execute_on_target( s->target );
@@ -5126,7 +5149,7 @@ struct death_sweep_t : public blade_dance_base_t
 
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
-  struct chaos_strike_damage_t : public demon_hunter_attack_t
+  struct chaos_strike_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     timespan_t delay;
     chaos_strike_base_t* parent;
@@ -5135,7 +5158,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     chaos_strike_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
                            chaos_strike_base_t* a )
-      : demon_hunter_attack_t( name, p, eff.trigger() ),
+      : base_t( name, p, eff.trigger() ),
         delay( timespan_t::from_millis( eff.misc_value1() ) ),
         parent( a ),
         refund_proc_chance( 0.0 )
@@ -5171,7 +5194,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     void execute() override
     {
-      demon_hunter_attack_t::execute();
+      base_t::execute();
 
       if ( may_refund )
       {
@@ -5193,7 +5216,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_attack_t::impact( s );
+      base_t::impact( s );
 
       // Relentless Onslaught cannot self-proc and is delayed by ~300ms after the normal OH impact
       if ( p()->talent.havoc.relentless_onslaught->ok() )
@@ -5230,9 +5253,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       {
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
-
-      // TOCHECK -- Does this proc from Relentless Onslaught?
-      td( s->target )->trigger_burning_blades( s );
 
       if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
       {
@@ -6053,11 +6073,11 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
     }
   };
 
-  struct soul_cleave_damage_t : public demon_hunter_attack_t
+  struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, std::basic_string<char> reporting_name,
                           const spell_data_t* s )
-      : demon_hunter_attack_t( name, p, s )
+      : burning_blades_trigger_t( name, p, s )
     {
       dual               = true;
       name_str_reporting = reporting_name;
@@ -6076,12 +6096,12 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
         debug_cast<soul_cleave_state_t*>( state )->t29_vengeance_4pc_proc = true;
       }
       // snapshot_state after so that it includes the DA multiplier from the proc
-      demon_hunter_attack_t::snapshot_state( state, rt );
+      base_t::snapshot_state( state, rt );
     }
 
     void impact( action_state_t* s ) override
     {
-      demon_hunter_attack_t::impact( s );
+      base_t::impact( s );
 
       // Soul Cleave can apply Frailty if Void Reaver is talented
       if ( result_is_hit( s->result ) && p()->talent.vengeance.void_reaver->ok() )
@@ -6093,20 +6113,18 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       {
         td( s->target )->debuffs.t29_vengeance_4pc->trigger();
       }
-
-      td( s->target )->trigger_burning_blades( s );
     }
 
     void execute() override
     {
-      demon_hunter_attack_t::execute();
+      base_t::execute();
 
       p()->buff.soul_furnace_damage_amp->expire();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = demon_hunter_attack_t::composite_da_multiplier( s );
+      double m = base_t::composite_da_multiplier( s );
 
       if ( s->chain_target == 0 && p()->talent.vengeance.focused_cleave->ok() )
       {
@@ -6265,7 +6283,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     DEATH_SWEEP_THROW = 3
   };
 
-  struct throw_glaive_damage_t : public demon_hunter_attack_t
+  struct throw_glaive_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
     struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
     {
@@ -6285,7 +6303,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     bool from_t31;
 
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, bool from_t31 = false )
-      : demon_hunter_attack_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
+      : burning_blades_trigger_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ),
         soulscar( nullptr ),
         from_t31( from_t31 )
     {
@@ -6305,7 +6323,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     void impact( action_state_t* state ) override
     {
-      demon_hunter_attack_t::impact( state );
+      base_t::impact( state );
 
       if ( result_is_hit( state->result ) )
       {
@@ -6325,8 +6343,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
           td( state->target )->debuffs.serrated_glaive->trigger();
         }
       }
-
-      td( state->target )->trigger_burning_blades( state );
     }
   };
 
@@ -7303,20 +7319,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
-}
-
-void demon_hunter_td_t::trigger_burning_blades( action_state_t* state )
-{
-  demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
-
-  if ( !p->talent.felscarred.burning_blades->ok() )
-    return;
-
-  if ( !action_t::result_is_hit( state->result ) )
-    return;
-
-  const double dot_damage = state->result_amount * p->talent.felscarred.burning_blades->effectN( 1 ).percent();
-  residual_action::trigger( p->active.burning_blades, state->target, dot_damage );
 }
 
 // ==========================================================================
