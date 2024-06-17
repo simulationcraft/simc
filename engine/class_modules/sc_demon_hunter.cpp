@@ -4087,7 +4087,10 @@ struct the_hunt_t : public demon_hunter_spell_t
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
 
-    p()->buff.reavers_glaive->trigger();
+    if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+    {
+      p()->buff.reavers_glaive->trigger();
+    }
   }
 
   timespan_t travel_time() const override
