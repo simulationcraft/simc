@@ -141,6 +141,12 @@ void monk_action_t<Base>::apply_buff_effects()
   // T33 Set Effects
   // apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
 
+  // Ordered Elements
+  if ( p()->talent.windwalker.ordered_elements.enabled() )
+  {
+    parse_effects( p()->buff.ordered_elements );
+  }
+
   /*
    * Temporary action-specific effects go here.
    * Does it apply a buff to a specific action?
@@ -669,12 +675,6 @@ template <class Base>
 double monk_action_t<Base>::cost() const
 {
   double c = base_t::cost();
-
-  if ( p()->specialization() == MONK_WINDWALKER )
-  {
-    if ( base_t::data().affected_by( p()->buff.ordered_elements->data().effectN( 1 ) ) )
-      c += p()->buff.ordered_elements->check_value();
-  }
 
   return c;
 }
