@@ -26,6 +26,42 @@
 
 #include "simulationcraft.hpp"
 
+template <class TActor, class TBuff = buff_t>
+struct hp_triggered_buff_t
+{
+  struct buff_pack_t
+  {
+    const spelleffect_data_t *effect;
+    const spell_data_t *spell_data;
+    propagate_const<TBuff *> buff;
+
+    buff_pack_t( TActor *player, const spelleffect_data_t *effect )
+      : effect( effect ),
+        spell_data( effect->trigger() ),
+        buff( make_buff<TBuff>( player, fmt::format( "{}_{}", effect->spell()->name_cstr(), effect->id() ),
+                                effect->trigger() ) )
+    {
+    }
+  };
+
+  std::vector<std::unique_ptr<buff_pack_t>> buffs;
+  hp_triggered_buff_t( TActor *player, const spell_data_t *driver )
+  {
+    for ( const spelleffect_data_t &effect : driver->effects() )
+      if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_468 )
+        buffs.emplace_back( std::make_unique<buff_pack_t>( player, &effect ) );
+
+    std::sort( buffs.begin(), buffs.end(),
+               []( const std::unique_ptr<buff_pack_t> &lhs, const std::unique_ptr<buff_pack_t> &rhs ) {
+                 return lhs->effect->base_value() > rhs->effect->base_value();
+               } );
+  }
+
+  std::unique_ptr<TBuff> trigger()
+  {
+  }
+};
+
 namespace monk
 {
 struct monk_t;
@@ -341,7 +377,7 @@ public:
   action_t *dual_threat_kick;
 
   // For Debug reporting, used by create_proc_callback in init_special_effects
-  std::map<std::string, std::vector<action_t *> > proc_tracking;
+  std::map<std::string, std::vector<action_t *>> proc_tracking;
 
   void create_proc_callback( const spell_data_t *effect_driver,
                              bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
@@ -614,6 +650,8 @@ public:
     propagate_const<buff_t *> tiger_strikes;
     propagate_const<buff_t *> tigers_ferocity;
     propagate_const<buff_t *> flow_of_battle;
+
+    propagate_const<hp_triggered_buff_t<monk_t, actions::monk_buff_t> *> flow_of_chi;
   } buff;
 
 public:

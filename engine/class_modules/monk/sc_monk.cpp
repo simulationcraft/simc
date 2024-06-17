@@ -5891,6 +5891,14 @@ using namespace absorbs;
 
 namespace buffs
 {
+using namespace actions;
+// ==========================================================================
+// Monk Buffs
+// ==========================================================================
+
+// ==========================================================================
+// Shuffle
+// ==========================================================================
 shuffle_t::shuffle_t( monk_t *player )
   : monk_buff_t( player, "shuffle", player->passives.shuffle ),
     accumulator( 0_s ),
@@ -5920,10 +5928,17 @@ void shuffle_t::trigger( timespan_t duration )
         as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
   accumulator -= threshold * count;
 }
-using namespace actions;
-// ==========================================================================
-// Monk Buffs
-// ==========================================================================
+
+// ===============================================================================
+// Elixir of Determination
+// ===============================================================================
+
+struct flow_of_chi_t : hp_triggered_buff_t<monk_t, monk_buff_t>
+{
+  flow_of_chi_t( monk_t *player ) : hp_triggered_buff_t( player, player->talent.general.flow_of_chi )
+  {
+  }
+};
 
 // ===============================================================================
 // Fortifying Brew Buff
@@ -8325,6 +8340,8 @@ void monk_t::create_buffs()
 
   movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch );
   movement.whirling_dragon_punch->set_distance( 1 );
+
+  buff.flow_of_chi = new buffs::flow_of_chi_t( this );
 }
 
 // monk_t::init_gains =======================================================
