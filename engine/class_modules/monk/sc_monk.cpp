@@ -7951,31 +7951,6 @@ void monk_t::create_buffs()
                               ->add_invalidate( CACHE_HASTE )
                               ->add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.martial_mixture = make_buff( this, "martial_mixure", find_spell( 451457 ) )
-                             ->set_trigger_spell( talent.windwalker.martial_mixture )
-                             ->set_default_value_from_effect( 1 );
-
-  buff.memory_of_the_monastery = make_buff( this, "memory_of_the_monastery", find_spell( 454970 ) )
-                                     ->set_trigger_spell( talent.windwalker.memory_of_the_monastery )
-                                     ->set_default_value_from_effect( 1 )
-                                     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                     ->add_invalidate( CACHE_ATTACK_HASTE )
-                                     ->add_invalidate( CACHE_HASTE )
-                                     ->add_invalidate( CACHE_SPELL_HASTE );
-
-  buff.momentum_boost_damage = make_buff( this, "momentum_boost_damage", find_spell( 451297 ) )
-                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
-                                   ->set_default_value_from_effect( 1 );
-
-  buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
-                                  ->set_trigger_spell( talent.windwalker.momentum_boost )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
-
-  buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
-                              ->set_trigger_spell( talent.windwalker.ordered_elements )
-                              ->set_default_value_from_effect( 1 );
-
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
@@ -8163,6 +8138,31 @@ void monk_t::create_buffs()
 
   buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( this, "invoke_xuen_the_white_tiger",
                                                                     talent.windwalker.invoke_xuen_the_white_tiger );
+
+  buff.martial_mixture = make_buff( this, "martial_mixure", find_spell( 451457 ) )
+                             ->set_trigger_spell( talent.windwalker.martial_mixture )
+                             ->set_default_value_from_effect( 1 );
+
+  buff.memory_of_the_monastery = make_buff( this, "memory_of_the_monastery", find_spell( 454970 ) )
+                                     ->set_trigger_spell( talent.windwalker.memory_of_the_monastery )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                     ->add_invalidate( CACHE_ATTACK_HASTE )
+                                     ->add_invalidate( CACHE_HASTE )
+                                     ->add_invalidate( CACHE_SPELL_HASTE );
+
+  buff.momentum_boost_damage = make_buff( this, "momentum_boost_damage", find_spell( 451297 ) )
+                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                   ->set_default_value_from_effect( 1 );
+
+  buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
+                                  ->set_trigger_spell( talent.windwalker.momentum_boost )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+
+  buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
+                              ->set_trigger_spell( talent.windwalker.ordered_elements )
+                              ->set_default_value_from_effect( 1 );
 
   buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337482 ) )
                             ->set_trigger_spell( talent.windwalker.xuens_battlegear )
