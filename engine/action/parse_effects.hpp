@@ -570,6 +570,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
+  std::vector<player_effect_t> rating_multiplier_effects;
   std::vector<player_effect_t> versatility_effects;
   std::vector<player_effect_t> player_multiplier_effects;
   std::vector<player_effect_t> pet_multiplier_effects;
@@ -597,6 +598,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
   double composite_melee_auto_attack_speed() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
+  double composite_rating_multiplier( rating_e ) const override;
   double composite_damage_versatility() const override;
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;

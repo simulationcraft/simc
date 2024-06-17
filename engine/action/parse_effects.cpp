@@ -634,6 +634,18 @@ double parse_player_effects_t::composite_attribute_multiplier( attribute_e attr 
   return am;
 }
 
+double parse_player_effects_t::composite_rating_multiplier( rating_e rating ) const
+{
+  auto rm = player_t::composite_rating_multiplier( rating );
+  auto mod = util::rating_to_rating_mod( rating );
+
+  for ( const auto& i : rating_multiplier_effects )
+    if ( i.opt_enum & mod )
+      rm *= 1.0 + get_effect_value( i );
+
+  return rm;
+}
+
 double parse_player_effects_t::composite_damage_versatility() const
 {
   auto v = player_t::composite_damage_versatility();
@@ -939,6 +951,20 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
       return &attribute_multiplier_effects;
 
+    case A_MOD_RATING_MULTIPLIER:
+      data.opt_enum = eff.misc_value1();
+      {
+        std::vector<std::string> str_list;
+        for ( auto stat : util::translate_all_rating_mod( data.opt_enum ) )
+        {
+          str_list.emplace_back( util::stat_type_string( stat ) );
+          invalidate( cache_from_stat( stat ) );
+        }
+        str = util::string_join( str_list );
+      }
+
+      return &rating_multiplier_effects;
+
     case A_MOD_VERSATILITY_PCT:
       str = "versatility";
       invalidate( CACHE_VERSATILITY );
@@ -1132,12 +1158,22 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
        << "<th>Notes</th>"
        << "</tr></thead>\n";
 
+    // TODO: consolidate these with debug message functors in get_effect_vector()
     auto attr_note = []( uint32_t opt ) {
       std::vector<std::string> str_list;
 
       for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
         if ( opt & ( 1 << ( stat - 1 ) ) )
           str_list.emplace_back( util::stat_type_string( stat ) );
+
+      return util::string_join( str_list );
+    };
+
+    auto rating_note = []( uint32_t opt ) {
+      std::vector<std::string> str_list;
+
+      for ( auto stat : util::translate_all_rating_mod( opt ) )
+        str_list.emplace_back( util::stat_type_string( stat ) );
 
       return util::string_join( str_list );
     };
@@ -1157,6 +1193,7 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
     print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
+    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", rating_note );
     print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
     print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
@@ -1186,6 +1223,7 @@ size_t parse_player_effects_t::total_effects_count()
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
          matching_armor_attribute_multiplier_effects.size() +
+         rating_multiplier_effects.size() +
          versatility_effects.size() +
          player_multiplier_effects.size() +
          pet_multiplier_effects.size() +
