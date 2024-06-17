@@ -7388,6 +7388,7 @@ void monk_t::init_spells()
   talent.windwalker.power_of_the_thunder_king      = _ST( "Power of the Thunder King" );
   talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
   talent.windwalker.knowledge_of_the_broken_temple = _ST( "Knowledge of the Broken Temple" );
+  talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
   talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
