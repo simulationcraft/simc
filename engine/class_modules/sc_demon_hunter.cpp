@@ -693,6 +693,7 @@ public:
     const spell_data_t* art_of_the_glaive_damage;
     const spell_data_t* warblades_hunger_buff;
     const spell_data_t* warblades_hunger_damage;
+    const spell_data_t* wounded_quarry_damage;
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff;
 
@@ -868,6 +869,7 @@ public:
 
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
+    proc_t* soul_fragment_from_wounded_quarry;
 
     // Fel-scarred
 
@@ -925,6 +927,7 @@ public:
     attack_t* art_of_the_glaive = nullptr;
     attack_t* preemptive_strike = nullptr;
     attack_t* warblades_hunger  = nullptr;
+    attack_t* wounded_quarry    = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -4647,6 +4650,16 @@ struct auto_attack_damage_t : public demon_hunter_attack_t
 
     trigger_demon_blades( s );
     td( s->target )->trigger_burning_blades( s );
+    if ( p()->talent.aldrachi_reaver.wounded_quarry->ok() && td( s->target )->debuffs.reavers_mark->up() )
+    {
+      p()->active.wounded_quarry->execute_on_target( s->target );
+      // 2024-06-16 -- Chance seems to be about 10% per melee hit per beta gameplay.
+      if ( rng().roll( 0.1 ) )
+      {
+        p()->proc.soul_fragment_from_wounded_quarry->occur();
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+      }
+    }
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -6717,6 +6730,15 @@ struct warblades_hunger_t : public demon_hunter_attack_t
   }
 };
 
+struct wounded_quarry_t : public demon_hunter_attack_t
+{
+  wounded_quarry_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
+  {
+    background = dual = true;
+  }
+};
+
 }  // end namespace attacks
 
 }  // end namespace actions
@@ -8066,6 +8088,7 @@ void demon_hunter_t::init_procs()
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
+  proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
 
   // Fel-scarred
 
@@ -8521,6 +8544,8 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442503 ) : spell_data_t::not_found();
   hero_spec.warblades_hunger_damage =
       talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442507 ) : spell_data_t::not_found();
+  hero_spec.wounded_quarry_damage =
+      talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
   hero_spec.thrill_of_the_fight_attack_speed_buff =
       talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
   hero_spec.thrill_of_the_fight_damage_buff =
@@ -8726,6 +8751,10 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.warblades_hunger->ok() )
   {
     active.warblades_hunger = get_background_action<warblades_hunger_t>( "warblades_hunger" );
+  }
+  if ( talent.aldrachi_reaver.wounded_quarry->ok() )
+  {
+    active.wounded_quarry = get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )
