@@ -1343,8 +1343,8 @@ public:
   {
     // TODO: Test Meridian Strikes
 
-    // Currently Xuen's Bond is triggering from SEF combo strikes, assume this is a bug
-    if ( o()->talent.windwalker.xuens_bond->ok() && o()->bugs )
+    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer a bug.
+    if ( o()->talent.windwalker.xuens_bond->ok() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100
   }
