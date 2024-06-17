@@ -8140,7 +8140,7 @@ void monk_t::create_buffs()
 
   buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
                                ->set_trigger_spell( talent.windwalker.darting_hurricane )
-                               ->set_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
+                               ->modify_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
                                ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
