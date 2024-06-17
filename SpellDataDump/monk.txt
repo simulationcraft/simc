@@ -23023,7 +23023,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1154044)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Self (1)
 Description      : Effect of your Mastery increased by $s1%.
 
 Tooltip          : Increases the effect of your Mastery by $w1%.

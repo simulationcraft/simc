@@ -19081,7 +19081,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1166362)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Rating: Crit | Target: Self (1)
 #2 (id=1166363)  : Apply Aura (6) | Modify Crit% (52)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : You gain $s1% more critical strike from critical strike sources.

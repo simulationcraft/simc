@@ -2713,7 +2713,7 @@ Effects          :
 #1 (id=132772)   : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=132773)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Rating: Crit | Target: Self (1)
 Description      : Your spells have a $s1% increased chance to deal a critical strike.
 
 You gain $s2% more of the Critical Strike stat from all sources.
@@ -14787,7 +14787,7 @@ Effects          :
 #1 (id=1089136)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1089137)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Rating: Haste | Target: Self (1)
 Description      : Your Haste is increased by $s1%.
 
 You gain $s2% more of the Haste stat from all sources.
