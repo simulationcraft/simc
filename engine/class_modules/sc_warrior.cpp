@@ -727,6 +727,61 @@ public:
 
     } protection;
 
+    struct colossus_talents_t
+    {
+      player_talent_t demolish; // NYI
+      player_talent_t martial_expert; // NYI
+      player_talent_t colossal_might; // NYI
+      player_talent_t boneshaker; // NYI
+      player_talent_t earthquaker; // NYI
+      player_talent_t one_against_many; // NYI
+      player_talent_t arterial_bleed; // NYI
+      player_talent_t tide_of_battle; // NYI
+      player_talent_t no_stranger_to_pain; // NYI
+      player_talent_t veteran_vitality; // NYI
+      player_talent_t practiced_strikes; // NYI
+      player_talent_t precise_might; // NYI
+      player_talent_t mountain_of_muscle_and_scars; // NYI
+      player_talent_t dominance_of_the_colossus; // NYI
+    } colossus;
+
+    struct mountain_thane_talents_t
+    {
+      player_talent_t lightning_strikes; // NYI
+      player_talent_t crashing_thunder; // NYI
+      player_talent_t ground_current; // NYI
+      player_talent_t strength_of_the_mountain; // NYI
+      player_talent_t thunder_blast; // NYI
+      player_talent_t storm_bolts; // NYI
+      player_talent_t storm_shield; // NYI
+      player_talent_t keep_your_feet_on_the_ground; // NYI
+      player_talent_t steadfast_as_the_peaks; // NYI
+      player_talent_t flashing_skies; // NYI
+      player_talent_t snap_induction; // NYI
+      player_talent_t gathering_clouds; // NYI
+      player_talent_t thorims_might; // NYI
+      player_talent_t burst_of_power; // NYI
+      player_talent_t avatar_of_the_storm; // NYI
+    } mountain_thane;
+
+    struct slayer_talents_t
+    {
+      player_talent_t slayers_dominance; // NYI
+      player_talent_t imminent_demise; // NYI
+      player_talent_t overwhelming_blades; // NYI
+      player_talent_t relentless_pursuit; // NYI
+      player_talent_t vicious_agility; // NYI
+      player_talent_t death_drive; // NYI
+      player_talent_t culling_cyclone; // NYI
+      player_talent_t brutal_finish; // NYI
+      player_talent_t fierce_followthrough; // NYI
+      player_talent_t opportunist; // NYI
+      player_talent_t show_no_mercy; // NYI
+      player_talent_t reap_the_storm; // NYI
+      player_talent_t slayers_malice; // NYI
+      player_talent_t unrelenting_onslaught; // NYI
+    } slayer;
+
     struct shared_talents_t
     {
       player_talent_t ravager;
@@ -6638,6 +6693,55 @@ void warrior_t::init_spells()
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
+
+  // Colossus Hero Talents
+  talents.colossus.demolish                     = find_talent_spell( talent_tree::HERO, "Demolish" );
+  talents.colossus.martial_expert               = find_talent_spell( talent_tree::HERO, "Martial Expert" );
+  talents.colossus.colossal_might               = find_talent_spell( talent_tree::HERO, "Colossal Might" );
+  talents.colossus.boneshaker                   = find_talent_spell( talent_tree::HERO, "Boneshaker" );
+  talents.colossus.earthquaker                  = find_talent_spell( talent_tree::HERO, "Earthquaker" );
+  talents.colossus.one_against_many             = find_talent_spell( talent_tree::HERO, "One Against Many" );
+  talents.colossus.arterial_bleed               = find_talent_spell( talent_tree::HERO, "Arterial Bleed" );
+  talents.colossus.tide_of_battle               = find_talent_spell( talent_tree::HERO, "Tide of Battle" );
+  talents.colossus.no_stranger_to_pain          = find_talent_spell( talent_tree::HERO, "No Stranger to Pain" );
+  talents.colossus.veteran_vitality             = find_talent_spell( talent_tree::HERO, "Veteran Vitality" );
+  talents.colossus.practiced_strikes            = find_talent_spell( talent_tree::HERO, "Practiced Strikes" );
+  talents.colossus.precise_might                = find_talent_spell( talent_tree::HERO, "Precise Might" );
+  talents.colossus.mountain_of_muscle_and_scars = find_talent_spell( talent_tree::HERO, "Mountain of Muscle and Scars" );
+  talents.colossus.dominance_of_the_colossus    = find_talent_spell( talent_tree::HERO, "Dominance of the Colossus" );
+
+  // Mountain Thane Hero Talents
+  talents.mountain_thane.lightning_strikes            = find_talent_spell( talent_tree::HERO, "Lightning Strikes" );
+  talents.mountain_thane.crashing_thunder             = find_talent_spell( talent_tree::HERO, "Crashing Thunder" );
+  talents.mountain_thane.ground_current               = find_talent_spell( talent_tree::HERO, "Ground Current" );
+  talents.mountain_thane.strength_of_the_mountain     = find_talent_spell( talent_tree::HERO, "Strength of the Mountain" );
+  talents.mountain_thane.thunder_blast                = find_talent_spell( talent_tree::HERO, "Thunder Blast" );
+  talents.mountain_thane.storm_bolts                  = find_talent_spell( talent_tree::HERO, "Storm Bolts" );
+  talents.mountain_thane.storm_shield                 = find_talent_spell( talent_tree::HERO, "Storm Shield" );
+  talents.mountain_thane.keep_your_feet_on_the_ground = find_talent_spell( talent_tree::HERO, "Keep Your Feet on the Ground" );
+  talents.mountain_thane.steadfast_as_the_peaks       = find_talent_spell( talent_tree::HERO, "Steadfast as the Peaks" );
+  talents.mountain_thane.flashing_skies               = find_talent_spell( talent_tree::HERO, "Flashing Skies" );
+  talents.mountain_thane.snap_induction               = find_talent_spell( talent_tree::HERO, "Snap Induction" );
+  talents.mountain_thane.gathering_clouds             = find_talent_spell( talent_tree::HERO, "Gathering Clouds" );
+  talents.mountain_thane.thorims_might                = find_talent_spell( talent_tree::HERO, "Thorim's Might" );
+  talents.mountain_thane.burst_of_power               = find_talent_spell( talent_tree::HERO, "Burts of Power" );
+  talents.mountain_thane.avatar_of_the_storm          = find_talent_spell( talent_tree::HERO, "Avatar of the Storm" );
+
+  // Slayer Hero Talents
+  talents.slayer.slayers_dominance     = find_talent_spell( talent_tree::HERO, "Slayer's Dominance" );
+  talents.slayer.imminent_demise       = find_talent_spell( talent_tree::HERO, "Imminent Demise" );
+  talents.slayer.overwhelming_blades   = find_talent_spell( talent_tree::HERO, "Overwhelming Blades" );
+  talents.slayer.relentless_pursuit    = find_talent_spell( talent_tree::HERO, "Relentless Pursuit" );
+  talents.slayer.vicious_agility       = find_talent_spell( talent_tree::HERO, "Vicious Agility" );
+  talents.slayer.death_drive           = find_talent_spell( talent_tree::HERO, "Death Drive" );
+  talents.slayer.culling_cyclone       = find_talent_spell( talent_tree::HERO, "Culling Cyclone" );
+  talents.slayer.brutal_finish         = find_talent_spell( talent_tree::HERO, "Brutal Finish" );
+  talents.slayer.fierce_followthrough  = find_talent_spell( talent_tree::HERO, "Fierce Followthrough" );
+  talents.slayer.opportunist           = find_talent_spell( talent_tree::HERO, "Opportunist" );
+  talents.slayer.show_no_mercy         = find_talent_spell( talent_tree::HERO, "Show No Mercy" );
+  talents.slayer.reap_the_storm        = find_talent_spell( talent_tree::HERO, "Reap the Storm" );
+  talents.slayer.slayers_malice        = find_talent_spell( talent_tree::HERO, "Slayer's Malice" );
+  talents.slayer.unrelenting_onslaught = find_talent_spell( talent_tree::HERO, "Unrelenting Onslaught" );
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
 
