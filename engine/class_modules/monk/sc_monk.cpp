@@ -8239,6 +8239,15 @@ void monk_t::create_buffs()
 
   buff.wisdom_of_the_wall_dodge = make_buff( this, "wisdom_of_the_wall_dodge", find_spell( 451242 ) )
                                       ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+                                      ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
+                                        self->set_default_value_from_effect( 3 );
+                                        self->modify_default_value( composite_damage_versatility() );
+                                      } )
+                                      ->set_cooldown( timespan_t::zero() )
+                                      ->set_duration( timespan_t::zero() )
+                                      ->set_period( timespan_t::from_seconds( 1 ) )
+                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                       ->add_invalidate( CACHE_CRIT_CHANCE )
                                       ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
                                       ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
@@ -8960,7 +8969,7 @@ double monk_t::composite_dodge() const
     d += talent.general.ironshell_brew->effectN( 1 ).percent();
 
   if ( buff.wisdom_of_the_wall_dodge->check() )
-    d += buff.wisdom_of_the_wall_dodge->data().effectN( 3 ).percent() * composite_damage_versatility();
+    d += buff.wisdom_of_the_wall_dodge->check_value();
 
   return d;
 }
