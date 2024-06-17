@@ -6693,7 +6693,7 @@ void monk_t::parse_player_effects()
   // mistweaver talent auras
   // windwalker talent auras
 
-  // Shadowpan
+  // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
 }
 
