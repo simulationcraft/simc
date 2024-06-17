@@ -9155,7 +9155,6 @@ void demon_hunter_t::parse_player_effects()
   }
 
   // Aldrachi Reaver
-  parse_effects( buff.thrill_of_the_fight_damage );
 
   // Fel-scarred
 }
