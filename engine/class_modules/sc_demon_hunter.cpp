@@ -1689,6 +1689,7 @@ public:
     ab::parse_effects( p()->buff.tww1_havoc_4pc );
 
     // Vengeance
+    ab::parse_effects( p()->buff.soul_furnace_damage_amp );
 
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
@@ -3873,18 +3874,6 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
         td( s->target )->debuffs.frailty->trigger();
       }
     }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = demon_hunter_spell_t::composite_da_multiplier( s );
-
-      if ( p()->buff.soul_furnace_damage_amp->up() )
-      {
-        m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
-      }
-
-      return m;
-    }
   };
 
   spirit_bomb_damage_t* damage;
@@ -5720,11 +5709,6 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       if ( s->chain_target == 0 && p()->talent.vengeance.focused_cleave->ok() )
       {
         m *= 1.0 + p()->talent.vengeance.focused_cleave->effectN( 1 ).percent();
-      }
-
-      if ( p()->buff.soul_furnace_damage_amp->up() )
-      {
-        m *= 1.0 + p()->buff.soul_furnace_damage_amp->check_value();
       }
 
       return m;
