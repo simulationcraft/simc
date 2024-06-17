@@ -8084,47 +8084,49 @@ void monk_t::create_buffs()
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.mistweaver.focused_thunder->effectN( 1 ).base_value() ) );
 
-  buff.fatal_touch = make_buff( this, "fatal_touch", find_spell( 450832 ) )
-                         ->set_trigger_spell( talent.general.fatal_touch )
+  buff.fatal_touch = make_buff_fallback( talent.general.fatal_touch->ok(), this, "fatal_touch", find_spell( 450832 ) )
                          ->set_default_value_from_effect( 1 )
                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Windwalker
-  buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
+  buff.bok_proc = make_buff_fallback( spec.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
                       ->set_trigger_spell( spec.combo_breaker )
                       ->set_chance( spec.combo_breaker->effectN( 1 ).percent() *
                                     ( 1.0f + talent.windwalker.memory_of_the_monastery->effectN( 1 ).percent() ) );
 
-  buff.chi_energy = make_buff( this, "chi_energy", find_spell( 337571 ) )
-                        ->set_trigger_spell( talent.windwalker.jade_ignition )
-                        ->set_default_value_from_effect( 1 );
+  buff.chi_energy =
+      make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", find_spell( 337571 ) )
+          ->set_default_value_from_effect( 1 );
 
   buff.combo_strikes =
-      make_buff( this, "combo_strikes" )
+      make_buff_fallback( mastery.combo_strikes->ok(), this, "combo_strikes" )
           ->set_trigger_spell( mastery.combo_strikes )
           ->set_duration( timespan_t::from_minutes( 60 ) )
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
-                            ->set_trigger_spell( talent.windwalker.dance_of_chiji );
+  buff.dance_of_chiji =
+      make_buff_fallback( talent.windwalker.dance_of_chiji->ok(), this, "dance_of_chiji", passives.dance_of_chiji )
+          ->set_trigger_spell( talent.windwalker.dance_of_chiji );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
-                                   ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
-                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
+  buff.dance_of_chiji_hidden =
+      make_buff_fallback( talent.windwalker.dance_of_chiji->ok(), this, "dance_of_chiji_hidden" )
+          ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
+          ->set_duration( timespan_t::from_seconds( 1.5 ) )
 
-                                   ->set_quiet( true );
+          ->set_quiet( true );
 
-  buff.darting_hurricane = make_buff( this, "darting_hurricane", find_spell( 459841 ) )
-                               ->set_trigger_spell( talent.windwalker.darting_hurricane )
-                               ->modify_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
-                               ->set_default_value_from_effect( 1 );
+  buff.darting_hurricane =
+      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane", find_spell( 459841 ) )
+          ->modify_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
+          ->set_default_value_from_effect( 1 );
 
-  buff.jadefire_brand = make_buff( this, "jadefire_brand_heal", passives.jadefire_brand_heal )
-                            ->set_trigger_spell( talent.windwalker.jadefire_harmony )
+  buff.jadefire_brand = make_buff_fallback( talent.windwalker.jadefire_harmony->ok(), this, "jadefire_brand_heal",
+                                            passives.jadefire_brand_heal )
                             ->set_default_value_from_effect( 1 );
 
-  buff.ferociousness = make_buff( this, "ferociousness", talent.windwalker.ferociousness )
+  buff.ferociousness = make_buff_fallback( talent.windwalker.ferociousness->ok(), this, "ferociousness",
+                                           talent.windwalker.ferociousness )
                            ->set_quiet( true )
                            ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
                              self->set_default_value_from_effect( 1 );
@@ -8137,7 +8139,8 @@ void monk_t::create_buffs()
                            ->set_period( timespan_t::from_seconds( 1 ) )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
 
-  buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
+  buff.flying_serpent_kick_movement = make_buff_fallback( spec.flying_serpent_kick->ok(), this,
+                                                          "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
                                           ->set_trigger_spell( spec.flying_serpent_kick );
 
   buff.fury_of_xuen_stacks =
@@ -8145,99 +8148,100 @@ void monk_t::create_buffs()
 
   buff.fury_of_xuen = new buffs::fury_of_xuen_t( this, "fury_of_xuen", passives.fury_of_xuen );
 
-  buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
-                       ->set_trigger_spell( talent.windwalker.hit_combo )
+  buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( this, "invoke_xuen_the_white_tiger",
                                                                     talent.windwalker.invoke_xuen_the_white_tiger );
 
-  buff.martial_mixture = make_buff( this, "martial_mixure", find_spell( 451457 ) )
-                             ->set_trigger_spell( talent.windwalker.martial_mixture )
-                             ->set_default_value_from_effect( 1 );
+  buff.martial_mixture =
+      make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure", find_spell( 451457 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.memory_of_the_monastery = make_buff( this, "memory_of_the_monastery", find_spell( 454970 ) )
-                                     ->set_trigger_spell( talent.windwalker.memory_of_the_monastery )
+  buff.memory_of_the_monastery = make_buff_fallback( talent.windwalker.memory_of_the_monastery->ok(), this,
+                                                     "memory_of_the_monastery", find_spell( 454970 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                      ->add_invalidate( CACHE_ATTACK_HASTE )
                                      ->add_invalidate( CACHE_HASTE )
                                      ->add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.momentum_boost_damage = make_buff( this, "momentum_boost_damage", find_spell( 451297 ) )
-                                   ->set_trigger_spell( talent.windwalker.momentum_boost )
-                                   ->set_default_value_from_effect( 1 );
+  buff.momentum_boost_damage =
+      make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage", find_spell( 451297 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.momentum_boost_speed = make_buff( this, "momentum_boost_speed", find_spell( 451298 ) )
-                                  ->set_trigger_spell( talent.windwalker.momentum_boost )
-                                  ->set_default_value_from_effect( 1 )
-                                  ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.momentum_boost_speed =
+      make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
+          ->set_default_value_from_effect( 1 )
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
-  buff.ordered_elements = make_buff( this, "ordered_elements", find_spell( 451462 ) )
-                              ->set_trigger_spell( talent.windwalker.ordered_elements )
-                              ->set_default_value_from_effect( 1 );
+  buff.ordered_elements =
+      make_buff_fallback( talent.windwalker.ordered_elements->ok(), this, "ordered_elements", find_spell( 451462 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337482 ) )
-                            ->set_trigger_spell( talent.windwalker.xuens_battlegear )
-                            ->set_default_value_from_effect( 1 )
-                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  buff.pressure_point =
+      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 337482 ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.storm_earth_and_fire =
-      make_buff( this, "storm_earth_and_fire", talent.windwalker.storm_earth_and_fire )
+      make_buff_fallback( talent.windwalker.storm_earth_and_fire->ok(), this, "storm_earth_and_fire",
+                          talent.windwalker.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
           ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
-  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 393039 ) )
-                                    ->set_trigger_spell( talent.windwalker.last_emperors_capacitor )
+  buff.the_emperors_capacitor = make_buff_fallback( talent.windwalker.last_emperors_capacitor->ok(), this,
+                                                    "the_emperors_capacitor", find_spell( 393039 ) )
                                     ->set_default_value_from_effect( 1 );
 
   buff.thunderfist =
-      make_buff( this, "thunderfist", passives.thunderfist )->set_trigger_spell( talent.windwalker.thunderfist );
+      make_buff_fallback( talent.windwalker.thunderfist->ok(), this, "thunderfist", passives.thunderfist );
 
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( this, "touch_of_death_ww", spell_data_t::nil() );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( this, "touch_of_karma", find_spell( 125174 ) );
 
-  buff.transfer_the_power = make_buff( this, "transfer_the_power", find_spell( 195321 ) )
-                                ->set_trigger_spell( talent.windwalker.transfer_the_power )
-                                ->set_default_value_from_effect( 1 );
+  buff.transfer_the_power =
+      make_buff_fallback( talent.windwalker.transfer_the_power->ok(), this, "transfer_the_power", find_spell( 195321 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.whirling_dragon_punch = make_buff( this, "whirling_dragon_punch", find_spell( 196742 ) )
-                                   ->set_trigger_spell( talent.windwalker.whirling_dragon_punch )
+  buff.whirling_dragon_punch = make_buff_fallback( talent.windwalker.whirling_dragon_punch->ok(), this,
+                                                   "whirling_dragon_punch", find_spell( 196742 ) )
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Shado-Pan
 
-  buff.against_all_odds = make_buff( this, "against_all_odds", find_spell( 451061 ) )
-                              ->set_trigger_spell( talent.shado_pan.against_all_odds )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                              ->add_invalidate( CACHE_AGILITY );
+  buff.against_all_odds =
+      make_buff_fallback( talent.shado_pan.against_all_odds->ok(), this, "against_all_odds", find_spell( 451061 ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->add_invalidate( CACHE_AGILITY );
 
-  buff.flurry_charge = make_buff( this, "flurry_charge", find_spell( 451021 ) )
-                           ->set_trigger_spell( talent.shado_pan.flurry_strikes )
-                           ->set_default_value_from_effect( 1 );
+  buff.flurry_charge =
+      make_buff_fallback( talent.shado_pan.flurry_strikes->ok(), this, "flurry_charge", find_spell( 451021 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.veterans_eye = make_buff( this, "veterans_eye", find_spell( 451085 ) )
-                          ->set_trigger_spell( talent.shado_pan.veterans_eye )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                          ->add_invalidate( CACHE_ATTACK_HASTE )
-                          ->add_invalidate( CACHE_HASTE )
-                          ->add_invalidate( CACHE_SPELL_HASTE );
+  buff.veterans_eye =
+      make_buff_fallback( talent.shado_pan.veterans_eye->ok(), this, "veterans_eye", find_spell( 451085 ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->add_invalidate( CACHE_ATTACK_HASTE )
+          ->add_invalidate( CACHE_HASTE )
+          ->add_invalidate( CACHE_SPELL_HASTE );
 
-  buff.vigilant_watch = make_buff( this, "vigilant_watch", find_spell( 451233 ) )
-                            ->set_trigger_spell( talent.shado_pan.vigilant_watch )
-                            ->set_default_value_from_effect( 1 );
+  buff.vigilant_watch =
+      make_buff_fallback( talent.shado_pan.vigilant_watch->ok(), this, "vigilant_watch", find_spell( 451233 ) )
+          ->set_default_value_from_effect( 1 );
 
-  buff.wisdom_of_the_wall_crit = make_buff( this, "wisdom_of_the_wall_crit", find_spell( 452684 ) )
-                                     ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
+  buff.wisdom_of_the_wall_crit = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
+                                                     "wisdom_of_the_wall_crit", find_spell( 452684 ) )
                                      ->set_default_value_from_effect( 1 );
 
-  buff.wisdom_of_the_wall_dodge = make_buff( this, "wisdom_of_the_wall_dodge", find_spell( 451242 ) )
+  buff.wisdom_of_the_wall_dodge = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
+                                                      "wisdom_of_the_wall_dodge", find_spell( 451242 ) )
                                       ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                       ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
                                         self->set_default_value_from_effect( 3 );
@@ -8253,11 +8257,13 @@ void monk_t::create_buffs()
                                       ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
                                       ->add_invalidate( CACHE_DODGE );
 
-  buff.wisdom_of_the_wall_flurry = make_buff( this, "wisdom_of_the_wall_flurry", find_spell( 452688 ) )
+  buff.wisdom_of_the_wall_flurry = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
+                                                       "wisdom_of_the_wall_flurry", find_spell( 452688 ) )
                                        ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                        ->set_default_value_from_effect( 1 );
 
-  buff.wisdom_of_the_wall_mastery = make_buff( this, "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
+  buff.wisdom_of_the_wall_mastery = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
+                                                        "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                         ->set_default_value_from_effect( 1 )
                                         ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
@@ -8267,16 +8273,17 @@ void monk_t::create_buffs()
   buff.kicks_of_flowing_momentum =
       new buffs::kicks_of_flowing_momentum_t( this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
 
-  buff.fists_of_flowing_momentum = make_buff( this, "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
-                                       ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) )
+  buff.fists_of_flowing_momentum = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
+                                                       "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
                                        ->set_default_value_from_effect( 1 );
 
-  buff.fists_of_flowing_momentum_fof = make_buff( this, "fists_of_flowing_momentum_fof", find_spell( 394951 ) )
+  buff.fists_of_flowing_momentum_fof = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
+                                                           "fists_of_flowing_momentum_fof", find_spell( 394951 ) )
                                            ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) );
 
   buff.brewmasters_rhythm =
-      make_buff( this, "brewmasters_rhythm", find_spell( 394797 ) )
-          ->set_trigger_spell( sets->set( MONK_BREWMASTER, T29, B2 ) )
+      make_buff_fallback( sets->set( MONK_BREWMASTER, T29, B2 )->ok(), this, "brewmasters_rhythm",
+                          find_spell( 394797 ) )
           // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
           ->set_cooldown( timespan_t::from_seconds( 1 ) )
           ->set_default_value_from_effect( 1 )
