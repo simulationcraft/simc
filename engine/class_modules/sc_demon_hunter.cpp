@@ -5967,10 +5967,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
     }
 
     if ( td( target )->debuffs.serrated_glaive->up() )
+    {
       p()->proc.throw_glaive_in_serrated_glaive->occur();
+    }
 
     if ( p()->active.preemptive_strike )
+    {
       p()->active.preemptive_strike->execute_on_target( target );
+    }
   }
 
   bool ready() override
@@ -5987,32 +5991,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
 // Reaver's Glaive ==========================================================
 struct reavers_glaive_t : public demon_hunter_attack_t
 {
-  struct reavers_glaive_damage_t : public demon_hunter_attack_t
-  {
-    reavers_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->hero_spec.reavers_glaive )
-    {
-      background = dual = true;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      demon_hunter_attack_t::impact( state );
-
-      if ( result_is_hit( state->result ) && p()->spec.burning_wound_debuff->ok() )
-      {
-        p()->active.burning_wound->execute_on_target( state->target );
-      }
-    }
-  };
-
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
   {
     apply_affecting_aura( p->talent.aldrachi_reaver.keen_engagement );
-
-    execute_action        = p->get_background_action<reavers_glaive_damage_t>( "reavers_glaive_damage" );
-    execute_action->stats = stats;
   }
 
   void execute() override
@@ -6022,7 +6004,9 @@ struct reavers_glaive_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     if ( p()->active.preemptive_strike )
+    {
       p()->active.preemptive_strike->execute_on_target( target );
+    }
 
     p()->buff.glaive_flurry->trigger();
     p()->buff.rending_strike->trigger();
