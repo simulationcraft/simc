@@ -4761,10 +4761,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
           p()->spawn_soul_fragment( soul_fragment::LESSER );
         }
       }
-      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-      {
-        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
-      }
     }
 
     if ( p()->set_bonuses.tww1_havoc_4pc->ok() )
@@ -5027,10 +5023,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
           p()->proc.soul_fragment_from_aldrachi_tactics->occur();
           p()->spawn_soul_fragment( soul_fragment::LESSER );
         }
-      }
-      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-      {
-        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
       }
     }
 
@@ -5569,10 +5561,6 @@ struct fracture_t : public demon_hunter_attack_t
             p()->spawn_soul_fragment( soul_fragment::LESSER );
           }
         }
-        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-        {
-          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
-        }
       }
 
       if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
@@ -5647,10 +5635,6 @@ struct shear_t : public demon_hunter_attack_t
             p()->proc.soul_fragment_from_aldrachi_tactics->occur();
             p()->spawn_soul_fragment( soul_fragment::LESSER );
           }
-        }
-        if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-        {
-          p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
         }
       }
 
@@ -5796,10 +5780,6 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
           p()->proc.soul_fragment_from_aldrachi_tactics->occur();
           p()->spawn_soul_fragment( soul_fragment::LESSER );
         }
-      }
-      if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-      {
-        p()->cooldown.the_hunt->adjust( -p()->talent.aldrachi_reaver.intent_pursuit->effectN( 1 ).time_value() );
       }
     }
 
