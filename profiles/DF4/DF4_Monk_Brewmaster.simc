@@ -60,16 +60,11 @@ actions.dumb+=/vivify,if=time<320
 actions.precombat=snapshot_stats
 
 actions=auto_attack
-actions+=/blackout_kick
-actions+=/breath_of_fire
-actions+=/keg_smash,if=buff.blackout_combo.down
-actions+=/spinning_crane_kick
-# actions=auto_attack
-# actions+=/potion
-# actions+=/call_action_list,name=ogcd
-# actions+=/call_action_list,name=igcd,if=time<240
-# actions+=/call_action_list,name=rota,if=time<240
-# actions+=/call_action_list,name=dumb,if=time>240
+actions+=/potion
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=igcd,if=time<240
+actions+=/call_action_list,name=rota,if=time<240
+actions+=/call_action_list,name=dumb,if=time>240
 
 # tank_dummy="Fluffy_Pollow"
 # level=83
