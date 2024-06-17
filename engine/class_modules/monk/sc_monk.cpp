@@ -153,6 +153,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
   parse_effects( p()->buff.darting_hurricane );
+  parse_effects( p()->buff.ferociousness );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -8123,6 +8124,19 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( talent.windwalker.jadefire_harmony )
                             ->set_default_value_from_effect( 1 );
 
+  buff.ferociousness = make_buff( this, "ferociousness", talent.windwalker.ferociousness )
+                           ->set_quiet( true )
+                           ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
+                             self->set_default_value_from_effect( 1 );
+
+                             if ( buff.invoke_xuen->up() )
+                               self->modify_default_value( self->data().effectN( 2 ).percent() );
+                           } )
+                           ->set_cooldown( timespan_t::zero() )
+                           ->set_duration( timespan_t::zero() )
+                           ->set_period( timespan_t::from_seconds( 1 ) )
+                           ->set_tick_behavior( buff_tick_behavior::CLIP );
+
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
                                           ->set_trigger_spell( spec.flying_serpent_kick );
 
@@ -9170,6 +9184,9 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 void monk_t::combat_begin()
 {
   base_t::combat_begin();
+
+  if ( talent.windwalker.ferociousness->ok() )
+    buff.ferociousness->trigger();
 
   if ( talent.general.windwalking->ok() )
   {
