@@ -4024,7 +4024,7 @@ struct breath_of_fire_t : public monk_spell_t
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
-    // Currently value is saved as 100% and each of the values is stagger_index / 3 * base_value
+    // Currently the value is saved as 100% and each of the values is stagger_index / 3 * base_value
     double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
     am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
 
@@ -7825,7 +7825,6 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
   debuff_override( monk_t *player, const stagger_data_t *parent_data, const level_data_t *data )
     : base_t( player, parent_data, data )
   {
-    add_invalidate( CACHE_HASTE );
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     apply_affecting_aura( player->talent.brewmaster.high_tolerance );
@@ -7840,19 +7839,18 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
 
 struct training_of_niuzao_buff : actions::monk_buff_t
 {
-  using actions::monk_buff_t::trigger;
   training_of_niuzao_buff( monk_t *player )
     : actions::monk_buff_t( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
   {
-    add_invalidate( CACHE_MASTERY );
     set_default_value( 0.0 );
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   }
 
-  virtual bool trigger()
+  bool trigger( int /* stacks */ = -1, double /* value */ = DEFAULT_VALUE(), double chance = -1.0,
+                timespan_t duration = timespan_t::min() ) override
   {
-    double value = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
-    return actions::monk_buff_t::trigger( 1, value );
+    double v = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
+    return actions::monk_buff_t::trigger( 1, v, chance, duration );
   }
 };
 
