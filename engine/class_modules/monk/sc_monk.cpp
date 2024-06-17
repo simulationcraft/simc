@@ -141,20 +141,21 @@ void monk_action_t<Base>::apply_buff_effects()
   // T33 Set Effects
   // apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
 
-  // Ordered Elements
-  if ( p()->talent.windwalker.ordered_elements.enabled() )
-  {
-    parse_effects( p()->buff.ordered_elements );
-  }
-
   /*
    * Temporary action-specific effects go here.
    * Does it apply a buff to a specific action?
    * If so, the aura gets parsed here with `parse_effects`.
    */
+
+  // Windwalker
+  parse_effects( p()->buff.ordered_elements );
+  parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
   parse_effects( p()->buff.darting_hurricane );
+
+  // Shado-Pan
+  parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // T33 Set Effects
   parse_effects( p()->buff.tiger_strikes );
@@ -702,9 +703,6 @@ double monk_action_t<Base>::composite_crit_damage_bonus_multiplier() const
 {
   double m = base_t::composite_crit_damage_bonus_multiplier();
 
-  if ( base_t::data().affected_by( p()->buff.wisdom_of_the_wall_crit->data().effectN( 1 ) ) )
-    m *= 1 + p()->buff.wisdom_of_the_wall_crit->check_value();
-
   return m;
 }
 
@@ -713,9 +711,6 @@ double monk_action_t<Base>::composite_ta_multiplier( const action_state_t *s ) c
 {
   double ta = base_t::composite_ta_multiplier( s );
 
-  if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
-    ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
-
   return ta;
 }
 
@@ -723,9 +718,6 @@ template <class Base>
 double monk_action_t<Base>::composite_da_multiplier( const action_state_t *s ) const
 {
   double da = base_t::composite_da_multiplier( s );
-
-  if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
-    da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
 
   return da;
 }
@@ -3092,9 +3084,6 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p()->buff.storm_earth_and_fire->check() )
       am *= 1.0 + p()->talent.windwalker.storm_earth_and_fire->effectN( 3 ).percent();
-
-    if ( p()->buff.hit_combo->check() )
-      am *= 1 + p()->passives.hit_combo->effectN( 3 ).percent();
 
     return am;
   }
@@ -8992,8 +8981,6 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t *sta
     multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
   else
     multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
-
-  multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
   return multiplier;
 }
