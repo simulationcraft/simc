@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.54988 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.55142 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -633,7 +633,7 @@ Name             : Fear (id=5782) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Resource         : 4% Base Mana (0) (id=249)[Hotfixed: Percent Cost (5 -> 4)]
+Resource         : 4% Base Mana (0) (id=249)
 Spell Level      : 5
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -3087,7 +3087,7 @@ Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=5421)[Hotfixed: Percent Cost (20 -> 10)]
+Resource         : 10% Base Mana (0) (id=5421)
 Spell Level      : 49
 Range            : 10 - 40 yards
 Cast Time        : 2 seconds
