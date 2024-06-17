@@ -750,7 +750,7 @@ double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
 template <class Base>
 void monk_action_t<Base>::trigger_storm_earth_and_fire( const action_t *a )
 {
-  p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && is_combo_strike() ) );
+  p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && p()->buff.combo_strikes->check() ) );
 }
 
 template <class Base>
@@ -6692,6 +6692,9 @@ void monk_t::parse_player_effects()
   // brewmaster talent auras
   // mistweaver talent auras
   // windwalker talent auras
+
+  // Shadopan
+  parse_effects( buff.wisdom_of_the_wall_mastery );
 }
 
 // monk_t::create_action ====================================================
@@ -8275,7 +8278,6 @@ void monk_t::create_buffs()
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                         ->set_default_value_from_effect( 1 )
-                                        ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                         ->add_invalidate( CACHE_MASTERY );
 
   // Tier 29 Set Bonus
@@ -9657,6 +9659,10 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 class monk_report_t : public player_report_extension_t
 {
 public:
+  monk_report_t( monk_t &player ) : p( player )
+  {
+  }
+
   struct monk_bug
   {
     std::string desc;
@@ -9688,7 +9694,7 @@ public:
 
     // =================================================
 
-    os << "<div class=\"section\">\n";
+    os << "<div class=\"player-section\">\n";
     os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
     os << "<div class=\"toggle-content hide\">\n";
 
@@ -9723,7 +9729,13 @@ public:
   void html_customsection( report::sc_html_stream &os ) override
   {
     monk_bugreport( os );
+    os << "<div class=\"player-section\">\n";
+    p.parsed_effects_html( os );
+    os << "</div>\n";
   }
+
+private:
+  monk_t &p;
 };
 
 struct monk_module_t : public module_t
@@ -9735,7 +9747,7 @@ struct monk_module_t : public module_t
   player_t *create_player( sim_t *sim, util::string_view name, race_e r ) const override
   {
     auto p              = new monk_t( sim, name, r );
-    p->report_extension = std::make_unique<monk_report_t>();
+    p->report_extension = std::make_unique<monk_report_t>( *p );
     return p;
   }
   bool valid() const override
