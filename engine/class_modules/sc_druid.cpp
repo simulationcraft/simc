@@ -13278,7 +13278,29 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.untamed_savagery );
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
-  action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, TWW1, B4 ) );
+
+  // lunar calling + 4pc interaction with thrash is scripted to multiply by 1.05/1.08 to account for thrash doing
+  // arcane damage. instead of a scripted multiplier, we can simply force the effect with the correct value.
+  // NOTE: this is currently bugged as multiplying by 5/8, not 1.05/1.08
+  auto bear_tww1 = sets->set( DRUID_GUARDIAN, TWW1, B4 );
+  if ( action.data().affected_by( talent.lunar_calling->effectN( 4 ) ) &&
+       ( action.data().affected_by( bear_tww1->effectN( 3 ) ) ||
+         action.data().affected_by( bear_tww1->effectN( 4 ) ) ) )
+  {
+    auto val = bear_tww1->effectN( 1 ).percent();
+    action.base_dd_multiplier *= 1.0 + val;
+    sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 100 );
+    action.affecting_list.emplace_back( &bear_tww1->effectN( 3 ), val );
+
+    val = bear_tww1->effectN( 2 ).percent();
+    action.base_td_multiplier *= 1.0 + val;
+    sim->print_debug( "{} base_td_multiplier modified by {}%", *this, val * 100 );
+    action.affecting_list.emplace_back( &bear_tww1->effectN( 4 ), val );
+  }
+  else
+  {
+    action.apply_affecting_aura( bear_tww1 );
+  }
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
