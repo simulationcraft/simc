@@ -2838,6 +2838,19 @@ namespace buffs
 {
 using druid_buff_t = druid_buff_base_t<>;
 
+template <typename DATA>
+struct druid_data_buff_t : public druid_buff_t
+{
+  DATA data;
+
+  druid_data_buff_t( druid_t* p, std::string_view n, const spell_data_t* s = spell_data_t::nil() )
+    : druid_buff_t( p, n, s ), data()
+  {}
+};
+
+// data buff aliases
+using treants_of_the_moon_buff_t = druid_data_buff_t<std::set<pets::treant_base_t*>>;
+
 struct druid_absorb_buff_t : public druid_buff_base_t<absorb_buff_t>
 {
 protected:
@@ -2991,33 +3004,6 @@ struct moonkin_form_buff_t : public druid_buff_t
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_HIT );
-  }
-};
-
-// Blood Frenzy =============================================================
-struct blood_frenzy_buff_t : public druid_buff_t
-{
-  gain_t* gain;
-  double rage;
-  size_t cap;
-
-  blood_frenzy_buff_t( druid_t* p )
-    : base_t( p, "blood_frenzy_buff", p->talent.blood_frenzy ),
-      gain( p->get_gain( "Blood Frenzy" ) ),
-      rage( find_effect( p->find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ),
-      cap( as<size_t>( p->talent.blood_frenzy->effectN( 1 ).base_value() ) )
-  {
-    set_quiet( true );
-    set_tick_zero( true );
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      trigger_blood_frenzy();
-    } );
-  }
-
-  void trigger_blood_frenzy()
-  {
-    if ( auto n = p()->dot_lists.thrash_bear.size() )
-      p()->resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, gain );
   }
 };
 
@@ -3236,33 +3222,6 @@ struct shooting_stars_buff_t : public druid_buff_t
   }
 };
 
-// Treants of the Moon ======================================================
-struct treants_of_the_moon_buff_t : public druid_buff_t
-{
-  std::set<pets::treant_base_t*> pet_list;
-
-  treants_of_the_moon_buff_t( druid_t* p ) : base_t( p, "treants_of_the_moon" )
-  {
-    set_quiet( true );
-    set_period( 1.5_s );
-    set_freeze_stacks( true );
-    set_tick_callback( [ this, p = p ]( buff_t*, int, timespan_t ) {
-      for ( auto pet : pet_list )
-      {
-        if ( pet->mf_cd->up() )
-        {
-          pet->mf_cd->start();
-
-          auto mf = p->active.treants_of_the_moon_mf;
-          const auto& tl = mf->target_list();
-          if ( auto tar = p->get_smart_target( tl, &druid_td_t::dots_t::moonfire, nullptr, 0.0, true ) )
-            mf->execute_on_target( tar );
-        }
-      }
-    } );
-  }
-};
-
 // Ursine Vigor =============================================================
 struct ursine_vigor_buff_t : public druid_buff_t
 {
@@ -3307,7 +3266,7 @@ void treant_base_t::arise()
   o()->buff.harmony_of_the_grove->trigger();
 
   if ( !o()->buff.treants_of_the_moon->is_fallback )
-    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.insert( this );
+    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->data.insert( this );
 }
 
 void treant_base_t::demise()
@@ -3318,7 +3277,7 @@ void treant_base_t::demise()
   o()->buff.harmony_of_the_grove->decrement();
 
   if ( !o()->buff.treants_of_the_moon->is_fallback )
-    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->pet_list.erase( this );
+    static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->data.erase( this );
 }
 }  // namespace pets
 
@@ -6431,8 +6390,7 @@ public:
     if ( p->talent.umbral_embrace.ok() )
     {
       add_parse_entry( da_multiplier_effects )
-        .set_value( p->buff.umbral_embrace->default_value )
-        .set_type( USE_DEFAULT )
+        .set_value( find_effect( p->talent.umbral_embrace, p->buff.umbral_embrace ).percent() )
         .set_use_stacks( false )
         .set_func( [ this ] { return umbral_embrace_check(); } )
         .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
@@ -10216,7 +10174,7 @@ void druid_t::create_buffs()
     make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
       ->set_trigger_spell( talent.umbral_embrace )
       ->set_chance( 0.2 )  // TODO: harcoded value
-      ->set_default_value( talent.umbral_embrace->effectN( 1 ).percent() );
+      ->set_default_value( 0 );  // value used to indicate if the proc happened during eclipse (1) or not (0)
 
   buff.umbral_inspiration =
     make_fallback( talent.umbral_inspiration.ok(), this, "umbral_inspiration", find_spell( 450419 ) );
@@ -10420,7 +10378,19 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
-  buff.blood_frenzy = make_fallback<blood_frenzy_buff_t>( talent.blood_frenzy.ok(), this, "blood_frenzy_buff" );
+  buff.blood_frenzy =
+    make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
+      ->set_quiet( true )
+      ->set_tick_zero( true )
+      ->set_tick_callback(
+        [ this,
+          g = get_gain( "Blood Frenzy" ),
+          cap = talent.blood_frenzy->effectN( 1 ).base_value(),
+          rage = find_effect( find_spell( 203961 ), E_ENERGIZE ).resource( RESOURCE_RAGE ) ]
+        ( buff_t*, int, timespan_t ) {
+          if ( auto n = as<double>( dot_lists.thrash_bear.size() ) )
+            resource_gain( RESOURCE_RAGE, std::min( cap, n ) * rage, g );
+        } );
 
   buff.brambles = make_fallback<brambles_buff_t>( talent.brambles.ok(), this, "brambles" );
 
@@ -10651,8 +10621,23 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.treants_of_the_moon = make_fallback<treants_of_the_moon_buff_t>(
-    talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
-      this, "treants_of_the_moon" );
+    talent.treants_of_the_moon.ok() || talent.grove_guardians.ok(), this, "treants_of_the_moon" )
+      ->set_quiet( true )
+      ->set_period( 1.5_s )
+      ->set_freeze_stacks( true )
+      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        for ( auto pet : static_cast<treants_of_the_moon_buff_t*>( b )->data )
+        {
+          if ( pet->mf_cd->up() )
+          {
+            pet->mf_cd->start();
+
+            auto mf = active.treants_of_the_moon_mf;
+            if ( auto tar = get_smart_target( mf->target_list(), &druid_td_t::dots_t::moonfire, nullptr, 0.0, true ) )
+              mf->execute_on_target( tar );
+          }
+        }
+      } );
 
   buff.feline_potential = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
     this, "feline_potential", find_spell( 441702 ) )
