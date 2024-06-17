@@ -211,7 +211,7 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
     case demonsurge_ability::FEL_DESOLATION:
       return "demonsurge_fel_desolation";
     case demonsurge_ability::ABYSSAL_GAZE:
-      return "demonsurge_ABYSSAL_GAZE";
+      return "demonsurge_abyssal_gaze";
     case demonsurge_ability::ANNIHILATION:
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
