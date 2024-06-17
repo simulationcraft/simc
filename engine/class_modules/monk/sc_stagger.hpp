@@ -205,7 +205,7 @@ struct stagger_t
   double tick_size_percent();
   timespan_t remains();
   bool is_ticking();
-  double level_index();  // avoid floating point demotion with double
+  double level_index() const;  // avoid floating point demotion with double
 
   void set_pool( double amount );
   void damage_changed( bool last_tick = false );
@@ -339,6 +339,22 @@ struct stagger_t : base_actor_t
     stagger_effect->init();
     for ( level_type *level : stagger_effect->levels )
       level->template init<debuff_type>();
+  }
+
+  stagger_impl::stagger_t<derived_actor_t> *find_stagger( std::string_view name )
+  {
+    auto &effect_pair = stagger.find( name );
+    assert( effect_pair != stagger.end() );
+    auto &[ key, effect ] = *effect_pair;
+    return effect;
+  }
+
+  const stagger_impl::stagger_t<derived_actor_t> *find_stagger( std::string_view name ) const
+  {
+    const auto &effect_pair = stagger.find( name );
+    assert( effect_pair != stagger.end() );
+    const auto &[ key, effect ] = *effect_pair;
+    return effect;
   }
 
   template <typename... Args>
@@ -642,7 +658,7 @@ bool stagger_t<derived_actor_t>::is_ticking()
 }
 
 template <class derived_actor_t>
-double stagger_t<derived_actor_t>::level_index()
+double stagger_t<derived_actor_t>::level_index() const
 {
   return levels.size() - std::distance( levels.begin(), std::find( levels.begin(), levels.end(), current ) ) - 1;
 }
