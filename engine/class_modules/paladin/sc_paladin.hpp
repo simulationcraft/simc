@@ -97,6 +97,7 @@ public:
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
     action_t* divine_guidance_damage;
+    heal_t* divine_guidance_heal;
     action_t* forges_reckoning;
     action_t* hammer_and_anvil;
     action_t* empyrean_hammer;

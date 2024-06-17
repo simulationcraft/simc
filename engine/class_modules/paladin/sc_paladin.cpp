@@ -456,8 +456,62 @@ struct consecration_t : public paladin_spell_t
       p()->buffs.sanctification_empower->execute();
     }
 
+    /*
+      Divine Guidance seems to function as follows:
+      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5
+      If you cannot heal 5 targets, deal the rest in damage to other targets inside the Consecration
+      Damage and Healing is divided by target count, up to 5, damage is then further divided by amount of mobs hit
+    */
+    // Divine Guidance seems to prioritise Healing, so count healing targets first
+    std::vector<player_t*> healingAllies;
+    int totalTargets = 0;
+    if ( p()->buffs.lightsmith.divine_guidance->up() )
+    {
+      for (auto friendly : sim->player_non_sleeping_list)
+      {
+        if ( friendly == p() )  // Always heal ourselves to avoid oversim
+          healingAllies.push_back( friendly );
+        else
+        {
+          if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
+            healingAllies.push_back( friendly );
+        }
+        if ( healingAllies.size() == 5 )
+          break;
+      }
+      // If we hit less than 5 healing targets, we can fill the rest with damage targets
+      double healingAlliesSize = healingAllies.size();
+      totalTargets             = healingAlliesSize;
+      if (healingAlliesSize < 5)
+      {
+        totalTargets = sim->target_non_sleeping_list.size() + healingAlliesSize;
+        if ( totalTargets > 5 )
+          totalTargets = 5;
+      }
+      p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
+      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
+      
+      // Healing events come before Consecration cast
+      for (auto friendly : healingAllies)
+      {
+        p()->active.divine_guidance_heal->set_target( friendly );
+        p()->active.divine_guidance_heal->execute();
+      }
+    }
 
     paladin_spell_t::execute();
+
+    // Damage events come after Consecration cast
+    if (p()->buffs.lightsmith.divine_guidance->up())
+    {
+      // Only create damage events when we're dealing damage, so not to proc stuff accidentally
+      if ( p()->active.divine_guidance_damage->base_dd_multiplier > 0 )
+      {
+        p()->active.divine_guidance_damage->set_target( target );
+        p()->active.divine_guidance_damage->execute();
+      }
+      p()->buffs.lightsmith.divine_guidance->expire();
+    }
 
     // Some parameters must be updated on each cast
     cons_params.target( execute_state->target ).start_time( sim->current_time() );
@@ -482,16 +536,6 @@ struct consecration_t : public paladin_spell_t
 
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-    if( p()->buffs.lightsmith.divine_guidance->up() )
-    {
-      p()->active.divine_guidance_damage->set_target( s->target );
-      p()->active.divine_guidance_damage->execute();
-    }
   }
 };
 
@@ -1837,10 +1881,11 @@ struct divine_guidance_damage_t : public paladin_spell_t
 {
    divine_guidance_damage_t( paladin_t* p ) : paladin_spell_t( "divine_guidance", p, p->find_spell( 433808 ) )
    {
-    proc = may_crit = true;
-    may_miss                     = false;
-    attack_power_mod.direct = 1;
-    aoe                          = 1;
+     proc = may_crit         = true;
+     may_miss                = false;
+     attack_power_mod.direct = 1;
+     aoe                     = -1;
+     split_aoe_damage        = true;
    }
 
    double action_multiplier() const override
@@ -1849,12 +1894,24 @@ struct divine_guidance_damage_t : public paladin_spell_t
      m *= p()->buffs.lightsmith.divine_guidance->stack();
      return m;
    }
-    void execute() override
-   {
-       paladin_spell_t::execute();
-       p()->buffs.lightsmith.divine_guidance->expire();
-   }
-   
+};
+
+struct divine_guidance_heal_t : public paladin_heal_t
+{
+  divine_guidance_heal_t( paladin_t* p ) : paladin_heal_t( "divine_guidance_heal", p, p->find_spell( 433807 ) )
+  {
+    proc = may_crit         = true;
+    may_miss                = false;
+    attack_power_mod.direct = 1;
+    aoe                     = 1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = paladin_heal_t::action_multiplier();
+    m *= p()->buffs.lightsmith.divine_guidance->stack();
+    return m;
+  }
 };
 
 // Hammer of Light // Light's Guidance =====================================================
@@ -2530,6 +2587,7 @@ void paladin_t::create_actions()
   if (talents.lightsmith.divine_guidance->ok() )
   {
     active.divine_guidance_damage = new divine_guidance_damage_t( this );
+    active.divine_guidance_heal   = new divine_guidance_heal_t( this );
   }
   //Templar
  // if (talents.lights_guidance->ok())
