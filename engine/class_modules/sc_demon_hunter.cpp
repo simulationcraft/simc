@@ -842,6 +842,7 @@ public:
     proc_t* soul_fragment_empowered_demon;
     proc_t* soul_fragment_lesser;
     proc_t* felblade_reset;
+    proc_t* soul_fragment_from_soul_sigils;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -871,9 +872,9 @@ public:
     // Fel-scarred
 
     // Set Bonuses
-    proc_t* soul_fragment_from_t29_2pc;
-    proc_t* soul_fragment_from_t31_4pc;
-    proc_t* soul_fragment_from_twws1_2pc;
+    proc_t* soul_fragment_from_vengeance_t29_2pc;
+    proc_t* soul_fragment_from_vengeance_t31_4pc;
+    proc_t* soul_fragment_from_vengeance_twws1_2pc;
   } proc;
 
   // RPPM objects
@@ -3234,7 +3235,7 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     {
       p()->active.sigil_of_flame_t31->execute_on_target( d->target );
       p()->spawn_soul_fragment( soul_fragment::LESSER );
-      p()->proc.soul_fragment_from_t31_4pc->occur();
+      p()->proc.soul_fragment_from_vengeance_t31_4pc->occur();
     }
   }
 };
@@ -5846,7 +5847,7 @@ struct fracture_t : public demon_hunter_attack_t
       if ( p()->set_bonuses.t29_vengeance_2pc->ok() && rng().roll( 0.15 ) )
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
-        p()->proc.soul_fragment_from_t29_2pc->occur();
+        p()->proc.soul_fragment_from_vengeance_t29_2pc->occur();
       }
 
       if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
@@ -6192,7 +6193,7 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
       p()->spawn_soul_fragment( soul_fragment::LESSER, soul_fragments_to_spawn );
       for ( unsigned i = 0; i < soul_fragments_to_spawn; i++ )
       {
-        p()->proc.soul_fragment_from_twws1_2pc->occur();
+        p()->proc.soul_fragment_from_vengeance_twws1_2pc->occur();
       }
     }
   }
@@ -8033,12 +8034,13 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range              = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater         = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon   = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser          = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset                = get_proc( "felblade_reset" );
+  proc.delayed_aa_range               = get_proc( "delayed_aa_out_of_range" );
+  proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser           = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset                 = get_proc( "felblade_reset" );
+  proc.soul_fragment_from_soul_sigils = get_proc( "soul_fragment_from_soul_sigils" );
 
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
@@ -8068,9 +8070,9 @@ void demon_hunter_t::init_procs()
   // Fel-scarred
 
   // Set Bonuses
-  proc.soul_fragment_from_t29_2pc   = get_proc( "soul_fragment_from_t29_2pc" );
-  proc.soul_fragment_from_t31_4pc   = get_proc( "soul_fragment_from_t31_4pc" );
-  proc.soul_fragment_from_twws1_2pc = get_proc( "soul_fragment_from_twws1_2pc" );
+  proc.soul_fragment_from_vengeance_t29_2pc   = get_proc( "soul_fragment_from_vengeance_t29_2pc" );
+  proc.soul_fragment_from_vengeance_t31_4pc   = get_proc( "soul_fragment_from_vengeance_t31_4pc" );
+  proc.soul_fragment_from_vengeance_twws1_2pc = get_proc( "soul_fragment_from_vengeance_twws1_2pc" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
