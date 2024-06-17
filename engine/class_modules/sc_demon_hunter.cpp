@@ -3744,13 +3744,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->buff.restless_hunter->trigger();
       }
 
-      for ( demonsurge_ability ability : demonsurge_havoc_abilities )
+      if ( p()->talent.felscarred.demonsurge->ok() )
       {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
+        for ( demonsurge_ability ability : demonsurge_havoc_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
       }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
-
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
       p()->buff.inner_demon->trigger();
@@ -4315,7 +4317,10 @@ struct the_hunt_t : public demon_hunter_spell_t
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
 
-    p()->buff.reavers_glaive->trigger();
+    if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
+    {
+      p()->buff.reavers_glaive->trigger();
+    }
   }
 
   timespan_t travel_time() const override
