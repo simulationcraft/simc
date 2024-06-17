@@ -2146,6 +2146,14 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
         p()->buff.gift_of_the_ox->trigger();
 
+      int stacks = p()->buff.teachings_of_the_monastery->current_stack;
+
+      if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && stacks > 0 )
+      {
+        p()->buff.memory_of_the_monastery->expire();
+        p()->buff.memory_of_the_monastery->trigger( stacks );
+      }
+
       p()->buff.teachings_of_the_monastery->expire();
 
       if ( p()->buff.blackout_reinforcement->up() )
@@ -2178,9 +2186,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
         // Transfer the power triggers from ToTM hits but only on the primary target
         if ( s->chain_target == 0 )
           p()->buff.transfer_the_power->trigger();
-
-        if ( p()->talent.windwalker.memory_of_the_monastery.ok() )
-          p()->buff.memory_of_the_monastery->trigger();
 
         bok_totm_proc->execute();
       }
