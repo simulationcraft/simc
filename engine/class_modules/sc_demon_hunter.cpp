@@ -3780,12 +3780,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
     else  // DEMON_HUNTER_VENGEANCE
     {
-      for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
+      if ( p()->talent.felscarred.demonsurge->ok() )
       {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
+        for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
       }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
       p()->buff.metamorphosis->trigger();
 
       if ( p()->talent.felscarred.violent_transformation->ok() )
