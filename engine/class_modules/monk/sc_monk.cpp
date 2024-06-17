@@ -1978,17 +1978,13 @@ struct charred_passions_t : base_action_t
     {
       background = dual = proc = true;
       may_crit                 = false;
+      base_multiplier          = 0.5;
     }
 
     void init() override
     {
       monk_spell_t::init();
-      update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_DA;
-    }
-
-    double action_da_multiplier() const override
-    {
-      return data().effectN( 1 ).trigger()->effectN( 1 ).percent();
+      update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
     }
   };
 
@@ -2026,12 +2022,12 @@ struct charred_passions_t : base_action_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 {
+  using base_t = charred_passions_t<monk_melee_attack_t>;
   blackout_kick_totm_proc_t *bok_totm_proc;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
-    : charred_passions_t<monk_melee_attack_t>(
-          p, "blackout_kick",
-          ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
+    : base_t( p, "blackout_kick",
+              ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
     parse_options( options_str );
     sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
@@ -2060,7 +2056,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   double composite_target_multiplier( player_t *target ) const override
   {
-    double m = monk_melee_attack_t::composite_target_multiplier( target );
+    double m = base_t::composite_target_multiplier( target );
 
     if ( target != p()->target )
       m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
@@ -2070,7 +2066,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   void consume_resource() override
   {
-    monk_melee_attack_t::consume_resource();
+    base_t::consume_resource();
 
     // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.bok_proc->up() )
@@ -2079,7 +2075,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   double composite_crit_chance() const override
   {
-    double c = monk_melee_attack_t::composite_crit_chance();
+    double c = base_t::composite_crit_chance();
 
     c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
 
@@ -2088,7 +2084,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   double composite_crit_damage_bonus_multiplier() const override
   {
-    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+    double m = base_t::composite_crit_damage_bonus_multiplier();
 
     m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
@@ -2097,7 +2093,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   double action_multiplier() const override
   {
-    double am = monk_melee_attack_t::action_multiplier();
+    double am = base_t::action_multiplier();
 
     am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
@@ -2113,7 +2109,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
 
@@ -2167,7 +2163,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     p()->buff.hit_scheme->trigger();
 
