@@ -881,9 +881,9 @@ public:
     attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
-    spell_t* infernal_armor     = nullptr;
-    spell_t* retaliation        = nullptr;
-    heal_t* frailty_heal        = nullptr;
+    spell_t* infernal_armor = nullptr;
+    spell_t* retaliation    = nullptr;
+    heal_t* frailty_heal    = nullptr;
 
     // Aldrachi Reaver
     attack_t* art_of_the_glaive = nullptr;
@@ -2094,6 +2094,30 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     : base_t( n, p, s, o )
   {
     special = true;
+  }
+};
+
+template <demonsurge_ability ABILITY, typename BASE>
+struct demonsurge_trigger_t : public BASE
+{
+  using base_t = demonsurge_trigger_t<ABILITY, BASE>;
+
+  demonsurge_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( BASE::p()->active.demonsurge && BASE::p()->buff.demonsurge_abilities[ ABILITY ]->up() )
+    {
+      BASE::p()->buff.demonsurge_abilities[ ABILITY ]->expire();
+      make_event<delayed_execute_event_t>(
+          *BASE::sim, BASE::p(), BASE::p()->active.demonsurge, BASE::p()->target,
+          timespan_t::from_millis( BASE::p()->hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ) );
+    }
   }
 };
 
@@ -3921,10 +3945,10 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
   }
 };
 
-struct spirit_burst_t : public spirit_bomb_base_t
+struct spirit_burst_t : public demonsurge_trigger_t<demonsurge_ability::SPIRIT_BURST, spirit_bomb_base_t>
 {
   spirit_burst_t( demon_hunter_t* p, util::string_view options_str )
-    : spirit_bomb_base_t( "spirit_burst", p, p->hero_spec.spirit_burst, options_str )
+    : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, options_str )
   {
   }
 
@@ -3935,13 +3959,6 @@ struct spirit_burst_t : public spirit_bomb_base_t
       return false;
     }
     return spirit_bomb_base_t::ready();
-  }
-
-  void execute() override
-  {
-    spirit_bomb_base_t::execute();
-
-    p()->trigger_demonsurge( demonsurge_ability::SPIRIT_BURST );
   }
 };
 
@@ -5800,10 +5817,10 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
   }
 };
 
-struct soul_sunder_t : public soul_cleave_base_t
+struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUNDER, soul_cleave_base_t>
 {
   soul_sunder_t( demon_hunter_t* p, util::string_view options_str )
-    : soul_cleave_base_t( "soul_sunder", p, p->hero_spec.soul_sunder, options_str )
+    : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, options_str )
   {
   }
 
@@ -5813,14 +5830,7 @@ struct soul_sunder_t : public soul_cleave_base_t
     {
       return false;
     }
-    return soul_cleave_base_t::ready();
-  }
-
-  void execute() override
-  {
-    soul_cleave_base_t::execute();
-
-    p()->trigger_demonsurge( demonsurge_ability::SOUL_SUNDER );
+    return base_t::ready();
   }
 };
 
@@ -8788,13 +8798,13 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up                                = nullptr;
-  frailty_driver                                       = nullptr;
-  exit_melee_event                                     = nullptr;
-  next_fragment_spawn                                  = 0;
-  metamorphosis_health                                 = 0;
-  frailty_accumulator                                  = 0.0;
-  shattered_destiny_accumulator                        = 0.0;
+  soul_fragment_pick_up         = nullptr;
+  frailty_driver                = nullptr;
+  exit_melee_event              = nullptr;
+  next_fragment_spawn           = 0;
+  metamorphosis_health          = 0;
+  frailty_accumulator           = 0.0;
+  shattered_destiny_accumulator = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
