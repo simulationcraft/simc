@@ -8173,7 +8173,7 @@ void monk_t::create_buffs()
           ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
-  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )
+  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 393039 ) )
                                     ->set_trigger_spell( talent.windwalker.last_emperors_capacitor )
                                     ->set_default_value_from_effect( 1 );
 
