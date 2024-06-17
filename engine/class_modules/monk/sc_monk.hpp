@@ -563,13 +563,14 @@ public:
     propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> dual_threat;
-    propagate_const<buff_t *> jadefire_brand;
+    propagate_const<buff_t *> ferociousness;
     propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> fury_of_xuen_stacks;
     propagate_const<buff_t *> fury_of_xuen;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> invoke_xuen;
+    propagate_const<buff_t *> jadefire_brand;
     propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
@@ -1265,6 +1266,7 @@ public:
     const spell_data_t *chi_burst_damage;
     const spell_data_t *chi_burst_energize;
     const spell_data_t *chi_burst_heal;
+    const spell_data_t *chi_wave_driver;
     const spell_data_t *chi_wave_damage;
     const spell_data_t *chi_wave_heal;
     const spell_data_t *claw_of_the_white_tiger;
