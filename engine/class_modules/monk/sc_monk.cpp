@@ -2211,7 +2211,8 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
     {
-      p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
+      p()->buff.elusive_brawler->trigger(
+          as<int>( p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() ) );
       p()->proc.elusive_footwork_proc->occur();
     }
 
