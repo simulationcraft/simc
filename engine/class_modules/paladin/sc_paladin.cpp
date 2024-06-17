@@ -486,6 +486,7 @@ struct consecration_t : public paladin_spell_t
 
   void impact( action_state_t* s ) override
   {
+    paladin_spell_t::impact( s );
     if( p()->buffs.lightsmith.divine_guidance->up() )
     {
       p()->active.divine_guidance_damage->set_target( s->target );
