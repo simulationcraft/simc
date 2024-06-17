@@ -2949,7 +2949,6 @@ void paladin_t::create_buffs()
   buffs.lightsmith.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.lightsmith.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
                          -> set_max_stack( 5 );
-  buffs.lightsmith.blessed_assurance     = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
   buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell( 433550 ) )
     ->add_invalidate(CACHE_STRENGTH)
     ->add_invalidate(CACHE_ARMOR);
