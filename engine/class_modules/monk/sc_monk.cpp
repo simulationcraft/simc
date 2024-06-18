@@ -8506,7 +8506,7 @@ void monk_t::init_special_effects()
   if ( talent.windwalker.flurry_of_xuen.ok() )
   {
     create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
-      if ( state->action->id == p->active_actions.flurry_of_xuen->id )
+      if ( state->action->id == p->active_actions.flurry_of_xuen->id || state->action->id == p->active_actions.empowered_tiger_lightning->id )
         return false;
 
       return true;
