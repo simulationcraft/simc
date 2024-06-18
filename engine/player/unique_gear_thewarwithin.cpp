@@ -1617,8 +1617,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "silvervein", e, e.player->find_spell( 452310 ) ), action( a ), effect( e )
+    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "silvervein", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1635,8 +1635,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "boulderbane", e, e.player->find_spell( 452496 ) ), action( a ), effect( e )
+    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "boulderbane", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1650,6 +1650,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct sigil_of_algari_concordance_t : public generic_proc_t
   {
+    const spell_data_t* summon_spell;
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
     bool silvervein;
@@ -1657,6 +1658,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
+        summon_spell( nullptr ),
         silvervein_spawner( "silvervein", e.player ),
         boulderbane_spawner( "boulderbane", e.player ),
         silvervein( false ),
@@ -1715,13 +1717,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
       if ( silvervein )
       {
-        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this ); } );
-        silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+        summon_spell = e.player->find_spell( 452310 );
+        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this, summon_spell ); } );
+        silvervein_spawner.set_default_duration( summon_spell->duration() );
       }
       if ( boulderbane )
       {
-        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this ); } );
-        boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+        summon_spell = e.player->find_spell( 452496 );
+        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
+        boulderbane_spawner.set_default_duration( summon_spell->duration() );
         add_child( earthen_ire_damage );
       }
 
