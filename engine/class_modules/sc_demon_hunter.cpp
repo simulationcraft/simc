@@ -218,6 +218,12 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
   }
 }
 
+enum art_of_the_glaive_ability
+{
+  GLAIVE_FLURRY,
+  RENDING_STRIKE
+};
+
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -2117,6 +2123,54 @@ struct demonsurge_trigger_t : public BASE
       make_event<delayed_execute_event_t>(
           *BASE::sim, BASE::p(), BASE::p()->active.demonsurge, BASE::p()->target,
           timespan_t::from_millis( BASE::p()->hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ) );
+    }
+  }
+};
+
+template <art_of_the_glaive_ability ABILITY, typename BASE>
+struct art_of_the_glaive_trigger_t : public BASE
+{
+  using base_t = art_of_the_glaive_trigger_t<ABILITY, BASE>;
+
+  art_of_the_glaive_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    bool second_ability = false;
+    if ( ABILITY == art_of_the_glaive_ability::GLAIVE_FLURRY &&
+         BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.glaive_flurry->up() )
+    {
+      BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+
+      BASE::p()->buff.glaive_flurry->expire();
+      second_ability = !BASE::p()->buff.rending_strike->up();
+    }
+    else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
+              BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.rending_strike->up() )
+    {
+      BASE::td( BASE::target )->debuffs.reavers_mark->trigger();
+
+      BASE::p()->buff.rending_strike->expire();
+      second_ability = !BASE::p()->buff.glaive_flurry->up();
+    }
+
+    if ( second_ability )
+    {
+      if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
+      {
+        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+        BASE::p()->buff.thrill_of_the_fight_damage->trigger();
+      }
+      if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
+      {
+        BASE::p()->proc.soul_fragment_from_aldrachi_tactics->occur();
+        BASE::p()->spawn_soul_fragment( soul_fragment::LESSER );
+      }
     }
   }
 };
@@ -4539,7 +4593,8 @@ struct auto_attack_t : public demon_hunter_attack_t
 
 // Blade Dance =============================================================
 
-struct blade_dance_base_t : public demon_hunter_attack_t
+struct blade_dance_base_t
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
   struct trail_of_ruin_dot_t : public demon_hunter_spell_t
   {
@@ -4635,7 +4690,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
   blade_dance_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view options_str,
                       buff_t* dodge_buff )
-    : demon_hunter_attack_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot( nullptr )
+    : base_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot( nullptr )
   {
     may_miss = false;
     cooldown = p->cooldown.blade_dance;  // Blade Dance/Death Sweep Category Cooldown
@@ -4655,7 +4710,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
   void init_finished() override
   {
-    demon_hunter_attack_t::init_finished();
+    base_t::init_finished();
 
     for ( auto& attack : attacks )
     {
@@ -4698,7 +4753,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   double cost() const override
   {
     // TWW1 4pc % cost reduction results in a fractional fury cost, but testing shows rounding up
-    return ceil( demon_hunter_attack_t::cost() );
+    return ceil( base_t::cost() );
   }
 
   void execute() override
@@ -4706,7 +4761,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Blade Dance/Death Sweep Shared Category Cooldown
     cooldown->duration = ability_cooldown;
 
-    demon_hunter_attack_t::execute();
+    base_t::execute();
 
     p()->buff.chaos_theory->trigger();
     trigger_cycle_of_hatred();
@@ -4743,27 +4798,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     if ( dodge_buff )
     {
       dodge_buff->trigger();
-    }
-
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
-         p()->active.art_of_the_glaive )
-    {
-      p()->active.art_of_the_glaive->execute_on_target( target );
-
-      p()->buff.glaive_flurry->expire();
-      if ( !p()->buff.rending_strike->up() )
-      {
-        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-        {
-          p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          p()->buff.thrill_of_the_fight_damage->trigger();
-        }
-        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-        {
-          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-          p()->spawn_soul_fragment( soul_fragment::LESSER );
-        }
-      }
     }
 
     if ( p()->set_bonuses.tww1_havoc_4pc->ok() )
@@ -4868,7 +4902,8 @@ struct death_sweep_t : public blade_dance_base_t
 
 // Chaos Strike =============================================================
 
-struct chaos_strike_base_t : public demon_hunter_attack_t
+struct chaos_strike_base_t
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
   struct chaos_strike_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -4978,7 +5013,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                        util::string_view options_str = {}, bool from_onslaught = false )
-    : demon_hunter_attack_t( n, p, s, options_str ), from_onslaught( from_onslaught ), tww1_reset_proc_chance( 0.0 )
+    : base_t( n, p, s, options_str ), from_onslaught( from_onslaught ), tww1_reset_proc_chance( 0.0 )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
@@ -4991,12 +5026,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     if ( from_onslaught )
       return 0.0;
 
-    return demon_hunter_attack_t::cost();
+    return base_t::cost();
   }
 
   void init_finished() override
   {
-    demon_hunter_attack_t::init_finished();
+    base_t::init_finished();
 
     // Use one stats object for all parts of the attack.
     for ( auto& attack : attacks )
@@ -5007,27 +5042,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    demon_hunter_attack_t::execute();
-
-    if ( !from_onslaught && p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-    {
-      p()->buff.rending_strike->expire();
-      td( target )->debuffs.reavers_mark->trigger();
-
-      if ( !p()->buff.glaive_flurry->up() )
-      {
-        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-        {
-          p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          p()->buff.thrill_of_the_fight_damage->trigger();
-        }
-        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-        {
-          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-          p()->spawn_soul_fragment( soul_fragment::LESSER );
-        }
-      }
-    }
+    base_t::execute();
 
     // Create Strike Events
     for ( auto& attack : attacks )
@@ -5455,7 +5470,7 @@ struct fel_rush_t : public demon_hunter_attack_t
 
 // Fracture =================================================================
 
-struct fracture_t : public demon_hunter_attack_t
+struct fracture_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
@@ -5483,7 +5498,7 @@ struct fracture_t : public demon_hunter_attack_t
   fracture_damage_t *mh, *oh;
 
   fracture_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "fracture", p, p->talent.vengeance.fracture, options_str )
+    : base_t( "fracture", p, p->talent.vengeance.fracture, options_str )
   {
     int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
     // divide the number in 2 as half come from main hand, half come from offhand.
@@ -5504,7 +5519,7 @@ struct fracture_t : public demon_hunter_attack_t
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+    double ea = base_t::composite_energize_amount( s );
 
     if ( p()->buff.metamorphosis->check() )
     {
@@ -5516,7 +5531,7 @@ struct fracture_t : public demon_hunter_attack_t
 
   void impact( action_state_t* s ) override
   {
-    demon_hunter_attack_t::impact( s );
+    base_t::impact( s );
     trigger_felblade( s );
 
     /*
@@ -5544,26 +5559,6 @@ struct fracture_t : public demon_hunter_attack_t
           p()->spawn_soul_fragment( soul_fragment::LESSER );
           p()->proc.soul_fragment_from_meta->occur();
         } );
-      }
-
-      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-      {
-        p()->buff.rending_strike->expire();
-        td( target )->debuffs.reavers_mark->trigger();
-
-        if ( !p()->buff.glaive_flurry->up() )
-        {
-          if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-          {
-            p()->buff.thrill_of_the_fight_attack_speed->trigger();
-            p()->buff.thrill_of_the_fight_damage->trigger();
-          }
-          if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-          {
-            p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-            p()->spawn_soul_fragment( soul_fragment::LESSER );
-          }
-        }
       }
 
       if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
@@ -5598,16 +5593,16 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Shear ====================================================================
 
-struct shear_t : public demon_hunter_attack_t
+struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
   shear_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "shear", p, p->spec.shear, options_str )
+    : base_t( "shear", p, p->spec.shear, options_str )
   {
   }
 
   void impact( action_state_t* s ) override
   {
-    demon_hunter_attack_t::impact( s );
+    base_t::impact( s );
     trigger_felblade( s );
 
     if ( result_is_hit( s->result ) )
@@ -5676,7 +5671,8 @@ struct shear_t : public demon_hunter_attack_t
 
 // Soul Cleave ==============================================================
 
-struct soul_cleave_base_t : public demon_hunter_attack_t
+struct soul_cleave_base_t
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
   struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -5723,7 +5719,7 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
 
   soul_cleave_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                       util::string_view options_str = {} )
-    : demon_hunter_attack_t( n, p, s, options_str ), heal( nullptr )
+    : base_t( n, p, s, options_str ), heal( nullptr )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
@@ -5747,7 +5743,7 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    demon_hunter_attack_t::execute();
+    base_t::execute();
 
     if ( heal )
     {
@@ -5765,26 +5761,6 @@ struct soul_cleave_base_t : public demon_hunter_attack_t
 
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( soul_fragment::ANY, true, static_cast<unsigned>( data().effectN( 3 ).base_value() ) );
-
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.glaive_flurry->up() &&
-         p()->active.art_of_the_glaive )
-    {
-      p()->active.art_of_the_glaive->execute_on_target( target );
-      p()->buff.glaive_flurry->expire();
-      if ( !p()->buff.rending_strike->up() )
-      {
-        if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-        {
-          p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          p()->buff.thrill_of_the_fight_damage->trigger();
-        }
-        if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-        {
-          p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-          p()->spawn_soul_fragment( soul_fragment::LESSER );
-        }
-      }
-    }
 
     // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
     if ( p()->set_bonuses.tww1_vengeance_2pc->ok() &&
