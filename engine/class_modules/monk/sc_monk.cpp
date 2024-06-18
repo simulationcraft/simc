@@ -818,20 +818,6 @@ monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_dat
   track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
-double monk_heal_t::composite_target_multiplier( player_t *target ) const
-{
-  double m = base_t::composite_target_multiplier( target );
-
-  return m;
-}
-
-double monk_heal_t::composite_target_crit_chance( player_t *target ) const
-{
-  double c = base_t::composite_target_crit_chance( target );
-
-  return c;
-}
-
 double monk_heal_t::composite_persistent_multiplier( const action_state_t *state ) const
 {
   double pm = base_t::composite_persistent_multiplier( state );
@@ -5168,106 +5154,77 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
 // ==========================================================================
 // Expel Harm
 // ==========================================================================
-
-struct expel_harm_dmg_t : public monk_spell_t
+struct expel_harm_t
 {
-  expel_harm_dmg_t( monk_t *player ) : monk_spell_t( player, "expel_harm_damage", player->find_spell( 115129 ) )
+  struct damage_t : monk_spell_t
   {
-    background  = true;
-    may_crit    = false;
-    base_dd_min = base_dd_max = 1.0;  // parse state flags
-  }
-};
+    damage_t( monk_t *player ) : monk_spell_t( player, "expel_harm_damage", player->talent.monk.expel_harm_damage )
+    {
+      background = dual = true;
+      base_dd_min = base_dd_max = 1.0;
+    }
+  };
 
-struct expel_harm_t : public monk_heal_t
-{
-  expel_harm_dmg_t *dmg;
-  expel_harm_t( monk_t *p, util::string_view options_str )
-    : monk_heal_t(
-          p, "expel_harm",
-          p->talent.windwalker.combat_wisdom.ok() ? p->passives.combat_wisdom_expel_harm : p->spec.expel_harm ),
-      dmg( new expel_harm_dmg_t( p ) )
+  damage_t *damage;
+
+  expel_harm_t( monk_t *player, std::string_view options_str )
+    : monk_heal_t( player, "expel_harm",
+                   player->talent.windwalker.combat_wisdom->ok() ? player->baseline.windwalker.combat_wisdom_expel_harm
+                                                                 : player->baseline.monk.expel_harm ),
+      damage( new damage_t( player ) )
   {
     parse_options( options_str );
-
-    target           = player;
     may_combo_strike = false;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
-
-    if ( p->talent.windwalker.combat_wisdom.ok() )
+    if ( player->talent.windwalker.combat_wisdom->ok() )
       background = true;
 
-    cooldown->duration += p->spec.expel_harm_2_brm->effectN( 1 ).time_value() / 1000.0;
-    crit_bonus_multiplier *= 1 + p->talent.general.profound_rebuttal->effectN( 1 ).percent();
+    apply_affecting_aura( player->baseline.brewmaster.expel_harm_rank_2 );
+    apply_affecting_aura( player->talent.monk.vigorous_expulsion );
+    apply_affecting_aura( player->talent.monk.profound_rebuttal );
 
-    add_child( dmg );
-  }
-
-  double composite_crit_chance() const override
-  {
-    auto mm = monk_heal_t::composite_crit_chance();
-
-    mm += p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
-
-    return mm;
+    stats = damage->stats;
   }
 
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
-
-    if ( p()->talent.general.strength_of_spirit->ok() )
-    {
-      double health_percent =
-          std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 ) / p()->resources.max[ RESOURCE_HEALTH ];
-      am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
-    }
-
-    am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
-
+    if ( !p()->talent.monk.strength_of_spirit->ok() )
+      return am;
+    am *= 1.0 + ( 1.0 - p()->health_percentage() ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
     return am;
   }
 
   void execute() override
   {
-    p()->buff.expel_harm_helper->trigger();
+    if ( p()->talent.brewmaster.gift_of_the_ox->ok() )
+      p()->buff.expel_harm_accumulator->trigger();
 
     monk_heal_t::execute();
 
-    if ( p()->talent.brewmaster.tranquil_spirit->ok() )
-    {
-      // Reduce stagger damage
-      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
-      p()->proc.tranquil_spirit_expel_harm->occur();
-    }
+    if ( !p()->talent.brewmaster.tranquil_spirit->ok() )
+      return;
+    double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
+    p()->proc.tranquil_spirit_expel_harm->occur();
   }
 
   void impact( action_state_t *s ) override
   {
     monk_heal_t::impact( s );
 
-    // Expel Harm is based on raw healing instead of effective healing as of Shadowlands
     double result = s->result_total;
-
-    if ( p()->specialization() == MONK_BREWMASTER )
+    if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
-      if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
-      {
-        for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
-        {
-          p()->buff.gift_of_the_ox->decrement();
-        }
-        result += p()->buff.expel_harm_helper->check_value();
-        p()->buff.expel_harm_helper->expire();
-      }
+      for ( size_t i = p()->buff.gift_of_the_ox->check(); i > 0; --i )
+        p()->buff.gift_of_the_ox->decrement();
+      result += p()->buff.expel_harm_accumulator->check_value();
+      p()->buff.expel_harm_accumulator->expire();
     }
-
     result *= data().effectN( 2 ).percent();
 
-    dmg->base_dd_min = result;
-    dmg->base_dd_max = result;
-    dmg->execute();
+    damage->base_dd_min = damage->base_dd_max = result;
+    damage->execute();
   }
 };
 
@@ -5746,7 +5703,7 @@ void brews_t::adjust( timespan_t reduction )
 {
   for ( auto &[ key, cooldown ] : cooldowns )
   {
-    cooldown->adjust( reduction );
+    cooldown->adjust( -reduction );
     cooldown->sim.print_debug( "reducing cooldown of brew ({}) by {}", cooldown->name(), reduction );
   }
 }
@@ -6995,11 +6952,12 @@ void monk_t::init_spells()
   talents.monk.chi_proficiency           = _CT( "Chi Proficiency" );
   talents.monk.martial_instincts         = _CT( "Martial Instincts" );
 
-  talent.monk.chi_wave        = _CT( "Chi Wave" );
-  talent.monk.chi_wave_buff   = find_spell( 450380 );
-  talent.monk.chi_wave_driver = find_spell( 115098 );
-  talent.monk.chi_wave_damage = find_spell( 132467 );
-  talent.monk.chi_wave_heal   = find_spell( 132463 );
+  talent.monk.chi_wave          = _CT( "Chi Wave" );
+  talent.monk.chi_wave_buff     = find_spell( 450380 );
+  talent.monk.chi_wave_driver   = find_spell( 115098 );
+  talent.monk.chi_wave_damage   = find_spell( 132467 );
+  talent.monk.chi_wave_heal     = find_spell( 132463 );
+  talent.monk.expel_harm_damage = find_spell( 115129 );
 
   // monk_t::talent::brewmaster
   talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );

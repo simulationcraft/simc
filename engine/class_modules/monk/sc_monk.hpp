@@ -203,8 +203,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 struct monk_heal_t : public monk_action_t<heal_t>
 {
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double composite_target_multiplier( player_t *target ) const override;
-  double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *action_state ) const override;
   double action_multiplier() const override;
 };
