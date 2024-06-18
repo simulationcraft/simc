@@ -1857,7 +1857,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
   struct geararang_launcher_t : public generic_proc_t
   {
     ground_aoe_params_t params;
-    geararang_launcher_t( const special_effect_t& e, const spell_data_t* data, action_t* equip_damage )
+    geararang_launcher_t( const special_effect_t& e, action_t* equip_damage )
       : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
     {
       auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
@@ -1922,7 +1922,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, e.driver(), overclock_strike );
+  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, overclock_strike );
 }
 
 // Remnant of Darkness
