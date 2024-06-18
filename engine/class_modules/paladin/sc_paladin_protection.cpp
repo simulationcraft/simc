@@ -405,17 +405,21 @@ struct blessed_hammer_t : public paladin_spell_t
     int roll_strikes = static_cast<int>(floor(num_strikes));
     if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
       roll_strikes += 1;
-    if (roll_strikes > 0)
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-          .target( execute_state->target )
-          // spawn at feet of player
-          .x( execute_state->action->player->x_position )
-          .y( execute_state->action->player->y_position )
-          .pulse_time( data().duration()/roll_strikes )
-          .n_pulses( roll_strikes )
-          .start_time( sim->current_time() + initial_delay )
-          .action( hammer ), true );
-
+    if ( roll_strikes > 0 )
+    {
+      hammer->base_multiplier = this->action_multiplier();
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                          .target( execute_state->target )
+                                          // spawn at feet of player
+                                          .x( execute_state->action->player->x_position )
+                                          .y( execute_state->action->player->y_position )
+                                          .pulse_time( data().duration() / roll_strikes )
+                                          .n_pulses( roll_strikes )
+                                          .start_time( sim->current_time() + initial_delay )
+                                          .action( hammer ),
+                                      true );
+    }
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
@@ -431,7 +435,13 @@ struct blessed_hammer_t : public paladin_spell_t
         p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
-
+    p()->buffs.lightsmith.blessed_assurance->expire();
+  }
+  double action_multiplier() const override
+  {
+    double am = paladin_spell_t::action_multiplier();
+    am *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
+    return am;
   }
 };
 
@@ -561,6 +571,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       if ( p()->standing_in_consecration() )
       {
+        hotr_aoe->base_multiplier = this->action_multiplier(); // AoE inherits Blessed Assurance's damage multiplier
         hotr_aoe->target = execute_state->target;
         hotr_aoe->execute();
       }
@@ -585,6 +596,13 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
         p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
+    p()->buffs.lightsmith.blessed_assurance->expire();
+  }
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    am *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
+    return am;
   }
 };
 

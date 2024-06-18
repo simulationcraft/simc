@@ -1646,6 +1646,10 @@ public:
     {
       p->buffs.lightsmith.divine_guidance->trigger();
     }
+    if (p->talents.lightsmith.blessed_assurance->ok())
+    {
+      p->buffs.lightsmith.blessed_assurance->trigger();
+    }
   }
 };
 

@@ -1117,15 +1117,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       background = true;
     }
   }
-  double action_multiplier() const override
-  {
-    double m = paladin_melee_attack_t::action_multiplier();
-    if (p()->buffs.lightsmith.blessed_assurance->up())
-    {
-      m *= 1.0 + (p()->talents.lightsmith.blessed_assurance->effectN(1)).percent();
-    }
-    return m;
-  }
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
@@ -1170,6 +1161,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
+    p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
   double cost() const override
@@ -1178,6 +1170,13 @@ struct crusader_strike_t : public paladin_melee_attack_t
       return 0;
 
     return paladin_melee_attack_t::cost();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    am *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
+    return am;
   }
 };
 
@@ -2946,7 +2945,8 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->schedule_execute();
           } );
 
-  buffs.lightsmith.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) );
+  buffs.lightsmith.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) )
+    ->set_default_value_from_effect(1);
   buffs.lightsmith.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
                          -> set_max_stack( 5 );
   buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell( 433550 ) )
