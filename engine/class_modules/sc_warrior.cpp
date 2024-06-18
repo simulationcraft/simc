@@ -664,6 +664,7 @@ public:
       player_talent_t depths_of_insanity;
       player_talent_t tenderize;
       player_talent_t storm_of_steel;
+      player_talent_t unhinged;
     } fury;
 
     struct protection_talents_t
@@ -1958,369 +1959,6 @@ struct rend_prot_t : public warrior_attack_t
   }
 };
 
-// Mortal Strike ============================================================
-struct mortal_strike_unhinged_t : public warrior_attack_t
-{
-  mortal_strike_unhinged_t( warrior_t* p, util::string_view name )
-    : warrior_attack_t( name, p, p->talents.arms.mortal_strike )
-  {
-    background = true;
-    cooldown->duration = timespan_t::zero();
-    weapon             = &( p->main_hand_weapon );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
-
-    return am;
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-
-  double tactician_cost() const override
-  {
-    return 0;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
-      {
-        execute_state->target->debuffs.mortal_wounds->trigger();
-      }
-    }
-
-    p()->buff.martial_prowess->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
-    {  // does this eat RPPM when switching from low -> high health target?
-      td( s->target )->debuffs_fatal_mark->trigger();
-    }
-    if ( td( s->target )->debuffs_executioners_precision->up() )
-    {
-      td( s->target )->debuffs_executioners_precision->expire();
-    }
-  }
-};
-
-struct mortal_strike_t : public warrior_attack_t
-{
-  double cost_rage;
-  double exhilarating_blows_chance;
-  double frothing_berserker_chance;
-  double rage_from_frothing_berserker;
-  warrior_attack_t* rend_dot;
-  mortal_strike_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
-      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
-      frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-      rend_dot( nullptr )
-  {
-    parse_options( options_str );
-
-    weapon           = &( p->main_hand_weapon );
-    cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
-    impact_action    = p->active.deep_wounds_ARMS;
-    rend_dot = new rend_dot_t( p );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
-
-    return am;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    cost_rage = last_resource_cost;
-    if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
-    {
-      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
-    }
-    if ( result_is_hit( execute_state->result ) )
-    {
-      if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
-      {
-        execute_state->target->debuffs.mortal_wounds->trigger();
-      }
-    }
-    if ( p()->talents.arms.exhilarating_blows->ok() && rng().roll( exhilarating_blows_chance ) )
-    {
-      p()->cooldown.mortal_strike->reset( true );
-      p()->cooldown.cleave->reset( true );
-    }
-
-    p()->buff.martial_prowess->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
-    { // does this eat RPPM when switching from low -> high health target?
-      td( s->target )->debuffs_fatal_mark->trigger();
-    }
-    if ( td( s->target )->debuffs_executioners_precision->up() )
-    {
-      td( s->target )->debuffs_executioners_precision->expire();
-    }
-    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
-    {
-      rend_dot->set_target( s->target );
-      rend_dot->execute();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
-// Bladestorm ===============================================================
-
-struct bladestorm_tick_t : public warrior_attack_t
-{
-  double rage_from_storm_of_steel;
-  bladestorm_tick_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
-    : warrior_attack_t( name, p, spell ),
-      rage_from_storm_of_steel( 0.0 )
-  {
-    dual = true;
-    aoe = -1;
-    reduced_aoe_targets = 8.0;
-    background = true;
-    if ( p->specialization() == WARRIOR_ARMS )
-    {
-      impact_action = p->active.deep_wounds_ARMS;
-    }
-    rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( execute_state->n_targets > 0 )
-      p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
-  }
-};
-
-struct bladestorm_t : public warrior_attack_t
-{
-  attack_t *bladestorm_mh, *bladestorm_oh;
-  mortal_strike_unhinged_t* mortal_strike;
-
-  bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_attack_t( n, p, spell ),
-    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
-      bladestorm_oh( nullptr ),
-      mortal_strike( nullptr )
-  {
-    parse_options( options_str );
-    channeled = false;
-    tick_zero = true;
-    interrupt_auto_attack = false;
-    travel_speed                      = 0;
-
-    bladestorm_mh->weapon             = &( player->main_hand_weapon );
-    add_child( bladestorm_mh );
-    if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
-    {
-      bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ), spell->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-      bladestorm_oh->weapon = &( player->off_hand_weapon );
-      add_child( bladestorm_oh );
-    }
-
-    // Unhinged DOES work w/ Torment and Signet
-    if ( p->talents.arms.unhinged->ok() )
-    {
-      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_bladestorm_unhinged" );
-      add_child( mortal_strike );
-    }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // Haste reduces dot time, as well as the tick time for Ravager
-    timespan_t tt = tick_time( s );
-    auto full_duration = dot_duration;
-
-    if ( p() -> buff.dance_of_death_arms -> up() )
-    {
-      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
-    }
-
-    return full_duration * ( tt / base_tick_time );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p()->buff.bladestorm->trigger();
-
-    if ( p()->talents.warrior.blademasters_torment.ok() )
-    {
-      action_t* torment_ability = p()->active.torment_avatar;
-      torment_ability->schedule_execute();
-    }
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // dont tick if BS buff not up
-    // since first tick is instant the buff won't be up yet
-    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
-    {
-      make_event( sim, [ d ] { d->cancel(); } );
-      return;
-    }
-
-    warrior_attack_t::tick( d );
-    bladestorm_mh->execute();
-
-    if ( bladestorm_mh->result_is_hit( execute_state->result ) && bladestorm_oh )
-    {
-      bladestorm_oh->execute();
-    }
-    // As of Dragonflight, Unhinged triggers with tick 2 and 4
-    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
-    {
-      auto t = select_random_target();
-
-      if ( t )
-      {
-        mortal_strike->target = t;
-        mortal_strike->execute();
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-    p()->buff.bladestorm->expire();
-
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      p()->buff.merciless_bonegrinder->trigger();
-    }
-  }
-
-// TODO: Mush Torment Bladestorm into regular Bladestorm reporting
-//  void init() override
-//  {
-//    warrior_attack_t::init();
-//    p()->active.torment_bladestorm->stats = stats;
-//  }
-};
-
-// Torment Bladestorm ===============================================================
-
-struct torment_bladestorm_t : public warrior_attack_t
-{
-  attack_t *bladestorm_mh, *bladestorm_oh;
-  mortal_strike_unhinged_t* mortal_strike;
-
-  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_attack_t( n, p, spell ),
-      bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
-      bladestorm_oh( nullptr ),
-      mortal_strike( nullptr )
-  {
-    parse_options( options_str );
-    channeled = false;
-    tick_zero = true;
-    interrupt_auto_attack = false;
-    travel_speed = 0;
-    dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-    bladestorm_mh->weapon = &( player->main_hand_weapon );
-    add_child( bladestorm_mh );
-
-    if ( p->talents.arms.unhinged->ok() )
-    {
-      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_torment_unhinged" );
-      add_child( mortal_strike );
-    }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-      return warrior_attack_t::composite_dot_duration( s );
-    return dot_duration * ( tick_time( s ) / base_tick_time );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p()->buff.bladestorm->trigger();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // dont tick if BS buff not up
-    // since first tick is instant the buff won't be up yet
-    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
-    {
-      make_event( sim, [ d ] { d->cancel(); } );
-      return;
-    }
-
-    warrior_attack_t::tick( d );
-    bladestorm_mh->execute();
-
-    // As of Dragonflight, Unhinged triggers with tick 2 and 4
-    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
-    {
-      auto t = select_random_target();
-
-      if ( t )
-      {
-        mortal_strike->target = t;
-        mortal_strike->execute();
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-    p()->buff.bladestorm->expire();
-
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      p()->buff.merciless_bonegrinder->trigger();
-    }
-  }
-};
-
 // Bloodthirst Heal =========================================================
 
 struct bloodthirst_heal_t : public warrior_heal_t
@@ -2390,6 +2028,41 @@ struct bloodthirst_t : public warrior_attack_t
     }
   }
 
+  // Background version for use with Unhinged
+  bloodthirst_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->talents.fury.bloodthirst ),
+      bloodthirst_heal( nullptr ),
+      gushing_wound( nullptr ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
+      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+  {
+    background = true;
+
+    weapon = &( p->main_hand_weapon );
+    radius = 5;
+    if ( p->non_dps_mechanics )
+    {
+      bloodthirst_heal = new bloodthirst_heal_t( p );
+    }
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+
+    if ( p->talents.fury.fresh_meat->ok() )
+    {
+      enrage_chance += p->talents.fury.fresh_meat->effectN( 1 ).percent();
+    }
+
+    if ( p->talents.fury.cold_steel_hot_blood.ok() )
+    {
+      gushing_wound = new gushing_wound_dot_t( p );
+    }
+
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+  }
+
   int n_targets() const override
   {
     if ( p()->buff.meat_cleaver->check() )
@@ -2421,8 +2094,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( gushing_wound && s->result == RESULT_CRIT )
     {
-      gushing_wound->set_target( s->target );
-      gushing_wound->execute();
+      gushing_wound->execute_on_target( s->target );
     }
 
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
@@ -2465,7 +2137,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->buff.reckless_abandon->check() )
+    if ( p()->buff.reckless_abandon->check() && !background )
     {
       return false;
     }
@@ -2496,6 +2168,46 @@ struct bloodbath_t : public warrior_attack_t
     radius = 5;
     cooldown = p->cooldown.bloodthirst;
     track_cd_waste = true;
+    if ( p->non_dps_mechanics )
+    {
+      bloodthirst_heal = new bloodthirst_heal_t( p );
+    }
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+
+    if ( p->talents.fury.deft_experience->ok() )
+    {
+      enrage_chance += p->talents.fury.deft_experience->effectN( 2 ).percent();
+    }
+
+    if ( p->talents.fury.fresh_meat->ok() )
+    {
+      enrage_chance += p->talents.fury.fresh_meat->effectN( 1 ).percent();
+    }
+
+    if ( p->talents.fury.cold_steel_hot_blood.ok() )
+    {
+      gushing_wound = new gushing_wound_dot_t( p );
+    }
+
+    if ( p->talents.fury.swift_strikes->ok() )
+    {
+      energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+  }
+
+  // Background version for use with unhinged
+  bloodbath_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spec.bloodbath ),
+      bloodthirst_heal( nullptr ),
+      gushing_wound( nullptr ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
+      enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+  {
+    background = true;
+
+    weapon = &( p->main_hand_weapon );
+    radius = 5;
     if ( p->non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
@@ -2594,6 +2306,391 @@ struct bloodbath_t : public warrior_attack_t
       return false;
     }
     return warrior_attack_t::ready();
+  }
+};
+
+// Mortal Strike ============================================================
+struct mortal_strike_t : public warrior_attack_t
+{
+  double cost_rage;
+  double exhilarating_blows_chance;
+  double frothing_berserker_chance;
+  double rage_from_frothing_berserker;
+  warrior_attack_t* rend_dot;
+  mortal_strike_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
+      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
+      frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
+      rend_dot( nullptr )
+  {
+    parse_options( options_str );
+
+    weapon           = &( p->main_hand_weapon );
+    cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
+    impact_action    = p->active.deep_wounds_ARMS;
+    rend_dot = new rend_dot_t( p );
+  }
+
+  // This version is used for unhinged and other background actions
+  mortal_strike_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->talents.arms.mortal_strike ),
+      exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
+      frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
+      rend_dot( nullptr )
+  {
+    background = true;
+    impact_action = p->active.deep_wounds_ARMS;
+    rend_dot = new rend_dot_t( p );
+    internal_cooldown->duration = 0_s;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    if ( background )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( background )
+      return 0;
+    return warrior_attack_t::tactician_cost();
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    cost_rage = last_resource_cost;
+    if ( !background && p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
+    {
+      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
+    }
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
+      {
+        execute_state->target->debuffs.mortal_wounds->trigger();
+      }
+    }
+
+    if ( p()->talents.arms.exhilarating_blows->ok() && rng().roll( exhilarating_blows_chance ) )
+    {
+      p()->cooldown.mortal_strike->reset( true );
+      p()->cooldown.cleave->reset( true );
+    }
+
+    p()->buff.martial_prowess->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->talents.arms.fatality->ok() && p()->rppm.fatal_mark->trigger() && target->health_percentage() > 30 )
+    { // does this eat RPPM when switching from low -> high health target?
+      td( s->target )->debuffs_fatal_mark->trigger();
+    }
+
+    if ( td( s->target )->debuffs_executioners_precision->up() )
+    {
+      td( s->target )->debuffs_executioners_precision->expire();
+    }
+
+    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    {
+      rend_dot->set_target( s->target );
+      rend_dot->execute();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
+// Bladestorm ===============================================================
+
+struct bladestorm_tick_t : public warrior_attack_t
+{
+  double rage_from_storm_of_steel;
+  bladestorm_tick_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
+    : warrior_attack_t( name, p, spell ),
+      rage_from_storm_of_steel( 0.0 )
+  {
+    dual = true;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
+    background = true;
+    if ( p->specialization() == WARRIOR_ARMS )
+    {
+      impact_action = p->active.deep_wounds_ARMS;
+    }
+    rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    if ( execute_state->n_targets > 0 )
+      p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
+  }
+};
+
+struct bladestorm_t : public warrior_attack_t
+{
+  attack_t *bladestorm_mh, *bladestorm_oh;
+  mortal_strike_t* mortal_strike;
+  bloodthirst_t* bloodthirst;
+  bloodbath_t* bloodbath;
+
+  bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_attack_t( n, p, spell ),
+    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      bladestorm_oh( nullptr ),
+      mortal_strike( nullptr ),
+      bloodbath( nullptr )
+  {
+    parse_options( options_str );
+    channeled = false;
+    tick_zero = true;
+    interrupt_auto_attack = false;
+    travel_speed                      = 0;
+
+    bladestorm_mh->weapon             = &( player->main_hand_weapon );
+    add_child( bladestorm_mh );
+    if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
+    {
+      bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ), spell->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+      bladestorm_oh->weapon = &( player->off_hand_weapon );
+      add_child( bladestorm_oh );
+    }
+
+    // Unhinged DOES work w/ Torment and Signet
+    if ( p->talents.arms.unhinged->ok() )
+    {
+      mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p );
+      add_child( mortal_strike );
+    }
+
+    if ( p->talents.fury.unhinged->ok() )
+    {
+      bloodthirst = new bloodthirst_t( "bloodthirst_bladestorm_unhinged", p );
+      add_child( bloodthirst );
+
+      if ( p->talents.fury.reckless_abandon->ok() )
+      {
+        bloodbath = new bloodbath_t( "bloodbath_bladestorm_unhinged", p );
+        add_child( bloodbath );
+      }
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // Haste reduces dot time, as well as the tick time for Ravager
+    timespan_t tt = tick_time( s );
+    auto full_duration = dot_duration;
+
+    if ( p() -> buff.dance_of_death_arms -> up() )
+    {
+      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+    }
+
+    return full_duration * ( tt / base_tick_time );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->buff.bladestorm->trigger();
+
+    if ( p()->talents.warrior.blademasters_torment.ok() )
+    {
+      action_t* torment_ability = p()->active.torment_avatar;
+      torment_ability->schedule_execute();
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // dont tick if BS buff not up
+    // since first tick is instant the buff won't be up yet
+    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
+    {
+      make_event( sim, [ d ] { d->cancel(); } );
+      return;
+    }
+
+    warrior_attack_t::tick( d );
+    bladestorm_mh->execute();
+
+    if ( bladestorm_mh->result_is_hit( execute_state->result ) && bladestorm_oh )
+    {
+      bladestorm_oh->execute();
+    }
+    // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
+    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 1 == 0 ) )
+    {
+      auto t = p() -> target;
+      if ( ! p() -> target || p() -> target->is_sleeping() )
+        t = select_random_target();
+
+      if ( t )
+      {
+        if ( mortal_strike )
+          mortal_strike->execute_on_target( t );
+        if ( bloodthirst || bloodbath )
+        {
+          if ( bloodbath && p()->buff.reckless_abandon->check() )
+            bloodbath->execute_on_target( t );
+          else
+            bloodthirst->execute_on_target( t );
+        }
+      }
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.bladestorm->expire();
+
+    if ( p()->talents.arms.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder->trigger();
+    }
+  }
+
+// TODO: Mush Torment Bladestorm into regular Bladestorm reporting
+//  void init() override
+//  {
+//    warrior_attack_t::init();
+//    p()->active.torment_bladestorm->stats = stats;
+//  }
+};
+
+// Torment Bladestorm ===============================================================
+
+struct torment_bladestorm_t : public warrior_attack_t
+{
+  attack_t *bladestorm_mh, *bladestorm_oh;
+  mortal_strike_t* mortal_strike;
+  bloodthirst_t* bloodthirst;
+  bloodbath_t* bloodbath;
+
+  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_attack_t( n, p, spell ),
+      bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
+      bladestorm_oh( nullptr ),
+      mortal_strike( nullptr ),
+      bloodthirst( nullptr ),
+      bloodbath( nullptr )
+  {
+    parse_options( options_str );
+    channeled = false;
+    tick_zero = true;
+    interrupt_auto_attack = false;
+    travel_speed = 0;
+    dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
+    bladestorm_mh->weapon = &( player->main_hand_weapon );
+    add_child( bladestorm_mh );
+
+    if ( p->talents.arms.unhinged->ok() )
+    {
+      mortal_strike = new mortal_strike_t( "mortal_strike_torment_unhinged", p );
+      add_child( mortal_strike );
+    }
+
+    if ( p->talents.fury.unhinged->ok() )
+    {
+      bloodthirst = new bloodthirst_t( "bloodthirst_torment_unhinged", p );
+      add_child( bloodthirst );
+
+      if ( p->talents.fury.reckless_abandon->ok() )
+      {
+        bloodbath = new bloodbath_t( "bloodbath_torment_unhinged", p );
+        add_child( bloodbath );
+      }
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+      return warrior_attack_t::composite_dot_duration( s );
+    return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p()->buff.bladestorm->trigger();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // dont tick if BS buff not up
+    // since first tick is instant the buff won't be up yet
+    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
+    {
+      make_event( sim, [ d ] { d->cancel(); } );
+      return;
+    }
+
+    warrior_attack_t::tick( d );
+    bladestorm_mh->execute();
+
+    // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
+    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 1 == 0 ) )
+    {
+      auto t = p() -> target;
+      if ( ! p() -> target || p() -> target->is_sleeping() )
+        t = select_random_target();
+
+      if ( t )
+      {
+        if ( mortal_strike )
+          mortal_strike->execute_on_target( t );
+        if ( bloodthirst || bloodbath )
+        {
+          if ( bloodbath && p()->buff.reckless_abandon->check() )
+            bloodbath->execute_on_target( t );
+          else
+            bloodthirst->execute_on_target( t );
+        }
+      }
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.bladestorm->expire();
+
+    if ( p()->talents.arms.merciless_bonegrinder->ok() )
+    {
+      p()->buff.merciless_bonegrinder->trigger();
+    }
   }
 };
 
@@ -4624,12 +4721,16 @@ struct ravager_tick_t : public warrior_attack_t
 struct ravager_t : public warrior_attack_t
 {
   ravager_tick_t* ravager;
-  mortal_strike_unhinged_t* mortal_strike;
+  mortal_strike_t* mortal_strike;
+  bloodthirst_t* bloodthirst;
+  bloodbath_t* bloodbath;
   // We have to use find_spell here, rather than use the talent lookup, as both fury and protection use the same spell_id
   ravager_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
-      mortal_strike( nullptr )
+      mortal_strike( nullptr ),
+      bloodthirst( nullptr ),
+      bloodbath( nullptr )
   {
     parse_options( options_str );
     ignore_false_positive   = true;
@@ -4640,8 +4741,20 @@ struct ravager_t : public warrior_attack_t
 
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_unhinged_t( p, "mortal_strike_ravager_unhinged" );
+      mortal_strike = new mortal_strike_t( "mortal_strike_ravager_unhinged", p );
       add_child( mortal_strike );
+    }
+
+    if ( p->talents.fury.unhinged->ok() )
+    {
+      bloodthirst = new bloodthirst_t( "bloodthirst_ravager_unhinged", p );
+      add_child( bloodthirst );
+
+      if ( p->talents.fury.reckless_abandon->ok() )
+      {
+        bloodbath = new bloodbath_t( "bloodbath_ravager_unhinged", p );
+        add_child( bloodbath );
+      }
     }
   }
 
@@ -4681,16 +4794,28 @@ struct ravager_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
+    // TODO In build 11.0.0.55120 ravager only ticks 5 times, instead of 6.  Unimplemented for now.
     ravager->execute();
 
-    // As of Dragonflight, Unhinged triggers with tick 2 and 4
-    if ( mortal_strike && ( d->current_tick == 2 || d->current_tick == 4 ) )
+    // As of TWW Unhinged procs on the even ticks
+    if ( mortal_strike && ( d->current_tick % 2 == 0 ) )
     {
-      auto t = select_random_target();
+      // Select main target for unhinged, if no target, or target is dead, select a random target
+      auto t = p() -> target;
+      if ( ! p() -> target || p() -> target->is_sleeping() )
+        t = select_random_target();
 
       if ( t )
       {
-        mortal_strike->execute_on_target( t );
+        if ( mortal_strike )
+          mortal_strike->execute_on_target( t );
+        if ( bloodthirst || bloodbath )
+        {
+          if ( bloodbath && p()->buff.reckless_abandon->check() )
+            bloodbath->execute_on_target( t );
+          else
+            bloodthirst->execute_on_target( t );
+        }
       }
     }
   }
@@ -6635,6 +6760,7 @@ void warrior_t::init_spells()
   talents.fury.depths_of_insanity   = find_talent_spell( talent_tree::SPECIALIZATION, "Depths of Insanity" );
   talents.fury.tenderize            = find_talent_spell( talent_tree::SPECIALIZATION, "Tenderize" );
   talents.fury.storm_of_steel       = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_FURY );
+  talents.fury.unhinged             = find_talent_spell( talent_tree::SPECIALIZATION, "Unhinged", WARRIOR_FURY );
 
   // Protection Talents
   talents.protection.ignore_pain            = find_talent_spell( talent_tree::SPECIALIZATION, "Ignore Pain" );
