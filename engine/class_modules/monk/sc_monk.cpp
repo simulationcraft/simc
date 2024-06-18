@@ -4363,7 +4363,7 @@ struct xuen_spell_t : public monk_spell_t
     p()->buff.invokers_delight->trigger();
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
-      p()->active_actions.flurry_of_xuen->execute();
+      p()->buff.flurry_of_xuen->trigger();
   }
 };
 
@@ -4400,7 +4400,7 @@ struct fury_of_xuen_summon_t final : monk_spell_t
     p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen->duration(), 1 );
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
-      p()->active_actions.flurry_of_xuen->execute();
+      p()->buff.flurry_of_xuen->trigger();
   }
 };
 
@@ -4439,24 +4439,11 @@ struct flurry_of_xuen_t : public monk_spell_t
   flurry_of_xuen_t( monk_t *p )
     : monk_spell_t( p, "flurry_of_xuen", p->passives.flurry_of_xuen_driver->effectN( 1 )._trigger_spell )
   {
-    background = true;
-    may_crit   = true;
+    background    = true;
+    may_crit      = true;
 
     aoe                 = -1;
     reduced_aoe_targets = p->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
-
-    // p.passives.flurry_of_xuen_driver->duration()
-    // Shows 3 second duration but is 2.7s consistently in logs
-    dot_duration   = timespan_t::from_seconds( 2.7 );
-    base_tick_time = dot_duration / p->talent.windwalker.flurry_of_xuen->effectN( 1 ).base_value();
-
-    attack_power_mod.direct = 0;
-    attack_power_mod.tick   = data().effectN( 1 ).ap_coeff();
-  }
-
-  bool ready() override
-  {
-    return p()->talent.windwalker.flurry_of_xuen->ok();
   }
 };
 
@@ -8052,6 +8039,14 @@ void monk_t::create_buffs()
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
+  buff.flurry_of_xuen =
+      make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
+                          passives.flurry_of_xuen_driver )
+          ->set_tick_callback( [ this ]( buff_t *b, int, timespan_t ) { active_actions.flurry_of_xuen->execute(); } )
+          ->set_tick_behavior( buff_tick_behavior::CLIP )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_freeze_stacks( true );
 
   buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( this, "invoke_xuen_the_white_tiger",
                                                                     talent.windwalker.invoke_xuen_the_white_tiger );
@@ -8508,14 +8503,19 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.flurry_of_xuen.ok() )
   {
-    create_proc_callback(
-        talent.windwalker.flurry_of_xuen.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          p->active_actions.flurry_of_xuen->set_target( state->target );
+    create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
+      if ( state->action->id == p->active_actions.flurry_of_xuen->id )
+        return false;
 
-          return true;
-        },
-        active_actions.flurry_of_xuen );
+      return true;
+    } );
+
+    callbacks.register_callback_execute_function(
+        talent.windwalker.flurry_of_xuen.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          active_actions.flurry_of_xuen->set_target( state->target );
+          buff.flurry_of_xuen->trigger();
+        } );
   }
 
   // ======================================

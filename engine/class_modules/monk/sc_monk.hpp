@@ -600,6 +600,7 @@ public:
     propagate_const<buff_t *> fury_of_xuen;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
+    propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> jadefire_brand;
     propagate_const<buff_t *> martial_mixture;
