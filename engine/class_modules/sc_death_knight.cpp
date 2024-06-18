@@ -5808,8 +5808,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     // TODO: check whether spelldata is wrong or tooltip is using the wrong spelldata
     // Spelldata used in the tooltip: 15s
-    p()->pets.bloodworms.spawn(
-        p()->talent.blood.bloodworms->effectN( 2 ).trigger()->effectN( 1 ).trigger()->duration(), 1 );
+    p()->pets.bloodworms.spawn();
     // Pet spawn spelldata: 16s
     // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
   }
@@ -6580,7 +6579,6 @@ struct apocalypse_t final : public death_knight_melee_attack_t
 {
   apocalypse_t( death_knight_t* p, util::string_view options_str )
     : death_knight_melee_attack_t( "apocalypse", p, p->talent.unholy.apocalypse ),
-      summon_duration( p->spell.apocalypse_duration->duration() ),
       rune_generation( as<int>( p->spell.apocalypse_rune_gen->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -6600,11 +6598,11 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td->debuff.festering_wound->check() );
 
     p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse );
-    p()->pets.apoc_ghouls.spawn( summon_duration, as<int>( data().effectN( 2 ).base_value() ) );
+    p()->pets.apoc_ghouls.spawn( as<int>( data().effectN( 2 ).base_value() ) );
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
-      p()->pets.apoc_magus.spawn( summon_duration, 1 );
+      p()->pets.apoc_magus.spawn();
     }
 
     if ( p()->talent.unholy.apocalypse.ok() )
@@ -6625,7 +6623,6 @@ struct apocalypse_t final : public death_knight_melee_attack_t
   }
 
 private:
-  timespan_t summon_duration;
   int rune_generation;
 };
 
@@ -6830,10 +6827,10 @@ struct raise_abomination_t final : public death_knight_spell_t
   {
     precombat_check();
     death_knight_spell_t::execute();
-    p()->pets.abomination.spawn( duration, 1 );
+    p()->pets.abomination.spawn();
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
     {
-      p()->pets.army_magus.spawn( duration, 1 );
+      p()->pets.army_magus.spawn();
     }
     if ( p()->talent.rider.apocalypse_now.ok() )
     {
@@ -7380,15 +7377,11 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( !p()->buffs.dancing_rune_weapon->up() )
     {
-      p()->pets.dancing_rune_weapon_pet.spawn( p()->talent.blood.dancing_rune_weapon->duration() +
-                                                   p()->talent.blood.everlasting_bond->effectN( 2 ).time_value(),
-                                               1 );
+      p()->pets.dancing_rune_weapon_pet.spawn();
 
       if ( p()->talent.blood.everlasting_bond.ok() )
       {
-        p()->pets.everlasting_bond_pet.spawn( p()->talent.blood.dancing_rune_weapon->duration() +
-                                                  p()->talent.blood.everlasting_bond->effectN( 2 ).time_value(),
-                                              1 );
+        p()->pets.everlasting_bond_pet.spawn();
       }
     }
   }
@@ -7826,8 +7819,7 @@ struct death_coil_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
     {
-      timespan_t duration = timespan_t::from_millis( p()->talent.unholy.doomed_bidding->effectN( 1 ).base_value() );
-      p()->pets.doomed_bidding_magus_coil.spawn( timespan_t::from_seconds( duration.total_seconds() ), 1 );
+      p()->pets.doomed_bidding_magus_coil.spawn();
     }
 
     p()->buffs.sudden_doom->decrement();
@@ -8191,7 +8183,7 @@ struct epidemic_t final : public death_knight_spell_t
 
     if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
     {
-      p()->pets.doomed_bidding_magus_epi.spawn( p()->talent.unholy.doomed_bidding->effectN( 1 ).time_value(), 1 );
+      p()->pets.doomed_bidding_magus_epi.spawn();
     }
 
     p()->buffs.sudden_doom->decrement();
@@ -10214,7 +10206,7 @@ struct summon_gargoyle_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p()->pets.gargoyle.spawn( data().duration(), 1 );
+    p()->pets.gargoyle.spawn();
   }
 };
 
@@ -11563,7 +11555,7 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
     if ( rppm.blood_beast->trigger() )
     {
       procs.blood_beast->occur();
-      pets.blood_beast.spawn( spell.blood_beast_summon->duration(), 1 );
+      pets.blood_beast.spawn();
     }
     buffs.essence_of_the_blood_queen->trigger();
     if ( !buffs.gift_of_the_sanlayn->check() )
@@ -12136,18 +12128,23 @@ void death_knight_t::create_pets()
   if ( talent.rider.riders_champion.ok() )
   {
     pets.whitemane.set_creation_callback( []( death_knight_t* p ) { return new pets::whitemane_pet_t( p ); } );
+    pets.whitemane.set_default_duration( spell.summon_whitemane_2->duration() );
     pets.whitemane.set_max_pets( 1 );
     pets.mograine.set_creation_callback( []( death_knight_t* p ) { return new pets::mograine_pet_t( p ); } );
+    pets.mograine.set_default_duration( spell.summon_mograine_2->duration() );
     pets.mograine.set_max_pets( 1 );
     pets.trollbane.set_creation_callback( []( death_knight_t* p ) { return new pets::trollbane_pet_t( p ); } );
+    pets.trollbane.set_default_duration( spell.summon_trollbane_2->duration() );
     pets.trollbane.set_max_pets( 1 );
     pets.nazgrim.set_creation_callback( []( death_knight_t* p ) { return new pets::nazgrim_pet_t( p ); } );
+    pets.nazgrim.set_default_duration( spell.summon_nazgrim_2->duration() );
     pets.nazgrim.set_max_pets( 1 );
   }
 
   if ( talent.sanlayn.the_blood_is_life.ok() )
   {
     pets.blood_beast.set_creation_callback( []( death_knight_t* p ) { return new pets::blood_beast_pet_t( p ); } );
+    pets.blood_beast.set_default_duration( spell.blood_beast_summon->duration() );
     pets.blood_beast.set_max_pets( 1 );
     pets.blood_beast.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   }
@@ -12156,6 +12153,7 @@ void death_knight_t::create_pets()
   {
     // Initialized even if the talent isn't picked for APL purpose
     pets.gargoyle.set_creation_callback( []( death_knight_t* p ) { return new pets::gargoyle_pet_t( p ); } );
+    pets.gargoyle.set_default_duration( talent.unholy.summon_gargoyle->duration() );
 
     if ( talent.unholy.all_will_serve.ok() )
     {
@@ -12169,6 +12167,7 @@ void death_knight_t::create_pets()
     {
       pets.army_ghouls.set_creation_callback(
           []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
+      pets.army_ghouls.set_default_duration( talent.unholy.army_of_the_dead->effectN( 1 ).trigger()->duration() );
       pets.army_ghouls.set_max_pets( 8 );
     }
 
@@ -12177,6 +12176,7 @@ void death_knight_t::create_pets()
     {
       pets.army_magus.set_creation_callback(
           []( death_knight_t* p ) { return new pets::magus_pet_t( p, "army_magus" ); } );
+      pets.army_magus.set_default_duration( talent.unholy.army_of_the_dead->effectN( 1 ).trigger()->duration() );
       pets.army_magus.set_max_pets( 1 );
     }
 
@@ -12184,27 +12184,33 @@ void death_knight_t::create_pets()
     {
       pets.apoc_ghouls.set_creation_callback(
           []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+      pets.apoc_ghouls.set_default_duration( spell.apocalypse_duration->duration() );
       pets.apoc_ghouls.set_max_pets( 4 );
 
       if ( talent.unholy.magus_of_the_dead.ok() )
       {
         pets.apoc_magus.set_creation_callback(
             []( death_knight_t* p ) { return new pets::magus_pet_t( p, "apoc_magus" ); } );
+        pets.apoc_magus.set_default_duration( spell.apocalypse_duration->duration() );
         pets.apoc_magus.set_max_pets( 1 );
       }
     }
 
     if ( talent.unholy.doomed_bidding.ok() )
     {
+      timespan_t doomed_bidding_duration = timespan_t::from_millis( talent.unholy.doomed_bidding->effectN( 1 ).base_value() );
       pets.doomed_bidding_magus_coil.set_creation_callback(
           []( death_knight_t* p ) { return new pets::magus_pet_t( p, "doomed_bidding_magus_coil" ); } );
+      pets.doomed_bidding_magus_coil.set_default_duration( doomed_bidding_duration );
       pets.doomed_bidding_magus_epi.set_creation_callback(
         []( death_knight_t* p ) { return new pets::magus_pet_t( p, "doomed_bidding_magus_epi" ); } );
+      pets.doomed_bidding_magus_epi.set_default_duration( doomed_bidding_duration );
     }
 
     if ( talent.unholy.raise_abomination.ok() )
     {
       pets.abomination.set_creation_callback( []( death_knight_t* p ) { return new pets::abomination_pet_t( p ); } );
+      pets.abomination.set_default_duration( talent.unholy.raise_abomination->duration() );
       pets.abomination.set_max_pets( 1 );
     }
   }
@@ -12215,12 +12221,16 @@ void death_knight_t::create_pets()
     {
       pets.dancing_rune_weapon_pet.set_creation_callback(
           []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "dancing_rune_weapon" ); } );
+      pets.dancing_rune_weapon_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() +
+                                                         talent.blood.everlasting_bond->effectN( 2 ).time_value() );
       pets.dancing_rune_weapon_pet.set_max_pets( 1 );
 
       if ( talent.blood.everlasting_bond.ok() )
       {
         pets.everlasting_bond_pet.set_creation_callback(
             []( death_knight_t* p ) { return new pets::dancing_rune_weapon_pet_t( p, "everlasting_bond" ); } );
+        pets.everlasting_bond_pet.set_default_duration( talent.blood.dancing_rune_weapon->duration() +
+                                                           talent.blood.everlasting_bond->effectN( 2 ).time_value() );
         pets.everlasting_bond_pet.set_max_pets( 1 );
       }
     }
@@ -12228,6 +12238,7 @@ void death_knight_t::create_pets()
     if ( talent.blood.bloodworms.ok() )
     {
       pets.bloodworms.set_creation_callback( []( death_knight_t* p ) { return new pets::bloodworm_pet_t( p ); } );
+      pets.bloodworms.set_default_duration( talent.blood.bloodworms->effectN( 2 ).trigger()->effectN( 1 ).trigger()->duration() );
       pets.bloodworms.set_max_pets( 5 );
     }
   }
