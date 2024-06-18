@@ -316,7 +316,6 @@ public:
     propagate_const<buff_t *> veterans_eye;
 
     // Covenant Abilities
-    propagate_const<buff_t *> bonedust_brew;
     propagate_const<buff_t *> jadefire_stomp;
     propagate_const<buff_t *> weapons_of_order;
 
@@ -395,8 +394,6 @@ public:
   struct active_actions_t
   {
     // General
-    propagate_const<action_t *> bonedust_brew_dmg;
-    propagate_const<action_t *> bonedust_brew_heal;
     propagate_const<action_t *> bountiful_brew;
     propagate_const<action_t *> chi_wave;
     propagate_const<action_t *> rushing_jade_wind;
@@ -536,8 +533,6 @@ public:
   struct buffs_t
   {
     // General
-    propagate_const<buff_t *> bonedust_brew;
-    propagate_const<buff_t *> bonedust_brew_attenuation_hidden;
     propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> dampen_harm;
@@ -564,7 +559,6 @@ public:
     propagate_const<buff_t *> fortifying_brew;
     propagate_const<buff_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_helper;
-    propagate_const<buff_t *> graceful_exit;
     propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
     propagate_const<buff_t *> press_the_advantage;
@@ -576,6 +570,7 @@ public:
     propagate_const<buff_t *> zen_meditation;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> recent_purifies;
+    propagate_const<buff_t *> ox_stance;
 
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
@@ -684,7 +679,7 @@ public:
 
   struct procs_t
   {
-    propagate_const<proc_t *> anvil_and_stave;
+    propagate_const<proc_t *> anvil__stave;
     propagate_const<proc_t *> attenuation;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
     propagate_const<proc_t *> blackout_combo_breath_of_fire;
@@ -697,7 +692,6 @@ public:
     propagate_const<proc_t *> blackout_reinforcement_melee;
     propagate_const<proc_t *> blackout_reinforcement_sck;
     propagate_const<proc_t *> blackout_reinforcement_waste;
-    propagate_const<proc_t *> bonedust_brew_reduction;
     propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;
@@ -803,68 +797,65 @@ public:
     // Brewmaster
     struct
     {
-      // Row 1
+      // row 1
       player_talent_t keg_smash;
-      // Row 2
+      // row 2
       player_talent_t purifying_brew;
       player_talent_t shuffle;
-      // Row 3
+      // row 3
       player_talent_t staggering_strikes;
       player_talent_t gift_of_the_ox;
       player_talent_t spirit_of_the_ox;
       player_talent_t quick_sip;
-      // Row 4
+      // row 4
       player_talent_t hit_scheme;
-      player_talent_t healing_elixir;
-      player_talent_t rushing_jade_wind;
+      player_talent_t elixir_of_determination;
       player_talent_t special_delivery;
-      // 8 Required
-      // Row 5
+      player_talent_t rushing_jade_wind;
+      // row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
-      player_talent_t graceful_exit;
+      player_talent_t autumn_blessing;
+      player_talent_t one_with_the_wind;
       player_talent_t zen_meditation;
-      player_talent_t clash;
-      // Row 6
+      player_talent_t strike_at_dawn;
+      // row 6
       player_talent_t breath_of_fire;
-      player_talent_t improved_celestial_brew;
-      player_talent_t improved_purifying_brew;
-      player_talent_t tranquil_spirit;
       player_talent_t gai_plins_imperial_brew;
-      player_talent_t fundamental_observation;
+      player_talent_t invoke_niuzao_the_black_ox;
+      player_talent_t tranquil_spirit;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
-      // Row 7
+      // row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
       player_talent_t fortifying_brew_determination;
-      player_talent_t black_ox_brew;
       player_talent_t bob_and_weave;
-      player_talent_t invoke_niuzao_the_black_ox;
+      player_talent_t black_ox_brew;
+      player_talent_t walk_with_the_ox;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
       player_talent_t pretense_of_instability;
       player_talent_t counterstrike;
-      // 20 Required
-      // Row 8
+      // row 8
       player_talent_t dragonfire_brew;
       player_talent_t charred_passions;
       player_talent_t high_tolerance;
-      player_talent_t walk_with_the_ox;
-      player_talent_t elusive_footwork;
-      player_talent_t anvil_and_stave;
-      player_talent_t face_palm;
-      // Row 9
-      player_talent_t bonedust_brew;
-      player_talent_t improved_invoke_niuzao_the_black_ox;
       player_talent_t exploding_keg;
+      player_talent_t improved_invoke_niuzao_the_black_ox;
+      player_talent_t elusive_footwork;
+      player_talent_t anvil__stave;
+      player_talent_t face_palm;
+      // row 9
+      player_talent_t ox_stance;
+      const spell_data_t *ox_stance_buff;
+      player_talent_t stormstouts_last_keg;
       player_talent_t blackout_combo;
       player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
-      // Row 10
-      player_talent_t bountiful_brew;
-      player_talent_t attenuation;
-      player_talent_t stormstouts_last_keg;
+      // row 10
+      player_talent_t black_ox_adept;
+      player_talent_t heightened_guard;
       player_talent_t call_to_arms;
       player_talent_t chi_surge;
     } brewmaster;
@@ -1186,12 +1177,6 @@ public:
 
     struct
     {
-      // row 1
-      player_talent_t keg_smash;
-      // row 7
-      player_talent_t scalding_brew;
-      // row 9
-      player_talent_t stormstouts_last_keg;
     } brewmaster;
 
     struct
@@ -1263,7 +1248,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    propagate_const<cooldown_t *> anvil_and_stave;
+    propagate_const<cooldown_t *> anvil__stave;
     propagate_const<cooldown_t *> blackout_kick;
     propagate_const<cooldown_t *> breath_of_fire;
     propagate_const<cooldown_t *> chi_torpedo;
@@ -1297,10 +1282,6 @@ public:
   {
     // General
     const spell_data_t *aura_monk;
-    const spell_data_t *bonedust_brew_dmg;
-    const spell_data_t *bonedust_brew_heal;
-    const spell_data_t *bonedust_brew_chi;
-    const spell_data_t *bonedust_brew_attenuation;
     const spell_data_t *chi_burst_damage;
     const spell_data_t *chi_burst_energize;
     const spell_data_t *chi_burst_heal;
@@ -1518,10 +1499,8 @@ public:
 
   // Custom Monk Functions
   void trigger_celestial_fortune( action_state_t * );
-  void trigger_bonedust_brew( const action_state_t * );
   void trigger_mark_of_the_crane( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-  void trigger_bonedust_brew( action_state_t * );
   player_t *next_mark_of_the_crane_target( action_state_t * );
   int mark_of_the_crane_counter();
   bool mark_of_the_crane_max();
@@ -1535,7 +1514,6 @@ public:
   void retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> &targets ) const;
   void retarget_storm_earth_and_fire_pets() const;
 
-  void bonedust_brew_assessor( action_state_t * );
   void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
   void trigger_spirit_of_forged_vermillion( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t *target );
