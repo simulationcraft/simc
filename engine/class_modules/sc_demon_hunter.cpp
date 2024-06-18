@@ -2163,8 +2163,11 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
-        BASE::p()->buff.thrill_of_the_fight_damage->trigger();
+        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep slashes.
+        make_event( *BASE::p()->sim, 700_ms, [ this ] {
+          BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+          BASE::p()->buff.thrill_of_the_fight_damage->trigger();
+        });
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
