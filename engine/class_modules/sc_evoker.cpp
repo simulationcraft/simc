@@ -1859,7 +1859,7 @@ public:
 
     if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
     {
-      parse_effects( p()->buff.volcanic_upsurge );
+      parse_effects( p()->buff.volcanic_upsurge, IGNORE_STACKS );
     }
   }
 
