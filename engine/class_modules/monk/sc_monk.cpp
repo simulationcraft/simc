@@ -6585,6 +6585,7 @@ void monk_t::parse_player_effects()
   // class talent auras
   parse_effects( talents.monk.chi_proficiency );
   parse_effects( talents.monk.martial_instincts );
+  parse_effects( talent.general.ferocity_of_xuen );
 
   // brewmaster talent auras
   // mistweaver talent auras
@@ -7106,6 +7107,7 @@ void monk_t::init_spells()
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
   talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
+  talent.general.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
   talent.general.spirits_essence         = _CT( "Spirit's Essence" );
@@ -8811,11 +8813,6 @@ double monk_t::composite_player_target_armor( player_t *target ) const
 double monk_t::composite_player_pet_damage_multiplier( const action_state_t *state, bool guardian ) const
 {
   double multiplier = base_t::composite_player_pet_damage_multiplier( state, guardian );
-
-  if ( guardian )
-    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
-  else
-    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
 
   return multiplier;
 }
