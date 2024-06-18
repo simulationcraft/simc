@@ -1861,6 +1861,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
       : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
     {
       auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+      damage->radius     = e.driver()->effectN( 1 ).radius();
       auto ground_effect = e.player->find_spell( 449842 );
       params.action( damage ).duration( ground_effect->duration() );
       cooldown->duration = 0_ms;  // Handled by the item
