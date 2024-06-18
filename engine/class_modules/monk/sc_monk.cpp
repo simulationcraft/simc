@@ -8000,15 +8000,15 @@ void monk_t::create_buffs()
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  // Do not use a fallback buff - it is possible to get a dance of chiji proc without the talent from other sources.
   buff.dance_of_chiji =
-      make_buff_fallback( talent.windwalker.dance_of_chiji->ok(), this, "dance_of_chiji", passives.dance_of_chiji )
+      make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
           ->set_trigger_spell( talent.windwalker.dance_of_chiji );
 
   buff.dance_of_chiji_hidden =
-      make_buff_fallback( talent.windwalker.dance_of_chiji->ok(), this, "dance_of_chiji_hidden" )
+      make_buff( this, "dance_of_chiji_hidden" )
           ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
           ->set_duration( timespan_t::from_seconds( 1.5 ) )
-
           ->set_quiet( true );
 
   buff.darting_hurricane =
