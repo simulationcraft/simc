@@ -4445,6 +4445,17 @@ struct flurry_of_xuen_t : public monk_spell_t
     aoe                 = -1;
     reduced_aoe_targets = p->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
   }
+  
+  double composite_da_multiplier( const action_state_t *s ) const override
+  {
+    double da = monk_spell_t::composite_da_multiplier( s );
+
+    // Tested 18/06/2024. FLoX does 150% increased damage during Storm Earth, and Fire.
+    if ( p()->bugs && p()->buff.storm_earth_and_fire->check() )
+      da *= 2.5;
+    
+    return da;
+  }
 };
 
 // ==========================================================================
