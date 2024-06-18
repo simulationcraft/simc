@@ -8017,17 +8017,18 @@ void monk_t::create_buffs()
                              double old_value    = self->current_value;
                              self->current_value = self->default_value;
 
-                             if ( buff.invoke_xuen->up() )
+                             if ( ( pets.xuen.n_active_pets() + pets.fury_of_xuen_tiger.n_active_pets() ) > 0 )
                                self->current_value *= 1 + self->data().effectN( 2 ).percent();
 
                              if ( old_value != self->current_value )
                                self->invalidate_cache();
                            } )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                            ->set_cooldown( timespan_t::zero() )
                            ->set_duration( timespan_t::zero() )
                            ->set_period( timespan_t::from_seconds( 1 ) )
-                           ->set_tick_behavior( buff_tick_behavior::CLIP )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+                           ->set_freeze_stacks( true )
+                           ->set_tick_behavior( buff_tick_behavior::CLIP );
 
   buff.flying_serpent_kick_movement = make_buff_fallback( spec.flying_serpent_kick->ok(), this,
                                                           "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
