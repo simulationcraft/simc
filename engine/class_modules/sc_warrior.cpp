@@ -3281,6 +3281,14 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap );
+
+    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
+    {
+      if ( p()->talents.fury.improved_whirlwind->ok() )
+    {
+      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+    }
+    }
   }
 
   void impact( action_state_t* state ) override
