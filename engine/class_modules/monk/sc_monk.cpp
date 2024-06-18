@@ -153,7 +153,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
   parse_effects( p()->buff.darting_hurricane );
-  parse_effects( p()->buff.ferociousness );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -8024,16 +8023,22 @@ void monk_t::create_buffs()
   buff.ferociousness = make_buff_fallback( talent.windwalker.ferociousness->ok(), this, "ferociousness",
                                            talent.windwalker.ferociousness )
                            ->set_quiet( true )
+                           ->set_default_value_from_effect( 1 )
                            ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
-                             self->set_default_value_from_effect( 1 );
+                             double old_value    = self->current_value;
+                             self->current_value = self->default_value;
 
                              if ( buff.invoke_xuen->up() )
-                               self->modify_default_value( self->data().effectN( 2 ).percent() );
+                               self->current_value *= 1 + self->data().effectN( 2 ).percent();
+
+                             if ( old_value != self->current_value )
+                               self->invalidate_cache();
                            } )
                            ->set_cooldown( timespan_t::zero() )
                            ->set_duration( timespan_t::zero() )
                            ->set_period( timespan_t::from_seconds( 1 ) )
-                           ->set_tick_behavior( buff_tick_behavior::CLIP );
+                           ->set_tick_behavior( buff_tick_behavior::CLIP )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.flying_serpent_kick_movement = make_buff_fallback( spec.flying_serpent_kick->ok(), this,
                                                           "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
@@ -8985,10 +8990,11 @@ stat_e monk_t::convert_hybrid_stat( stat_e s ) const
 
 void monk_t::combat_begin()
 {
-  base_t::combat_begin();
-
+  // Trigger Ferociousness precombat
   if ( talent.windwalker.ferociousness->ok() )
     buff.ferociousness->trigger();
+
+  base_t::combat_begin();
 
   if ( talent.general.windwalking->ok() )
   {
