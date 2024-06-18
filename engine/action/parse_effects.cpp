@@ -124,7 +124,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
            ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
              ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
              ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() ) )
     {
       double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 

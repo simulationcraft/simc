@@ -1301,6 +1301,7 @@ public:
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
+  void adjust_health_pct( double, bool );
   const spell_data_t* apply_override( const spell_data_t* base, const spell_data_t* passive ) const;
   bool uses_form( specialization_e spec, std::string_view name, action_t* action ) const;
   bool uses_cat_form() const;
@@ -3226,39 +3227,6 @@ struct shooting_stars_buff_t : public druid_buff_t
 
     for ( size_t i = 0; i < procs; i++ )
       damage->execute_on_target( dot_list[ i ]->target );
-  }
-};
-
-// Ursine Vigor =============================================================
-struct ursine_vigor_buff_t : public druid_buff_t
-{
-  double hp_mul = 1.0;
-
-  ursine_vigor_buff_t( druid_t* p )
-    : base_t( p, "ursine_vigor", find_trigger( p->talent.ursine_vigor ).trigger() )
-  {
-    set_default_value( find_trigger( p->talent.ursine_vigor ).percent() );
-    add_invalidate( CACHE_ARMOR );
-
-    hp_mul += default_value;
-  }
-
-  void start( int s, double v, timespan_t d ) override
-  {
-    base_t::start( s, v, d );
-
-    p()->resources.max[ RESOURCE_HEALTH ] *= hp_mul;
-    p()->resources.current[ RESOURCE_HEALTH ] *= hp_mul;
-    p()->recalculate_resource_max( RESOURCE_HEALTH );
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    p()->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
-    p()->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
-    p()->recalculate_resource_max( RESOURCE_HEALTH );
-
-    base_t::expire_override( s, d );
   }
 };
 }  // end namespace buffs
@@ -10059,7 +10027,17 @@ void druid_t::create_buffs()
       b->current_value -= b->data().effectN( 2 ).percent();
     } );
 
-  buff.ursine_vigor = make_fallback<ursine_vigor_buff_t>( talent.ursine_vigor.ok(), this, "ursine_vigor" );
+  buff.ursine_vigor =
+    make_fallback( talent.ursine_vigor.ok(), this, "ursine_vigor", find_trigger( talent.ursine_vigor ).trigger() )
+      ->set_stack_change_callback(
+        [ this,
+          mul = 1.0 + find_trigger( talent.ursine_vigor ).percent() ]
+        ( buff_t*, int old_, int new_ ) {
+          if ( !old_ )
+            adjust_health_pct( mul, true );
+          else if ( !new_ )
+            adjust_health_pct( mul, false );
+        } );
 
   buff.wild_charge_movement = make_fallback( talent.wild_charge.ok(), this, "wild_charge_movement" );
 
@@ -10443,17 +10421,9 @@ void druid_t::create_buffs()
         ( buff_t*, int old_, int new_ ) {
           berserk_cd_fn();
           if ( !old_ )
-          {
-            resources.max[ RESOURCE_HEALTH ] *= mul;
-            resources.current[ RESOURCE_HEALTH ] *= mul;
-            recalculate_resource_max( RESOURCE_HEALTH );
-          }
+            adjust_health_pct( mul, true );
           else if ( !new_ )
-          {
-            resources.max[ RESOURCE_HEALTH ] /= mul;
-            resources.current[ RESOURCE_HEALTH ] /= mul;
-            recalculate_resource_max( RESOURCE_HEALTH );
-          }
+            adjust_health_pct( mul, false );
         } );
 
   buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
@@ -12836,6 +12806,22 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
   w.swing_time = timespan_t::from_seconds( swing_time );
 }
 
+void druid_t::adjust_health_pct( double mul, bool increase )
+{
+  if ( increase )
+  {
+    resources.max[ RESOURCE_HEALTH ] *= mul;
+    resources.current[ RESOURCE_HEALTH ] *= mul;
+  }
+  else
+  {
+    resources.max[ RESOURCE_HEALTH ] /= mul;
+    resources.current[ RESOURCE_HEALTH ] /= mul;
+  }
+
+  recalculate_resource_max( RESOURCE_HEALTH );
+}
+
 const spell_data_t* druid_t::apply_override( const spell_data_t* base, const spell_data_t* passive ) const
 {
   if ( !passive->ok() )
@@ -13629,7 +13615,7 @@ void druid_t::parse_player_effects()
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.strategic_infusion );
-  parse_effects( buff.ursine_vigor, USE_DEFAULT );
+  parse_effects( buff.ursine_vigor, talent.ursine_vigor );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),       // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
                  buff.wildshape_mastery->data().effectN( 1 ).percent() );
