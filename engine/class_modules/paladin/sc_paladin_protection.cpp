@@ -908,8 +908,10 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       p()->active.forges_reckoning->execute_on_target(target);
     }
-
-    p()->trigger_empyrean_hammer( target, 1, 300_ms );
+    if ( p()->talents.templar.hammerfall->ok() )
+    {
+      p()->trigger_empyrean_hammer( target, 1, 300_ms );
+    }
 
   }
 
