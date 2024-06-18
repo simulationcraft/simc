@@ -74,6 +74,8 @@ enum flag_e : uint32_t
   // free casts
   APEX         = 0x01000000,  // apex predators's craving
   TOOTHANDCLAW = 0x02000000,  // tooth and claw talent
+  // misc
+  UMBRAL       = 0x10000000,  // umbral embrace talent
 
   FREE_PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT | TWIN | TREANT | LIGHTOFELUNE,
   FREE_CASTS = APEX | TOOTHANDCLAW
@@ -224,7 +226,7 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags & ( flag_e::FREE_PROCS | flag_e::FREE_CASTS ); }
+  bool is_free() const { return action_flags >> 3; }  // first 3 bits are not cost related
 };
 
 struct eclipse_handler_t
@@ -541,11 +543,11 @@ public:
     action_t* denizen_of_the_dream;  // placeholder action
     action_t* moons;                 // placeholder action
     action_t* orbit_breaker;
+    action_t* orbital_strike;
     action_t* shooting_stars;        // placeholder action
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
     action_t* sundered_firmament;
-    action_t* orbital_strike;
 
     // Feral
     action_t* ferocious_bite_apex;  // free bite from apex predator's crazing
@@ -4349,6 +4351,7 @@ struct ferocious_bite_t : public ferocious_bite_base_t
     if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->check() &&
          p()->buff.apex_predators_craving->can_expire( this ) )
     {
+      p()->last_foreground_action = p()->active.ferocious_bite_apex;
       p()->active.ferocious_bite_apex->execute_on_target( target );
       p()->buff.apex_predators_craving->expire();
       return;
@@ -5233,6 +5236,7 @@ struct maul_t : public maul_base_t
     if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
          p()->buff.tooth_and_claw->can_expire( this ) )
     {
+      p()->last_foreground_action = p()->active.maul_tooth_and_claw;
       p()->active.maul_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
       return;
@@ -5340,6 +5344,7 @@ struct raze_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
          p()->buff.tooth_and_claw->can_expire( this ) )
     {
+      p()->last_foreground_action = p()->active.raze_tooth_and_claw;
       p()->active.raze_tooth_and_claw->execute_on_target( target );
       p()->buff.tooth_and_claw->decrement();  // TODO: adjust if cases arise where it doesn't consume
       return;
@@ -6351,11 +6356,10 @@ public:
   }
 };
 
-template <eclipse_e E>
 struct ap_generator_t : public druid_spell_t
 {
 protected:
-  using base_t = ap_generator_t<E>;
+  using base_t = ap_generator_t;
 
 public:
   double smolder_mul;
@@ -6368,44 +6372,6 @@ public:
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
     parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; } );
-
-    const spell_data_t* other_ecl;
-    dot_t* druid_td_t::dots_t::* other_dot;
-    const spell_data_t* other_dmg;;
-
-    if constexpr ( E == eclipse_e::LUNAR )
-    {
-      other_ecl = p->spec.eclipse_solar;
-      other_dot = &druid_td_t::dots_t::sunfire;
-      other_dmg = p->spec.sunfire_dmg;
-    }
-    else if constexpr ( E == eclipse_e::SOLAR )
-    {
-      other_ecl = p->spec.eclipse_lunar;
-      other_dot = &druid_td_t::dots_t::moonfire;
-      other_dmg = p->spec.moonfire_dmg;
-    }
-
-    // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
-    if ( p->talent.umbral_embrace.ok() )
-    {
-      add_parse_entry( da_multiplier_effects )
-        .set_value( find_effect( p->talent.umbral_embrace, p->buff.umbral_embrace ).percent() )
-        .set_use_stacks( false )
-        .set_func( [ this ] { return umbral_embrace_check(); } )
-        .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
-
-      force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
-
-      force_target_effect( [ this, other_dot ]( actor_target_data_t* t ) {
-        return umbral_embrace_check() && std::invoke( other_dot, static_cast<druid_td_t*>( t )->dots )->is_ticking();
-      }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
-    }
-  }
-
-  bool umbral_embrace_check()
-  {
-    return p()->buff.umbral_embrace->check() && p()->eclipse_handler.in_eclipse();
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -6417,25 +6383,12 @@ public:
 
   void execute() override
   {
-    auto embrace = umbral_embrace_check();
-    if ( embrace )
-      set_school_override( SCHOOL_ASTRAL );
-
     druid_spell_t::execute();
 
     if ( dreamstate && p()->buff.dreamstate->can_expire( this ) )
       p()->buff.dreamstate->decrement();
 
     dreamstate = false;
-
-    if ( embrace && p()->buff.umbral_embrace->can_expire( this ) )
-    {
-      clear_school_override();
-      p()->buff.umbral_embrace->expire();
-      p()->buff.umbral_inspiration->trigger();
-    }
-
-    p()->buff.umbral_embrace->trigger( this );
   }
 
   void impact( action_state_t* s ) override
@@ -6459,6 +6412,121 @@ public:
   void cancel() override { druid_spell_t::cancel(); dreamstate = false; }
 
   void interrupt_action() override { druid_spell_t::interrupt_action(); dreamstate = false; }
+};
+
+template <eclipse_e E, typename BASE>
+struct umbral_embrace_t : public BASE
+{
+protected:
+  using base_t = umbral_embrace_t<E, BASE>;
+
+public:
+  struct _umbral_t : public BASE
+  {
+    _umbral_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::UMBRAL )
+    {
+      BASE::set_school( SCHOOL_ASTRAL );
+      BASE::name_str_reporting = "Umbral";
+
+      const spell_data_t* other_ecl;
+      dot_t* druid_td_t::dots_t::*other_dot;
+      const spell_data_t* other_dmg;
+
+      if constexpr ( E == eclipse_e::LUNAR )
+      {
+        other_ecl = p->spec.eclipse_solar;
+        other_dot = &druid_td_t::dots_t::sunfire;
+        other_dmg = p->spec.sunfire_dmg;
+      }
+      else if constexpr ( E == eclipse_e::SOLAR )
+      {
+        other_ecl = p->spec.eclipse_lunar;
+        other_dot = &druid_td_t::dots_t::moonfire;
+        other_dmg = p->spec.moonfire_dmg;
+      }
+
+      // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
+      // NOTE: currently bugged and not affected by opposite passive mastery
+      add_parse_entry( BASE::da_multiplier_effects )
+        .set_value( find_effect( p->talent.umbral_embrace, p->buff.umbral_embrace ).percent() )
+        .set_func( [ this ] { return umbral_embrace_check(); } )
+        .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
+
+      BASE::force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
+
+      BASE::force_target_effect( [ this, other_dot ]( actor_target_data_t* t ) {
+        return umbral_embrace_check() && std::invoke( other_dot, static_cast<druid_td_t*>( t )->dots )->is_ticking();
+      }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
+    }
+
+    bool umbral_embrace_check()
+    {
+      return BASE::p()->buff.umbral_embrace->check() && BASE::p()->eclipse_handler.in_eclipse();
+    }
+
+    // the school change effect is handled differently than damage buff effect, and will lead to 'false' casts where the
+    // school is astral, but the damage bonus does not apply. for now we can treat this as purely cosmetic as all
+    // currently applicable school based damage snapshots on cast.
+    bool umbral_embrace_false_check()
+    {
+      return BASE::p()->buff.umbral_embrace->check() &&
+             ( BASE::p()->buff.umbral_embrace->check_value() || BASE::p()->eclipse_handler.in_eclipse() );
+    }
+
+    void umbral_embrace_trigger( action_t* a )
+    {
+      BASE::p()->buff.umbral_embrace->trigger( a, 1, BASE::p()->eclipse_handler.in_eclipse() );
+    }
+  };
+
+  _umbral_t* umbral = nullptr;
+  proc_t* fake_umbral = nullptr;
+
+  umbral_embrace_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : BASE( n, p, s, f )
+  {
+    if ( p->talent.umbral_embrace.ok() )
+    {
+      umbral = p->get_secondary_action<_umbral_t>( BASE::name_str + "_umbral", s );
+      BASE::add_child( umbral );
+
+      fake_umbral = BASE::p()->get_proc( util::inverse_tokenize( BASE::name_str ) + " (False Astral)" );
+    }
+  }
+
+  void execute() override
+  {
+    if ( umbral )
+    {
+      if ( umbral->umbral_embrace_check() )
+      {
+        BASE::p()->last_foreground_action = umbral;
+        umbral->time_to_execute = BASE::time_to_execute;
+        umbral->dreamstate = BASE::dreamstate;
+        umbral->execute_on_target( BASE::target );
+
+        if ( BASE::p()->buff.umbral_embrace->can_expire( this ) )
+        {
+          BASE::p()->buff.umbral_embrace->expire( this );
+          BASE::p()->buff.umbral_inspiration->trigger();
+        }
+
+        umbral->umbral_embrace_trigger( this );
+        return;
+      }
+      else if ( umbral->umbral_embrace_false_check() )
+      {
+        fake_umbral->occur();
+      }
+
+      BASE::execute();
+
+      umbral->umbral_embrace_trigger( this );
+    }
+    else
+    {
+      BASE::execute();
+    }
+  }
 };
 
 // Astral Smolder ===========================================================
@@ -7720,14 +7788,15 @@ struct starfall_t : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::LUNAR>>
+struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 {
   const modified_spelleffect_t* aoe_eff;
   double smolder_mul;
   double sotf_mul;
   unsigned sotf_cap;
 
-  DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ),
+  starfire_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : base_t( n, p, s, f ),
     smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
     sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
     sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
@@ -7865,6 +7934,11 @@ struct starfire_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclips
 
     return cam;
   }
+};
+
+struct starfire_t : public umbral_embrace_t<eclipse_e::LUNAR, starfire_base_t>
+{
+  DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ) {}
 };
 
 // Starsurge Spell ==========================================================
@@ -8248,13 +8322,13 @@ struct wild_mushroom_t : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e::SOLAR>>
+struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 {
   double smolder_mul;
   unsigned count = 0;
 
-  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ),
-    smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+  wrath_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : base_t( n, p, s, f ), smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
@@ -8346,7 +8420,11 @@ struct wrath_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t<eclipse_e
 
     base_t::schedule_travel( s );
   }
+};
 
+struct wrath_t : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
+{
+  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ) {}
 };
 
 // Convoke the Spirits ======================================================
@@ -10621,23 +10699,24 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
   buff.treants_of_the_moon = make_fallback<treants_of_the_moon_buff_t>(
-    talent.treants_of_the_moon.ok() || talent.grove_guardians.ok(), this, "treants_of_the_moon" )
-      ->set_quiet( true )
-      ->set_period( 1.5_s )
-      ->set_freeze_stacks( true )
-      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-        for ( auto pet : static_cast<treants_of_the_moon_buff_t*>( b )->data )
-        {
-          if ( pet->mf_cd->up() )
+    talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
+      this, "treants_of_the_moon" )
+        ->set_quiet( true )
+        ->set_period( 1.5_s )
+        ->set_freeze_stacks( true )
+        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+          for ( auto pet : static_cast<treants_of_the_moon_buff_t*>( b )->data )
           {
-            pet->mf_cd->start();
+            if ( pet->mf_cd->up() )
+            {
+              pet->mf_cd->start();
 
-            auto mf = active.treants_of_the_moon_mf;
-            if ( auto tar = get_smart_target( mf->target_list(), &druid_td_t::dots_t::moonfire, nullptr, 0.0, true ) )
-              mf->execute_on_target( tar );
+              auto mf = active.treants_of_the_moon_mf;
+              if ( auto tar = get_smart_target( mf->target_list(), &druid_td_t::dots_t::moonfire, nullptr, 0.0, true ) )
+                mf->execute_on_target( tar );
+            }
           }
-        }
-      } );
+        } );
 
   buff.feline_potential = make_fallback( talent.wildpower_surge.ok() && specialization() == DRUID_GUARDIAN,
     this, "feline_potential", find_spell( 441702 ) )
