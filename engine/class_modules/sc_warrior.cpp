@@ -196,7 +196,7 @@ T_CONTAINER* get_data_entry( util::string_view name, std::vector<T_DATA*>& entri
   return &( entries.back()->second );
 }
 
-struct warrior_t : public player_t
+struct warrior_t : public parse_player_effects_t
 {
 public:
   std::vector<attack_t*> rampage_attacks;
@@ -809,7 +809,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   warrior_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF )
-    : player_t( sim, WARRIOR, name, r ),
+    : parse_player_effects_t( sim, WARRIOR, name, r ),
       rampage_attacks( 0 ),
       first_rampage_attack_missed( false ),
       active(),
@@ -837,6 +837,7 @@ public:
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;
+  void init_finished() override;
   void init_gains() override;
   void init_position() override;
   void init_procs() override;
@@ -860,7 +861,6 @@ public:
   double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
-  double composite_melee_expertise( const weapon_t* ) const override;
   double composite_attack_power_multiplier() const override;
   // double composite_melee_attack_power() const override;
   double composite_mastery() const override;
@@ -868,7 +868,6 @@ public:
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
-  double composite_crit_avoidance() const override;
   // double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
@@ -905,6 +904,7 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void apply_affecting_auras( action_t& action ) override;
+  void parse_player_effects();
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -7434,6 +7434,14 @@ void warrior_t::create_buffs()
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
 }
+
+// warrior_t::init_finished =============================================
+void warrior_t::init_finished()
+{
+  parse_player_effects();
+  player_t::init_finished();
+}
+
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
 {
@@ -7992,17 +8000,6 @@ double warrior_t::composite_melee_haste() const
   return a;
 }
 
-// warrior_t::composite_melee_expertise =====================================
-
-double warrior_t::composite_melee_expertise( const weapon_t* ) const
-{
-  double e = player_t::composite_melee_expertise();
-
-  e += spec.protection_warrior->effectN( 7 ).percent();
-
-  return e;
-}
-
 // warrior_t::composite_mastery =============================================
 
 double warrior_t::composite_mastery() const
@@ -8274,15 +8271,6 @@ double warrior_t::composite_crit_block() const
   return b;
 }
 
-// warrior_t::composite_crit_avoidance ===========================================
-
-double warrior_t::composite_crit_avoidance() const
-{
-  double c = player_t::composite_crit_avoidance();
-  c += spec.protection_warrior->effectN( 7 ).percent();
-  return c;
-}
-
 // warrior_t::composite_melee_auto_attack_speed ==================================
 /*
 double warrior_t::composite_melee_auto_attack_speed() const
@@ -8432,7 +8420,7 @@ double warrior_t::non_stacking_movement_modifier() const
 
 void warrior_t::invalidate_cache( cache_e c )
 {
-  player_t::invalidate_cache( c );
+  parse_player_effects_t::invalidate_cache( c );
 
   if ( mastery.critical_block->ok() )
   {
@@ -8624,6 +8612,24 @@ void warrior_t::copy_from( player_t* source )
   never_surrender_percentage = p -> never_surrender_percentage;
 }
 
+void warrior_t::parse_player_effects()
+{
+  parse_effects( spec.warrior );
+
+  if ( specialization() == WARRIOR_ARMS )
+  {
+    parse_effects( spec.arms_warrior );
+  }
+  else if ( specialization() == WARRIOR_FURY )
+  {
+    parse_effects( spec.fury_warrior );
+  }
+  else if ( specialization() == WARRIOR_PROTECTION )
+  {
+    parse_effects( spec.protection_warrior );
+  }
+}
+
 void warrior_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -8788,7 +8794,7 @@ public:
 
       os << "<div class=\"clear\"></div>\n";
     }
-
+    p.parsed_effects_html( os );
     os << "\t\t\t\t\t</div>\n";
   }
 
