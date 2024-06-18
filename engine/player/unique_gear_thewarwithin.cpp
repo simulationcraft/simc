@@ -1715,12 +1715,12 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
       if ( silvervein )
       {
-        silvervein_spawner.set_creation_callback( [ this, e ]( player_t* ) { return new silvervein_pet_t( e, this ); } );
+        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this ); } );
         silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
       }
       if ( boulderbane )
       {
-        boulderbane_spawner.set_creation_callback( [ this, e ]( player_t* ) { return new boulderbane_pet_t( e, this ); } );
+        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this ); } );
         boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
         add_child( earthen_ire_damage );
       }
