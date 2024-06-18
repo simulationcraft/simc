@@ -4676,7 +4676,6 @@ struct blood_shield_buff_t final : public absorb_buff_t
       if ( dk->talent.blood.consumption.ok() )
         dk->cooldown.consumption->reset( true );
     }
-
   }
 };
 

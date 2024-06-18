@@ -1650,7 +1650,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct sigil_of_algari_concordance_t : public generic_proc_t
   {
-    const special_effect_t& effect;
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
     bool silvervein;
@@ -1658,7 +1657,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
-        effect( e ),
         silvervein_spawner( "silvervein", e.player ),
         boulderbane_spawner( "boulderbane", e.player ),
         silvervein( false ),
@@ -1717,12 +1715,12 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
       if ( silvervein )
       {
-        silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
+        silvervein_spawner.set_creation_callback( [ this, e ]( player_t* ) { return new silvervein_pet_t( e, this ); } );
         silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
       }
       if ( boulderbane )
       {
-        boulderbane_spawner.set_creation_callback( [ this ]( player_t* ) { return new boulderbane_pet_t( effect, this ); } );
+        boulderbane_spawner.set_creation_callback( [ this, e ]( player_t* ) { return new boulderbane_pet_t( e, this ); } );
         boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
         add_child( earthen_ire_damage );
       }
@@ -1813,6 +1811,7 @@ void ravenous_honey_buzzer( special_effect_t& e )
 // 443411 Use Driver
 // 446764 Equip Driver
 // 446811 Use Damage
+// 449842 Ground Effect Trigger
 // 449828 Equip Damage
 // 450453 Equip Buff
 void overclocked_geararang_launcher( special_effect_t& e )
@@ -1822,13 +1821,9 @@ void overclocked_geararang_launcher( special_effect_t& e )
     buff_t* buff;
     action_t* overclock_strike;
 
-    overclocked_strike_cb_t( const special_effect_t& e, const spell_data_t* equip_driver, buff_t* buff )
-      : dbc_proc_callback_t( e.player, e ),
-      buff( buff ), overclock_strike( nullptr )
+    overclocked_strike_cb_t( const special_effect_t& e, buff_t* buff, action_t* strike )
+      : dbc_proc_callback_t( e.player, e ), buff( buff ), overclock_strike( strike )
     {
-      overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
-      overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
-      overclock_strike->base_multiplier *= role_mult( e );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -1859,6 +1854,30 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   };
 
+  struct geararang_launcher_t : public generic_proc_t
+  {
+    ground_aoe_params_t params;
+    geararang_launcher_t( const special_effect_t& e, const spell_data_t* data, action_t* equip_damage )
+      : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
+    {
+      auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+      auto ground_effect = e.player->find_spell( 449842 );
+      params.action( damage ).duration( ground_effect->duration() );
+      cooldown->duration = 0_ms;  // Handled by the item
+      add_child( damage );
+      add_child( equip_damage );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      make_event<ground_aoe_event_t>( *sim, player,
+                                      params.target( s->target ).x( s->target->x_position ).y( s->target->y_position ),
+                                      true /* Immediate pulse */ );
+    }
+  };
+
   unsigned equip_id = 446764;
   auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Overclocked Gear-a-Rang missing equip effect" );
@@ -1868,13 +1887,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
   auto damage_buff_spell = e.player->find_spell( 450453 );
   auto overclock_buff    = create_buff<buff_t>( e.player, damage_buff_spell );
 
-  auto damage            = new special_effect_t( e.player );
-  damage->name_str       = "overclocked_strike_proc";
-  damage->item           = e.item;
-  damage->spell_id       = damage_buff_spell->id();
+  auto overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
+  overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+  overclock_strike->base_multiplier *= role_mult( e );
+
+  auto damage      = new special_effect_t( e.player );
+  damage->name_str = "overclocked_strike_proc";
+  damage->item     = e.item;
+  damage->spell_id = damage_buff_spell->id();
   e.player->special_effects.push_back( damage );
 
-  auto damage_cb = new overclocked_strike_cb_t( *damage, equip_driver, overclock_buff );
+  auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );
   damage_cb->initialize();
   damage_cb->deactivate();
 
@@ -1889,19 +1912,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   } );
 
-  auto overclock         = new special_effect_t( e.player );
-  overclock->name_str    = "overclock";
-  overclock->item        = e.item;
-  overclock->spell_id    = equip_driver->id();
+  auto overclock      = new special_effect_t( e.player );
+  overclock->name_str = "overclock";
+  overclock->item     = e.item;
+  overclock->spell_id = equip_driver->id();
   e.player->special_effects.push_back( overclock );
 
   auto overclock_cb = new overclock_cb_t( *overclock, e, overclock_buff );
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  // Might be worth converting to a poper ground effect event later. For now, this is close enough.
-  auto use_damage  = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
-  e.execute_action = use_damage;
+  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, e.driver(), overclock_strike );
 }
 
 // Remnant of Darkness
