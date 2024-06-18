@@ -795,6 +795,15 @@ public:
       player_talent_t clash;
     } general;
 
+    struct
+    {
+      player_talent_t chi_wave;
+      const spell_data_t *chi_wave_buff;
+      const spell_data_t *chi_wave_driver;
+      const spell_data_t *chi_wave_damage;
+      const spell_data_t *chi_wave_heal;
+    } monk;
+
     // Brewmaster
     struct
     {

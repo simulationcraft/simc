@@ -1,14 +1,13 @@
 max_time=400
 vary_combat_length=0.0
 override.target_health=0.05
-enable_all_talents=1
-
 
 monk="TWW Brewmaster Test"
 spec=brewmaster
 level=80
 race=tauren
 load_default_gear=1
+enable_all_talents=1
 
 # spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0

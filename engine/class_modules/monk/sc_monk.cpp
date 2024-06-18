@@ -127,8 +127,6 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
   apply_affecting_aura( p()->baseline.windwalker.aura );
 
-  // TODO: Move to Fort Brew
-  apply_affecting_aura( p()->talents.monk.expeditious_fortification );
   apply_affecting_aura( p()->talents.monk.chi_proficiency );
 
   //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
@@ -1750,12 +1748,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->buff.press_the_advantage->expire();
     }
 
-    if ( p()->buff.chi_wave->up() )
-    {
-      p()->active_actions.chi_wave->set_target( target );
-      p()->active_actions.chi_wave->schedule_execute();
-      p()->buff.chi_wave->expire();
-    }
+    p()->active_actions.chi_wave->execute();
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       p()->buff.ordered_elements->trigger();
@@ -4067,7 +4060,9 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 
     harmful = may_crit = false;
 
+    apply_affecting_aura( p->talents.monk.expeditious_fortification );
     apply_affecting_aura( p->talents.monk.ironshell_brew );
+    apply_affecting_aura( p->talent.brewmaster.fortifying_brew_determination );
   }
 
   void execute() override
@@ -5035,12 +5030,7 @@ struct vivify_t : public monk_heal_t
     if ( p()->mastery.gust_of_mists->ok() )
       mastery->execute();
 
-    if ( p()->buff.chi_wave->up() )
-    {
-      p()->active_actions.chi_wave->set_target( this->execute_state->target );
-      p()->active_actions.chi_wave->schedule_execute();
-      p()->buff.chi_wave->expire();
-    }
+    p()->active_actions.chi_wave->execute();
   }
 };
 
@@ -5399,85 +5389,67 @@ struct zen_pulse_t : public monk_spell_t
 // ==========================================================================
 // Chi Wave
 // ==========================================================================
-
-struct chi_wave_heal_tick_t : public monk_heal_t
-{
-  chi_wave_heal_tick_t( monk_t *p, util::string_view name ) : monk_heal_t( p, name, p->passives.chi_wave_heal )
-  {
-    background = direct_tick = true;
-    target                   = player;
-  }
-};
-
-struct chi_wave_dmg_tick_t : public monk_spell_t
-{
-  chi_wave_dmg_tick_t( monk_t *player, util::string_view name )
-    : monk_spell_t( player, name, player->passives.chi_wave_damage )
-  {
-    background              = true;
-    ww_mastery              = true;
-    attack_power_mod.direct = player->passives.chi_wave_damage->effectN( 1 ).ap_coeff();
-    attack_power_mod.tick   = 0;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    return am;
-  }
-};
-
 struct chi_wave_t : public monk_spell_t
 {
-  heal_t *heal;
-  spell_t *damage;
+  template <class TBase>
+  struct bounce_t : TBase
+  {
+    using TBase::execute;
+    std::function<void( unsigned )> other_cb;
+    std::function<void( unsigned )> this_cb;
+    unsigned count;
 
-  int bounces;
-  bool dmg;
+    bounce_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "chi_wave_{}", name ), spell_data ), count( 0 )
+    {
+      TBase::dual         = true;
+      TBase::travel_speed = player->talent.monk.chi_wave_driver->missile_speed();
+      this_cb             = [ this ]( unsigned new_count ) { this->execute( new_count ); };
+    }
+
+    void execute( unsigned new_count )
+    {
+      count = new_count;
+      if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
+        return;
+      TBase::execute();
+    }
+
+    void impact( action_state_t *state )
+    {
+      TBase::impact( state );
+      other_cb( ++count );
+    }
+  };
+
+  bounce_t<monk_heal_t> *heal;
+  bounce_t<monk_spell_t> *damage;
 
   chi_wave_t( monk_t *player )
     : monk_spell_t( player, "chi_wave", player->passives.chi_wave_driver ),
-      heal( new chi_wave_heal_tick_t( player, "chi_wave_heal" ) ),
-      damage( new chi_wave_dmg_tick_t( player, "chi_wave_damage" ) ),
-      dmg( true ),
-      bounces( data().effectN( 1 ).base_value() )
+      heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
+      damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
   {
-    sef_ability = actions::sef_ability_e::SEF_CHI_WAVE;
+    sef_ability      = actions::sef_ability_e::SEF_CHI_WAVE;
+    background       = true;
+    may_combo_strike = false;
 
-    background   = true;
-    hasted_ticks = harmful = false;
-    cooldown->hasted       = false;
-    tick_zero              = true;
-    may_combo_strike       = false;
-
-    int total_ticks = 1 + bounces;
-    dot_duration    = timespan_t::from_seconds( bounces );
-    base_tick_time  = dot_duration / total_ticks;
-
-    gcd_type = gcd_haste_type::NONE;
-
-    add_child( heal );
-    add_child( damage );
+    heal->other_cb   = damage->this_cb;
+    damage->other_cb = heal->this_cb;
+    stats            = damage->stats;
   }
 
-  void impact( action_state_t *s ) override
+  void execute() override
   {
-    dmg = true;  // Set flag so that the first tick does damage
+    if ( !p()->buff.chi_wave->up() )
+      return;
+    p()->buff.chi_wave->expire();
+    monk_spell_t::execute();
 
-    monk_spell_t::impact( s );
-  }
-
-  void tick( dot_t *d ) override
-  {
-    monk_spell_t::tick( d );
-    // Select appropriate tick action
-    if ( dmg )
-      damage->execute();
+    if ( player->target->is_enemy() )
+      damage->execute( 0 );
     else
-      heal->execute();
-
-    dmg = !dmg;  // Invert flag for next use
+      heal->execute( 0 );
   }
 };
 
@@ -7023,6 +6995,12 @@ void monk_t::init_spells()
   talents.monk.chi_proficiency           = _CT( "Chi Proficiency" );
   talents.monk.martial_instincts         = _CT( "Martial Instincts" );
 
+  talent.monk.chi_wave        = _CT( "Chi Wave" );
+  talent.monk.chi_wave_buff   = find_spell( 450380 );
+  talent.monk.chi_wave_driver = find_spell( 115098 );
+  talent.monk.chi_wave_damage = find_spell( 132467 );
+  talent.monk.chi_wave_heal   = find_spell( 132463 );
+
   // monk_t::talent::brewmaster
   talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
   talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
@@ -7424,18 +7402,15 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
-  passives.chi_burst_energize        = find_spell( 261682 );
-  passives.chi_burst_heal            = find_spell( 130654 );
-  passives.chi_wave_driver           = find_spell( 115098 );
-  passives.chi_wave_damage           = find_spell( 132467 );
-  passives.chi_wave_heal             = find_spell( 132463 );
-  passives.claw_of_the_white_tiger   = find_spell( 389541 );
-  passives.chi_burst_damage          = find_spell( 148135 );
-  passives.jadefire_stomp_damage     = find_spell( 388207 );
-  passives.healing_elixir            = find_spell( 122281 );
-  passives.mystic_touch              = find_spell( 8647 );
-  passives.rushing_jade_wind         = find_spell( 116847 );
-  passives.rushing_jade_wind_tick    = find_spell( 148187 );
+  passives.chi_burst_energize      = find_spell( 261682 );
+  passives.chi_burst_heal          = find_spell( 130654 );
+  passives.claw_of_the_white_tiger = find_spell( 389541 );
+  passives.chi_burst_damage        = find_spell( 148135 );
+  passives.jadefire_stomp_damage   = find_spell( 388207 );
+  passives.healing_elixir          = find_spell( 122281 );
+  passives.mystic_touch            = find_spell( 8647 );
+  passives.rushing_jade_wind       = find_spell( 116847 );
+  passives.rushing_jade_wind_tick  = find_spell( 148187 );
 
   // Brewmaster
   passives.breath_of_fire_dot           = find_spell( 123725 );
@@ -7816,9 +7791,7 @@ void monk_t::create_buffs()
                          ->set_trigger_spell( talent.general.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
 
-  buff.chi_wave = make_buff( this, "chi_wave", find_spell( 450380 ) )
-                      ->set_trigger_spell( talent.general.chi_wave )
-                      ->set_default_value_from_effect( 1 );
+  buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
 
   buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
                          ->set_trigger_spell( talent.windwalker.dual_threat )
