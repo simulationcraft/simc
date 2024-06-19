@@ -1578,7 +1578,7 @@ public:
     {
       should_continue = false;
       // Shining Light is now consumed before Divine Purpose 2020-11-01
-      p->buffs.shining_light_free->expire();
+      p->buffs.shining_light_free->decrement();
     }
 
     if ( p->buffs.bastion_of_light->check() && should_continue )
