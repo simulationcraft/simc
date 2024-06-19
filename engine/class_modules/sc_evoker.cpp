@@ -5962,11 +5962,7 @@ public:
     background                        = true;
     aoe                               = -1;
     split_aoe_damage                  = true;
-
-    base_dd_multiplier = 1.85; // Bug?
   }
-
-  // TODO: MELT ARMOR
 
   void init() override
   {
@@ -5991,7 +5987,11 @@ public:
     return cd;
   }
 
-  
+  bool use_full_mastery() const
+  {
+    return evoker && evoker->talent.tyranny.ok() && evoker->buff.dragonrage->check();
+  }
+   
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = base::composite_target_multiplier( t );
@@ -5999,15 +5999,30 @@ public:
     if ( evoker )
     {
       auto td = evoker->get_target_data( t );
+
       if ( td && td->debuffs.melt_armor->check() )
       {
         tm *= 1 + td->debuffs.melt_armor->check_value();
+      }
+
+      if ( td && td->dots.fire_breath->is_ticking() )
+      {
+        tm *= 1 + evoker->talent.molten_embers->effectN( 1 ).percent();
       }
 
       if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
       {
         tm *= 1 + evoker->talent.scalecommander.might_of_the_black_dragonflight->effectN( 1 ).percent();
       }
+
+      // No mastery yet
+      /* if ( evoker->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( use_full_mastery() )
+          tm *= 1.0 + evoker->cache.mastery_value();
+        else
+          tm *= 1.0 + evoker->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
+      }*/
     }
     
     return tm;
