@@ -203,8 +203,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 struct monk_heal_t : public monk_action_t<heal_t>
 {
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double composite_target_multiplier( player_t *target ) const override;
-  double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *action_state ) const override;
   double action_multiplier() const override;
 };
@@ -558,7 +556,7 @@ public:
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
     propagate_const<buff_t *> gift_of_the_ox;
-    propagate_const<buff_t *> expel_harm_helper;
+    propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
     propagate_const<buff_t *> press_the_advantage;
@@ -771,7 +769,6 @@ public:
       // Row 8
       player_talent_t save_them_all;
       player_talent_t swift_art;
-      player_talent_t strength_of_spirit;
       player_talent_t profound_rebuttal;
       player_talent_t summon_black_ox_statue;
       player_talent_t summon_jade_serpent_statue;
@@ -794,6 +791,25 @@ public:
       player_talent_t rushing_reflexes;
       player_talent_t clash;
     } general;
+
+    struct
+    {
+      player_talent_t chi_wave;
+      const spell_data_t *chi_wave_buff;
+      const spell_data_t *chi_wave_driver;
+      const spell_data_t *chi_wave_damage;
+      const spell_data_t *chi_wave_heal;
+      player_talent_t strength_of_spirit;
+
+      player_talent_t fortifying_brew;
+      const spell_data_t *fortifying_brew_buff;
+      player_talent_t ironshell_brew;
+      player_talent_t expeditious_fortification;
+      player_talent_t chi_proficiency;
+      player_talent_t martial_instincts;
+      player_talent_t vigorous_expulsion;
+      player_talent_t profound_rebuttal;
+    } monk;
 
     // Brewmaster
     struct
@@ -941,6 +957,7 @@ public:
       // Row 2
       player_talent_t momentum_boost;
       player_talent_t combat_wisdom;
+      const spell_data_t *combat_wisdom_expel_harm;
       player_talent_t acclamation;
       // Row 3
       player_talent_t touch_of_the_tiger;
@@ -1168,47 +1185,12 @@ public:
   {
     struct
     {
-      player_talent_t fortifying_brew;
-      const spell_data_t *fortifying_brew_buff;
-      player_talent_t ironshell_brew;
-      player_talent_t expeditious_fortification;
-      player_talent_t chi_proficiency;
-      player_talent_t martial_instincts;
-    } monk;
-
-    struct
-    {
-    } brewmaster;
-
-    struct
-    {
-    } mistweaver;
-
-    struct
-    {
-    } windwalker;
-
-    struct
-    {
-    } conduit_of_the_celestials;
-
-    struct
-    {
-    } master_of_harmony;
-
-    struct
-    {
-    } shado_pan;
-  } talents;
-
-  struct
-  {
-    struct
-    {
       const spell_data_t *aura;
       const spell_data_t *critical_strikes;
       const spell_data_t *two_hand_adjustment;
       const spell_data_t *leather_specialization;
+      const spell_data_t *expel_harm;
+      const spell_data_t *expel_harm_damage;
     } monk;
 
     struct
@@ -1217,6 +1199,7 @@ public:
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
+      const spell_data_t *expel_harm_rank_2;
 
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
@@ -1229,6 +1212,7 @@ public:
     {
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *expel_harm_rank_2;
     } mistweaver;
 
     struct
