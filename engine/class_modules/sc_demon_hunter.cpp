@@ -508,22 +508,22 @@ public:
     {
       player_talent_t art_of_the_glaive;
 
-      player_talent_t keen_engagement;
-      player_talent_t preemptive_strike;
+      player_talent_t fury_of_the_aldrachi;
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
-      player_talent_t incisive_blade;  // NYI - bugged in-game
+      player_talent_t reavers_mark;
 
-      player_talent_t aldrachi_tactics;      // NYI
-      player_talent_t army_unto_oneself;     // NYI
+      player_talent_t aldrachi_tactics;
+      player_talent_t army_unto_oneself;     // No Implementation
       player_talent_t incorruptible_spirit;  // NYI
       player_talent_t wounded_quarry;        // NYI
 
-      player_talent_t intent_pursuit;    // partially implemented (Blade Dance / Soul Cleave)
-      player_talent_t escalation;        // NYI
-      player_talent_t warblades_hunger;  // NYI
+      player_talent_t incisive_blade;
+      player_talent_t keen_engagement;
+      player_talent_t preemptive_strike;
+      player_talent_t warblades_hunger;
 
-      player_talent_t thrill_of_the_fight;  // NYI
+      player_talent_t thrill_of_the_fight;
     } aldrachi_reaver;
 
     struct felscarred_talents_t
@@ -1612,6 +1612,8 @@ public:
     ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
     ab::apply_affecting_aura( p->talent.vengeance.illuminated_sigils );
 
+    ab::apply_affecting_aura( p->talent.aldrachi_reaver.incisive_blade );
+
     ab::apply_affecting_aura( p->talent.felscarred.flamebound );
 
     // Rank Passives
@@ -2145,7 +2147,10 @@ struct art_of_the_glaive_trigger_t : public BASE
     if ( ABILITY == art_of_the_glaive_ability::GLAIVE_FLURRY &&
          BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.glaive_flurry->up() )
     {
-      BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+      if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
+      {
+        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+      }
 
       BASE::p()->buff.glaive_flurry->expire();
       second_ability = !BASE::p()->buff.rending_strike->up();
@@ -2153,7 +2158,10 @@ struct art_of_the_glaive_trigger_t : public BASE
     else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
               BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.rending_strike->up() )
     {
-      BASE::td( BASE::target )->debuffs.reavers_mark->trigger();
+      if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
+      {
+        BASE::td( BASE::target )->debuffs.reavers_mark->trigger();
+      }
 
       BASE::p()->buff.rending_strike->expire();
       second_ability = !BASE::p()->buff.glaive_flurry->up();
@@ -2163,11 +2171,12 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep slashes.
+        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep
+        // slashes.
         make_event( *BASE::p()->sim, 700_ms, [ this ] {
           BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
           BASE::p()->buff.thrill_of_the_fight_damage->trigger();
-        });
+        } );
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
@@ -4144,10 +4153,7 @@ struct the_hunt_t : public demon_hunter_spell_t
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
 
-    if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-    {
-      p()->buff.reavers_glaive->trigger();
-    }
+    p()->buff.reavers_glaive->trigger();
   }
 
   timespan_t travel_time() const override
@@ -5598,8 +5604,7 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
-  shear_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "shear", p, p->spec.shear, options_str )
+  shear_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "shear", p, p->spec.shear, options_str )
   {
   }
 
@@ -5617,26 +5622,6 @@ struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::R
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_meta->occur();
-      }
-
-      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-      {
-        p()->buff.rending_strike->expire();
-        td( target )->debuffs.reavers_mark->trigger();
-
-        if ( !p()->buff.glaive_flurry->up() )
-        {
-          if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-          {
-            p()->buff.thrill_of_the_fight_attack_speed->trigger();
-            p()->buff.thrill_of_the_fight_damage->trigger();
-          }
-          if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-          {
-            p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-            p()->spawn_soul_fragment( soul_fragment::LESSER );
-          }
-        }
       }
 
       if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
@@ -6164,8 +6149,8 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // if glaive flurry is up and rending strike is not up
-    // escalation causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial execution
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->talent.aldrachi_reaver.escalation->ok() &&
+    // fury of the aldrachi causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial execution
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() &&
          p()->buff.glaive_flurry->up() && !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
@@ -7811,20 +7796,20 @@ void demon_hunter_t::init_spells()
   // Aldrachi Reaver talents
   talent.aldrachi_reaver.art_of_the_glaive = find_talent_spell( talent_tree::HERO, "Art of the Glaive" );
 
-  talent.aldrachi_reaver.keen_engagement    = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
-  talent.aldrachi_reaver.preemptive_strike  = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
-  talent.aldrachi_reaver.evasive_action     = find_talent_spell( talent_tree::HERO, "Evasive Action" );
-  talent.aldrachi_reaver.unhindered_assault = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
-  talent.aldrachi_reaver.incisive_blade     = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+  talent.aldrachi_reaver.fury_of_the_aldrachi = find_talent_spell( talent_tree::HERO, "Fury of the Aldrachi" );
+  talent.aldrachi_reaver.evasive_action       = find_talent_spell( talent_tree::HERO, "Evasive Action" );
+  talent.aldrachi_reaver.unhindered_assault   = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
+  talent.aldrachi_reaver.reavers_mark         = find_talent_spell( talent_tree::HERO, "Reaver's Mark" );
 
   talent.aldrachi_reaver.aldrachi_tactics     = find_talent_spell( talent_tree::HERO, "Aldrachi Tactics" );
   talent.aldrachi_reaver.army_unto_oneself    = find_talent_spell( talent_tree::HERO, "Army Unto Oneself" );
   talent.aldrachi_reaver.incorruptible_spirit = find_talent_spell( talent_tree::HERO, "Incorruptible Spirit" );
   talent.aldrachi_reaver.wounded_quarry       = find_talent_spell( talent_tree::HERO, "Wounded Quarry" );
 
-  talent.aldrachi_reaver.intent_pursuit   = find_talent_spell( talent_tree::HERO, "Intent Pursuit" );
-  talent.aldrachi_reaver.escalation       = find_talent_spell( talent_tree::HERO, "Escalation" );
-  talent.aldrachi_reaver.warblades_hunger = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
+  talent.aldrachi_reaver.incisive_blade    = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+  talent.aldrachi_reaver.keen_engagement   = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
+  talent.aldrachi_reaver.preemptive_strike = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
+  talent.aldrachi_reaver.warblades_hunger  = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
   talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
 
