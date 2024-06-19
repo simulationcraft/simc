@@ -13389,7 +13389,18 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
-  action.apply_affecting_aura( talent.arcane_affinity );  // TODO: confirm if this applies to non-arcane wrath/thrash
+  // thrash family flags only apply with lunar calling
+  bool apply_arcane_affinity = talent.arcane_affinity.ok();
+  if ( action.data().class_flag( 40 ) ||  //  flag 40: bear thrash dot
+       action.data().class_flag( 91 ) ||  //  flag 91: bear thrash direct
+       action.data().class_flag( 126 ) )  //  flag 126: cat thrash
+  {
+    apply_arcane_affinity = apply_arcane_affinity && talent.lunar_calling.ok();
+  }
+
+  if ( apply_arcane_affinity )
+    action.apply_affecting_aura( talent.arcane_affinity );
+
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
