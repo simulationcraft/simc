@@ -1849,7 +1849,7 @@ public:
   // lunation & lunar amplification seem to go off the original school for temporary school changes
   school_e _get_school() const
   {
-    return ab::original_school != SCHOOL_NONE : ab::original_school : ab::get_school();
+    return ab::original_school != SCHOOL_NONE ? ab::original_school : ab::get_school();
   }
 
   void parse_action_effects();
