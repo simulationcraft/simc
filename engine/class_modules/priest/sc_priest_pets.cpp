@@ -304,8 +304,8 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t )->buffs.schism->check(); },
-    p().o().talents.discipline.schism_debuff );
+        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t
+    )->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
     }*/
   }
 
@@ -497,7 +497,7 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    gcd_type    = gcd_haste_type::SPELL_HASTE;
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
@@ -513,7 +513,7 @@ struct void_flay_t final : public priest_pet_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
-    
+
     m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
 
     return m;
@@ -1162,9 +1162,9 @@ namespace priestspace
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& priest_t::get_current_main_pet()
 {
-  return talents.voidweaver.voidwraith.enabled() ? pets.voidwraith
-         : talents.shared.mindbender.enabled()   ? pets.mindbender
-                                                 : pets.shadowfiend;
+  return talents.voidweaver.voidwraith.enabled()
+             ? pets.voidwraith
+             : talents.shared.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
 }
 
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
@@ -1235,8 +1235,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     {
       // pet.fiend.X refers to either shadowfiend or mindbender
 
-      auto expr =
-          get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr = get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

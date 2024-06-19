@@ -114,7 +114,6 @@ void shadow( player_t* p )
   filler->add_action( "call_action_list,name=empowered_filler,if=dot.devouring_plague.remains>action.mind_spike.cast_time|!talent.mind_spike" );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
-  filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "devouring_plague,if=buff.voidform.up|cooldown.dark_ascension.up|buff.mind_devourer.up" );
   filler->add_action( "halo,if=spell_targets>1", "Save up to 20s if adds are coming soon." );
   filler->add_action( "power_word_life,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up", "Using a heal with no damage kickbacks for TOF is damage neutral, so we will do it." );
@@ -154,7 +153,7 @@ void shadow( player_t* p )
   main->add_action( "vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
   main->add_action( "mind_blast,if=(!buff.mind_devourer.up|!talent.mind_devourer|cooldown.void_eruption.up&talent.void_eruption)&(cooldown.void_torrent.remains>=gcd.max*4|!talent.void_blast)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
   main->add_action( "void_torrent,if=!variable.holding_crash&(!talent.idol_of_cthun|!talent.void_eruption),target_if=dot.devouring_plague.remains>=2.5,interrupt_if=cooldown.shadow_word_death.ready&pet.fiend.active&set_bonus.tier31_2pc", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
-  main->add_action( "call_action_list,name=filler", "Cast Mindgames if all DoTs will be active by the time the cast finishes" );
+  main->add_action( "call_action_list,name=filler" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
   heal_for_tof->add_action( "divine_star", "Use Divine Star to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
@@ -253,7 +252,6 @@ void shadow_ptr( player_t* p )
   filler->add_action( "call_action_list,name=empowered_filler,if=dot.devouring_plague.remains>action.mind_spike.cast_time|!talent.mind_spike" );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
-  filler->add_action( "mindgames,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "devouring_plague,if=buff.voidform.up|cooldown.dark_ascension.up|buff.mind_devourer.up" );
   filler->add_action( "halo,if=spell_targets>1", "Save up to 20s if adds are coming soon." );
   filler->add_action( "power_word_life,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up", "Using a heal with no damage kickbacks for TOF is damage neutral, so we will do it." );
@@ -290,7 +288,7 @@ void shadow_ptr( player_t* p )
   main->add_action( "vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
   main->add_action( "mind_blast,if=(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
   main->add_action( "void_torrent,if=!variable.holding_crash&(!talent.idol_of_cthun|!talent.void_eruption),target_if=dot.devouring_plague.remains>=2.5,interrupt_if=cooldown.shadow_word_death.ready&pet.fiend.active&set_bonus.tier31_2pc", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
-  main->add_action( "call_action_list,name=filler", "Cast Mindgames if all DoTs will be active by the time the cast finishes" );
+  main->add_action( "call_action_list,name=filler" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
   heal_for_tof->add_action( "divine_star", "Use Divine Star to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
@@ -333,7 +331,6 @@ void discipline( player_t* p )
   main->add_action( "shadow_word_death,if=target.health.pct<20" );
   main->add_action( "penance" );
   main->add_action( "mind_blast" );
-  main->add_action( "mindgames" );
   main->add_action( "shadow_word_death,if=talent.expiation&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
   main->add_action( "halo" );
   main->add_action( "divine_star" );
@@ -386,7 +383,6 @@ void holy( player_t* p )
   divine_favor_chastise_active->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Active)  ---------------------------------------------------------------------------" );
   divine_favor_chastise_active->add_action( "divine_star,if=spell_targets.divine_star>=2" );
   divine_favor_chastise_active->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
-  divine_favor_chastise_active->add_action( "mindgames" );
   divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_chastise_active->add_action( "holy_word_chastise" );
   divine_favor_chastise_active->add_action( "smite,cycle_targets=1,target_if=min:dot.holy_fire.remains,if=spell_targets.holy_nova>=2", "We want to cycle smite to different targets to spread holy fire dots in AOE situations, this will buff holy nova's damage" );
@@ -395,7 +391,6 @@ void holy( player_t* p )
   divine_favor_filler->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Filler)  ---------------------------------------------------------------------------" );
   divine_favor_filler->add_action( "divine_star,if=spell_targets.divine_star>=2" );
   divine_favor_filler->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
-  divine_favor_filler->add_action( "mindgames" );
   divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.apotheosis.remains<cooldown.divine_word.remains)|(cooldown.holy_word_chastise.duration_expected<=cooldown.divine_word.remains)", "We can use chastise for damage as long as we will have apotheosis available before the next divine word, otherwise only use it when it will be back up at the same time as divine word" );
   divine_favor_filler->add_action( "smite" );
@@ -408,7 +403,6 @@ void holy( player_t* p )
   divine_image->add_action( "halo,if=spell_targets.halo>=2" );
   divine_image->add_action( "divine_star,if=spell_targets.divine_star>=2" );
   divine_image->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
-  divine_image->add_action( "mindgames" );
   divine_image->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_image->add_action( "smite" );
 
@@ -418,7 +412,6 @@ void holy( player_t* p )
   generic->add_action( "halo,if=spell_targets.halo>=2" );
   generic->add_action( "divine_star,if=spell_targets.divine_star>=2" );
   generic->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
-  generic->add_action( "mindgames" );
   generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "smite" );
 

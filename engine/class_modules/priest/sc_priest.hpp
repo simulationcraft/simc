@@ -77,6 +77,7 @@ namespace actions::heals
 struct essence_devourer_t;
 struct atonement_t;
 struct divine_aegis_t;
+struct cauterizing_shadows_t;
 }  // namespace actions::heals
 
 /**
@@ -124,7 +125,6 @@ public:
   void target_demise();
 };
 
-
 // utility to create target_effect_t compatible functions from priest_td_t member references
 template <typename T>
 static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
@@ -132,9 +132,8 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   if constexpr ( std::is_invocable_v<T, priest_td_t::buffs_t> )
   {
     if ( stack )
-      return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check();
-      };
+      return
+          [ d ]( actor_target_data_t* t ) { return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check(); };
     else
       return [ d ]( actor_target_data_t* t ) {
         return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check() > 0;
@@ -332,9 +331,8 @@ public:
     const spell_data_t* divine_star_heal_shadow;
     const spell_data_t* divine_star_dmg_shadow;
     player_talent_t translucent_image;
-    player_talent_t mindgames;
-    const spell_data_t* mindgames_healing_reversal;
-    const spell_data_t* mindgames_damage_reversal;
+    player_talent_t cauterizing_shadows;
+    const spell_data_t* cauterizing_shadows_spell;
     // Row 9
     player_talent_t surge_of_light;
     player_talent_t lights_inspiration;
@@ -349,7 +347,7 @@ public:
     const spell_data_t* essence_devourer_shadowfiend;
     const spell_data_t* essence_devourer_mindbender;
     player_talent_t void_shift;
-    player_talent_t shattered_perceptions;
+    player_talent_t phantom_reach;
 
     struct
     {
@@ -592,6 +590,13 @@ public:
       const spell_data_t* collapsing_void_damage;
     } voidweaver;
 
+    struct
+    {
+      const spell_data_t* mindgames;
+      const spell_data_t* mindgames_healing_reversal;
+      const spell_data_t* mindgames_damage_reversal;
+    } pvp;
+
     // Shared
     const spell_data_t* shining_force;
 
@@ -654,7 +659,6 @@ public:
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> shadowfiend;
     propagate_const<cooldown_t*> voidwraith;
@@ -699,6 +703,7 @@ public:
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_t30_2pc;
+    propagate_const<gain_t*> cauterizing_shadows_health;
   } gains;
 
   // Benefits
@@ -767,6 +772,7 @@ public:
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
+    propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
   } background_actions;
 
   // Items
@@ -823,6 +829,9 @@ public:
     double twist_of_fate_heal_rppm                = 0.0;
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
+
+    // The amount of allies to assume for Cauterizing Shadows healing
+    int cauterizing_shadows_allies = 3;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -931,6 +940,7 @@ public:
   void trigger_entropic_rift();
   void extend_entropic_rift();
   void expand_entropic_rift();
+  void trigger_cauterizing_shadows();
 
   unsigned int specialization_aura_id()
   {
@@ -1126,7 +1136,7 @@ public:
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().buffs.devoured_pride );                 // Spell Direct and Periodic amount
+      parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS, p().talents.archon.perfected_form );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
@@ -1193,8 +1203,7 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ),
-                            p().talents.discipline.schism_debuff );
+      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ), p().talents.discipline.schism_debuff );
     }
 
     // Archon
