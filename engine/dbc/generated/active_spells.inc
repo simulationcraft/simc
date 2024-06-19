@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.55120
-static const std::array<active_class_spell_t, 305> __active_spells_data { {
+// Active class spells, wow build 11.0.0.55185
+static const std::array<active_class_spell_t, 307> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -76,6 +76,8 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  3,    0, 257284,      0, "Hunter's Mark"                      },
   {  3,    0, 272651,      0, "Command Pet"                        },
   {  3,    0, 321297,      0, "Eyes of the Beast"                  },
+  {  3,  255, 186289,      0, "Aspect of the Eagle"                },
+  {  3,  255, 190925,      0, "Harpoon"                            },
   {  4,    0,    408,      0, "Kidney Shot"                        },
   {  4,    0,    921,      0, "Pick Pocket"                        },
   {  4,    0,   1725,      0, "Distract"                           },
@@ -307,7 +309,7 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.55120
+// Pet active spells, wow build 11.0.0.55185
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
