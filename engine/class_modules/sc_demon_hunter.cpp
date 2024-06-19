@@ -3123,14 +3123,14 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     return td( t )->dots.sigil_of_flame;
   }
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
+  double composite_target_ta_multiplier( player_t* target ) const override
   {
-    double m = demon_hunter_sigil_t::composite_ta_multiplier( s );
+    double ttm = demon_hunter_sigil_t::composite_target_ta_multiplier( target );
 
-    double current_stack = td( s->target )->debuffs.sigil_of_flame->stack();
-    m *= current_stack;
+    double current_stack = td( target )->debuffs.sigil_of_flame->stack();
+    ttm *= current_stack;
 
-    return m;
+    return ttm;
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
