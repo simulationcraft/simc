@@ -129,6 +129,8 @@ void monk_action_t<Base>::apply_buff_effects()
 
   apply_affecting_aura( p()->talent.monk.chi_proficiency );
 
+  // Windwalker
+  apply_affecting_aura( p()->talent.windwalker.rising_star );
   //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
 
   // Shado-Pan
@@ -1571,8 +1573,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
 
-    am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
-
     am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
@@ -1593,15 +1593,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage->check();
 
     return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
-
-    m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
-
-    return m;
   }
 
   void execute() override
@@ -6970,8 +6961,7 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::mistweaver
-  {
-  }
+  {}
 
   // monk_t::talent::windwalker
   {
@@ -6979,12 +6969,8 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::conduit_of_the_celestials
-  {
-  }
-  // monk_t::talent::master_of_harmony
-  {
-  }
-  // monk_t::talent::shado-pan
+  {}  // monk_t::talent::master_of_harmony
+  {}  // monk_t::talent::shado-pan
   {
   }
 
