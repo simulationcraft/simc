@@ -154,6 +154,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.bok_proc );
   parse_effects( p()->buff.darting_hurricane );
+  parse_effects( p()->buff.pressure_point );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -1548,6 +1549,13 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.acclamation.ok() )
       get_td( s->target )->debuff.acclamation->trigger();
+
+    if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+    {
+      p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
+                                           true );
+      p()->proc.xuens_battlegear_reduction->occur();
+    }
   }
 };
 
@@ -1586,8 +1594,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   double composite_crit_chance() const override
   {
     double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->buff.pressure_point->check_value();
 
     c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage->check();
 
@@ -2655,8 +2661,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
 
     p()->buff.fists_of_flowing_momentum_fof->expire();
-
-    p()->buff.pressure_point->trigger();
 
     p()->buff.transfer_the_power->expire();
 
