@@ -1495,8 +1495,7 @@ public:
       return;
 
     bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
-                             ( is_divine_storm && p->buffs.empyrean_power->up() ) ||
-                             ( ( is_wog || is_sotr ) && p->buffs.bastion_of_light->up() );
+                             ( is_divine_storm && p->buffs.empyrean_power->up() );
 
     double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
     // Free spenders seem to count as 3 Holy Power, regardless the cost
@@ -1517,7 +1516,7 @@ public:
     {
       // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
       if ( p->cooldowns.righteous_protector_icd->up() ||
-           ( p->bugs && ( isFreeSLDPSpender || p->buffs.bastion_of_light->up() ) ) )
+           ( p->bugs && isFreeSLDPSpender ) )
       {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
@@ -1579,12 +1578,6 @@ public:
       should_continue = false;
       // Shining Light is now consumed before Divine Purpose 2020-11-01
       p->buffs.shining_light_free->decrement();
-    }
-
-    if ( p->buffs.bastion_of_light->check() && should_continue )
-    {
-      p->buffs.bastion_of_light->decrement();
-      should_continue = false;
     }
 
     if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )

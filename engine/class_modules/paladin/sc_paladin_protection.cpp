@@ -286,13 +286,14 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target  = p;
   }
 
   void execute() override
   {
     paladin_spell_t::execute();
 
-    p()->buffs.bastion_of_light->trigger( 3 );
+    p()->buffs.bastion_of_light->trigger(p()->buffs.bastion_of_light->max_stack());
   }
 };
 
@@ -686,6 +687,25 @@ struct judgment_prot_t : public judgment_t
     background = true;
   }
 
+  void execute() override
+  {
+    judgment_t::execute();
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      int hopo = 0;
+      if ( p()->spec.judgment_3->ok() )
+        hopo += judge_holy_power;
+      if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+        hopo += sw_holy_power;
+      if ( p()->buffs.bastion_of_light->up() )
+        hopo += p()->buffs.bastion_of_light->default_value;
+      if ( hopo > 0 )
+        p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
+    }
+    p()->buffs.bastion_of_light->decrement();
+  }
+
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
@@ -693,13 +713,6 @@ struct judgment_prot_t : public judgment_t
 
     if ( result_is_hit( s->result ) )
     {
-      int hopo = 0;
-      if ( p()->spec.judgment_3->ok() )
-        hopo += judge_holy_power;
-      if ( p()->talents.sanctified_wrath->ok() && (p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ))
-        hopo += sw_holy_power;
-      if( hopo > 0 )
-        p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
       {
         residual_action::trigger(
@@ -928,16 +941,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
         am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
     }
     return am;
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
-
-    if ( p()->buffs.bastion_of_light->check() )
-      c *= 1.0 + p()->buffs.bastion_of_light->data().effectN( 1 ).percent();
-
-    return c;
   }
 };
 
@@ -1320,7 +1323,8 @@ void paladin_t::create_buffs_protection()
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
         //-> set_default_value( talents.moment_of_glory->effectN( 2 ).percent() );
-  buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
+  buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light)
+    ->set_default_value_from_effect(1);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 386652 ) )
                                         ->set_default_value( find_spell( 386652 )->effectN( 1 ).percent() );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
