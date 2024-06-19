@@ -2162,8 +2162,6 @@ void paladin_t::trigger_laying_down_arms()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    buffs.shining_light_stacks->expire();
-    buffs.shining_light_free->expire();
     buffs.shining_light_free->trigger(); 
   }
   else if (specialization() == PALADIN_HOLY) 
