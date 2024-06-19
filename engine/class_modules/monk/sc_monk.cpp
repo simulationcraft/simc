@@ -5373,7 +5373,7 @@ struct chi_burst_t : monk_spell_t
     {
       TBase::background = TBase::dual = true;
       TBase::reduced_aoe_targets      = player->talent.monk.chi_burst_projectile->effectN( 1 ).base_value();
-      // TBase::aoe = -1;
+      TBase::aoe                      = -1;
 
       // TODO: Helper to check if a damaging effect exists on the passed spell
       for ( const auto &effect : spell_data->effects() )
