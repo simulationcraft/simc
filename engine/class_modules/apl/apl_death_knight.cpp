@@ -407,12 +407,11 @@ void unholy( player_t* p )
 
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead)|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "raise_abomination,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<gcd*2|!talent.commander_of_the_dead)|fight_remains<30" );
-  cooldowns->add_action( "unholy_blight,if=(variable.st_planning|variable.adds_remain)" );
   cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&(talent.gift_of_the_sanlayn&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|!talent.gift_of_the_sanlayn&talent.apocalypse&cooldown.apocalypse.remains<8|!talent.apocalypse)" );
   cooldowns->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead)&runic_power>=40" );
   cooldowns->add_action( "unholy_assault,if=(variable.st_planning|variable.adds_remain)&(cooldown.apocalypse.remains<gcd*2|!talent.apocalypse)" );
   cooldowns->add_action( "apocalypse,if=(variable.st_planning|variable.adds_remain)&(debuff.festering_wound.stack>=4)" );
-  cooldowns->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable&!talent.vampiric_strike|dot.blood_plague.refreshable))&((!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))|(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2))))" );
+  cooldowns->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable&!talent.vampiric_strike|dot.blood_plague.refreshable))&((!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))|(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2))))" );
   cooldowns->add_action( "abomination_limb,if=(variable.st_planning|variable.adds_remain)&(active_enemies>=2|!buff.dark_transformation.up&!buff.sudden_doom.react&debuff.festering_wound.stack<=2)" );
 
   st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)", "Single Taget" );
