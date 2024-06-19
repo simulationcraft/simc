@@ -2042,6 +2042,7 @@ struct sacred_weapon_t : public paladin_spell_t
 {
   sacred_weapon_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon", p )
   {
+    harmful = false;
   }
   void execute() override
   {
@@ -2058,6 +2059,7 @@ struct holy_bulwark_t : public paladin_spell_t
 {
   holy_bulwark_t( paladin_t* p ) : paladin_spell_t( "holy_bulwark", p )
   {
+    harmful = false;
   }
   void execute() override
   {
@@ -2096,7 +2098,10 @@ struct holy_armaments_t : public paladin_spell_t
     auto nextArmament = p()->active.armament[ p()->next_armament ];
 
     if ( p() == target )
+    {
+      nextArmament->target = target;
       nextArmament->execute();
+    }
     else
       nextArmament->execute_on_target( target );
     sim->print_debug( "Player {} cast Holy Armaments on {}", p()->name(), target->name() );
@@ -2168,6 +2173,7 @@ void paladin_t::trigger_laying_down_arms()
   {
     buffs.infusion_of_light->trigger();
   }
+  cooldowns.lay_on_hands->adjust( -talents.lightsmith.laying_down_arms->effectN( 1 ).time_value() );
 };
 
 void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay )
@@ -4294,18 +4300,14 @@ struct paladin_module_t : public module_t
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     p->buffs.holy_bulwark = make_buff( p, "holy_bulwark", p->find_spell( 432496 ) )
-                                        ->set_cooldown( 0_s )
-                                        ->set_stack_change_callback( [ this ]( buff_t* buff, int, int new_ ) {
-                                          if ( !new_ && buff->source )
-                                            debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
-                                        } );
+                                ->set_cooldown( 0_s )
+                                ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t) {
+                                  debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                } );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
-                                 ->set_stack_change_callback( []( buff_t* buff, int, int new_)
-                                   {
-                                     if ( !new_ && buff->source )
-                                       debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
-                                   }
-    );
+                                 ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
+                                   debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                 } );
   }
 
   void create_actions(player_t* p) const override
