@@ -315,6 +315,15 @@ void monk_action_t<Base>::init()
 template <class Base>
 void monk_action_t<Base>::init_finished()
 {
+  // 2H Weapon Scaling
+  if ( attack_power_mod.direct > 0 )
+  {
+    if ( ap_type == attack_power_type::WEAPON_BOTH && player->main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      base_multiplier *= 0.98;  // This value is not included in spelldata but is included in the tooltip label
+    }
+  }
   base_t::init_finished();
 }
 
@@ -947,18 +956,6 @@ void monk_melee_attack_t::impact( action_state_t *s )
   }
 }
 
-void monk_melee_attack_t::apply_dual_wield_two_handed_scaling()
-{
-  ap_type = attack_power_type::WEAPON_BOTH;
-
-  if ( player->main_hand_weapon.group() == WEAPON_2H )
-  {
-    ap_type = attack_power_type::WEAPON_MAINHAND;
-    // 0.98 multiplier found only in tooltip
-    base_multiplier *= 0.98;
-  }
-}
-
 monk_buff_t::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
   : buff_t( player, name, spell_data, item )
 {
@@ -1524,8 +1521,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     background  = true;
     ww_mastery  = true;
     sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
-
-    apply_dual_wield_two_handed_scaling();
   }
 
   double action_multiplier() const override
@@ -1572,9 +1567,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     background = dual = true;
     may_crit          = true;
     trigger_chiji     = true;
-
-    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
-      apply_dual_wield_two_handed_scaling();
   }
 
   double action_multiplier() const override
@@ -2006,9 +1998,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       add_child( bok_totm_proc );
     }
 
-    if ( p->specialization() == MONK_BREWMASTER || p->specialization() == MONK_WINDWALKER )
-      apply_dual_wield_two_handed_scaling();
-
     if ( p->spec.blackout_kick_2->ok() )
       base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
@@ -2284,9 +2273,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius_max();
 
-    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
-      apply_dual_wield_two_handed_scaling();
-
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
     school                        = SCHOOL_PHYSICAL;
@@ -2541,7 +2527,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
-    apply_dual_wield_two_handed_scaling();
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -2688,8 +2673,6 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
     aoe                 = -1;
     reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
 
-    apply_dual_wield_two_handed_scaling();
-
     name_str_reporting = "wdp_aoe";
   }
 
@@ -2713,8 +2696,6 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
     ww_mastery = true;
 
     background = true;
-
-    apply_dual_wield_two_handed_scaling();
 
     name_str_reporting = "wdp_st";
   }
@@ -3145,8 +3126,6 @@ struct dual_threat_t : public monk_melee_attack_t
     weapon            = &( player->main_hand_weapon );
 
     cooldown->duration = base_execute_time = trigger_gcd = timespan_t::zero();
-
-    apply_dual_wield_two_handed_scaling();
   }
 
   void execute() override
