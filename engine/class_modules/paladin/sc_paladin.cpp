@@ -4311,10 +4311,12 @@ struct paladin_module_t : public module_t
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     p->buffs.holy_bulwark = make_buff( p, "holy_bulwark", p->find_spell( 432496 ) )
                                 ->set_cooldown( 0_s )
+                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t) {
                                   debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
                                 } );
     p->buffs.sacred_weapon = make_buff( p, "sacred_weapon", p->find_spell( 432502 ) )
+                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                  ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
                                    debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
                                  } );
