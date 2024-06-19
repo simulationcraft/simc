@@ -6313,9 +6313,10 @@ struct exterminate_aoe_t final : public death_knight_spell_t
   exterminate_aoe_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.exterminate_damage )
   {
-    background         = true;
-    cooldown->duration = 0_ms;
-    aoe                = -1;
+    background          = true;
+    cooldown->duration  = 0_ms;
+    aoe                 = -1;
+    reduced_aoe_targets = p->spell.exterminate_damage->effectN( 5 ).base_value();
 
     if ( p->specialization() == DEATH_KNIGHT_FROST )
     {
