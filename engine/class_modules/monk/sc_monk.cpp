@@ -132,6 +132,7 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Windwalker
   apply_affecting_aura( p()->talent.windwalker.rising_star );
+  apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
   //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
 
   // Shado-Pan
@@ -1669,8 +1670,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    apply_affecting_effect( p->talent.windwalker.brawlers_intensity->effectN( 1 ) );
-
     may_combo_strike = true;
     sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type          = attack_power_type::NONE;
@@ -1893,8 +1892,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 
     am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
 
-    am *= 1 + p()->talent.windwalker.brawlers_intensity->effectN( 2 ).percent();
-
     return am;
   }
 
@@ -2060,8 +2057,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
 
     am *= 1 + p()->buff.blackout_reinforcement->check_value();
-
-    am *= 1 + p()->talent.windwalker.brawlers_intensity->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.courageous_impulse.ok() && p()->buff.bok_proc->check() )
       am *= 1 + p()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
