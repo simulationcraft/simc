@@ -1182,7 +1182,7 @@ public:
         {
           // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
           p()->cast_holy_armaments( p(), paladin::armament::SACRED_WEAPON, false,
-                                    p()->next_armament == paladin::armament::SACRED_WEAPON && p->bugs );
+                                    p()->next_armament == paladin::armament::SACRED_WEAPON && p()->bugs );
         }
       }
     }
