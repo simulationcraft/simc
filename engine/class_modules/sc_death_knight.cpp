@@ -13199,6 +13199,7 @@ void death_knight_t::create_buffs()
   buffs.gift_of_the_sanlayn = make_fallback( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
                                              spell.gift_of_the_sanlayn_buff )
                                   ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+                                  ->set_duration( 0_ms ) // Handled by DT and VB
                                   ->add_invalidate( CACHE_HASTE )
                                   ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                                     buffs.vampiric_strike->expire();
