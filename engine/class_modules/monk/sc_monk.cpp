@@ -128,6 +128,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->baseline.windwalker.aura );
 
   apply_affecting_aura( p()->talent.monk.chi_proficiency );
+  apply_affecting_aura( p()->talent.general.fast_feet );
 
   // Windwalker
   apply_affecting_aura( p()->talent.windwalker.rising_star );
@@ -1571,8 +1572,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
-
     am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
@@ -2350,8 +2349,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
     am *= 1 + p()->buff.counterstrike->data().effectN( 2 ).percent();
-
-    am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
     am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage_helper->check();
 
@@ -6729,27 +6726,6 @@ bool monk_t::mark_of_the_crane_max()
   return true;
 }
 
-// Current contributions to SCK ( not including DoCJ bonus )
-double monk_t::sck_modifier()
-{
-  double current = 1;
-
-  int motc_stacks = mark_of_the_crane_counter();
-
-  if ( motc_stacks > 0 )
-    current *= 1 + ( motc_stacks * passives.cyclone_strikes->effectN( 1 ).percent() );
-
-  current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
-
-  current *= 1 + buff.kicks_of_flowing_momentum->check_value();
-
-  current *= 1 + buff.counterstrike->data().effectN( 2 ).percent();
-
-  current *= 1 + talent.general.fast_feet->effectN( 2 ).percent();
-
-  return current;
-}
-
 // monk_t::activate =========================================================
 
 void monk_t::activate()
@@ -9319,8 +9295,6 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   {
     if ( splits[ 1 ] == "count" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
-    else if ( splits[ 1 ] == "modifier" )
-      return make_fn_expr( name_str, [ this ] { return sck_modifier(); } );
     else if ( splits[ 1 ] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
