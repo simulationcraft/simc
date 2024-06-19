@@ -497,8 +497,7 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
-    gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    gcd_type = gcd_haste_type::SPELL_HASTE;
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
