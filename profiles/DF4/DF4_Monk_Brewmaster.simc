@@ -30,7 +30,7 @@ actions.igcd+=/touch_of_death
 actions.igcd+=/exploding_keg
 actions.igcd+=/celestial_brew
 
-actions.rota+=/chi_burst
+# actions.rota+=/chi_burst
 actions.rota+=/blackout_kick
 actions.rota+=/rising_sun_kick
 actions.rota+=/breath_of_fire
