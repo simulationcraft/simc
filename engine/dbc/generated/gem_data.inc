@@ -1,4 +1,4 @@
-// Gem properties, wow build 11.0.0.55120
+// Gem properties, wow build 11.0.0.55185
 static const std::array<gem_property_data_t, 2271> __gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
@@ -2212,9 +2212,9 @@ static const std::array<gem_property_data_t, 2271> __gem_property_data { {
   { 4187,  7245, 0x00000001, 14158 }, // Lifestorm
   { 4188,  7246, 0x00000001, 14158 }, // Chi-Ji, the Red Crane
   { 4189,  7250, 0x00000001, 0 }, // Morphing Elements
-  { 4190,  7251, 0x0000000e, 0 }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
-  { 4191,  7252, 0x0000000e, 0 }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
-  { 4192,  7253, 0x0000000e, 0 }, // +$k1 Primary Stat and +$438874s1% perceived fame and fortune per unique Algari gem color socketed
+  { 4190,  7251, 0x0000000e, 0 }, // +$k1 Primary Stat
+  { 4191,  7252, 0x0000000e, 0 }, // +$k1 Primary Stat
+  { 4192,  7253, 0x0000000e, 0 }, // +$k1 Primary Stat
   { 4194,  7276, 0x01000000, 14159 }, // Vindication
   { 4195,  7277, 0x01000000, 14159 }, // Warmth
   { 4196,  7278, 0x01000000, 14159 }, // Savior

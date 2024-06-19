@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.0.55120
-static const std::array<item_name_description_t, 902> __item_name_description_data { {
+// Item name descriptions, wow build 11.0.0.55185
+static const std::array<item_name_description_t, 910> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -902,5 +902,13 @@ static const std::array<item_name_description_t, 902> __item_name_description_da
   { 14169, "Rank 3/4"                                    },
   { 14170, "Rank 4/4"                                    },
   { 14174, "Delves"                                      },
+  { 14176, "Tier 1"                                      },
+  { 14177, "Tier 2"                                      },
+  { 14178, "Tier 3"                                      },
+  { 14179, "Tier 4"                                      },
+  { 14180, "Tier 5"                                      },
+  { 14181, "Tier 6"                                      },
+  { 14182, "Tier 7"                                      },
+  { 14183, "Tier 8"                                      },
 } };
 

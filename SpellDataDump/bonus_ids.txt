@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5694,8 +5694,8 @@ bonus_id={ 10516 }, quality={ rare }, effects={ Quaking Leap (id=435729, index=0
 bonus_id={ 10517 }, quality={ epic }, effects={ Quaking Leap (id=435757, index=0, type=equip) }
 bonus_id={ 10518 }, effects={ Prismatic Null Stone (id=435992, index=0, type=equip) }
 bonus_id={ 10519 }, quality={ common }, effects={ Hunter's Chains (id=436031, index=0, type=equip) }
-bonus_id={ 10520 }, effects={ Elemental Focusing Lens (id=436035, index=0, type=equip) }
-bonus_id={ 10521 }, effects={ Captured Starlight (id=436136, index=0, type=use) }
+bonus_id={ 10520 }, effects={ Elemental Focusing Lens (id=461177, index=0, type=equip) }
+bonus_id={ 10521 }, effects={ Captured Starlight (id=460521, index=0, type=equip) }
 bonus_id={ 10524 }, quality={ uncommon }, effects={ Hunter's Chains (id=436211, index=0, type=equip) }
 bonus_id={ 10525 }, quality={ rare }, effects={ Hunter's Chains (id=436229, index=0, type=equip) }
 bonus_id={ 10526 }, quality={ epic }, effects={ Hunter's Chains (id=436240, index=0, type=equip) }
@@ -6295,7 +6295,7 @@ bonus_id={ 11293 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=45
 bonus_id={ 11295 }, base_ilevel={ 515 }
 bonus_id={ 11297 }, base_ilevel={ 545 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
-bonus_id={ 11300 }, effects={ Evolution (id=458573, index=0, type=equip) }
+bonus_id={ 11300 }, effects={ Ascendance (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
 bonus_id={ 11302 }, effects={ Symbiosis (id=455534, index=0, type=equip) }
 bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
@@ -6312,3 +6312,4 @@ bonus_id={ 11315 }, stats={ 100% Haste [0.3333] }
 bonus_id={ 11316 }, stats={ 100% Crit [0.3333] }
 bonus_id={ 11317 }, stats={ 100% Vers [0.3333] }
 bonus_id={ 11318 }, base_ilevel={ 545 }
+bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Delver's Bounty (id=460285, index=0, type=use) }

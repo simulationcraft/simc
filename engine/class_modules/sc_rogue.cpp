@@ -1718,7 +1718,8 @@ public:
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
     bool fazed_damage = false;
-    bool fazed_crit = false;
+    bool fazed_crit_chance = false;
+    bool fazed_crit_damage = false;
     bool flagellation = false;
     bool ghostly_strike = false;
     bool goremaws_bite = false;         // Cost Reduction
@@ -1843,7 +1844,8 @@ public:
     if ( p->talent.trickster.unseen_blade->ok() )
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
-      affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+      affected_by.fazed_crit_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+      affected_by.fazed_crit_chance = ab::data().affected_by( p->spell.fazed_debuff->effectN( 5 ) );
     }
 
     if ( p->talent.fatebound.destiny_defined->ok() )
@@ -2655,7 +2657,7 @@ public:
   {
     double c = ab::composite_target_crit_chance( target );
 
-    if ( affected_by.fazed_crit && td( target )->debuffs.fazed->check() )
+    if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
       c += td( target )->debuffs.fazed->value_crit_chance();
     }
@@ -2694,7 +2696,19 @@ public:
 
     if ( affected_by.t30_subtlety_4pc && p()->buffs.symbols_of_death->check() )
     {
-      cm += p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+      cm *= 1.0 + p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+    }
+
+    return cm;
+  }
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
+  {
+    double cm = ab::composite_target_crit_damage_bonus_multiplier( target );
+
+    if ( affected_by.fazed_crit_damage && td( target )->debuffs.fazed->check() )
+    {
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent();
     }
 
     return cm;
@@ -3471,7 +3485,7 @@ struct melee_t : public rogue_attack_t
   bool canceled;
   timespan_t prev_scheduled_time;
 
-  melee_t( const char* name, rogue_t* p, int sw ) :
+  melee_t( const char* name, const char* reporting_name, rogue_t* p, int sw ) :
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true ), canceled( false ),
     prev_scheduled_time( timespan_t::zero() )
   {
@@ -3481,6 +3495,7 @@ struct melee_t : public rogue_attack_t
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
     weapon_multiplier = 1.0;
+    name_str_reporting = reporting_name;
 
     if ( p->dual_wield() )
       base_hit -= 0.19;
@@ -3606,6 +3621,7 @@ struct auto_melee_attack_t : public action_t
     sync_weapons( 0 )
   {
     trigger_gcd = timespan_t::zero();
+    name_str_reporting = "Auto Attack";
 
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
@@ -3618,7 +3634,9 @@ struct auto_melee_attack_t : public action_t
 
     p->melee_main_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_mh" ) );
     if ( !p->melee_main_hand )
-      p->melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
+      p->melee_main_hand = new melee_t( "auto_attack_mh", "Auto Attack (Main Hand)", p, sync_weapons );
+
+    add_child( p->melee_main_hand );
 
     p->main_hand_attack = p->melee_main_hand;
     p->main_hand_attack->weapon = &( p->main_hand_weapon );
@@ -3628,7 +3646,9 @@ struct auto_melee_attack_t : public action_t
     {
       p->melee_off_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_oh" ) );
       if ( !p->melee_off_hand )
-        p->melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+        p->melee_off_hand = new melee_t( "auto_attack_oh", "Auto Attack (Off Hand)", p, sync_weapons );
+
+      add_child( p->melee_off_hand );
 
       p->off_hand_attack = p->melee_off_hand;
       p->off_hand_attack->weapon = &( p->off_hand_weapon );
@@ -3639,6 +3659,8 @@ struct auto_melee_attack_t : public action_t
 
   void execute() override
   {
+    stats->add_execute( 0_ms, target ); // log AA timer resets
+
     player->main_hand_attack->schedule_execute();
 
     if ( player->off_hand_attack )
@@ -7240,7 +7262,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     affected_by.zoldyck_insignia = false; // Does not affect direct, does affect periodic
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
-    add_child( serrated_bone_spike_dot );
+    serrated_bone_spike_dot->stats = stats; // Merge reporting
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -7371,6 +7393,7 @@ struct hunt_them_down_t : public rogue_attack_t
   hunt_them_down_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.hunt_them_down_damage )
   {
+    p->auto_attack->add_child( this );
   }
 
   // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
@@ -9789,7 +9812,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
-    ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
+    ->apply_affecting_aura( source->talent.trickster.no_scruples ); // Crit Chance
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
   } );

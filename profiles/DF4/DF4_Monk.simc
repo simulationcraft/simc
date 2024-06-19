@@ -1,8 +1,3 @@
-use_item_verification=0
-enable_all_talents=1
-
 input=DF4_Monk_Brewmaster.simc
-
 input=DF4_Monk_Mistweaver.simc
-
 input=DF4_Monk_Windwalker.simc

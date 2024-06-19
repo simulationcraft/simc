@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.55120
-static const std::array<specialization_spell_entry_t, 411> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.0.55185
+static const std::array<specialization_spell_entry_t, 413> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -93,6 +93,8 @@ static const std::array<specialization_spell_entry_t, 411> __specialization_spel
   {  3,  254, 193468,      0, "Mastery: Sniper Training"          , 0 },
   {  3,  255, 137017,      0, "Survival Hunter"                   , 0 },
   {  3,  255, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
+  {  3,  255, 186289,      0, "Aspect of the Eagle"               , 0 },
+  {  3,  255, 190925,      0, "Harpoon"                           , 0 },
   {  3,  255, 263135,      0, "Mastery: Spirit Bond"              , 0 },
   {  4,  259,    703,      0, "Garrote"                           , 0 },
   {  4,  259,   1329,   1752, "Mutilate"                          , 0 },

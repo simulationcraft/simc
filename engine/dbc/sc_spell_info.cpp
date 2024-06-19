@@ -1585,7 +1585,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
                                        : static_cast<stat_e>( e->misc_value1() + 1 );
     s << " | Stat: " << util::stat_type_abbrev( stat );
   }
-  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_RATING )
+  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_RATING || e->subtype() == A_MOD_RATING_MULTIPLIER ) )
   {
     std::vector<const char*> tmp;
     range::transform( util::translate_all_rating_mod( e->misc_value1() ), std::back_inserter( tmp ),

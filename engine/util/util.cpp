@@ -2277,6 +2277,35 @@ stat_e util::translate_rating_mod( unsigned ratings )
   return STAT_NONE;
 }
 
+unsigned util::rating_to_rating_mod( rating_e r )
+{
+  switch ( r )
+  {
+    case RATING_DODGE:                  return RATING_MOD_DODGE;
+    case RATING_PARRY:                  return RATING_MOD_PARRY;
+    case RATING_MELEE_HIT:              return RATING_MOD_HIT_MELEE;
+    case RATING_RANGED_HIT:             return RATING_MOD_HIT_RANGED;
+    case RATING_SPELL_HIT:              return RATING_MOD_HIT_SPELL;
+    case RATING_MELEE_CRIT:             return RATING_MOD_CRIT_MELEE;
+    case RATING_RANGED_CRIT:            return RATING_MOD_CRIT_RANGED;
+    case RATING_SPELL_CRIT:             return RATING_MOD_CRIT_SPELL;
+    case RATING_PVP_RESILIENCE:         return RATING_MOD_RESILIENCE;
+    case RATING_MELEE_HASTE:            return RATING_MOD_HASTE_MELEE;
+    case RATING_RANGED_HASTE:           return RATING_MOD_HASTE_RANGED;
+    case RATING_SPELL_HASTE:            return RATING_MOD_HASTE_SPELL;
+    case RATING_DAMAGE_VERSATILITY:     return RATING_MOD_VERS_DAMAGE;
+    case RATING_HEAL_VERSATILITY:       return RATING_MOD_VERS_HEAL;
+    case RATING_MITIGATION_VERSATILITY: return RATING_MOD_VERS_MITIG;
+    case RATING_EXPERTISE:              return RATING_MOD_EXPERTISE;
+    case RATING_MASTERY:                return RATING_MOD_MASTERY;
+    case RATING_PVP_POWER:              return RATING_MOD_PVP_POWER;
+    case RATING_LEECH:                  return RATING_MOD_LEECH;
+    case RATING_SPEED:                  return RATING_MOD_SPEED;
+    case RATING_AVOIDANCE:              return RATING_MOD_AVOIDANCE;
+    default:                            return 0;
+  }
+}
+
 rating_e util::stat_to_rating( stat_e s )
 {
   switch ( s )

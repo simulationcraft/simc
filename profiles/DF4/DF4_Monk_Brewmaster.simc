@@ -1,14 +1,14 @@
 max_time=400
 vary_combat_length=0.0
 override.target_health=0.05
-enable_all_talents=1
-
 
 monk="TWW Brewmaster Test"
 spec=brewmaster
+role=tank
 level=80
 race=tauren
 load_default_gear=1
+enable_all_talents=1
 
 # spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0
@@ -66,14 +66,14 @@ actions+=/call_action_list,name=igcd,if=time<240
 actions+=/call_action_list,name=rota,if=time<240
 actions+=/call_action_list,name=dumb,if=time>240
 
-# tank_dummy="Fluffy_Pollow"
-# level=83
-# race=humanoid
-# role=tank
-# position=front
+tank_dummy="Fluffy_Pollow"
+level=83
+race=humanoid
+role=tank
+position=front
 
-# actions.precombat=snapshot_stats
-# actions=auto_attack,damage=1500000,range=30000,attack_speed=2,aoe_tanks=1
-# actions+=/melee_nuke,damage=300000000,range=60000,attack_speed=2,cooldown=30,aoe_tanks=1
-# actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60,bleed=1
-# actions+=/pause_action,duration=30,cooldown=30,if=time>=30
+actions.precombat=snapshot_stats
+actions=auto_attack,damage=7500000,range=30000,attack_speed=1.5,aoe_tanks=1
+actions+=/melee_nuke,damage=12000000,range=60000,attack_speed=2,cooldown=30,aoe_tanks=1
+actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60,bleed=1
+actions+=/pause_action,duration=30,cooldown=30,if=time>=30

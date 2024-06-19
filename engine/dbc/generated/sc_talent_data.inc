@@ -1,5 +1,5 @@
-// 567 talents, wow build 11.0.0.55120
-static std::array<talent_data_t, 567> __talent_data { {
+// 566 talents, wow build 11.0.0.55185
+static std::array<talent_data_t, 566> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -238,7 +238,6 @@ static std::array<talent_data_t, 567> __talent_data { {
   { "Balance Affinity"                  , 22163, 0x00, 0x0400,    0,   0,   2,  197488,       0,  0 },
   { "Stellar Flare"                     , 22165, 0x00, 0x0400,  102,   2,   5,  202347,       0,  0 },
   { "Mana Tea"                          , 22166, 0x00, 0x0200,  270,   2,   2,  197908,       0,  0 },
-  { "Spirit of the Crane"               , 22167, 0x00, 0x0200,  270,   1,   2,  210802,       0,  0 },
   { "Lifecycles"                        , 22168, 0x00, 0x0200,  270,   0,   2,  197915,       0,  0 },
   { "Upwelling"                         , 22169, 0x00, 0x0200,  270,   1,   6,  274963,       0,  0 },
   { "Rising Mist"                       , 22170, 0x00, 0x0200,  270,   2,   6,  274909,       0,  0 },

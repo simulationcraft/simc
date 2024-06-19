@@ -76,8 +76,7 @@ struct mind_flay_t final : public priest_spell_t
   mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
       _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) )
   {
     parse_options( options_str );
 
@@ -86,11 +85,6 @@ struct mind_flay_t final : public priest_spell_t
 
   void execute() override
   {
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
-
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
@@ -122,7 +116,6 @@ struct mind_flay_t final : public priest_spell_t
 private:
   propagate_const<action_t*> _base_spell;
   propagate_const<action_t*> _insanity_spell;
-  timespan_t manipulation_cdr;
 };
 
 // ==========================================================================
@@ -130,11 +123,7 @@ private:
 // ==========================================================================
 struct mind_spike_base_t : public priest_spell_t
 {
-  timespan_t manipulation_cdr;
-
-  mind_spike_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
-    : priest_spell_t( n, p, s ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  mind_spike_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
   }
@@ -164,11 +153,6 @@ struct mind_spike_base_t : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
 
     if ( priest().talents.shadow.mind_melt.enabled() )
     {
@@ -636,6 +620,16 @@ struct shadow_word_pain_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
+  void last_tick( dot_t* d ) override
+  {
+    if ( priest().talents.cauterizing_shadows.enabled() )
+    {
+      priest().trigger_cauterizing_shadows();
+    }
+
+    priest_spell_t::last_tick( d );
+  }
+
   void trigger( player_t* target )
   {
     background = true;
@@ -650,11 +644,25 @@ struct shadow_word_pain_t final : public priest_spell_t
     priest_spell_t::execute();
 
     if ( casted )
+    {
       p().buffs.deaths_torment->expire();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
+    // Trigger Cauterizing Shadows if you refreshed with less than 5 seconds
+    if ( priest().talents.cauterizing_shadows.enabled() )
+    {
+      priest_td_t& td = get_td( s->target );
+
+      if ( td.dots.shadow_word_pain->remains() <
+           timespan_t::from_seconds( priest().talents.cauterizing_shadows->effectN( 1 ).base_value() ) )
+      {
+        priest().trigger_cauterizing_shadows();
+      }
+    }
+
     priest_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
@@ -1326,8 +1334,8 @@ struct void_eruption_t final : public priest_spell_t
 
     if ( priest().buffs.sustained_potency->check() )
     {
-      priest().buffs.voidform->extend_duration(
-          player, timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+      priest().buffs.voidform->extend_duration( player,
+                                                timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
 
       priest().buffs.sustained_potency->expire();
     }
@@ -1516,7 +1524,7 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().spawn_idol_of_cthun( s );
-    
+
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
       priest().trigger_entropic_rift();
@@ -1826,8 +1834,7 @@ public:
   propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
   double torment_mult;
 
-  shadow_crash_base_t( priest_t& p, util::string_view options_str, std::string_view name,
-                       const spell_data_t* s )
+  shadow_crash_base_t( priest_t& p, util::string_view options_str, std::string_view name, const spell_data_t* s )
     : priest_spell_t( name, p, s ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed(), s ) ),
