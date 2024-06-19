@@ -2094,42 +2094,52 @@ struct holy_armaments_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-
-    auto nextArmament = p()->active.armament[ p()->next_armament ];
-
-    if ( p() == target )
-    {
-      nextArmament->target = target;
-      nextArmament->execute();
-    }
-    else
-      nextArmament->execute_on_target( target );
-    sim->print_debug( "Player {} cast Holy Armaments on {}", p()->name(), target->name() );
-
-    if ( p()->talents.lightsmith.solidarity->ok() )
-    {
-      if ( target != p() )
-      {
-        nextArmament->execute();
-        sim->print_debug( "Player {} cast Holy Armaments on self via Solidarity", p()->name() );
-      }
-      else
-      {
-        // ToDo: Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
-        // actor. It could also target pets
-        for ( auto& _p : sim->player_no_pet_list )
-        {
-          if ( _p->is_sleeping() || _p == p() )
-            continue;
-          nextArmament->execute_on_target( _p );
-          sim->print_debug( "Player {} cast Holy Armaments on {} via Solidarity", p()->name(), _p->name() );
-          break;
-        }
-      }
-    }
-    p()->next_armament = armament( ( p()->next_armament + 1 ) % NUM_ARMAMENT );
+    p()->cast_holy_armaments( execute_state->target, p()->next_armament, true, false );
   }
 };
+
+void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random )
+{
+  auto nextArmament = active.armament[ usedArmament ];
+
+  if (random)
+  {
+    nextArmament = active.armament[ rng().range( 2 ) ];
+  }
+
+  if ( target == this )
+  {
+    nextArmament->target = target;
+    nextArmament->execute();
+  }
+  else
+    nextArmament->execute_on_target( target );
+  sim->print_debug( "Player {} cast Holy Armaments on {}", name(), target->name() );
+
+  if ( talents.lightsmith.solidarity->ok() )
+  {
+    if ( target != this )
+    {
+      nextArmament->execute();
+      sim->print_debug( "Player {} cast Holy Armaments on self via Solidarity", name() );
+    }
+    else
+    {
+      // ToDo: Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
+      // actor. It could also target pets
+      for ( auto& _p : sim->player_no_pet_list )
+      {
+        if ( _p->is_sleeping() || _p == this )
+          continue;
+        nextArmament->execute_on_target( _p );
+        sim->print_debug( "Player {} cast Holy Armaments on {} via Solidarity", name(), _p->name() );
+        break;
+      }
+    }
+  }
+  if ( changeArmament )
+    next_armament = armament( ( next_armament + 1 ) % NUM_ARMAMENT );
+}
 
 dbc_proc_callback_t* create_sacred_weapon_callback( player_t* p )
 {

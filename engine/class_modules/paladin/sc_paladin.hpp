@@ -752,6 +752,7 @@ public:
   bool standing_in_consecration() const;
   bool standing_in_hallow() const;
   void adjust_health_percent();
+  void cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
@@ -1179,18 +1180,9 @@ public:
         // No Spelldata is found, neither chance nor ppm, this is our best estimation
         if ( ab::rng().roll( 0.01 ) )
         {
-          // Currently 100% chance to trigger sacred weapon on alpha - 05/13
-          if ( ab::rng().roll( 1 ) )
-          {
-            // Sacred Weapon
-            p()->active.armament[ 1 ]->execute();
-            // player()->buffs.lightsmith.sacred_weapon->trigger();
-          }
-          else
-          {
-            // Holy Bulwark
-            p()->active.armament[ 0 ]->execute();
-          }
+          // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
+          p()->cast_holy_armaments( p(), paladin::armament::SACRED_WEAPON, false,
+                                    p()->next_armament == paladin::armament::SACRED_WEAPON && p->bugs );
         }
       }
     }
