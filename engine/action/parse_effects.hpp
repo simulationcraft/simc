@@ -316,6 +316,9 @@ struct modified_spelleffect_t
   double resource() const
   { return resource( _eff.resource_gain_type() ); }
 
+  timespan_t time_value() const
+  { return timespan_t::from_millis( base_value() ); }
+
   operator const spelleffect_data_t&() const
   { return _eff; }
 

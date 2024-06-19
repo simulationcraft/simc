@@ -6936,34 +6936,34 @@ struct mark_of_the_wild_t : public druid_spell_t
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
-  struct crescent_moon_t : public druid_spell_t
+  struct minor_moon_t : public druid_spell_t
   {
-    crescent_moon_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 424588 ), f )
+    minor_moon_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 424588 ), f )
     {
       background = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
-      name_str_reporting = "crescent_moon";
+      name_str_reporting = "minor_moon";
     }
 
     void init() override
     {
       druid_spell_t::init();
 
-      if ( p()->active.moons && get_suffix( name_str, "crescent_moon" ).empty() )
+      if ( p()->active.moons && get_suffix( name_str, "minor_moon" ).empty() )
         p()->active.moons->add_child( this );
     }
   };
 
   moon_stage_e stage = moon_stage_e::FULL_MOON;
-  action_t* crescent = nullptr;
-  unsigned num_crescent = 0;
+  action_t* minor = nullptr;
+  unsigned num_minor = 0;
 
   moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
-      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon", f );
+      minor = p->get_secondary_action<minor_moon_t>( "minor_moon", f );
   }
 
   void init() override
@@ -7031,9 +7031,9 @@ struct moon_base_t : public druid_spell_t
     advance_stage();
 
     // TODO: any delay/stagger?
-    if ( crescent && num_crescent )
-      for ( unsigned i = 0; i < num_crescent; i++ )
-        crescent->execute_on_target( target );
+    if ( minor && num_minor )
+      for ( unsigned i = 0; i < num_minor; i++ )
+        minor->execute_on_target( target );
   }
 };
 
@@ -7044,7 +7044,8 @@ struct new_moon_t : public moon_base_t
   {
     stage = moon_stage_e::NEW_MOON;
 
-    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+    if ( p->talent.the_eternal_moon.ok() )
+      num_minor = as<unsigned>( minor->data().effectN( 3 ).base_value() );
   }
 };
 
@@ -7055,7 +7056,8 @@ struct half_moon_t : public moon_base_t
   {
     stage = moon_stage_e::HALF_MOON;
 
-    num_crescent = as<unsigned>( p->talent.the_eternal_moon->effectN( 3 ).base_value() );
+    if ( p->talent.the_eternal_moon.ok() )
+      num_minor = as<unsigned>( minor->data().effectN( 3 ).base_value() );
   }
 };
 
@@ -7072,12 +7074,12 @@ struct full_moon_t : public trigger_atmospheric_exposure_t<moon_base_t>
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
 
-    num_crescent = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
+    num_minor = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
 
     if ( auto suf = get_suffix( name_str, "full_moon" ); !suf.empty() )
     {
-      crescent = p->get_secondary_action<crescent_moon_t>( "crescent_moon_" + name_str, f );
-      add_child( crescent );
+      minor = p->get_secondary_action<minor_moon_t>( "minor_moon_" + name_str, f );
+      add_child( minor );
     }
   }
 
@@ -10672,7 +10674,9 @@ void druid_t::create_buffs()
   buff.ravage_maul = make_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
     this, "ravage", find_spell( 441602 ) );
 
-  buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) );
+  buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
+    // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
+    ->set_period( 0_ms );
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
     this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
@@ -11673,10 +11677,13 @@ void druid_t::init_special_effects()
     {
       timespan_t dur;
 
-      implant_cb_t( druid_t* p, const special_effect_t& e )
-        : druid_cb_t( p, e ),
-          dur( p->talent.implant->effectN( p->specialization() == DRUID_FERAL ? 1 : 2 ).time_value() )
-      {}
+      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
+      {
+        auto m_data = p->get_modified_spell( p->talent.implant )
+          ->parse_effects( p->talent.resilient_flourishing );
+
+        dur = m_data->effectN( p->specialization() == DRUID_FERAL ? 1 : 2 ).time_value();
+      }
 
       // TODO: whitelist aoe spells as necessary if they can trigger
       void trigger( action_t* a, action_state_t* s ) override
@@ -13381,14 +13388,14 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
-  action.apply_affecting_aura( talent.arcane_affinity );
+  action.apply_affecting_aura( talent.arcane_affinity );  // TODO: confirm if this applies to non-arcane wrath/thrash
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
   action.apply_affecting_aura( talent.empowered_shapeshifting );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
-  action.apply_affecting_aura( talent.lunar_calling );
+  action.apply_affecting_aura( talent.lunar_calling );  // TODO: confirm arcane thrash applies to balance, and starfire damage to guardian
   action.apply_affecting_aura( talent.lunar_insight );
   action.apply_affecting_aura( talent.potent_enchantments );
   action.apply_affecting_aura( talent.resilient_flourishing );
@@ -13552,6 +13559,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.feline_potential, CONSUME_BUFF );
   parse_effects( p()->buff.harmony_of_the_grove );
   parse_effects( p()->buff.root_network );
+  parse_effects( p()->buff.strategic_infusion );
   parse_effects( p()->buff.ursine_potential, CONSUME_BUFF );
 }
 
@@ -13619,7 +13627,6 @@ void druid_t::parse_player_effects()
   parse_effects( buff.bear_form );
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
-  parse_effects( buff.strategic_infusion );
   parse_effects( buff.ursine_vigor, talent.ursine_vigor );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),       // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
