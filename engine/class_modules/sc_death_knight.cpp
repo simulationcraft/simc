@@ -8684,11 +8684,11 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
   double cost() const override
   {
-    double c = base_costs[ RESOURCE_RUNIC_POWER ];
+    double c          = death_knight_melee_attack_t::cost();
     double current_rp = p()->resources.current[ RESOURCE_RUNIC_POWER ];
-    double excess_rp = std::max( current_rp - c, 0.0 );
+    double excess_rp  = std::max( current_rp - c, 0.0 );
 
-    if( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
+    if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
     {
       c += std::min( std::fabs( data().powerN( 2 ).max_cost() ), excess_rp );
     }
