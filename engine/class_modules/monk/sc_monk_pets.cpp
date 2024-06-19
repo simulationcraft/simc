@@ -106,12 +106,7 @@ struct pet_action_base_t : public BASE
     super_t::impact( s );
 
     if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-    {
       o()->trigger_empowered_tiger_lightning( s );
-
-      if ( o()->get_target_data( s->target )->debuff.bonedust_brew->up() )
-        o()->bonedust_brew_assessor( s );
-    }
 
     if ( !super_t::result_is_miss( s->result ) && s->result_amount > 0 )
     {
@@ -157,12 +152,7 @@ struct pet_action_base_t : public BASE
 
     if ( !super_t::result_is_miss( dot->state->result ) &&
          dot->state->result_type == result_amount_type::DMG_OVER_TIME )
-    {
       o()->trigger_empowered_tiger_lightning( dot->state );
-
-      if ( o()->get_target_data( dot->state->target )->debuff.bonedust_brew->up() )
-        o()->bonedust_brew_assessor( dot->state );
-    }
   }
 };
 
@@ -1343,8 +1333,8 @@ public:
   {
     // TODO: Test Meridian Strikes
 
-    // Currently Xuen's Bond is triggering from SEF combo strikes, assume this is a bug
-    if ( o()->talent.windwalker.xuens_bond->ok() && o()->bugs )
+    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer a bug.
+    if ( o()->talent.windwalker.xuens_bond->ok() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100
   }

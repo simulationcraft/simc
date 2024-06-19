@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 11.0.0.55120
+// Permanent item enchants, wow build 11.0.0.55185
 static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -219,9 +219,9 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 6659,  1, 19, 0x20000000, 0x00000428, "draconic_finesse"                  },
   { 6660,  2, 19, 0x20000000, 0x00000428, "draconic_finesse"                  },
   { 6661,  3, 19, 0x20000000, 0x00000428, "draconic_finesse"                  },
-  { 6662,  1, 19, 0x20000000, 0x000019c7, "draconic_inspiration"              },
-  { 6663,  2, 19, 0x20000000, 0x000019c7, "draconic_inspiration"              },
-  { 6664,  3, 19, 0x20000000, 0x000019c7, "draconic_inspiration"              },
+  { 6662,  1, 19, 0x20000000, 0x000019c7, "draconic_ingenuity"                },
+  { 6663,  2, 19, 0x20000000, 0x000019c7, "draconic_ingenuity"                },
+  { 6664,  3, 19, 0x20000000, 0x000019c7, "draconic_ingenuity"                },
   { 4881,  0,  4, 0x00000080, 0x0000001e, "draconic_leg_reinforcements"       },
   { 6665,  1, 19, 0x20000000, 0x00000628, "draconic_perception"               },
   { 6666,  2, 19, 0x20000000, 0x00000628, "draconic_perception"               },

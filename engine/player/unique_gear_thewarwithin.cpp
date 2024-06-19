@@ -72,11 +72,11 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e )
   return spell_data_t::nil();
 }
 
-double role_mult( const special_effect_t& e )
+double role_mult( const special_effect_t& effect )
 {
   double mult = 1.0;
 
-  if ( auto vars = e.player->dbc->spell_desc_vars( e.driver()->id() ).desc_vars() )
+  if ( auto vars = effect.player->dbc->spell_desc_vars( effect.driver()->id() ).desc_vars() )
   {
     std::cmatch m;
     std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
@@ -93,9 +93,9 @@ double role_mult( const special_effect_t& e )
         std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
         for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
         {
-          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == e.player->spec_spell->id() )
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == effect.player->spec_spell->id() )
           {
-            e.player->sim->print_debug( "parsed role multiplier for special effect '{}': {}", e.name(), mult );
+            effect.player->sim->print_debug( "parsed role multiplier for effect '{}': {}", effect.name(), mult );
             return mult;
           }
         }
@@ -131,6 +131,36 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
 
     add_fn( stats.front(), buff );
   }
+}
+
+unsigned unique_gem_count( const special_effect_t& effect )
+{
+  // from item_naming.inc
+  static constexpr std::array<unsigned, 5> algari_gem_desc = { 14110,    // ruby
+                                                               14111,    // amber
+                                                               14113,    // emerald
+                                                               14114,    // sapphire
+                                                               14115 };  // onyx
+  std::set<unsigned> gems;
+
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto gem_id : item.parsed.gem_id )
+    {
+      if ( gem_id )
+      {
+        const auto& _gem = effect.player->dbc->item( gem_id );
+        const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
+        if ( auto _desc = _prop.desc_id; range::contains( algari_gem_desc, _desc ) )
+          gems.insert( _desc );
+      }
+    }
+  }
+
+  auto count = as<unsigned>( gems.size() );
+  effect.player->sim->print_debug( "unique gem count for effect '{}': {}", effect.name(), count );
+
+  return count;
 }
 
 namespace consumables
@@ -413,6 +443,18 @@ void secondary_weapon_enchant( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 435500 driver
+void culminating_blasphemite( special_effect_t& effect )
+{
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_count( effect );;
+  // check for prismatic null stone
+  if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
+    pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
+
+  effect.player->base.crit_damage_multiplier *= 1.0 + pct;
+  effect.player->base.crit_healing_multiplier *= 1.0 + pct;
+}
 }  // namespace enchants
 
 namespace embellishments
@@ -465,6 +507,58 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   grenade->travel_speed = missile->missile_speed();
 
   effect.execute_action = grenade;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 436035 equip
+//  e1: coeff? trigger driver
+// 436039 driver
+//  e1: coeff? this is 10x equip coeff and seems to be the one being used in-game
+// 436043 damage
+// 436044 heal
+// TODO: determine if it can proc with no gems
+// TODO: determine which coeff is actually used
+// TODO: confirm damage amount increase per gem type calculation
+// TODO: confirm rppm decrease per gem type calculation
+// TODO: determine if heal uses same coeff as damage
+// TODO: confirm damage/heal depends on target type, and not triggering action type
+void elemental_focusing_lens( special_effect_t& effect )
+{
+  auto gem_count = unique_gem_count( effect );
+
+  // TODO: determine if it can proc with no gems
+  if ( !gem_count )
+    return;
+
+  // TODO: determine which coeff is actually used. in-game seems to be incorrectly using the driver coeff, which is 10x
+  // the equip coeff.
+  auto amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  // TODO: confirm damage amount increase per gem type calculation
+  amount *= 6 - gem_count;
+
+  // TODO: confirm rppm decrease per gem type calculation
+  effect.rppm_modifier_ = 1.0 / ( 6 - gem_count );
+
+  effect.spell_id = effect.trigger()->id();
+
+  auto damage = create_proc_action<generic_proc_t>( "elemental_focusing_len", effect, 436043 );
+  damage->base_dd_min = damage->base_dd_max = amount;
+
+  // TODO: determine if heal uses same coeff as damage
+  auto heal = create_proc_action<generic_heal_t>( "elemental_focusing_len_heal", effect, 436044 );
+  heal->base_dd_min = heal->base_dd_max = amount;
+  heal->name_str_reporting = "Heal";
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      // TODO: confirm damage/heal depends on target type, and not triggering action type
+      if ( s->target->is_enemy() )
+        damage->execute_on_target( s->target );
+      else
+        heal->execute_on_target( s->target );
+    } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1523,8 +1617,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "silvervein", e, e.player->find_spell( 452310 ) ), action( a ), effect( e )
+    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "silvervein", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1541,8 +1635,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "boulderbane", e, e.player->find_spell( 452496 ) ), action( a ), effect( e )
+    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "boulderbane", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1556,7 +1650,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct sigil_of_algari_concordance_t : public generic_proc_t
   {
-    const special_effect_t& effect;
+    const spell_data_t* summon_spell;
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
     bool silvervein;
@@ -1564,7 +1658,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
-        effect( e ),
+        summon_spell( nullptr ),
         silvervein_spawner( "silvervein", e.player ),
         boulderbane_spawner( "boulderbane", e.player ),
         silvervein( false ),
@@ -1623,13 +1717,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
       if ( silvervein )
       {
-        silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
-        silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+        summon_spell = e.player->find_spell( 452310 );
+        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this, summon_spell ); } );
+        silvervein_spawner.set_default_duration( summon_spell->duration() );
       }
       if ( boulderbane )
       {
-        boulderbane_spawner.set_creation_callback( [ this ]( player_t* ) { return new boulderbane_pet_t( effect, this ); } );
-        boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+        summon_spell = e.player->find_spell( 452496 );
+        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
+        boulderbane_spawner.set_default_duration( summon_spell->duration() );
         add_child( earthen_ire_damage );
       }
 
@@ -1719,6 +1815,7 @@ void ravenous_honey_buzzer( special_effect_t& e )
 // 443411 Use Driver
 // 446764 Equip Driver
 // 446811 Use Damage
+// 449842 Ground Effect Trigger
 // 449828 Equip Damage
 // 450453 Equip Buff
 void overclocked_geararang_launcher( special_effect_t& e )
@@ -1728,13 +1825,9 @@ void overclocked_geararang_launcher( special_effect_t& e )
     buff_t* buff;
     action_t* overclock_strike;
 
-    overclocked_strike_cb_t( const special_effect_t& e, const spell_data_t* equip_driver, buff_t* buff )
-      : dbc_proc_callback_t( e.player, e ),
-      buff( buff ), overclock_strike( nullptr )
+    overclocked_strike_cb_t( const special_effect_t& e, buff_t* buff, action_t* strike )
+      : dbc_proc_callback_t( e.player, e ), buff( buff ), overclock_strike( strike )
     {
-      overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
-      overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
-      overclock_strike->base_multiplier *= role_mult( e );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -1765,6 +1858,31 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   };
 
+  struct geararang_launcher_t : public generic_proc_t
+  {
+    ground_aoe_params_t params;
+    geararang_launcher_t( const special_effect_t& e, action_t* equip_damage )
+      : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
+    {
+      auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+      damage->radius     = e.driver()->effectN( 1 ).radius();
+      auto ground_effect = e.player->find_spell( 449842 );
+      params.action( damage ).duration( ground_effect->duration() );
+      cooldown->duration = 0_ms;  // Handled by the item
+      add_child( damage );
+      add_child( equip_damage );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      make_event<ground_aoe_event_t>( *sim, player,
+                                      params.target( s->target ).x( s->target->x_position ).y( s->target->y_position ),
+                                      true /* Immediate pulse */ );
+    }
+  };
+
   unsigned equip_id = 446764;
   auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Overclocked Gear-a-Rang missing equip effect" );
@@ -1774,13 +1892,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
   auto damage_buff_spell = e.player->find_spell( 450453 );
   auto overclock_buff    = create_buff<buff_t>( e.player, damage_buff_spell );
 
-  auto damage            = new special_effect_t( e.player );
-  damage->name_str       = "overclocked_strike_proc";
-  damage->item           = e.item;
-  damage->spell_id       = damage_buff_spell->id();
+  auto overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
+  overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+  overclock_strike->base_multiplier *= role_mult( e );
+
+  auto damage      = new special_effect_t( e.player );
+  damage->name_str = "overclocked_strike_proc";
+  damage->item     = e.item;
+  damage->spell_id = damage_buff_spell->id();
   e.player->special_effects.push_back( damage );
 
-  auto damage_cb = new overclocked_strike_cb_t( *damage, equip_driver, overclock_buff );
+  auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );
   damage_cb->initialize();
   damage_cb->deactivate();
 
@@ -1795,19 +1917,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   } );
 
-  auto overclock         = new special_effect_t( e.player );
-  overclock->name_str    = "overclock";
-  overclock->item        = e.item;
-  overclock->spell_id    = equip_driver->id();
+  auto overclock      = new special_effect_t( e.player );
+  overclock->name_str = "overclock";
+  overclock->item     = e.item;
+  overclock->spell_id = equip_driver->id();
   e.player->special_effects.push_back( overclock );
 
   auto overclock_cb = new overclock_cb_t( *overclock, e, overclock_buff );
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  // Might be worth converting to a poper ground effect event later. For now, this is close enough.
-  auto use_damage  = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
-  e.execute_action = use_damage;
+  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, overclock_strike );
 }
 
 // Remnant of Darkness
@@ -2974,18 +3094,21 @@ void register_special_effects()
   // Oils
   register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
 
-  // Enchants
+  // Enchants & gems
   register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );
   register_special_effect( { 449221, 449223, 449222 }, enchants::authority_of_the_depths );
   register_special_effect( { 449055, 449056, 449059,                                          // council's guile (crit)
                              449095, 449096, 449097,                                          // stormrider's fury (haste)
                              449112, 449113, 449114,                                          // stonebound artistry (mastery)
                              449120, 449118, 449117 }, enchants::secondary_weapon_enchant );  // oathsworn tenacity (vers)
+  register_special_effect( 435500, enchants::culminating_blasphemite );
 
 
   // Embellishments & Tinkers
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
+  register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
+  register_special_effect( 436035, embellishments::elemental_focusing_lens );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );

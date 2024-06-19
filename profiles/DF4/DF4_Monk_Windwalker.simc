@@ -3,14 +3,11 @@ vary_combat_length=0.0
 override.target_health=0.05
 
 monk="TWW Windwalker Test"
-source=default
 spec=windwalker
-level=70
+level=80
 race=void_elf
-role=dps
-position=back
-talents=B0QAyDc16vWbNHtgLBW3PSstWAAAAAAAAAAAAKpJpFiIJpVkISiSSAAAAAAAAAEgECkIJBJSaRQIJRCJSSSCA
 load_default_gear=1
+enable_all_talents=1
 
 # actions.ogcd+=/fortifying_brew
 actions.ogcd+=/diffuse_magic
@@ -38,7 +35,7 @@ actions.dumb+=/roll
 actions.dumb+=/flying_serpent_kick
 actions.dumb+=/expel_harm
 # actions.dumb+=/disable,if=time<260
-actions.dumb+=/crackling_jade_lightning,if=time<280
+# actions.dumb+=/crackling_jade_lightning,if=time<280
 # actions.dumb+=/soothing_mist,if=time<300
 actions.dumb+=/vivify,if=time<320
 

@@ -1,4 +1,4 @@
-// Embellishment data, wow build 11.0.0.55120
+// Embellishment data, wow build 11.0.0.55185
 static const std::array<embellishment_data_t, 27> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
@@ -17,7 +17,7 @@ static const std::array<embellishment_data_t, 27> __embellishment_data { {
   { "Verdant Conduit", 9521, 179513 },
   { "Dreamtender's Charm", 9532, 179870 },
   { "Verdant Tether", 9614, 180720 },
-  { "Elemental Focusing Lens", 10520, 182921 },
+  { "Elemental Focusing Lens", 10520, 189340 },
   { "Prismatic Null Stone", 10518, 182911 },
   { "Captured Starlight", 10521, 182939 },
   { "Blessed Weapon Grip", 11103, 183926 },

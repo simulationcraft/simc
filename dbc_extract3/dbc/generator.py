@@ -4275,8 +4275,15 @@ class GemPropertyDataGenerator(DataGenerator):
                 length = len(data))
 
         for entry in data:
-            self.output_record(entry.field('id', 'id_enchant', 'color'),
-                    comment = entry.ref('id_enchant').id and entry.ref('id_enchant').desc or '')
+            fields = entry.field('id', 'id_enchant', 'color')
+
+            # it's possible to have gem items with different descriptors sharing the same gem propery.
+            # as we are mainly interested in parsing the 'color' of standard gems, only output 1:1 matches of gem
+            # property to descriptor.
+            descs = entry.child_refs('ItemSparse')
+            fields += descs[0].field('id_name_desc') if len(descs) == 1 else ['0']
+
+            self.output_record(fields, comment = entry.ref('id_enchant').id and entry.ref('id_enchant').desc or '')
 
         self.output_footer()
 
