@@ -2653,6 +2653,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     p()->buff.transfer_the_power->expire();
 
+    p()->buff.pressure_point->trigger();
+
     if ( p()->talent.windwalker.momentum_boost->ok() )
     {
       p()->buff.momentum_boost_damage->expire();
