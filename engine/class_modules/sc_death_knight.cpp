@@ -6316,7 +6316,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     background          = true;
     cooldown->duration  = 0_ms;
     aoe                 = -1;
-    reduced_aoe_targets = p->spell.exterminate_damage->effectN( 5 ).base_value();
+    reduced_aoe_targets = p->talent.deathbringer.exterminate->effectN( 5 ).base_value();
 
     if ( p->specialization() == DEATH_KNIGHT_FROST )
     {
