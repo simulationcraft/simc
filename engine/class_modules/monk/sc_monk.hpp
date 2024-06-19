@@ -219,7 +219,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   double action_multiplier() const override;
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
   void impact( action_state_t *state ) override;
-  void apply_dual_wield_two_handed_scaling();
 };
 
 struct monk_buff_t : public buff_t
