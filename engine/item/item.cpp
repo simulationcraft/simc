@@ -2102,7 +2102,7 @@ void item_t::decode_embellishment()
 
   parsed.data.add_effect( effect );
 
-  player->sim->print_debug( "Player {} itme '{}' adding embellishment {}", player->name(), name(), emb.name );
+  player->sim->print_debug( "Player {} item '{}' adding embellishment {}", player->name(), name(), emb.name );
 
   return;
 }
