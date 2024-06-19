@@ -1289,6 +1289,7 @@ struct time_skip_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
+    set_reverse( true );
 
     apply_affecting_aura( p->talent.tomorrow_today );
 
@@ -8056,13 +8057,6 @@ void evoker_t::create_buffs()
   buff.unrelenting_siege    = MBF( talent.scalecommander.unrelenting_siege.ok(), this, "unrelenting_siege",
                                    talent.scalecommander.unrelenting_siege_buff )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  
-  if ( talent.scalecommander.unrelenting_siege.ok() )
-  {
-    buff.unrelenting_siege->set_max_stack(
-        as<int>( talent.scalecommander.unrelenting_siege->effectN( 2 ).base_value() /
-                 talent.scalecommander.unrelenting_siege->effectN( 1 ).base_value() ) );
-  }
 }
 
 void evoker_t::create_options()
