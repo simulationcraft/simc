@@ -1563,7 +1563,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     : monk_melee_attack_t( p, name, p->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
-    ap_type    = attack_power_type::WEAPON_BOTH;
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type = attack_power_type::WEAPON_BOTH;
 
     background = dual = true;
     may_crit          = true;
@@ -1746,8 +1748,6 @@ struct rising_sun_kick_press_the_advantage_dmg_t : public rising_sun_kick_dmg_t
     proc              = true;
     trigger_gcd       = 0_s;
     is_base_rsk       = false;
-
-    ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   double action_multiplier() const override
@@ -1984,7 +1984,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
               ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
     parse_options( options_str );
-    ap_type          = attack_power_type::WEAPON_BOTH;
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type = attack_power_type::WEAPON_BOTH;
+
     sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     ww_mastery       = true;
     may_combo_strike = true;
@@ -2252,8 +2254,6 @@ struct chi_explosion_t : public monk_spell_t
     dual = background = true;
     aoe               = -1;
     school            = SCHOOL_NATURE;
-
-    ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   double action_multiplier() const override
@@ -2284,6 +2284,9 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     school                        = SCHOOL_PHYSICAL;
     cooldown->duration            = timespan_t::zero();
     base_costs[ RESOURCE_ENERGY ] = 0;
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type = attack_power_type::WEAPON_BOTH;
   }
 
   int motc_counter() const
