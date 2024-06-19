@@ -1718,7 +1718,8 @@ public:
     bool deepening_shadows = false;     // Trigger
     bool dragon_tempered_blades = false;// Proc Reduction
     bool fazed_damage = false;
-    bool fazed_crit = false;
+    bool fazed_crit_chance = false;
+    bool fazed_crit_damage = false;
     bool flagellation = false;
     bool ghostly_strike = false;
     bool goremaws_bite = false;         // Cost Reduction
@@ -1843,7 +1844,8 @@ public:
     if ( p->talent.trickster.unseen_blade->ok() )
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
-      affected_by.fazed_crit = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+      affected_by.fazed_crit_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 4 ) );
+      affected_by.fazed_crit_chance = ab::data().affected_by( p->spell.fazed_debuff->effectN( 5 ) );
     }
 
     if ( p->talent.fatebound.destiny_defined->ok() )
@@ -2655,7 +2657,7 @@ public:
   {
     double c = ab::composite_target_crit_chance( target );
 
-    if ( affected_by.fazed_crit && td( target )->debuffs.fazed->check() )
+    if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
       c += td( target )->debuffs.fazed->value_crit_chance();
     }
@@ -2694,7 +2696,19 @@ public:
 
     if ( affected_by.t30_subtlety_4pc && p()->buffs.symbols_of_death->check() )
     {
-      cm += p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+      cm *= 1.0 + p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+    }
+
+    return cm;
+  }
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
+  {
+    double cm = ab::composite_target_crit_damage_bonus_multiplier( target );
+
+    if ( affected_by.fazed_crit_damage && td( target )->debuffs.fazed->check() )
+    {
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent();
     }
 
     return cm;
@@ -7248,7 +7262,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     affected_by.zoldyck_insignia = false; // Does not affect direct, does affect periodic
 
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
-    add_child( serrated_bone_spike_dot );
+    serrated_bone_spike_dot->stats = stats; // Merge reporting
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -9798,7 +9812,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
-    ->apply_affecting_aura( source->talent.trickster.surprising_strikes );
+    ->apply_affecting_aura( source->talent.trickster.no_scruples ); // Crit Chance
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
   } );
