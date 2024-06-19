@@ -1821,7 +1821,7 @@ public:
       // TODO: confirm what can and cannot trigger or consume lunar amplificiation
       if ( p()->talent.lunar_amplification.ok() && !ab::background )
       {
-        if ( dbc::has_common_school( ab::get_school(), SCHOOL_ARCANE ) )
+        if ( dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
         {
           // schedule expiration to wait for complete action resolution
           if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_expire( this ) )
@@ -1835,7 +1835,7 @@ public:
 
       // TODO: confirm what can and cannot trigger lunation
       if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) &&
-           dbc::has_common_school( ab::get_school(), SCHOOL_ARCANE ) )
+           dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
       {
         assert( p()->talent.lunation->effects().size() == 3 );
         auto eff = p()->talent.lunation->effects().begin();
@@ -1844,6 +1844,12 @@ public:
           cd->adjust( ( *eff++ ).time_value() );
       }
     }
+  }
+
+  // lunation & lunar amplification seem to go off the original school for temporary school changes
+  school_e _get_school() const
+  {
+    return ab::original_school != SCHOOL_NONE : ab::original_school : ab::get_school();
   }
 
   void parse_action_effects();
@@ -6403,7 +6409,7 @@ public:
   {
     _umbral_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::UMBRAL )
     {
-      BASE::set_school_override( SCHOOL_ASTRAL );
+      BASE::set_school_override( SCHOOL_ASTRAL );  // preserve original school for lunar amplification/lunation
       BASE::name_str_reporting = "Umbral";
 
       const spell_data_t* other_ecl;
@@ -6454,11 +6460,6 @@ public:
     void umbral_embrace_trigger( action_t* a )
     {
       BASE::p()->buff.umbral_embrace->trigger( a, 1, BASE::p()->eclipse_handler.in_eclipse() );
-    }
-
-    school_e get_school() const override
-    {
-      return BASE::original_school;
     }
   };
 
