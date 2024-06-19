@@ -543,6 +543,7 @@ public:
     propagate_const<buff_t *> windwalking_driver;
     propagate_const<absorb_buff_t *> yulons_grace;
     propagate_const<buff_t *> windwalking_movement_aura;
+    propagate_const<buff_t *> chi_burst;
 
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
@@ -799,6 +800,11 @@ public:
       const spell_data_t *chi_wave_driver;
       const spell_data_t *chi_wave_damage;
       const spell_data_t *chi_wave_heal;
+      player_talent_t chi_burst;
+      const spell_data_t *chi_burst_buff;
+      const spell_data_t *chi_burst_projectile;
+      const spell_data_t *chi_burst_damage;
+      const spell_data_t *chi_burst_heal;
       player_talent_t strength_of_spirit;
 
       player_talent_t fortifying_brew;

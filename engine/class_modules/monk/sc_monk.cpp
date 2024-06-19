@@ -4404,8 +4404,8 @@ struct flurry_of_xuen_t : public monk_spell_t
   flurry_of_xuen_t( monk_t *p )
     : monk_spell_t( p, "flurry_of_xuen", p->passives.flurry_of_xuen_driver->effectN( 1 )._trigger_spell )
   {
-    background    = true;
-    may_crit      = true;
+    background = true;
+    may_crit   = true;
 
     aoe                 = -1;
     reduced_aoe_targets = p->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
@@ -5397,91 +5397,52 @@ struct chi_wave_t : public monk_spell_t
 // ==========================================================================
 // Chi Burst
 // ==========================================================================
-
-struct chi_burst_heal_t : public monk_heal_t
+struct chi_burst_t : monk_spell_t
 {
-  chi_burst_heal_t( monk_t *player ) : monk_heal_t( player, "chi_burst_heal", player->passives.chi_burst_heal )
+  template <class TBase>
+  struct hit_t : TBase
   {
-    background = true;
-    target     = player;
-    // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
-    aoe                 = ( player->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
-    reduced_aoe_targets = ( player->user_options.chi_burst_healing_targets > 1
-                                ? 0.0
-                                : player->talent.general.chi_burst->effectN( 1 ).base_value() );
-  }
+    hit_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "chi_burst_{}", name ), spell_data )
+    {
+      TBase::background = TBase::dual = true;
+      TBase::reduced_aoe_targets      = player->talent.monk.chi_burst_projectile->effectN( 1 ).base_value();
+      // TBase::aoe = -1;
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
+      // TODO: Helper to check if a damaging effect exists on the passed spell
+      for ( const auto &effect : spell_data->effects() )
+        if ( effect.type() == E_SCHOOL_DAMAGE )
+          TBase::ww_mastery = true;
+    }
+  };
 
-    // If we are using the Chi Burst Healing Target option we need to simulate the reduced healing beyond 6 targets
-    double soft_cap = p()->talent.general.chi_burst->effectN( 1 ).base_value();
-    if ( p()->user_options.chi_burst_healing_targets > soft_cap )
-      am *= std::sqrt( soft_cap / p()->user_options.chi_burst_healing_targets );
+  hit_t<monk_spell_t> *damage;
+  hit_t<monk_heal_t> *heal;
+  buff_t *buff;
 
-    return am;
-  }
-};
-
-struct chi_burst_damage_t : public monk_spell_t
-{
-  chi_burst_damage_t( monk_t *player ) : monk_spell_t( player, "chi_burst_damage", player->passives.chi_burst_damage )
-  {
-    background = true;
-    ww_mastery = true;
-    aoe        = -1;
-  }
-};
-
-struct chi_burst_t : public monk_spell_t
-{
-  chi_burst_heal_t *heal;
-  chi_burst_damage_t *damage;
-  chi_burst_t( monk_t *player, util::string_view options_str )
-    : monk_spell_t( player, "chi_burst", player->talent.general.chi_burst ),
-      heal( new chi_burst_heal_t( player ) ),
-      damage( new chi_burst_damage_t( player ) )
+  // TODO: Figure out what you have to do to simulate this as a projectile.
+  chi_burst_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "chi_burst", player->talent.monk.chi_burst_projectile ),
+      damage( new hit_t<monk_spell_t>( player, "damage", player->talent.monk.chi_burst_damage ) ),
+      heal( new hit_t<monk_heal_t>( player, "heal", player->talent.monk.chi_burst_heal ) ),
+      buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
-    may_combo_strike = true;
-
-    add_child( damage );
-    add_child( heal );
-
-    cooldown->hasted = false;
-
-    attack_power_mod.direct = 0;
-    weapon_power_mod        = 0;
-
-    interrupt_auto_attack = false;
-    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
   bool ready() override
   {
-    if ( p()->talent.general.chi_burst->ok() )
+    if ( buff->up() )
       return monk_spell_t::ready();
-
     return false;
   }
 
   void execute() override
   {
-    // AoE healing is wonky in SimC. Try to simulate healing multiple players without over burdening sims
-    if ( p()->user_options.chi_burst_healing_targets > 1 )
-    {
-      int healing_targets = p()->user_options.chi_burst_healing_targets;
-      for ( int i = 0; i < healing_targets; i++ )
-        heal->execute();
-    }
-    else
-      heal->execute();
-    damage->execute();
-
     monk_spell_t::execute();
+    buff->expire();
+    damage->execute();
+    heal->execute();
   }
 };
 
@@ -6951,12 +6912,17 @@ void monk_t::init_spells()
     talent.monk.vigorous_expulsion        = _CT( "Vigorous Expulsion" );
     talent.monk.profound_rebuttal         = _CT( "Profound Rebuttal" );
 
-    talent.monk.chi_wave           = _CT( "Chi Wave" );
-    talent.monk.chi_wave_buff      = find_spell( 450380 );
-    talent.monk.chi_wave_driver    = find_spell( 115098 );
-    talent.monk.chi_wave_damage    = find_spell( 132467 );
-    talent.monk.chi_wave_heal      = find_spell( 132463 );
-    talent.monk.strength_of_spirit = _CT( "Strength of Spirit" );
+    talent.monk.chi_wave             = _CT( "Chi Wave" );
+    talent.monk.chi_wave_buff        = find_spell( 450380 );
+    talent.monk.chi_wave_driver      = find_spell( 115098 );
+    talent.monk.chi_wave_damage      = find_spell( 132467 );
+    talent.monk.chi_wave_heal        = find_spell( 132463 );
+    talent.monk.chi_burst            = _CT( "Chi Burst" );
+    talent.monk.chi_burst_buff       = find_spell( 460490 );
+    talent.monk.chi_burst_projectile = find_spell( 123986 );
+    talent.monk.chi_burst_damage     = find_spell( 148135 );
+    talent.monk.chi_burst_heal       = find_spell( 130654 );
+    talent.monk.strength_of_spirit   = _CT( "Strength of Spirit" );
   }
 
   // monk_t::talent::brewmaster
@@ -7752,6 +7718,8 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
+  buff.chi_burst = make_buff_fallback( talent.monk.chi_burst->ok(), this, "chi_burst", talent.monk.chi_burst_buff );
+
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal )
                                       ->set_trigger_spell( talent.general.soothing_mist );
 
@@ -7943,15 +7911,13 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Do not use a fallback buff - it is possible to get a dance of chiji proc without the talent from other sources.
-  buff.dance_of_chiji =
-      make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
-          ->set_trigger_spell( talent.windwalker.dance_of_chiji );
+  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
+                            ->set_trigger_spell( talent.windwalker.dance_of_chiji );
 
-  buff.dance_of_chiji_hidden =
-      make_buff( this, "dance_of_chiji_hidden" )
-          ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
-          ->set_duration( timespan_t::from_seconds( 1.5 ) )
-          ->set_quiet( true );
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
+                                   ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
+                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
+                                   ->set_quiet( true );
 
   buff.darting_hurricane =
       make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane", find_spell( 459841 ) )
@@ -7996,13 +7962,14 @@ void monk_t::create_buffs()
                        ->set_default_value_from_effect( 1 )
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.flurry_of_xuen =
-      make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
-                          passives.flurry_of_xuen_driver )
-          ->set_tick_callback( [ this ]( buff_t *b, int, timespan_t ) { active_actions.flurry_of_xuen->execute(); } )
-          ->set_tick_behavior( buff_tick_behavior::CLIP )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_freeze_stacks( true );
+  buff.flurry_of_xuen = make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
+                                            passives.flurry_of_xuen_driver )
+                            ->set_tick_callback( [ this ]( buff_t * /* b */, int, timespan_t ) {
+                              active_actions.flurry_of_xuen->execute();
+                            } )
+                            ->set_tick_behavior( buff_tick_behavior::CLIP )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->set_freeze_stacks( true );
 
   buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( this, "invoke_xuen_the_white_tiger",
                                                                     talent.windwalker.invoke_xuen_the_white_tiger );
@@ -8460,7 +8427,8 @@ void monk_t::init_special_effects()
   if ( talent.windwalker.flurry_of_xuen.ok() )
   {
     create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
-      if ( state->action->id == p->active_actions.flurry_of_xuen->id || state->action->id == p->active_actions.empowered_tiger_lightning->id )
+      if ( state->action->id == p->active_actions.flurry_of_xuen->id ||
+           state->action->id == p->active_actions.empowered_tiger_lightning->id )
         return false;
 
       return true;
@@ -8512,6 +8480,14 @@ void monk_t::init_special_effects()
           return true;
         },
         PF2_ALL_HIT );
+  }
+
+  // ======================================
+  // Chi Burst ( Monk Talent )
+  // ======================================
+  if ( talent.monk.chi_burst->ok() )
+  {
+    create_proc_callback( talent.monk.chi_burst.spell(), []( monk_t *player, action_state_t *state ) { return true; } );
   }
 
   // ======================================
