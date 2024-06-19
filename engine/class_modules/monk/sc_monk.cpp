@@ -4671,9 +4671,7 @@ struct jadefire_stomp_damage_t : public monk_spell_t
     attack_power_mod.direct = p->passives.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
 
-    // apply_affecting_effect isn't working for whatever reason, manually setting for now
-    base_dd_multiplier *= 1.0 + p->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
-    // apply_affecting_effect( p.talent.windwalker.singularly_focused_jade->effectN( 2 ) );
+    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -4698,15 +4696,8 @@ struct jadefire_stomp_heal_t : public monk_heal_t
 
     attack_power_mod.direct = 0;
     spell_power_mod.direct  = p->passives.jadefire_stomp_damage->effectN( 2 ).sp_coeff();
-  }
 
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= 1.0 + p()->talent.windwalker.singularly_focused_jade->effectN( 2 ).percent();
-
-    return am;
+    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
   }
 
   void impact( action_state_t *s ) override
@@ -4732,8 +4723,10 @@ struct jadefire_stomp_t : public monk_spell_t
 
     damage = new jadefire_stomp_damage_t( p );
     heal   = new jadefire_stomp_heal_t( p );
-    aoe    = as<int>( data().effectN( 3 ).base_value() +
-                   p->talent.windwalker.singularly_focused_jade->effectN( 3 ).base_value() );
+    aoe    = as<int>( data().effectN( 1 ).base_value() );
+
+    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
+    aoe += p->talent.windwalker.singularly_focused_jade->effectN( 1 ).base_value();
 
     if ( p->specialization() == MONK_WINDWALKER )
     {
@@ -4785,14 +4778,10 @@ struct jadefire_stomp_t : public monk_spell_t
 
     heal->execute();
 
-    damage->set_target( s->target );
-    damage->execute();
+    damage->execute_on_target( s->target );
 
     if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      ww_damage->set_target( s->target );
-      ww_damage->execute();
-    }
+      ww_damage->execute_on_target( s->target );
 
     get_td( s->target )->debuff.jadefire_brand->trigger();
   }
@@ -7216,7 +7205,7 @@ void monk_t::init_spells()
   talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
-  talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
+  talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );
   talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
   talent.windwalker.darting_hurricane              = _ST( "Darting Hurricane" );
 
