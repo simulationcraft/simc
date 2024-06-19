@@ -8002,8 +8002,6 @@ void monk_t::create_buffs()
                                         self->set_default_value_from_effect( 3 );
                                         self->modify_default_value( composite_damage_versatility() );
                                       } )
-                                      ->set_cooldown( timespan_t::zero() )
-                                      ->set_duration( timespan_t::zero() )
                                       ->set_period( timespan_t::from_seconds( 1 ) )
                                       ->set_tick_behavior( buff_tick_behavior::CLIP )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
