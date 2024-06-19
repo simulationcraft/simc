@@ -5982,7 +5982,8 @@ struct frost_fever_t final : public death_knight_disease_t
   frost_fever_t( util::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.frost_fever ),
       rp_generation(
-          as<int>( p->spec.frost_fever->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ) )
+          as<int>( p->spec.frost_fever->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) +
+                   ( p->talent.unholy.superstrain->effectN( 3 ).base_value() / 10 ) ) )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -5992,7 +5993,7 @@ struct frost_fever_t final : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-    
+
     if ( p->talent.deathbringer.blood_fever.ok() )
     {
       blood_fever = get_action<blood_fever_t>( "blood_fever", p );
