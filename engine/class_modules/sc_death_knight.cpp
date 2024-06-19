@@ -8564,6 +8564,12 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
     }
 
+    if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
+    {
+      // TODO-TWW check bugged behavior, currently always applies the full value and uses no spell data
+      m *= 1.525;
+    }
+
     return m;
   }
 
@@ -8636,6 +8642,14 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
     if ( data().ok() )
     {
+      // With 11.0.0.55185 Frost Strike has two powers
+      // One with the usual _cost
+      // Two with 0 _cost and 150 _cost_max
+      // Two overrides base_costs in action_t::parse_spell_data so restore it here
+      base_costs[ RESOURCE_RUNIC_POWER ] = std::fabs( data().powerN( 1 ).cost() );
+      // Zero the secondary cost to only apply it when we want it
+      secondary_costs[ RESOURCE_RUNIC_POWER ] = 0;
+
       if ( p->main_hand_weapon.group() == WEAPON_2H )
       {
         mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
@@ -8678,7 +8692,13 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       td->debuff.razorice->expire();
     }
 
+    if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
+    {
+      this->base_costs[ RESOURCE_RUNIC_POWER ] += std::fabs( data().powerN( 2 ).max_cost() );
+    }
+
     death_knight_melee_attack_t::execute();
+    base_costs[ RESOURCE_RUNIC_POWER ] = std::fabs( data().powerN( 1 ).cost() );
 
     if ( hit_any_target )
     {
