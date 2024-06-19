@@ -8682,6 +8682,19 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     }
   }
 
+  double cost() const override
+  {
+    double c = base_costs[ RESOURCE_RUNIC_POWER ];
+    double current_rp = p()->resources.current[ RESOURCE_RUNIC_POWER ];
+
+    if( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
+    {
+      c += std::min( std::fabs( data().powerN( 2 ).max_cost() ), current_rp - c );
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     const auto td = get_td( target );
@@ -8692,13 +8705,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       td->debuff.razorice->expire();
     }
 
-    if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
-    {
-      this->base_costs[ RESOURCE_RUNIC_POWER ] += std::fabs( data().powerN( 2 ).max_cost() );
-    }
-
     death_knight_melee_attack_t::execute();
-    base_costs[ RESOURCE_RUNIC_POWER ] = std::fabs( data().powerN( 1 ).cost() );
 
     if ( hit_any_target )
     {
