@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1067,7 +1067,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1102568)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-Description      : Blasts all enemies in front of you, $?s320415[dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage beyond $s5 targets.$?s343311[
+Description      : Blasts all enemies in front of you,$?s320415[ dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage beyond $s5 targets.$?s343311[
 
 When Eye Beam finishes fully channeling, your Haste is increased by an additional $343312s1% for $343312d.][]
 Variables        : $dmg={?a320415[{$?a203550[${$198030s1*15*2}][${$198030s1*10*2}]}][{$?a203550[${$198030s1*15}][${$198030s1*10}]}]
@@ -1182,7 +1182,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1331,7 +1331,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1487,7 +1487,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
+Category         : 1608: Quickened Sigils (209281 effect#5)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -1517,7 +1517,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
+Category         : 1606: Quickened Sigils (209281 effect#2)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -1546,7 +1546,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
+Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2415,7 +2415,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
+Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1), Illuminated Sigils (428557 effect#3)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -2445,7 +2445,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
+Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1), Illuminated Sigils (428557 effect#3)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2476,7 +2476,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 2381: Ascending Flame (428603 effect#1), Ascending Flame (428603 effect#2)
-                 : 3036: Illuminated Sigils (428557 effect#6)
+                 : 3036: Illuminated Sigils (428557 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Flames of Fury (389694 effects: #2, #3), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452489 effect#5)
@@ -2865,7 +2865,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
+Category         : 1606: Quickened Sigils (209281 effect#2)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2923,7 +2923,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
+Category         : 1608: Quickened Sigils (209281 effect#5)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2951,7 +2951,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
+Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -4490,7 +4490,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Enduring Torment (453314 effect#2), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4708,7 +4708,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demon Hunter Havoc 11.0 Class Set 4pc (454626 effect#2)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4771,7 +4771,7 @@ Spell Type       : Melee
 Range            : 5 yards
 Max Targets      : 5
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Immolation Aura (427913 effect#6), Immolation Aura (427914 effect#6), Immolation Aura (427915 effect#6), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452435 effects: #1, #3), Demon Hunter Vengeance 11.0 Class Set 2pc (453707 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Soul Furnace (391172 effect#1), Fiery Resolve (425653 effects: #1, #2), Immolation Aura (427913 effect#6), Immolation Aura (427914 effect#6), Immolation Aura (427915 effect#6), Incisive Blade (442492 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effect#1), Demonsurge (452435 effects: #1, #3), Demon Hunter Vengeance 11.0 Class Set 2pc (453707 effect#1)
 Triggered by     : Soul Cleave (228477), Soul Sunder (452436)
 Family Flags     : 31, 34, 70
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5000,25 +5000,6 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357027)   : Apply Aura (6) | Proc Trigger Spell (42): Felblade
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 204497 | Target: Self (1)
-
-Name             : Rope Beam (id=243642) [Hidden] 
-Class            : Demon Hunter
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Is Channelled (34), Ignore Line of Sight (66), Always Hit (114)
-Effects          :
-#1 (id=370317)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 
 Name             : Metamorphosis (id=247121) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -5345,7 +5326,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 50
+Max Scaling Level: 80
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -5359,9 +5340,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5899,7 +5880,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Labels           : 976
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
@@ -6902,7 +6883,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Labels           : 976
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
@@ -10353,7 +10334,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1606: Quickened Sigils (209281 effect#2), Illuminated Sigils (428557 effect#2)
+Category         : 1606: Quickened Sigils (209281 effect#2)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10383,7 +10364,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 1608: Quickened Sigils (209281 effect#5), Illuminated Sigils (428557 effect#4)
+Category         : 1608: Quickened Sigils (209281 effect#5)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32, 75
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10413,7 +10394,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
+Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1), Illuminated Sigils (428557 effect#3)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10445,7 +10426,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1), Illuminated Sigils (428557 effect#3)
+Category         : 1607: Quickened Sigils (209281 effect#4), Improved Sigil of Misery (320418 effect#1)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32, 76
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10475,7 +10456,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10591,7 +10572,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -10973,7 +10954,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -12143,7 +12124,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1887: Illuminated Sigils (428557 effect#5)
+Category         : 1887
 Labels           : 976
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
@@ -12537,24 +12518,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc191427
 Tooltip          : Stunned.
-
-Name             : 10.1.5 Secrets - Influencer - Fireworks (id=422507) 
-Class            : Demon Hunter
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Log (8), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Allow While Stunned (163)
-Effects          :
-#1 (id=1097898)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 
 Name             : Demon Hunter Havoc 10.2 Class Set 2pc (id=422857) [Passive, Hidden] 
 Class            : Demon Hunter
@@ -13506,24 +13469,15 @@ Effects          :
 #1 (id=1109495)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
                    Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
-#2 (id=1109496)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1606 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Chains (202138), Sigil of Chains (207665), Sigil of Chains (389807)
-#3 (id=1109497)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1607 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Misery (202140), Sigil of Misery (207684), Sigil of Misery (389813)
-#4 (id=1109498)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1608 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Silence (202137), Sigil of Silence (207682), Sigil of Silence (389809)
-#5 (id=1109499)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1887 | Target: Self (1)
-                   Affected Spells (Category): Elysian Decree (306830), Elysian Decree (327839), Sigil of Spite (389815), Elysian Decree (389858), Sigil of Spite (390163), Elysian Decree (394985)
-#6 (id=1113242)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+#2 (id=1109496)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598), Illuminated Sigils (428595)
-Description      : Sigil skills have $s2 additional $lcharge:charges;.
+#3 (id=1109497)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
+                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
+Description      : Sigil of Flame has ${$s3/-1000} sec reduced cooldown and $s1 additional $lcharge:charges;.
 
-You have $s6% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.
+You have $s2% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.
 
 Name             : Illuminated Sigils (id=428595) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -13532,7 +13486,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2381: Ascending Flame (428603 effect#1), Ascending Flame (428603 effect#2)
-                 : 3036: Illuminated Sigils (428557 effect#6)
+                 : 3036: Illuminated Sigils (428557 effect#2)
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13748,7 +13702,11 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 444661 | Target: Self (1)
 #2 (id=1137373)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consuming $?a212612[$s1][$s2] Soul Fragments allows you to cast Reaver's Glaive.
+#3 (id=1168477)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1168478)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consuming $?a212612[$s1][$s2] Soul Fragments converts your next Throw Glaive into Reaver's Glaive.
 
 $@spellicon442294 $@spellname442294: 
 $@spelldesc442294
@@ -13757,7 +13715,7 @@ Variables        : $frags = $?a212612[$s1][$s2]
 Name             : Reaver's Glaive (id=442294) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Spell Type       : Ranged
+Spell Type       : Melee
 Range            : 40 yards
 Velocity         : 30 yards/sec
 Labels           : 3349: Keen Engagement (442497 effect#1)
@@ -13777,13 +13735,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=1137756)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: fury | Target: Self (1)
-Description      : Throw a glaive enhanced with the essence of consumed souls at your target, dealing $s1 Physical damage and ricocheting to $x1 additional targets for ${$s1/2}.
+Description      : Throw a glaive enhanced with the essence of consumed souls at your target, dealing $s1 Physical damage and ricocheting to ${$x1-1} additional targets.
  
-Begins a well-practiced pattern of glaivework, enhancing your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] and $?a212612[Blade Dance][Soul Cleave]:
+Begins a well-practiced pattern of glaivework, enhancing your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] and $?a212612[Blade Dance][Soul Cleave].
 
-$?a212612[$@spellname162794]?s263642[$@spellname263642][$@spellname203782] applies Reaver's Mark which causes the target to take $442624s1% increased damage for $442624d
-
-$?a212612[$@spellname188499][$@spellname228477] deals 3 additional glaive slashes to nearby targets for $AP damage.$?a442497[
+The enhanced ability you cast first deals $442290s3% increased damage, and the second deals $442290s4% increased damage.$?a442497[
 
 |CFFffffffGenerates $s2 Fury.|R][]
 
@@ -13828,7 +13784,7 @@ Description      : $@spelldesc442290
 Tooltip          : $?a212612[$@spellicon162794 Chaos Strike]?s263642[$@spellicon263642 Fracture]?a212613[$@spellicon203782 Shear][Chaos Strike, Fracture, or Shear] applies Reaver's Mark which causes the target to take increased damage for $442624d.
 
 Name             : Incisive Blade (id=442492) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13842,12 +13798,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1137751)  : Apply Aura (6) | Dummy (4)
+#1 (id=1137751)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When enhanced, $?a212612[Chaos Strike][Soul Cleave] deals $s1% increased damage.
+                   Affected Spells: Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518), Soul Cleave (228478)
+                   Family Flags: 6, 14, 31, 50, 127
+Description      : $?a212612[Chaos Strike][Soul Cleave] deals $s1% increased damage.
 
 Name             : Keen Engagement (id=442497) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=100]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13872,17 +13830,17 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
-                 : Generic Heal
+Proc Flags       : ........ ...x...x ........ ........   ........ ........ ........ ........   
+                 : Generic Heal Taken, Magic Heal Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1137766)  : Apply Aura (6) | Proc Trigger Spell (42): Warblade's Hunger
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 442503 | Target: Self (1)
@@ -13895,21 +13853,24 @@ Spell Type       : None
 Duration         : 30 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Triggered by     : Warblade's Hunger (442502)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
 Effects          :
 #1 (id=1137770)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value 2: 3351 (Label) | Target: Self (1)
                    Affected Spells (Label): Warblade's Hunger (442507)
 Description      : $@spelldesc442502
-Tooltip          : Your next Chaos Strike or $?s243642[Fracture][Shear] will deal ${$s1*$422507s1} additional damage.
+Tooltip          : Your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] will deal $442507s1 additional Physical damage.
 
 Name             : Warblade's Hunger (id=442507) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -13921,13 +13882,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
 Effects          :
 #1 (id=1137775)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc442502
 
 Name             : Reaver's Mark (id=442624) [Spell Family (107)] 
@@ -13953,11 +13915,13 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Fracture (225919), Fracture (225921), Annihilation (227518), Soul Cleave (228478), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Infernal Armor (273239), Unbound Chaos (275148), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Eye Beam (391058), Demon Spikes (391159), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Wounded Quarry (442808), Demonsurge (451266), Burning Blades (453177)
                    Family Flags: 16, 70
+#2 (id=1167823)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc442502
 Tooltip          : Taking $w1% increased damage from $@auracaster.
 
-Name             : Intent Pursuit (id=442679) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=1, max_rank=1, req_points=1]
+Name             : Reaver's Mark (id=442679) [Spell Family (107), Passive] 
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -13972,8 +13936,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1138061)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting The Hunt allows you to cast Reaver's Glaive.
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When enhanced by Reaver's Glaive, $?a212612[Chaos Strike]?s263642[Fracture][Shear] applies Reaver's Mark, which causes the target to take $442624s1% increased damage for $442624d. 
+
+If cast after $?a212612[Blade Dance][Soul Cleave], Reaver's Mark is increased to ${$442624s1*($s1/100+1)}%.
 
 Name             : Aldrachi Tactics (id=442683) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
@@ -14094,8 +14060,8 @@ Effects          :
 Description      : @spelldesc442714
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Escalation (id=442718) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
+Name             : Fury of the Aldrachi (id=442718) [Spell Family (107), Passive] 
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -14110,10 +14076,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1138123)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1138124)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each successive enhanced ability deals $s1% increased damage. The effect of the second enhancement is increased by $s2%.
+#2 (id=1138124)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When enhanced by Reaver's Glaive, $?a212612[Blade Dance][Soul Cleave] casts $s2 additional glaive slashes to nearby targets. 
+
+If cast after $?a212612[Chaos Strike]?s263642[Fracture][Shear], cast ${$s2*($s1/100+1)} slashes instead.
 
 Name             : Incorruptible Spirit (id=442736) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -14136,6 +14104,27 @@ Effects          :
 #1 (id=1138156)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming a Soul Fragment also heals you for an additional $s1% over time.
+
+Name             : Incorruptible Spirit (id=442788) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1138226)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc442736
+Tooltip          : Absorbing $w1 damage.
 
 Name             : Wounded Quarry (id=442806) [Spell Family (107), Passive] 
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
@@ -14258,7 +14247,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141407)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
-Description      : $@spelldesc442502
+Description      : $@spelldesc442290
 
 Name             : Art of the Glaive (id=444810) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -14370,11 +14359,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1141685)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc444997
 
 Name             : Preemptive Strike (id=444997) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=2, col=1, max_rank=1, req_points=1, select_idx=200]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -15089,7 +15078,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1)
+Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1), Illuminated Sigils (428557 effect#3)
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 24, 32
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 

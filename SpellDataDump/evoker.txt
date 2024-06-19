@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55120 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -461,7 +461,7 @@ Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
-Max Scaling Level: 50
+Max Scaling Level: 80
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -475,9 +475,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 10235.64 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -985,7 +985,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #17, #18, #19), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Imminent Destruction (411055 effects: #1, #2, #3), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Mass Disintegrate (436336 effect#1), Melt Armor (441172 effect#2), Burning Adrenaline (444019 effects: #2, #3), Evoker Devastation 11.0 Class Set 2pc (453676 effect#1), Imminent Destruction (459574 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #17, #18, #19), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Imminent Destruction (411055 effects: #1, #2, #3), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Mass Disintegrate (436336 effect#1), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Burning Adrenaline (444019 effects: #2, #3), Evoker Devastation 11.0 Class Set 2pc (453676 effect#1), Imminent Destruction (459574 effect#1)
 Family Flags     : 0, 2, 3, 6, 38
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2022,7 +2022,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 1464
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Lifeforce Mender (376179 effect#2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2, #15, #16), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effect#1), Lifespark (443176 effect#2)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Lifeforce Mender (376179 effect#2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2, #15, #16), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3), Lifespark (443176 effect#2)
 Family Flags     : 0, 7, 50
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -2265,7 +2265,7 @@ Resource         : 0.9% Base Mana (0) (id=265427) w/ Preservation Evoker (id=356
 Range            : 25 yards
 GCD              : 1.5 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2, #15, #16), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Protracted Talons (369909 effect#1), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2, #15, #16), Echoing Strike (410784 effect#2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Unrelenting Siege (441248 effects: #1, #3)
 Family Flags     : 0, 12
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3919,7 +3919,6 @@ Description      : Deep Breath reduces the Essence costs of Disintegrate and Pyr
 
 Name             : Snapfire (id=370783) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=8, col=1, max_rank=1, req_points=20]
-                 : Devastation [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -4483,6 +4482,7 @@ Description      : Azure Strike and Living Flame deal $s1% more damage.
 
 Name             : Renewing Breath (id=371257) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=mul, values=(1, 2)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -9218,7 +9218,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Natural Convergence (369913 effect#3), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Essence Burst (392268 effects: #1, #2, #3), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effects: #1, #2, #3)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #18, #19), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Natural Convergence (369913 effect#3), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Essence Burst (392268 effects: #1, #2, #3), Hover (393271 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effects: #1, #2, #3)
 Family Flags     : 0, 2, 3, 38, 54
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10458,7 +10458,7 @@ Effects          :
                    Affected Spells (Label): Devotion Aura (465), Crusader Aura (32223), Retribution Aura (183435), Concentration Aura (317920)
 #12 (id=1091014)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 1660 (Label) | Target: Friendly (21)
-                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Poison Cleansing Totem (383013), Poison Cleansing (383014), Magma Eruption (383061), Stoneskin (395078), Tranquil Air (395129), Mana Spring (395192), Mana Spring (395197), Magma Eruption (395349), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357)
+                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Searing Bolt (3606), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Poison Cleansing Totem (383013), Poison Cleansing (383014), Magma Eruption (383061), Stoneskin (395078), Tranquil Air (395129), Mana Spring (395197), Magma Eruption (395349), Poison Cleansing (403922), Tremor (455622), Searing Volley (458147), Surging Bolt (458266), Surging Bolt (458267), Chain Heal (458357)
 #13 (id=1096840)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 2835 (Label) | Target: Friendly (21)
                    Affected Spells (Label): Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Mangle (33917), Crusader Strike (35395), Rebuke (96231), Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Disable (116095), Spear Hand Strike (116705), Touch of Death (322109)
@@ -13678,15 +13678,15 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1119626)  : None (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : Tip the Scales overloads you with temporal energy, increasing your haste, movement speed, and cooldown recovery rate by $431698s1%, ramping up to ${$431698u*$431698s1}% over $431698d.
+Description      : Tip the Scales overloads you with temporal energy, increasing your haste, movement speed, and cooldown recovery rate by ${$431698u*$431698s1}%, decreasing over $431698d.
 
 Name             : Temporal Burst (desc=Bronze) (id=431698) [Spell Family (224)] 
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
 Spell Level      : 10
-Duration         : 40 seconds
-Stacks           : 40 maximum
+Duration         : 30 seconds
+Stacks           : 30 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -13888,8 +13888,10 @@ Effects          :
 #1 (id=1120035)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1127405)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1168563)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c2[When Dream Breath or Fire Breath critically strike, their duration is extended by $s1 sec, up to a maximum of ${$s1*6} sec.][Ebon Might and Prescience can critically strike, extending their duration by $s2 sec.]
+Description      : $?c2[When Dream Breath or Fire Breath critically strike, their duration is extended by $s1 sec, up to a maximum of ${$s1*6} sec.][Ebon Might and Prescience gain a chance equal to your critical strike chance to grant $s2% additional stats.]
 
 Name             : Afterimage (desc=Bronze) (id=431875) [Spell Family (224), Passive] 
 Talent Entry     : Chronowarden (Preservation) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
@@ -14699,7 +14701,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1135466)  : None (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
-Description      : Deep Breath causes enemies to take $s2% increased damage from Bombardments and Essence abilities for $441172d.
+Description      : $?c1[Deep Breath][Breath of Eons] causes enemies to take $s2% increased damage from Bombardments and Essence abilities for $441172d.
 
 Name             : Hardened Scales (desc=Black) (id=441180) [Spell Family (224), Passive] 
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
@@ -14742,7 +14744,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1135484)  : Apply Aura (6) | Proc Trigger Spell (42): Menacing Presence
+#1 (id=1135484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 441201 | Target: Self (1)
 Description      : Knocking enemies up or backwards reduces their damage done to you by $s1% for $441201d.
 
@@ -14790,7 +14792,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1135534)  : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Bombardments reduce the cooldown of Deep Breath by $s1 sec for each target struck, up to $s2 sec.
+Description      : Bombardments reduce the cooldown of $?c1[Deep Breath][Breath of Eons] by $s1 sec for each target struck, up to $s2 sec.
 
 Name             : Extended Battle (desc=Black) (id=441212) [Spell Family (224), Passive] 
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
@@ -14874,8 +14876,8 @@ Effects          :
 #1 (id=1135586)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1135587)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : For each second you are in combat, Azure Strike and Living Flame deal $s1% increased damage, up to $s2%.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : For each second you are in combat, Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $s1% increased damage, up to $s2%.
 
 Name             : Unrelenting Siege (desc=Black) (id=441248) [Spell Family (224)] 
 Class            : Evoker
@@ -14883,7 +14885,7 @@ School           : Firestorm
 Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
-Stacks           : 1 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14897,12 +14899,16 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1135590)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Living Flame (361500), Azure Strike (362969)
-                   Family Flags: 12, 50
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Family Flags: 6, 12, 50, 54
 #2 (id=1135591)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1168513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Family Flags: 6, 12, 50, 54
 Description      : $@spelldesc441246
-Tooltip          : Azure Strike and Living Flame deal $w1% increased damage.
+Tooltip          : Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $w1% increased damage.
 
 Name             : Nimble Flyer (desc=Black) (id=441253) [Spell Family (224), Passive] 
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
@@ -15196,7 +15202,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1139173)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Any Target (25)
-Description      : Engulf your target in dragonflame, damaging them for $443329s1 or healing them for $443330s1. For each of your periodic effects on the target, effectiveness is increased by $s1%.
+Description      : Engulf your target in dragonflame, damaging them for $443329s1 Fire or healing them for $443330s1. For each of your periodic effects on the target, effectiveness is increased by $s1%.
 
 Name             : Engulf (desc=Red) (id=443329) [Spell Family (224)] 
 Class            : Evoker
@@ -16272,5 +16278,25 @@ Effects          :
                    Family Flags: 11
 Description      : $@spelldesc432004
 Tooltip          : Next $?c2[Echo][Prescience] is $s1% more effective.
+
+Name             : Double-time (desc=Bronze) (id=460688) [Spell Family (224)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Spell Level      : 10
+Range            : 100 yards
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1168564)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+Description      : $@spelldesc431874
 
 
