@@ -7216,7 +7216,7 @@ void monk_t::init_spells()
   talent.windwalker.memory_of_the_monastery        = _ST( "Memory of the Monastery" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
   talent.windwalker.path_of_jade                   = _ST( "Path of Jade" );
-  talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focusted Jade" );
+  talent.windwalker.singularly_focused_jade        = _ST( "Singularly Focused Jade" );
   talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
   talent.windwalker.darting_hurricane              = _ST( "Darting Hurricane" );
 
