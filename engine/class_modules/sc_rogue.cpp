@@ -1286,6 +1286,7 @@ public:
   }
 
   // Character Definition
+  void        init_position() override;
   void        init_spells() override;
   void        init_base_stats() override;
   void        init_talents() override;
@@ -10129,6 +10130,21 @@ std::string rogue_t::default_rune() const
 std::string rogue_t::default_temporary_enchant() const
 {
   return rogue_apl::temporary_enchant( this );
+}
+
+// rogue_t::init_position ==================================================
+
+void rogue_t::init_position()
+{
+  if ( specialization() == ROGUE_OUTLAW && position_str.empty() )
+  {
+    // default outlaw to front when we have an unspecified position
+    base.position = POSITION_FRONT;
+    position_str = util::position_type_string( base.position );
+    sim->print_debug( "{}: Position defaulted to {}", name(), position_str );
+  }
+
+  player_t::init_position();
 }
 
 // rogue_t::init_actions ====================================================
