@@ -2147,24 +2147,27 @@ struct art_of_the_glaive_trigger_t : public BASE
     if ( ABILITY == art_of_the_glaive_ability::GLAIVE_FLURRY &&
          BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.glaive_flurry->up() )
     {
+      second_ability = !BASE::p()->buff.rending_strike->up();
+
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
         BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
-      second_ability = !BASE::p()->buff.rending_strike->up();
     }
     else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
               BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.rending_strike->up() )
     {
+      second_ability = !BASE::p()->buff.glaive_flurry->up();
+
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
-        BASE::td( BASE::target )->debuffs.reavers_mark->trigger();
+        BASE::td( BASE::target )->debuffs.reavers_mark->expire();
+        BASE::td( BASE::target )->debuffs.reavers_mark->trigger( second_ability ? 2 : 1 );
       }
 
       BASE::p()->buff.rending_strike->expire();
-      second_ability = !BASE::p()->buff.glaive_flurry->up();
     }
 
     if ( second_ability )
@@ -6149,9 +6152,11 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // if glaive flurry is up and rending strike is not up
-    // fury of the aldrachi causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial execution
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() &&
-         p()->buff.glaive_flurry->up() && !p()->buff.rending_strike->up() )
+    // fury of the aldrachi causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial
+    // execution
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() &&
+         p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
+         !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
     }
@@ -6731,8 +6736,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   }
 
   // TODO: make this conditional on hero spec
-  debuffs.reavers_mark =
-      make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )->set_default_value_from_effect( 1 );
+  debuffs.reavers_mark = make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_max_stack( 2 );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
