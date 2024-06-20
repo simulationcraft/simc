@@ -391,8 +391,6 @@ public:
 
     struct
     {
-      const spell_data_t* holy_bulwark; // Absorb part of Holy Armaments
-      const spell_data_t* sacred_weapon; // Damage part of Holy Armaments
       const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge ("Echoes the effects of your Holy Power spenders")
     } lightsmith;
 

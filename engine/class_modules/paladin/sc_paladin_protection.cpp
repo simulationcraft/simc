@@ -1019,13 +1019,12 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   if ( buffs.devotion_aura->up() )
-  {//todo 
-      
+  { 
     double devoRed = buffs.devotion_aura->value();
-    /* if ( talents.shared_resolve->ok() && ( buffs.lightsmith.sacred_weapon->up() || buffs.lightsmith.holy_bulwark->up() ) )
+    if ( talents.lightsmith.shared_resolve->ok() && ( player_t::buffs.sacred_weapon->up() || player_t::buffs.holy_bulwark->up() ) )
     {
-      devoRed *= 1 + talents.shared_resolve->effectN( 1 ).percent();
-    }*/
+      devoRed *= 1 + player_t::buffs.holy_bulwark->data().effectN( 1 ).percent(); // Not sure why this is in Holy Bulwark's spell data
+    }
     s->result_amount *= 1.0 + devoRed;
   }
 
