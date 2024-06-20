@@ -1727,7 +1727,7 @@ public:
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
     // We exclude parsing effect #4 as that tier set is no longer active.
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff,
-                              effect_data_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
+                              effect_mask_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
 
     // Aldrachi Reaver
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );

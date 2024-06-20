@@ -1137,7 +1137,7 @@ public:
     if ( p().specialization() == PRIEST_SHADOW )
     {
       parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, effect_mask_t( true ).diable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
+      parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
                      p().talents.archon.perfected_form );
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );

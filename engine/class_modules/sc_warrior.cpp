@@ -1016,8 +1016,9 @@ public:
     if ( p()->talents.warrior.thunderous_words->ok() )
     {
       // Action-scoped Thunderous Roar effect(#3) only apply with Thunderous Words
-      parse_target_effects( d_fn( &warrior_td_t::dots_thunderous_roar ), effect_mask_t( false ).enable( 3 ),
-                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger() );
+      parse_target_effects( d_fn( &warrior_td_t::dots_thunderous_roar ),
+                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(),
+                            effect_mask_t( false ).enable( 3 ) );
     }
 
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
