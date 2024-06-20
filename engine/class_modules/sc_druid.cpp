@@ -7881,7 +7881,6 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
-    // TODO: can starfire that enters eclipse proc touch the cosmos
     if ( p()->eclipse_handler.in_eclipse() )
       p()->buff.touch_the_cosmos_starfall->trigger( this );
   }
@@ -8379,7 +8378,6 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     base_t::execute();
 
-    // TODO: can wrath that triggers eclipse proc touch the cosmos
     if ( p()->eclipse_handler.in_eclipse() )
       p()->buff.touch_the_cosmos_starsurge->trigger( this );
   }
@@ -8410,7 +8408,22 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 
 struct wrath_t : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
 {
-  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ) {}
+  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
+  {
+    if ( p->talent.arcane_affinity.ok() )
+    {
+      // TODO: arcane affinity seems to be bugged and applies only to the maximum damage of non-UE wrath.
+      // as simc only looks at the average, apply a half strength modifier.
+      auto val = p->talent.arcane_affinity->effectN( 1 ).percent() * 0.5;
+      base_dd_multiplier *= 1.0 + val;
+      sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 100 );
+      affecting_list.emplace_back( &p->talent.arcane_affinity->effectN( 1 ), val );
+
+      // arcane affinity applies fully to umbral embrace'd wrath
+      if ( umbral )
+        umbral->apply_affecting_aura( p->talent.arcane_affinity );
+    }
+  }
 };
 
 // Convoke the Spirits ======================================================
@@ -10247,7 +10260,7 @@ void druid_t::create_buffs()
   buff.umbral_embrace =
     make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
       ->set_trigger_spell( talent.umbral_embrace )
-      ->set_chance( 0.2 )  // TODO: harcoded value
+      ->set_chance( 0.2 )        // TODO: harcoded value
       ->set_default_value( 0 );  // value used to indicate if the proc happened during eclipse (1) or not (0)
 
   buff.umbral_inspiration =
@@ -13396,6 +13409,11 @@ void druid_t::apply_affecting_auras( action_t& action )
        action.data().class_flag( 126 ) )  //  flag 126: cat thrash
   {
     apply_arcane_affinity = apply_arcane_affinity && talent.lunar_calling.ok();
+  }
+  // wrath is handled in wrath_t
+  else if ( action.data().class_flag( 0 ) )  // flag 0: wrath
+  {
+    apply_arcane_affinity = false;
   }
 
   if ( apply_arcane_affinity )
