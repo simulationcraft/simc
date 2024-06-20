@@ -1444,10 +1444,12 @@ void judgment_t::impact( action_state_t* s )
     int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );
-  }
-  if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
-  {
-    p()->trigger_hammer_and_anvil( s );
+
+    if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
+    {
+      p()->active.hammer_and_anvil->set_target( s->target );
+      p()->active.hammer_and_anvil->execute();
+    }
   }
 
   if (p()->talents.templar.sanctification->ok())
@@ -1839,28 +1841,15 @@ struct rite_of_adjuration_t : public weapon_enchant_t
   }
 };
 
-
-
-void paladin_t::trigger_hammer_and_anvil( action_state_t* s )
-{
-   
-   // escape if we don't have Hammer and Anvil
-   if ( !talents.lightsmith.hammer_and_anvil->ok() )
-    return;
-   
-   active.hammer_and_anvil->set_target( s->target );
-   active.hammer_and_anvil->execute();
-
-   
-}
-
 struct hammer_and_anvil_t : public paladin_spell_t
 { 
-   hammer_and_anvil_t( paladin_t* p )
-     :  paladin_spell_t( "hammer_and_anvil", p, p->talents.lightsmith.hammer_and_anvil->effectN( 1 ).trigger() )
+  // ToDo: Find out how Hammer and Anvil behaves above 5 targets
+  hammer_and_anvil_t( paladin_t* p )
+    : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
    {
     background = proc = may_crit = true;
     may_miss                     = false;
+    aoe                          = -1;
    }
    
 };
