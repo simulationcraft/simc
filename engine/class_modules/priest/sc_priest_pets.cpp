@@ -268,10 +268,10 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().o().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
+      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().o().buffs.shadowform );
       parse_effects( p().o().buffs.devoured_pride );
-      parse_effects( p().o().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -279,11 +279,11 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
+        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
       }
       else
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
+        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
       }
     }
 

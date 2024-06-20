@@ -1137,12 +1137,13 @@ public:
     if ( p().specialization() == PRIEST_SHADOW )
     {
       parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS, p().talents.archon.perfected_form );  // Skip E3 for AM
+      parse_effects( p().buffs.voidform, effect_mask_t( true ).diable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
+                     p().talents.archon.perfected_form );
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS,
-                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
+                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
 
@@ -1151,11 +1152,11 @@ public:
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
         if ( p().talents.shadow.dark_ascension.enabled() )
         {
-          parse_effects( p().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
+          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
         }
         else
         {
-          parse_effects( p().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
+          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
         }
       }
 
