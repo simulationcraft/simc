@@ -94,6 +94,7 @@ void protection( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "devotion_aura" );
   precombat->add_action( "lights_judgment" );
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "consecration" );
