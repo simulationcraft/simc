@@ -403,8 +403,6 @@ public:
     propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
-    propagate_const<heal_t *> gift_of_the_ox_trigger;
-    propagate_const<heal_t *> gift_of_the_ox_expire;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
     propagate_const<action_t *> chi_surge;
@@ -438,8 +436,6 @@ public:
   double squirm_timer;
   double spiritual_focus_count;
   timespan_t shuffle_count_secs;
-
-  double gift_of_the_ox_proc_chance;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
@@ -721,7 +717,6 @@ public:
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
-      player_talent_t rising_sun_kick;
       // Row 2
       player_talent_t elusive_mists;
       player_talent_t tigers_lust;
@@ -814,6 +809,7 @@ public:
       player_talent_t martial_instincts;
       player_talent_t vigorous_expulsion;
       player_talent_t profound_rebuttal;
+      player_talent_t rising_sun_kick;
     } monk;
 
     // Brewmaster
@@ -1205,6 +1201,7 @@ public:
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
       const spell_data_t *expel_harm_rank_2;
+      const spell_data_t *blackout_kick;
 
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
@@ -1379,12 +1376,6 @@ public:
 
   } passives;
 
-  // RPPM objects
-  struct rppms_t
-  {
-    real_ppm_t *spirit_of_the_ox;
-  } rppm;
-
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
@@ -1448,7 +1439,6 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
-  void init_rng() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
