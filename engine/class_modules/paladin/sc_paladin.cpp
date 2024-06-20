@@ -1276,6 +1276,13 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
   void execute() override
   {
+    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.lightsmith.valiance->ok() &&
+         p()->buffs.shining_light_free->up() )
+    {
+      timespan_t reduction = timespan_t::from_millis( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
+      p()->cooldowns.holy_armaments->adjust( -reduction );
+    }
+
     holy_power_consumer_t::execute();
 
     if ( p()->specialization() == PALADIN_PROTECTION )
@@ -1283,24 +1290,6 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       if ( p()->talents.faith_in_the_light->ok() )
       {
         p()->buffs.faith_in_the_light->trigger();
-      }
-    }
-    
-    if ( p()->specialization() == PALADIN_PROTECTION && p()->talents.lightsmith.valiance->ok()  && p()->buffs.shining_light_free->up() )
-    {
-      timespan_t increase = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
-      if ( player->buffs.holy_bulwark->up() )
-      {
-        player->buffs.holy_bulwark->extend_duration( p(), increase );
-      }
-      if ( player->buffs.sacred_weapon->up() )
-      {
-        player->buffs.sacred_weapon->extend_duration( p(), increase );
-      }
-      if ( !player->buffs.holy_bulwark->up() && !player->buffs.sacred_weapon->up() )
-      {
-        timespan_t reduction = timespan_t::from_seconds( p()->talents.lightsmith.valiance->effectN( 1 ).base_value() );
-        p()->cooldowns.holy_armaments->adjust( reduction );
       }
     }
 
