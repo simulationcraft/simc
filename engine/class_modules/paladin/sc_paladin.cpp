@@ -222,6 +222,8 @@ void avenging_wrath_t::execute()
   paladin_spell_t::execute();
 
   p()->buffs.avenging_wrath->trigger();
+  if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
+    p()->buffs.lightsmith.blessing_of_the_forge->execute();
 }
 
 // Holy Avenger
@@ -1309,6 +1311,10 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
         }
       }
     }
+    if (p()->buffs.lightsmith.blessing_of_the_forge->up())
+    {
+      p()->active.sacred_word->execute_on_target( execute_state->target );
+    }
   }
 
   double action_multiplier() const override
@@ -2316,12 +2322,133 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   }
 };
 
+// Shield of the Righteous ==================================================
+
+shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p )
+  : buff_t( p, "shield_of_the_righteous", p->spells.sotr_buff )
+{
+  add_invalidate( CACHE_BONUS_ARMOR );
+  set_default_value( p->spells.sotr_buff->effectN( 1 ).percent() );
+  set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  cooldown->duration = 0_ms;  // handled by the ability
+}
+
+void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+
+  auto* p = debug_cast<paladin_t*>( player );
+
+  if ( p->talents.inner_light->ok() )
+  {
+    p->buffs.inner_light->trigger();
+  }
+}
+
+struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  shield_of_the_righteous_t( paladin_t* p, util::string_view options_str )
+    : holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous )
+  {
+    parse_options( options_str );
+
+    if ( !p->has_shield_equipped() )
+    {
+      sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
+      background = true;
+    }
+
+    aoe         = -1;
+    use_off_gcd = is_sotr = true;
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+  }
+
+  shield_of_the_righteous_t( paladin_t* p )
+    : holy_power_consumer_t( "shield_of_the_righteous_vanquishers_hammer", p, p->spec.shield_of_the_righteous )
+  {
+    // This is the "free" SotR from vanq hammer. Identifiable by being background.
+    background        = true;
+    aoe               = -1;
+    trigger_gcd       = 0_ms;
+    weapon_multiplier = 0.0;
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    // Buff granted regardless of combat roll result
+    // Duration and armor bonus recalculation handled in the buff
+    p()->buffs.shield_of_the_righteous->trigger();
+
+    if ( p()->talents.redoubt->ok() )
+    {
+      p()->buffs.redoubt->trigger();
+    }
+
+    if ( !background )
+    {
+      if ( p()->buffs.shining_light_stacks->at_max_stacks() )
+      {
+        p()->buffs.shining_light_stacks->expire();
+        p()->buffs.shining_light_free->trigger();
+      }
+      else
+        p()->buffs.shining_light_stacks->trigger();
+    }
+
+    p()->buffs.bulwark_of_righteous_fury->expire();
+
+    if ( p()->buffs.lightsmith.blessing_of_the_forge->up() )
+    {
+      p()->active.forges_reckoning->execute_on_target( target );
+    }
+    if ( p()->talents.templar.hammerfall->ok() )
+    {
+      p()->trigger_empyrean_hammer( target, 1, 300_ms );
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+    // Range increase on bulwark of righteous fury not implemented.
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+    {
+      am *= 1.0 + p()->buffs.bulwark_of_righteous_fury->stack_value();
+    }
+    if ( p()->talents.strength_of_conviction->ok() && p()->standing_in_consecration() )
+    {
+      am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
+    }
+    return am;
+  }
+};
+
 struct incandescence_t : public paladin_spell_t
 {
   incandescence_t( paladin_t* p ) : paladin_spell_t( "incandescence", p, p->find_spell( 385816 ) )
   {
     background = true;
     aoe = 5;
+  }
+};
+
+struct forges_reckoning_t : public paladin_spell_t
+{
+  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+  }
+};
+struct sacred_word_t : public paladin_heal_t
+{
+  sacred_word_t( paladin_t* p ) : paladin_heal_t( "sacred_word", p, p->spells.lightsmith.sacred_word )
+  {
+    background = true;
   }
 };
 
@@ -2580,6 +2707,11 @@ void paladin_t::create_actions()
     active.divine_guidance_damage = new divine_guidance_damage_t( this );
     active.divine_guidance_heal   = new divine_guidance_heal_t( this );
   }
+  if ( talents.lightsmith.blessing_of_the_forge->ok() )
+  {
+    active.forges_reckoning = new forges_reckoning_t( this );
+    active.sacred_word      = new sacred_word_t( this );
+  }
   //Templar
  // if (talents.lights_guidance->ok())
   {
@@ -2675,6 +2807,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new divine_toll_t( this, options_str );
   if ( name == "blessing_of_the_seasons" )
     return new blessing_of_the_seasons_t( this, options_str );
+  if ( name == "shield_of_the_righteous" )
+    return new shield_of_the_righteous_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
   if ( name == "holy_armaments" )
@@ -2937,15 +3071,19 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->schedule_execute();
           } );
 
-  buffs.lightsmith.blessed_assurance = make_buff( this, "blessed_assurance", find_spell( 433019 ) )
-    ->set_default_value_from_effect(1);
-  buffs.lightsmith.divine_guidance   = make_buff( this, "divine_guidance", find_spell( 433106 ) )
-                         -> set_max_stack( 5 );
+  buffs.lightsmith.blessed_assurance =
+      make_buff( this, "blessed_assurance", find_spell( 433019 ) )->set_default_value_from_effect( 1 );
+  buffs.lightsmith.divine_guidance = make_buff( this, "divine_guidance", find_spell( 433106 ) )->set_max_stack( 5 );
   buffs.lightsmith.rite_of_sanctification = make_buff( this, "rite_of_sanctification", find_spell( 433550 ) )
-    ->add_invalidate(CACHE_STRENGTH)
-    ->add_invalidate(CACHE_ARMOR);
-  buffs.lightsmith.rite_of_adjuration     = make_buff( this, "rite_of_adjuration", find_spell( 433584 ) )
-    ->add_invalidate( CACHE_STAMINA );
+                                                ->add_invalidate( CACHE_STRENGTH )
+                                                ->add_invalidate( CACHE_ARMOR );
+  buffs.lightsmith.rite_of_adjuration =
+      make_buff( this, "rite_of_adjuration", find_spell( 433584 ) )->add_invalidate( CACHE_STAMINA );
+  buffs.lightsmith.blessing_of_the_forge = make_buff( this, "blessing_of_the_forge", find_spell( 434132 ) )
+                                               ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                                 if ( new_ )
+                                                   cast_holy_armaments( this, armament::SACRED_WEAPON, false, false );
+                                               } );
 
 
   buffs.templar.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
@@ -3250,7 +3388,9 @@ void paladin_t::init_spells()
 
   talents.lightsmith.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
   // Child spell of blessing of the forge, triggered by casting shield of the righteous
-  spells.lightsmith.forges_reckoning        = find_spell( 447258 );
+  spells.lightsmith.forges_reckoning = find_spell( 447258 );
+  // Child spell of blessing of the forge, triggered by casting Word of Glory
+  spells.lightsmith.sacred_word             = find_spell( 447246 );
 
   spells.templar.empyrean_hammer          = find_spell( 431398 );
 

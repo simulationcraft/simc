@@ -99,6 +99,7 @@ public:
     action_t* divine_guidance_damage;
     heal_t* divine_guidance_heal;
     action_t* forges_reckoning;
+    action_t* sacred_word;
     action_t* hammer_and_anvil;
     action_t* empyrean_hammer;
     action_t* heartfire;
@@ -222,6 +223,7 @@ public:
       buff_t* divine_guidance;
       buff_t* rite_of_sanctification;
       buff_t* rite_of_adjuration;
+      buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
     } lightsmith;
 
     struct
@@ -391,7 +393,8 @@ public:
 
     struct
     {
-      const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge ("Echoes the effects of your Holy Power spenders")
+      const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge (Shield of the Righteous)
+      const spell_data_t* sacred_word;      // Spell triggered by Blessing of the Forge (Word of Glory)
     } lightsmith;
 
     struct

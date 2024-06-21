@@ -331,15 +331,6 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   }
 };
 
-struct forges_reckoning_t : public paladin_spell_t
-{
-  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-  }
-};
-
 
 // Blessed Hammer (Protection) ================================================
 struct blessed_hammer_tick_t : public paladin_spell_t
@@ -798,6 +789,9 @@ struct sentinel_t : public paladin_spell_t
     // First expire is after buff length minus 15 seconds, but at least 1 second (E.g., Retribution Aura-procced Sentinel decays instantly)
     timespan_t firstExpireDuration = std::max(p()->buffs.sentinel->buff_duration() - timespan_t::from_seconds(15), timespan_t::from_seconds(1));
     p()->buffs.sentinel_decay->trigger( firstExpireDuration );
+
+    if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
+      p()->buffs.lightsmith.blessing_of_the_forge->execute();
   }
 };
 
@@ -832,117 +826,6 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
     p->adjust_health_percent();
   }
 }
-
-// Shield of the Righteous ==================================================
-
-shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-  buff_t( p, "shield_of_the_righteous", p->spells.sotr_buff )
-{
-  add_invalidate( CACHE_BONUS_ARMOR );
-  set_default_value( p->spells.sotr_buff->effectN( 1 ).percent() );
-  set_refresh_behavior( buff_refresh_behavior::EXTEND );
-  cooldown->duration = 0_ms; // handled by the ability
-
-
-}
-
-void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-{
-  buff_t::expire_override( expiration_stacks, remaining_duration );
-
-  auto* p = debug_cast<paladin_t*>( player );
-
-  if ( p->talents.inner_light->ok() )
-  {
-    p->buffs.inner_light->trigger();
-  }
-
-}
-
-struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
-{
-  shield_of_the_righteous_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous )
-  {
-    parse_options( options_str );
-
-    if ( ! p->has_shield_equipped() )
-    {
-      sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
-      background = true;
-    }
-
-    aoe = -1;
-    use_off_gcd = is_sotr = true;
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-
-
-  }
-
-  shield_of_the_righteous_t( paladin_t* p ) :
-    holy_power_consumer_t( "shield_of_the_righteous_vanquishers_hammer", p, p->spec.shield_of_the_righteous )
-  {
-    // This is the "free" SotR from vanq hammer. Identifiable by being background.
-    background = true;
-    aoe = -1;
-    trigger_gcd = 0_ms;
-    weapon_multiplier = 0.0;
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-
-    // Buff granted regardless of combat roll result
-    // Duration and armor bonus recalculation handled in the buff
-    p()->buffs.shield_of_the_righteous->trigger();
-
-    if ( p()->talents.redoubt->ok() )
-    {
-      p()->buffs.redoubt->trigger();
-    }
-
-    if ( !background )
-    {
-      if ( p()->buffs.shining_light_stacks->at_max_stacks() )
-      {
-        p()->buffs.shining_light_stacks->expire();
-        p()->buffs.shining_light_free->trigger();
-      }
-      else
-        p()->buffs.shining_light_stacks->trigger();
-    }
-
-    p()->buffs.bulwark_of_righteous_fury->expire();
-
-    if (p()->talents.lightsmith.blessing_of_the_forge->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
-    {
-      p()->active.forges_reckoning->execute_on_target(target);
-    }
-    if ( p()->talents.templar.hammerfall->ok() )
-    {
-      p()->trigger_empyrean_hammer( target, 1, 300_ms );
-    }
-
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    // Range increase on bulwark of righteous fury not implemented.
-    if ( p()->talents.bulwark_of_righteous_fury->ok() )
-    {
-      am *= 1.0 + p()->buffs.bulwark_of_righteous_fury->stack_value();
-    }
-    if ( p()->talents.strength_of_conviction->ok() && p()->standing_in_consecration() )
-    {
-        am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
-    }
-    return am;
-  }
-};
 
 struct cleansing_flame_damage_t : public paladin_spell_t
 {
@@ -1258,7 +1141,6 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
-    active.forges_reckoning     = new forges_reckoning_t( this );
   }
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
   {
@@ -1276,7 +1158,6 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
