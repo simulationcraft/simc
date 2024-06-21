@@ -10,14 +10,16 @@
 #include "report/decorators.hpp"
 #include "sim/sim.hpp"
 
-std::string player_effect_t::value_type_name( parse_flag_e t ) const
+std::string player_effect_t::value_type_name( uint8_t t ) const
 {
-  switch ( t )
-  {
-    case USE_DEFAULT: return "Default Value";
-    case USE_CURRENT: return "Current Value";
-    default:          return "Spell Data";
-  }
+  if ( t & VALUE_OVERRIDE )
+    return "Value Override";
+  else if ( t & USE_CURRENT )
+    return "Current Value";
+  else if ( t & USE_DEFAULT )
+    return "Default Value";
+  else
+    return "Spell Data";
 }
 
 void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
@@ -40,6 +42,9 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   if ( idx )
     notes.emplace_back( "Consume" );
+
+  if ( type & AFFECTED_OVERRIDE )
+    notes.emplace_back( "Scripted" );
 
   if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
@@ -66,6 +71,14 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     util::string_join( notes ) );
 }
 
+std::string target_effect_t::value_type_name( uint8_t t ) const
+{
+  if ( t & VALUE_OVERRIDE )
+    return "Value Override";
+  else
+    return "";
+}
+
 void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
                                          std::function<std::string( uint32_t )> note_fn,
                                          std::function<std::string( double )> val_str_fn ) const
@@ -74,6 +87,9 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   if ( mastery )
     notes.emplace_back( "Mastery" );
+
+  if ( type & AFFECTED_OVERRIDE )
+    notes.emplace_back( "Scripted" );
 
   if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
@@ -95,7 +111,7 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     eff->spell()->id(),
     eff->index() + 1,
     val_str,
-    "",
+    value_type_name( type ),
     util::string_join( notes ) );
 }
 
@@ -472,7 +488,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
-    if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
+    if ( tmp.data.buff && tmp.data.type & USE_DEFAULT )
       val = tmp.data.buff->default_value * 100;
 
     if ( !is_valid_aura( eff ) )
@@ -507,7 +523,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   if constexpr ( is_detected_v<detect_type, U> )
   {
-    if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+    if ( !val && tmp.data.type == USE_DATA )
       return;
   }
   else
@@ -535,9 +551,9 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   {
     if ( tmp.data.buff )
     {
-      if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+      if ( tmp.data.type & USE_CURRENT )
         val_str = flat ? "current value" : "current value percent";
-      else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
+      else if ( tmp.data.type & USE_DEFAULT )
         val_str = val_str + " (default value)";
     }
   }
@@ -572,7 +588,7 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
     if ( !stack )
       return 0.0;
 
-    if ( i.type == USE_CURRENT )
+    if ( i.type & USE_CURRENT )
       eff_val = i.buff->check_value();
 
     if ( i.use_stacks )
@@ -1271,12 +1287,16 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     return &da_multiplier_effects;
   }
 
-  if ( !force && !check_affected_list( pack.affect_list, eff, force ) )
-    return nullptr;
+  if ( !force )
+  {
+    if ( !check_affected_list( pack.affect_lists, eff, force ) )
+      return nullptr;
+    else if ( force )
+      pack.data.type |= AFFECTED_OVERRIDE;
+  }
 
   if ( !force && !_action->data().affected_by_all( eff ) )
     return nullptr;
-
 
   auto& data = pack.data;
 
@@ -1389,8 +1409,13 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
     return &target_multiplier_effects;
   }
 
-  if ( !force && !check_affected_list( pack.affect_list, eff, force ) )
-    return nullptr;
+  if ( !force )
+  {
+    if ( !check_affected_list( pack.affect_lists, eff, force ) )
+      return nullptr;
+    else if ( force )
+      pack.data.type |= AFFECTED_OVERRIDE;
+  }
 
   if ( !force && !_action->data().affected_by_all( eff ) )
     return nullptr;
@@ -1426,39 +1451,43 @@ bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const
   return true;
 }
 
-bool parse_action_base_t::check_affected_list( const affect_list_t& list, const spelleffect_data_t& eff, bool& force )
+bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>& lists, const spelleffect_data_t& eff,
+                                               bool& force )
 {
-  if ( list.idx.size() && !range::contains( list.idx, eff.index() + 1 ) )
-    return true;
-
-  for ( auto f : list.family )
+  for ( const auto& list : lists )
   {
-    if ( _action->data().class_flag( std::abs( f ) ) )
+    if ( list.idx.size() && !range::contains( list.idx, eff.index() + 1 ) )
+      continue;
+
+    for ( auto f : list.family )
     {
-      if ( f > 0 )
+      if ( _action->data().class_flag( std::abs( f ) ) )
       {
-        force = true;
-        return true;
-      }
-      else if ( f < 0 )
-      {
-        return false;
+        if ( f > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( f < 0 )
+        {
+          return false;
+        }
       }
     }
-  }
 
-  for ( auto s : list.spell )
-  {
-    if ( _action->data().id() == std::abs( s ) )
+    for ( auto s : list.spell )
     {
-      if ( s > 0 )
+      if ( _action->data().id() == std::abs( s ) )
       {
-        force = true;
-        return true;
-      }
-      else if ( s < 0 )
-      {
-        return false;
+        if ( s > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( s < 0 )
+        {
+          return false;
+        }
       }
     }
   }

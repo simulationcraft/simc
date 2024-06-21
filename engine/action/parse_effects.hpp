@@ -11,14 +11,17 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
-enum parse_flag_e
+enum parse_flag_e : uint8_t
 {
-  USE_DATA,
-  USE_DEFAULT,
-  USE_CURRENT,
-  IGNORE_STACKS,
-  ALLOW_ZERO,
-  CONSUME_BUFF
+  USE_DATA          = 0x00,
+  USE_DEFAULT       = 0x01,
+  USE_CURRENT       = 0x02,
+  IGNORE_STACKS     = 0x04,
+  ALLOW_ZERO        = 0x08,
+  CONSUME_BUFF      = 0x10,
+  // internal flags that should not be used in parse_effects()
+  VALUE_OVERRIDE    = 0x20,
+  AFFECTED_OVERRIDE = 0x40
 };
 
 // effects dependent on player state
@@ -26,13 +29,13 @@ struct player_effect_t
 {
   buff_t* buff = nullptr;
   double value = 0.0;
-  parse_flag_e type = USE_DATA;
+  uint8_t type = USE_DATA;
   bool use_stacks = true;
   bool mastery = false;
   std::function<bool()> func = nullptr;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
-  uint32_t idx = 0;
+  uint32_t idx = 0;  // used for consume_buff linkage during init_finished()
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -40,7 +43,7 @@ struct player_effect_t
   player_effect_t& set_value( double v )
   { value = v; return *this; }
 
-  player_effect_t& set_type( parse_flag_e t )
+  player_effect_t& set_type( uint8_t t )
   { type = t; return *this; }
 
   player_effect_t& set_use_stacks( bool s )
@@ -67,18 +70,18 @@ struct player_effect_t
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
-  std::string value_type_name( parse_flag_e ) const;
+  std::string value_type_name( uint8_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
                           std::function<std::string( double )> ) const;
 };
 
 // effects dependent on target state
-// TODO: add value type to debuffs if it becomes necessary in the future
 struct target_effect_t
 {
   std::function<int( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
+  uint8_t type = USE_DATA;  // for internal flags only
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
@@ -102,6 +105,8 @@ struct target_effect_t
   {
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
+
+  std::string value_type_name( uint8_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
                           std::function<std::string( double )> ) const;
@@ -196,7 +201,7 @@ struct pack_t
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
-  affect_list_t affect_list;
+  std::vector<affect_list_t> affect_lists;
 };
 
 template <typename U>
@@ -287,8 +292,11 @@ struct parse_base_t
 
       if constexpr ( is_detected_v<detect_type, U> )
       {
-        if ( mod == USE_DEFAULT || mod == USE_CURRENT )
-          tmp.data.type = mod;
+        if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( tmp.data.type & VALUE_OVERRIDE ) )
+        {
+          tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+          tmp.data.type |= mod;
+        }
       }
 
       if constexpr ( is_detected_v<detect_idx, U> )
@@ -300,6 +308,12 @@ struct parse_base_t
     else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
     {
       tmp.data.value = mod;
+
+      if constexpr ( is_detected_v<detect_type, U> )
+      {
+        tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+        tmp.data.type |= VALUE_OVERRIDE;
+      }
     }
     else if constexpr ( std::is_same_v<T, effect_mask_t> || ( std::is_integral_v<T> && !std::is_same_v<T, bool> ) )
     {
@@ -307,7 +321,7 @@ struct parse_base_t
     }
     else if constexpr ( std::is_same_v<T, affect_list_t> )
     {
-      tmp.affect_list = std::move( mod );
+      tmp.affect_lists.push_back( std::move( mod ) );
     }
     else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
     {
@@ -736,7 +750,7 @@ public:
 
   bool can_force( const spelleffect_data_t& ) const override;
 
-  bool check_affected_list( const affect_list_t&, const spelleffect_data_t&, bool& );
+  bool check_affected_list( const std::vector<affect_list_t>&, const spelleffect_data_t&, bool& );
 
   void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
 
