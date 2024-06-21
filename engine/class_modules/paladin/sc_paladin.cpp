@@ -2019,6 +2019,14 @@ struct sacred_weapon_proc_t : public Base
   {
     Base::background = true;
     Base::callbacks  = false;
+    Base::aoe        = -1;
+  }
+  double composite_aoe_multiplier(const action_state_t* state) const override
+  {
+    double m = Base::composite_aoe_multiplier( state );
+    if ( state->n_targets == 1 )
+      m *= 1.5;
+    return m;
   }
 };
 // Sacred Weapon Buff
