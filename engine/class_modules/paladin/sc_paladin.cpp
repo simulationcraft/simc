@@ -2024,6 +2024,7 @@ struct sacred_weapon_proc_t : public Base
   double composite_aoe_multiplier(const action_state_t* state) const override
   {
     double m = Base::composite_aoe_multiplier( state );
+    // If Sacred Weapon hits only 1 target, it's damage is increased by 50%
     if ( state->n_targets == 1 )
       m *= 1.5;
     return m;
