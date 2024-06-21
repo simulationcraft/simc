@@ -6685,11 +6685,6 @@ struct dream_burst_t : public druid_spell_t
     background = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
-
-    // eclipse and mastery applied via script
-    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-    force_effect( p->mastery.astral_invocation, 3 );
-    force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), p->spec.sunfire_dmg, 4U, p->mastery.astral_invocation );
   }
 };
 
@@ -7954,19 +7949,6 @@ struct starsurge_t : public ap_spender_t
     {
       background = true;
       name_str_reporting = "goldrinns_fang";
-
-      force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
-      force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-
-      // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
-      // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
-      // forcing effect#1 modified by the talent.
-      force_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
-      force_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-
-      // mastery is applied via hidden script
-      force_effect( p->mastery.astral_invocation, 1 );
-      force_effect( p->mastery.astral_invocation, 3 );
     }
   };
 
@@ -8138,20 +8120,6 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     flare->dot_duration += p->talent.potent_enchantments->effectN( 1 ).time_value();
     add_child( flare );
-
-
-    force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-
-    // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
-    // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
-    // forcing effect#1 modified by the talent.
-    force_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
-    force_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-
-    // mastery is applied via hidden script
-    force_effect( p->mastery.astral_invocation, 1 );
-    force_effect( p->mastery.astral_invocation, 3 );
   }
 
   void impact( action_state_t* s ) override
@@ -13491,17 +13459,36 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.heart_of_the_wild, hotw_mask );
 
   // Balance
-  parse_effects( p()->mastery.astral_invocation );
+  parse_effects( p()->mastery.astral_invocation,
+                 // arcane passive mastery (eff#1) and nature passive mastery (eff#3) apply to orbital strike &
+                 // goldrinn's fang (label 2391) via hidden script
+                 affect_list_t( 1, 3 ).adjust_label( 2391 ),
+                 // nature passive mastery (eff#3) applies to dream burst (433850) via hidden script
+                 affect_list_t( 3 ).adjust_spell( 433850 ) );
+
+  // talent data for balance of all things only modifies effect#1 of the buff, and is missing modification to effect#3
+  // which is done via hidden script. hack around this by overriding the value instead of normally parsing the talent.
   parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
+  parse_effects( p()->buff.balance_of_all_things_arcane, effect_mask_t( false ).enable( 3 ),
+                 p()->talent.balance_of_all_things->effectN( 1 ).percent() );
   parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
+  parse_effects( p()->buff.balance_of_all_things_nature, effect_mask_t( false ).enable( 3 ),
+                 p()->talent.balance_of_all_things->effectN( 1 ).percent() );
+
   // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
   // instead of data value
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
-  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT );
+  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT,
+                 // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) via hidden script
+                 affect_list_t( 1 ).adjust_label( 2391 ) );
+
   // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
   // instead of data value
   parse_effects( p()->buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), p()->talent.umbral_intensity );
-  parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT );
+  parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
+                 // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
+                 // via hidden script
+                 affect_list_t( 1 ).adjust_label( 2391 ).adjust_spell( 433850 ) );
 
   auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
   if ( p()->talent.astral_insight.ok() )
@@ -13599,7 +13586,9 @@ void druid_action_t<Base>::parse_target_effects()
                         p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
 
   parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
-                        p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+                        p()->spec.sunfire_dmg, p()->mastery.astral_invocation,
+                        // nature dot mastery (eff#4) applies to dream burst (433850) via hidden script
+                        affect_list_t( 4 ).adjust_spell( 433850 ) );
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
                         p()->spec.stellar_amplification );
