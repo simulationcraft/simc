@@ -500,12 +500,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   std::string type_str;
   bool flat = false;
-  std::vector<U>* vec;
-
-  if constexpr ( is_detected_v<detect_buff, U> )
-    vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
-  else
-    vec = get_target_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+  std::vector<U>* vec = get_effect_vector( eff, tmp, val_mul, type_str, flat, force );
 
   if ( !vec )
     return;
@@ -545,13 +540,9 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
       else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
         val_str = val_str + " (default value)";
     }
+  }
 
-    debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
-  }
-  else
-  {
-    target_debug_message( type_str, val_str, s_data, i );
-  }
+  debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
 
   tmp.data.value = val;
   tmp.data.mastery = mastery;
@@ -596,7 +587,7 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
   return eff_val;
 }
 
-double parse_effects_t::get_target_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
+double parse_effects_t::get_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
 {
   if ( auto check = i.func( td ) )
   {
@@ -858,7 +849,7 @@ double parse_player_effects_t::composite_player_target_multiplier( player_t* tar
 
   for ( const auto& i : target_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
-      tm *= 1.0 + get_target_effect_value( i, td );
+      tm *= 1.0 + get_effect_value( i, td );
 
   return tm;
 }
@@ -870,7 +861,7 @@ double parse_player_effects_t::composite_player_target_pet_damage_multiplier( pl
 
   for ( const auto& i : target_pet_multiplier_effects )
     if ( static_cast<bool>( i.opt_enum ) == guardian )
-      tm *= 1.0 + get_target_effect_value( i, td );
+      tm *= 1.0 + get_effect_value( i, td );
 
   return tm;
 }
@@ -907,10 +898,12 @@ bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) cons
 }
 
 std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                         player_effect_t& data, double& val_mul,
-                                                                         std::string& str, bool& /* flat */,
-                                                                         bool /* force */ )
+                                                                         pack_t<player_effect_t>& pack,
+                                                                         double& val_mul, std::string& str,
+                                                                         bool& /* flat */, bool /* force */ )
 {
+  auto& data = pack.data;
+
   auto invalidate = [ &data ]( cache_e c ) {
     if ( data.buff )
       data.buff->add_invalidate( c );
@@ -1104,11 +1097,13 @@ bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff
   return false;
 }
 
-std::vector<target_effect_t>* parse_player_effects_t::get_target_effect_vector( const spelleffect_data_t& eff,
-                                                                                target_effect_t& data,
-                                                                                double& /* val_mul */, std::string& str,
-                                                                                bool& /* flat */, bool /* force */ )
+std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                         pack_t<target_effect_t>& pack,
+                                                                         double& /* val_mul */, std::string& str,
+                                                                         bool& /* flat */, bool /* force */ )
 {
+  auto& data = pack.data;
+
   switch ( eff.subtype() )
   {
     case A_MOD_DAMAGE_FROM_CASTER:
@@ -1133,8 +1128,8 @@ std::vector<target_effect_t>* parse_player_effects_t::get_target_effect_vector( 
   return nullptr;
 }
 
-void parse_player_effects_t::target_debug_message( std::string_view type_str, std::string_view val_str,
-                                                   const spell_data_t* s_data, size_t i )
+void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
+                                            bool, const spell_data_t* s_data, size_t i )
 {
   sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
                     s_data->name_cstr(), s_data->id(), i );
@@ -1266,9 +1261,25 @@ bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
 
 // non-templated implementation of parse_action_effects_t::get_effect_vector()
 std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                      player_effect_t& data, double& val_mul,
-                                                                      std::string& str, bool& flat, bool force )
+                                                                      pack_t<player_effect_t>& pack,
+                                                                      double& val_mul, std::string& str,
+                                                                      bool& flat, bool force )
 {
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
+  {
+    str = "auto attack";
+    return &da_multiplier_effects;
+  }
+
+  if ( !force && !check_affected_list( pack.family_list, pack.spell_list, force ) )
+    return nullptr;
+
+  if ( !force && !_action->data().affected_by_all( eff ) )
+    return nullptr;
+
+
+  auto& data = pack.data;
+
   auto adjust_recharge_multiplier_warning = [ this, &data ] {
     if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
     {
@@ -1277,16 +1288,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     }
   };
 
-  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
-  {
-    str = "auto attack";
-    return &da_multiplier_effects;
-  }
-  else if ( !_action->data().affected_by_all( eff ) && !force )
-  {
-    return nullptr;
-  }
-  else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
     switch ( eff.misc_value1() )
     {
@@ -1376,38 +1378,38 @@ bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) 
   return false;
 }
 
-std::vector<target_effect_t>* parse_action_base_t::get_target_effect_vector( const spelleffect_data_t& eff,
-                                                                             target_effect_t& /* data */,
-                                                                             double& /* val_mul */, std::string& str,
-                                                                             bool& flat, bool force )
+std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                      pack_t<target_effect_t>& pack,
+                                                                      double& /* val_mul */, std::string& str,
+                                                                      bool& flat, bool force )
 {
   if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
   {
     str = "auto attack";
     return &target_multiplier_effects;
   }
-  else if ( !_action->data().affected_by_all( eff ) && !force )
-  {
+
+  if ( !force && !check_affected_list( pack.family_list, pack.spell_list, force ) )
     return nullptr;
-  }
-  else
+
+  if ( !force && !_action->data().affected_by_all( eff ) )
+    return nullptr;
+
+  switch ( eff.subtype() )
   {
-    switch ( eff.subtype() )
-    {
-      case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
-      case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
-      case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
-                                                     str = "crit chance"; return &target_crit_chance_effects;
-      case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
-      default:                                       return nullptr;
-    }
+    case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+    case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
+    case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
+                                                   str = "crit chance"; return &target_crit_chance_effects;
+    case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+    default:                                       return nullptr;
   }
 
   return nullptr;
 }
 
-void parse_action_base_t::target_debug_message( std::string_view type_str, std::string_view val_str,
-                                                const spell_data_t* s_data, size_t i )
+void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
+                                         bool, const spell_data_t* s_data, size_t i )
 {
   _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
                              _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
@@ -1419,6 +1421,43 @@ bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const
   {
     assert( false && "Effect already affects action, no need to force" );
     return false;
+  }
+
+  return true;
+}
+
+bool parse_action_base_t::check_affected_list( std::vector<int8_t>& family, std::vector<int32_t>& spell, bool& force )
+{
+  for ( auto f : family )
+  {
+    if ( _action->data().class_flag( std::abs( f ) ) )
+    {
+      if ( f > 0 )
+      {
+        force = true;
+        return true;
+      }
+      else if ( f < 0 )
+      {
+        return false;
+      }
+    }
+  }
+
+  for ( auto s : spell )
+  {
+    if ( _action->data().id() == std::abs( s ) )
+    {
+      if ( s > 0 )
+      {
+        force = true;
+        return true;
+      }
+      else if ( s < 0 )
+      {
+        return false;
+      }
+    }
   }
 
   return true;

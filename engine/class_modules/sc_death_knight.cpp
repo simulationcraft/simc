@@ -4357,18 +4357,18 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<player_effect_t>& pack,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      str           = "school change";
-      data.type     = parse_flag_e::ALLOW_ZERO;
-      debug_cast<school_change_buff_t*>( data.buff )->school = eff.misc_value1();
-      debug_cast<school_change_buff_t*>( data.buff )->actions.push_back( this );
+      str            = "school change";
+      pack.data.type = parse_flag_e::ALLOW_ZERO;
+      debug_cast<school_change_buff_t*>( pack.data.buff )->school = eff.misc_value1();
+      debug_cast<school_change_buff_t*>( pack.data.buff )->actions.push_back( this );
       return &school_change_effects;
     }
-    return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
+    return action_base_t::get_effect_vector( eff, pack, val_mul, str, flat, force );
   }
 
   std::string full_name() const
