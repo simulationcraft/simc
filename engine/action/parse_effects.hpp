@@ -162,8 +162,16 @@ struct effect_mask_t
 
 struct affect_list_t
 {
+  std::vector<size_t> idx;
   std::vector<int8_t> family;
   std::vector<int32_t> spell;
+
+  affect_list_t() = default;
+
+  affect_list_t( size_t i ) { idx.push_back( i ); }
+
+  template <typename... Ts>
+  affect_list_t( size_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
   affect_list_t& adjust_family( int8_t f )
   { family.push_back( f ); return *this; }
@@ -188,8 +196,7 @@ struct pack_t
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
-  std::vector<int8_t> family_list;
-  std::vector<int32_t> spell_list;
+  affect_list_t affect_list;
 };
 
 template <typename U>
@@ -300,8 +307,7 @@ struct parse_base_t
     }
     else if constexpr ( std::is_same_v<T, affect_list_t> )
     {
-      tmp.family_list = mod.family;
-      tmp.spell_list = mod.spell;
+      tmp.affect_list = std::move( mod );
     }
     else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
     {
@@ -730,7 +736,7 @@ public:
 
   bool can_force( const spelleffect_data_t& ) const override;
 
-  bool check_affected_list( std::vector<int8_t>&, std::vector<int32_t>&, bool& );
+  bool check_affected_list( const affect_list_t&, const spelleffect_data_t&, bool& );
 
   void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
 

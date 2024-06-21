@@ -1271,7 +1271,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     return &da_multiplier_effects;
   }
 
-  if ( !force && !check_affected_list( pack.family_list, pack.spell_list, force ) )
+  if ( !force && !check_affected_list( pack.affect_list, eff, force ) )
     return nullptr;
 
   if ( !force && !_action->data().affected_by_all( eff ) )
@@ -1389,7 +1389,7 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
     return &target_multiplier_effects;
   }
 
-  if ( !force && !check_affected_list( pack.family_list, pack.spell_list, force ) )
+  if ( !force && !check_affected_list( pack.affect_list, eff, force ) )
     return nullptr;
 
   if ( !force && !_action->data().affected_by_all( eff ) )
@@ -1426,9 +1426,12 @@ bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const
   return true;
 }
 
-bool parse_action_base_t::check_affected_list( std::vector<int8_t>& family, std::vector<int32_t>& spell, bool& force )
+bool parse_action_base_t::check_affected_list( const affect_list_t& list, const spelleffect_data_t& eff, bool& force )
 {
-  for ( auto f : family )
+  if ( list.idx.size() && !range::contains( list.idx, eff.index() + 1 ) )
+    return true;
+
+  for ( auto f : list.family )
   {
     if ( _action->data().class_flag( std::abs( f ) ) )
     {
@@ -1444,7 +1447,7 @@ bool parse_action_base_t::check_affected_list( std::vector<int8_t>& family, std:
     }
   }
 
-  for ( auto s : spell )
+  for ( auto s : list.spell )
   {
     if ( _action->data().id() == std::abs( s ) )
     {
