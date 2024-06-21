@@ -568,8 +568,6 @@ struct player_t : public actor_t
     // 11.0 The War Within
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
-    buff_t* sacred_weapon;   // Lightsmith Paladin externals
-    buff_t* holy_bulwark;    // Lightsmith Paladin externals (dummy only)
   } buffs;
 
   struct debuffs_t
@@ -606,7 +604,6 @@ struct player_t : public actor_t
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
-    std::vector<timespan_t> sacred_weapon;
     std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> pact_of_the_soulstalkers;

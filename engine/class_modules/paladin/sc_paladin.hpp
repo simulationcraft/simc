@@ -219,6 +219,8 @@ public:
     // TWW Hero Talents
     struct
     {
+      buff_t* sacred_weapon;
+      buff_t* holy_bulwark;
       buff_t* blessed_assurance;
       buff_t* divine_guidance;
       buff_t* rite_of_sanctification;
@@ -808,7 +810,7 @@ public:
   {
     return !( talents.crusading_strikes->ok() );
   }
-  dbc_proc_callback_t* create_sacred_weapon_callback;
+  dbc_proc_callback_t* create_sacred_weapon_callback(paladin_t* source, player_t* target);
 };
 
 namespace buffs
