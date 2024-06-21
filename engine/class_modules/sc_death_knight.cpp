@@ -13484,7 +13484,7 @@ void death_knight_t::create_buffs()
 
   buffs.frostwhelps_aid =
       make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-          ->set_default_value( talent.frost.frostwhelps_aid->effectN( 3 ).base_value() );
+          ->set_default_value( spell.frostwhelps_aid_buff->effectN( 1 ).base_value() );
 
   buffs.unleashed_frenzy = make_fallback( talent.frost.unleashed_frenzy.ok(), this, "unleashed_frenzy",
                                           talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
