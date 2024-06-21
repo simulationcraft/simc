@@ -13480,7 +13480,7 @@ void death_knight_t::create_buffs()
 
   buffs.enduring_strength =
       make_fallback( talent.frost.enduring_strength.ok(), this, "enduring_strength", spell.enduring_strength_buff )
-          ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
+          ->set_default_value( spell.enduring_strength_buff->effectN( 1 ).percent() );
 
   buffs.frostwhelps_aid =
       make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
