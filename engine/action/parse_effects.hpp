@@ -167,16 +167,17 @@ struct effect_mask_t
 
 struct affect_list_t
 {
-  std::vector<size_t> idx;
+  std::vector<int8_t> idx;
   std::vector<int8_t> family;
+  std::vector<int16_t> label;
   std::vector<int32_t> spell;
 
   affect_list_t() = default;
 
-  affect_list_t( size_t i ) { idx.push_back( i ); }
+  affect_list_t( int8_t i ) { idx.push_back( i ); }
 
   template <typename... Ts>
-  affect_list_t( size_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
+  affect_list_t( int8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
   affect_list_t& adjust_family( int8_t f )
   { family.push_back( f ); return *this; }
@@ -184,6 +185,13 @@ struct affect_list_t
   template <typename... Ts>
   affect_list_t& adjust_family( int8_t f, Ts... fs )
   { adjust_family( f ); return adjust_family( fs... ); }
+
+  affect_list_t& adjust_label( int16_t l )
+  { label.push_back( l ); return *this; }
+
+  template <typename... Ts>
+  affect_list_t& adjust_label( int16_t l, Ts... ls )
+  { adjust_label( l ); return adjust_label( ls... ); }
 
   affect_list_t& adjust_spell( int32_t s )
   { spell.push_back( s ); return *this; }

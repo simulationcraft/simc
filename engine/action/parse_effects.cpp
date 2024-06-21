@@ -1475,6 +1475,22 @@ bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>&
       }
     }
 
+    for ( auto l : list.label )
+    {
+      if ( _action->data().affected_by_label( std::abs( l ) ) )
+      {
+        if ( l > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( l < 0 )
+        {
+          return false;
+        }
+      }
+    }
+
     for ( auto s : list.spell )
     {
       if ( _action->data().id() == std::abs( s ) )
