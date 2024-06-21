@@ -8959,23 +8959,13 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       {
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
-          if ( specialization() == DEMON_HUNTER_HAVOC )
+          it->consume( true );
+          
+          if ( sim->debug )
           {
-            it->remove();
-          }
-          else  // DEMON_HUNTER_VENGEANCE
-          {
-            // 7.2.5 -- When Soul Fragments are created that exceed the cap of 5 active fragments,
-            // the oldest fragment is now automatically consumed if it is within 60 yards of the Demon Hunter.
-            // If it is more than 60 yds from the Demon Hunter, it despawns.
-            it->consume( true );
-
-            if ( sim->debug )
-            {
-              sim->out_debug.printf( "%s consumes overflow fragment %ss. remaining=%u", name(),
-                                     get_soul_fragment_str( soul_fragment::LESSER ),
-                                     get_total_soul_fragments( soul_fragment::LESSER ) );
-            }
+            sim->out_debug.printf( "%s consumes overflow fragment %ss. remaining=%u", name(),
+                                   get_soul_fragment_str( soul_fragment::LESSER ),
+                                   get_total_soul_fragments( soul_fragment::LESSER ) );
           }
 
           proc.soul_fragment_overflow->occur();
