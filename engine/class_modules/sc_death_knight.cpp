@@ -11010,7 +11010,7 @@ void death_knight_t::trigger_virulent_plague_death( player_t* target )
 
 bool death_knight_t::in_death_and_decay() const
 {
-  if ( talent.rider.mograines_might.ok() && buffs.mograines_might->check() || buffs.death_and_decay->check() )
+  if ( ( talent.rider.mograines_might.ok() && buffs.mograines_might->check() ) || buffs.death_and_decay->check() )
   {
     return true;
   }
