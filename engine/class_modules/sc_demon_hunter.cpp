@@ -636,7 +636,6 @@ public:
     const spell_data_t* momentum_buff;
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
-    const spell_data_t* serrated_glaive_debuff;
     const spell_data_t* soulscar_debuff;
     const spell_data_t* restless_hunter_buff;
     const spell_data_t* tactical_retreat_buff;
@@ -1718,7 +1717,8 @@ public:
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), p()->spec.burning_wound_debuff );
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::essence_break ), p()->spec.essence_break_debuff );
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
-                              p()->spec.serrated_glaive_debuff );
+                              p()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
+                              p()->talent.havoc.serrated_glaive );
 
     // Vengeance
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
@@ -5006,7 +5006,7 @@ struct chaos_strike_base_t
 
       // TOCHECK -- Does this proc from Relentless Onslaught?
       // TOCHECK -- Does the applying Chaos Strike/Annihilation benefit from the debuff?
-      if ( p()->spec.serrated_glaive_debuff->ok() )
+      if ( p()->talent.havoc.serrated_glaive->ok() )
       {
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
@@ -5852,7 +5852,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
           p()->active.burning_wound->execute_on_target( state->target );
         }
 
-        if ( p()->spec.serrated_glaive_debuff->ok() )
+        if ( p()->talent.havoc.serrated_glaive->ok() )
         {
           td( state->target )->debuffs.serrated_glaive->trigger();
         }
@@ -6751,9 +6751,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
           ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
           ->apply_affecting_aura( p.talent.vengeance.chains_of_anger );
 
-  debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
-                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
+  debuffs.serrated_glaive =
+      make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
+          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 }
 
 // ==========================================================================
@@ -7872,18 +7872,17 @@ void demon_hunter_t::init_spells()
       talent.havoc.first_blood->ok() ? find_spell( 393055 ) : spell_data_t::not_found();
   spec.first_blood_death_sweep_2_damage =
       talent.havoc.first_blood->ok() ? find_spell( 393054 ) : spell_data_t::not_found();
-  spec.glaive_tempest_damage  = talent.havoc.glaive_tempest->ok() ? find_spell( 342857 ) : spell_data_t::not_found();
-  spec.initiative_buff        = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
-  spec.inner_demon_buff       = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
-  spec.inner_demon_damage     = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
-  spec.momentum_buff          = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
-  spec.inertia_buff           = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
-  spec.ragefire_damage        = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
-  spec.restless_hunter_buff   = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
-  spec.serrated_glaive_debuff = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
-  spec.soulscar_debuff        = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
-  spec.tactical_retreat_buff  = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
-  spec.unbound_chaos_buff     = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
+  spec.glaive_tempest_damage = talent.havoc.glaive_tempest->ok() ? find_spell( 342857 ) : spell_data_t::not_found();
+  spec.initiative_buff       = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
+  spec.inner_demon_buff      = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
+  spec.inner_demon_damage    = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
+  spec.momentum_buff         = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
+  spec.inertia_buff          = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
+  spec.ragefire_damage       = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
+  spec.restless_hunter_buff  = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
+  spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
+  spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
+  spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
   spec.chaotic_disposition_damage =
       talent.havoc.chaotic_disposition->ok() ? find_spell( 428493 ) : spell_data_t::not_found();
 
@@ -8960,7 +8959,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
           it->consume( true );
-          
+
           if ( sim->debug )
           {
             sim->out_debug.printf( "%s consumes overflow fragment %ss. remaining=%u", name(),
