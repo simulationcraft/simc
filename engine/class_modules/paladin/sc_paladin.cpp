@@ -2632,7 +2632,11 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
 
-  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )->set_default_value_from_effect(1);
+  if (paladin->specialization() == PALADIN_PROTECTION)
+  {
+    debuff.judgment->apply_affecting_aura( paladin->spec.protection_paladin );
+  }
   if ( paladin->talents.highlords_judgment->ok() )
   {
     debuff.judgment =
