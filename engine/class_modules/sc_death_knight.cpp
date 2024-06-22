@@ -677,6 +677,7 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
+  unsigned int vampiric_strike_proc_attempts; // Number of vampiric strike attempts
 
   // Buffs
   struct buffs_t
@@ -1632,6 +1633,7 @@ public:
       festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
+      vampiric_strike_proc_attempts( 0 ),
       buffs(),
       runeforge(),
       active_spells(),
@@ -11548,6 +11550,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
 
 void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 {
+  vampiric_strike_proc_attempts++;
   double chance    = talent.sanlayn.vampiric_strike->effectN( 1 ).percent();
   double target_hp = target->health_percentage();
 
@@ -11559,6 +11562,8 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   {
     chance += talent.sanlayn.bloodsoaked_ground->effectN( 2 ).percent();
   }
+
+  chance *= vampiric_strike_proc_attempts;
 
   if ( rng().roll( chance ) )
   {
@@ -11573,6 +11578,7 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
 void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 {
+  vampiric_strike_proc_attempts = 0;
   if ( is_vampiric )
   {
     active_spells.vampiric_strike_heal->execute();
@@ -13773,11 +13779,12 @@ void death_knight_t::reset()
   player_t::reset();
 
   _runes.reset();
-  active_dnd                   = nullptr;
-  runic_power_decay            = nullptr;
-  km_proc_attempts             = 0;
-  bone_shield_charges_consumed = 0;
-  active_riders                = 0;
+  active_dnd                    = nullptr;
+  runic_power_decay             = nullptr;
+  km_proc_attempts              = 0;
+  bone_shield_charges_consumed  = 0;
+  active_riders                 = 0;
+  vampiric_strike_proc_attempts = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -14034,7 +14041,6 @@ void death_knight_t::adjust_dynamic_cooldowns()
 
 // Basic Parse Effects implementation for pets. Mostly applies to Dancing Rune Weapon currently
 // Other pets (such as Mograine from Riders) also benefit from this due to executing spells contained in whitelists
-// Do be careful, parsing some effects here (such as Unholys Mastery) may lead to double dipping
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
@@ -14049,6 +14055,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 
   // Unholy
   parse_effects( dk()->buffs.unholy_assault );
+  parse_effects( dk()->mastery.dreadblade );
 
   // Rider of the Apocalypse
   parse_effects( dk()->buffs.mograines_might );
