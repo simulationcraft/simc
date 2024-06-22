@@ -292,7 +292,7 @@ jobs:
 
       - name: Dump APL
         id: dump_apl
-        if: matrix.fightstyle == 'singletarget'
+        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget'
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
@@ -305,11 +305,13 @@ jobs:
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: ${{ matrix.spec }}.txt
+          retention-days: 1
 
   tww-apl-dump:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
     needs: [ tww-test ]
+    if: github.event_name == 'push
 
     steps:
       - uses: actions/checkout@v4
@@ -322,7 +324,7 @@ jobs:
           merge-multiple: true
 
       - name: Commit APLs
-        uses: EndBug/add-and-commit@v9.1.4
+        uses: EndBug/add-and-commit@v9
         with:
           message: 'Update APL Dump ${{ github.sha }}'
           default_author: github_actions
