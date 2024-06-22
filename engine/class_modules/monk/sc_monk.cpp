@@ -4981,117 +4981,6 @@ struct revival_t : public monk_heal_t
 };
 
 // ==========================================================================
-// Gift of the Ox
-// ==========================================================================
-struct gift_of_the_ox_t : monk_buff_t
-{
-  /*
-   * TODO:
-   *  - Check which spell id is triggered by expire and by trigger orb
-   */
-  using monk_buff_t::decrement;
-  using monk_buff_t::trigger;
-  struct orb_t : monk_heal_t
-  {
-    orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : monk_heal_t( player, name, spell_data )
-    {
-      background = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_heal_t::action_multiplier();
-      am *= 1.0 + ( 1.0 - p()->health_percentage() ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-      return am;
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      monk_heal_t::impact( state );
-
-      if ( p()->talent.brewmaster.tranquil_spirit->ok() )
-      {
-        double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-        p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
-        p()->proc.tranquil_spirit_goto->occur();
-      }
-
-      if ( !p()->buff.expel_harm_accumulator->check() )
-        return;
-
-      double current = p()->buff.expel_harm_accumulator->check_value();
-      double new_    = current + state->result_amount;
-      sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} new={}", p()->name(),
-                        state->result_total, current, new_ );
-      p()->buff.expel_harm_accumulator->trigger( 1, new_ );
-    }
-  };
-
-  orb_t *heal_trigger;
-  orb_t *heal_expire;
-  double accumulator;
-
-  // just using the first orb spawner.
-  // 124503 also exists, but it just spawns an orb on the opposite side, so no
-  // impact in simc
-  gift_of_the_ox_t( monk_t *player )
-    : monk_buff_t( player, "gift_of_the_ox", player->find_spell( 124506 ) ),
-      heal_trigger( new orb_t( player, "gift_of_the_ox_trigger", player->find_spell( 124507 ) ) ),
-      heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->find_spell( 178173 ) ) ),
-      accumulator( 0.0 )
-  {
-    set_max_stack( 5 );
-    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-    set_refresh_behavior( buff_refresh_behavior::NONE );
-  }
-
-  void trigger( double amount )
-  {
-    if ( !p().talent.brewmaster.gift_of_the_ox->ok() && !p().talent.brewmaster.spirit_of_the_ox->ok() )
-      return;
-
-    accumulator += amount;
-    if ( accumulator < p().max_health() )
-      return;
-
-    int added_orbs = accumulator / p().max_health();
-    sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={}", p().name(), added_orbs,
-                      check(), added_orbs, added_orbs - ( check() + added_orbs ) % max_stack(),
-                      ( check() + added_orbs ) % max_stack() );
-    accumulator -= added_orbs * p().max_health();
-    while ( added_orbs + check() > max_stack() )
-    {
-      expire();
-      monk_buff_t::trigger( max_stack() );
-      added_orbs -= max_stack();
-    }
-    monk_buff_t::trigger( added_orbs );
-  }
-
-  void decrement( int stacks = 1 )
-  {
-    if ( check() > 0 )
-      heal_trigger->execute();
-    monk_buff_t::decrement( stacks );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    for ( int i = 0; i < expiration_stacks; ++i )
-      heal_expire->execute();
-  }
-
-  void reset() override
-  {
-    monk_buff_t::reset();
-    accumulator = 0.0;
-  }
-};
-
-// ==========================================================================
 // Expel Harm
 // ==========================================================================
 struct expel_harm_t : monk_heal_t
@@ -5156,8 +5045,7 @@ struct expel_harm_t : monk_heal_t
     double result = s->result_total;
     if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
-      for ( size_t i = p()->buff.gift_of_the_ox->check(); i > 0; --i )
-        p()->buff.gift_of_the_ox->decrement();
+      p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
       p()->buff.expel_harm_accumulator->expire();
     }
@@ -5628,6 +5516,129 @@ using namespace actions;
 // ==========================================================================
 // Monk Buffs
 // ==========================================================================
+
+// ==========================================================================
+// Gift of the Ox
+// ==========================================================================
+gift_of_the_ox_t::gift_of_the_ox_t( monk_t *player )
+  : monk_buff_t( player, "gift_of_the_ox", player->find_spell( 124506 ) ),
+    player( player ),
+    heal_trigger( new orb_t( player, "gift_of_the_ox_trigger", player->find_spell( 124507 ) ) ),
+    heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->find_spell( 178173 ) ) ),
+    accumulator( 0.0 )
+{
+}
+
+bool gift_of_the_ox_t::trigger( int count )
+{
+  int overflow = std::max( count + check() - max_stack(), 0 );
+  player->sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={} ZXC",
+                            player->name(), count, check(), count, overflow, std::min( count + check(), max_stack() ) );
+
+  for ( ; count > 0; --count )
+  {
+    if ( check() == max_stack() )
+    {
+      orb_event_t *next = queue.front();
+      // one of...
+      // next->execute();
+      // OR
+      heal_trigger->execute();
+      event_t::cancel( next );
+      queue.pop();
+    }
+    queue.emplace( make_event<orb_event_t>( *player->sim, player, &queue, [ this ]() { heal_expire->execute(); } ) );
+  }
+  return true;
+}
+
+int gift_of_the_ox_t::consume( int count )
+{
+  int available = std::min( count, check() );
+  player->sim->print_debug(
+      "{} consuming {} out of {} Gift of the Ox Orbs. start={} quantity={} available={} end={} ZXC", player->name(),
+      available, check(), check(), count, available, check() - available );
+  for ( int i = available; i > 0; --i )
+  {
+    heal_trigger->execute();
+    event_t::cancel( queue.front() );
+    queue.pop();
+  }
+  return available;
+}
+
+void gift_of_the_ox_t::reset()
+{
+  accumulator = 0.0;
+  while ( up() )
+  {
+    event_t::cancel( queue.front() );
+    queue.pop();
+  }
+}
+
+bool gift_of_the_ox_t::trigger_from_damage( double amount )
+{
+  if ( !player->talent.brewmaster.gift_of_the_ox->ok() && !player->talent.brewmaster.spirit_of_the_ox->ok() )
+    return false;
+
+  accumulator += amount;
+  if ( accumulator < player->max_health() )
+    return false;
+
+  int added = accumulator / player->max_health();
+  accumulator -= added * player->max_health();
+  return gift_of_the_ox_t::trigger( added );
+}
+
+gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+  : monk_heal_t( player, name, spell_data )
+{
+  background = true;
+}
+
+double gift_of_the_ox_t::orb_t::action_multiplier() const
+{
+  double am = monk_heal_t::action_multiplier();
+  // if ( p()->talent.monk.strength_of_spirit->ok() )
+  //   am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) * p()->talent.monk.strength_of_spirit->effectN( 1
+  //   ).percent();
+  return am;
+}
+
+void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
+{
+  monk_heal_t::impact( state );
+
+  if ( p()->talent.brewmaster.tranquil_spirit->ok() )
+  {
+    double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
+    p()->proc.tranquil_spirit_goto->occur();
+  }
+
+  if ( !p()->buff.expel_harm_accumulator->check() )
+    return;
+
+  double current = p()->buff.expel_harm_accumulator->check_value();
+  double new_    = current + state->result_amount;
+  // sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} new={}", p()->name(),
+  //                   state->result_total, current, new_ );
+  p()->buff.expel_harm_accumulator->trigger( 1, new_ );
+}
+
+gift_of_the_ox_t::orb_event_t::orb_event_t( monk_t *player, std::queue<orb_event_t *> *queue,
+                                            std::function<void()> expire_cb )
+  : event_t( *player, player->find_spell( 124506 )->duration() ), queue( queue ), expire_cb( std::move( expire_cb ) )
+{
+}
+
+void gift_of_the_ox_t::orb_event_t::execute()
+{
+  assert( id == queue->front()->id );
+  expire_cb();
+  queue->pop();
+}
 
 // ==========================================================================
 // Shuffle
@@ -7698,8 +7709,9 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  buff.gift_of_the_ox = make_buff_fallback<actions::gift_of_the_ox_t>(
-      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+  // buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>( talent.brewmaster.gift_of_the_ox->ok() ||
+  // talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+  buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
 
   buff.expel_harm_accumulator =
       new buffs::expel_harm_accumulator_t( this, "expel_harm_accumulator", spell_data_t::nil() );
@@ -8381,7 +8393,7 @@ void monk_t::init_special_effects()
       if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
            state->action->id != player->baseline.brewmaster.blackout_kick->id() )
         return false;
-      player->buff.gift_of_the_ox->trigger();
+      // player->buff.gift_of_the_ox->trigger();
       return true;
     } );
 
@@ -9004,7 +9016,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
   // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
   if ( s->action->id != passives.stagger_self_damage->id() )
-    buff.gift_of_the_ox->trigger( s->result_amount );
+    buff.gift_of_the_ox->trigger_from_damage( s->result_amount );
 
   base_t::target_mitigation( school, dt, s );
 }

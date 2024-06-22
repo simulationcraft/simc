@@ -20,6 +20,7 @@
 
 #include <array>
 #include <memory>
+#include <queue>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
@@ -273,6 +274,57 @@ struct shuffle_t : actions::monk_buff_t
   shuffle_t( monk_t *monk );
   void trigger( timespan_t duration );
 };
+
+struct gift_of_the_ox_t : actions::monk_buff_t
+{
+  /*
+   * TODO:
+   *  - Check which spell id is triggered by expire and by trigger orb
+   */
+  struct orb_t : actions::monk_heal_t
+  {
+    orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
+
+    double action_multiplier() const override;
+    void impact( action_state_t *state ) override;
+  };
+
+  struct orb_event_t;
+  struct orb_event_t : event_t
+  {
+    std::queue<orb_event_t *> *queue;
+    std::function<void()> expire_cb;
+
+    orb_event_t( monk_t *player, std::queue<orb_event_t *> *queue, std::function<void()> expire_cb );
+    void execute() override;
+  };
+
+  monk_t *player;
+  orb_t *heal_trigger;
+  orb_t *heal_expire;
+  std::queue<orb_event_t *> queue;
+  double accumulator;
+  int _max_stack;
+
+  // just using the first orb spawner.
+  // 124503 also exists, but it just spawns an orb on the opposite side, so no
+  // impact in simc
+  gift_of_the_ox_t( monk_t *player );
+  bool trigger( int count );
+  bool trigger_from_damage( double amount );
+  int consume( int count );
+  void reset();
+
+  int check() const
+  {
+    return queue.size();
+  }
+  bool up() const
+  {
+    return !queue.empty();
+  }
+};
+
 }  // namespace buffs
 
 inline int sef_spell_index( int x )
@@ -551,7 +603,7 @@ public:
     propagate_const<buff_t *> elusive_brawler;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
-    propagate_const<buff_t *> gift_of_the_ox;
+    propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
@@ -1501,6 +1553,37 @@ public:
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
+
+template <class Buff>
+Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
+{
+  return static_cast<Buff *>(
+      buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
+}
+
+template <typename Buff, typename Player, typename... Args>
+Buff *make_buff_fallback( bool true_buff, Player &&player, std::string_view name, Args &&...args )
+{
+  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+  static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+                     std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
+                 "Player must be derived from player_t or actor_pair_t" );
+
+  if ( true_buff )
+  {
+    if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
+      return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
+    else
+      return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
+  }
+  else
+  {
+    if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
+      return make_fallback<Buff>( player.target, name, player.source );
+    else
+      return make_fallback<Buff>( player, name, player );
+  }
+}
 
 struct sef_despawn_cb_t
 {
