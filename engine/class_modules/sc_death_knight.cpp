@@ -3818,9 +3818,10 @@ struct horseman_pet_t : public death_knight_pet_t
   horseman_pet_t( death_knight_t* owner, util::string_view name, bool guardian = true, bool dynamic = true )
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.type  = WEAPON_BEAST_2H;
     owner_coeff.ap_from_ap = 1;
     resource_regeneration  = regen_type::DISABLED;
+    auto_attack_multiplier = 1.25;
   }
 
   void arise() override
@@ -3942,6 +3943,7 @@ struct mograine_pet_t final : public horseman_pet_t
   {
     npc_id = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 1_s;
+    auto_attack_multiplier     *= 2.0;
   }
 
   void init_spells() override
