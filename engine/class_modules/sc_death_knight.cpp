@@ -3564,6 +3564,13 @@ struct magus_pet_t : public death_knight_pet_t
       cooldown->duration = dk()->pet_spell.frostbolt->duration();
     }
 
+    void execute() override
+    {
+      // Magus of the Dead waits a little bit after executing Frost Bolt
+      trigger_gcd = execute_time() + rng().range( 100_ms, 200_ms );
+      magus_spell_t::execute();
+    }
+
     // Frostbolt applies a slowing debuff on non-boss targets
     // This is needed because Frostbolt won't ever target an enemy affected by the debuff
     void impact( action_state_t* state ) override
