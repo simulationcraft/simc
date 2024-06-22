@@ -4320,9 +4320,34 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     }
   };
 
+  struct next_armament_expr_t : public paladin_expr_t
+  {
+    next_armament_expr_t(util::string_view n, paladin_t& p) : paladin_expr_t(n, p)
+    {
+
+    }
+    double evaluate() override
+    {
+      return paladin.next_armament;
+    }
+  };
+
   if ( splits[ 0 ] == "next_season" )
   {
     return std::make_unique<next_season_expr_t>( name_str, *this );
+  }
+
+  if (splits[0] == "next_armament")
+  {
+    return std::make_unique<next_armament_expr_t>( name_str, *this );
+  }
+  if (splits[0] == "holy_bulwark")
+  {
+    return make_fn_expr( "holy_bulwark", [ this ]() { return armament::HOLY_BULWARK; } );
+  }
+  if ( splits[ 0 ] == "sacred_weapon" )
+  {
+    return make_fn_expr( "sacred_weapon", [ this ]() { return armament::SACRED_WEAPON; } );
   }
 
   auto cons_expr = create_consecration_expression( name_str );
