@@ -1425,6 +1425,7 @@ sim_t::sim_t()
     fixed_time( true ),
     save_profiles( false ),
     save_profile_with_actions( true ),
+    save_full_profile( true ),
     default_actions( false ),
     max_time( 0_ms ),
     expected_iteration_time( 0_ms ),
@@ -3712,6 +3713,7 @@ void sim_t::create_options()
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
   add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
+  add_option( opt_bool( "save_full_profile", save_full_profile ) );
   add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
 

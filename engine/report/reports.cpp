@@ -83,15 +83,17 @@ void print_profiles(sim_t* sim)
 
     std::string file_name = p->report_information.save_str;
 
-    if (file_name.empty() && sim->save_profiles)
+    if ( file_name.empty() && sim->save_profiles && sim->save_full_profile )
     {
       file_name = sim->save_prefix_str;
       file_name += p->name_str;
-      if (sim->save_talent_str)
+
+      if ( sim->save_talent_str )
       {
         file_name += "_";
         file_name += p->primary_tree_name();
       }
+
       file_name += sim->save_suffix_str;
       file_name += ".simc";
     }
