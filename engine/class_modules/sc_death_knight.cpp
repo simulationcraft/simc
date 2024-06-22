@@ -4103,7 +4103,6 @@ struct nazgrim_pet_t final : public horseman_pet_t
       : horseman_melee_t( p, name, p->dk()->pet_spell.nazgrim_scourge_strike_shadow )
     {
       background = dual  = true;
-      name_str_reporting = "scourge_strike";
     }
   };
 
@@ -4114,8 +4113,7 @@ struct nazgrim_pet_t final : public horseman_pet_t
         scourge_strike_shadow( get_action<scourge_strike_shadow_nazgrim_t>( "scourge_strike_shadow", p ) )
     {
       parse_options( options_str );
-      impact_action        = scourge_strike_shadow;
-      impact_action->stats = stats;
+      impact_action = scourge_strike_shadow;
     }
 
   private:
@@ -4193,7 +4191,7 @@ struct abomination_pet_t : public death_knight_pet_t
     tww1_4pc_proc                     = true;
     owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
-    auto_attack_multiplier            = 1.0 / owner_coeff.ap_from_ap;
+    auto_attack_multiplier            = 1.0 / owner_coeff.ap_from_ap; // Auto Attacks appear to use base player attack power
 
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
