@@ -311,7 +311,7 @@ jobs:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
     needs: [ tww-test ]
-    if: github.event_name == 'push
+    if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v4
