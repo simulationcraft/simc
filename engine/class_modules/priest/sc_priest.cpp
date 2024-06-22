@@ -3404,7 +3404,7 @@ void priest_t::init_spells()
   talents.voidweaver.devour_matter          = HT( "Devour Matter" );  // NYI
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
-  talents.voidweaver.darkening_horizon      = HT( "Darkening Horizon" );
+  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 ); // Entry id for Darkening Horizon
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
@@ -3498,6 +3498,7 @@ void priest_t::create_buffs()
           ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
                                ? as<int>( talents.voidweaver.darkening_horizon->effectN( 2 ).base_value() )
                                : 1 );
+
   buffs.collapsing_void = make_buff( this, "collapsing_void", talents.voidweaver.collapsing_void )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                               ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {

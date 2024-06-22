@@ -508,22 +508,22 @@ public:
     {
       player_talent_t art_of_the_glaive;
 
-      player_talent_t keen_engagement;
-      player_talent_t preemptive_strike;
+      player_talent_t fury_of_the_aldrachi;
       player_talent_t evasive_action;  // No Implementation
       player_talent_t unhindered_assault;
-      player_talent_t incisive_blade;  // NYI - bugged in-game
+      player_talent_t reavers_mark;
 
-      player_talent_t aldrachi_tactics;      // NYI
-      player_talent_t army_unto_oneself;     // NYI
+      player_talent_t aldrachi_tactics;
+      player_talent_t army_unto_oneself;     // No Implementation
       player_talent_t incorruptible_spirit;  // NYI
       player_talent_t wounded_quarry;        // NYI
 
-      player_talent_t intent_pursuit;    // partially implemented (Blade Dance / Soul Cleave)
-      player_talent_t escalation;        // NYI
-      player_talent_t warblades_hunger;  // NYI
+      player_talent_t incisive_blade;
+      player_talent_t keen_engagement;
+      player_talent_t preemptive_strike;
+      player_talent_t warblades_hunger;
 
-      player_talent_t thrill_of_the_fight;  // NYI
+      player_talent_t thrill_of_the_fight;
     } aldrachi_reaver;
 
     struct felscarred_talents_t
@@ -1612,6 +1612,8 @@ public:
     ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
     ab::apply_affecting_aura( p->talent.vengeance.illuminated_sigils );
 
+    ab::apply_affecting_aura( p->talent.aldrachi_reaver.incisive_blade );
+
     ab::apply_affecting_aura( p->talent.felscarred.flamebound );
 
     // Rank Passives
@@ -1724,8 +1726,8 @@ public:
 
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
     // We exclude parsing effect #4 as that tier set is no longer active.
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff, 0b01000,
-                              p()->talent.vengeance.fiery_demise );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff,
+                              effect_mask_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
 
     // Aldrachi Reaver
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );
@@ -2145,29 +2147,39 @@ struct art_of_the_glaive_trigger_t : public BASE
     if ( ABILITY == art_of_the_glaive_ability::GLAIVE_FLURRY &&
          BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.glaive_flurry->up() )
     {
-      BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+      second_ability = !BASE::p()->buff.rending_strike->up();
+
+      if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
+      {
+        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+      }
 
       BASE::p()->buff.glaive_flurry->expire();
-      second_ability = !BASE::p()->buff.rending_strike->up();
     }
     else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
               BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.rending_strike->up() )
     {
-      BASE::td( BASE::target )->debuffs.reavers_mark->trigger();
+      second_ability = !BASE::p()->buff.glaive_flurry->up();
+
+      if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
+      {
+        BASE::td( BASE::target )->debuffs.reavers_mark->expire();
+        BASE::td( BASE::target )->debuffs.reavers_mark->trigger( second_ability ? 2 : 1 );
+      }
 
       BASE::p()->buff.rending_strike->expire();
-      second_ability = !BASE::p()->buff.glaive_flurry->up();
     }
 
     if ( second_ability )
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep slashes.
+        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep
+        // slashes.
         make_event( *BASE::p()->sim, 700_ms, [ this ] {
           BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
           BASE::p()->buff.thrill_of_the_fight_damage->trigger();
-        });
+        } );
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
@@ -4144,10 +4156,7 @@ struct the_hunt_t : public demon_hunter_spell_t
       p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
     }
 
-    if ( p()->talent.aldrachi_reaver.intent_pursuit->ok() )
-    {
-      p()->buff.reavers_glaive->trigger();
-    }
+    p()->buff.reavers_glaive->trigger();
   }
 
   timespan_t travel_time() const override
@@ -5598,8 +5607,7 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
 {
-  shear_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "shear", p, p->spec.shear, options_str )
+  shear_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "shear", p, p->spec.shear, options_str )
   {
   }
 
@@ -5617,26 +5625,6 @@ struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::R
       {
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_meta->occur();
-      }
-
-      if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->buff.rending_strike->up() )
-      {
-        p()->buff.rending_strike->expire();
-        td( target )->debuffs.reavers_mark->trigger();
-
-        if ( !p()->buff.glaive_flurry->up() )
-        {
-          if ( p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
-          {
-            p()->buff.thrill_of_the_fight_attack_speed->trigger();
-            p()->buff.thrill_of_the_fight_damage->trigger();
-          }
-          if ( p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
-          {
-            p()->proc.soul_fragment_from_aldrachi_tactics->occur();
-            p()->spawn_soul_fragment( soul_fragment::LESSER );
-          }
-        }
       }
 
       if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
@@ -6164,9 +6152,11 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // if glaive flurry is up and rending strike is not up
-    // escalation causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial execution
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && p()->talent.aldrachi_reaver.escalation->ok() &&
-         p()->buff.glaive_flurry->up() && !p()->buff.rending_strike->up() )
+    // fury of the aldrachi causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial
+    // execution
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() &&
+         p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
+         !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
     }
@@ -6746,8 +6736,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   }
 
   // TODO: make this conditional on hero spec
-  debuffs.reavers_mark =
-      make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )->set_default_value_from_effect( 1 );
+  debuffs.reavers_mark = make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_max_stack( 2 );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
@@ -7811,20 +7802,20 @@ void demon_hunter_t::init_spells()
   // Aldrachi Reaver talents
   talent.aldrachi_reaver.art_of_the_glaive = find_talent_spell( talent_tree::HERO, "Art of the Glaive" );
 
-  talent.aldrachi_reaver.keen_engagement    = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
-  talent.aldrachi_reaver.preemptive_strike  = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
-  talent.aldrachi_reaver.evasive_action     = find_talent_spell( talent_tree::HERO, "Evasive Action" );
-  talent.aldrachi_reaver.unhindered_assault = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
-  talent.aldrachi_reaver.incisive_blade     = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+  talent.aldrachi_reaver.fury_of_the_aldrachi = find_talent_spell( talent_tree::HERO, "Fury of the Aldrachi" );
+  talent.aldrachi_reaver.evasive_action       = find_talent_spell( talent_tree::HERO, "Evasive Action" );
+  talent.aldrachi_reaver.unhindered_assault   = find_talent_spell( talent_tree::HERO, "Unhindered Assault" );
+  talent.aldrachi_reaver.reavers_mark         = find_talent_spell( talent_tree::HERO, "Reaver's Mark" );
 
   talent.aldrachi_reaver.aldrachi_tactics     = find_talent_spell( talent_tree::HERO, "Aldrachi Tactics" );
   talent.aldrachi_reaver.army_unto_oneself    = find_talent_spell( talent_tree::HERO, "Army Unto Oneself" );
   talent.aldrachi_reaver.incorruptible_spirit = find_talent_spell( talent_tree::HERO, "Incorruptible Spirit" );
   talent.aldrachi_reaver.wounded_quarry       = find_talent_spell( talent_tree::HERO, "Wounded Quarry" );
 
-  talent.aldrachi_reaver.intent_pursuit   = find_talent_spell( talent_tree::HERO, "Intent Pursuit" );
-  talent.aldrachi_reaver.escalation       = find_talent_spell( talent_tree::HERO, "Escalation" );
-  talent.aldrachi_reaver.warblades_hunger = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
+  talent.aldrachi_reaver.incisive_blade    = find_talent_spell( talent_tree::HERO, "Incisive Blade" );
+  talent.aldrachi_reaver.keen_engagement   = find_talent_spell( talent_tree::HERO, "Keen Engagement" );
+  talent.aldrachi_reaver.preemptive_strike = find_talent_spell( talent_tree::HERO, "Preemptive Strike" );
+  talent.aldrachi_reaver.warblades_hunger  = find_talent_spell( talent_tree::HERO, "Warblade's Hunger" );
 
   talent.aldrachi_reaver.thrill_of_the_fight = find_talent_spell( talent_tree::HERO, "Thrill of the Fight" );
 
@@ -8968,23 +8959,13 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
       {
         if ( it->is_type( soul_fragment::LESSER ) && it->active() )
         {
-          if ( specialization() == DEMON_HUNTER_HAVOC )
+          it->consume( true );
+          
+          if ( sim->debug )
           {
-            it->remove();
-          }
-          else  // DEMON_HUNTER_VENGEANCE
-          {
-            // 7.2.5 -- When Soul Fragments are created that exceed the cap of 5 active fragments,
-            // the oldest fragment is now automatically consumed if it is within 60 yards of the Demon Hunter.
-            // If it is more than 60 yds from the Demon Hunter, it despawns.
-            it->consume( true );
-
-            if ( sim->debug )
-            {
-              sim->out_debug.printf( "%s consumes overflow fragment %ss. remaining=%u", name(),
-                                     get_soul_fragment_str( soul_fragment::LESSER ),
-                                     get_total_soul_fragments( soul_fragment::LESSER ) );
-            }
+            sim->out_debug.printf( "%s consumes overflow fragment %ss. remaining=%u", name(),
+                                   get_soul_fragment_str( soul_fragment::LESSER ),
+                                   get_total_soul_fragments( soul_fragment::LESSER ) );
           }
 
           proc.soul_fragment_overflow->occur();
@@ -9088,7 +9069,8 @@ void demon_hunter_t::parse_player_effects()
   // Vengeance
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? 0b00 : 0b10 );
+    parse_effects( buff.demon_spikes, talent.vengeance.deflecting_spikes->ok() ? effect_mask_t( true )
+                                                                               : effect_mask_t( true ).disable( 1 ) );
     parse_effects( spec.riposte );
     parse_effects( spec.thick_skin );
     parse_effects( mastery.fel_blood_rank_2 );

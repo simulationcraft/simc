@@ -986,8 +986,9 @@ public:
     parse_effects( p()->buff.berserker_stance );
     parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_effects( p()->buff.dancing_blades );
+    // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
     if ( p()->talents.fury.powerful_enrage->ok() )
-      parse_effects( p()->buff.enrage, 0b00011 );  // Power Enrage
+      parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
     parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
 
@@ -1001,21 +1002,23 @@ public:
 
     // Arms
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
-    // To account for this, we parse the data twice, first ignoring effects #3, #4 & #5 via mask, then if the T30 2pc is
-    // active parse again ignoring effects #1, #2.
+    // To account for this, we parse the data twice, first ignoring effects #4 & #5, then if the T30 2pc is active only
+    // parse #4 & #5.
     parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
-                          p()->spell.deep_wounds_arms, 0b11000,
+                          p()->spell.deep_wounds_arms, effect_mask_t( true ).disable( 4, 5 ),
                           p()->mastery.deep_wounds_ARMS );
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) )
     {
       parse_target_effects( d_fn( &warrior_td_t::dots_deep_wounds ),
-                            p()->spell.deep_wounds_arms, 0b00111 );
+                            p()->spell.deep_wounds_arms, effect_mask_t( false ).enable( 4, 5 ) );
     }
 
     if ( p()->talents.warrior.thunderous_words->ok() )
     {
+      // Action-scoped Thunderous Roar effect(#3) only apply with Thunderous Words
       parse_target_effects( d_fn( &warrior_td_t::dots_thunderous_roar ),
-                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(), 0b001 );
+                            p()->talents.warrior.thunderous_roar->effectN( 2 ).trigger(),
+                            effect_mask_t( false ).enable( 3 ) );
     }
 
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),

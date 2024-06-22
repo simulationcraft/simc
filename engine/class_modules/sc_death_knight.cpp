@@ -4357,18 +4357,18 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<player_effect_t>& pack,
                                                    double& val_mul, std::string& str, bool& flat, bool force ) override
   {
     if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
     {
-      str           = "school change";
-      data.type     = parse_flag_e::ALLOW_ZERO;
-      debug_cast<school_change_buff_t*>( data.buff )->school = eff.misc_value1();
-      debug_cast<school_change_buff_t*>( data.buff )->actions.push_back( this );
+      str            = "school change";
+      pack.data.type = parse_flag_e::ALLOW_ZERO;
+      debug_cast<school_change_buff_t*>( pack.data.buff )->school = eff.misc_value1();
+      debug_cast<school_change_buff_t*>( pack.data.buff )->actions.push_back( this );
       return &school_change_effects;
     }
-    return action_base_t::get_effect_vector( eff, data, val_mul, str, flat, force );
+    return action_base_t::get_effect_vector( eff, pack, val_mul, str, flat, force );
   }
 
   std::string full_name() const
@@ -4496,7 +4496,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
           s->result_amount * p()->talent.sanlayn.pact_of_the_sanlayn->effectN( 1 ).percent();
     }
 
-    if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() )
+    if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() && this->data().id() != 66198) // TODO-TWW verify if offhand obliterate bug is fixed
     {
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.reapers_mark->check() )
@@ -5982,7 +5982,8 @@ struct frost_fever_t final : public death_knight_disease_t
   frost_fever_t( util::string_view name, death_knight_t* p )
     : death_knight_disease_t( name, p, p->spell.frost_fever ),
       rp_generation(
-          as<int>( p->spec.frost_fever->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) ) )
+          as<int>( p->spec.frost_fever->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) +
+                   ( p->talent.unholy.superstrain->effectN( 3 ).base_value() / 10 ) ) )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -5992,7 +5993,7 @@ struct frost_fever_t final : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-    
+
     if ( p->talent.deathbringer.blood_fever.ok() )
     {
       blood_fever = get_action<blood_fever_t>( "blood_fever", p );
@@ -13479,11 +13480,11 @@ void death_knight_t::create_buffs()
 
   buffs.enduring_strength =
       make_fallback( talent.frost.enduring_strength.ok(), this, "enduring_strength", spell.enduring_strength_buff )
-          ->set_default_value( talent.frost.enduring_strength->effectN( 3 ).percent() );
+          ->set_default_value( spell.enduring_strength_buff->effectN( 1 ).percent() );
 
   buffs.frostwhelps_aid =
       make_fallback( talent.frost.frostwhelps_aid.ok(), this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
-          ->set_default_value( talent.frost.frostwhelps_aid->effectN( 3 ).base_value() );
+          ->set_default_value( spell.frostwhelps_aid_buff->effectN( 1 ).base_value() );
 
   buffs.unleashed_frenzy = make_fallback( talent.frost.unleashed_frenzy.ok(), this, "unleashed_frenzy",
                                           talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
