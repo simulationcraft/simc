@@ -744,7 +744,7 @@ public:
   void trigger_holy_shield( action_state_t* s );
   void trigger_tyrs_enforcer( action_state_t* s );
   void trigger_laying_down_arms();
-  void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay );
+  void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
   void heartfire( action_state_t* s );
   void t29_4p_prot();
   void t31_4p_prot( action_state_t* s );

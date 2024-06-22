@@ -1913,6 +1913,14 @@ struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_atta
     aoe = 5;
     base_aoe_multiplier     = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
   }
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+    p()->trigger_empyrean_hammer(
+        target, p()->talents.templar.lights_guidance->effectN( 2 ).base_value(),
+        travel_time() + timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
+        true );
+  }
 };
 
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -1923,8 +1931,9 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       direct_hammer()
   {
     parse_options( options_str );
-    is_hammer_of_light_driver = true;
-    direct_hammer = new hammer_of_light_damage_t( p, options_str );
+    is_hammer_of_light_driver   = true;
+    direct_hammer               = new hammer_of_light_damage_t( p, options_str );
+    direct_hammer->travel_delay = p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() / 1000.0;
     add_child( direct_hammer );
   }
 
@@ -1952,9 +1961,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    void execute() override
    {
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
-
-        direct_hammer->set_target( execute_state->target );
-        direct_hammer->execute();
+     direct_hammer->execute_on_target( execute_state->target );
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
@@ -2031,6 +2038,24 @@ struct empyrean_hammer_t : public paladin_spell_t
     }
 
 };
+
+void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay,
+                                         bool random_after_first )
+{
+  player_t* next_target = target;
+  timespan_t totalDelay      = delay;
+  timespan_t additionalDelay = timespan_t::from_millis( talents.templar.lights_guidance->effectN( 3 ).base_value() );
+  for ( int i = 0; i < number_to_trigger; i++ )
+  {
+    if ( ( i > 0 && random_after_first ) || target == nullptr )
+    {
+      double result = (int)( rng().real() * sim->target_non_sleeping_list.size() );
+      next_target   = sim->target_non_sleeping_list[ result ];
+    }
+    make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
+    totalDelay += additionalDelay;
+  }
+}
 
 // Holy Armaments
 // Sacred Weapon Driver
@@ -2193,16 +2218,6 @@ void paladin_t::trigger_laying_down_arms()
   }
   cooldowns.lay_on_hands->adjust( -talents.lightsmith.laying_down_arms->effectN( 1 ).time_value() );
 };
-
-void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay )
-{
-    for ( int i = 0; i < number_to_trigger; i++ )
-    {
-        make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, target, delay );
-    }
-}
-
-
 
 // Hammer of Wrath
 
@@ -3432,7 +3447,7 @@ void paladin_t::init_spells()
 
   talents.lightsmith.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
 
-  talents.templar.lights_guidance         = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
+  talents.templar.lights_guidance         = find_talent_spell( talent_tree::HERO, "Light's Guidance" );
   
   talents.templar.zealous_vindication     = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
   talents.templar.for_whom_the_bell_tolls = find_talent_spell( talent_tree::HERO, "For Whom the Bell Tolls" );
