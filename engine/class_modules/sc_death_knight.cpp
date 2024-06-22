@@ -1622,6 +1622,7 @@ public:
   runes_t _runes;
 
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
+  std::vector<pets::death_knight_pet_t*> dk_active_pets;
 
   death_knight_t( sim_t* sim, util::string_view name, race_e r )
     : parse_player_effects_t( sim, DEATH_KNIGHT, name, r ),
@@ -1646,7 +1647,8 @@ public:
       pets( this ),
       procs(),
       options(),
-      _runes( this )
+      _runes( this ),
+      dk_active_pets()
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
@@ -2296,6 +2298,7 @@ struct death_knight_pet_t : public pet_t
   void arise() override
   {
     pet_t::arise();
+    dk()->dk_active_pets.push_back( this );
     if ( decomposition_can_extend )
     {
       decomposition_extended = 0_s;
@@ -2309,6 +2312,7 @@ struct death_knight_pet_t : public pet_t
 
   void demise() override
   {
+    range::erase_remove( dk()->dk_active_pets, [ this ]( player_t* ) { return this; } );
     pet_t::demise();
     if ( decomposition_can_extend )
     {
@@ -2319,6 +2323,7 @@ struct death_knight_pet_t : public pet_t
   void reset() override
   {
     pet_t::reset();
+    dk()->dk_active_pets.clear();
     if ( decomposition_can_extend )
     {
       decomposition_extended = 0_s;
@@ -5526,35 +5531,7 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
       {
         execute_damage();
         // Cant use the main `active_pets` vector here, breaks non dk pets.
-        for ( auto& pet : p()->pets.apoc_ghouls.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.army_ghouls.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.army_magus.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.apoc_magus.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.doomed_bidding_magus_coil.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.doomed_bidding_magus_epi.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.abomination.active_pets() )
-        {
-          extend_pet( pet );
-        }
-        for ( auto& pet : p()->pets.gargoyle.active_pets() )
+        for ( auto& pet : p()->dk_active_pets )
         {
           extend_pet( pet );
         }
