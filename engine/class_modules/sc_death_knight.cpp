@@ -1986,7 +1986,7 @@ inline void runes_t::regenerate_immediate( timespan_t seconds )
     timespan_t units_regened = std::min( seconds_left, first_left );
 
     // Regenerate all regenerating runes by units_regened
-    for ( auto rune : regenerating_runes )
+    for ( auto& rune : regenerating_runes )
     {
       rune->adjust_regen_event( -units_regened );
     }
@@ -2400,7 +2400,7 @@ std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* paren
   return [ parent ]( death_knight_pet_t* p ) {
     if ( !p->dk()->options.individual_pet_reporting )
     {
-      for ( auto a : p->action_list )
+      for ( auto& a : p->action_list )
       {
         auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
         if ( it != parent->child_action.end() )
@@ -4771,7 +4771,7 @@ struct death_knight_leech_damage_heal_t : public death_knight_heal_t
     da_value_mod = 1.0;
     ta_value_mod = 1.0;
 
-    for ( auto effect : this->data().effects() )
+    for ( auto& effect : this->data().effects() )
     {
       if ( effect.type() == E_HEALTH_LEECH )
       {
@@ -11629,7 +11629,7 @@ modified_spell_data_t* death_knight_t::get_modified_spell( const spell_data_t* s
 {
   if ( s && s->ok() )
   {
-    for ( auto m : modified_spells )
+    for ( auto& m : modified_spells )
       if ( m->_spell.id() == s->id() )
         return m;
 
