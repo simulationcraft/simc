@@ -289,6 +289,47 @@ jobs:
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
+      - name: Dump APL
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
+            enable_all_talents=1 enable_all_tiem_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            save_actions=${{ matrix.spec }}.txt
+
+      - name: Upload APL
+        uses: actions/upload-artifact@v4
+        with:
+          name: apl-${{ github.sha }}-${{ matrix.spec }}
+          path: ${{ matirx.spec }}.txt
+
+  tww-apl-dump:
+    name: Action Priority List Dump
+    runs-on: ${{ matrix.os }}
+    needs: [ tww-test ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download APLs
+        uses: actions/download-artifact@v4
+        with:
+          path: ActionPiorityLists
+          pattern: apl-${{ github.sha }}-*
+          merge-multiple: true
+
+      - name: Commit APLs
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          message: 'Update APL Dump ${{ github.sha }}'
+          default_author: github_actions
+          fetch: false
+          add: '*.txt'
+
+      - name: Cleanup
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: apl-${{ github.sha }}-*
+
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
