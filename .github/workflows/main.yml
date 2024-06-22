@@ -300,7 +300,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
-          path: ${{ matirx.spec }}.txt
+          path: ${{ matrix.spec }}.txt
 
   tww-apl-dump:
     name: Action Priority List Dump
