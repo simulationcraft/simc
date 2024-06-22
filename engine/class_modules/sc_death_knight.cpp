@@ -5718,7 +5718,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->active_dnd )
+      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->in_death_and_decay() )
       {
         if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->trigger() )
         {
