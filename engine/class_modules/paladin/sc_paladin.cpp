@@ -1899,15 +1899,34 @@ struct divine_guidance_heal_t : public paladin_heal_t
 
 // Hammer of Light // Light's Guidance =====================================================
 
+struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
+    : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
+  {
+    parse_options( options_str );
+    background             = true;
+
+    auto hol = p->spells.templar.hammer_of_light;
+
+    attack_power_mod.direct = hol->effectN( 1 ).ap_coeff();
+    aoe = 5;
+    base_aoe_multiplier     = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
+  }
+};
+
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-   hammer_of_light_t( paladin_t* p, util::string_view options_str )
-     : holy_power_consumer_t( "hammer of light", p, p->find_spell( 427453 ) )
-   {
+  hammer_of_light_damage_t* direct_hammer;
+  hammer_of_light_t( paladin_t* p, util::string_view options_str )
+    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ),
+      direct_hammer()
+  {
     parse_options( options_str );
-    spell_power_mod.direct = 5.8;
-    cooldown->duration     = 60_ms;
-   }
+    is_hammer_of_light_driver = true;
+    direct_hammer = new hammer_of_light_damage_t( p, options_str );
+    add_child( direct_hammer );
+  }
 
   double cost_pct_multiplier() const override
    {
@@ -1932,7 +1951,10 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
    void execute() override
    {
-    holy_power_consumer_t<paladin_melee_attack_t>::execute();
+     holy_power_consumer_t<paladin_melee_attack_t>::execute();
+
+        direct_hammer->set_target( execute_state->target );
+        direct_hammer->execute();
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
@@ -3405,12 +3427,6 @@ void paladin_t::init_spells()
   talents.lightsmith.hammer_and_anvil       = find_talent_spell( talent_tree::HERO, "Hammer and Anvil" );
 
   talents.lightsmith.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
-  // Child spell of blessing of the forge, triggered by casting shield of the righteous
-  spells.lightsmith.forges_reckoning = find_spell( 447258 );
-  // Child spell of blessing of the forge, triggered by casting Word of Glory
-  spells.lightsmith.sacred_word             = find_spell( 447246 );
-
-  spells.templar.empyrean_hammer          = find_spell( 431398 );
 
   talents.templar.lights_guidance         = find_talent_spell( talent_tree::HERO, "Lights Guidance" );
   
@@ -3439,6 +3455,13 @@ void paladin_t::init_spells()
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
+
+  // Hero Talent Spells
+  spells.lightsmith.forges_reckoning    = find_spell( 447258 );  // Child spell of blessing of the forge, triggered by casting shield of the righteous
+  spells.lightsmith.sacred_word         = find_spell( 447246 ); // Child spell of blessing of the forge, triggered by casting Word of Glory
+  spells.templar.hammer_of_light_driver = find_spell( 427453 );
+  spells.templar.hammer_of_light        = find_spell( 429826 );
+  spells.templar.empyrean_hammer        = find_spell( 431398 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );

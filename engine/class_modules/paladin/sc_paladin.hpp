@@ -402,6 +402,7 @@ public:
     struct
     {
       const spell_data_t* hammer_of_light;
+      const spell_data_t* hammer_of_light_driver;
       const spell_data_t* empyrean_hammer;
     } templar;
   } spells;
@@ -1430,8 +1431,14 @@ public:
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
+  bool is_hammer_of_light_driver;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
-    : ab( n, player, s ), is_divine_storm( false ), is_wog( false ), is_sotr( false ), doesnt_consume_dp( false )
+    : ab( n, player, s ),
+      is_divine_storm( false ),
+      is_wog( false ),
+      is_sotr( false ),
+      doesnt_consume_dp( false ),
+      is_hammer_of_light_driver(false)
   {
   }
 
@@ -1486,6 +1493,10 @@ public:
 
     // if this is a vanq-hammer-based DS, don't do this stuff
     if ( ab::background && is_divine_storm )
+      return;
+
+    // ToDo: Check what the driver can and cannot do. Pretty sure it can proc DP at least
+    if ( is_hammer_of_light_driver )
       return;
 
     bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
