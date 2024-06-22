@@ -1,29 +1,29 @@
-# druid=DF4_Druid_Balance
-# level=70
-# race=tauren
-# spec=balance
-# role=spell
-# position=back
-# talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAJJigkQQSikIFolIJSSJRTcgQol0SSERDgCAE
+druid=DF4_Druid_Balance
+level=70
+race=tauren
+spec=balance
+role=spell
+position=back
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAJiIIJSQSIJSRol4AJSSJRTcgQol0SSERDgCAE
 
-# head=benevolent_embersages_casque,id=207254,bonus_id=4786/1520/9576,,gem_id=192988,enchant=incandescent_essence
-# neck=eye_of_the_rising_flame,id=207163,bonus_id=4800/4786/1520/9576/8782,gem_id=192961/192961/192961
-# shoulder=lifebound_shoulderpads,id=193406,bonus_id=8836/1576/8797/8960/8793
-# back=drape_of_the_loyal_vassal,id=158375,bonus_id=4786/9853/9576
-# chest=benevolent_embersages_robe,id=207257,bonus_id=4786/1520/9576,enchant=waking_stats_3
-# wrists=thermal_bindings,id=134461,bonus_id=4786/9882/9576,gem_id=192961
-# hands=benevolent_embersages_talons,id=207255,bonus_id=4786/1520/9576
-# waist=benevolent_embersages_sagacious_sash,id=207251,bonus_id=4786/1520/9576,gem_id=192961
-# legs=benevolent_embersages_leggings,id=207253,bonus_id=4786/1520/9576,enchant=lambent_armor_kit_3
-# feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/1576
-# finger1=archdruids_tainted_seal,id=134487,bonus_id=4786/9882/9576,gem_id=192961,enchant=devotion_of_haste_3
-# finger2=band_of_twisted_bark,id=134531,bonus_id=4786/9882/9576,gem_id=192961,enchant=devotion_of_haste_3
-# trinket1=pips_emerald_friendship_badge,id=207168,bonus_id=4800/4786/1520/9576
-# trinket2=balefire_branch,id=159630,bonus_id=4786/9853/9576
-# main_hand=vakash_the_shadowed_inferno,id=207788,bonus_id=4800/4786/1520/9576,enchant=wafting_devotion_3
-# off_hand=tricksters_captivating_chime,id=207796,bonus_id=4800/4786/1520/9576
+head=,id=217193,bonus_id=6652/7981/10884/8095/10867/10338/1520/8767/10531,enchant_id=7052,gem_id=192988
+neck=,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/10359/8174/10249,gem_id=192948/192948/192948,crafted_stats=36/49
+shoulder=,id=217195,bonus_id=6652/7981/10869/10884/10338/1520/8767
+back=,id=204465,bonus_id=10503/1576/8767,enchant_id=6598
+chest=,id=217191,bonus_id=6652/7981/10865/10884/10338/1520/8767,enchant_id=6625
+wrist=,id=193419,bonus_id=8836/8840/8902/9405/10359/8932/8960/8793/10249/10531,enchant_id=6580,gem_id=192948,crafted_stats=36/40
+hands=,id=217192,bonus_id=6652/10866/9639/10884/10338/1520/8767
+waist=,id=207135,bonus_id=6652/10874/7981/10884/10338/1559/8767/10531,enchant_id=6904,gem_id=192948
+legs=,id=207132,bonus_id=6652/10874/7981/10338/10884/1559/8767,enchant_id=6830
+feet=,id=193398,bonus_id=8836/8840/8902/9405/10359/8932/8960/8791/10249,enchant_id=6613,crafted_stats=36/49
+finger1=,id=195480,bonus_id=6652/10418/1605/8767/10531,enchant_id=6556,gem_id=192948
+finger2=,id=195526,bonus_id=6652/10531/10503/1602/8767,enchant_id=6556,gem_id=192948
+trinket1=,id=202615,bonus_id=7981/10884/10338/1585/8767
+trinket2=,id=204211,bonus_id=1576
+main_hand=,id=207788,bonus_id=10247/10418/1559/8767,enchant_id=6655
+off_hand=,id=195484,bonus_id=6652/7981/10884/10338/1611/8767
 
-# save=DF4_Druid_Balance.simc
+save=DF4_Druid_Balance.simc
 
 druid="DF4_Druid_Feral"
 source=default
