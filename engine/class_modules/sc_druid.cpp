@@ -1341,19 +1341,32 @@ namespace pets
 // Denizen of the Dream =============================================
 struct denizen_of_the_dream_t : public pet_t
 {
-  struct fey_missile_t : public spell_t
+  struct fey_missile_t : public parse_action_effects_t<spell_t>
   {
     druid_t* o;
     double mastery_passive;
     double mastery_dot;
 
     fey_missile_t( pet_t* p )
-      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
+      : parse_action_effects_t( "fey_missile", p, p->find_spell( 188046 ) ),
         o( static_cast<druid_t*>( p->owner ) ),
         mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
         mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
     {
       name_str_reporting = "fey_missile";
+
+      _player = p->owner;  // use owner's target data & mastery
+
+      force_effect( o->buff.eclipse_lunar, 1, USE_CURRENT );
+      force_effect( o->buff.eclipse_solar, 1, USE_CURRENT );
+
+      force_effect( o->mastery.astral_invocation, 1 );
+      force_effect( o->mastery.astral_invocation, 3 );
+
+      force_target_effect( d_fn( &druid_td_t::dots_t::moonfire ), o->spec.moonfire_dmg, 4,
+                           o->mastery.astral_invocation );
+      force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), o->spec.sunfire_dmg, 4,
+                           o->mastery.astral_invocation );
     }
 
     void execute() override
@@ -1377,34 +1390,7 @@ struct denizen_of_the_dream_t : public pet_t
 
       cooldown->duration = timespan_t::from_seconds( delay / 75.0 );
 
-      spell_t::execute();
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      auto da = spell_t::composite_da_multiplier( s );
-
-      da *= 1.0 + o->buff.eclipse_lunar->check_value();
-      da *= 1.0 + o->buff.eclipse_solar->check_value();
-
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-
-      return da;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      auto tm = spell_t::composite_target_multiplier( t );
-      auto td = o->get_target_data( t );
-
-      if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      return tm;
+      parse_action_effects_t::execute();
     }
   };
 
