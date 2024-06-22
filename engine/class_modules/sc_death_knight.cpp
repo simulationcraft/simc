@@ -4185,14 +4185,15 @@ struct abomination_pet_t : public death_knight_pet_t
 
   abomination_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "abomination" )
   {
-    npc_id                      = owner->talent.unholy.raise_abomination->effectN( 2 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 3.6_s;
+    npc_id                            = owner->talent.unholy.raise_abomination->effectN( 2 ).misc_value1();
+    main_hand_weapon.type             = WEAPON_BEAST;
+    main_hand_weapon.swing_time       = 3.6_s;
     affected_by_commander_of_the_dead = true;
     decomposition_can_extend          = true;
     tww1_4pc_proc                     = true;
-    owner_coeff.ap_from_ap = 2.4;
-    resource_regeneration  = regen_type::DISABLED;
+    owner_coeff.ap_from_ap            = 2.4;
+    resource_regeneration             = regen_type::DISABLED;
+    auto_attack_multiplier            = 1.0 / owner_coeff.ap_from_ap;
 
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
