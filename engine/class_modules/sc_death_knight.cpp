@@ -3819,8 +3819,6 @@ struct horseman_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 2_s;
-
     owner_coeff.ap_from_ap = 1;
     resource_regeneration  = regen_type::DISABLED;
   }
@@ -3943,6 +3941,7 @@ struct mograine_pet_t final : public horseman_pet_t
   mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
   {
     npc_id = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
+    main_hand_weapon.swing_time = 1_s;
   }
 
   void init_spells() override
@@ -3996,6 +3995,7 @@ struct whitemane_pet_t final : public horseman_pet_t
   whitemane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "whitemane" )
   {
     npc_id = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
+    main_hand_weapon.swing_time = 2_s;
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
       {
@@ -4060,6 +4060,7 @@ struct trollbane_pet_t final : public horseman_pet_t
   trollbane_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "trollbane" )
   {
     npc_id = owner->spell.summon_trollbane->effectN( 1 ).misc_value1();
+    main_hand_weapon.swing_time = 2_s;
   }
 
   void init_action_list() override
@@ -4091,6 +4092,7 @@ struct nazgrim_pet_t final : public horseman_pet_t
   nazgrim_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "nazgrim" )
   {
     npc_id = owner->spell.summon_nazgrim->effectN( 1 ).misc_value1();
+    main_hand_weapon.swing_time = 2_s;
   }
 
   struct scourge_strike_shadow_nazgrim_t final : public horseman_melee_t
