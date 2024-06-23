@@ -640,6 +640,12 @@ struct eye_of_tyr_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     p()->buffs.templar.hammer_of_light_ready->trigger();
+
+    if (p()->talents.templar.sacrosanct_crusade->ok())
+    {
+      p()->active.sacrosanct_crusade->execute();
+    }
+
     if (p()->talents.templar.undisputed_ruling->ok())
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),

@@ -140,6 +140,7 @@ public:
 
     action_t* expurgation;
     action_t* wrathful_sanction;
+    action_t* sacrosanct_crusade;
   } active;
 
   // Buffs

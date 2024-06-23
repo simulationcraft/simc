@@ -862,8 +862,9 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 
 struct shield_of_vengeance_t : public paladin_absorb_t
 {
+  double shield_modifier;
   shield_of_vengeance_t( paladin_t* p, util::string_view options_str )
-    : paladin_absorb_t( "shield_of_vengeance", p, p->talents.shield_of_vengeance )
+    : paladin_absorb_t( "shield_of_vengeance", p, p->talents.shield_of_vengeance ), shield_modifier(1.0)
   {
     parse_options( options_str );
 
@@ -886,11 +887,19 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
     if ( p()->talents.aegis_of_protection->ok() )
       shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
-
+    shield_amount *= shield_modifier;
     shield_amount *= 1.0 + p()->composite_heal_versatility();
 
     paladin_absorb_t::execute();
     p()->buffs.shield_of_vengeance->trigger( 1, shield_amount );
+  }
+};
+
+struct shield_of_vengeance_sacrosanct_crusade_t : shield_of_vengeance_t
+{
+  shield_of_vengeance_sacrosanct_crusade_t(paladin_t* p) : shield_of_vengeance_t( p, "" )
+  {
+    shield_modifier = p->talents.templar.sacrosanct_crusade->effectN( 1 ).percent();
   }
 };
 
@@ -2871,6 +2880,7 @@ void paladin_t::create_actions()
   else if ( specialization() == PALADIN_RETRIBUTION )
   {
     paladin_t::create_ret_actions();
+    active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   }
   // Hero Talents
   //Lightsmith
@@ -2898,10 +2908,10 @@ void paladin_t::create_actions()
   {
     active.empyrean_hammer = new empyrean_hammer_t(this);
   }
-
-  active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
-
-
+  if (talents.templar.sacrosanct_crusade->ok())
+  {
+    active.sacrosanct_crusade = new shield_of_vengeance_sacrosanct_crusade_t( this );
+  }
 
   if ( talents.judgment_of_light->ok() )
   {
@@ -3553,7 +3563,8 @@ void paladin_t::init_spells()
 
   // spec talents shared among specs
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
-  talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
+  talents.relentless_inquisitor = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
+  talents.shield_of_vengeance            = find_spell( 184662 );
 
   talents.divine_toll      = find_talent_spell( talent_tree::CLASS, "Divine Toll" );
   talents.divine_resonance = find_talent_spell( talent_tree::CLASS, "Divine Resonance" );
