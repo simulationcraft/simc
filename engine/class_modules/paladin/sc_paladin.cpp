@@ -1932,6 +1932,10 @@ struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_atta
         target, p()->talents.templar.lights_guidance->effectN( 2 ).base_value(),
         travel_time() + timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
         true );
+    if ( p()->talents.templar.shake_the_heavens->ok() )
+    {
+      p()->buffs.templar.shake_the_heavens->execute();
+    }
   }
 };
 
@@ -1983,11 +1987,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->talents.templar.undisputed_ruling->ok() )
     {
       p()->buffs.templar.undisputed_ruling->trigger();
-    }
-    if (p()->talents.templar.shake_the_heavens->ok())
-    {
-     // needs spelldata help
-      p()->buffs.templar.shake_the_heavens->trigger();
     }
     if (p()->talents.templar.zealous_vindication->ok())
     {
@@ -3167,7 +3166,7 @@ void paladin_t::create_buffs()
   // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                  this->trigger_empyrean_hammer( target, 1, 0_ms );
+                                  this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                 }
   );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) );
