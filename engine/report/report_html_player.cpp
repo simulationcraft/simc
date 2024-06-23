@@ -1952,7 +1952,7 @@ std::string base64_to_url( std::string_view s )
 }
 
 // TODO: update once TWW trees are finalized
-int raidbots_talent_render_width( specialization_e spec, int height )
+int raidbots_talent_render_width( specialization_e /* spec */, int height )
 {
   return height * 49 / 25;
 

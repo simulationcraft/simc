@@ -3007,20 +3007,12 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
   }
 };
 
-struct sands_of_time_state_t
-{
-  bool sands_crit;
-};
-
 struct ebon_might_t : public evoker_augment_t
 {
-protected:
-  using state_t = evoker_action_state_t<sands_of_time_state_t>;
-
 public:
   timespan_t ebon_time          = timespan_t::min();
   mutable std::vector<player_t*> secondary_list, tertiary_list;
-  timespan_t double_time_extension;
+  double double_time_mult;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
     : ebon_might_t( p, "ebon_might", options_str, timespan_t::min() )
@@ -3036,11 +3028,13 @@ public:
       ebon_time( ebon ),
       secondary_list(),
       tertiary_list(),
-      double_time_extension( timespan_t::from_seconds( p->talent.chronowarden.double_time->effectN( 2 ).base_value() ) )
+      double_time_mult( p->talent.chronowarden.double_time->effectN( 2 ).percent() )
   {
     // Add a target so you always hit yourself.
     aoe += 1;
     dot_duration = base_tick_time = 0_ms;
+
+    may_crit = true;
 
     cooldown->base_duration = 0_s;
 
@@ -3052,34 +3046,18 @@ public:
     }
   }
 
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
   double ebon_value() const
   {
-    return p()->spec.ebon_might->effectN( 1 ).percent() + p()->buff.tww1_4pc_aug->check_stack_value();
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    evoker_augment_t::snapshot_state( s, rt );
-    cast_state( s )->sands_crit = rng().roll( p()->cache.spell_crit_chance() );
+    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.ebon_might_self_buff->check_value() ) +
+           p()->buff.tww1_4pc_aug->check_stack_value();
   }
 
   double ebon_int()
   {
+    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
+                      player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
+                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
+
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
 
@@ -3185,11 +3163,11 @@ public:
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();
-      if ( p()->talent.chronowarden.double_time.enabled() && crit )
-      {
-        time += double_time_extension;
-      }
       buff->trigger( time );
+      if ( p()->talent.chronowarden.double_time.enabled() && crit && t == p() )
+      {
+        buff->current_value = double_time_mult;
+      }
       if ( t != p() && new_cast )
         update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
     }
@@ -3295,11 +3273,11 @@ public:
     {
       for ( auto t : p()->allies_with_my_ebon )
       {
-        ebon_on_target( t, cast_state( s )->sands_crit );
+        ebon_on_target( t, s->result == RESULT_CRIT );
       }
     }
 
-    ebon_on_target( s->target, cast_state( s )->sands_crit );
+    ebon_on_target( s->target, s->result == RESULT_CRIT );
   }
 
   int n_targets() const override
@@ -5393,23 +5371,45 @@ public:
 
 struct prescience_t : public evoker_augment_t
 {
+protected:
   double anachronism_chance;
   double golden_opportunity_chance;
+  double double_time_mult;
 
+public:
   prescience_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "prescience", p, p->talent.prescience, options_str ),
       anachronism_chance(),
-      golden_opportunity_chance()
+      golden_opportunity_chance(),
+      double_time_mult()
   {
-    anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
+    anachronism_chance        = p->talent.anachronism->effectN( 1 ).percent();
     golden_opportunity_chance = p->talent.chronowarden.golden_opportunity->effectN( 1 ).percent();
+    double_time_mult          = p->talent.chronowarden.double_time->effectN( 2 ).percent();
+
+    may_crit = true;
+  }
+
+  void init() override
+
+  {
+      evoker_augment_t::init();
+
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
 
-    p()->get_target_data( s->target )->buffs.prescience->trigger();
+    double prescience_value = p()->get_target_data( s->target )->buffs.prescience->default_value;
+    
+    if ( s->result == RESULT_CRIT )
+    {
+      prescience_value *= 1 + double_time_mult;
+    }
+
+    p()->get_target_data( s->target )->buffs.prescience->trigger( 1, prescience_value );
+
 
     p()->buff.golden_opportunity->expire();
 
@@ -5962,11 +5962,7 @@ public:
     background                        = true;
     aoe                               = -1;
     split_aoe_damage                  = true;
-
-    base_dd_multiplier = 1.85; // Bug?
   }
-
-  // TODO: MELT ARMOR
 
   void init() override
   {
@@ -5991,7 +5987,11 @@ public:
     return cd;
   }
 
-  
+  bool use_full_mastery() const
+  {
+    return evoker && evoker->talent.tyranny.ok() && evoker->buff.dragonrage->check();
+  }
+   
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = base::composite_target_multiplier( t );
@@ -5999,15 +5999,30 @@ public:
     if ( evoker )
     {
       auto td = evoker->get_target_data( t );
+
       if ( td && td->debuffs.melt_armor->check() )
       {
         tm *= 1 + td->debuffs.melt_armor->check_value();
+      }
+
+      if ( td && td->dots.fire_breath->is_ticking() )
+      {
+        tm *= 1 + evoker->talent.molten_embers->effectN( 1 ).percent();
       }
 
       if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
       {
         tm *= 1 + evoker->talent.scalecommander.might_of_the_black_dragonflight->effectN( 1 ).percent();
       }
+
+      // No mastery yet
+      /* if ( evoker->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( use_full_mastery() )
+          tm *= 1.0 + evoker->cache.mastery_value();
+        else
+          tm *= 1.0 + evoker->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
+      }*/
     }
     
     return tm;
@@ -6357,27 +6372,19 @@ struct prescience_buff_t : public evoker_buff_t<buff_t>
 {
 protected:
   using bb = evoker_buff_t<buff_t>;
-  timespan_t double_time_length;
 
 public:
   prescience_buff_t( evoker_td_t& td )
-    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff ), double_time_length()
+    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
   {
     set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_chance( 1.0 );
-
-    double_time_length = timespan_t::from_seconds( p()->talent.chronowarden.double_time->effectN( 2 ).base_value() );
   };
 
   timespan_t buff_duration() const override
   {
     timespan_t bd = bb::buff_duration();
-
-    if ( p()->talent.chronowarden.double_time.enabled() && p()->rng().roll( p()->composite_spell_crit_chance() ) )
-    {
-      bd += double_time_length;
-    }
 
     if ( p()->buff.t31_2pc_proc->check() )
     {
@@ -7976,7 +7983,9 @@ void evoker_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
           ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
             static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
-          } );
+          } )
+          ->set_default_value( 0 )
+          ->set_freeze_stacks( true );
 
   buff.t31_2pc_proc = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_proc",
                            sets->set( EVOKER_AUGMENTATION, T31, B2 ) )

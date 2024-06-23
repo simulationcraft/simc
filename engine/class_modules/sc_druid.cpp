@@ -1341,19 +1341,32 @@ namespace pets
 // Denizen of the Dream =============================================
 struct denizen_of_the_dream_t : public pet_t
 {
-  struct fey_missile_t : public spell_t
+  struct fey_missile_t : public parse_action_effects_t<spell_t>
   {
     druid_t* o;
     double mastery_passive;
     double mastery_dot;
 
     fey_missile_t( pet_t* p )
-      : spell_t( "fey_missile", p, p->find_spell( 188046 ) ),
+      : parse_action_effects_t( "fey_missile", p, p->find_spell( 188046 ) ),
         o( static_cast<druid_t*>( p->owner ) ),
         mastery_passive( o->mastery.astral_invocation->effectN( 1 ).mastery_value() ),
         mastery_dot( o->mastery.astral_invocation->effectN( 5 ).mastery_value() )
     {
       name_str_reporting = "fey_missile";
+
+      _player = p->owner;  // use owner's target data & mastery
+
+      force_effect( o->buff.eclipse_lunar, 1, USE_CURRENT );
+      force_effect( o->buff.eclipse_solar, 1, USE_CURRENT );
+
+      force_effect( o->mastery.astral_invocation, 1 );
+      force_effect( o->mastery.astral_invocation, 3 );
+
+      force_target_effect( d_fn( &druid_td_t::dots_t::moonfire ), o->spec.moonfire_dmg, 4,
+                           o->mastery.astral_invocation );
+      force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), o->spec.sunfire_dmg, 4,
+                           o->mastery.astral_invocation );
     }
 
     void execute() override
@@ -1377,34 +1390,7 @@ struct denizen_of_the_dream_t : public pet_t
 
       cooldown->duration = timespan_t::from_seconds( delay / 75.0 );
 
-      spell_t::execute();
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      auto da = spell_t::composite_da_multiplier( s );
-
-      da *= 1.0 + o->buff.eclipse_lunar->check_value();
-      da *= 1.0 + o->buff.eclipse_solar->check_value();
-
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-      da *= 1.0 + o->cache.mastery() * mastery_passive;
-
-      return da;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      auto tm = spell_t::composite_target_multiplier( t );
-      auto td = o->get_target_data( t );
-
-      if ( td->dots.moonfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      if ( td->dots.sunfire->is_ticking() )
-        tm *= 1.0 + o->cache.mastery() * mastery_dot;
-
-      return tm;
+      parse_action_effects_t::execute();
     }
   };
 
@@ -1821,7 +1807,7 @@ public:
       // TODO: confirm what can and cannot trigger or consume lunar amplificiation
       if ( p()->talent.lunar_amplification.ok() && !ab::background )
       {
-        if ( dbc::has_common_school( ab::get_school(), SCHOOL_ARCANE ) )
+        if ( dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
         {
           // schedule expiration to wait for complete action resolution
           if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_expire( this ) )
@@ -1835,7 +1821,7 @@ public:
 
       // TODO: confirm what can and cannot trigger lunation
       if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) &&
-           dbc::has_common_school( ab::get_school(), SCHOOL_ARCANE ) )
+           dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
       {
         assert( p()->talent.lunation->effects().size() == 3 );
         auto eff = p()->talent.lunation->effects().begin();
@@ -1844,6 +1830,12 @@ public:
           cd->adjust( ( *eff++ ).time_value() );
       }
     }
+  }
+
+  // lunation & lunar amplification seem to go off the original school for temporary school changes
+  school_e _get_school() const
+  {
+    return ab::original_school != SCHOOL_NONE ? ab::original_school : ab::get_school();
   }
 
   void parse_action_effects();
@@ -6403,7 +6395,7 @@ public:
   {
     _umbral_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::UMBRAL )
     {
-      BASE::set_school_override( SCHOOL_ASTRAL );
+      BASE::set_school_override( SCHOOL_ASTRAL );  // preserve original school for lunar amplification/lunation
       BASE::name_str_reporting = "Umbral";
 
       const spell_data_t* other_ecl;
@@ -6454,11 +6446,6 @@ public:
     void umbral_embrace_trigger( action_t* a )
     {
       BASE::p()->buff.umbral_embrace->trigger( a, 1, BASE::p()->eclipse_handler.in_eclipse() );
-    }
-
-    school_e get_school() const override
-    {
-      return BASE::original_school;
     }
   };
 
@@ -6684,11 +6671,6 @@ struct dream_burst_t : public druid_spell_t
     background = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
-
-    // eclipse and mastery applied via script
-    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-    force_effect( p->mastery.astral_invocation, 3 );
-    force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), p->spec.sunfire_dmg, 4U, p->mastery.astral_invocation );
   }
 };
 
@@ -7880,7 +7862,6 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     else if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
-    // TODO: can starfire that enters eclipse proc touch the cosmos
     if ( p()->eclipse_handler.in_eclipse() )
       p()->buff.touch_the_cosmos_starfall->trigger( this );
   }
@@ -7954,19 +7935,6 @@ struct starsurge_t : public ap_spender_t
     {
       background = true;
       name_str_reporting = "goldrinns_fang";
-
-      force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
-      force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-
-      // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
-      // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
-      // forcing effect#1 modified by the talent.
-      force_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
-      force_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-
-      // mastery is applied via hidden script
-      force_effect( p->mastery.astral_invocation, 1 );
-      force_effect( p->mastery.astral_invocation, 3 );
     }
   };
 
@@ -8138,20 +8106,6 @@ struct orbital_strike_t : public druid_spell_t
     flare->name_str_reporting = "stellar_flare";
     flare->dot_duration += p->talent.potent_enchantments->effectN( 1 ).time_value();
     add_child( flare );
-
-
-    force_effect( p->buff.eclipse_lunar, 1, USE_CURRENT );
-    force_effect( p->buff.eclipse_solar, 1, USE_CURRENT );
-
-    // in spell data, the crit effect is applied via label with effect#3. however, the talent only has P_EFFECT_1 and
-    // thus does not modify effect#3 via proper methods, instead relying on hidden scripting. we get around this by
-    // forcing effect#1 modified by the talent.
-    force_effect( p->buff.balance_of_all_things_arcane, 1, p->talent.balance_of_all_things );
-    force_effect( p->buff.balance_of_all_things_nature, 1, p->talent.balance_of_all_things );
-
-    // mastery is applied via hidden script
-    force_effect( p->mastery.astral_invocation, 1 );
-    force_effect( p->mastery.astral_invocation, 3 );
   }
 
   void impact( action_state_t* s ) override
@@ -8378,7 +8332,6 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     base_t::execute();
 
-    // TODO: can wrath that triggers eclipse proc touch the cosmos
     if ( p()->eclipse_handler.in_eclipse() )
       p()->buff.touch_the_cosmos_starsurge->trigger( this );
   }
@@ -8409,7 +8362,22 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 
 struct wrath_t : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
 {
-  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath ) {}
+  DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
+  {
+    if ( p->talent.arcane_affinity.ok() )
+    {
+      // TODO: arcane affinity seems to be bugged and applies only to the maximum damage of non-UE wrath.
+      // as simc only looks at the average, apply a half strength modifier.
+      auto val = p->talent.arcane_affinity->effectN( 1 ).percent() * 0.5;
+      base_dd_multiplier *= 1.0 + val;
+      sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 100 );
+      affecting_list.emplace_back( &p->talent.arcane_affinity->effectN( 1 ), val );
+
+      // arcane affinity applies fully to umbral embrace'd wrath
+      if ( umbral )
+        umbral->apply_affecting_aura( p->talent.arcane_affinity );
+    }
+  }
 };
 
 // Convoke the Spirits ======================================================
@@ -10246,7 +10214,7 @@ void druid_t::create_buffs()
   buff.umbral_embrace =
     make_fallback( talent.umbral_embrace.ok(), this, "umbral_embrace", find_trigger( talent.umbral_embrace ).trigger() )
       ->set_trigger_spell( talent.umbral_embrace )
-      ->set_chance( 0.2 )  // TODO: harcoded value
+      ->set_chance( 0.2 )        // TODO: harcoded value
       ->set_default_value( 0 );  // value used to indicate if the proc happened during eclipse (1) or not (0)
 
   buff.umbral_inspiration =
@@ -10683,9 +10651,7 @@ void druid_t::create_buffs()
       ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
-    this, "strategic_infusion", find_spell( 439891 ) )
-      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    this, "strategic_infusion", find_spell( 439891 ) );
 
   buff.treants_of_the_moon = make_fallback<treants_of_the_moon_buff_t>(
     talent.treants_of_the_moon.ok() && ( talent.force_of_nature.ok() || talent.grove_guardians.ok() ),
@@ -13388,7 +13354,23 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
-  action.apply_affecting_aura( talent.arcane_affinity );  // TODO: confirm if this applies to non-arcane wrath/thrash
+  // thrash family flags only apply with lunar calling
+  bool apply_arcane_affinity = talent.arcane_affinity.ok();
+  if ( action.data().class_flag( 40 ) ||  //  flag 40: bear thrash dot
+       action.data().class_flag( 91 ) ||  //  flag 91: bear thrash direct
+       action.data().class_flag( 126 ) )  //  flag 126: cat thrash
+  {
+    apply_arcane_affinity = apply_arcane_affinity && talent.lunar_calling.ok();
+  }
+  // wrath is handled in wrath_t
+  else if ( action.data().class_flag( 0 ) )  // flag 0: wrath
+  {
+    apply_arcane_affinity = false;
+  }
+
+  if ( apply_arcane_affinity )
+    action.apply_affecting_aura( talent.arcane_affinity );
+
   action.apply_affecting_aura( talent.astral_insight );
   action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
   action.apply_affecting_aura( talent.early_spring );
@@ -13463,17 +13445,36 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.heart_of_the_wild, hotw_mask );
 
   // Balance
-  parse_effects( p()->mastery.astral_invocation );
+  parse_effects( p()->mastery.astral_invocation,
+                 // arcane passive mastery (eff#1) and nature passive mastery (eff#3) apply to orbital strike &
+                 // goldrinn's fang (label 2391) via hidden script
+                 affect_list_t( 1, 3 ).adjust_label( 2391 ),
+                 // nature passive mastery (eff#3) applies to dream burst (433850) via hidden script
+                 affect_list_t( 3 ).adjust_spell( 433850 ) );
+
+  // talent data for balance of all things only modifies effect#1 of the buff, and is missing modification to effect#3
+  // which is done via hidden script. hack around this by overriding the value instead of normally parsing the talent.
   parse_effects( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
+  parse_effects( p()->buff.balance_of_all_things_arcane, effect_mask_t( false ).enable( 3 ),
+                 p()->talent.balance_of_all_things->effectN( 1 ).percent() );
   parse_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
+  parse_effects( p()->buff.balance_of_all_things_nature, effect_mask_t( false ).enable( 3 ),
+                 p()->talent.balance_of_all_things->effectN( 1 ).percent() );
+
   // due to harmony of the heavens, we parse the damage effects (#1/#7) separately and use the current buff value
   // instead of data value
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
-  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT );
+  parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT,
+                 // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) via hidden script
+                 affect_list_t( 1 ).adjust_label( 2391 ) );
+
   // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
   // instead of data value
   parse_effects( p()->buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), p()->talent.umbral_intensity );
-  parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT );
+  parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
+                 // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
+                 // via hidden script
+                 affect_list_t( 1 ).adjust_label( 2391 ).adjust_spell( 433850 ) );
 
   auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
   if ( p()->talent.astral_insight.ok() )
@@ -13571,7 +13572,9 @@ void druid_action_t<Base>::parse_target_effects()
                         p()->spec.moonfire_dmg, p()->mastery.astral_invocation );
 
   parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
-                        p()->spec.sunfire_dmg, p()->mastery.astral_invocation );
+                        p()->spec.sunfire_dmg, p()->mastery.astral_invocation,
+                        // nature dot mastery (eff#4) applies to dream burst (433850) via hidden script
+                        affect_list_t( 4 ).adjust_spell( 433850 ) );
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
                         p()->spec.stellar_amplification );

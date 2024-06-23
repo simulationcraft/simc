@@ -11,14 +11,17 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
-enum parse_flag_e
+enum parse_flag_e : uint8_t
 {
-  USE_DATA,
-  USE_DEFAULT,
-  USE_CURRENT,
-  IGNORE_STACKS,
-  ALLOW_ZERO,
-  CONSUME_BUFF
+  USE_DATA          = 0x00,
+  USE_DEFAULT       = 0x01,
+  USE_CURRENT       = 0x02,
+  IGNORE_STACKS     = 0x04,
+  ALLOW_ZERO        = 0x08,
+  CONSUME_BUFF      = 0x10,
+  // internal flags that should not be used in parse_effects()
+  VALUE_OVERRIDE    = 0x20,
+  AFFECTED_OVERRIDE = 0x40
 };
 
 // effects dependent on player state
@@ -26,13 +29,13 @@ struct player_effect_t
 {
   buff_t* buff = nullptr;
   double value = 0.0;
-  parse_flag_e type = USE_DATA;
+  uint8_t type = USE_DATA;
   bool use_stacks = true;
   bool mastery = false;
   std::function<bool()> func = nullptr;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
-  uint32_t idx = 0;
+  uint32_t idx = 0;  // used for consume_buff linkage during init_finished()
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -40,7 +43,7 @@ struct player_effect_t
   player_effect_t& set_value( double v )
   { value = v; return *this; }
 
-  player_effect_t& set_type( parse_flag_e t )
+  player_effect_t& set_type( uint8_t t )
   { type = t; return *this; }
 
   player_effect_t& set_use_stacks( bool s )
@@ -67,18 +70,18 @@ struct player_effect_t
            mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
-  std::string value_type_name( parse_flag_e ) const;
+  std::string value_type_name( uint8_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
                           std::function<std::string( double )> ) const;
 };
 
 // effects dependent on target state
-// TODO: add value type to debuffs if it becomes necessary in the future
 struct target_effect_t
 {
   std::function<int( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
+  uint8_t type = USE_DATA;  // for internal flags only
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
@@ -102,6 +105,8 @@ struct target_effect_t
   {
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
+
+  std::string value_type_name( uint8_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
                           std::function<std::string( double )> ) const;
@@ -160,6 +165,42 @@ struct effect_mask_t
   { return mask; }
 };
 
+struct affect_list_t
+{
+  std::vector<uint8_t> idx;
+  std::vector<int8_t> family;
+  std::vector<int16_t> label;
+  std::vector<int32_t> spell;
+
+  affect_list_t() = default;
+
+  affect_list_t( uint8_t i ) { idx.push_back( i ); }
+
+  template <typename... Ts>
+  affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
+
+  affect_list_t& adjust_family( int8_t f )
+  { family.push_back( f ); return *this; }
+
+  template <typename... Ts>
+  affect_list_t& adjust_family( int8_t f, Ts... fs )
+  { adjust_family( f ); return adjust_family( fs... ); }
+
+  affect_list_t& adjust_label( int16_t l )
+  { label.push_back( l ); return *this; }
+
+  template <typename... Ts>
+  affect_list_t& adjust_label( int16_t l, Ts... ls )
+  { adjust_label( l ); return adjust_label( ls... ); }
+
+  affect_list_t& adjust_spell( int32_t s )
+  { spell.push_back( s ); return *this; }
+
+  template <typename... Ts>
+  affect_list_t& adjust_spell( int32_t s, Ts... ss )
+  { adjust_spell( s ); return adjust_spell( ss... ); }
+};
+
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
 struct pack_t
@@ -168,6 +209,7 @@ struct pack_t
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
+  std::vector<affect_list_t> affect_lists;
 };
 
 template <typename U>
@@ -258,8 +300,11 @@ struct parse_base_t
 
       if constexpr ( is_detected_v<detect_type, U> )
       {
-        if ( mod == USE_DEFAULT || mod == USE_CURRENT )
-          tmp.data.type = mod;
+        if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( tmp.data.type & VALUE_OVERRIDE ) )
+        {
+          tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+          tmp.data.type |= mod;
+        }
       }
 
       if constexpr ( is_detected_v<detect_idx, U> )
@@ -271,10 +316,20 @@ struct parse_base_t
     else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
     {
       tmp.data.value = mod;
+
+      if constexpr ( is_detected_v<detect_type, U> )
+      {
+        tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+        tmp.data.type |= VALUE_OVERRIDE;
+      }
     }
     else if constexpr ( std::is_same_v<T, effect_mask_t> || ( std::is_integral_v<T> && !std::is_same_v<T, bool> ) )
     {
       tmp.mask = mod;
+    }
+    else if constexpr ( std::is_same_v<T, affect_list_t> )
+    {
+      tmp.affect_lists.push_back( std::move( mod ) );
     }
     else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
     {
@@ -454,15 +509,6 @@ public:
   //
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
-  virtual bool is_valid_aura( const spelleffect_data_t& ) const { return false; }
-
-  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& data,
-                                                           double& val_mul, std::string& str, bool& flat,
-                                                           bool force ) = 0;
-
-  virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
-
   template <typename T, typename... Ts>
   void parse_effects( T data, Ts... mods )
   {
@@ -502,8 +548,6 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
-
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
   //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
@@ -511,15 +555,6 @@ public:
   // The following optional arguments can be used in any order:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
-  virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
-
-  virtual std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t& eff, target_effect_t& data,
-                                                                  double& val_mul, std::string& str, bool& flat,
-                                                                  bool force ) = 0;
-
-  virtual void target_debug_message( std::string_view type_str, std::string_view val_str, const spell_data_t* s_data,
-                                     size_t i ) = 0;
-
   template <typename... Ts>
   void parse_target_effects( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
                              Ts... mods )
@@ -563,7 +598,23 @@ public:
     parse_effect( pack, spell, idx, true );
   }
 
-  double get_target_effect_value( const target_effect_t&, actor_target_data_t* ) const;
+  virtual bool is_valid_aura( const spelleffect_data_t& ) const { return false; }
+  virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
+
+  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<player_effect_t>& pack,
+                                                           double& val_mul, std::string& str, bool& flat,
+                                                           bool force ) = 0;
+  virtual std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<target_effect_t>& data,
+                                                           double& val_mul, std::string& str, bool& flat,
+                                                           bool force ) = 0;
+
+  virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
+                              bool mastery, const spell_data_t* s_data, size_t i ) = 0;
+  virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
+                              bool /* mastery */, const spell_data_t* s_data, size_t i ) = 0;
+
+  double get_effect_value( const player_effect_t&, bool benefit = false ) const;
+  double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 
   virtual bool can_force( const spelleffect_data_t& ) const { return true; }
 };
@@ -628,19 +679,17 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   void invalidate_cache( cache_e c ) override;
 
   bool is_valid_aura( const spelleffect_data_t& ) const override;
+  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
-                                                   bool&, bool ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<player_effect_t>&, double&,
+                                                   std::string&, bool&, bool ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<target_effect_t>&, double&,
+                                                   std::string&, bool&, bool ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
-
-  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
-
-  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t&, target_effect_t&, double&,
-                                                          std::string&, bool&, bool ) override;
-
-  void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+                      size_t ) override;
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -695,21 +744,21 @@ public:
   parse_action_base_t( player_t* p, action_t* a ) : parse_effects_t( p ), _action( a ) {}
 
   bool is_valid_aura( const spelleffect_data_t& ) const override;
+  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
-                                                   bool&, bool ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<player_effect_t>&, double&,
+                                                   std::string&, bool&, bool ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<target_effect_t>&, double&,
+                                                   std::string&, bool&, bool ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
-
-  bool is_valid_target_aura( const spelleffect_data_t& ) const override;
-
-  std::vector<target_effect_t>* get_target_effect_vector( const spelleffect_data_t&, target_effect_t&, double&,
-                                                          std::string&, bool&, bool ) override;
-
-  void target_debug_message( std::string_view, std::string_view, const spell_data_t*, size_t ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
+                      size_t ) override;
 
   bool can_force( const spelleffect_data_t& ) const override;
+
+  bool check_affected_list( const std::vector<affect_list_t>&, const spelleffect_data_t&, bool& );
 
   void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
 
@@ -916,7 +965,7 @@ public:
     auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_multiplier_effects )
-      tm *= 1.0 + get_target_effect_value( i, td );
+      tm *= 1.0 + get_effect_value( i, td );
 
     return tm;
   }
@@ -927,7 +976,7 @@ public:
     auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_chance_effects )
-      cc += get_target_effect_value( i, td );
+      cc += get_effect_value( i, td );
 
     return cc;
   }
@@ -938,7 +987,7 @@ public:
     auto td = _player->get_target_data( t );
 
     for ( const auto& i : target_crit_damage_effects )
-      cd *= 1.0 + get_target_effect_value( i, td );
+      cd *= 1.0 + get_effect_value( i, td );
 
     return cd;
   }

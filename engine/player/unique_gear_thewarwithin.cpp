@@ -133,15 +133,21 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
   }
 }
 
-unsigned unique_gem_count( const special_effect_t& effect )
+// from item_naming.inc
+enum gem_color_e : unsigned
 {
-  // from item_naming.inc
-  static constexpr std::array<unsigned, 5> algari_gem_desc = { 14110,    // ruby
-                                                               14111,    // amber
-                                                               14113,    // emerald
-                                                               14114,    // sapphire
-                                                               14115 };  // onyx
-  std::set<unsigned> gems;
+  GEM_RUBY     = 14110,
+  GEM_AMBER    = 14111,
+  GEM_EMERALD  = 14113,
+  GEM_SAPPHIRE = 14114,
+  GEM_ONYX     = 14115
+};
+
+static constexpr std::array<gem_color_e, 5> gem_colors = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
+
+std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
+{
+  std::vector<gem_color_e> gems;
 
   for ( const auto& item : effect.player->items )
   {
@@ -151,16 +157,30 @@ unsigned unique_gem_count( const special_effect_t& effect )
       {
         const auto& _gem = effect.player->dbc->item( gem_id );
         const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
-        if ( auto _desc = _prop.desc_id; range::contains( algari_gem_desc, _desc ) )
-          gems.insert( _desc );
+        for ( auto g : gem_colors )
+        {
+          if ( _prop.desc_id == static_cast<unsigned>( g ) )
+          {
+            gems.push_back( g );
+            break;
+          }
+        }
       }
     }
   }
 
-  auto count = as<unsigned>( gems.size() );
-  effect.player->sim->print_debug( "unique gem count for effect '{}': {}", effect.name(), count );
+  return gems;
+}
 
-  return count;
+std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+{
+  auto _list = algari_gem_list( effect );
+  range::sort( _list );
+
+  auto it = range::unique( _list );
+  _list.erase( it, _list.end() );
+
+  return _list;
 }
 
 namespace consumables
@@ -447,7 +467,7 @@ void secondary_weapon_enchant( special_effect_t& effect )
 // 435500 driver
 void culminating_blasphemite( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_count( effect );;
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect ).size();
   // check for prismatic null stone
   if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
     pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
@@ -503,7 +523,8 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
 
   // TODO: confirm damage doesn't increase per extra target
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
-  grenade->base_dd_min = grenade->base_dd_max = amount;
+  grenade->base_dd_min += amount;
+  grenade->base_dd_max += amount;
   grenade->travel_speed = missile->missile_speed();
 
   effect.execute_action = grenade;
@@ -511,56 +532,60 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 436035 equip
-//  e1: coeff? trigger driver
-// 436039 driver
-//  e1: coeff? this is 10x equip coeff and seems to be the one being used in-game
-// 436043 damage
-// 436044 heal
-// TODO: determine if it can proc with no gems
-// TODO: determine which coeff is actually used
-// TODO: confirm damage amount increase per gem type calculation
-// TODO: confirm rppm decrease per gem type calculation
-// TODO: determine if heal uses same coeff as damage
-// TODO: confirm damage/heal depends on target type, and not triggering action type
+// 461177 equip
+//  e1: coeff, trigger driver
+// 461180 driver
+// 461185 holy damage from amber
+// 461190 nature damage from emerald
+// 461191 shadow damage from onyx
+// 461192 fire damage from ruby
+// 461193 frost damage from sapphire
+// TODO: determine if damage selection is per gem, or per unique gem type
 void elemental_focusing_lens( special_effect_t& effect )
 {
-  auto gem_count = unique_gem_count( effect );
+  // TODO: determine if damage selection is per gem, or per unique gem type
+  auto gems = algari_gem_list( effect );
 
-  // TODO: determine if it can proc with no gems
-  if ( !gem_count )
+  if ( !gems.size() )
     return;
 
-  // TODO: determine which coeff is actually used. in-game seems to be incorrectly using the driver coeff, which is 10x
-  // the equip coeff.
   auto amount = effect.driver()->effectN( 1 ).average( effect.item );
-
-  // TODO: confirm damage amount increase per gem type calculation
-  amount *= 6 - gem_count;
-
-  // TODO: confirm rppm decrease per gem type calculation
-  effect.rppm_modifier_ = 1.0 / ( 6 - gem_count );
 
   effect.spell_id = effect.trigger()->id();
 
-  auto damage = create_proc_action<generic_proc_t>( "elemental_focusing_len", effect, 436043 );
-  damage->base_dd_min = damage->base_dd_max = amount;
+  // guard against duplicate proxy/callback from multiple embellishments
+  auto proxy = effect.player->find_action( "elemental_focusing_lens" );
+  if ( !proxy )
+  {
+    proxy = new action_t( action_e::ACTION_OTHER, "elemental_focusing_lens", effect.player, effect.driver() );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 
-  // TODO: determine if heal uses same coeff as damage
-  auto heal = create_proc_action<generic_heal_t>( "elemental_focusing_len_heal", effect, 436044 );
-  heal->base_dd_min = heal->base_dd_max = amount;
-  heal->name_str_reporting = "Heal";
+  std::unordered_map<gem_color_e, action_t*> damages;
+
+  static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> damage_ids = { {
+    { GEM_RUBY,     461192, "ruby"     },
+    { GEM_AMBER,    461185, "amber"    },
+    { GEM_EMERALD,  461190, "emerald"  },
+    { GEM_SAPPHIRE, 461193, "sapphire" },
+    { GEM_ONYX,     461191, "onyx"     }
+  } };
+
+  for ( auto [ g, id, name ] : damage_ids )
+  {
+    auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
+    dam->base_dd_min += amount;
+    dam->base_dd_max += amount;
+    dam->name_str_reporting = util::inverse_tokenize( name );
+    damages[ g ] = dam;
+    proxy->add_child( dam );
+  }
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-      // TODO: confirm damage/heal depends on target type, and not triggering action type
-      if ( s->target->is_enemy() )
-        damage->execute_on_target( s->target );
-      else
-        heal->execute_on_target( s->target );
+    effect.spell_id, [ gems, damages ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      damages.at( gems.at( cb->rng().range( gems.size() ) ) )->execute_on_target( s->target );
     } );
 
-  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace embellishments
 
@@ -3108,7 +3133,7 @@ void register_special_effects()
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
   register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
-  register_special_effect( 436035, embellishments::elemental_focusing_lens );
+  register_special_effect( 461177, embellishments::elemental_focusing_lens );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );

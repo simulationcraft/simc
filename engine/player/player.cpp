@@ -1870,11 +1870,11 @@ void player_t::init_items()
 
         if ( !items[ slot ].options_str.empty() )
         {
-          if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND )
+          if ( inv_type == INVTYPE_WEAPON && slot == SLOT_MAIN_HAND && items[ SLOT_OFF_HAND ].options_str.empty() )
             slot = SLOT_OFF_HAND;
-          else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 )
+          else if ( inv_type == INVTYPE_FINGER && slot == SLOT_FINGER_1 && items[ SLOT_FINGER_2 ].options_str.empty() )
             slot = SLOT_FINGER_2;
-          else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 )
+          else if ( inv_type == INVTYPE_TRINKET && slot == SLOT_TRINKET_1 && items[ SLOT_TRINKET_2 ].options_str.empty() )
             slot = SLOT_TRINKET_2;
           else
             continue;
@@ -2653,7 +2653,7 @@ static bool generate_tree_nodes( player_t* player,
 // Different entries within the same node are allowed to have non-unique selection indices.
 // Manually resolve such conflicts here.
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
-static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool /* is_ptr */ )
 {
   auto get_index = [ = ]( const trait_data_t* t ) -> short {
     if ( t->selection_index == -1 )
