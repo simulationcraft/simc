@@ -2510,15 +2510,6 @@ struct bladestorm_t : public warrior_attack_t
     }
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // Haste reduces dot time, as well as the tick time for Ravager
-    timespan_t tt = tick_time( s );
-    auto full_duration = dot_duration;
-
-    return full_duration * ( tt / base_tick_time );
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2638,12 +2629,6 @@ struct torment_bladestorm_t : public warrior_attack_t
         add_child( bloodbath );
       }
     }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-      return warrior_attack_t::composite_dot_duration( s );
-    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   void execute() override
@@ -4764,15 +4749,6 @@ struct ravager_t : public warrior_attack_t
         add_child( bloodbath );
       }
     }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // Haste reduces dot time, as well as the tick time for Ravager
-    timespan_t tt = tick_time( s );
-    auto full_duration = dot_duration;
-
-    return full_duration * ( tt / base_tick_time );
   }
 
   void execute() override

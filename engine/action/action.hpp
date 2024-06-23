@@ -328,6 +328,9 @@ public:
   /// Default full duration of dot.
   timespan_t dot_duration;
 
+  /// Whether or not the dot duration is hasted. Channeled spells generally also have this flag.
+  bool hasted_dot_duration;
+
   /// Maximum number of DoT stacks.
   int dot_max_stack;
 

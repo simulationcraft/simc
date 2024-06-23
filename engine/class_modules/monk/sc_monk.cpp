@@ -2424,12 +2424,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     return new spinning_crane_kick_state_t( this, p()->target );
   }
 
-  // N full ticks, but never additional ones.
-  timespan_t composite_dot_duration( const action_state_t *s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
-  }
-
   double cost_flat_modifier() const override
   {
     double c = monk_melee_attack_t::cost_flat_modifier();

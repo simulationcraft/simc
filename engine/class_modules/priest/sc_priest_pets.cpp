@@ -944,18 +944,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
   void tick( dot_t* d ) override
   {
     priest_pet_spell_t::tick( d );
@@ -1016,18 +1004,6 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     priest_pet_spell_t::init();
 
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
   }
 };
 

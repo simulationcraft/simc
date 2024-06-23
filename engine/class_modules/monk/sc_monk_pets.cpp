@@ -860,22 +860,32 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
-    // Forcing SEF to use it's own base_tick_time for tick_time.
+    // sef_action_base_t uses the source action's tick_time, which ignores base_tick_time adjustment made in the
+    // constructor above. Recalculate tick_time here.
     timespan_t tick_time( const action_state_t *state ) const override
     {
       timespan_t t = base_tick_time;
-      if ( channeled || hasted_ticks )
+      if ( hasted_ticks )
       {
         t *= state->haste;
       }
       return t;
     }
 
+    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
+    // Recalculate composite_dot_duration here.
     timespan_t composite_dot_duration( const action_state_t *s ) const override
     {
-      if ( channeled )
-        return dot_duration * ( tick_time( s ) / base_tick_time );
+      if ( hasted_dot_duration )
+      {
+        auto tt = tick_time( s );
+
+        // technically it's possible to have hasted dot duration without hasted ticks
+        if ( !hasted_ticks )
+          tt *= s->haste;
+
+        return dot_duration * ( tt / base_tick_time );
+      }
 
       return dot_duration;
     }
