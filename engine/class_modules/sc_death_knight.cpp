@@ -2525,7 +2525,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 template <typename T_PET>
 struct ruptured_viscera_t final : public pet_spell_t<T_PET>
 {
-  ruptured_viscera_t( T_PET* p, bool magus )
+  ruptured_viscera_t( T_PET* p, bool magus = false )
     : pet_spell_t<T_PET>( p, "ruptured_viscera", p->dk()->pet_spell.ruptured_viscera ), magus( magus )
   {
     this->aoe        = -1;
@@ -2950,7 +2950,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
-      ruptured_viscera = new ruptured_viscera_t( this, false );
+      ruptured_viscera = new ruptured_viscera_t<army_ghoul_pet_t>( this );
     }
   }
 
@@ -3596,7 +3596,7 @@ struct magus_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_spells();
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
-      ruptured_viscera = new ruptured_viscera_t( this, true );
+      ruptured_viscera = new ruptured_viscera_t<magus_pet_t>( this, true );
     }
   }
 
