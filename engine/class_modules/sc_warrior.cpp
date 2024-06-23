@@ -237,8 +237,8 @@ public:
     buff_t* charge_movement;
     buff_t* collateral_damage;
     buff_t* concussive_blows;
-    buff_t* dance_of_death_arms;
-    buff_t* dance_of_death_prot;
+    buff_t* dance_of_death_bladestorm;
+    buff_t* dance_of_death_ravager;
     buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
@@ -411,6 +411,8 @@ public:
     // Extra Spells To Make Things Work
 
     const spell_data_t* colossus_smash_debuff;
+    const spell_data_t* dance_of_death;
+    const spell_data_t* dance_of_death_bs_buff; // Bladestorm
     const spell_data_t* fatal_mark_debuff;
     const spell_data_t* concussive_blows_debuff;
     const spell_data_t* recklessness_buff;
@@ -787,7 +789,7 @@ public:
     {
       player_talent_t ravager;
       player_talent_t bloodsurge;
-
+      player_talent_t dance_of_death;
     } shared;
 
   } talents;
@@ -1026,6 +1028,7 @@ public:
     parse_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
+    parse_effects( p()->buff.dance_of_death_bladestorm );
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
     parse_effects( p()->buff.storm_of_swords );
@@ -2510,11 +2513,6 @@ struct bladestorm_t : public warrior_attack_t
     timespan_t tt = tick_time( s );
     auto full_duration = dot_duration;
 
-    if ( p() -> buff.dance_of_death_arms -> up() )
-    {
-      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
-    }
-
     return full_duration * ( tt / base_tick_time );
   }
 
@@ -2578,6 +2576,11 @@ struct bladestorm_t : public warrior_attack_t
     if ( p()->talents.arms.merciless_bonegrinder->ok() )
     {
       p()->buff.merciless_bonegrinder->trigger();
+    }
+
+    if ( p() -> talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_bladestorm->up() )
+    {
+      p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
     }
   }
 
@@ -3235,6 +3238,11 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->buff.violent_outburst->check() )
     {
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
+    }
+
+    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
+    {
+      am *= 1.0 + p()->talents.mountain_thane.crashing_thunder->effectN( 1 ).percent();
     }
 
     return am;
@@ -4714,16 +4722,6 @@ struct ravager_tick_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_storm_of_steel, p()->gain.storm_of_steel );
     }
   }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-    if( p() -> buff.dance_of_death_prot -> up() )
-    {
-      am *= 1.0 + p() -> buff.dance_of_death_prot -> value();
-    }
-    return am;
-  }
 };
 
 struct ravager_t : public warrior_attack_t
@@ -4732,7 +4730,6 @@ struct ravager_t : public warrior_attack_t
   mortal_strike_t* mortal_strike;
   bloodthirst_t* bloodthirst;
   bloodbath_t* bloodbath;
-  // We have to use find_spell here, rather than use the talent lookup, as both fury and protection use the same spell_id
   ravager_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
@@ -4772,25 +4769,16 @@ struct ravager_t : public warrior_attack_t
     timespan_t tt = tick_time( s );
     auto full_duration = dot_duration;
 
-    if ( p() -> buff.dance_of_death_prot -> up () )
-    {
-      // Nov 2 2022 - Dance of death extends ravager by 2 seconds, but you do not get an extra tick.
-      // As a result, not applying the time for now, as it doesn't work.
-      if ( !p() -> bugs )
-        full_duration += p() -> talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
-    }
-
-    if ( p() -> buff.dance_of_death_arms -> up() )
-    {
-      full_duration += p() -> talents.arms.dance_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
-    }
-
     return full_duration * ( tt / base_tick_time );
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
+
+    // Make sure the buff is expired on fresh cast
+    if ( p()->talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_ravager->check() )
+      p()->buff.dance_of_death_ravager->expire();
 
     if ( p()->talents.arms.merciless_bonegrinder->ok() )
     {
@@ -4802,7 +4790,6 @@ struct ravager_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    // TODO In build 11.0.0.55120 ravager only ticks 5 times, instead of 6.  Unimplemented for now.
     ravager->execute();
 
     // As of TWW Unhinged procs on the even ticks
@@ -6561,6 +6548,8 @@ void warrior_t::init_spells()
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
+  spell.dance_of_death          = find_spell( 390713 );
+  spell.dance_of_death_bs_buff  = find_spell( 459572 );
   spell.deep_wounds_arms        = find_spell( 262115 );
   spell.fatal_mark_debuff       = find_spell( 383704 );
   spell.sudden_death_arms       = find_spell( 52437 );
@@ -6892,6 +6881,7 @@ void warrior_t::init_spells()
 
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
+  talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
 
   // Convenant Abilities
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
@@ -7328,16 +7318,14 @@ void warrior_td_t::target_demise()
   if ( source->sim->event_mgr.canceled )
     return;
 
-  warrior_t* p = static_cast<warrior_t*>( source );
+  warrior_t* p = debug_cast<warrior_t*>( source );
 
-  if ( p -> talents.protection.dance_of_death.ok() && dots_ravager->is_ticking() )
+  if ( p -> talents.shared.dance_of_death.ok() && p -> buff.bladestorm -> up() )
   {
-    p -> buff.dance_of_death_prot -> trigger();
-  }
-
-  if ( p -> talents.arms.dance_of_death.ok() && ( dots_ravager->is_ticking() || p -> buff.bladestorm -> up() ) )
-  {
-    p -> buff.dance_of_death_arms -> trigger();
+    if ( ! p -> buff.dance_of_death_bladestorm -> at_max_stacks() )
+    {
+      p -> buff.dance_of_death_bladestorm -> trigger();
+    }
   }
 
   if ( p -> talents.warrior.war_machine->ok() )
@@ -7526,10 +7514,13 @@ void warrior_t::create_buffs()
 
   buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
 
-  buff.dance_of_death_arms = make_buff( this, "dance_of_death_arms", talents.arms.dance_of_death -> effectN( 1 ).trigger() );
+  buff.dance_of_death_ravager = make_buff( this, "dance_of_death_ravager", find_spell( 459567 ) )
+      ->set_duration( 0_s ) // Handled by the ravager action
+      ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
 
-  buff.dance_of_death_prot = make_buff( this, "dance_of_death_prot", talents.protection.dance_of_death -> effectN( 1 ).trigger() )
-                    -> set_default_value( talents.protection.dance_of_death -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+  buff.dance_of_death_bladestorm = make_buff( this, "dance_of_death_bladestorm", spell.dance_of_death_bs_buff )
+      ->set_duration( 20_s ) // Slightly longer than max extension
+      ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
 
