@@ -2164,7 +2164,6 @@ struct empyrean_hammer_t : public paladin_spell_t
       else if ( sim->debug )
         sim->print_debug( "{} tries to trigger Endless Wrath (cooldown)", p()->name_str );
     }
-    p()->buffs.templar.sanctification->expire();
   }
 
   double action_multiplier() const override
