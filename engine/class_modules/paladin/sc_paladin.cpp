@@ -148,9 +148,10 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
 
 struct shield_of_vengeance_buff_t : public absorb_buff_t
 {
+  double max_absorb;
   shield_of_vengeance_buff_t( player_t* p )
     : absorb_buff_t( p, "shield_of_vengeance",
-                     p->find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
+                     p->find_spell( 184662 ) ), max_absorb(0.0)
   {
     cooldown->duration = 0_ms;
   }
@@ -161,13 +162,24 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
 
     auto* p = static_cast<paladin_t*>( player );
     // do thing
-    if ( p->options.fake_sov )
-    {
       // TODO(mserrano): This is a horrible hack
-      p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
-          current_value;
-      p->active.shield_of_vengeance_damage->execute();
-    }
+    p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
+        p->options.fake_sov ? max_absorb : current_value;
+    p->active.shield_of_vengeance_damage->execute();
+  }
+  // Shield of Vengeance now needs to function for both Prot and Ret. Since there are instances where Prot also takes no damage, we'll just always deal the maximum absorb as damage, too
+  // For this, we need to know what the maximum amount of absorb was at execution time (Since we sometimes actually lose HP as Prot)
+  // For Ret, it's possible to stack both SoVs, so they add to each other
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    auto* p = static_cast<paladin_t*>( player );
+    bool add = p->buffs.shield_of_vengeance->up();
+    double prev_val = current_value;
+    bool ret_value = absorb_buff_t::trigger( stacks, value, chance, duration );
+    // 2024-06-23 Currently, if you overwrite SoV with a SC proc (or overwrite a SC proc with SoV), only the current amount of absorb goes into SoV's final damage
+    double value_to_add_to = p->bugs ? prev_val : max_absorb;
+    max_absorb          = add ? value_to_add_to + value : value;
+    return ret_value;
   }
 };
 }  // namespace buffs
@@ -891,7 +903,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     shield_amount *= 1.0 + p()->composite_heal_versatility();
 
     paladin_absorb_t::execute();
-    p()->buffs.shield_of_vengeance->trigger( 1, shield_amount );
+    p()->buffs.shield_of_vengeance->trigger( 1, shield_amount, -1, timespan_t::min() );
   }
 };
 
@@ -900,6 +912,7 @@ struct shield_of_vengeance_sacrosanct_crusade_t : shield_of_vengeance_t
   shield_of_vengeance_sacrosanct_crusade_t(paladin_t* p) : shield_of_vengeance_t( p, "" )
   {
     shield_modifier = p->talents.templar.sacrosanct_crusade->effectN( 1 ).percent();
+    background      = true;
   }
 };
 
@@ -2880,7 +2893,6 @@ void paladin_t::create_actions()
   else if ( specialization() == PALADIN_RETRIBUTION )
   {
     paladin_t::create_ret_actions();
-    active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   }
   // Hero Talents
   //Lightsmith
@@ -2912,6 +2924,7 @@ void paladin_t::create_actions()
   {
     active.sacrosanct_crusade = new shield_of_vengeance_sacrosanct_crusade_t( this );
   }
+  active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
   if ( talents.judgment_of_light->ok() )
   {
