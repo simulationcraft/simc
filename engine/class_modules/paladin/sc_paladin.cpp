@@ -1502,6 +1502,8 @@ void judgment_t::execute()
     }
   }
 
+  // ToDo: Check if this doesn't trigger on Ret's Divine Toll, but Ret's Divine Resonance
+  p()->buffs.templar.for_whom_the_bell_tolls->decrement();
 }
 
 double judgment_t::action_multiplier() const
@@ -1510,6 +1512,10 @@ double judgment_t::action_multiplier() const
 
   if ( p()->talents.justification->ok() )
     am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
+
+  // ToDo: Check if this doesn't benefit for Ret's Divine Toll, but Ret's Divine Resonance
+  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() )
+    am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
 
   return am;
 }
@@ -1616,10 +1622,16 @@ struct divine_toll_t : public paladin_spell_t
     t31HasProcced = false;
 
     paladin_spell_t::execute();
-
     if ( p()->talents.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
+    }
+    if ( p()->talents.templar.for_whom_the_bell_tolls->ok() )
+    {
+      auto data = p()->buffs.templar.for_whom_the_bell_tolls->data();
+      // Damage for Judgment increases by 100%, reduced by 20% for each target more than 1, maximum 5 (Since Divine Toll caps at 5)
+      auto increase = data.effectN( 1 ).base_value() - ( data.effectN( 4 ).base_value() * ( execute_state->n_targets - 1 ) );
+      p()->buffs.templar.for_whom_the_bell_tolls->execute(-1, increase / 100.0, timespan_t::min());
     }
   }
 };
@@ -3147,15 +3159,10 @@ void paladin_t::create_buffs()
 
   buffs.templar.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
   buffs.templar.hammer_of_light_free  = make_buff( this, "hammer_of_light_free", find_spell(433015) );
-  buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
-                                ->set_expire_at_max_stack( true )
-                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                   if ( !new_ )
-                                   {//TODO: Implement logic to check for EoT/HoL availability, unlikely to come up in sims, but good to have parity
-                                     buffs.templar.hammer_of_light_ready->trigger();
-                                     buffs.templar.hammer_of_light_free->trigger();
-                                   }
-                                 } );
+
+  buffs.templar.for_whom_the_bell_tolls = make_buff( this, "for_whom_the_bell_tolls", find_spell( 433618 ) );
+  buffs.templar.for_whom_the_bell_tolls->set_initial_stack( buffs.templar.for_whom_the_bell_tolls->max_stack() );
+
   buffs.templar.undisputed_ruling    = make_buff( this, "undisputed_ruling", find_spell( 432629 ) );
   // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
@@ -3166,6 +3173,16 @@ void paladin_t::create_buffs()
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
+                                ->set_expire_at_max_stack( true )
+                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                   if ( !new_ )
+                                   {//TODO: Implement logic to check for EoT/HoL availability, unlikely to come up in sims, but good to have parity
+                                     buffs.templar.hammer_of_light_ready->trigger();
+                                     buffs.templar.hammer_of_light_free->trigger();
+                                   }
+                                 } );
 }
 
 // paladin_t::default_potion ================================================

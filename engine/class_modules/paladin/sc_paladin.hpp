@@ -232,11 +232,12 @@ public:
     {
       buff_t* hammer_of_light_ready;
       buff_t* hammer_of_light_free;
-      buff_t* lights_deliverance;
+      buff_t* for_whom_the_bell_tolls;
       buff_t* shake_the_heavens;
-      buff_t* undisputed_ruling;
       buff_t* endless_wrath;
       buff_t* sanctification;
+      buff_t* undisputed_ruling;
+      buff_t* lights_deliverance;
     } templar;
 
   } buffs;
