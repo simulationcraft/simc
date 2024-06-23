@@ -88,6 +88,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.endless_wrath_icd           = get_cooldown( "endless_wrath_icd" );
   cooldowns.endless_wrath_icd->duration = find_spell( 432615 )->internal_cooldown();
 
+  cooldowns.hammerfall_icd           = get_cooldown( "hammerfall_icd" );
+  cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -2017,7 +2020,7 @@ struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_atta
     background             = true;
 
     auto hol = p->spells.templar.hammer_of_light;
-
+    is_hammer_of_light      = true;
     attack_power_mod.direct = hol->effectN( 1 ).ap_coeff();
     aoe = 5;
     base_aoe_multiplier     = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
@@ -2045,6 +2048,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
   {
     parse_options( options_str );
     is_hammer_of_light_driver   = true;
+    is_hammer_of_light          = true;
     direct_hammer               = new hammer_of_light_damage_t( p, options_str );
     direct_hammer->travel_delay = p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() / 1000.0;
     add_child( direct_hammer );
@@ -2581,10 +2585,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p()->buffs.lightsmith.blessing_of_the_forge->up() )
     {
       p()->active.forges_reckoning->execute_on_target( target );
-    }
-    if ( p()->talents.templar.hammerfall->ok() )
-    {
-      p()->trigger_empyrean_hammer( target, 1, 300_ms );
     }
   }
 

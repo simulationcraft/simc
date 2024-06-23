@@ -324,6 +324,7 @@ public:
     cooldown_t* eye_of_tyr;          // Light's Deliverance
     cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
+    cooldown_t* hammerfall_icd;
   } cooldowns;
 
   // Passives
@@ -1451,13 +1452,15 @@ public:
   bool is_sotr;
   bool doesnt_consume_dp;
   bool is_hammer_of_light_driver;
+  bool is_hammer_of_light;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
-      is_hammer_of_light_driver(false)
+      is_hammer_of_light( false ),
+      is_hammer_of_light_driver( false )
   {
   }
 
@@ -1500,6 +1503,16 @@ public:
     if ( ab::aoe == 0 && p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
     {
       p->buffs.rush_of_light->trigger();
+    }
+    if ( !is_hammer_of_light && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
+    {
+      int additionalTargets = 0;
+      if ( p->buffs.templar.shake_the_heavens->up() )
+        additionalTargets += p->talents.templar.hammerfall->effectN( 2 ).base_value();
+      p->trigger_empyrean_hammer( nullptr, 1 + additionalTargets,
+                                  timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
+                                  true );
+      p->cooldowns.hammerfall_icd->start();
     }
   }
 
