@@ -145,6 +145,31 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   add_invalidate( CACHE_CRIT_CHANCE );
   add_invalidate( CACHE_MASTERY );
 }
+
+struct shield_of_vengeance_buff_t : public absorb_buff_t
+{
+  shield_of_vengeance_buff_t( player_t* p )
+    : absorb_buff_t( p, "shield_of_vengeance",
+                     p->find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
+  {
+    cooldown->duration = 0_ms;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    auto* p = static_cast<paladin_t*>( player );
+    // do thing
+    if ( p->options.fake_sov )
+    {
+      // TODO(mserrano): This is a horrible hack
+      p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
+          current_value;
+      p->active.shield_of_vengeance_damage->execute();
+    }
+  }
+};
 }  // namespace buffs
 
 // end namespace buffs
@@ -809,6 +834,63 @@ struct retribution_aura_t : public paladin_aura_base_t
       background = true;
 
     aura_buff = p->buffs.retribution_aura;
+  }
+};
+
+// SoV
+
+struct shield_of_vengeance_proc_t : public paladin_spell_t
+{
+  shield_of_vengeance_proc_t( paladin_t* p ) : paladin_spell_t( "shield_of_vengeance_proc", p, p->find_spell( 184689 ) )
+  {
+    may_miss = may_dodge = may_parry = may_glance = false;
+    background                                    = true;
+    split_aoe_damage                              = true;
+  }
+
+  void init() override
+  {
+    paladin_spell_t::init();
+    snapshot_flags = 0;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+};
+
+struct shield_of_vengeance_t : public paladin_absorb_t
+{
+  shield_of_vengeance_t( paladin_t* p, util::string_view options_str )
+    : paladin_absorb_t( "shield_of_vengeance", p, p->talents.shield_of_vengeance )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+
+    // unbreakable spirit reduces cooldown
+    if ( p->talents.unbreakable_spirit->ok() )
+      cooldown->duration = data().cooldown() * ( 1 + p->talents.unbreakable_spirit->effectN( 1 ).percent() );
+  }
+
+  void init() override
+  {
+    paladin_absorb_t::init();
+    snapshot_flags |= ( STATE_CRIT | STATE_VERSATILITY );
+  }
+
+  void execute() override
+  {
+    double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+
+    if ( p()->talents.aegis_of_protection->ok() )
+      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
+
+    shield_amount *= 1.0 + p()->composite_heal_versatility();
+
+    paladin_absorb_t::execute();
+    p()->buffs.shield_of_vengeance->trigger( 1, shield_amount );
   }
 };
 
@@ -2817,6 +2899,7 @@ void paladin_t::create_actions()
     active.empyrean_hammer = new empyrean_hammer_t(this);
   }
 
+  active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
 
 
@@ -2918,6 +3001,8 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new rite_of_adjuration_t( this, options_str );
   if ( name == "rite_of_sanctification" )
     return new rite_of_sanctification_t( this, options_str );
+  if ( name == "shield_of_vengeance" )
+    return new shield_of_vengeance_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3104,6 +3189,7 @@ void paladin_t::create_buffs()
                                     ->set_default_value_from_effect( 1 )
                                     ->set_max_stack( 5 );  // Buff has no stacks, but can have up to 5 different values.
 
+  buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
   buffs.holy_avenger =
       make_buff( this, "holy_avenger", talents.holy_avenger )->set_cooldown( 0_ms );  // handled by the ability
   buffs.devotion_aura = make_buff( this, "devotion_aura", find_spell( 465 ) )
