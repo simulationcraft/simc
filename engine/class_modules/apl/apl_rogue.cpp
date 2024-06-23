@@ -243,7 +243,6 @@ void outlaw( player_t* p )
   finish->add_action( "between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.remains<4|talent.improved_between_the_eyes|talent.greenskins_wickers)&!buff.greenskins_wickers.up", "Finishers  Use Between the Eyes to keep the crit buff up, but on cooldown if Improved/Greenskins, and avoid overriding Greenskins" );
   finish->add_action( "between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&(raid_event.adds.remains>8|raid_event.adds.in<raid_event.adds.remains|!raid_event.adds.up)", "Crackshot builds use Between the Eyes outside of Stealth if we will not enter a Stealth window before the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
-  finish->add_action( "killing_spree,if=debuff.ghostly_strike.up|!talent.ghostly_strike" );
   finish->add_action( "cold_blood" );
   finish->add_action( "dispatch" );
 
