@@ -394,7 +394,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=aoe_burst,if=active_enemies>=2&buff.death_and_decay.up" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=2&!buff.death_and_decay.up" );
-  default_->add_action( "run_action_list,name=san_fishing,if=!buff.gift_of_the_sanlayn.up&cooldown.dark_transformation.remains>buff.essence_of_the_blood_queen.remains" );
+  default_->add_action( "run_action_list,name=san_fishing,if=talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up&cooldown.dark_transformation.remains>buff.essence_of_the_blood_queen.remains" );
   default_->add_action( "call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike" );
 
