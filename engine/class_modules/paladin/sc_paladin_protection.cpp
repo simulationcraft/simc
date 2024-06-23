@@ -386,6 +386,8 @@ struct blessed_hammer_t : public paladin_spell_t
     tick_may_crit = true;
 
     add_child( hammer );
+
+    triggers_higher_calling = true;
   }
 
   void execute() override
@@ -417,15 +419,6 @@ struct blessed_hammer_t : public paladin_spell_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
-    }
-
-    if ( p()->talents.templar.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.templar.shake_the_heavens->up() )
-      {
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-      }
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
@@ -545,7 +538,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     add_child( hotr_aoe );
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
-    cooldown->hasted  = true;
+    cooldown->hasted        = true;
+    triggers_higher_calling = true;
   }
 
   void execute() override
@@ -570,22 +564,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
       {
         p()->t29_4p_prot();
-      }
-      if ( p()->talents.templar.higher_calling->ok() )
-      {
-        auto extension = timespan_t::from_millis( p()->talents.templar.higher_calling->ok() );
-        if ( p()->buffs.templar.shake_the_heavens->up() )
-        {
-          p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-        }
-      }
-    }
-    if ( p()->talents.templar.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.templar.shake_the_heavens->up() )
-      {
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       }
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
@@ -673,15 +651,7 @@ struct judgment_prot_t : public judgment_t
       heartfire = new heartfire_t( p );
     }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
-  }
-
-  // background constructor for proc judgments
-  judgment_prot_t( paladin_t* p, util::string_view name ) :
-    judgment_t( p, name ),
-    judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-    sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
-  {
-    background = true;
+    triggers_higher_calling = true;
   }
 
   void execute() override

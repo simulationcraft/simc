@@ -322,6 +322,7 @@ public:
     cooldown_t* searing_light_icd;
 
     cooldown_t* eye_of_tyr;  // Light's Deliverance
+    cooldown_t* higher_calling_icd; // Needed for Crusading Strikes
   } cooldowns;
 
   // Passives
@@ -1004,13 +1005,16 @@ public:
   bool searing_light_disabled;
   bool clears_judgment;
 
+  bool triggers_higher_calling;
+
   paladin_action_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
       hasted_gcd( false ),
       searing_light_disabled( false ),
-      clears_judgment( false )
+      clears_judgment( false ),
+      triggers_higher_calling( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1154,6 +1158,15 @@ public:
         p()->active.searing_light->set_target( ab::execute_state->target );
         p()->active.searing_light->schedule_execute();
       }
+    }
+    if (triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() && p()->cooldowns.higher_calling_icd->up())
+    {
+      timespan_t extension = timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() );
+      // If Crusading Strikes is triggering, extension is only 500ms
+      if ( ab::id == 408385 )
+        extension = 500_ms;
+      p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
+      p()->cooldowns.higher_calling_icd->start();
     }
   }
 

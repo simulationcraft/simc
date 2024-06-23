@@ -346,6 +346,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
 
     affected_by.hand_of_light = true;
+    triggers_higher_calling   = true;
   }
 
   void execute() override
@@ -1148,6 +1149,7 @@ struct base_templar_strike_t : public paladin_melee_attack_t
       crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
+    triggers_higher_calling = true;
   }
 
   void impact( action_state_t *s ) override

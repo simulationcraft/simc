@@ -82,6 +82,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
   cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
 
+  cooldowns.higher_calling_icd           = get_cooldown( "higher_calling_icd" );
+  cooldowns.higher_calling_icd->duration = find_spell( 431687 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -1012,6 +1015,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
       crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
+    triggers_higher_calling = true;
   }
 
   void execute() override
@@ -1222,6 +1226,8 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       background = true;
     }
+
+    triggers_higher_calling = true;
   }
   void impact( action_state_t* s ) override
   {
@@ -1258,14 +1264,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
-    }
-    if ( p()->talents.templar.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.templar.shake_the_heavens->up() )
-      {
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-      }
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
@@ -1594,15 +1592,6 @@ void judgment_t::execute()
       {
         p()->buffs.sentinel_decay->extend_duration( p(), extension );
       }
-    }
-  }
-
-  if ( p()->talents.templar.higher_calling->ok() )
-  {
-    auto extension = 1000_ms;
-    if ( p()->buffs.templar.shake_the_heavens->up() )
-    {
-      p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
     }
   }
 
@@ -2419,6 +2408,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
       base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
     }
+    triggers_higher_calling = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2444,15 +2434,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       p()->buffs.templar.endless_wrath->expire();
     }
-    if ( p()->talents.templar.higher_calling->ok() )
-    {
-      auto extension = 1000_ms;
-      if ( p()->buffs.templar.shake_the_heavens->up() )
-      {
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-      }
-    }
-
   }
 
   void impact( action_state_t* s ) override
