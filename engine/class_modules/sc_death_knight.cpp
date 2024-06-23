@@ -4048,6 +4048,18 @@ struct trollbane_pet_t final : public horseman_pet_t
       dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
     }
+
+    bool ready() override
+    {
+      if ( dk()->bugs )
+      {
+        return dk()->target->type == ENEMY_ADD && cooldown->is_ready();
+      }
+      else
+      {
+        return horseman_spell_t::ready();
+      }
+    }
   };
 
   struct obliterate_trollbane_t final : public horseman_melee_t
@@ -5714,7 +5726,7 @@ struct melee_t : public death_knight_melee_attack_t
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
-      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->in_death_and_decay() )
+      if ( get_td( s->target )->dot.blood_plague->is_ticking() && !p()->active_dnd )
       {
         if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->trigger() )
         {
