@@ -3305,7 +3305,8 @@ void paladin_t::create_buffs()
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
-                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                     ->set_default_value_from_effect( 1 );
 
   buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
                                 ->set_expire_at_max_stack( true )
