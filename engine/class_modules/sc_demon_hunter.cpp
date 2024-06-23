@@ -5944,7 +5944,16 @@ struct reavers_glaive_t : public demon_hunter_attack_t
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
   {
-    apply_affecting_aura( p->talent.aldrachi_reaver.keen_engagement );
+    if ( p->talent.aldrachi_reaver.keen_engagement->ok() )
+    {
+      energize_type                    = action_energize::ON_CAST;
+      energize_resource                = data().effectN( 2 ).resource_gain_type();
+      energize_amount                  = p->talent.aldrachi_reaver.keen_engagement->effectN( 1 ).resource( energize_resource );
+    }
+    else
+    {
+      energize_type = action_energize::NONE;
+    }
   }
 
   void execute() override
