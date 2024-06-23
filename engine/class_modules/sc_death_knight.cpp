@@ -11576,6 +11576,11 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
   chance *= vampiric_strike_proc_attempts;
 
+  if ( chance >= 0.9 )
+  {
+    buffs.vampiric_strike->predict();
+  }
+
   if ( rng().roll( chance ) )
   {
     if ( buffs.vampiric_strike->check() )
@@ -13267,6 +13272,7 @@ void death_knight_t::create_buffs()
                                       {
                                         procs.vampiric_strike_waste->occur();
                                       }
+                                      buffs.vampiric_strike->predict();
                                       buffs.vampiric_strike->trigger();
                                     }
                                   } );
