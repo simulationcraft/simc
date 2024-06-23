@@ -5445,6 +5445,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         value_ = effect.percent();
         break;
 
+      case P_CAST_TIME:
+        base_execute_time *= 1 + effect.percent();
+        sim->print_debug( "{} cast time modified by {}% to {}", *this, effect.base_value(), base_execute_time );
+        value_ = effect.percent();
+        break;
+
       case P_GCD:
         trigger_gcd *= 1.0 + effect.percent();
         if ( trigger_gcd < timespan_t::zero() )
