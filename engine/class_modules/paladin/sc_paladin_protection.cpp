@@ -932,6 +932,11 @@ void paladin_t::target_mitigation( school_e school,
   {
     s->result_amount *= 1.0 + talents.crusaders_resolve->effectN( 1 ).percent() * td->debuff.crusaders_resolve->stack();
   }
+  
+  if (td->debuff.empyrean_hammer->up())
+  {
+    s->result_amount *= 1.0 + td->debuff.empyrean_hammer->data().effectN( 3 ).percent();
+  }
 
   // Divine Bulwark and consecration reduction
   if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )

@@ -2011,43 +2011,82 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
 
 // Empyrean Hammer
+struct empyrean_hammer_wd_t : public paladin_spell_t
+{
+  empyrean_hammer_wd_t( paladin_t* p ) : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
+  {
+    background = true;
+    may_crit   = false;
+    aoe        = -1;
+  }
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    paladin_spell_t::available_targets( tl );
+
+    // Does not hit the main target
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
 
 struct empyrean_hammer_t : public paladin_spell_t
 {
-    empyrean_hammer_t( paladin_t* p ) : paladin_spell_t( "empyrean_hammer", p, p->find_spell( 431398 ) )
+  empyrean_hammer_wd_t* wd;
+  empyrean_hammer_t( paladin_t* p ) : paladin_spell_t( "empyrean_hammer", p, p->spells.templar.empyrean_hammer ), wd(nullptr)
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+    if ( p->talents.templar.wrathful_descent->ok())
     {
-        background = proc = may_crit = true;
-        may_miss                     = false;
+      wd = new empyrean_hammer_wd_t( p );
+      add_child( wd );
     }
+  }
 
-    void execute() override
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p()->talents.templar.lights_deliverance->ok() )
     {
-        paladin_spell_t::execute();
-        if ( p()->talents.templar.lights_deliverance->ok() )
-        {
-            p()->buffs.templar.lights_deliverance->trigger();
-        }
-        if (p()->talents.templar.endless_wrath->ok())
-        {
-            if ( rng().roll( p()->talents.templar.endless_wrath->effectN( 1 ).percent() ) )
-            {
+      p()->buffs.templar.lights_deliverance->trigger();
+    }
+    if ( p()->talents.templar.endless_wrath->ok() )
+    {
+      if ( rng().roll( p()->talents.templar.endless_wrath->effectN( 1 ).percent() ) )
+      {
         p()->cooldowns.hammer_of_wrath->reset( true );
         p()->buffs.templar.endless_wrath->trigger();
-            }
-        }
-        p()->buffs.templar.sanctification->expire();
+      }
     }
+    p()->buffs.templar.sanctification->expire();
+  }
 
-    double action_multiplier() const override
+  double action_multiplier() const override
+  {
+    double am = paladin_spell_t::action_multiplier();
+    if ( p()->buffs.templar.sanctification->up() )
     {
-        double am = paladin_spell_t::action_multiplier();
-        if (p()->buffs.templar.sanctification->up())
-        {
-            am *= 1.0 + p()->buffs.templar.sanctification->stack_value();
-        }
-        return am;
+      am *= 1.0 + p()->buffs.templar.sanctification->stack_value();
     }
+    return am;
+  }
 
+  void impact(action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+    if ( p()->talents.templar.wrathful_descent->ok() && s->result == RESULT_CRIT && !wd->target_list().empty() )
+    {
+      wd->base_dd_min = wd->base_dd_max =
+          p()->talents.templar.wrathful_descent->effectN( 2 ).percent() * s->result_total;
+      wd->execute_on_target( target );
+      p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
+    }
+  }
 };
 
 void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay,
@@ -2687,6 +2726,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
+  debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
 
 
   buffs.holy_bulwark  = make_buff( *this, "holy_bulwark", paladin->find_spell( 432496 ) )->set_cooldown( 0_s );
@@ -3497,6 +3537,7 @@ void paladin_t::init_spells()
   spells.templar.hammer_of_light_driver = find_spell( 427453 );
   spells.templar.hammer_of_light        = find_spell( 429826 );
   spells.templar.empyrean_hammer        = find_spell( 431398 );
+  spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );

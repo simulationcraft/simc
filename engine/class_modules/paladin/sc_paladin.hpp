@@ -74,6 +74,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* eye_of_tyr;
     buff_t* crusaders_resolve;
     buff_t* heartfire;  // T30 2p Prot
+    buff_t* empyrean_hammer;
   } debuff;
 
   struct
@@ -405,6 +406,7 @@ public:
       const spell_data_t* hammer_of_light;
       const spell_data_t* hammer_of_light_driver;
       const spell_data_t* empyrean_hammer;
+      const spell_data_t* empyrean_hammer_wd; // Wrathful Descent triggered damage
     } templar;
   } spells;
 
