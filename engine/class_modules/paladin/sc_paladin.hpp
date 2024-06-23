@@ -321,8 +321,9 @@ public:
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
 
-    cooldown_t* eye_of_tyr;  // Light's Deliverance
-    cooldown_t* higher_calling_icd; // Needed for Crusading Strikes
+    cooldown_t* eye_of_tyr;          // Light's Deliverance
+    cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
+    cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
   } cooldowns;
 
   // Passives

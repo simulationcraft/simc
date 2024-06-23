@@ -85,6 +85,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.higher_calling_icd           = get_cooldown( "higher_calling_icd" );
   cooldowns.higher_calling_icd->duration = find_spell( 431687 )->internal_cooldown();
 
+  cooldowns.endless_wrath_icd           = get_cooldown( "endless_wrath_icd" );
+  cooldowns.endless_wrath_icd->duration = find_spell( 432615 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -2150,11 +2153,15 @@ struct empyrean_hammer_t : public paladin_spell_t
     }
     if ( p()->talents.templar.endless_wrath->ok() )
     {
-      if ( rng().roll( p()->talents.templar.endless_wrath->effectN( 1 ).percent() ) )
+      if ( p()->cooldowns.endless_wrath_icd->up() )
       {
-        p()->cooldowns.hammer_of_wrath->reset( true );
-        p()->buffs.templar.endless_wrath->trigger();
+        if ( p()->buffs.templar.endless_wrath->trigger() )
+          p()->cooldowns.hammer_of_wrath->reset( true );
+        // ICD starts regardless of whether HoW reset or not
+        p()->cooldowns.endless_wrath_icd->start();
       }
+      else if ( sim->debug )
+        sim->print_debug( "{} tries to trigger Endless Wrath (cooldown)", p()->name_str );
     }
     p()->buffs.templar.sanctification->expire();
   }
@@ -2429,11 +2436,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       p()->buffs.final_verdict->expire();
     }
-
-    if ( p()->buffs.templar.endless_wrath->up() )
-    {
-      p()->buffs.templar.endless_wrath->expire();
-    }
+    p()->buffs.templar.endless_wrath->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3299,7 +3302,8 @@ void paladin_t::create_buffs()
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                 }
   );
-  buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) );
+  buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
+                                    ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
