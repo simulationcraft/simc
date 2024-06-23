@@ -2521,6 +2521,52 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
   }
 };
 
+// Ruptured Viscera ========================================================
+template <typename T_PET>
+struct ruptured_viscera_t final : public pet_spell_t<T_PET>
+{
+  ruptured_viscera_t( T_PET* p, bool magus )
+    : pet_spell_t<T_PET>( p, "ruptured_viscera", p->dk()->pet_spell.ruptured_viscera ), magus( magus )
+  {
+    this->aoe        = -1;
+    this->background = true;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    pet_spell_t<T_PET>::available_targets( tl );
+    if ( this->magus )
+    {
+      for ( auto& t : tl )
+      {
+        // Give magus an incredibly low chance to hit any target with Ruptured Viscera
+        if ( this->rng().roll( 0.95 ) )
+        {
+          auto it = range::find( tl, t );
+          if ( it != tl.end() )
+          {
+            tl.erase( it );
+          }
+        }
+      }
+    }
+
+    return tl.size();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    pet_spell_t<T_PET>::impact( s );
+    if ( this->dk()->rng().roll( this->dk()->spell.ruptured_viscera_chance->effectN( 1 ).percent() ) )
+    {
+      this->dk()->trigger_festering_wound( s, 1, this->dk()->procs.fw_ruptured_viscera );
+    }
+  }
+
+private:
+  bool magus;
+};
+
 // ==========================================================================
 // Specialized Death Knight Pet Actions
 // ==========================================================================
@@ -2869,25 +2915,6 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  struct ruptured_viscera_t final : public pet_spell_t<army_ghoul_pet_t>
-  {
-    ruptured_viscera_t( army_ghoul_pet_t* p )
-      : pet_spell_t( p, "ruptured_viscera", p->dk()->pet_spell.ruptured_viscera )
-    {
-      aoe        = -1;
-      background = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      pet_spell_t::impact( s );
-      if ( dk()->rng().roll( dk()->spell.ruptured_viscera_chance->effectN( 1 ).percent() ) )
-      {
-        dk()->trigger_festering_wound( s, 1, dk()->procs.fw_ruptured_viscera );
-      }
-    }
-  };
-
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" )
     : base_ghoul_pet_t( owner, name, true )
   {
@@ -2923,7 +2950,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
-      ruptured_viscera = new ruptured_viscera_t( this );
+      ruptured_viscera = new ruptured_viscera_t( this, false );
     }
   }
 
@@ -3517,44 +3544,6 @@ struct magus_pet_t : public death_knight_pet_t
     }
   };
 
-  struct ruptured_viscera_magus_t final : public pet_spell_t<magus_pet_t>
-  {
-    ruptured_viscera_magus_t( magus_pet_t* p )
-      : pet_spell_t( p, "ruptured_viscera", p->dk()->pet_spell.ruptured_viscera )
-    {
-      aoe        = -1;
-      background = true;
-    }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      pet_spell_t::available_targets( tl );
-
-      for ( auto& t : tl )
-      {
-        // Give magus an incredibly low chance to hit any target with Ruptured Viscera
-        if ( rng().roll( 0.95 ) )
-        {
-          auto it = range::find( tl, t );
-          if ( it != tl.end() )
-          {
-            tl.erase( it );
-          }
-        }
-      }
-      return tl.size();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      pet_spell_t::impact( s );
-      if ( dk()->rng().roll( dk()->spell.ruptured_viscera_chance->effectN( 1 ).percent() ) )
-      {
-        dk()->trigger_festering_wound( s, 1, dk()->procs.fw_ruptured_viscera );
-      }
-    }
-  };
-
   struct frostbolt_magus_t final : public magus_spell_t
   {
     frostbolt_magus_t( magus_pet_t* p, util::string_view options_str )
@@ -3567,7 +3556,7 @@ struct magus_pet_t : public death_knight_pet_t
     void execute() override
     {
       // Magus of the Dead waits a little bit after executing Frost Bolt
-      trigger_gcd = execute_time() + rng().range( 100_ms, 200_ms );
+      trigger_gcd = execute_time() + rng().range( 0_ms, 410_ms );
       magus_spell_t::execute();
     }
 
@@ -3607,7 +3596,7 @@ struct magus_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_spells();
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
-      ruptured_viscera = new ruptured_viscera_magus_t( this );
+      ruptured_viscera = new ruptured_viscera_t( this, true );
     }
   }
 
