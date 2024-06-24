@@ -5527,68 +5527,84 @@ gift_of_the_ox_t::gift_of_the_ox_t( monk_t *player )
     heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->find_spell( 178173 ) ) ),
     accumulator( 0.0 )
 {
+  // we're just using buff tracking to provide stats.
+  // stack changes are all controlled by the events we create, so duration is set
+  // to be extra high
+  set_max_stack( 5 );
+  set_duration( 2 * buff_duration() );
+  set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  set_refresh_behavior( buff_refresh_behavior::NONE );
 }
 
-bool gift_of_the_ox_t::trigger( int count )
+void gift_of_the_ox_t::spawn_orb( int count )
 {
-  int overflow = std::max( count + check() - max_stack(), 0 );
-  player->sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={} ZXC",
-                            player->name(), count, check(), count, overflow, std::min( count + check(), max_stack() ) );
+  if ( is_fallback )
+    return;
+
+  int overflow = std::max( count + as<int>( queue.size() ) - max_stack(), 0 );
+  player->sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={}", player->name(),
+                            count, queue.size(), count, overflow,
+                            std::min( count + as<int>( queue.size() ), max_stack() ) );
 
   for ( ; count > 0; --count )
   {
-    if ( check() == max_stack() )
-    {
-      orb_event_t *next = queue.front();
-      // one of...
-      // next->execute();
-      // OR
+    monk_buff_t::trigger();
+    if ( queue.size() == as<unsigned long>( max_stack() ) )
       heal_trigger->execute();
-      event_t::cancel( next );
-      queue.pop();
-    }
-    queue.emplace( make_event<orb_event_t>( *player->sim, player, &queue, [ this ]() { heal_expire->execute(); } ) );
+    else
+      queue.emplace( make_event<orb_event_t>( *sim, player, &queue, [ this ]() {
+        player->sim->print_debug( "{} expiring 1 out of {} Gift of the Ox Orbs. current={} expire={}", player->name(),
+                                  queue.size(), queue.size(), 1 );
+        decrement();
+        heal_expire->execute();
+      } ) );
   }
-  return true;
+}
+
+void gift_of_the_ox_t::trigger_from_damage( double amount )
+{
+  if ( is_fallback )
+    return;
+
+  accumulator += amount;
+  if ( accumulator < player->max_health() )
+    return;
+
+  int added = accumulator / player->max_health();
+  accumulator -= added * player->max_health();
+  spawn_orb( added );
 }
 
 int gift_of_the_ox_t::consume( int count )
 {
-  int available = std::min( count, check() );
-  player->sim->print_debug(
-      "{} consuming {} out of {} Gift of the Ox Orbs. start={} quantity={} available={} end={} ZXC", player->name(),
-      available, check(), check(), count, available, check() - available );
+  if ( is_fallback )
+    return 0;
+
+  int available = std::min( count, as<int>( queue.size() ) );
+  player->sim->print_debug( "{} consuming {} out of {} Gift of the Ox Orbs. start={} quantity={} available={} end={}",
+                            player->name(), available, queue.size(), queue.size(), count, available,
+                            queue.size() - available );
   for ( int i = available; i > 0; --i )
   {
     heal_trigger->execute();
-    event_t::cancel( queue.front() );
-    queue.pop();
+    // if ( queue.front()->remains() > 50_ms )
+    //   orb_event_t::remove( queue );
+    decrement();
   }
   return available;
 }
 
 void gift_of_the_ox_t::reset()
 {
+  if ( is_fallback )
+    return;
+
+  monk_buff_t::reset();
   accumulator = 0.0;
   while ( up() )
   {
-    event_t::cancel( queue.front() );
-    queue.pop();
+    orb_event_t::remove( queue );
   }
-}
-
-bool gift_of_the_ox_t::trigger_from_damage( double amount )
-{
-  if ( !player->talent.brewmaster.gift_of_the_ox->ok() && !player->talent.brewmaster.spirit_of_the_ox->ok() )
-    return false;
-
-  accumulator += amount;
-  if ( accumulator < player->max_health() )
-    return false;
-
-  int added = accumulator / player->max_health();
-  accumulator -= added * player->max_health();
-  return gift_of_the_ox_t::trigger( added );
 }
 
 gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
@@ -5600,9 +5616,9 @@ gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spe
 double gift_of_the_ox_t::orb_t::action_multiplier() const
 {
   double am = monk_heal_t::action_multiplier();
-  // if ( p()->talent.monk.strength_of_spirit->ok() )
-  //   am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) * p()->talent.monk.strength_of_spirit->effectN( 1
-  //   ).percent();
+  if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
+    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) *
+                    p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
   return am;
 }
 
@@ -5638,6 +5654,12 @@ void gift_of_the_ox_t::orb_event_t::execute()
   assert( id == queue->front()->id );
   expire_cb();
   queue->pop();
+}
+
+void gift_of_the_ox_t::orb_event_t::remove( std::queue<orb_event_t *> &queue )
+{
+  event_t::cancel( queue.front() );
+  queue.pop();
 }
 
 // ==========================================================================
@@ -8393,7 +8415,7 @@ void monk_t::init_special_effects()
       if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
            state->action->id != player->baseline.brewmaster.blackout_kick->id() )
         return false;
-      // player->buff.gift_of_the_ox->trigger();
+      player->buff.gift_of_the_ox->spawn_orb( 1 );
       return true;
     } );
 

@@ -289,7 +289,6 @@ struct gift_of_the_ox_t : actions::monk_buff_t
     void impact( action_state_t *state ) override;
   };
 
-  struct orb_event_t;
   struct orb_event_t : event_t
   {
     std::queue<orb_event_t *> *queue;
@@ -297,6 +296,11 @@ struct gift_of_the_ox_t : actions::monk_buff_t
 
     orb_event_t( monk_t *player, std::queue<orb_event_t *> *queue, std::function<void()> expire_cb );
     void execute() override;
+    const char *name() const override
+    {
+      return "ox_orb_event_t";
+    }
+    static void remove( std::queue<orb_event_t *> &queue );
   };
 
   monk_t *player;
@@ -310,19 +314,10 @@ struct gift_of_the_ox_t : actions::monk_buff_t
   // 124503 also exists, but it just spawns an orb on the opposite side, so no
   // impact in simc
   gift_of_the_ox_t( monk_t *player );
-  bool trigger( int count );
-  bool trigger_from_damage( double amount );
+  void spawn_orb( int count );
+  void trigger_from_damage( double amount );
   int consume( int count );
   void reset();
-
-  int check() const
-  {
-    return queue.size();
-  }
-  bool up() const
-  {
-    return !queue.empty();
-  }
 };
 
 }  // namespace buffs
