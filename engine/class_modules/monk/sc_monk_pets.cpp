@@ -771,7 +771,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t *player )
       : sef_melee_attack_t( "rising_sun_kick_dmg", player,
-                            player->o()->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
+                            player->o()->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
 
@@ -797,7 +797,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.general.rising_sun_kick )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.monk.rising_sun_kick )
     {
       execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
@@ -1333,7 +1333,8 @@ public:
   {
     // TODO: Test Meridian Strikes
 
-    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer a bug.
+    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer
+    // a bug.
     if ( o()->talent.windwalker.xuens_bond->ok() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100

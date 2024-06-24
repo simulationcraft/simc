@@ -20,6 +20,7 @@
 
 #include <array>
 #include <memory>
+#include <queue>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
@@ -273,6 +274,49 @@ struct shuffle_t : actions::monk_buff_t
   shuffle_t( monk_t *monk );
   void trigger( timespan_t duration );
 };
+
+struct gift_of_the_ox_t : actions::monk_buff_t
+{
+  /*
+   * TODO:
+   *  - Check which spell id is triggered by expire and by trigger orb
+   */
+  struct orb_t : actions::monk_heal_t
+  {
+    orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
+
+    double action_multiplier() const override;
+    void impact( action_state_t *state ) override;
+  };
+
+  struct orb_event_t : event_t
+  {
+    std::queue<orb_event_t *> *queue;
+    std::function<void()> expire_cb;
+
+    orb_event_t( monk_t *player, timespan_t duration, std::queue<orb_event_t *> *queue,
+                 std::function<void()> expire_cb );
+    void execute() override;
+    const char *name() const override;
+  };
+
+  monk_t *player;
+  orb_t *heal_trigger;
+  orb_t *heal_expire;
+  std::queue<orb_event_t *> queue;
+  double accumulator;
+
+  // just using the first orb spawner.
+  // 124503 also exists, but it just spawns an orb on the opposite side, so no
+  // impact in simc
+  gift_of_the_ox_t( monk_t *player );
+  void spawn_orb( int count );
+  void trigger_from_damage( double amount );
+  int consume( int count );
+  void remove();
+  void reset();
+};
+
 }  // namespace buffs
 
 inline int sef_spell_index( int x )
@@ -403,8 +447,6 @@ public:
     propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
-    propagate_const<heal_t *> gift_of_the_ox_trigger;
-    propagate_const<heal_t *> gift_of_the_ox_expire;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
     propagate_const<action_t *> chi_surge;
@@ -438,8 +480,6 @@ public:
   double squirm_timer;
   double spiritual_focus_count;
   timespan_t shuffle_count_secs;
-
-  double gift_of_the_ox_proc_chance;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
@@ -555,7 +595,7 @@ public:
     propagate_const<buff_t *> elusive_brawler;
     propagate_const<buff_t *> exploding_keg;
     propagate_const<buff_t *> fortifying_brew;
-    propagate_const<buff_t *> gift_of_the_ox;
+    propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
     propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
@@ -721,7 +761,6 @@ public:
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
-      player_talent_t rising_sun_kick;
       // Row 2
       player_talent_t elusive_mists;
       player_talent_t tigers_lust;
@@ -814,6 +853,7 @@ public:
       player_talent_t martial_instincts;
       player_talent_t vigorous_expulsion;
       player_talent_t profound_rebuttal;
+      player_talent_t rising_sun_kick;
     } monk;
 
     // Brewmaster
@@ -828,6 +868,9 @@ public:
       player_talent_t staggering_strikes;
       player_talent_t gift_of_the_ox;
       player_talent_t spirit_of_the_ox;
+      const spell_data_t *gift_of_the_ox_buff;
+      const spell_data_t *gift_of_the_ox_heal_trigger;
+      const spell_data_t *gift_of_the_ox_heal_expire;
       player_talent_t quick_sip;
       // row 4
       player_talent_t hit_scheme;
@@ -1205,6 +1248,7 @@ public:
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
       const spell_data_t *expel_harm_rank_2;
+      const spell_data_t *blackout_kick;
 
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
@@ -1379,12 +1423,6 @@ public:
 
   } passives;
 
-  // RPPM objects
-  struct rppms_t
-  {
-    real_ppm_t *spirit_of_the_ox;
-  } rppm;
-
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
@@ -1448,7 +1486,6 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
-  void init_rng() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
@@ -1511,6 +1548,37 @@ public:
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
+
+template <class Buff>
+Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
+{
+  return static_cast<Buff *>(
+      buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
+}
+
+template <typename Buff, typename Player, typename... Args>
+Buff *make_buff_fallback( bool true_buff, Player &&player, std::string_view name, Args &&...args )
+{
+  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
+  static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+                     std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
+                 "Player must be derived from player_t or actor_pair_t" );
+
+  if ( true_buff )
+  {
+    if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
+      return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
+    else
+      return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
+  }
+  else
+  {
+    if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
+      return make_fallback<Buff>( player.target, name, player.source );
+    else
+      return make_fallback<Buff>( player, name, player );
+  }
+}
 
 struct sef_despawn_cb_t
 {
