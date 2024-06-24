@@ -525,12 +525,6 @@ using namespace helpers;
 
         return m;
       }
-
-      timespan_t composite_dot_duration( const action_state_t* s ) const override
-      {
-        // Model this like channel behavior - we can't actually set it as a channel without breaking things
-        return dot_duration * ( tick_time( s ) / base_tick_time );
-      }
     };
     
     drain_life_dot_t* aoe_dot;
@@ -1687,9 +1681,6 @@ using namespace helpers;
 
       update_flags &= ~STATE_HASTE;
     }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    { return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration; }
 
     void impact( action_state_t* s ) override
     {

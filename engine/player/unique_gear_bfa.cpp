@@ -2591,12 +2591,6 @@ void items::grongs_primal_rage( special_effect_t& effect )
                                                     effect.player->find_spell( 288269 ), true );
     }
 
-    // Even though ticks are hasted, the duration is a fixed 4s
-    timespan_t composite_dot_duration( const action_state_t* ) const override
-    {
-      return dot_duration;
-    }
-
     // Copied from draught of souls
     void execute() override
     {

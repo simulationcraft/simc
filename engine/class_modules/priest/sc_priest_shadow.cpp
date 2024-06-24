@@ -1428,12 +1428,6 @@ struct void_torrent_t final : public priest_spell_t
     energize_amount   = insanity_gain;
   }
 
-  // DoT duration is fixed at 3s
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration;
-  }
-
   bool usable_moving() const override
   {
     if ( priest().talents.voidweaver.dark_energy.enabled() )

@@ -359,9 +359,9 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     background(),
     use_off_gcd(),
     use_while_casting(),
-    usable_while_casting( false ),
+    usable_while_casting(),
     interrupt_auto_attack( true ),
-    reset_auto_attack( false ),
+    reset_auto_attack(),
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
@@ -370,7 +370,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     repeating(),
     harmful( true ),
     proc(),
-    is_interrupt( false ),
+    is_interrupt(),
     is_precombat(),
     initialized(),
     may_hit( true ),
@@ -382,7 +382,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     may_crit(),
     tick_may_crit(),
     tick_zero(),
-    tick_on_application( false ),
+    tick_on_application(),
     hasted_ticks(),
     consume_per_tick_(),
     rolling_periodic(),
@@ -414,6 +414,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_execute_time(),
     base_tick_time(),
     dot_duration(),
+    hasted_dot_duration(),
     dot_max_stack( 1 ),
     base_costs(),
     secondary_costs(),
@@ -465,7 +466,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     marker(),
     last_used(),
     option(),
-    interrupt_global( false ),
+    interrupt_global(),
     if_expr(),
     target_if_mode( TARGET_IF_NONE ),
     target_if_expr(),
@@ -624,6 +625,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application         = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  hasted_dot_duration         = spell_data.flags( spell_attribute::SX_DURATION_HASTED );
   rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
@@ -4053,7 +4055,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_MUL_PET )
-    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
+  {
+    state->pet_multiplier =
+      player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
+  }
 
   if ( flags & STATE_TGT_MUL_DA )
     state->target_da_multiplier = composite_target_da_multiplier( state->target );
@@ -4062,7 +4067,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_ta_multiplier = composite_target_ta_multiplier( state->target );
 
   if ( flags & STATE_TGT_MUL_PET )
-    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( state->target, player->type == PLAYER_GUARDIAN );
+  {
+    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier(
+      state->target, player->type == PLAYER_GUARDIAN );
+  }
 
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
@@ -4079,9 +4087,15 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
 
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
-  if ( channeled )
+  if ( hasted_dot_duration )
   {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
+    auto tt = tick_time( s );
+
+    // technically it's possible to have hasted dot duration without hasted ticks
+    if ( !hasted_ticks )
+      tt *= s->haste;
+
+    return dot_duration * ( tt / base_tick_time );
   }
 
   return dot_duration;

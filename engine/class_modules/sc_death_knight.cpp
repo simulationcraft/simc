@@ -6991,16 +6991,6 @@ struct blooddrinker_t final : public death_knight_spell_t
     }
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // blooddrinker has flag "Haste Affects Duration (273) which is not implemented for auto parsing
-    // But does affect the duration by haste.
-    timespan_t tt = tick_time( s );
-    auto full_duration = dot_duration;
-
-    return full_duration * ( tt / base_tick_time );
-  }
-
 private:
   propagate_const<action_t*> heal;
 };

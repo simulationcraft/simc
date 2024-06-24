@@ -1850,12 +1850,6 @@ struct felseeker_t : warlock_pet_spell_t
     channeled = true;
   }
 
-  // Pit Lord does a single channel for a fixed duration. The tick interval is hasted so that it still scales with haste.
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration ;
-  }
-
   void last_tick( dot_t* d ) override
   {
     warlock_pet_spell_t::last_tick( d );
