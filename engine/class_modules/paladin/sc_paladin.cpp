@@ -2220,9 +2220,10 @@ struct sacred_weapon_proc_t : public paladin_spell_t
 {
   sacred_weapon_proc_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon_proc", p, p->find_spell( 432616 ) )
   {
-    background = true;
-    callbacks  = false;
-    aoe        = -1;
+    background          = true;
+    callbacks           = false;
+    aoe                 = -1;
+    reduced_aoe_targets = 5;
   }
   void execute() override
   {
