@@ -1839,8 +1839,17 @@ struct entropic_rift_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().buffs.entropic_rift->extend_duration( player, 1_s );
-    priest().buffs.voidheart->extend_duration( player, 2_ms );
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().buffs.entropic_rift->extend_duration(
+          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
+    }
+
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->extend_duration(
+          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
+    }
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
 
