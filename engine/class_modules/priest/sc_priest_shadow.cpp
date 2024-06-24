@@ -1494,19 +1494,14 @@ struct void_torrent_t final : public priest_spell_t
 
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
-      if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
-      {
-        p().state.active_entropic_rift->current_pulse = 0;
-        sim->print_debug( "{} extends entropic rift by resetting ticks. New Current Pulse: {} ", p().name(),
-                          p().state.active_entropic_rift->current_pulse );
-      }
-
-      priest().buffs.entropic_rift->extend_duration( player, channeled_time );
+      priest().buffs.entropic_rift->extend_duration(
+          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
     }
 
     if ( priest().talents.voidweaver.voidheart.enabled() )
     {
-      priest().buffs.voidheart->extend_duration( player, channeled_time );
+      priest().buffs.voidheart->extend_duration(
+          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
     }
 
     priest_spell_t::last_tick( d );

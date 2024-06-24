@@ -3477,7 +3477,15 @@ void priest_t::create_buffs()
   if ( talents.voidweaver.entropic_rift.ok() )
   {
     buffs.entropic_rift->set_refresh_behavior( buff_refresh_behavior::DURATION )
+        ->set_tick_zero( false )
+        ->set_tick_on_application( false )
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
+        ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
+        ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned int tick ) {
+          if ( tick < 1 )
+            return 1_s;
+          return b->buff_period * cache.spell_cast_speed();
+        } )
         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
           background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
         } )
