@@ -5644,7 +5644,7 @@ void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
   double current = p()->buff.expel_harm_accumulator->check_value();
   double total   = current + state->result_amount;
   sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} total={}", p()->name(),
-                    state->result_total, current, total );
+                    state->result_total, current, state->result_total, total );
   p()->buff.expel_harm_accumulator->trigger( 1, total );
 }
 
@@ -6907,7 +6907,8 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::mistweaver
-  {}
+  {
+  }
 
   // monk_t::talent::windwalker
   {
@@ -6915,8 +6916,10 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::conduit_of_the_celestials
-  {}  // monk_t::talent::master_of_harmony
-  {}  // monk_t::talent::shado-pan
+  {
+  }  // monk_t::talent::master_of_harmony
+  {
+  }  // monk_t::talent::shado-pan
   {
   }
 
