@@ -2133,6 +2133,12 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
 
     return tl.size();
   }
+  void impact(action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+    if ( s->result == RESULT_HIT )
+      p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
+  }
 };
 
 struct empyrean_hammer_t : public paladin_spell_t
