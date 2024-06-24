@@ -294,13 +294,10 @@ struct gift_of_the_ox_t : actions::monk_buff_t
     std::queue<orb_event_t *> *queue;
     std::function<void()> expire_cb;
 
-    orb_event_t( monk_t *player, std::queue<orb_event_t *> *queue, std::function<void()> expire_cb );
+    orb_event_t( monk_t *player, timespan_t duration, std::queue<orb_event_t *> *queue,
+                 std::function<void()> expire_cb );
     void execute() override;
-    const char *name() const override
-    {
-      return "ox_orb_event_t";
-    }
-    static void remove( std::queue<orb_event_t *> &queue );
+    const char *name() const override;
   };
 
   monk_t *player;
@@ -308,7 +305,6 @@ struct gift_of_the_ox_t : actions::monk_buff_t
   orb_t *heal_expire;
   std::queue<orb_event_t *> queue;
   double accumulator;
-  int _max_stack;
 
   // just using the first orb spawner.
   // 124503 also exists, but it just spawns an orb on the opposite side, so no
@@ -317,6 +313,7 @@ struct gift_of_the_ox_t : actions::monk_buff_t
   void spawn_orb( int count );
   void trigger_from_damage( double amount );
   int consume( int count );
+  void remove();
   void reset();
 };
 
@@ -871,6 +868,9 @@ public:
       player_talent_t staggering_strikes;
       player_talent_t gift_of_the_ox;
       player_talent_t spirit_of_the_ox;
+      const spell_data_t *gift_of_the_ox_buff;
+      const spell_data_t *gift_of_the_ox_heal_trigger;
+      const spell_data_t *gift_of_the_ox_heal_expire;
       player_talent_t quick_sip;
       // row 4
       player_talent_t hit_scheme;

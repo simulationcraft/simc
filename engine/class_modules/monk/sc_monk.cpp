@@ -5521,10 +5521,11 @@ using namespace actions;
 // Gift of the Ox
 // ==========================================================================
 gift_of_the_ox_t::gift_of_the_ox_t( monk_t *player )
-  : monk_buff_t( player, "gift_of_the_ox", player->find_spell( 124506 ) ),
+  : monk_buff_t( player, "gift_of_the_ox", player->talent.brewmaster.gift_of_the_ox_buff ),
     player( player ),
-    heal_trigger( new orb_t( player, "gift_of_the_ox_trigger", player->find_spell( 124507 ) ) ),
-    heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->find_spell( 178173 ) ) ),
+    heal_trigger(
+        new orb_t( player, "gift_of_the_ox_trigger", player->talent.brewmaster.gift_of_the_ox_heal_trigger ) ),
+    heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->talent.brewmaster.gift_of_the_ox_heal_expire ) ),
     accumulator( 0.0 )
 {
   // we're just using buff tracking to provide stats.
@@ -5549,10 +5550,10 @@ void gift_of_the_ox_t::spawn_orb( int count )
   for ( ; count > 0; --count )
   {
     monk_buff_t::trigger();
-    if ( queue.size() == as<unsigned long>( max_stack() ) )
+    if ( as<int>( queue.size() ) == max_stack() )
       heal_trigger->execute();
     else
-      queue.emplace( make_event<orb_event_t>( *sim, player, &queue, [ this ]() {
+      queue.emplace( make_event<orb_event_t>( *sim, player, data().duration(), &queue, [ this ]() {
         player->sim->print_debug( "{} expiring 1 out of {} Gift of the Ox Orbs. current={} expire={}", player->name(),
                                   queue.size(), queue.size(), 1 );
         decrement();
@@ -5587,11 +5588,15 @@ int gift_of_the_ox_t::consume( int count )
   for ( int i = available; i > 0; --i )
   {
     heal_trigger->execute();
-    // if ( queue.front()->remains() > 50_ms )
-    //   orb_event_t::remove( queue );
-    decrement();
+    remove();
   }
   return available;
+}
+
+void gift_of_the_ox_t::remove()
+{
+  event_t::cancel( queue.front() );
+  queue.pop();
 }
 
 void gift_of_the_ox_t::reset()
@@ -5601,9 +5606,9 @@ void gift_of_the_ox_t::reset()
 
   monk_buff_t::reset();
   accumulator = 0.0;
-  while ( up() )
+  while ( !queue.empty() )
   {
-    orb_event_t::remove( queue );
+    remove();
   }
 }
 
@@ -5637,15 +5642,15 @@ void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
     return;
 
   double current = p()->buff.expel_harm_accumulator->check_value();
-  double new_    = current + state->result_amount;
-  // sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} new={}", p()->name(),
-  //                   state->result_total, current, new_ );
-  p()->buff.expel_harm_accumulator->trigger( 1, new_ );
+  double total   = current + state->result_amount;
+  sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} total={}", p()->name(),
+                    state->result_total, current, total );
+  p()->buff.expel_harm_accumulator->trigger( 1, total );
 }
 
-gift_of_the_ox_t::orb_event_t::orb_event_t( monk_t *player, std::queue<orb_event_t *> *queue,
+gift_of_the_ox_t::orb_event_t::orb_event_t( monk_t *player, timespan_t duration, std::queue<orb_event_t *> *queue,
                                             std::function<void()> expire_cb )
-  : event_t( *player, player->find_spell( 124506 )->duration() ), queue( queue ), expire_cb( std::move( expire_cb ) )
+  : event_t( *player, duration ), queue( queue ), expire_cb( std::move( expire_cb ) )
 {
 }
 
@@ -5656,10 +5661,9 @@ void gift_of_the_ox_t::orb_event_t::execute()
   queue->pop();
 }
 
-void gift_of_the_ox_t::orb_event_t::remove( std::queue<orb_event_t *> &queue )
+const char *gift_of_the_ox_t::orb_event_t::name() const
 {
-  event_t::cancel( queue.front() );
-  queue.pop();
+  return "orb_event_t";
 }
 
 // ==========================================================================
@@ -6194,23 +6198,6 @@ struct blackout_reinforcement_t : public monk_buff_t
   }
 };
 
-// ===============================================================================
-// Expel Harm Helper
-// ===============================================================================
-
-struct expel_harm_accumulator_t : public monk_buff_t
-{
-  expel_harm_accumulator_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_trigger_spell( p->talent.brewmaster.gift_of_the_ox );
-    set_can_cancel( true );
-    set_quiet( true );
-    set_cooldown( timespan_t::zero() );
-    set_duration( timespan_t::from_millis( 1 ) );
-    set_max_stack( 1 );
-    set_default_value( 0.0 );
-  }
-};
 }  // namespace buffs
 
 namespace items
@@ -6869,6 +6856,9 @@ void monk_t::init_spells()
     talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
     talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
     talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox" );
+    talent.brewmaster.gift_of_the_ox_buff                 = find_spell( 124506 );
+    talent.brewmaster.gift_of_the_ox_heal_trigger         = find_spell( 124507 );
+    talent.brewmaster.gift_of_the_ox_heal_expire          = find_spell( 178173 );
     talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
     talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
     talent.brewmaster.elixir_of_determination             = _ST( "Elixir of Determination" );
@@ -7731,12 +7721,18 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  // buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>( talent.brewmaster.gift_of_the_ox->ok() ||
-  // talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
-  buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
+  buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>(
+      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
 
   buff.expel_harm_accumulator =
-      new buffs::expel_harm_accumulator_t( this, "expel_harm_accumulator", spell_data_t::nil() );
+      make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
+                          "expel_harm_accumulator" )
+          ->set_can_cancel( true )
+          ->set_quiet( true )
+          ->set_cooldown( 0_ms )
+          ->set_duration( 1_ms )
+          ->set_max_stack( 1 )
+          ->set_default_value( 0.0 );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
                            ->set_default_value_from_effect( 2 )
