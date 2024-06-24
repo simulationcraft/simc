@@ -3413,7 +3413,7 @@ void priest_t::init_spells()
   talents.voidweaver.devour_matter          = HT( "Devour Matter" );  // NYI
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
-  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 ); // Entry id for Darkening Horizon
+  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 );  // Entry id for Darkening Horizon
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
@@ -4111,7 +4111,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );

@@ -1570,8 +1570,7 @@ struct psychic_link_t final : public priest_spell_t
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
       _pl_shadow_word_death(
           new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow.psychic_link ) ),
-      _pl_void_blast(
-          new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) )
+      _pl_void_blast( new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
