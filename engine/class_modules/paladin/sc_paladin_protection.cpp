@@ -617,7 +617,10 @@ struct eye_of_tyr_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    p()->buffs.templar.hammer_of_light_ready->trigger();
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
 
     if (p()->talents.templar.sacrosanct_crusade->ok())
     {
