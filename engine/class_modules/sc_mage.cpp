@@ -4295,14 +4295,14 @@ struct glacial_spike_t final : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  timespan_t execute_time_flat_modifier() const override
+  timespan_t execute_time() const override
   {
-    timespan_t add = frost_mage_spell_t::execute_time_flat_modifier();
+    timespan_t t = frost_mage_spell_t::execute_time();
 
     // If the Mage just gained the final Icicle, add a small delay to approximate the lack of spell queueing.
-    add += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
+    t += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
 
-    return add;
+    return t;
   }
 
   double action_multiplier() const override
