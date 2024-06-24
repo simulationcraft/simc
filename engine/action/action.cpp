@@ -1138,6 +1138,31 @@ double action_t::cost_per_tick( resource_e r ) const
   return base_costs_per_tick[ r ];
 }
 
+// action_t::execute_time ===================================================
+
+timespan_t action_t::execute_time() const
+{
+  auto base = base_execute_time.base;
+
+  auto mul = base_execute_time.pct_mul * execute_time_pct_multiplier();
+  if ( mul <= 0 )
+    return 0_ms;
+
+  auto add = base_execute_time.flat_add + execute_time_flat_modifier();
+
+  return ( base + add ) * mul;
+}
+
+timespan_t action_t::execute_time_flat_modifier() const
+{
+  return 0_ms;
+}
+
+double action_t::execute_time_pct_multiplier() const
+{
+  return 1.0;
+}
+
 // action_t::gcd ============================================================
 
 timespan_t action_t::gcd() const
@@ -2246,7 +2271,7 @@ bool action_t::usable_precombat() const
   if ( !harmful )
     return true;
 
-  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time() > timespan_t::zero() )
     return true;
 
   return false;

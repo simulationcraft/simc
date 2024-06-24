@@ -7291,7 +7291,7 @@ void evoker_t::init_finished()
         if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
-          time_spent += std::max( a->base_execute_time, a->trigger_gcd );
+          time_spent += std::max( a->base_execute_time(), a->trigger_gcd );
         }
       } );
 

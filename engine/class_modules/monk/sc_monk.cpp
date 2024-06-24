@@ -4844,13 +4844,13 @@ struct enveloping_mist_t : public monk_heal_t
     mastery = new gust_of_mists_t( p );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t et = monk_heal_t::execute_time();
+    auto mul = monk_heal_t::execute_time_pct_multiplier();
 
-    et *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
+    mul *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
 
-    return et;
+    return mul;
   }
 
   void execute() override

@@ -51,6 +51,50 @@ namespace report {
 
 // Action ===================================================================
 
+// Container to hold base value and all permanent/passive modifiers for values that are automatically parsed from spell
+// data. We need to hold these separate because flat modifiers, including those from dynamic sources, are calculated
+// before percent multipliers. The final value should be properly reconstituted in the relevant method. Also includes
+// operator overloads for ease of use/compatibility with operations to type previously used to store the value.
+
+template <typename T>
+struct parsed_value_t
+{
+  T base;
+  T flat_add;
+  double pct_mul;
+
+  parsed_value_t( T value = T() ) : base( value ), flat_add(), pct_mul( 1.0 ) {}
+
+  T value() const
+  { return ( base + flat_add ) * pct_mul; }
+
+  operator T() const
+  { return value(); }
+
+  T operator()() const
+  { return value(); }
+
+  parsed_value_t& operator=( T v )
+  { base = v; flat_add = T(); pct_mul = 1.0; return *this; }
+
+  parsed_value_t& operator+=( T v )
+  { flat_add += v; return *this; }
+
+  parsed_value_t& operator-=( T v )
+  { flat_add -= v; return *this; }
+
+  template <typename U>
+  parsed_value_t& operator*=( U v )
+  { pct_mul *= v; return *this; }
+
+  template <typename U>
+  parsed_value_t& operator/=( U v )
+  { pct_mul /= v; return *this; }
+
+  friend void sc_format_to( const parsed_value_t<T>& v, fmt::format_context::iterator out )
+  { fmt::format_to( out, "{}", v.value() ); }
+};
+
 struct action_t : private noncopyable
 {
 public:
@@ -320,7 +364,7 @@ public:
   double amount_delta;
 
   /// Amount of time the ability uses to execute before modifiers.
-  timespan_t base_execute_time;
+  parsed_value_t<timespan_t> base_execute_time;
 
   /// Amount of time the ability uses between ticks.
   timespan_t base_tick_time;
@@ -334,53 +378,8 @@ public:
   /// Maximum number of DoT stacks.
   int dot_max_stack;
 
-  /// Container to hold base cost and all permanent/passive modifiers. We need to hold these separate because flat
-  /// modifiers, including those from dynamic sources, are calculated before percent multipliers. The final cost is
-  /// properly reconstituted in action_t::cost(). Also includes operator overloads for ease of use/compatibility with
-  /// operations to double type previously used to store base cost.
-  struct base_cost_t
-  {
-    double base = 0.0;
-    double flat_add = 0.0;
-    double pct_mul = 1.0;
-
-    base_cost_t() = default;
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t( T c ) : base( c ) {}
-
-    double cost() const
-    { return ( base + flat_add ) * pct_mul; }
-
-    operator double() const
-    { return cost(); }
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t& operator=( T c )
-    { base = c; flat_add = 0.0; pct_mul = 1.0; return *this; }
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t& operator+=( T flat )
-    { flat_add += flat; return *this; }
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t& operator-=( T flat )
-    { flat_add -= flat; return *this; }
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t& operator*=( T pct )
-    { pct_mul *= pct; return *this; }
-
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-    base_cost_t& operator/=( T pct )
-    { pct_mul /= pct; return *this; }
-
-    friend void sc_format_to( const base_cost_t& c, fmt::format_context::iterator out )
-    { fmt::format_to( out, "{}", c.cost() ); }
-  };
-
   /// Cost of using the ability.
-  std::array<base_cost_t, RESOURCE_MAX> base_costs;
+  std::array<parsed_value_t<double>, RESOURCE_MAX> base_costs;
   
   /// Maximum amount of additional resource that can be expended.
   std::array<double, RESOURCE_MAX> secondary_costs;
@@ -769,8 +768,11 @@ public:
 
   virtual double false_negative_pct() const;
 
-  virtual timespan_t execute_time() const
-  { return base_execute_time; }
+  virtual timespan_t execute_time() const;
+
+  virtual timespan_t execute_time_flat_modifier() const;
+
+  virtual double execute_time_pct_multiplier() const;
 
   virtual timespan_t tick_time( const action_state_t* state ) const;
 

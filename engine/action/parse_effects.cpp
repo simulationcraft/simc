@@ -1332,6 +1332,8 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 
     switch ( eff.misc_value1() )
     {
+      case P_CAST_TIME:     val_mul = 1.0;
+                            str = "cast time";   return &flat_execute_time_effects;
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
       case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
@@ -1534,7 +1536,9 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
     print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
-    print_parsed_type( os, &VEC::execute_time_effects, "Execute Time" );
+    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time",
+                       []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); } );
+    print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
     print_parsed_type( os, &VEC::dot_duration_effects, "Dot Duration" );
     print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
@@ -1556,6 +1560,7 @@ size_t parse_action_base_t::total_effects_count()
   return ta_multiplier_effects.size() +
          da_multiplier_effects.size() +
          execute_time_effects.size() +
+         flat_execute_time_effects.size() +
          gcd_effects.size() +
          dot_duration_effects.size() +
          tick_time_effects.size() +
@@ -1605,6 +1610,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( ta_multiplier_effects );
   initialize_buff_list_on_vector( da_multiplier_effects );
   initialize_buff_list_on_vector( execute_time_effects );
+  initialize_buff_list_on_vector( flat_execute_time_effects );
   initialize_buff_list_on_vector( gcd_effects );
   initialize_buff_list_on_vector( dot_duration_effects );
   initialize_buff_list_on_vector( tick_time_effects );

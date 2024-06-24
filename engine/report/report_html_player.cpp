@@ -1035,7 +1035,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->cooldown->hasted ? "true" : "false",
                  a->cooldown->charges,
                  a->base_recharge_multiplier,
-                 a->base_execute_time.total_seconds(),
+                 a->base_execute_time().total_seconds(),
                  a->base_crit,
                  a->target ? util::encode_html( a->target->name() ).c_str() : "",
                  a->aoe );

@@ -934,16 +934,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest().refresh_insidious_ire_buff( s );
   }
 
-  timespan_t execute_time() const override
-  {
-    if ( priest().buffs.unfurling_darkness->check() )
-    {
-      return 0_ms;
-    }
-
-    return priest_spell_t::execute_time();
-  }
-
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );

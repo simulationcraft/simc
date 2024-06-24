@@ -2868,16 +2868,16 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return c;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
-      return 0_ms;
+      return 0;
 
-    timespan_t t = arcane_mage_spell_t::execute_time();
+    double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
+    mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
-    return t;
+    return mul;
   }
 };
 
@@ -3687,14 +3687,14 @@ struct fireball_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = fire_mage_spell_t::execute_time();
+    double mul = fire_mage_spell_t::execute_time_pct_multiplier();
 
     if ( !p()->buffs.flame_accelerant_icd->check() )
-      t *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
+      mul *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
 
-    return t;
+    return mul;
   }
 
   double action_multiplier() const override
@@ -4030,13 +4030,13 @@ struct frostbolt_t final : public frost_mage_spell_t
     return std::max( t, min_gcd );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = frost_mage_spell_t::execute_time();
+    double mul = frost_mage_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
+    mul *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
-    return t;
+    return mul;
   }
 
   double action_multiplier() const override
@@ -4295,14 +4295,14 @@ struct glacial_spike_t final : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  timespan_t execute_time() const override
+  timespan_t execute_time_flat_modifier() const override
   {
-    timespan_t t = frost_mage_spell_t::execute_time();
+    timespan_t add = frost_mage_spell_t::execute_time_flat_modifier();
 
     // If the Mage just gained the final Icicle, add a small delay to approximate the lack of spell queueing.
-    t += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
+    add += std::max( p()->state.gained_full_icicles + p()->options.glacial_spike_delay - sim->current_time(), 0_ms );
 
-    return t;
+    return add;
   }
 
   double action_multiplier() const override

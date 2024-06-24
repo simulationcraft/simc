@@ -3158,7 +3158,7 @@ void algethar_puzzle_box( special_effect_t& effect )
           if ( a->action_ready() )
           {
             timespan_t delta =
-              std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+              std::max( std::max( a->base_execute_time(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
             sim->print_debug( "PRECOMBAT: Algethar Puzzle Box precast timing pushed by {} for {}", delta,
               a->name() );
             time += delta;

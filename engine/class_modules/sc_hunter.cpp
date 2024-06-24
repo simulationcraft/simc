@@ -4406,12 +4406,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> actions.arctic_bola -> execute_on_target( target );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
     if ( p() -> buffs.lock_and_load -> check() )
-      return 0_ms;
+      return 0;
 
-    auto et = hunter_ranged_attack_t::execute_time();
+    auto et = hunter_ranged_attack_t::execute_time_pct_multiplier();
 
     if ( p() -> buffs.streamline -> check() )
       et *= 1 + p() -> buffs.streamline -> check_value();

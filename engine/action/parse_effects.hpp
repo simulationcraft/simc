@@ -723,6 +723,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> ta_multiplier_effects;
   std::vector<player_effect_t> da_multiplier_effects;
   std::vector<player_effect_t> execute_time_effects;
+  std::vector<player_effect_t> flat_execute_time_effects;
   std::vector<player_effect_t> gcd_effects;
   std::vector<player_effect_t> dot_duration_effects;
   std::vector<player_effect_t> tick_time_effects;
@@ -899,14 +900,25 @@ public:
     return cd;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    auto et = BASE::execute_time();
+    auto mul = BASE::execute_time_pct_multiplier();
 
     for ( const auto& i : execute_time_effects )
-      et *= 1.0 + get_effect_value( i, true );
+      mul *= 1.0 + get_effect_value( i, true );
 
-    return std::max( 0_ms, et );
+    return mul;
+  }
+
+  timespan_t execute_time_flat_modifier() const override
+  {
+    auto base = BASE::execute_time_flat_modifier();
+    double add = 0.0;
+
+    for ( const auto& i : flat_execute_time_effects )
+      add += get_effect_value( i, true );
+
+    return base + timespan_t::from_millis( add );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
