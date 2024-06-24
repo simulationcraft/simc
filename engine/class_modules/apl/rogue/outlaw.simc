@@ -82,7 +82,7 @@ actions.cds+=/use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_
 actions.cds+=/killing_spree,if=variable.finish_condition&!stealthed.all
 # Crackshot builds use stealth cooldowns if Between the Eyes is ready
 actions.cds+=/call_action_list,name=stealth_cds,if=!stealthed.all&(!talent.crackshot|cooldown.between_the_eyes.ready)
-actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=100|fight_remains<charges*6)
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=150|fight_remains<charges*6)
 # Use Blade Rush at minimal energy outside of stealth
 actions.cds+=/blade_rush,if=energy.base_time_to_max>4&!stealthed.all
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up
