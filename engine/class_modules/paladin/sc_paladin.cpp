@@ -2011,18 +2011,18 @@ struct divine_guidance_heal_t : public paladin_heal_t
 
 // Hammer of Light // Light's Guidance =====================================================
 
-struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_attack_t>
+struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
   {
     parse_options( options_str );
-    background             = true;
+    background = true;
 
-    auto hol = p->spells.templar.hammer_of_light;
+    auto hol                = p->spells.templar.hammer_of_light;
     is_hammer_of_light      = true;
     attack_power_mod.direct = hol->effectN( 1 ).ap_coeff();
-    aoe = 5;
+    aoe                     = 5;
     base_aoe_multiplier     = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
   }
   void execute() override
@@ -2035,6 +2035,21 @@ struct hammer_of_light_damage_t :public holy_power_consumer_t<paladin_melee_atta
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
       p()->buffs.templar.shake_the_heavens->execute();
+    }
+  }
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->talents.templar.undisputed_ruling->ok() )
+    {
+      if ( p()->talents.greater_judgment->ok() )
+      {
+        td( s->target )->debuff.judgment->trigger();
+      }
+      if ( s->chain_target < 2 )
+      {
+        p()->buffs.templar.undisputed_ruling->execute();
+      }
     }
   }
 };
@@ -2085,29 +2100,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p()->buffs.templar.hammer_of_light_ready->expire();
       p()->buffs.templar.hammer_of_light_free->expire();
     }
-    if ( p()->talents.templar.undisputed_ruling->ok() )
-    {
-      p()->buffs.templar.undisputed_ruling->trigger();
-    }
     if (p()->talents.templar.zealous_vindication->ok())
     {
       p()->trigger_empyrean_hammer( target, 2, 0_ms );
     }
    }
-
-   void impact( action_state_t* s ) override
-   {
-   holy_power_consumer_t::impact( s );
-    if ( p()->talents.templar.undisputed_ruling->ok() )
-    {
-      if ( p()->talents.greater_judgment->ok() )
-      {
-        td( s->target )->debuff.judgment->trigger();
-      }
-    }
-   }
-
-
 };
 
 
@@ -3301,7 +3298,9 @@ void paladin_t::create_buffs()
   buffs.templar.for_whom_the_bell_tolls = make_buff( this, "for_whom_the_bell_tolls", find_spell( 433618 ) );
   buffs.templar.for_whom_the_bell_tolls->set_initial_stack( buffs.templar.for_whom_the_bell_tolls->max_stack() );
 
-  buffs.templar.undisputed_ruling    = make_buff( this, "undisputed_ruling", find_spell( 432629 ) );
+  buffs.templar.undisputed_ruling = make_buff( this, "undisputed_ruling", find_spell( 432629 ) )
+                                        ->set_default_value_from_effect( 1 )
+                                        ->add_invalidate( CACHE_HASTE );
   // Trigger first effect 2s after buff initially gets applied, then every 2 seconds after, unsure if it has a partial tick after it expires with extensions
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -3938,6 +3937,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
 
+  if ( buffs.templar.undisputed_ruling->up() )
+    h /= 1.0 + buffs.templar.undisputed_ruling->value();
+
   return h;
 }
 
@@ -3970,6 +3972,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
+
+  if ( buffs.templar.undisputed_ruling->up() )
+    h /= 1.0 + buffs.templar.undisputed_ruling->value();
 
   return h;
 }
