@@ -911,11 +911,6 @@ void paladin_t::target_mitigation( school_e school,
   {
     s->result_amount *= 1.0 + td->debuff.eye_of_tyr->value();
   }
-
-  if (td->debuff.crusaders_resolve->up())
-  {
-    s->result_amount *= 1.0 + talents.crusaders_resolve->effectN( 1 ).percent() * td->debuff.crusaders_resolve->stack();
-  }
   
   if (td->debuff.empyrean_hammer->up())
   {
