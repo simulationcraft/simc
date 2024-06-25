@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1013,7 +1013,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Volcanic Surge (408572 effect#1), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Volcanic Surge (408572 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 96
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1035,7 +1035,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 17 (max 49)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 63, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2962,7 +2962,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Chains of Devastation (336736 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Unrelenting Calamity (382685 effect#1), Fire and Ice (382886 effect#1), Stormkeeper (383009 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 34, 39, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3055,7 +3055,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 16
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Molten Weapon (224125 effects: #1, #2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1), Surge of Power (395457 effect#1), Volcanic Surge (408572 effect#1), Volcanic Strength (409833 effects: #1, #2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 101, 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3271,7 +3271,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (12 seconds cooldown)
 Category         : 2077: Elemental Shaman (137040 effect#8), Elemental Blast (394152 effect#2)
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Maelstrom Weapon (187881 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 56, 98, 103, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3416,7 +3416,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 24, 39, 79, 103, 108, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4648,7 +4648,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 0, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4757,7 +4757,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #24), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25, #26, #27), Enhancement Shaman (137041 effects: #1, #2, #5, #24), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 1, 39, 56, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7098,7 +7098,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Tempest (454021 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Stormcaller (454021 effects: #1, #2)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7120,7 +7120,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Tempest (454021 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#16), Elemental Shaman (137040 effects: #12, #22), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Stormkeeper (205495 effects: #1, #3), Wind Gust (263806 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Electrified Shocks (382089 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2), Thorim's Invocation (384444 effect#2), Maelstrom of Elements (394677 effects: #1, #3), Volcanic Surge (408572 effect#1), Volcanic Surge (408575 effect#1), Ancestral Swiftness (443454 effects: #2, #3), Tempest (454015 effect#1), Stormcaller (454021 effects: #1, #2)
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12281,7 +12281,7 @@ Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Tempest (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effect#1), Electrified Shocks (382089 effect#1), Fire and Ice (382886 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
 Family Flags     : 39, 79, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15435,7 +15435,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1014462)  : Apply Aura (6) | Auto Attack Speed (Normalized wDPS) (9)
+#1 (id=1014462)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc382888
 Tooltip          : Attack speed increased by $w1%.
@@ -19007,12 +19007,13 @@ School           : Nature
 Spell Type       : None
 Resource         : 0.4% Base Mana (0) (id=306931) w/ Enhancement Shaman (id=137041)
 Resource         : 8.64% Base Mana (0) (id=306932) w/ Restoration Shaman (id=137039)
+Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 24 seconds
 Cooldown         : 30 seconds
 Affecting spells : Elemental Rebalancers (208777 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 15, 29
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19020,12 +19021,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Not Shapeshifted (16)
 Effects          :
 #1 (id=1141708)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 225409 | Misc Value 2: 0x174f | Target: Unknown(41)
-Description      : $?a137039[Summons a totem at your feet that immediately and every $455594t1 sec casts Healing Rain within $455630s1 yards where allies are present, healing for $455630s3% more than a normal Healing Rain. Lasts $d.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 225409 | Misc Value 2: 0x174f | Target: Unknown(87)
+Description      : $?a137039[Summons a totem at the target location that maintains Healing Rain for $d. Heals for $455630s3% more than a normal Healing Rain.
 
-|cFFFFFFFFReplaces Healing Rain.|r][Summons a totem at your feet that creates a Tremor immediately and every $455593t1 sec within $455630s1 yards where enemies are present for $455622s1 Physical damage. Damage reduced beyond $455622s2 targets. Lasts $d.
+|cFFFFFFFFReplaces Healing Rain.|r][Summons a totem at the target location that creates a Tremor immediately and every $455593t1 sec for $455622s1 Physical damage. Damage reduced beyond $455622s2 targets. Lasts $d.
 
 |cFFFFFFFFReplaces Windfury Totem. 
 
@@ -19634,7 +19636,7 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?a137041[Your next Stormstrike or Windstrike deals $s2% increased damage and damages $s3 nearby $Lenemy:enemies; at $s4% effectiveness.][The cast time of your next healing spell is reduced by $s1%.]
 
-Tooltip          : $?a137041[Your next Stormstrike or Windstrike deals $w2% increased damage and damages $w3 nearby $Lenemy:enemies; at $w4% effectiveness.][The cast time of your next healing spell is reduced by $w1%.]
+Tooltip          : $?a137041[Your next Stormstrike or Windstrike deals $w2% increased damage and damages $s3 nearby $Lenemy:enemies; at $w4% effectiveness.][The cast time of your next healing spell is reduced by $w1%.]
 
 Name             : Shaman Elemental 11.0 Class Set 2pc (id=453684) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -19776,7 +19778,6 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $?s137040[$s1][$s2] $?s137040[Maelstrom][Maelstrom Weapon stacks] spent replaces your next Lightning Bolt with Tempest.
 
-$@spellicon452201 $@spellname452201
 $@spelltooltip452201
 
 Name             : Tempest (id=454015) [Spell Family (11)] 
@@ -19804,7 +19805,7 @@ Effects          :
 Description      : $@spelldesc454009
 Tooltip          : Lightning Bolt replaced by Tempest.
 
-Name             : Tempest (id=454021) [Spell Family (11), Passive] 
+Name             : Stormcaller (id=454021) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Shaman
 School           : Nature
@@ -19898,7 +19899,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1158781)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?s137040[Gain one stack of Stormkeeper every $s1 sec][Tempest summons a Nature Feral Spirit for $d].
+Description      : $?s137040[Gain one stack of Stormkeeper every $s1 sec][Tempest summons a Nature Feral Spirit for $426516d].
 
 Name             : Nature's Protection (id=454027) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=4, col=3, max_rank=1, req_points=1, select_idx=100]
@@ -20092,49 +20093,6 @@ Effects          :
                    Family Flags: 1, 63, 85
 Description      : Crash Lightning, Chain Lightning, and Earthquake damage increased by $s1%.
 
-Name             : Ox Stance (id=455068) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=1, max_rank=1, req_points=20]
-Class            : Shaman, Monk
-School           : Physical
-Spell Type       : None
-Labels           : 3670: Heightened Guard (455081 effect#1)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=1158212)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1158249)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Purifying Brew grants a charge of Ox Stance, increased based on Stagger level. When you take damage that is greater than $s1% of your current health, a charge is consumed to increase the amount you Stagger.
-
-Name             : Ox Stance (id=455071) [Spell Family (53)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 30 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=1158229)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc455088
-Tooltip          : Increased Stagger on next attack greater than $455068s1~% of your current health.
-
 Name             : Storm Swell (id=455088) [Spell Family (11), Passive] 
 Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=3, col=2, max_rank=1, req_points=1, select_idx=100]
 Class            : Shaman
@@ -20268,7 +20226,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1158319)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?s137040[Lightning Rod targets now also take 20% of the damage that Tempest deals, and Tempest also the applies Lightning Rod effect.][Gain the effects of the Lightning Rod talent:
+Description      : $?s137040[Lightning Rod targets now also take 20% of the damage that Tempest deals, and Tempest also applies Lightning Rod effect.][Gain the effects of the Lightning Rod talent:
 
 $@spellicon210689 $@spellname210689
 $@spelldesc210689]
@@ -20283,14 +20241,14 @@ Real PPM         : 5 (Haste multiplier)
 Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1158331)  : Apply Aura (6) | Proc Trigger Spell (42): Awakening Storms
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 455130 | Target: Self (1)
@@ -20357,29 +20315,11 @@ Effects          :
 #1 (id=1159176)  : Apply Aura (6) | Periodic Dummy (226): every 6 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Surging Totem (id=455594) [Spell Family (11), Hidden] 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 16 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
-Effects          :
-#1 (id=1159177)  : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
 Name             : Tremor (id=455622) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
-Range            : 30 yards
+Range            : 40 yards
 Labels           : 3704: Pulse Capacitor (445032 effect#1), Totemic Rebound (458269 effect#1)
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Shaman Elemental 11.0 Class Set 4pc (457727 effects: #1, #2)
@@ -20395,10 +20335,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : AI Doesn't Face Target (179)
 Effects          :
 #1 (id=1159222)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
 #2 (id=1159269)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc444995
+Description      : Surging Totem creates Tremors every $455593t1 sec, dealing $s1 Physical damage to enemies within $A1 yards. Damage reduced beyond $s2 targets.
 
 Name             : Surging Totem (id=455630) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=1, col=1, max_rank=1, req_points=1, override="Surging Totem" (id=444995)]
@@ -20883,5 +20823,96 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc445034
 Tooltip          : Searing Totem is hurling Searing Bolts at nearby enemies.
+
+Name             : Shaman (id=462106) [Spell Family (11), Passive, Hidden] 
+Class            : Elemental Enhancement Restoration Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171334)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Elemental Shaman (id=462107) [Spell Family (11), Passive, Hidden] 
+Class            : Elemental Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171335)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Enhancement Shaman (id=462108) [Spell Family (11), Passive, Hidden] 
+Class            : Enhancement Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171336)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Restoration Shaman (id=462110) [Spell Family (11), Passive, Hidden] 
+Class            : Restoration Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171338)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Awakening Storms (id=462131) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : Aura (infinite)
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31)
+Effects          :
+#1 (id=1171364)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc455129
+Tooltip          : $s1 Awakening Storms.
 
 

@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 11.0.0.55185
+// Item enchantment data, wow build 11.0.0.55288
 static const std::array<item_enchantment_data_t, 5032> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
@@ -4948,9 +4948,9 @@ static const std::array<item_enchantment_data_t, 5032> __spell_item_ench_data { 
   { 7443,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449112,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Stonebound Artistry |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7444,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449113,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Stonebound Artistry |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7445,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449114,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Stonebound Artistry |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7446,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449120,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn Tenacity |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7447,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449118,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn Tenacity |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7448,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449117,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn Tenacity |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7446,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449120,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn's Tenacity |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7447,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449118,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn's Tenacity |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 7448,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 449117,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Oathsworn's Tenacity |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7449,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448830,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Authority of Air |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7450,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448831,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Authority of Air |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7451,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Authority of Air |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },

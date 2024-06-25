@@ -1,5 +1,5 @@
-// 566 talents, wow build 11.0.0.55185
-static std::array<talent_data_t, 566> __talent_data { {
+// 565 talents, wow build 11.0.0.55288
+static std::array<talent_data_t, 565> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -99,7 +99,6 @@ static std::array<talent_data_t, 566> __talent_data { {
   { "Absolute Corruption"               , 21180, 0x00, 0x0100,  265,   1,   1,  196103,       0,  0 },
   { "Poison Bomb"                       , 21186, 0x00, 0x0008,  259,   0,   6,  255544,       0,  0 },
   { "Shuriken Tornado"                  , 21188, 0x00, 0x0008,  261,   2,   6,  277925,       0,  0 },
-  { "Serenity"                          , 21191, 0x00, 0x0200,  269,   2,   6,  152173,       0,  0 },
   { "Fury of Elune"                     , 21193, 0x00, 0x0400,  102,   1,   6,  202770,       0,  0 },
   { "Unlimited Power"                   , 21198, 0x00, 0x0040,  262,   0,   6,  260895,       0,  0 },
   { "Wellspring"                        , 21199, 0x00, 0x0040,  264,   1,   6,  197995,       0,  0 },

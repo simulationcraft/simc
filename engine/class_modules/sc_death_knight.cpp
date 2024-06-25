@@ -813,8 +813,6 @@ public:
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
     // Frost
-    propagate_const<cooldown_t*>
-        icecap_icd;  // internal cooldown that prevents several procs on the same dual-wield attack
     propagate_const<cooldown_t*> inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     propagate_const<cooldown_t*>
         koltiras_favor_icd;  // internal cooldown that prevents several procs on the same dual-wield attack
@@ -1674,7 +1672,6 @@ public:
     cooldown.death_and_decay_dynamic =
         get_cooldown( "death_and_decay" );  // Default value, changed during action construction
     cooldown.death_grip             = get_cooldown( "death_grip" );
-    cooldown.icecap_icd             = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
     cooldown.frigid_executioner_icd = get_cooldown( "frigid_executioner_icd" );
     cooldown.pillar_of_frost        = get_cooldown( "pillar_of_frost" );
@@ -4646,10 +4643,8 @@ private:
 
 struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t>
 {
-  bool triggers_icecap;
-
   death_knight_melee_attack_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : death_knight_action_t( n, p, s ), triggers_icecap( false )
+    : death_knight_action_t( n, p, s )
   {
     special    = true;
     may_glance = false;
@@ -4666,15 +4661,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
       // Razorice is executed after the attack that triggers it
       p()->active_spells.runeforge_razorice->set_target( state->target );
       p()->active_spells.runeforge_razorice->schedule_execute();
-    }
-
-    if ( triggers_icecap && p()->talent.frost.icecap.ok() && p()->cooldown.icecap_icd->is_ready() &&
-         state->result == RESULT_CRIT )
-    {
-      p()->cooldown.pillar_of_frost->adjust(
-          timespan_t::from_seconds( -p()->talent.frost.icecap->effectN( 1 ).base_value() / 10.0 ) );
-
-      p()->cooldown.icecap_icd->start();
     }
   }
 };
@@ -5064,36 +5050,21 @@ private:
 struct pillar_of_frost_buff_t final : public death_knight_buff_t
 {
   pillar_of_frost_buff_t( death_knight_t* p, util::string_view n, const spell_data_t* s )
-    : death_knight_buff_t( p, n, s ), runes_spent( 0 ), pillar_extension( 0 )
+    : death_knight_buff_t( p, n, s ), pillar_extension( 0 )
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
   }
 
-  // Override the value of the buff to properly capture Pillar of Frost's strength buff behavior
-  double value() override
-  {
-    return p()->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * p()->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
-  }
-
-  double check_value() const override
-  {
-    return p()->talent.frost.pillar_of_frost->effectN( 1 ).percent() +
-           ( runes_spent * p()->talent.frost.pillar_of_frost->effectN( 2 ).percent() );
-  }
-
   void start( int stacks, double value, timespan_t duration ) override
   {
     death_knight_buff_t::start( stacks, value, duration );
-    runes_spent      = 0;
     pillar_extension = 0;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
-    runes_spent      = 0;
     pillar_extension = 0;
     if ( p()->talent.frost.enduring_strength.ok() )
     {
@@ -5104,7 +5075,6 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
   void refresh( int stacks, double value, timespan_t duration ) override
   {
     death_knight_buff_t::refresh( stacks, value, duration );
-    runes_spent      = 0;
     pillar_extension = 0;
     if ( p()->talent.frost.enduring_strength.ok() )
     {
@@ -5130,9 +5100,6 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
                                                             p()->buffs.enduring_strength_builder->stack() );
     p()->buffs.enduring_strength_builder->expire();
   }
-
-public:
-  int runes_spent;
 
 private:
   unsigned pillar_extension;
@@ -8465,7 +8432,6 @@ struct frostscythe_t final : public death_knight_melee_attack_t
     weapon              = &( player->main_hand_weapon );
     aoe                 = -1;
     reduced_aoe_targets = data().effectN( 5 ).base_value();
-    triggers_icecap     = true;
     base_crit           = 1.0;
   }
 
@@ -8572,7 +8538,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   {
     background = special = true;
     weapon               = w;
-    triggers_icecap      = true;
     if ( p->talent.frost.shattered_frost.ok() )
     {
       shattered_frost = get_action<shattered_frost_t>( "shattered_frost", p );
@@ -8586,12 +8551,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     if ( sb )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
-    }
-
-    if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
-    {
-      // TODO-TWW check bugged behavior, currently always applies the full value and uses no spell data
-      m *= 1.525;
     }
 
     return m;
@@ -8667,14 +8626,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
     if ( data().ok() )
     {
-      // With 11.0.0.55185 Frost Strike has two powers
-      // One with the usual _cost
-      // Two with 0 _cost and 150 _cost_max
-      // Two overrides base_costs in action_t::parse_spell_data so restore it here
-      base_costs[ RESOURCE_RUNIC_POWER ] = std::fabs( data().powerN( 1 ).cost() );
-      // Zero the secondary cost to only apply it when we want it
-      secondary_costs[ RESOURCE_RUNIC_POWER ] = 0;
-
       if ( p->main_hand_weapon.group() == WEAPON_2H )
       {
         mh_delay = timespan_t::from_millis( as<int>( data().effectN( 4 ).misc_value1() ) );
@@ -8705,20 +8656,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
         add_child( get_action<shattered_frost_t>( "shattered_frost", p ) );
       }
     }
-  }
-
-  double cost() const override
-  {
-    double c          = death_knight_melee_attack_t::cost();
-    double current_rp = p()->resources.current[ RESOURCE_RUNIC_POWER ];
-    double excess_rp  = std::max( current_rp - c, 0.0 );
-
-    if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() )
-    {
-      c += std::min( std::fabs( data().powerN( 2 ).max_cost() ), excess_rp );
-    }
-
-    return c;
   }
 
   void execute() override
@@ -9323,7 +9260,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     background = special = true;
     may_miss             = false;
     weapon               = w;
-    triggers_icecap      = true;
 
     // To support Cleaving strieks affecting Obliterate in Dragonflight:
     // - obliterate damage spells have gained a value of 1 in their chain target data
@@ -10813,13 +10749,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     {
       debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
           as<int>( amount );
-      invalidate_cache( CACHE_STRENGTH );
-    }
-
-    if ( specialization() == DEATH_KNIGHT_FROST && buffs.pillar_of_frost->up() )
-    {
-      debug_cast<buffs::pillar_of_frost_buff_t*>( buffs.pillar_of_frost )->runes_spent += as<int>( amount );
-      // Manually invalidate cache when incrementing runes_spent to ensure it updates
       invalidate_cache( CACHE_STRENGTH );
     }
 
@@ -12921,9 +12850,6 @@ void death_knight_t::init_spells()
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
 
-  if ( talent.frost.icecap.ok() )
-    cooldown.icecap_icd->duration = talent.frost.icecap->internal_cooldown();
-
   if ( talent.frost.enduring_strength.ok() )
     cooldown.enduring_strength_icd->duration = spell.enduring_strength_cooldown->internal_cooldown();
 
@@ -14450,6 +14376,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.frost.frigid_executioner );
   action.apply_affecting_aura( talent.frost.biting_cold );
   action.apply_affecting_aura( talent.frost.absolute_zero );
+  action.apply_affecting_aura( talent.frost.icecap );
   if ( spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H )
   {
     action.apply_affecting_aura( spec.might_of_the_frozen_wastes );
