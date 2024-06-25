@@ -5233,7 +5233,8 @@ struct apocalyptic_conquest_buff_t final : public death_knight_buff_t
     : death_knight_buff_t( p, name, spell ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
-    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+    add_invalidate( CACHE_STRENGTH );
+    // set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  TODO: bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -13308,7 +13309,8 @@ void death_knight_t::create_buffs()
   buffs.visceral_strength =
       make_fallback( talent.sanlayn.visceral_strength, this, "visceral_strength", spell.visceral_strength_buff )
           ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+          ->add_invalidate( CACHE_STRENGTH);
+          // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
@@ -13352,10 +13354,10 @@ void death_knight_t::create_buffs()
                                       ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).base_value() / 10 )
                                       ->add_invalidate( CACHE_STRENGTH )
                                       ->set_cooldown( spell.bloodied_blade_stacks_buff->internal_cooldown() );
-                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
 
     buffs.bloodied_blade_final  = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
-                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
                                       ->add_invalidate( CACHE_STRENGTH );
                                       // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
@@ -13982,12 +13984,31 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
   auto a = player_t::composite_attribute( attr );
 
   // TODO: remove if fixed.  This implements effect type 80 ( Modify Attribute% )
-  if ( specialization() == DEATH_KNIGHT_BLOOD && attr == ATTR_STRENGTH )
+  if ( attr == ATTR_STRENGTH )
   {
-    if ( buffs.bloodied_blade_stacks->check() )
-      a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
-    if ( buffs.bloodied_blade_final->check() )
-      a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+    switch ( specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        if ( buffs.bloodied_blade_stacks->check() )
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
+        if ( buffs.bloodied_blade_final->check() )
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+        if ( buffs.visceral_strength->check() )
+          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        if ( buffs.visceral_strength->check() )
+          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
+        if ( buffs.apocalyptic_conquest->check() )
+          a += base.stats.attribute[ attr ] * buffs.apocalyptic_conquest->check_value();
+        break;
+      case DEATH_KNIGHT_FROST:
+        if ( buffs.apocalyptic_conquest->check() )
+          a += base.stats.attribute[ attr ] * buffs.apocalyptic_conquest->check_value();
+        break;
+      default:
+        break;
+    }
   }
 
   return a;
