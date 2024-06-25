@@ -1471,6 +1471,7 @@ public:
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
+  double composite_attribute( attribute_e ) const;
   double composite_dodge() const override;
   double composite_mastery() const override;
   double non_stacking_movement_modifier() const override;

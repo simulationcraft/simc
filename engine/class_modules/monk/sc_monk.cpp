@@ -7960,7 +7960,9 @@ void monk_t::create_buffs()
   buff.against_all_odds =
       make_buff_fallback( talent.shado_pan.against_all_odds->ok(), this, "against_all_odds", find_spell( 451061 ) )
           ->set_default_value_from_effect( 1 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->set_default_value_from_effect_type(
+              A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+//          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
           ->add_invalidate( CACHE_AGILITY );
 
   buff.flurry_charge =
@@ -8601,6 +8603,20 @@ double monk_t::composite_attack_power_multiplier() const
 
   return ap;
 }
+
+// monk_t::composite_attribute() ==========================
+
+double monk_t::composite_attribute( attribute_e attr ) const
+{
+  auto a = player_t::composite_attribute( attr );
+
+  // TODO: remove if fixed
+  if ( attr == ATTR_AGILITY && buff.against_all_odds->check() )
+    a += base.stats.attribute[ attr ] * buff.against_all_odds->check_value();
+
+  return a;
+}
+
 
 // monk_t::composite_dodge ==============================================
 
