@@ -722,7 +722,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> unbreakable_tww1_2pc;
     buff_t* unbroken_tww1_2pc;
-    propagate_const<buff_t*> piledriver_tww1_4pc;
+    buff_t* piledriver_tww1_4pc;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -3330,6 +3330,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_action_t::impact( state );
 
       dk()->buffs.bone_shield->trigger( stack_gain );
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        dk() -> buffs.piledriver_tww1_4pc->trigger( stack_gain );
     }
   };
 
@@ -3381,6 +3383,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_action_t::impact( state );
 
       dk()->buffs.bone_shield->trigger( stack_gain );
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        dk() -> buffs.piledriver_tww1_4pc->trigger( stack_gain );
     }
   };
 
@@ -7391,6 +7395,8 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     if ( p()->talent.blood.insatiable_blade.ok() )
     {
       p()->buffs.bone_shield->trigger( bone_shield_stack_gain );
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( bone_shield_stack_gain );
     }
 
     // Only summon the rune weapons if the buff is down.
@@ -7745,6 +7751,8 @@ struct deaths_caress_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->buffs.bone_shield->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
@@ -9266,6 +9274,8 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( s );
 
     p()->buffs.bone_shield->trigger( as<int>( data().effectN( 3 ).base_value() ) );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( as<int>( data().effectN( 3 ).base_value() ) );
   }
 };
 
@@ -13905,6 +13915,18 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
+  //  TWW1 4pc handling
+  if ( specialization() == DEATH_KNIGHT_BLOOD &&
+        sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) &&
+        buffs.bone_shield->stack() < sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 2 ).base_value() &&
+        rng().roll( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 5 ).percent() ) )
+  {
+    if ( rng().roll( 0.5 ) ) // 50% chance to roll 1 or 2 charges
+      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() );
+    else
+      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() );
+  }
+
   if ( ( ( specialization() == DEATH_KNIGHT_BLOOD && !buffs.bone_shield->check() ) || !cooldown.bone_shield_icd->up() ||
          state->action->special ) )
   {
@@ -13917,6 +13939,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     buffs.bone_shield->decrement();
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ) )
       buffs.unbroken_tww1_2pc->trigger();
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+      buffs.piledriver_tww1_4pc->decrement();
   }
   cooldown.bone_shield_icd->start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it
