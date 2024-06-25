@@ -2851,8 +2851,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
 
 
-  buffs.holy_bulwark  = make_buff( *this, "holy_bulwark", paladin->find_spell( 432496 ) )->set_cooldown( 0_s );
-  buffs.sacred_weapon = make_buff( *this, "sacred_weapon", paladin->find_spell( 432502 ) );
+  buffs.holy_bulwark  = make_buff( *this, "holy_bulwark_ally", paladin->find_spell( 432496 ) )->set_cooldown( 0_s );
+  buffs.sacred_weapon = make_buff( *this, "sacred_weapon_ally", paladin->find_spell( 432502 ) );
 
   if ( !target->is_enemy() && target != paladin )
   {

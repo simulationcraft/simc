@@ -1222,9 +1222,9 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
+  buffs.sanctification = make_buff( this, "sanctification_tier", find_spell( 424616 ) );
 
-  buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
+  buffs.sanctification_empower = make_buff( this, "sanctification_tier_empower", find_spell( 424622 ) );
 }
 
 void paladin_t::init_spells_protection()
