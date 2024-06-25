@@ -4033,18 +4033,15 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
 }
 
-timespan_t action_t::tick_time( const action_state_t* state ) const
+timespan_t action_t::tick_time( const action_state_t* s ) const
 {
   auto base = base_tick_time.base;
 
-  auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( state );
+  auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
   if ( mul <= 0 )
     return 0_ms;
 
-  if ( hasted_ticks )
-    mul *= state->haste;
-
-  auto add = base_tick_time.flat_add + tick_time_flat_modifier( state );
+  auto add = base_tick_time.flat_add + tick_time_flat_modifier( s );
 
   return ( base + add ) * mul;
 }
@@ -4054,8 +4051,11 @@ timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::tick_time_pct_multiplier( const action_state_t* ) const
+double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
 {
+  if ( hasted_ticks )
+    return s->haste;
+
   return 1.0;
 }
 
@@ -4136,15 +4136,6 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
   if ( mul <= 0 )
     return 0_ms;
 
-  if ( hasted_dot_duration )
-  {
-    // technically it's possible to have hasted dot duration without hasted ticks
-    if ( !hasted_ticks )
-      mul *= ( ( base_tick_time * s->haste ) / base_tick_time );
-    else
-      mul *= tick_time( s ) / base_tick_time;
-  }
-
   auto add = dot_duration.flat_add + dot_duration_flat_modifier( s );
 
   return ( base + add ) * mul;
@@ -4155,8 +4146,17 @@ timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::dot_duration_pct_multiplier( const action_state_t* ) const
+double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
 {
+  if ( hasted_dot_duration )
+  {
+    // technically it's possible to have hasted dot duration without hasted ticks
+    if ( !hasted_ticks )
+      return ( base_tick_time * s->haste ) / base_tick_time;
+    else
+      return tick_time( s ) / base_tick_time;
+  }
+
   return 1.0;
 }
 
