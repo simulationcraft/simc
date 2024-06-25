@@ -57,8 +57,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=64)       : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].
-
+Description      : Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d$?s103828[, and stunning it for $7922d][].
+
+
+
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
@@ -158,9 +160,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.87119 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=357783)   : Trigger Spell (64): Rend
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388539 | Target: Enemy (6)
-Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
-
-|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
+Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
+
+
+
+|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
+
 ][]
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -256,10 +261,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
-
+Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
+
+
+
 |cFFFFFFFFGenerates ${$m5/10} Rage.|r][]
-Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]$?s202743[
+Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]$?s202743[
+
 Taking $w3% increased damage from $@auracaster.][]
 
 Name             : Challenging Shout (id=1161) [Spell Family (4)] 
@@ -315,8 +323,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80500 | PvP Coefficient: 1.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1024888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Slams an opponent, causing $s1 Physical damage.$?s388903[
-
+Description      : Slams an opponent, causing $s1 Physical damage.$?s388903[
+
+
+
 |cFFFFFFFFGenerates ${$388903s6/10} Rage.][]
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -347,7 +357,8 @@ Effects          :
 #3 (id=293811)   : Trigger Spell (64): Whirlwind | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 411547 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, $?s202316[hitting your primary target with Slam and ][]striking all nearby targets for $<baseDmg> Physical damage. Deals reduced damage beyond $s1 targets.
-Variables        : $baseDmg=${3*$199658s1}
+Variables        : $baseDmg=${3*$199658s1}
+
 $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 
 Name             : Hamstring (id=1715) [Spell Family (4)] 
@@ -428,11 +439,15 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Shockwave (46968), Shockwave (132168), Odyn's Fury (385059), Shockwave (441668)
                    Family Flags: 17, 47, 103
-Description      : Go berserk, increasing all Rage generation by $s1% and granting your abilities $s4% increased critical strike chance for $d.$?a396749[
-
+Description      : Go berserk, increasing all Rage generation by $s1% and granting your abilities $s4% increased critical strike chance for $d.$?a396749[
+
+
+
 |cFFFFFFFFGenerates ${$s3/10} Rage.|r][]
-Tooltip          : Rage generation increased by $w1%.
-Critical strike chance of all abilities increased by $w4%.$?a202751[
+Tooltip          : Rage generation increased by $w1%.
+
+Critical strike chance of all abilities increased by $w4%.$?a202751[
+
 Bloodthirst and Raging Blow upgraded to $@spellname335096 and $@spellname335097.][]
 
 Name             : Shield Block (id=2565) [Spell Family (4)] 
@@ -628,9 +643,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 163558 | Target: Enemy (6)
 #3 (id=738697)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 20% health.$?s316402[
-
-|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
+Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 20% health.$?s316402[
+
+
+
+|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
+
 
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -665,11 +683,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #5 (id=844585)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Blasts all enemies within $A1 yards for $s1 Physical damage$?s199045[, roots them for $199042d,][] and reduces their movement speed by $435203s1% for $435203d. Deals reduced damage beyond $s5 targets.$?a137048|(a137050&a436707)[
-
-|cFFFFFFFFGenerates ${$s4/10} Rage.][]$?c1|c3[
-
-|cFFFFFFFFIf you have Rend, Thunder Clap affects $s5 nearby targets with Rend.
+Description      : Blasts all enemies within $A1 yards for $s1 Physical damage$?s199045[, roots them for $199042d,][] and reduces their movement speed by $435203s1% for $435203d. Deals reduced damage beyond $s5 targets.$?a137048|(a137050&a436707)[
+
+
+
+|cFFFFFFFFGenerates ${$s4/10} Rage.][]$?c1|c3[
+
+
+
+|cFFFFFFFFIf you have Rend, Thunder Clap affects $s5 nearby targets with Rend.
+
 ][]
 
 Name             : Heroic Leap (id=6544) [Spell Family (4)] 
@@ -700,7 +723,8 @@ Effects          :
 #2 (id=475719)   : Unknown(254)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Unknown(87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?c3[, and resetting the remaining cooldown on Taunt][].
-Variables        : $base=${1+0.5*$AP}
+Variables        : $base=${1+0.5*$AP}
+
 $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
 
 Name             : Pummel (id=6552) [Spell Family (4)] 
@@ -752,8 +776,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52155 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
-Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
-
+Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
+
+
+
 Your successful dodges and parries have a chance to make your next Revenge cost no Rage.
 Variables        : $cap=${5}
 
@@ -784,8 +810,10 @@ Effects          :
 #3 (id=1101943)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Radius: 100 yards | Target: Raid in Area (56)
 Description      : Increases the attack power of all raid and party members within $a1 yards by $s1% for $d.
-Tooltip          : Attack power increased by $w1%.$?$w3>0[
-
+Tooltip          : Attack power increased by $w1%.$?$w3>0[
+
+
+
 Stamina increased by $w3%.][]
 
 Name             : Overpower (id=7384) [Spell Family (4)] 
@@ -821,13 +849,20 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459)
                    Family Flags: 22, 25
-Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
-
-Increases the damage of your next Mortal Strike or Cleave by $s2%, stacking up to $u times]?s316440[
-
-Increases the damage of your next Mortal Strike by $s2%, stacking up to $u times.][]$?s400801[
-
-|cFFFFFFFFGenerates ${$7384s3/10} Rage.][]
+Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
+
+
+
+Increases the damage of your next Mortal Strike or Cleave by $s2%, stacking up to $u times]?s316440[
+
+
+
+Increases the damage of your next Mortal Strike by $s2%, stacking up to $u times.][]$?s400801[
+
+
+
+|cFFFFFFFFGenerates ${$7384s3/10} Rage.][]
+
 
 Tooltip          : Your next Mortal Strike $?s845[or Cleave ][]will deal $w2% increased damage.
 
@@ -903,10 +938,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5764)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Whirlwind $?s436707[and Thunder Clap cause][causes] your next $85739u single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.
-
+Description      : Whirlwind $?s436707[and Thunder Clap cause][causes] your next $85739u single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.
+
+
+
 Whirlwind generates $190411s1 Rage, plus an additional $190411s2 per target hit. Maximum $<maxRage> Rage.
-Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
+Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
+
 $maxRage=${$190411s1+($190411s2*$190411s3)}
 
 Name             : Last Stand (id=12975) [Spell Family (4)] 
@@ -1077,8 +1115,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.15000 | PvP Coefficient: 1.06000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
-
+Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
 
@@ -1145,10 +1185,14 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #4 (id=1082240)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
-
-Devastate, Thunder Clap, Revenge, and Execute have a $231834s1% chance to reset the cooldown of Shield Slam.][]
-
+Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
+
+
+
+Devastate, Thunder Clap, Revenge, and Execute have a $231834s1% chance to reset the cooldown of Shield Slam.][]
+
+
+
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
 
 Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
@@ -1224,8 +1268,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=19369)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Restores $202147s1% health every $202147t1 sec when you have not taken damage for $202149d.
-
+Description      : Restores $202147s1% health every $202147t1 sec when you have not taken damage for $202149d.
+
+
+
 While you are below $458245s3% health, restores ${$458245s4}.1% health every $458245t1 sec. The amount restored increases the closer you are to death.
 
 Name             : Victorious State (id=32215) [Spell Family (4), Passive, Hidden] 
@@ -1297,8 +1343,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=24417)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47200 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
-
+Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
+
+
+
 Only usable within $32216d after you kill an enemy that yields experience or honor.
 
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
@@ -1373,12 +1421,17 @@ Effects          :
                    Family Flags: 11
 #4 (id=738383)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for $<dmg> Physical damage over $d. Deals reduced damage beyond $s1 targets.
-
-You are immune to movement impairing and loss of control effects, but can use defensive abilities and avoid attacks.
-
+Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for $<dmg> Physical damage over $d. Deals reduced damage beyond $s1 targets.
+
+
+
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and avoid attacks.
+
+
+
 |cFFFFFFFFGenerates ${$o4/10} Rage over the duration.|r
-Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+
 Immune to crowd control.
 Variables        : $dmg=$?c2[${(1+($d/$t))*($50622sw1+($95738sw1/2))}][${(1+($d/$t))*$50622sw1}]
 
@@ -1944,7 +1997,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=71863)    : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and increase your Rage by ${$m2/10}.
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and increase your Rage by ${$m2/10}.
+
 
 
 Name             : Mastery: Unshackled Fury (id=76856) [Spell Family (4), Passive] 
@@ -2000,8 +2054,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 12880 | Target: Self (1)
 #5 (id=217532)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
-
+Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
+
+
+
 Also increases your attack power by ${$s5}.1%.
 
 Name             : Single-Minded Fury (id=81099) [Spell Family (4), Passive] 
@@ -2074,10 +2130,14 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 50 | Trigger Spell: 96103 | Target: Enemy (6)
 #4 (id=317575)   : Trigger Spell (64): Raging Blow
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 85384 | Target: Enemy (6)
-Description      : A mighty blow with both weapons that deals a total of $<damage> Physical damage.$?s383854[
-
-Raging Blow has a $s1% chance to instantly reset its own cooldown.][]
-
+Description      : A mighty blow with both weapons that deals a total of $<damage> Physical damage.$?s383854[
+
+
+
+Raging Blow has a $s1% chance to instantly reset its own cooldown.][]
+
+
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -2337,8 +2397,10 @@ Effects          :
 #3 (id=1102094)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc97462
-Tooltip          : Health increased by $97462s1% of maximum.$?a424742[
-
+Tooltip          : Health increased by $97462s1% of maximum.$?a424742[
+
+
+
 Movement speed increased by $424742s4%.][]
 
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
@@ -2481,8 +2543,10 @@ Effects          :
                    Base Value: -1500 | Scaled Value: -1500 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Cleave (845), Cleave (458459)
                    Family Flags: 22
-Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.
-
+Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
 
@@ -2764,8 +2828,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=297932)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.
-
+Description      : Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds. Deals reduced damage to secondary targets. Dragon Roar critically strikes for $<critMult> times normal damage.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Variables        : $critMult=${3}
 
@@ -2798,7 +2864,8 @@ Effects          :
 #3 (id=225727)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.
-Tooltip          : Parry chance increased by $s1%.
+Tooltip          : Parry chance increased by $s1%.
+
 Damage taken reduced by $w2%.
 
 Name             : Victory Rush (id=118779) [Spell Family (4)] 
@@ -3097,7 +3164,8 @@ Effects          :
 #10 (id=1132070)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc134732
-Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+
 Damage taken increased by $w2.][]
 
 Name             : Warrior (id=137047) [Spell Family (4), Passive, Hidden] 
@@ -3612,8 +3680,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=714082)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
-
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
+
+
+
 If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798s1}
 
@@ -3694,7 +3764,8 @@ Effects          :
 #5 (id=256845)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc134732
-Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+
 Damage taken increased by $w2.][]
 
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
@@ -3721,10 +3792,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=737698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Becoming Enraged increases your damage done by $76856s1%$?s383848[, Haste by $184362s1%, and movement speed by $184362s2% for $184362d.]?s440277[ and ability damage done by an additional $184362s4% for $184362d.][ for $184362d.]
-
-$@spellicon23881 Bloodthirst has a $m2% chance to Enrage you.$?s316412[
-
+Description      : Becoming Enraged increases your damage done by $76856s1%$?s383848[, Haste by $184362s1%, and movement speed by $184362s2% for $184362d.]?s440277[ and ability damage done by an additional $184362s4% for $184362d.][ for $184362d.]
+
+
+
+$@spellicon23881 Bloodthirst has a $m2% chance to Enrage you.$?s316412[
+
+
+
 $@spellicon184367 Rampage always Enrages you.][]
 
 Name             : Enrage (id=184362) [Spell Family (4)] 
@@ -3763,9 +3838,12 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670)
                    Family Flags: 9
 Description      : $@spelldesc184361
-Tooltip          : Damage done increased by $76856s1%$?s383848[, Haste increased by $m1%,
-Movement speed increased by $m2%.]?s440277[, ability damage increased by an additional $m4%][.]$?s208154[
-
+Tooltip          : Damage done increased by $76856s1%$?s383848[, Haste increased by $m1%,
+
+Movement speed increased by $m2%.]?s440277[, ability damage increased by an additional $m4%][.]$?s208154[
+
+
+
 Damage taken reduced by $208154m3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
@@ -3963,12 +4041,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 199852 | Target: Self (1)
 #9 (id=800240)   : Trigger Spell (64): Whirlwind Off-Hand
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 199851 | Target: Self (1)
-Description      : Unleashes a whirlwind of steel, striking all nearby enemies for $<damage> Physical damage. Deals reduced damage beyond $s3 targets.$?s12950[
-
-Causes your next $85739u single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]$?s12950[
-
+Description      : Unleashes a whirlwind of steel, striking all nearby enemies for $<damage> Physical damage. Deals reduced damage beyond $s3 targets.$?s12950[
+
+
+
+Causes your next $85739u single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]$?s12950[
+
+
+
 |cFFFFFFFFGenerates $s1 Rage, plus an additional $s2 per target hit.|r][]
-Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
+Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
+
 $maxRage=${$190411s1+($190411s2*$190411s3)}
 
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
@@ -4050,12 +4133,18 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #2 (id=291445)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Run at high speed toward an enemy or ally.
-
-When targeting an enemy, deals $126664s2 Physical damage and roots the target for $105771d.
-
-When targeting an ally, intercepts the next melee or ranged attack against them within $147833d while the ally remains within $147833A2 yards.
-
+Description      : Run at high speed toward an enemy or ally.
+
+
+
+When targeting an enemy, deals $126664s2 Physical damage and roots the target for $105771d.
+
+
+
+When targeting an ally, intercepts the next melee or ranged attack against them within $147833d while the ally remains within $147833A2 yards.
+
+
+
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
 Name             : Charge (id=198337) [Spell Family (4)] 
@@ -4525,8 +4614,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=297955)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
-
+Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
+
+
+
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory and makes it cost no Rage.
 
 Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden] 
@@ -5205,8 +5296,10 @@ Effects          :
 #3 (id=1071391)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2590 (Label) | Target: Self (1)
                    Affected Spells (Label): Spell Reflection (23920)
-Description      : Spell Reflection reflects the next $s3 incoming spells cast on you and reflected spells deal $s1% extra damage to the attacker.
-
+Description      : Spell Reflection reflects the next $s3 incoming spells cast on you and reflected spells deal $s1% extra damage to the attacker.
+
+
+
 Spell Reflection's cooldown is increased by ${$s2/1000} sec.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
@@ -5430,8 +5523,10 @@ Effects          :
 #3 (id=325886)   : Trigger Spell (64): Enrage
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3800 | Trigger Spell: 184362 | Target: Self (1)
 Description      : Odyn has granted you a second chance to defeat that which has bested you in combat.  Do this within $d and Odyn will grant you your life and restore $218835s1% of your health.
-Tooltip          : Odyn has granted you a second chance to defeat your enemy!
-
+Tooltip          : Odyn has granted you a second chance to defeat your enemy!
+
+
+
 Failure results in death.
 
 Name             : Gaze of the Val'kyr (id=218834) [Spell Family (4)] 
@@ -5564,12 +5659,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Berserker Shout (384100), Spell Reflection (385391), Disrupting Shout (386071), Battle Stance (386164), Berserker Stance (386196), Defensive Stance (386208), Spell Block (392966)
                    Family Flags: 11
-Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for $<dmg> Physical damage over $d. Deals reduced damage beyond $s1 targets.
-
-You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
-$?c2[
+Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for $<dmg> Physical damage over $d. Deals reduced damage beyond $s1 targets.
+
+
+
+You are immune to movement impairing and loss of control effects, but can use defensive abilities and can avoid attacks.
+
+$?c2[
+
 |cFFFFFFFFGenerates ${$50622s3/10} Rage each time you deal damage.|r][]
-Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+Tooltip          : Dealing damage to all nearby enemies every $t1 sec.
+
 Immune to crowd control.
 Variables        : $dmg=$?c2[${(1+($d/$t))*($50622sw1+($95738sw1/2))}][${(1+($d/$t))*$50622sw1}]
 
@@ -5594,7 +5694,8 @@ Effects          :
 #1 (id=344495)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc134732
-Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+
 Damage taken increased by $w2.][]
 
 Name             : Ravager (id=228920) [Spell Family (4)] 
@@ -5630,8 +5731,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
 #3 (id=345049)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Throws a whirling weapon at the target location that chases nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.
-
+Description      : Throws a whirling weapon at the target location that chases nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.
+
+
+
 |cFFFFFFFFGenerates ${$334934s1/10} Rage each time it deals damage.|r
 Tooltip          : Ravager is currently active.
 Variables        : $damage=${6*$156287s1}
@@ -6253,8 +6356,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
-Description      : Deals $s1 Holy Damage to enemies within $A1.
-
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+
+
 Heals $s2 to allies within $A1. 
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
@@ -6283,10 +6388,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.41600 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Bash an enemy's skull, dealing $s1 Physical damage.
-
-Skullsplitter causes your Rend and Deep Wounds on the target to bleed out $427040s1% faster for $427040d.
-
+Description      : Bash an enemy's skull, dealing $s1 Physical damage.
+
+
+
+Skullsplitter causes your Rend and Deep Wounds on the target to bleed out $427040s1% faster for $427040d.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
@@ -6537,8 +6646,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 262232 | Target: Self (1)
 #2 (id=623312)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your auto attacks generate $s2% more Rage.
-
+Description      : Your auto attacks generate $s2% more Rage.
+
+
+
 Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your movement speed by $262232s2% for $262232d.
 
 Name             : War Machine (id=262232) [Spell Family (4)] 
@@ -6985,8 +7096,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 163558 | Target: Enemy (6)
 #3 (id=741742)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 35% health.
-
+Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 35% health.
+
+
+
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
 
 Name             : Siegebreaker (id=280772) [Spell Family (4)] 
@@ -7013,8 +7126,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=738538)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.
-
+Description      : Break the enemy's defenses, dealing $s1 Physical damage, and increasing your damage done to the target by $280773s1% for $280773d.
+
+
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
 Name             : Siegebreaker (id=280773) [Spell Family (4)] 
@@ -7128,8 +7243,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=738984)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
-Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than $s3% health.$?s316405[
-
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than $s3% health.$?s316405[
+
+
+
 If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798s1}
 
@@ -7155,7 +7272,8 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330334 | Scaled Value: 330334 | PvP Coefficient: 1.00000 | Misc Value: 317349 | Target: Self (1)
-Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health.
+Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health.
+
 
 
 Name             : Into the Fray (id=283938) [Spell Family (4)] 
@@ -7198,7 +7316,8 @@ Effects          :
 #2 (id=751475)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 23774.8 (coefficient=9.509202) | PvP Coefficient: 0.50000 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
-Variables        : $rage=${$288087s1/10}
+Variables        : $rage=${$288087s1/10}
+
 $damage=${$s2*3}
 
 Name             : Cold Steel, Hot Blood (id=288084) [Spell Family (4), Hidden] 
@@ -7372,10 +7491,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 307871 | Radius: 5 yards | Target: Unknown(87)
 #2 (id=786849)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 307954 | Radius: 5 yards | Target: Unknown(87)
-Description      : Throw a Kyrian spear at the target location, dealing $307871s1 Arcane damage instantly and an additional $307871o4 damage over $307954d. Deals reduced damage beyond $<cap> targets.
-
-Enemies hit are tethered to Spear of Bastion's location for the duration.
-
+Description      : Throw a Kyrian spear at the target location, dealing $307871s1 Arcane damage instantly and an additional $307871o4 damage over $307954d. Deals reduced damage beyond $<cap> targets.
+
+
+
+Enemies hit are tethered to Spear of Bastion's location for the duration.
+
+
+
 |cFFFFFFFFGenerates $/10;307871s3 Rage.|r
 Variables        : $cap=${5}
 
@@ -7559,8 +7682,10 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #2 (id=799631)   : Trigger Spell (64): Onslaught
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20 | Trigger Spell: 396718 | Target: Enemy (6)
-Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d.][.]
-
+Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d.][.]
+
+
+
 |cFFFFFFFFGenerates ${$m1/10} Rage.
 
 Name             : Cleave (id=315955) [Spell Family (4)] 
@@ -7885,8 +8010,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 262232 | Target: Self (1)
 #2 (id=801428)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your auto attacks generate $s2% more Rage.
-
+Description      : Your auto attacks generate $s2% more Rage.
+
+
+
 Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your movement speed by $262232s2% for $262232d.
 
 Name             : Execute (id=317073) [Spell Family (4), Hidden] 
@@ -7905,7 +8032,8 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=801995)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc163201
+Description      : $@spelldesc163201
+
 
 
 Name             : Condemn (desc=Venthyr) (id=317320) [Spell Family (4), Passive, Hidden] 
@@ -7974,12 +8102,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 317483 | Target: Enemy (6)
 #2 (id=802658)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 20% health.
-
-The primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[
-
+Description      : Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 20% health.
+
+
+
+The primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[
+
+
+
 If your foe survives, $s2% of the Rage spent is refunded.][]
-Variables        : $damage=${2.0*$317483s1}
+Variables        : $damage=${2.0*$317483s1}
+
 $absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}
 
 Name             : Condemn (desc=Venthyr) (id=317483) [Spell Family (4)] 
@@ -8036,12 +8169,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 317489 | Target: Enemy (6)
 #3 (id=802663)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 20% health.
-
-The primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[
-
+Description      : Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 20% health.
+
+
+
+The primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[
+
+
+
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
-Variables        : $damage=${2.0*$317483s1}
+Variables        : $damage=${2.0*$317483s1}
+
 $absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}
 
 Name             : Condemn (desc=Venthyr) (id=317488) [Spell Family (4)] 
@@ -8200,15 +8338,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 325862 | Target: Self (1)
 #11 (id=880318)   : Trigger Spell (64): Conqueror's Banner
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343714 | Target: Self (1)
-Description      : Brandish the Conqueror's Banner, granting $s1 Mastery and $s2% increased movement speed to you and your $325862s6 nearest allies, and preventing movement speed from being reduced below $s3%. Lasts $d.
-
+Description      : Brandish the Conqueror's Banner, granting $s1 Mastery and $s2% increased movement speed to you and your $325862s6 nearest allies, and preventing movement speed from being reduced below $s3%. Lasts $d.
+
+
+
 |cFFFFFFFFGenerates $<rage> Rage per sec.|r
-Tooltip          : Mastery increased by $w1.
-Movement speed increased by $w2%.
-Less hindered by movement impairing effects.
-Generating ${$w4/10} Rage per sec.
-$?$w8!=0[
-Strength increased by $w8%.][]$?$w9!=0[
+Tooltip          : Mastery increased by $w1.
+
+Movement speed increased by $w2%.
+
+Less hindered by movement impairing effects.
+
+Generating ${$w4/10} Rage per sec.
+
+$?$w8!=0[
+
+Strength increased by $w8%.][]$?$w9!=0[
+
 Critical strike chance increased by $w9%.][]
 Variables        : $rage=$?c1[${4}]?c2[${6}][${4}]
 
@@ -8310,9 +8456,12 @@ Effects          :
 #6 (id=885552)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : $@spelldesc324143
-Tooltip          : Mastery increased by $w1.
-Movement speed increased by $w2%.
-Less hindered by movement impairing effects.$?$w5!=0[
+Tooltip          : Mastery increased by $w1.
+
+Movement speed increased by $w2%.
+
+Less hindered by movement impairing effects.$?$w5!=0[
+
 Critical strike chance increased by $w5%.][]
 
 Name             : Ancient Aftershock (desc=Night Fae) (id=325886) [Spell Family (4)] 
@@ -8345,12 +8494,16 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Stun | Target: Cone to Enemy (104)
 #3 (id=845571)   : Trigger Spell (64): Ancient Aftershock
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343607 | Target: Self (1)
-Description      : Unleash a wave of anima, dealing $s1 Nature damage to up to $s2 enemies and knocking them down for $d.
-
+Description      : Unleash a wave of anima, dealing $s1 Nature damage to up to $s2 enemies and knocking them down for $d.
+
+
+
 The ground will continue to expel anima, dealing $<areaDmg> Nature damage to up to $s2 enemies and generating $<rage> Rage per enemy over $343607d. Every $<period> sec, targets are briefly knocked down.
 Tooltip          : Stunned.
-Variables        : $rage=${4*($326076s1/10)}
-$areaDmg=${4*$326062s1}
+Variables        : $rage=${4*($326076s1/10)}
+
+$areaDmg=${4*$326062s1}
+
 $period=${3}
 
 Name             : Ancient Aftershock (id=326062) [Spell Family (4)] 
@@ -8505,12 +8658,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 317489 | Target: Enemy (6)
 #3 (id=823933)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 35% health.
-
-The primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[
-
+Description      : Condemn a foe to suffer for their sins, causing ${$317488sw1+$317489sw1} Shadow damage. Only usable on enemies who are above 80% health or below 35% health.
+
+
+
+The primary target is weakened, preventing $<absorb> damage they would deal to you.$?s316403[
+
+
+
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
-Variables        : $damage=${2.0*$317483s1}
+Variables        : $damage=${2.0*$317483s1}
+
 $absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}
 
 Name             : Condemn (desc=Venthyr) (id=330334) [Spell Family (4)] 
@@ -8540,12 +8698,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 317483 | Target: Enemy (6)
 #2 (id=823944)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 35% health.
-
-The primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[
-
+Description      : Condemn a foe to suffer for their sins, causing up to $<damage> Shadow damage. Only usable on enemies who are above 80% health or below 35% health.
+
+
+
+The primary target is weakened, preventing up to $<absorb> damage they would deal to you.$?s231830[
+
+
+
 If your foe survives, $s2% of the Rage spent is refunded.][]
-Variables        : $damage=${2.0*$317483s1}
+Variables        : $damage=${2.0*$317483s1}
+
 $absorb=${(($317320s3/100)*$AP)*2.0*(1+$@versadmg)}
 
 Name             : Repulsive Pennant (id=333858) [Spell Family (4)] 
@@ -8660,7 +8823,8 @@ Effects          :
 #15 (id=829489)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Friendly (21)
 Description      : $@spelldesc333891
-Tooltip          : Leech increased by $w1%.
+Tooltip          : Leech increased by $w1%.
+
 Immune to crowd control effects.
 
 Name             : Collateral Damage (id=334779) [Spell Family (4), Passive] 
@@ -8941,8 +9105,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.96233 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
-
+Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Crushing Blow (id=335097) [Spell Family (4)] 
@@ -8975,10 +9141,14 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 50 | Trigger Spell: 335098 | Target: Enemy (6)
 #4 (id=831440)   : Trigger Spell (64): Crushing Blow
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 335100 | Target: Enemy (6)
-Description      : Strike a mighty blow with both weapons that deals a total of ${$335098s1+$335100s1} Physical damage.$?s383854[
-
-Crushing Blow has a $s1% chance to instantly reset its own cooldown.][]
-
+Description      : Strike a mighty blow with both weapons that deals a total of ${$335098s1+$335100s1} Physical damage.$?s383854[
+
+
+
+Crushing Blow has a $s1% chance to instantly reset its own cooldown.][]
+
+
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
 Name             : Crushing Blow (id=335098) [Spell Family (4)] 
@@ -9256,7 +9426,8 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Radius: 0 - 60 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Raise your $?c3[shield][weapon], reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
-Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
+Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
+
 Magical damage taken reduced by $s2%.
 
 Name             : Merciless Bonegrinder (id=335260) [Spell Family (4), Passive, Hidden] 
@@ -9278,7 +9449,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1147 (Label) | Target: Self (1)
                    Affected Spells (Label): Merciless Bonegrinder (346574)
 Description      : When $?s152277[Ravager][Bladestorm] ends, Whirlwind deals |cFFFFFFFF$s1%|r increased damage for $?s152277[$<rav>][$<bstorm>] sec.
-Variables        : $rav=${7}
+Variables        : $rav=${7}
+
 $bstorm=${9}
 
 Name             : Signet of Tormented Kings (id=335266) [Spell Family (4), Passive] 
@@ -9561,7 +9733,8 @@ Attributes       : ........ ........ ........ .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=832527)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : $@spelldesc335718
+Description      : $@spelldesc335718
+
 
 
 Name             : Seismic Reverberation (id=335758) [Spell Family (4), Passive] 
@@ -10080,7 +10253,8 @@ Effects          :
 #6 (id=868418)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc324143
-Tooltip          : Maximum health increased by $w1%. Critical strike chance increased by $w2%.$?$w6!=0[
+Tooltip          : Maximum health increased by $w1%. Critical strike chance increased by $w2%.$?$w6!=0[
+
 Strength increased by $w6%.][]
 
 Name             : Conqueror's Banner (desc=Necrolord) (id=343714) [Spell Family (4), Hidden] 
@@ -10146,8 +10320,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 262232 | Target: Self (1)
 #2 (id=872264)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your auto attacks generate $s2% more Rage.
-
+Description      : Your auto attacks generate $s2% more Rage.
+
+
+
 Killing an enemy instantly generates ${$262232s1/10} Rage, and increases your movement speed by $262232s2% for $262232d.
 
 Name             : Battlelord (id=346369) [Spell Family (4)] 
@@ -10382,7 +10558,8 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=886346)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000}.1 sec].
+Description      : Condemn extends the duration of $?c1[Colossus Smash by ${$s1/1000}.1 sec]?c2[Recklessness by ${$s2/1000}.1 sec][Avatar by ${$s3/1000}.1 sec].
+
 
 
 Name             : Nature's Fury (id=354161) [Spell Family (4), Hidden] 
@@ -10981,10 +11158,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 376080 | Radius: 5 yards | Target: Unknown(87)
 #2 (id=1002893)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 376081 | Radius: 5 yards | Target: Unknown(87)
-Description      : Throw a spear at the target location, dealing $376080s1 Physical damage instantly and an additional $376080o4 damage over $376081d. Deals reduced damage beyond $<cap> targets.
-
-Enemies hit are chained to the spear's location for the duration.
-
+Description      : Throw a spear at the target location, dealing $376080s1 Physical damage instantly and an additional $376080o4 damage over $376081d. Deals reduced damage beyond $<cap> targets.
+
+
+
+Enemies hit are chained to the spear's location for the duration.
+
+
+
 |cFFFFFFFFGenerates $/10;376080s3 Rage.|r
 Variables        : $cap=${5}
 
@@ -11024,8 +11205,10 @@ Effects          :
                    Family Flags: 9
 Hotfixed         : NEW EFFECT
 Description      : $@spelldesc376079
-Tooltip          : Tethered by chains and taking $w4 Physical damage every $t4 sec.$?e4[
-
+Tooltip          : Tethered by chains and taking $w4 Physical damage every $t4 sec.$?e4[
+
+
+
 Taking $w5% additional critical strike damage from $@auracaster.][]
 
 Name             : Champion's Spear (id=376081) [Spell Family (4)] 
@@ -11193,8 +11376,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013939)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you take any damage, heal for ${$m1/10}.2% of your maximum health. 
-
+Description      : When you take any damage, heal for ${$m1/10}.2% of your maximum health. 
+
+
+
 This can only occur once every $357946d.
 
 Name             : Pain and Gain (id=382551) [Spell Family (4)] 
@@ -11353,7 +11538,8 @@ Effects          :
                    Family Flags: 9
 #3 (id=1014475)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your damage while using two-handed weapons by $s1%.
+Description      : Increases your damage while using two-handed weapons by $s1%.
+
 
 
 Name             : Dual Wield Specialization (id=382900) [Spell Family (4), Passive, Hidden] 
@@ -11601,7 +11787,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cleave (845), Slam (1464), Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Whirlwind (411547), Cleave (458459)
                    Family Flags: 21, 22, 34
-Description      : Slam, Cleave, and Whirlwind deal $s1% more damage and $s2% increased critical strike damage.
+Description      : Slam, Cleave, and Whirlwind deal $s1% more damage and $s2% increased critical strike damage.
+
 
 
 Name             : Fueled by Violence (id=383103) [Spell Family (4), Passive, Hidden] 
@@ -11670,8 +11857,10 @@ Effects          :
                    Family Flags: 3
 #2 (id=1014823)  : Apply Player/Pet Aura (202) | Proc Trigger Spell (42): Concussive Blows
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383116 | Radius: 100 yards | Target: Self (1)
-Description      : Cooldown of Pummel reduced by ${$s1/-1000}.1 sec. 
-
+Description      : Cooldown of Pummel reduced by ${$s1/-1000}.1 sec. 
+
+
+
 Successfully interrupting an enemy increases the damage you deal to them by $383116s2% for $383116d.
 
 Name             : Concussive Blows (id=383116) [Spell Family (4)] 
@@ -11745,9 +11934,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1077766)  : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
-Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects last ${$s1/1000}.1 sec longer and have a $s2% increased critical strike chance.
-
-If you have Rend, Mortal Strike inflicts Rend on targets below $s4% health.
+Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects last ${$s1/1000}.1 sec longer and have a $s2% increased critical strike chance.
+
+
+
+If you have Rend, Mortal Strike inflicts Rend on targets below $s4% health.
+
 
 
 Name             : Improved Sweeping Strikes (id=383155) [Spell Family (4), Passive, Hidden] 
@@ -11813,7 +12005,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1015062)  : Reduce Remaining Cooldown (290)
                    Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Trigger Spell: 12294 | Target: Self (1)
-Description      : Mortal Strike and Cleave have a $383219h% chance to instantly reset their own cooldowns.
+Description      : Mortal Strike and Cleave have a $383219h% chance to instantly reset their own cooldowns.
+
 
 
 Name             : Bloodborne (id=383287) [Spell Family (4), Passive] 
@@ -11983,7 +12176,8 @@ Effects          :
 #1 (id=1015154)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Whirlwind and Cleave deal $383316s1% increased damage during Ravager or for $<bstorm> sec after Bladestorm ends.
-Variables        : $rav=${7}
+Variables        : $rav=${7}
+
 $bstorm=${9}
 
 Name             : Valor in Victory (id=383338) [Spell Family (4), Passive, Hidden] 
@@ -12244,7 +12438,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #4 (id=1015890)  : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
-Description      : Restores $s1% health instantly and removes all diseases, poisons and curses affecting you.
+Description      : Restores $s1% health instantly and removes all diseases, poisons and curses affecting you.
+
 
 
 Name             : Frenzied Enrage (id=383848) [Spell Family (4), Passive] 
@@ -12630,7 +12825,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=1022025)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Increases Strength and Armor by $s1% and your critical strike chance by $s2%.
+Description      : Increases Strength and Armor by $s1% and your critical strike chance by $s2%.
+
 
 
 Name             : Impenetrable Wall (id=384072) [Spell Family (4), Passive] 
@@ -12688,8 +12884,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #5 (id=1016450)  : Trigger Spell (64): Berserker Shout
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 384102 | Target: Self (1)
-Description      : Go berserk, removing and granting immunity to Fear, Sap, and Incapacitate effects for $d.
-
+Description      : Go berserk, removing and granting immunity to Fear, Sap, and Incapacitate effects for $d.
+
+
+
 Also remove fear effects from group members within $384102A1 yds.
 Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 
@@ -13071,9 +13269,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 385061 | Target: Self (1)
 #5 (id=1024239)  : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
-Description      : Unleashes your power, dealing ${$385060sw1+$385062sw1+$385061sw1+$385061sw1} Physical damage and an additional $385060o2 Physical damage over $385060d to all enemies within $385060A2 yards.
-
-|cFFFFFFFFGenerates ${$s5/10} Rage.|r
+Description      : Unleashes your power, dealing ${$385060sw1+$385062sw1+$385061sw1+$385061sw1} Physical damage and an additional $385060o2 Physical damage over $385060d to all enemies within $385060A2 yards.
+
+
+
+|cFFFFFFFFGenerates ${$s5/10} Rage.|r
+
 
 
 Name             : Odyn's Fury (id=385060) [Spell Family (4)] 
@@ -13329,7 +13530,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Wounds (115767), Deep Wounds (115768), Deep Wounds (262115), Gushing Wound (385042), Odyn's Fury (385060), Rend (388539), Thunderous Roar (397364)
                    Family Flags: 120
-Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects deal $s1% increased damage.
+Description      : Deep Wounds, Rend and Thunderous Roar's Bleed effects deal $s1% increased damage.
+
 
 
 Name             : Thunderlord (id=385840) [Spell Family (4), Passive] 
@@ -13355,8 +13557,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6
                    Affected Spells: Demoralizing Shout (1160)
                    Family Flags: 17
-Description      : Increases the radius of Demoralizing Shout by $s3 yards.
-
+Description      : Increases the radius of Demoralizing Shout by $s3 yards.
+
+
+
 Each enemy hit by Thunder Clap reduces the remaining cooldown on Demoralizing Shout by ${$s1/1000}.1 sec, up to ${$s1*$s2/1000}.1 sec.
 
 Name             : Show of Force (id=385842) [Spell Family (4)] 
@@ -13431,8 +13635,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019448)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Trigger Spell: 385889 | Target: Self (1)
-Description      : Blocking an attack deals $385890s1 Physical damage to the attacker, ignoring armor. 
-
+Description      : Blocking an attack deals $385890s1 Physical damage to the attacker, ignoring armor. 
+
+
+
 Generates high threat.
 
 Name             : Tough as Nails (id=385889) [Spell Family (4), Hidden] 
@@ -13502,10 +13708,14 @@ Attributes       : ....x... ........ x.x..... .....x..   ........ .xx..... .....
 Effects          :
 #1 (id=1019546)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Charge to an enemy with your shield, dealing $385954s1 Physical damage to it and $385954s2 Physical damage to all enemies within 10 yards.
-
-Also stuns the primary target for $385954d.
-
+Description      : Charge to an enemy with your shield, dealing $385954s1 Physical damage to it and $385954s2 Physical damage to all enemies within 10 yards.
+
+
+
+Also stuns the primary target for $385954d.
+
+
+
 |cFFFFFFFFGenerates ${$385954s4/10} Rage.|r
 
 Name             : Shield Charge (id=385953) [Spell Family (4)] 
@@ -13705,7 +13915,8 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: At Self (22) -> Enemy in Area (15)
 #3 (id=1020162)  : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 14 yards | Mechanic: Interrupt | Target: At Self (22) -> Enemy in Area (15)
-Description      : Taunts all enemies within $A1 yds to attack you for $d, interrupts all spellcasting within $A1 yds and prevents any spell in that school from being cast for $d.
+Description      : Taunts all enemies within $A1 yds to attack you for $d, interrupts all spellcasting within $A1 yds and prevents any spell in that school from being cast for $d.
+
 
 Tooltip          : Taunted.
 
@@ -13737,8 +13948,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 #3 (id=1020088)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Description      : A balanced combat state that increases the critical strike chance of your abilities by $s1% and reduces the duration of movement impairing effects by $s2%. 
-
+Description      : A balanced combat state that increases the critical strike chance of your abilities by $s1% and reduces the duration of movement impairing effects by $s2%. 
+
+
+
 Lasts until canceled.
 Tooltip          : Critical strike chance increased by $s1% and reduces the duration of movement impairing effects by $s2%.
 
@@ -13773,8 +13986,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 #5 (id=1020116)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-Description      : An aggressive combat state that increases the damage of your auto-attacks by $s1% and reduces the duration of Fear, Sap and Incapacitate effects on you by $s2%.
-
+Description      : An aggressive combat state that increases the damage of your auto-attacks by $s1% and reduces the duration of Fear, Sap and Incapacitate effects on you by $s2%.
+
+
+
 Lasts until canceled.
 Tooltip          : Auto-attack damage increased by $s1% and the effects of Fear, Sap and Incapacitate are reduced by $s2%.
 
@@ -13811,11 +14026,15 @@ Effects          :
 #3 (id=1153688)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Description      : A defensive combat state that reduces all damage you take by $s1%$?a452494[ and all magic damage you take by an additional $s3%][]$?a137048[][, and all damage you deal by $s2%]. 
-
+Description      : A defensive combat state that reduces all damage you take by $s1%$?a452494[ and all magic damage you take by an additional $s3%][]$?a137048[][, and all damage you deal by $s2%]. 
+
+
+
 Lasts until canceled.
-Tooltip          : Damage taken reduced by $s1%.
-$?a452494[Magic damage taken reduced by an additional $s3%.][]
+Tooltip          : Damage taken reduced by $s1%.
+
+$?a452494[Magic damage taken reduced by an additional $s3%.][]
+
 $?a137048[][Damage done reduced by $s2%.]
 
 Name             : Champion's Might (id=386284) [Spell Family (4), Passive, Hidden] 
@@ -13935,8 +14154,10 @@ Effects          :
 #2 (id=1160634)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: -10 | Target: Self (1)
                    Affected School(s): All
-Description      : When your health is brought below $s1%, you take $386397s1% less damage for $386397d and healing you receive is increased by $386397s2%.
-
+Description      : When your health is brought below $s1%, you take $386397s1% less damage for $386397d and healing you receive is increased by $386397s2%.
+
+
+
 Cannot occur more than once every $456447d.
 
 Name             : Battle-Scarred Veteran (id=386397) 
@@ -14065,7 +14286,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1078844)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every other time Bladestorm or Ravager deal damage, you automatically cast a $?c1[Mortal Strike][Bloodthirst] at your target or random nearby enemy$?a134735[, dealing $s3% of normal damage.][.]
+Description      : Every other time Bladestorm or Ravager deal damage, you automatically cast a $?c1[Mortal Strike][Bloodthirst] at your target or random nearby enemy$?a134735[, dealing $s3% of normal damage.][.]
+
 
 
 Name             : Battlelord (id=386630) [Spell Family (4), Passive] 
@@ -14318,8 +14540,10 @@ Effects          :
                    Family Flags: 21
 #7 (id=1024915)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-Description      : Whirlwind has a ${$s1/1000}.1 sec cooldown, but deals $s3% increased damage. 
-
+Description      : Whirlwind has a ${$s1/1000}.1 sec cooldown, but deals $s3% increased damage. 
+
+
+
 Slam has a ${$s2/1000}.1 sec cooldown and generates ${$s6/10} Rage, but deals $s4% increased damage.
 
 Name             : Tenderize (id=388933) [Spell Family (4), Passive] 
@@ -14512,8 +14736,10 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1026755)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Activating Avatar casts Recklessness with a duration of ${$s1/1000} sec.
-
+Description      : Activating Avatar casts Recklessness with a duration of ${$s1/1000} sec.
+
+
+
 The additional Rage generation of this Recklessness cast is reduced to $s2%.
 
 Name             : Crushing Force (id=390642) [Spell Family (4), Passive] 
@@ -14541,8 +14767,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
                    Family Flags: 41
-Description      : Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.
-
+Description      : Shield Slam deals an additional $s1% damage and deals $s2% increased critical strike damage.
+
+
+
 
 
 Name             : Barbaric Training (id=390674) [Spell Family (4), Passive] 
@@ -14624,10 +14852,14 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1166471)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c1[When an enemy dies while affected by your Bladestorm, all damage you deal is increased by $459572s1% for the remainder of the Bladestorm and for $459572d afterwards.
-
-][]When an enemy dies while affected by your Ravager, its duration is extended by ${$s1/1000} sec.
-
+Description      : $?c1[When an enemy dies while affected by your Bladestorm, all damage you deal is increased by $459572s1% for the remainder of the Bladestorm and for $459572d afterwards.
+
+
+
+][]When an enemy dies while affected by your Ravager, its duration is extended by ${$s1/1000} sec.
+
+
+
 $?c1[These effects][This effect] can trigger a maximum of $s2 times per use of $?c1[Bladestorm or ][]Ravager.
 
 Name             : Mind Melt (id=391090) [Spell Family (6), Passive, Hidden] 
@@ -14663,8 +14895,10 @@ Effects          :
                    Affected Spells (Label): Mind Melt (391092)
 #2 (id=1070947)  : Apply Aura (6) | Proc Trigger Spell (42): Mind Melt
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 391092 | Target: Self (1)
-Description      : Mind Spike increases the critical strike chance of Mind Blast by $s1%, stacking up to $391092U times.
-
+Description      : Mind Spike increases the critical strike chance of Mind Blast by $s1%, stacking up to $391092U times.
+
+
+
 Lasts $391092d.
 
 Name             : Mind Melt (id=391092) [Spell Family (6)] 
@@ -15049,7 +15283,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1031513)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Raging Blow deals $386045s1% increased damage and while Enraged, Raging Blow has a $s1% increased chance to instantly reset its own cooldown.
+Description      : Raging Blow deals $386045s1% increased damage and while Enraged, Raging Blow has a $s1% increased chance to instantly reset its own cooldown.
+
 
 
 Name             : Spell Block (id=392966) [Spell Family (4)] 
@@ -15466,9 +15701,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.39162 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1033409)  : Trigger Spell (64): Rend
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388539 | Target: Enemy (6)
-Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $394063o1 Bleed damage over $394063d.$?s6343[
-
-|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
+Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $394063o1 Bleed damage over $394063d.$?s6343[
+
+
+
+|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
+
 ][]
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -15580,8 +15818,10 @@ Effects          :
 #4 (id=1033837)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2349 (Label) | Target: Self (1)
                    Affected Spells (Label): Devastator (236282)
-Description      : Devastate deals $s1% increased damage and generates ${$s2/10} Rage.
-
+Description      : Devastate deals $s1% increased damage and generates ${$s2/10} Rage.
+
+
+
 Devastator deals $s3% increased damage and generates ${$s4/10} Rage.
 
 Name             : Battering Ram (id=394312) [Spell Family (4), Passive] 
@@ -15659,8 +15899,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062)
                    Family Flags: 104
-Description      : Odyn's Fury's Enrages you, deals $s2% increased damage and grants you $85739u stacks of Whirlwind.
-
+Description      : Odyn's Fury's Enrages you, deals $s2% increased damage and grants you $85739u stacks of Whirlwind.
+
+
+
 
 
 Name             : Shattering Throw (id=394352) [Spell Family (4)] 
@@ -15757,10 +15999,14 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=1038230)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.12240 | PvP Coefficient: 1.35000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Brutally attack an enemy for $s1 Physical damage$?388933[
-
-and become Enrage for 5 sec.][.]
-
+Description      : Brutally attack an enemy for $s1 Physical damage$?388933[
+
+
+
+and become Enrage for 5 sec.][.]
+
+
+
 |cFFFFFFFFGenerates ${$m2/10} Rage.
 
 Name             : Reckless Abandon (id=396749) [Spell Family (4), Passive] 
@@ -15872,8 +16118,10 @@ Effects          :
                    Affected Spells: Deep Wounds (115767), Deep Wounds (115768), Deep Wounds (262115), Gushing Wound (385042), Odyn's Fury (385060), Rend (388539), Thunderous Roar (397364)
                    Family Flags: 120
 Description      : $@spelldesc384318
-Tooltip          : Bleeding for $w1 damage every $t1 sec.$?a424742[
-
+Tooltip          : Bleeding for $w1 damage every $t1 sec.$?a424742[
+
+
+
 Damage taken increased by $w2%.][]
 
 Name             : Improved Execute (id=397708) [Spell Family (4), Passive] 
@@ -15921,7 +16169,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 400806 | Target: Self (1)
 #2 (id=1044959)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Overpower generates ${$400806s1/10} Rage when used on enemies below $s2% health.
+Description      : Overpower generates ${$400806s1/10} Rage when used on enemies below $s2% health.
+
 
 
 Name             : Spiteful Serenity (id=400314) [Spell Family (4), Passive, Hidden] 
@@ -16017,7 +16266,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384)
                    Family Flags: 2
-Description      : Overpower deals $s3% additional damage, has $s1% increased critical strike chance, and deals $s2% increased critical strike damage.
+Description      : Overpower deals $s3% additional damage, has $s1% increased critical strike chance, and deals $s2% increased critical strike damage.
+
 
 
 Name             : Strength of Arms (id=400806) [Spell Family (4)] 
@@ -16089,8 +16339,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670)
                    Family Flags: 9
-Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.
-
+Description      : Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.
+
+
+
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
 
@@ -16269,8 +16521,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406087 | Target: Self (1)
 #2 (id=1054764)  : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406090 | Target: Self (1)
-Description      : While active, you automatically assume your human form when you leave combat.
-
+Description      : While active, you automatically assume your human form when you leave combat.
+
+
+
 Activate to disable this effect.
 
 Name             : Calm the Wolf (desc=Racial) (id=406090) [Hidden] 
@@ -16838,18 +17092,30 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Piercing Howl (12323)
                    Family Flags: 71
-Description      : Your Shout abilities have additional effects.
-$@spellicon6673 $@spellname6673:
-Increases Stamina by $s1%.
-$@spellicon12323 $@spellname12323:
-Radius increased by $s6%
-$@spellicon384100 $@spellname384100:
-Range increased by $s2 yds.
-$@spellicon5246 $@spellname5246:
-Cooldown reduced by ${$s3/-1000} sec.
-$@spellicon97462 $@spellname97462:
-Removes movement impairing effects and grants $s4% movement speed to allies.
-$@spellicon384318 $@spellname384318:
+Description      : Your Shout abilities have additional effects.
+
+$@spellicon6673 $@spellname6673:
+
+Increases Stamina by $s1%.
+
+$@spellicon12323 $@spellname12323:
+
+Radius increased by $s6%
+
+$@spellicon384100 $@spellname384100:
+
+Range increased by $s2 yds.
+
+$@spellicon5246 $@spellname5246:
+
+Cooldown reduced by ${$s3/-1000} sec.
+
+$@spellicon97462 $@spellname97462:
+
+Removes movement impairing effects and grants $s4% movement speed to allies.
+
+$@spellicon384318 $@spellname384318:
+
 Targets receive $s5% more damage from all sources while bleeding.
 
 Name             : Battlefield Commander (desc=PvP Talent) (id=424840) [Spell Family (4), Hidden] 
@@ -17004,8 +17270,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1114009)  : Apply Aura (6) | Proc Trigger Spell (42): Colossal Might
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 440989 | Target: Self (1)
-Description      : Colossal Might increases damage dealt by your next Demolish by $440989s1%, stacking up to $440989u times.
-
+Description      : Colossal Might increases damage dealt by your next Demolish by $440989s1%, stacking up to $440989u times.
+
+
+
 $?c1[Mortal Strike and Execute][Shield Slam and Execute] grant a stack of Colossal Might and $?c1[Cleave][Revenge] grants a stack of Colossal Might when it strikes $s1 or more targets.
 
 Name             : Dominance of the Colossus (id=429636) [Spell Family (4), Passive, Hidden] 
@@ -17028,8 +17296,10 @@ Effects          :
                    Affected Spells (Label): Colossal Might (440989)
 #2 (id=1135859)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Colossal Might now stacks up to 10 times. If you would gain a stack of Colossal Might and are at max stacks, the cooldown of Demolish is reduced by $s2 sec.
-
+Description      : Colossal Might now stacks up to 10 times. If you would gain a stack of Colossal Might and are at max stacks, the cooldown of Demolish is reduced by $s2 sec.
+
+
+
 Enemies affected by Demolish take up to ${$447513s2*$447513u*0.1}% more damage from you and deal up to ${$447513s1*$447513u*-0.1}% less damage to you for $447513d based on the number of stacks of Colossal Might consumed by Demolish.
 
 Name             : One Against Many (id=429637) [Spell Family (4), Passive, Hidden] 
@@ -17146,8 +17416,10 @@ Effects          :
                    Affected School(s): All
 #5 (id=1135815)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You deal $s1% more damage and take ${$s4/-10}.1% less damage.
-
+Description      : You deal $s1% more damage and take ${$s4/-10}.1% less damage.
+
+
+
 Size increased by $s5%.
 
 Name             : No Stranger to Pain (id=429644) [Spell Family (4), Passive, Hidden] 
@@ -17232,8 +17504,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1127180)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging enemies with Thunder Clap, $?a137048[Revenge, ][Raging Blow, ]or Execute has a $s1% chance to also strike one with a lightning bolt, dealing $435791s1 Nature damage$?s436152[ and generating ${$435791s3/10} Rage][].
-
+Description      : Damaging enemies with Thunder Clap, $?a137048[Revenge, ][Raging Blow, ]or Execute has a $s1% chance to also strike one with a lightning bolt, dealing $435791s1 Nature damage$?s436152[ and generating ${$435791s3/10} Rage][].
+
+
+
 Lightning Strikes occur $s2% more often during Avatar.
 
 Name             : Steadfast as the Peaks (id=434970) [Spell Family (4), Passive] 
@@ -17253,8 +17527,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1125291)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
-Description      : Stamina increased by $s1%.
-
+Description      : Stamina increased by $s1%.
+
+
+
 $?s202168[Impending Victory][Victory Rush] increases your maximum health by $437152s3% for $437152d. When this health increase expires, you heal for any amount of the original $?s202168[Impending Victory][Victory Rush] that healed you in excess of your full health.
 
 Name             : Thunder Clap (id=435203) [Spell Family (4)] 
@@ -17311,8 +17587,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 #5 (id=1125688)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Blasts all enemies within $A1 yards for $s1 Stormstrike damage$?s199045[, roots them for $199042d,][] and reduces their movement speed by $435203s1% for $435203d. Deals reduced damage beyond $s5 targets.$?a137048|(a137050&a436707)[
-
+Description      : Blasts all enemies within $A1 yards for $s1 Stormstrike damage$?s199045[, roots them for $199042d,][] and reduces their movement speed by $435203s1% for $435203d. Deals reduced damage beyond $s5 targets.$?a137048|(a137050&a436707)[
+
+
+
 |cFFFFFFFFGenerates ${$s4/10} Rage.][]
 
 Name             : Thunder Blast (id=435607) [Spell Family (4), Passive] 
@@ -17338,9 +17616,12 @@ Effects          :
 #2 (id=1160106)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value 2: 3159 (Label) | Target: Self (1)
                    Affected Spells (Label): Thunder Blast (435222)
-Description      : Shield Slam and Bloodthirst have a $s1% chance to grant you Thunder Blast, stacking up to 2 charges.
-
-$@spellicon435222|cFFFFFFFF$@spellname435222|r
+Description      : Shield Slam and Bloodthirst have a $s1% chance to grant you Thunder Blast, stacking up to 2 charges.
+
+
+
+$@spellicon435222|cFFFFFFFF$@spellname435222|r
+
 Your next Thunder Clap becomes a Thunder Blast that deals $?a137048[$s2% increased damage as Stormstrike][Stormstrike damage] and generates ${$435222s4/10} Rage.
 
 Name             : Thunder Blast (id=435615) [Spell Family (4)] 
@@ -17435,8 +17716,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Revenge (6572), Raging Blow (85384), Raging Blow (96103), Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 10, 45, 115, 116
-Description      : Lightning Strikes generate ${$s1/10} Rage.
-
+Description      : Lightning Strikes generate ${$s1/10} Rage.
+
+
+
 $?a137048[Revenge][Raging Blow] and Execute damage increased by $s2%.
 
 Name             : Storm Bolts (id=436162) [Spell Family (4), Passive] 
@@ -17528,10 +17811,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 144 | Target: Self (1)
 #9 (id=1145557)  : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2142 | Target: Self (1)
-Description      : Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within 8 yds of it. Deals reduced damage beyond $s1 targets.
-
-While channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.
-
+Description      : Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within 8 yds of it. Deals reduced damage beyond $s1 targets.
+
+
+
+While channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.
+
+
+
 You can block, parry, dodge, and use certain defensive abilities while channeling Demolish.
 
 Name             : Crashing Thunder (id=436707) [Spell Family (4), Passive] 
@@ -17579,10 +17866,14 @@ Effects          :
 #8 (id=1167204)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3856 (Label) | Target: Self (1)
                    Affected Spells (Label): Meat Cleaver (280392)
-Description      : Stormstrike or Nature damage your abilities deal is increased by $s1%. Stormstrike damage ignores Armor.
-
-Thunder Clap damage increased by $s3%$?a137050[, and it generates ${$s4/10} Rage][]. 
-
+Description      : Stormstrike or Nature damage your abilities deal is increased by $s1%. Stormstrike damage ignores Armor.
+
+
+
+Thunder Clap damage increased by $s3%$?a137050[, and it generates ${$s4/10} Rage][]. 
+
+
+
 Seismic Reverberations$?a137048[ now affects][, Improved Whirlwind, Meat Cleaver, and Barbaric Training now affect] Thunder Clap in addition to Whirlwind.
 
 Name             : Thunder Clap (id=436792) [Spell Family (4)] 
@@ -17654,10 +17945,14 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Bloodbath (335096)
                    Family Flags: 42, 108
-Description      : Shield Slam damage increased by $s1%.$?a137048[
-
-Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%][
-
+Description      : Shield Slam damage increased by $s1%.$?a137048[
+
+
+
+Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%][
+
+
+
 Bloodthirst and Rampage damage increased by $s4%.]
 
 Name             : Flashing Skies (id=437079) [Spell Family (4), Passive] 
@@ -17759,11 +18054,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1128894)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Avatar grants you $s1 charges of Thunder Blast and resets the cooldown of Thunder Clap.
-
-While Avatar is not active, Lightning Strikes have a $s2% chance to grant you Avatar for $s3 secs.
-
-$@spellicon435222|cFFFFFFFF$@spellname435222|r
+Description      : Casting Avatar grants you $s1 charges of Thunder Blast and resets the cooldown of Thunder Clap.
+
+
+
+While Avatar is not active, Lightning Strikes have a $s2% chance to grant you Avatar for $s3 secs.
+
+
+
+$@spellicon435222|cFFFFFFFF$@spellname435222|r
+
 Your next Thunder Clap becomes a Thunder Blast that deals Stormstrike damage.
 
 Name             : Steadfast as the Peaks (id=437152) [Spell Family (4)] 
@@ -17817,8 +18117,10 @@ Effects          :
 #2 (id=1160360)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
-Description      : Physical damage taken reduced by $s2%.
-
+Description      : Physical damage taken reduced by $s2%.
+
+
+
 Thunder Blast reduces damage you take by $438591s1% for $438591d.
 
 Name             : Keep Your Feet on the Ground (id=438591) [Spell Family (4)] 
@@ -18145,8 +18447,10 @@ Effects          :
                    Affected Spells: Revenge (6572), Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 10, 85
 Description      : $@spelldesc429634
-Tooltip          : Damage dealt by Demolish increased by $w1%.
-$?(a429641&c1)[Damage dealt by Overpower increased by $w3%.]?$?(a429641&c3)[Damage dealt by Revenge increased by $w3%.][]
+Tooltip          : Damage dealt by Demolish increased by $w1%.
+
+$?(a429641&c1)[Damage dealt by Overpower increased by $w3%.]?$?(a429641&c3)[Damage dealt by Revenge increased by $w3%.][]
+
 $?a440995[Damage dealt by Rend and Deep Wounds increased by $w2%.][]
 
 Name             : Earthquaker (id=440992) [Spell Family (4), Passive, Hidden] 
@@ -18191,8 +18495,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1135202)  : Apply Aura (6) | Proc Trigger Spell (42): Second Wind
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Trigger Spell: 441387 | Target: Self (1)
-Description      : When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.
-
+Description      : When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.
+
+
+
 This effect cannot occur more than once every $proccooldown sec.
 
 Name             : Arterial Bleed (id=440995) [Spell Family (4), Passive, Hidden] 
@@ -18212,7 +18518,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1135204)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.
+Description      : Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.
+
 
 
 Name             : Second Wind (id=441387) [Spell Family (4)] 
@@ -18318,8 +18625,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141367)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every $s1 Slayer's Strikes you gain Sudden Death.
-
+Description      : Every $s1 Slayer's Strikes you gain Sudden Death.
+
+
+
 Using Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
 
 Name             : Death Drive (id=444770) [Spell Family (4), Passive, Hidden] 
@@ -18399,7 +18708,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141371)  : Apply Aura (6) | Proc Trigger Spell (42): Fierce Followthrough
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 458689 | Target: Self (1)
-Description      : $?c1[Mortal Strike][Bloodthirst] critical strikes increase the damage of your next $?c1[Mortal Strike][Bloodthirst] by $458689s1%.
+Description      : $?c1[Mortal Strike][Bloodthirst] critical strikes increase the damage of your next $?c1[Mortal Strike][Bloodthirst] by $458689s1%.
+
 
 
 Name             : Opportunist (id=444774) [Spell Family (4), Passive, Hidden] 
@@ -18442,7 +18752,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141373)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?c1[Mortal Strike and Cleave have][Bloodthirst has] a $h% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
+Description      : $?c1[Mortal Strike and Cleave have][Bloodthirst has] a $h% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
+
 
 
 Name             : Relentless Pursuit (id=444776) [Spell Family (4), Passive, Hidden] 
@@ -18462,9 +18773,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141374)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Charge grants you $446044s1% movement speed for $446044d.
-
-Charge removes all movement impairing effects, this effect cannot occur more than once every $458386d.
+Description      : Charge grants you $446044s1% movement speed for $446044d.
+
+
+
+Charge removes all movement impairing effects, this effect cannot occur more than once every $458386d.
+
 
 
 Name             : Vicious Agility (id=444777) [Spell Family (4), Passive, Hidden] 
@@ -18550,8 +18864,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 446035 | Scaled Value: 446035 | PvP Coefficient: 1.00000 | Misc Value: 227847 | Target: Self (1)
-Description      : When you Execute a target that you've Marked for Execution, you both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stacks of Overwhelmed to the target per stack of Marked for Execution consumed.
-
+Description      : When you Execute a target that you've Marked for Execution, you both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stacks of Overwhelmed to the target per stack of Marked for Execution consumed.
+
+
+
 You can now use Pummel and Storm Bolt while Bladestorming.
 
 Name             : Slayer's Strike (id=445579) [Spell Family (4)] 
@@ -18608,7 +18924,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600)
                    Family Flags: 29, 115, 116
-Description      : $@spelldesc444767
+Description      : $@spelldesc444767
+
 
 Tooltip          : Execute damage$?e1[, critical strike chance, and critical strike damage][] from $@auracaster increased by $w1%.
 
@@ -18866,7 +19183,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Description      : $@spelldesc429636
-Tooltip          : Taking $w2% increased damage from $@auracaster.
+Tooltip          : Taking $w2% increased damage from $@auracaster.
+
 Dealing ${$W1*-1.0}.1% less damage to $@auracaster.
 
 Name             : Fight Through the Flames (id=452494) [Spell Family (4), Passive] 
@@ -19197,7 +19515,8 @@ Effects          :
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
 Description      : $@spelldesc444774
-Tooltip          : $?c1[Overpower damage increased by $w3% and critical strike damage increased by $w4%.][Raging Blow damage increased by $w1% and critical strike damage increased by $w2%.
+Tooltip          : $?c1[Overpower damage increased by $w3% and critical strike damage increased by $w4%.][Raging Blow damage increased by $w1% and critical strike damage increased by $w2%.
+
 ]
 
 Name             : Snap Induction (id=456270) [Spell Family (4), Passive] 
