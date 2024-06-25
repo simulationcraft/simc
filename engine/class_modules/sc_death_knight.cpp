@@ -703,6 +703,8 @@ public:
 
     // Blood
     absorb_buff_t* blood_shield;
+    propagate_const<buff_t*> bloodied_blade_stacks;
+    propagate_const<buff_t*> bloodied_blade_final;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
@@ -861,6 +863,7 @@ public:
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
+    action_t* heart_strike_bloodied_blade;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -1083,7 +1086,7 @@ public:
       player_talent_t tombstone;
       player_talent_t blooddrinker;
       player_talent_t consumption;
-      // NYI TALENT
+      player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
       // Row 9
       player_talent_t shattering_bone;
@@ -1307,12 +1310,15 @@ public:
 
     // Blood
     const spell_data_t* blood_shield;
+    const spell_data_t* bloodied_blade_stacks_buff;
+    const spell_data_t* bloodied_blade_final_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
+    const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
@@ -1687,6 +1693,7 @@ public:
   void init_procs() override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
+  double composite_attribute( attribute_e ) const;
   double composite_bonus_armor() const override;
   void combat_begin() override;
   void activate() override;
@@ -1694,6 +1701,7 @@ public:
   void arise() override;
   void adjust_dynamic_cooldowns() override;
   void assess_heal( school_e, result_amount_type, action_state_t* ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void do_damage( action_state_t* ) override;
@@ -8880,6 +8888,23 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
+struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
+  {
+    heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
+      : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
+    {
+      background = true;
+      aoe        = 2;
+      weapon     = &( p->main_hand_weapon );
+    }
+
+    int n_targets() const override
+    {
+      return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
+                                        : aoe;
+    }
+  };
+
 struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
@@ -11755,6 +11780,10 @@ void death_knight_t::create_actions()
     {
       active_spells.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
     }
+    if ( talent.blood.bloodied_blade.ok() )
+    {
+      active_spells.heart_strike_bloodied_blade = get_action<heart_strike_bloodied_blade_t>( "heart_strike_bloodied_blade", this );
+    }
   }
 
   // Unholy
@@ -12469,12 +12498,12 @@ void death_knight_t::init_spells()
   talent.blood.coagulopathy         = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
   talent.blood.bloodworms           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   // Row 8
-  talent.blood.blood_feast   = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
-  talent.blood.mark_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
-  talent.blood.tombstone     = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.blooddrinker  = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
-  talent.blood.consumption   = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
-  // NYI TALENT
+  talent.blood.blood_feast     = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
+  talent.blood.mark_of_blood   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
+  talent.blood.tombstone       = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
+  talent.blood.blooddrinker    = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
+  talent.blood.consumption     = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
@@ -12688,13 +12717,16 @@ void death_knight_t::init_spells()
   spell.virulent_erruption = conditional_spell_lookup( spec.outbreak->ok(), 191685 );
 
   // Blood
-  spell.blood_shield         = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
-  spell.bone_shield          = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
-  spell.sanguine_ground      = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
-  spell.ossuary_buff         = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
-  spell.crimson_scourge_buff = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
-  spell.heartbreaker_rp_gain = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
-  spell.heartrend_buff       = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
+  spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
+  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
+  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
+  spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
+  spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
+  spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.heartrend_buff              = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
+  spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
   spell.voracious_buff           = conditional_spell_lookup( talent.blood.voracious.ok(), 274009 );
@@ -13326,6 +13358,18 @@ void death_knight_t::create_buffs()
             ->set_cooldown( 0_ms )
             ->apply_affecting_aura( talent.blood.reinforced_bones );
 
+    buffs.bloodied_blade_stacks = make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
+                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).base_value() / 10 )
+                                      ->add_invalidate( CACHE_STRENGTH )
+                                      ->set_cooldown( spell.bloodied_blade_stacks_buff->internal_cooldown() );
+                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+
+    buffs.bloodied_blade_final  = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
+                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+                                      ->add_invalidate( CACHE_STRENGTH );
+                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+
+
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
     buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy->effectN( 2 ).trigger() )
@@ -13827,6 +13871,25 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   player_t::assess_heal( school, t, s );
 }
 
+// death_knight_t::assess_damage ============================================
+
+void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
+{
+  player_t::assess_damage( school, type, s );
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD && s-> result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
+  {
+    if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+    {
+      buffs.bloodied_blade_stacks->expire();
+      buffs.bloodied_blade_final->trigger();
+      active_spells.heart_strike_bloodied_blade->execute_on_target( target );
+    }
+    else if ( ! buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
+      buffs.bloodied_blade_stacks->trigger();
+  }
+}
+
 // death_knight_t::assess_damage_imminent ===================================
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
@@ -13920,6 +13983,24 @@ double death_knight_t::composite_bonus_armor() const
   }
 
   return ba;
+}
+
+// death_knight_t::composite_attribute ======================================
+
+double death_knight_t::composite_attribute( attribute_e attr ) const
+{
+  auto a = player_t::composite_attribute( attr );
+
+  // TODO: remove if fixed.  This implements effect type 80 ( Modify Attribute% )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && attr == ATTR_STRENGTH )
+  {
+    if ( buffs.bloodied_blade_stacks->check() )
+      a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
+    if ( buffs.bloodied_blade_final->check() )
+      a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+  }
+
+  return a;
 }
 
 // death_knight_t::combat_begin =============================================
