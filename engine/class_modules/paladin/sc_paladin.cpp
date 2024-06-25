@@ -2111,11 +2111,15 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 // Empyrean Hammer
 struct empyrean_hammer_wd_t : public paladin_spell_t
 {
-  empyrean_hammer_wd_t( paladin_t* p ) : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
+  empyrean_hammer_wd_t( paladin_t* p )
+    : paladin_spell_t( "empyrean_hammer_wrathful_descent", p, p->spells.templar.empyrean_hammer_wd )
   {
-    background = true;
-    may_crit   = false;
-    aoe        = -1;
+    background          = true;
+    may_crit            = false;
+    aoe                 = -1;
+    // This spell currently deals full damage to all targets, even above 20.
+    // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
+    reduced_aoe_targets = -1;
   }
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
