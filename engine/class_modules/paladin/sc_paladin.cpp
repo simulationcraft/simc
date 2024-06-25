@@ -2327,7 +2327,8 @@ struct holy_armaments_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    p()->cast_holy_armaments( execute_state->target, p()->next_armament, true, false );
+    p()->cast_holy_armaments( execute_state->target->is_enemy() ? p() : execute_state->target, p()->next_armament, true,
+                              false );
   }
 };
 
