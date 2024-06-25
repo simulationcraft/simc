@@ -3701,11 +3701,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       }
     }
 
-    timespan_t tick_time( const action_state_t* ) const override
-    {
-      return base_tick_time;
-    }
-
     void trigger_dot( action_state_t* s ) override
     {
       if ( player->in_combat )  // only trigger channel 'dot' in combat
@@ -3737,7 +3732,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       generic_proc_t::tick( d );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                     ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time ) + buff->buff_duration() );
+                     ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time.base ) + buff->buff_duration() );
     }
 
     void last_tick( dot_t* d ) override

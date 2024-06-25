@@ -860,16 +860,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    // sef_action_base_t uses the source action's tick_time, which ignores base_tick_time adjustment made in the
-    // constructor above. Recalculate tick_time here.
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
     timespan_t tick_time( const action_state_t *state ) const override
     {
-      timespan_t t = base_tick_time;
       if ( hasted_ticks )
       {
-        t *= state->haste;
+        return base_tick_time * state->haste;
       }
-      return t;
+
+      return base_tick_time;
     }
 
     // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
@@ -1134,16 +1134,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration          = data().duration();
     }
 
-    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
-    // Forcing SEF to use it's own base_tick_time for tick_time.
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
     timespan_t tick_time( const action_state_t *state ) const override
     {
-      timespan_t t = base_tick_time;
-      if ( channeled || hasted_ticks )
+      if ( hasted_ticks )
       {
-        t *= state->haste;
+        return base_tick_time * state->haste;
       }
-      return t;
+
+      return base_tick_time;
     }
 
     double cost_per_tick( resource_e ) const override

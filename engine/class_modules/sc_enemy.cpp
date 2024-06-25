@@ -742,7 +742,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
     // Replace damage option
     add_option( opt_float( "damage", base_td ) );
     add_option( opt_timespan( "dot_duration", dot_duration.base ) );
-    add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_timespan( "tick_time", base_tick_time.base ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }
@@ -781,7 +781,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
 
     add_option( opt_float( "damage", base_td ) );
     add_option( opt_timespan( "dot_duration", dot_duration.base ) );
-    add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_timespan( "tick_time", base_tick_time.base ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }

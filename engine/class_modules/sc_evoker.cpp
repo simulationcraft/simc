@@ -3579,16 +3579,16 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    timespan_t t = base_t::tick_time( state );
+    auto mul = base_t::tick_time_pct_multiplier( state );
 
     if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
     {
-      t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+      mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
     }
 
-    return t;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -3675,16 +3675,16 @@ struct fire_breath_t : public empowered_charge_spell_t
       }
     }
 
-    timespan_t tick_time( const action_state_t* state ) const override
+    double tick_time_pct_multiplier( const action_state_t* state ) const override
     {
-      timespan_t t = base_t::tick_time( state );
+      auto mul = base_t::tick_time_pct_multiplier( state );
 
       if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
       {
-        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+        mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
 
-      return t;
+      return mul;
     }
 
     void trigger_dot( action_state_t* state ) override

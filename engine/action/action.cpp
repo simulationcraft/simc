@@ -4035,12 +4035,28 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 timespan_t action_t::tick_time( const action_state_t* state ) const
 {
-  timespan_t t = base_tick_time;
+  auto base = base_tick_time.base;
+
+  auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( state );
+  if ( mul <= 0 )
+    return 0_ms;
+
   if ( hasted_ticks )
-  {
-    t *= state->haste;
-  }
-  return t;
+    mul *= state->haste;
+
+  auto add = base_tick_time.flat_add + tick_time_flat_modifier( state );
+
+  return ( base + add ) * mul;
+}
+
+timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::tick_time_pct_multiplier( const action_state_t* ) const
+{
+  return 1.0;
 }
 
 void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt )

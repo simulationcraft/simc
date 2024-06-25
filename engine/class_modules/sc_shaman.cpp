@@ -7382,15 +7382,15 @@ public:
     return mul;
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    auto tt = shaman_spell_t::tick_time( state );
+    auto mul = shaman_spell_t::tick_time_pct_multiplier( state );
 
-    tt *= 1.0 + p()->buff.fire_elemental->stack_value();
+    mul *= 1.0 + p()->buff.fire_elemental->stack_value();
 
-    tt *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
+    mul *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
 
-    return tt;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -8627,10 +8627,6 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
     return shaman_spell_t::ready();
   }
 
-  timespan_t tick_time( const action_state_t* /* s */ ) const override
-  {
-    return base_tick_time;
-  }
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );

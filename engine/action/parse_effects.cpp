@@ -1334,6 +1334,8 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     {
       case P_CAST_TIME:     val_mul = 1.0;
                             str = "cast time";   return &flat_execute_time_effects;
+      case P_TICK_TIME:     val_mul = 1.0;
+                            str = "tick time";   return &flat_tick_time_effects; 
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
       case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
@@ -1531,19 +1533,20 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
        << "<th class=\"small\">Notes</th>"
        << "</tr>\n";
 
+    auto timespan_fn = []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); };
+
     using VEC = parse_action_base_t;
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
     print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
-    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time",
-                       []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); } );
+    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", timespan_fn );
     print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
-    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration",
-                       []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); } );
+    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration", timespan_fn );
     print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
-    print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
+    print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", timespan_fn );
+    print_parsed_type( os, &VEC::tick_time_effects, "Percent Tick Time" );
     print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
@@ -1567,6 +1570,7 @@ size_t parse_action_base_t::total_effects_count()
          dot_duration_effects.size() +
          flat_dot_duration_effects.size() +
          tick_time_effects.size() +
+         flat_tick_time_effects.size() +
          recharge_multiplier_effects.size() +
          cost_effects.size() +
          flat_cost_effects.size() +
@@ -1618,6 +1622,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( dot_duration_effects );
   initialize_buff_list_on_vector( flat_dot_duration_effects );
   initialize_buff_list_on_vector( tick_time_effects );
+  initialize_buff_list_on_vector( flat_tick_time_effects );
   initialize_buff_list_on_vector( recharge_multiplier_effects );
   initialize_buff_list_on_vector( cost_effects );
   initialize_buff_list_on_vector( flat_cost_effects );

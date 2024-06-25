@@ -389,7 +389,7 @@ public:
   parsed_value_t<timespan_t> base_execute_time;
 
   /// Amount of time the ability uses between ticks.
-  timespan_t base_tick_time;
+  parsed_value_t<timespan_t> base_tick_time;
 
   /// Default full duration of dot.
   parsed_value_t<timespan_t> dot_duration;
@@ -797,6 +797,10 @@ public:
   virtual double execute_time_pct_multiplier() const;
 
   virtual timespan_t tick_time( const action_state_t* state ) const;
+
+  virtual timespan_t tick_time_flat_modifier( const action_state_t* state ) const;
+
+  virtual double tick_time_pct_multiplier( const action_state_t* state ) const;
 
   virtual timespan_t travel_time() const;
 

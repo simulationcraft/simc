@@ -3152,13 +3152,13 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     return full_duration;
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    timespan_t t = arcane_mage_spell_t::tick_time( s );
+    auto mul = arcane_mage_spell_t::tick_time_pct_multiplier( s );
 
-    t *= debug_cast<const am_state_t*>( s )->tick_time_multiplier;
+    mul *= debug_cast<const am_state_t*>( s )->tick_time_multiplier;
 
-    return t;
+    return mul;
   }
 
   void channel_finish()

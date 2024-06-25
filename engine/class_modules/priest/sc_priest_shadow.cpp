@@ -249,12 +249,6 @@ struct dispersion_t final : public priest_spell_t
     priest_spell_t::execute();
   }
 
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Unhasted, even though it is a channeled spell.
-    return base_tick_time;
-  }
-
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );

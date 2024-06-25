@@ -3819,22 +3819,10 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     channeled = tick_zero = tick_may_crit = true;
     dot_duration                          = data().duration();
-    hasted_ticks = false;  // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the
-                           // increase in the number of ticks.
     interrupt_auto_attack = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  timespan_t tick_time( const action_state_t *state ) const override
-  {
-    timespan_t t = base_tick_time;
-    if ( channeled || hasted_ticks )
-    {
-      t *= state->haste;
-    }
-    return t;
   }
 
   double cost_per_tick( resource_e resource ) const override

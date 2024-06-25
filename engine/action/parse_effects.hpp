@@ -728,6 +728,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> dot_duration_effects;
   std::vector<player_effect_t> flat_dot_duration_effects;
   std::vector<player_effect_t> tick_time_effects;
+  std::vector<player_effect_t> flat_tick_time_effects;
   std::vector<player_effect_t> recharge_multiplier_effects;
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
@@ -951,14 +952,24 @@ public:
     return std::max( BASE::min_gcd, g );
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    auto tt = BASE::tick_time( s );
+    auto mul = BASE::tick_time_pct_multiplier( s );
 
     for ( const auto& i : tick_time_effects )
-      tt *= 1.0 + get_effect_value( i );
+      mul *= 1.0 + get_effect_value( i );
 
-    return std::max( 1_ms, tt );
+    return mul;
+  }
+
+  timespan_t tick_time_flat_modifier( const action_state_t* s ) const override
+  {
+    double add = 0.0;
+
+    for ( const auto& i : flat_tick_time_effects )
+      add += get_effect_value( i );
+
+    return BASE::tick_time_flat_modifier( s ) + timespan_t::from_millis( add );
   }
 
   timespan_t cooldown_duration() const override

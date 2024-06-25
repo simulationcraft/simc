@@ -1529,13 +1529,13 @@ using namespace helpers;
       warlock_spell_t::snapshot_state( s, rt );
     }
 
-    timespan_t tick_time( const action_state_t* s ) const override
+    double tick_time_pct_multiplier( const action_state_t* s ) const override
     {
-      timespan_t t = warlock_spell_t::tick_time( s );
+      auto mul = warlock_spell_t::tick_time_pct_multiplier( s );
 
-      t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+      mul *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
 
-      return t;
+      return mul;
     }
 
     double dot_duration_pct_multiplier( const action_state_t* s ) const override

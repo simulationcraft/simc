@@ -2457,11 +2457,6 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       }
     }
 
-    timespan_t tick_time( const action_state_t* ) const override
-    {
-      return base_tick_time;
-    }
-
     void trigger_dot( action_state_t* s ) override
     {
       if ( player->in_combat )  // only trigger channel 'dot' in combat
