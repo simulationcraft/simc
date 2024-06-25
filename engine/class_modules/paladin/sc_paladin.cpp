@@ -4589,6 +4589,32 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return make_fn_expr( "sacred_weapon", [ this ]() { return armament::SACRED_WEAPON; } );
   }
 
+  struct judgment_holy_power_expr_t : public paladin_expr_t
+  {
+    judgment_holy_power_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
+    double evaluate() override
+    {
+      double gain = 1.0;
+      if (paladin.talents.sanctified_wrath->ok())
+      {
+        if ( paladin.buffs.avenging_wrath->up() || paladin.buffs.sentinel->up() )
+          gain++;
+      }
+      if (paladin.buffs.bastion_of_light->up())
+      {
+        gain += paladin.talents.bastion_of_light->effectN( 1 ).base_value();
+      }
+      return gain;
+    }
+  };
+
+  if (splits[0] == "judgment_holy_power")
+  {
+    return std::make_unique<judgment_holy_power_expr_t>( name_str, *this );
+  }
+
   auto cons_expr = create_consecration_expression( name_str );
   auto aw_expr   = create_aw_expression( name_str );
   if ( cons_expr )
