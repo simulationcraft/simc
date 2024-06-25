@@ -1493,7 +1493,7 @@ bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>&
 
     for ( auto s : list.spell )
     {
-      if ( _action->data().id() == std::abs( s ) )
+      if ( _action->data().id() == as<unsigned>( std::abs( s ) ) )
       {
         if ( s > 0 )
         {

@@ -167,17 +167,17 @@ struct effect_mask_t
 
 struct affect_list_t
 {
-  std::vector<int8_t> idx;
+  std::vector<uint8_t> idx;
   std::vector<int8_t> family;
   std::vector<int16_t> label;
   std::vector<int32_t> spell;
 
   affect_list_t() = default;
 
-  affect_list_t( int8_t i ) { idx.push_back( i ); }
+  affect_list_t( uint8_t i ) { idx.push_back( i ); }
 
   template <typename... Ts>
-  affect_list_t( int8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
+  affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
   affect_list_t& adjust_family( int8_t f )
   { family.push_back( f ); return *this; }

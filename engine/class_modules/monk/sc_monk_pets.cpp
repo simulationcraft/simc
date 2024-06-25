@@ -771,7 +771,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t *player )
       : sef_melee_attack_t( "rising_sun_kick_dmg", player,
-                            player->o()->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
+                            player->o()->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
 
@@ -797,7 +797,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.general.rising_sun_kick )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.monk.rising_sun_kick )
     {
       execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
@@ -860,22 +860,32 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
-    // Forcing SEF to use it's own base_tick_time for tick_time.
+    // sef_action_base_t uses the source action's tick_time, which ignores base_tick_time adjustment made in the
+    // constructor above. Recalculate tick_time here.
     timespan_t tick_time( const action_state_t *state ) const override
     {
       timespan_t t = base_tick_time;
-      if ( channeled || hasted_ticks )
+      if ( hasted_ticks )
       {
         t *= state->haste;
       }
       return t;
     }
 
+    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
+    // Recalculate composite_dot_duration here.
     timespan_t composite_dot_duration( const action_state_t *s ) const override
     {
-      if ( channeled )
-        return dot_duration * ( tick_time( s ) / base_tick_time );
+      if ( hasted_dot_duration )
+      {
+        auto tt = tick_time( s );
+
+        // technically it's possible to have hasted dot duration without hasted ticks
+        if ( !hasted_ticks )
+          tt *= s->haste;
+
+        return dot_duration * ( tt / base_tick_time );
+      }
 
       return dot_duration;
     }
@@ -1333,7 +1343,8 @@ public:
   {
     // TODO: Test Meridian Strikes
 
-    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer a bug.
+    // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer
+    // a bug.
     if ( o()->talent.windwalker.xuens_bond->ok() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100

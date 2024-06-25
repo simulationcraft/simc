@@ -4718,11 +4718,6 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     update_flags &= ~STATE_HASTE;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
-  }
-
   void trigger_explosion( player_t* target )
   {
     p()->action.living_bomb_explosion->set_target( target );

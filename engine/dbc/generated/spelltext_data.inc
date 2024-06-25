@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.0.55185
-static const std::array<spelltext_data_t, 26208> __spelltext_data { {
+static const std::array<spelltext_data_t, 26209> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26172,6 +26172,7 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
   { 460496, "$@spelldesc257044", 0, 0 },
   { 460499, "$@spelldesc458753", "Strength increased by ${$W1}.1%.", 0 },
   { 460500, "Parrying an attack grants you a charge of Bloodied Blade, increasing your Strength by ${s1/10}.1%, up to 5%.\r\n\r\nAt 10 stacks, your next parry consumes all charges to unleash a Heart Strike at 200% effectiveness and increase your Strength by 10% for 6 sec.", "Strength increased by ${$W1}.1%.", 0 },
+  { 460501, "Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d$?s316575[\r\n\r\n|cFFFFFFFFGenerates $s3 bonus Runic Power][]$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r", "Movement speed reduced by $s5%.", 0 },
   { 460521, "When damaged below $M2% health, gain a shield for $460531d sec which absorbs up to $s1 damage.\r\n\r\nThis effect can only be triggered once every $460536d but is reduced by $M3 sec per unique Algari gem color socketed.", 0, 0 },
   { 460527, "$@spelldesc460521", 0, 0 },
   { 460531, "$@spelldesc460521", "Captured Starlight has shielded you for $w1 damage.", 0 },

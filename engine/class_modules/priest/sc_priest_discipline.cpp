@@ -398,13 +398,6 @@ public:
     }
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t full_duration = dot_duration * s->haste;
-
-    return full_duration;
-  }
-
   timespan_t tick_time( const action_state_t* s ) const override
   {
     timespan_t t = ab::tick_time( s );

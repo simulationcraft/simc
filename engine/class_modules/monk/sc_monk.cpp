@@ -1560,7 +1560,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t( monk_t *p, util::string_view name )
-    : monk_melee_attack_t( p, name, p->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
+    : monk_melee_attack_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
 
@@ -1607,9 +1607,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
       p()->buff.thunder_focus_tea->decrement();
     }
-
-    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
-      p()->buff.gift_of_the_ox->trigger();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T30, B4 ) )
       p()->buff.elusive_brawler->trigger();
@@ -1661,7 +1658,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   bool is_base_rsk;
 
   rising_sun_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.general.rising_sun_kick ), is_base_rsk( true )
+    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick ), is_base_rsk( true )
   {
     parse_options( options_str );
 
@@ -1796,7 +1793,7 @@ struct rising_sun_kick_press_the_advantage_t : public monk_melee_attack_t
   rising_sun_kick_press_the_advantage_dmg_t *trigger_attack;
 
   rising_sun_kick_press_the_advantage_t( monk_t *p )  // , util::string_view options_str
-    : monk_melee_attack_t( p, "rising_sun_kick_press_the_advantage", p->talent.general.rising_sun_kick )
+    : monk_melee_attack_t( p, "rising_sun_kick_press_the_advantage", p->talent.monk.rising_sun_kick )
   {
     // parse_options( options_str );
 
@@ -1980,8 +1977,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
   blackout_kick_totm_proc_t *bok_totm_proc;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
-    : base_t( p, "blackout_kick",
-              ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
+    : base_t(
+          p, "blackout_kick",
+          ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick : p->spec.blackout_kick ) )
   {
     parse_options( options_str );
     if ( p->specialization() == MONK_WINDWALKER )
@@ -2096,9 +2094,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       }
 
       p()->buff.transfer_the_power->trigger();
-
-      if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
-        p()->buff.gift_of_the_ox->trigger();
 
       p()->buff.teachings_of_the_monastery->expire();
 
@@ -2422,12 +2417,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   action_state_t *new_state() override
   {
     return new spinning_crane_kick_state_t( this, p()->target );
-  }
-
-  // N full ticks, but never additional ones.
-  timespan_t composite_dot_duration( const action_state_t *s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   double cost_flat_modifier() const override
@@ -4986,122 +4975,6 @@ struct revival_t : public monk_heal_t
 };
 
 // ==========================================================================
-// Gift of the Ox
-// ==========================================================================
-
-struct gift_of_the_ox_t : public monk_heal_t
-{
-  gift_of_the_ox_t( monk_t *p, util::string_view options_str )
-    : monk_heal_t( p, "gift_of_the_ox", p->passives.gift_of_the_ox_heal )
-  {
-    parse_options( options_str );
-    harmful     = false;
-    background  = true;
-    target      = p;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  bool ready() override
-  {
-    if ( !p()->talent.brewmaster.gift_of_the_ox->ok() )
-      return false;
-
-    return p()->buff.gift_of_the_ox->check();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
-    // should be zero if not talented, but just to be safe (for first condition):
-    if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() && p()->bugs )
-    {
-      double health_percent =
-          std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 ) / p()->resources.max[ RESOURCE_HEALTH ];
-      am *= 1 + ( 1 - health_percent ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    p()->buff.gift_of_the_ox->decrement();
-
-    if ( p()->talent.brewmaster.tranquil_spirit->ok() )
-    {
-      // Reduce stagger damage
-      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-      p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
-      p()->proc.tranquil_spirit_goto->occur();
-    }
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_heal_t::impact( s );
-    if ( p()->buff.expel_harm_accumulator->check() )
-    {
-      double result        = s->result_total;
-      double current_value = p()->buff.expel_harm_accumulator->check_value();
-      p()->sim->print_debug( "adding {} to buff of {}", result, current_value );
-      p()->buff.expel_harm_accumulator->trigger( 1, result + current_value );
-    }
-  }
-};
-
-struct gift_of_the_ox_trigger_t : public monk_heal_t
-{
-  gift_of_the_ox_trigger_t( monk_t *p ) : monk_heal_t( p, "gift_of_the_ox_trigger", p->find_spell( 124507 ) )
-  {
-    background  = true;
-    target      = p;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
-    // should be zero if not talented, but just to be safe (for first condition):
-    if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() && p()->bugs )
-    {
-      double health_percent =
-          std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 ) / p()->resources.max[ RESOURCE_HEALTH ];
-      am *= 1 + ( 1 - health_percent ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_heal_t::impact( s );
-    if ( p()->buff.expel_harm_accumulator->check() )
-    {
-      double result        = s->result_total;
-      double current_value = p()->buff.expel_harm_accumulator->check_value();
-      p()->sim->print_debug( "adding {} to buff of {}", result, current_value );
-      p()->buff.expel_harm_accumulator->trigger( 1, result + current_value );
-    }
-  }
-};
-
-struct gift_of_the_ox_expire_t : public monk_heal_t
-{
-  gift_of_the_ox_expire_t( monk_t *p ) : monk_heal_t( p, "gift_of_the_ox_expire", p->find_spell( 178173 ) )
-  {
-    background  = true;
-    target      = p;
-    trigger_gcd = timespan_t::zero();
-  }
-};
-
-// ==========================================================================
 // Expel Harm
 // ==========================================================================
 struct expel_harm_t : monk_heal_t
@@ -5133,7 +5006,7 @@ struct expel_harm_t : monk_heal_t
     apply_affecting_aura( player->talent.monk.vigorous_expulsion );
     apply_affecting_aura( player->talent.monk.profound_rebuttal );
 
-    stats = damage->stats;
+    add_child( damage );
   }
 
   double action_multiplier() const override
@@ -5166,8 +5039,7 @@ struct expel_harm_t : monk_heal_t
     double result = s->result_total;
     if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
-      for ( size_t i = p()->buff.gift_of_the_ox->check(); i > 0; --i )
-        p()->buff.gift_of_the_ox->decrement();
+      p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
       p()->buff.expel_harm_accumulator->expire();
     }
@@ -5343,7 +5215,9 @@ struct chi_wave_t : public monk_spell_t
 
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
-    stats            = damage->stats;
+
+    add_child( heal );
+    add_child( damage );
   }
 
   void execute() override
@@ -5373,7 +5247,7 @@ struct chi_burst_t : monk_spell_t
     {
       TBase::background = TBase::dual = true;
       TBase::reduced_aoe_targets      = player->talent.monk.chi_burst_projectile->effectN( 1 ).base_value();
-      // TBase::aoe = -1;
+      TBase::aoe                      = -1;
 
       // TODO: Helper to check if a damaging effect exists on the passed spell
       for ( const auto &effect : spell_data->effects() )
@@ -5394,6 +5268,9 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
+    add_child( damage );
+    add_child( heal );
+    gcd_type = gcd_haste_type::NONE;
   }
 
   bool ready() override
@@ -5635,6 +5512,155 @@ using namespace actions;
 // ==========================================================================
 
 // ==========================================================================
+// Gift of the Ox
+// ==========================================================================
+gift_of_the_ox_t::gift_of_the_ox_t( monk_t *player )
+  : monk_buff_t( player, "gift_of_the_ox", player->talent.brewmaster.gift_of_the_ox_buff ),
+    player( player ),
+    heal_trigger(
+        new orb_t( player, "gift_of_the_ox_trigger", player->talent.brewmaster.gift_of_the_ox_heal_trigger ) ),
+    heal_expire( new orb_t( player, "gift_of_the_ox_expire", player->talent.brewmaster.gift_of_the_ox_heal_expire ) ),
+    accumulator( 0.0 )
+{
+  // we're just using buff tracking to provide stats.
+  // stack changes are all controlled by the events we create, so duration is set
+  // to be extra high
+  set_max_stack( 5 );
+  set_duration( 2 * buff_duration() );
+  set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  set_refresh_behavior( buff_refresh_behavior::NONE );
+}
+
+void gift_of_the_ox_t::spawn_orb( int count )
+{
+  if ( is_fallback )
+    return;
+
+  int overflow = std::max( count + as<int>( queue.size() ) - max_stack(), 0 );
+  player->sim->print_debug( "{} adding {} Gift of the Ox Orbs. start={} apply={} overflow={} end={}", player->name(),
+                            count, queue.size(), count, overflow,
+                            std::min( count + as<int>( queue.size() ), max_stack() ) );
+
+  for ( ; count > 0; --count )
+  {
+    monk_buff_t::trigger();
+    if ( as<int>( queue.size() ) == max_stack() )
+      heal_trigger->execute();
+    else
+      queue.emplace( make_event<orb_event_t>( *sim, player, data().duration(), &queue, [ this ]() {
+        player->sim->print_debug( "{} expiring 1 out of {} Gift of the Ox Orbs. current={} expire={}", player->name(),
+                                  queue.size(), queue.size(), 1 );
+        decrement();
+        heal_expire->execute();
+      } ) );
+  }
+}
+
+void gift_of_the_ox_t::trigger_from_damage( double amount )
+{
+  if ( is_fallback )
+    return;
+
+  accumulator += amount;
+  if ( accumulator < player->max_health() )
+    return;
+
+  int added = accumulator / player->max_health();
+  accumulator -= added * player->max_health();
+  spawn_orb( added );
+}
+
+int gift_of_the_ox_t::consume( int count )
+{
+  if ( is_fallback )
+    return 0;
+
+  int available = std::min( count, as<int>( queue.size() ) );
+  player->sim->print_debug( "{} consuming {} out of {} Gift of the Ox Orbs. start={} quantity={} available={} end={}",
+                            player->name(), available, queue.size(), queue.size(), count, available,
+                            queue.size() - available );
+  for ( int i = available; i > 0; --i )
+  {
+    heal_trigger->execute();
+    remove();
+  }
+  return available;
+}
+
+void gift_of_the_ox_t::remove()
+{
+  event_t::cancel( queue.front() );
+  queue.pop();
+}
+
+void gift_of_the_ox_t::reset()
+{
+  if ( is_fallback )
+    return;
+
+  monk_buff_t::reset();
+  accumulator = 0.0;
+  while ( !queue.empty() )
+  {
+    remove();
+  }
+}
+
+gift_of_the_ox_t::orb_t::orb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+  : monk_heal_t( player, name, spell_data )
+{
+  background = true;
+}
+
+double gift_of_the_ox_t::orb_t::action_multiplier() const
+{
+  double am = monk_heal_t::action_multiplier();
+  if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
+    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) *
+                    p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
+  return am;
+}
+
+void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
+{
+  monk_heal_t::impact( state );
+
+  if ( p()->talent.brewmaster.tranquil_spirit->ok() )
+  {
+    double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
+    p()->proc.tranquil_spirit_goto->occur();
+  }
+
+  if ( !p()->buff.expel_harm_accumulator->check() )
+    return;
+
+  double current = p()->buff.expel_harm_accumulator->check_value();
+  double total   = current + state->result_amount;
+  sim->print_debug( "{} adding {} to Expel Harm accumulator. current={} add={} total={}", p()->name(),
+                    state->result_total, current, state->result_total, total );
+  p()->buff.expel_harm_accumulator->trigger( 1, total );
+}
+
+gift_of_the_ox_t::orb_event_t::orb_event_t( monk_t *player, timespan_t duration, std::queue<orb_event_t *> *queue,
+                                            std::function<void()> expire_cb )
+  : event_t( *player, duration ), queue( queue ), expire_cb( std::move( expire_cb ) )
+{
+}
+
+void gift_of_the_ox_t::orb_event_t::execute()
+{
+  assert( id == queue->front()->id );
+  expire_cb();
+  queue->pop();
+}
+
+const char *gift_of_the_ox_t::orb_event_t::name() const
+{
+  return "orb_event_t";
+}
+
+// ==========================================================================
 // Shuffle
 // ==========================================================================
 shuffle_t::shuffle_t( monk_t *player )
@@ -5790,41 +5816,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
-// ===============================================================================
-// Gift of the Ox Buff
-// ===============================================================================
-struct gift_of_the_ox_buff_t : public monk_buff_t
-{
-  gift_of_the_ox_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_can_cancel( false );
-    set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p->talent.brewmaster.gift_of_the_ox );
-    stack_behavior = buff_stack_behavior::ASYNCHRONOUS;
-
-    set_refresh_behavior( buff_refresh_behavior::NONE );
-
-    set_duration( p->find_spell( 124503 )->duration() );
-    set_max_stack( 99 );
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    if ( stacks > 0 )
-    {
-      p().active_actions.gift_of_the_ox_trigger->execute();
-
-      monk_buff_t::decrement( stacks, value );
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    // p().active_actions.gift_of_the_ox_expire->execute();
     monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -6201,23 +6192,6 @@ struct blackout_reinforcement_t : public monk_buff_t
   }
 };
 
-// ===============================================================================
-// Expel Harm Helper
-// ===============================================================================
-
-struct expel_harm_accumulator_t : public monk_buff_t
-{
-  expel_harm_accumulator_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_trigger_spell( p->talent.brewmaster.gift_of_the_ox );
-    set_can_cancel( true );
-    set_quiet( true );
-    set_cooldown( timespan_t::zero() );
-    set_duration( timespan_t::from_millis( 1 ) );
-    set_max_stack( 1 );
-    set_default_value( 0.0 );
-  }
-};
 }  // namespace buffs
 
 namespace items
@@ -6341,7 +6315,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     squirm_timer( 0 ),
     spiritual_focus_count( 0 ),
     shuffle_count_secs( 0_s ),
-    gift_of_the_ox_proc_chance(),
     efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 ),
@@ -6353,7 +6326,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     mastery(),
     cooldown(),
     passives(),
-    rppm(),
     pets( this ),
     user_options( options_t() )
 {
@@ -6490,8 +6462,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new exploding_keg_t( this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( this, options_str );
-  if ( name == "gift_of_the_ox" )
-    return new gift_of_the_ox_t( this, options_str );
   if ( name == "invoke_niuzao" )
     return new niuzao_spell_t( this, options_str );
   if ( name == "invoke_niuzao_the_black_ox" )
@@ -6826,6 +6796,7 @@ void monk_t::init_spells()
     baseline.brewmaster.celestial_fortune      = find_specialization_spell( "Celestial Fortune" );
     baseline.brewmaster.celestial_fortune_heal = find_spell( 216521 );  // TODO: Can you be more specific?
     baseline.brewmaster.expel_harm_rank_2      = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
+    baseline.brewmaster.blackout_kick          = find_spell( 205523 );
 
     baseline.brewmaster.light_stagger    = find_specialization_spell( "Light Stagger" );
     baseline.brewmaster.moderate_stagger = find_specialization_spell( "Moderate Stagger" );
@@ -6856,6 +6827,7 @@ void monk_t::init_spells()
     talent.monk.martial_instincts         = _CT( "Martial Instincts" );
     talent.monk.vigorous_expulsion        = _CT( "Vigorous Expulsion" );
     talent.monk.profound_rebuttal         = _CT( "Profound Rebuttal" );
+    talent.monk.rising_sun_kick           = _CT( "Rising Sun Kick" );
 
     talent.monk.chi_wave             = _CT( "Chi Wave" );
     talent.monk.chi_wave_buff        = find_spell( 450380 );
@@ -6878,6 +6850,9 @@ void monk_t::init_spells()
     talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
     talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
     talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox" );
+    talent.brewmaster.gift_of_the_ox_buff                 = find_spell( 124506 );
+    talent.brewmaster.gift_of_the_ox_heal_trigger         = find_spell( 124507 );
+    talent.brewmaster.gift_of_the_ox_heal_expire          = find_spell( 178173 );
     talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
     talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
     talent.brewmaster.elixir_of_determination             = _ST( "Elixir of Determination" );
@@ -6926,7 +6901,8 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::mistweaver
-  {}
+  {
+  }
 
   // monk_t::talent::windwalker
   {
@@ -6934,8 +6910,10 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::conduit_of_the_celestials
-  {}  // monk_t::talent::master_of_harmony
-  {}  // monk_t::talent::shado-pan
+  {
+  }  // monk_t::talent::master_of_harmony
+  {
+  }  // monk_t::talent::shado-pan
   {
   }
 
@@ -6944,9 +6922,8 @@ void monk_t::init_spells()
   // =================================================================================================
 
   // Row 1
-  talent.general.soothing_mist   = _CT( "Soothing Mist" );
-  talent.general.paralysis       = _CT( "Paralysis" );
-  talent.general.rising_sun_kick = _CT( "Rising Sun Kick" );
+  talent.general.soothing_mist = _CT( "Soothing Mist" );
+  talent.general.paralysis     = _CT( "Paralysis" );
   // Row 2
   talent.general.elusive_mists     = _CT( "Elusive Mists" );
   talent.general.tigers_lust       = _CT( "Tiger's Lust" );
@@ -7250,7 +7227,6 @@ void monk_t::init_spells()
   spec.vivify                   = find_class_spell( "Vivify" );
 
   // Brewmaster Specialization
-  spec.blackout_kick_brm         = find_spell( 205523 );
   spec.spinning_crane_kick_brm   = find_spell( 322729 );
   spec.spinning_crane_kick_2_brm = find_spell( 322700 );
   spec.stagger                   = find_specialization_spell( "Stagger" );
@@ -7411,8 +7387,6 @@ void monk_t::init_spells()
     active_actions.breath_of_fire             = new actions::spells::breath_of_fire_dot_t( this );
     active_actions.celestial_fortune          = new actions::heals::celestial_fortune_t( this );
     active_actions.exploding_keg              = new actions::spells::exploding_keg_proc_t( this );
-    active_actions.gift_of_the_ox_trigger     = new actions::gift_of_the_ox_trigger_t( this );
-    active_actions.gift_of_the_ox_expire      = new actions::gift_of_the_ox_expire_t( this );
     active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
 
     active_actions.rising_sun_kick_press_the_advantage =
@@ -7744,9 +7718,18 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( this, "gift_of_the_ox", find_spell( 124503 ) );
+  buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>(
+      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+
   buff.expel_harm_accumulator =
-      new buffs::expel_harm_accumulator_t( this, "expel_harm_accumulator", spell_data_t::nil() );
+      make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
+                          "expel_harm_accumulator" )
+          ->set_can_cancel( true )
+          ->set_quiet( true )
+          ->set_cooldown( 0_ms )
+          ->set_duration( 1_ms )
+          ->set_max_stack( 1 )
+          ->set_default_value( 0.0 );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
                            ->set_default_value_from_effect( 2 )
@@ -7977,7 +7960,9 @@ void monk_t::create_buffs()
   buff.against_all_odds =
       make_buff_fallback( talent.shado_pan.against_all_odds->ok(), this, "against_all_odds", find_spell( 451061 ) )
           ->set_default_value_from_effect( 1 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+          ->set_default_value_from_effect_type(
+              A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+//          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
           ->add_invalidate( CACHE_AGILITY );
 
   buff.flurry_charge =
@@ -8145,16 +8130,6 @@ void monk_t::init_procs()
 void monk_t::init_assessors()
 {
   base_t::init_assessors();
-}
-
-// monk_t::init_rng =======================================================
-
-void monk_t::init_rng()
-{
-  base_t::init_rng();
-
-  if ( talent.brewmaster.spirit_of_the_ox->ok() )
-    rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
 }
 
 void monk_t::create_proc_callback( const spell_data_t *effect_driver,
@@ -8425,9 +8400,19 @@ void monk_t::init_special_effects()
   // Chi Burst ( Monk Talent )
   // ======================================
   if ( talent.monk.chi_burst->ok() )
-  {
-    create_proc_callback( talent.monk.chi_burst.spell(), []( monk_t *player, action_state_t *state ) { return true; } );
-  }
+    create_proc_callback( talent.monk.chi_burst.spell(), []( monk_t *, action_state_t * ) { return true; } );
+
+  // ======================================
+  // Spirit of the Ox ( Brewmaster Talent )
+  // ======================================
+  if ( talent.brewmaster.spirit_of_the_ox->ok() )
+    create_proc_callback( talent.brewmaster.spirit_of_the_ox.spell(), []( monk_t *player, action_state_t *state ) {
+      if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
+           state->action->id != player->baseline.brewmaster.blackout_kick->id() )
+        return false;
+      player->buff.gift_of_the_ox->spawn_orb( 1 );
+      return true;
+    } );
 
   // ======================================
 
@@ -8618,6 +8603,20 @@ double monk_t::composite_attack_power_multiplier() const
 
   return ap;
 }
+
+// monk_t::composite_attribute() ==========================
+
+double monk_t::composite_attribute( attribute_e attr ) const
+{
+  auto a = player_t::composite_attribute( attr );
+
+  // TODO: remove if fixed
+  if ( attr == ATTR_AGILITY && buff.against_all_odds->check() )
+    a += base.stats.attribute[ attr ] * buff.against_all_odds->check_value();
+
+  return a;
+}
+
 
 // monk_t::composite_dodge ==============================================
 
@@ -8982,29 +8981,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 {
   auto target_data = get_target_data( s->action->player );
 
-  // Gift of the Ox Trigger Calculations ===========================================================
-
-  // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
-  // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
-  // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
-  if ( s->action->id != passives.stagger_self_damage->id() )
-  {
-    double goto_proc_chance = s->result_amount / max_health();
-
-    gift_of_the_ox_proc_chance += goto_proc_chance;
-
-    if ( gift_of_the_ox_proc_chance > 1.0 )
-    {
-      buff.gift_of_the_ox->trigger();
-
-      gift_of_the_ox_proc_chance -= 1.0;
-    }
-  }
-
-  // Stagger is not reduced by damage mitigation effects
-  if ( s->action->id == passives.stagger_self_damage->id() )
-    return;
-
   // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
   if ( buff.dampen_harm->up() )
   {
@@ -9064,6 +9040,14 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
       s->result_amount = 0;
     }
   }
+
+  // Gift of the Ox Trigger Calculations ===========================================================
+
+  // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
+  // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
+  // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
+  if ( s->action->id != passives.stagger_self_damage->id() )
+    buff.gift_of_the_ox->trigger_from_damage( s->result_amount );
 
   base_t::target_mitigation( school, dt, s );
 }

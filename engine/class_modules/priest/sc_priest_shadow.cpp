@@ -1428,12 +1428,6 @@ struct void_torrent_t final : public priest_spell_t
     energize_amount   = insanity_gain;
   }
 
-  // DoT duration is fixed at 3s
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration;
-  }
-
   bool usable_moving() const override
   {
     if ( priest().talents.voidweaver.dark_energy.enabled() )
@@ -1494,19 +1488,14 @@ struct void_torrent_t final : public priest_spell_t
 
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
-      if ( p().state.active_entropic_rift && p().state.active_entropic_rift->current_pulse > 0 )
-      {
-        p().state.active_entropic_rift->current_pulse = 0;
-        sim->print_debug( "{} extends entropic rift by resetting ticks. New Current Pulse: {} ", p().name(),
-                          p().state.active_entropic_rift->current_pulse );
-      }
-
-      priest().buffs.entropic_rift->extend_duration( player, channeled_time );
+      priest().buffs.entropic_rift->extend_duration(
+          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
     }
 
     if ( priest().talents.voidweaver.voidheart.enabled() )
     {
-      priest().buffs.voidheart->extend_duration( player, channeled_time );
+      priest().buffs.voidheart->extend_duration(
+          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
     }
 
     priest_spell_t::last_tick( d );
@@ -1575,8 +1564,7 @@ struct psychic_link_t final : public priest_spell_t
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
       _pl_shadow_word_death(
           new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow.psychic_link ) ),
-      _pl_void_blast(
-          new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) )
+      _pl_void_blast( new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();

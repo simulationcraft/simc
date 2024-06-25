@@ -1839,8 +1839,17 @@ struct entropic_rift_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().buffs.entropic_rift->extend_duration( player, 1_s );
-    priest().buffs.voidheart->extend_duration( player, 2_ms );
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().buffs.entropic_rift->extend_duration(
+          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
+    }
+
+    if ( priest().talents.voidweaver.voidheart.enabled() )
+    {
+      priest().buffs.voidheart->extend_duration(
+          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
+    }
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
 
@@ -3404,7 +3413,7 @@ void priest_t::init_spells()
   talents.voidweaver.devour_matter          = HT( "Devour Matter" );  // NYI
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
-  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 ); // Entry id for Darkening Horizon
+  talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 );  // Entry id for Darkening Horizon
   talents.voidweaver.depth_of_shadows       = HT( "Depth of Shadows" );
   talents.voidweaver.voidwraith             = HT( "Voidwraith" );
   talents.voidweaver.voidwraith_spell       = find_spell( 451235 );
@@ -3477,7 +3486,15 @@ void priest_t::create_buffs()
   if ( talents.voidweaver.entropic_rift.ok() )
   {
     buffs.entropic_rift->set_refresh_behavior( buff_refresh_behavior::DURATION )
+        ->set_tick_zero( false )
+        ->set_tick_on_application( false )
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
+        ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
+        ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned int tick ) {
+          if ( tick < 1 )
+            return 1_s;
+          return b->buff_period * cache.spell_cast_speed();
+        } )
         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
           background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
         } )
@@ -4094,7 +4111,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );
