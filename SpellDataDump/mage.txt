@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -42,7 +42,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2, #3), Wintertide (378406 effect#1), Fractured Frost (378445 effect#1), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3)
+Affecting spells : Icy Veins (12472 effect#2), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2, #3), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3)
 Family Flags     : 5, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -196,7 +196,7 @@ Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=123)
 Spell Level      : 6
 GCD              : 1.5 seconds
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Static Cloud (461515 effect#1)
 Family Flags     : 3, 12, 100
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -308,7 +308,7 @@ Range            : 40 yards
 Cast Time        : 3.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Master Flame (336852 effects: #1, #2), Siphoned Malice (337090 effects: #1, #2), Surging Blaze (343230 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Hyperthermia (383874 effects: #1, #2), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Quickflame (450807 effect#1), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#3), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Majesty of the Phoenix (453329 effects: #1, #2), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Sparking Cinders (457729 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Master Flame (336852 effects: #1, #2), Siphoned Malice (337090 effects: #1, #2), Surging Blaze (343230 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Hyperthermia (383874 effects: #1, #2), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Quickflame (450807 effect#1), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#3), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Majesty of the Phoenix (453329 effects: #1, #2), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Sparking Cinders (457729 effect#2), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 2, 3, 99
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -687,9 +687,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=817843)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s257541[, Phoenix Flames][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a387044[
-
-Ignite's damage has a $387044h% chance to reduce the cooldown of Fire Blast by $387044s1 sec.][]
+Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Scorch, Pyroblast$?s153561[, Meteor][]$?s257541[, Phoenix Flames][]$?s198929[, Cinderstorm][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.
 
 Fire Blast causes your Ignites to spread to $s4 nearby enemies.
 
@@ -840,7 +838,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Rhonin's Assaulting Armwraps (208081 effect#1), Norgannon's Foresight (236380 effect#1), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Concentration (384379 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#1), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Rhonin's Assaulting Armwraps (208081 effect#1), Norgannon's Foresight (236380 effect#1), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Concentration (384379 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#1), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Consortium's Bauble (461260 effects: #1, #2)
 Family Flags     : 3, 29
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -853,7 +851,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=20028)    : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Chain from Initial Target (7), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.13400 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.88000 | PvP Coefficient: 1.13400 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: none | Target: Self (1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -1223,7 +1221,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x..... x..x....   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -3440,7 +3438,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#1)
-Family Flags     : 120
+Family Flags     : 89, 120
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3477,8 +3475,7 @@ Effects          :
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=2, col=1, max_rank=1, req_points=0]
-Class            : Mage
+Class            : Arcane Mage
 School           : Arcane
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=9139)
@@ -3511,7 +3508,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Splintering Orbs (444256 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Spellfrost Teachings (458411 effects: #1, #2), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Splintering Orbs (444256 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Spellfrost Teachings (458411 effects: #1, #2), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Resonant Orbs (461453 effect#1)
 Family Flags     : 3, 83
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......xx 
@@ -4107,6 +4104,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flamestrike (2120)
                    Family Flags: 2
+#6 (id=1171107)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Living Bomb (44461), Living Bomb (453251)
+                   Family Flags: 48
 Description      : Engulfs you in flames for $d, increasing your spells' critical strike chance by $s1% $?a383967[and granting you Mastery equal to $s3% of your Critical Strike stat][]. Castable while casting other spells.$?a383489[
 
 When you activate Combustion, you gain $383489s3% Critical Strike damage, and up to $383493I nearby allies gain $383489s4% Critical Strike for $383493d.][]
@@ -4796,7 +4797,7 @@ Tooltip          : Movement slowed by $w1%.
 Taking $w2 Frost damage every $t2 sec.
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5872,7 +5873,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effect#3), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Triggered by     : Frostbolt (116)
 Family Flags     : 3, 5
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
@@ -5909,7 +5910,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344285)   : School Damage (2): frost | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.44580 | PvP Coefficient: 1.31500 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.31500 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -6054,7 +6055,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Arcing Cleave (id=231564) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Nature
 Spell Type       : None
@@ -6218,7 +6219,7 @@ Attributes       : ........ ........ x.x..... ........   .......x ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Reflection (39), No Threat (42), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=355674)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6329,7 +6330,7 @@ Avoidance increased by $449330s1%.][]
 Variables        : $shield=${$s6/100*$MHP*(1+$@versadmg)}
 
 Name             : Chrono Shift (id=235711) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -6490,7 +6491,7 @@ Description      : Arcane Missiles can now be channeled while moving.
 Evocation can be channeled while moving.
 
 Name             : Amplification (id=236628) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -6561,7 +6562,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Static Cloud (461515 effect#1)
 Family Flags     : 3, 12
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7208,7 +7209,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=706664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (5143), Arcane Explosion (414381)
+                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (5143)
                    Family Flags: 11, 100
 Description      : $@spelldesc79684
 Tooltip          : Your next Arcane Missiles or Arcane Explosion costs no mana$?s321758[ and Arcane Missiles fires an additional missile][].
@@ -7728,7 +7729,7 @@ Effects          :
 Description      : $@spelldesc279854
 
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -8273,7 +8274,7 @@ Description      : $@spelldesc321358
 Tooltip          : Intellect and spell critical strike chance increased by $w1%.
 
 Name             : Enlightened (id=321387) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -8471,6 +8472,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Glacial Spike (199786), Ice Lance (228598), Glacial Spike (228600), Ebonbolt (257538)
                    Family Flags: 17, 64, 117
+#4 (id=1170474)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Misc Value 2: 3408 (Label) | Target: Self (1)
+                   Affected Spells (Label): Frost Splinter (443722), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713)
+#5 (id=1170475)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3785 (Label) | Target: Self (1)
+                   Affected Spells (Label): Embedded Frost Splinter (443740), Embedded Arcane Splinter (444735)
 Description      : Increases the damage of Frozen Orb by $s76613%.
 
 Name             : Mirror Image (id=321685) 
@@ -8628,7 +8635,7 @@ Effects          :
 Description      : Prismatic Barrier further reduces magical damage taken by an additional $s1% and duration of harmful Magic effects by $s2%.
 
 Name             : Crackling Energy (id=321752) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -8643,7 +8650,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=809654)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Time and Space (240689), Arcane Explosion (414381)
                    Family Flags: 12, 29
 Description      : Increases Arcane Explosion and Arcane Blast damage by $s1%.
@@ -10075,7 +10082,7 @@ Effects          :
 Description      : Initial Pyroblast damage increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Arcane Echo (id=342231) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -11160,6 +11167,10 @@ Effects          :
                    Family Flags: 57
 #2 (id=1007173)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1171370)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostbolt (228597), Frostfire Bolt (431044)
+                   Family Flags: 5
 Description      : $@spelldesc378448
 
 Name             : Fractured Frost (id=378448) [Spell Family (3), Passive] 
@@ -11183,7 +11194,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=1018870)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : While Icy Veins is active, your Frostbolts hit up to ${$s3-1} additional targets.
+Description      : While Icy Veins is active, your Frostbolts hit up to ${$s3-1} additional targets and their damage is increased by $s4%.
 
 Name             : Deep Shatter (id=378749) [Spell Family (3), Passive] 
 Talent Entry     : Frost [tree=spec, row=7, col=1, max_rank=2, req_points=8]
@@ -12389,7 +12400,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1015643)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Phoenix Flames (450506), Living Bomb (453251), Magi's Spark (453925), Nether Munitions (454004), Frigid Pulse (460623)
                    Family Flags: 3
 Description      : $@spelldesc383604
@@ -12443,7 +12454,7 @@ Description      : $@spelldesc383634
 Tooltip          : Your Fire Blast and Phoenix Flames recharge $s1% faster.
 
 Name             : Improved Arcane Missiles (id=383661) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12458,7 +12469,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1015719)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Arcane Missiles (7268)
                    Family Flags: 21
 Description      : Increases Arcane Missiles damage by $s1%.
@@ -12486,7 +12497,7 @@ Effects          :
 Description      : Damaging a target with Pyroblast increases the damage it receives from Ignite by ${$s2/100}.1%. Stacks up to $453268u times.
 
 Name             : Impetus (id=383676) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12881,7 +12892,7 @@ Description      : $@spelldesc384033
 Tooltip          : Your next Fireball or Pyroblast will also cast a Meteor at your target.
 
 Name             : Illuminated Thoughts (id=384060) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12921,7 +12932,7 @@ Effects          :
 Description      : Ignite deals $s1% more damage while Combustion is not active. Fire Blast spreads Ignite to $s2 additional nearby targets during Combustion.
 
 Name             : Siphon Storm (id=384187) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13006,7 +13017,7 @@ Description      : $@spelldesc382826
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Concentration (id=384374) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13106,7 +13117,7 @@ Description      : $@spelldesc384452
 Tooltip          : Increases the damage of your next Arcane Barrage by $s1%.
 
 Name             : Arcane Bombardment (id=384581) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13128,7 +13139,7 @@ Effects          :
 Description      : Arcane Barrage deals an additional $s2% damage against targets below $s1% health.
 
 Name             : Prodigious Savant (id=384612) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=3, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Mage
 School           : Arcane
@@ -13152,7 +13163,7 @@ Effects          :
 Description      : Arcane Charges further increase Mastery effectiveness of Arcane Blast and Arcane Barrage by $s1%.
 
 Name             : Charged Orb (id=384651) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13210,7 +13221,7 @@ Effects          :
 Description      : $@spelldesc384683
 
 Name             : Orb Barrage (id=384858) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13226,7 +13237,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1017755)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Arcane Barrage has a $s1% chance per Arcane Charge consumed to launch an Arcane Orb in front of you.
+#2 (id=1170601)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Arcane Barrage has a $s1% chance per Arcane Charge consumed to launch an Arcane Orb in front of you at $s2% effectiveness.
 
 Name             : Orb Barrage (id=384859) [Spell Family (3)] 
 Class            : Mage
@@ -14219,14 +14232,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1075216)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Phoenix Flames (257542), Phoenix Flames (450506)
                    Family Flags: 52
 Description      : $@spelldesc405535
 Tooltip          : Phoenix Flames refunds a charge on use and its damage is increased by $w1%.
 
 Name             : Concentrated Power (id=414379) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14255,8 +14268,8 @@ Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 GCD              : 1.5 seconds
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
-Family Flags     : 3, 12, 100
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Crackling Energy (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Static Cloud (461515 effect#1)
+Family Flags     : 3, 12
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14546,7 +14559,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1087322)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.34000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.30000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 #2 (id=1087415)  : Apply Aura (6) | Dummy (4)
@@ -14625,7 +14638,9 @@ Effects          :
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Meteor (153561), Meteor (153564), Meteor Burn (155158), Meteor (351140), Meteor (438607), Meteor (438608)
                    Family Flags: 122
-Description      : Meteor now turns one target hit into a Living Bomb. Additionally, its cooldown is reduced by ${$s2/-1000} sec.
+#2 (id=1171135)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Meteor now turns $s2 $Ltarget:targets; hit into a Living Bomb. Additionally, its cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Inflame (id=417467) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=6, col=1, max_rank=1, req_points=8]
@@ -15317,7 +15332,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 14 seconds
-Stacks           : 8 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15339,7 +15354,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 14 seconds
-Stacks           : 8 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15367,7 +15382,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #5, #7), Slick Ice (327509 effects: #1, #2, #3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effect#1), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effects: #1, #2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #5, #7), Slick Ice (327509 effects: #1, #2, #3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effects: #1, #2, #3), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 0, 3, 5, 57, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15382,7 +15397,7 @@ Effects          :
 #1 (id=1118526)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1118527)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1118528)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.
@@ -15539,7 +15554,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 20 (Haste multiplier)
+Real PPM         : 30 (Haste multiplier)
 Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -15587,7 +15602,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 1.2 (Haste multiplier)
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -15604,7 +15619,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1118782)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Frost and Fire spells have a chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $s1% increased damage, explode for $s2% of its damage to nearby enemies, and grant you maximum benefit of Frostfire Mastery and refresh its duration.
+Description      : Your Frost and Fire spells have a chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies, and grant you maximum benefit of Frostfire Mastery and refresh its duration.
 
 Name             : Frostfire Empowerment (id=431177) [Spell Family (3)] 
 Class            : Mage
@@ -15634,8 +15649,12 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044)
                    Family Flags: 108
+#3 (id=1169876)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Frostfire Bolt (431044)
+                   Family Flags: 108
 Description      : $@spelldesc431176
-Tooltip          : Your next Frostfire Bolt  always critically strikes, explodes for $s2% of its damage to nearby enemies, and is instant cast.
+Tooltip          : Your next Frostfire Bolt always critically strikes, deals $s3% additional damage, explodes for $431176s2% of its damage to nearby enemies, and is instant cast.
 
 Name             : Flash Freezeburn (id=431178) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
@@ -15687,6 +15706,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
+Real PPM         : 15 (Haste multiplier)
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -15701,7 +15721,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1118809)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting damaging Frost or Fire spells increases the damage of your next Frostfire Bolt by $431190s1%, stacking up to $431190u times.
+Description      : Casting damaging Frost or Fire spells has a high chance to increase the damage of your next Frostfire Bolt by $431190s1%, stacking up to $431190u times.
 
 Name             : Severe Temperatures (id=431190) [Spell Family (3)] 
 Class            : Mage
@@ -15723,7 +15743,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1118810)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044)
                    Family Flags: 108
 Description      : $@spelldesc431189
@@ -15900,7 +15920,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 45 yards/sec
 Travel Delay     : 1 seconds
-Labels           : 3408: Mastery: Savant (190740 effect#7)
+Labels           : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -15954,8 +15974,8 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
-Labels           : 3785: Mastery: Savant (190740 effect#6)
-Stacks           : 40 maximum
+Labels           : 3785: Mastery: Savant (190740 effect#6), Mastery: Icicles (321684 effect#5)
+Stacks           : 250 maximum
 Proc Chance      : 101%
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
@@ -16030,7 +16050,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 90 yards/sec
 Travel Delay     : 1 seconds
-Labels           : 3408: Mastery: Savant (190740 effect#7)
+Labels           : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
@@ -16054,7 +16074,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 45 yards/sec
 Travel Delay     : 1 seconds
-Labels           : 3408: Mastery: Savant (190740 effect#7)
+Labels           : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -16194,8 +16214,6 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=1140964)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-#2 (id=1150490)  : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : $@spelldesc444483
 
 Name             : Shifting Shards (id=444675) [Spell Family (3), Passive, Hidden] 
@@ -16224,7 +16242,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 45 yards/sec
 Travel Delay     : 1 seconds
-Labels           : 3408: Mastery: Savant (190740 effect#7)
+Labels           : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
@@ -16282,8 +16300,6 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=1141292)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-#2 (id=1150492)  : Dummy (3)
-                   Base Value: 1.2 | Scaled Value: 1.2 | PvP Coefficient: 1.00000
 Description      : $@spelldesc444483
 
 Name             : Embedded Arcane Splinter (id=444735) [Spell Family (3)] 
@@ -16292,8 +16308,8 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
-Labels           : 3785: Mastery: Savant (190740 effect#6)
-Stacks           : 40 maximum
+Labels           : 3785: Mastery: Savant (190740 effect#6), Mastery: Icicles (321684 effect#5)
+Stacks           : 250 maximum
 Proc Chance      : 101%
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
@@ -16309,7 +16325,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=1141320)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01150 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : $@spelldesc443722
+Description      : $@spelldesc443763
 Tooltip          : Dealing $s1 Arcane damage every $t1 sec.
 
 Name             : Embedded Arcane Splinter (id=444736) [Spell Family (3)] 
@@ -16351,7 +16367,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141347)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You have $s1% increased movement speed during Alter Time.
+Description      : You have $s1% increased movement speed during Alter Time$?a236457[ and Evocation][].
 
 
 Name             : Slippery Slinging (id=444754) [Spell Family (3)] 
@@ -16361,12 +16377,13 @@ Spell Type       : None
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Display Duration (170)
 Effects          :
 #1 (id=1141349)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16669,7 +16686,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Phoenix Flames (450506), Living Bomb (453251), Magi's Spark (453925), Nether Munitions (454004), Frigid Pulse (460623)
                    Family Flags: 3
-Description      : Increases your spell damage by $s1%. Stacks up to $u times.
+#6 (id=1170851)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases your spell damage by $?c1[$s1][$s6]%. Stacks up to $u times.
 Tooltip          : Spell damage increased by $w1%.
 
 Name             : Invocation: Arcane Phoenix (id=448658) [Spell Family (3), Passive, Hidden] 
@@ -16818,7 +16837,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1148362)  : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc449330
 Tooltip          : Leech increased by $s1%.
 
@@ -16917,7 +16936,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : Consuming Burden of Power causes your next cast of $?c1[Arcane Barrage to grant $s4 Arcane Charges and][Fire Blast to] call down a storm of $s1 Meteorites on its target.$?c1[][
 
-Each Meteorite's impact reduces the cooldown of Fire Blast  by ${$s2/1000}.1 sec.]
+Each Meteorite's impact reduces the cooldown of Fire Blast by ${$s2/1000}.1 sec.]
 Tooltip          : Your next $?c1[Arcane Barrage][Fire Blast] calls down a storm of $s1 Meteorites on its target.
 
 Name             : Spellfire Spheres (id=449400) [Spell Family (3)] 
@@ -17047,9 +17066,13 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1151358)  : Dummy (3)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1170827)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1170828)  : Dummy (3)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.
 
-When your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for ${$s1/1000} sec, plus an additional ${$s2/1000}.1 sec for each exceptional spell it had cast.
+When your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.
 
 $?c1[$@spellicon451038$@spellname451038:
 $@spellaura451038][$@spellicon383874 $@spellname383874:
@@ -17122,7 +17145,7 @@ Attributes       : ........ ........ x......x ........   ........ ........ .....
 Effects          :
 #1 (id=1149154)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
-Description      : $@spelldesc449630
+Description      : $@spelldesc449700
 
 Name             : Magi's Spark (id=450004) [Spell Family (3)] 
 Class            : Mage
@@ -17149,7 +17172,7 @@ Description      : $@spelldesc454016
 Tooltip          : Afflicted by a Magi's Spark. Explodes upon taking damage from Arcane Missiles, Arcane Barrage, and Arcane Blast.
 
 Name             : Nether Munitions (id=450206) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Arcane [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -17203,7 +17226,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1150171)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Icy Veins is active, damaging an enemy with Frostbolt increases spell damage by $454371s1%.
+Description      : While Icy Veins is active, damaging an enemy with Frostbolt increases spell damage by $454371s1%. Stacks up to $454371u times.
 
 Name             : Phoenix Flames (id=450506) [Spell Family (3)] 
 Class            : Mage
@@ -17236,7 +17259,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 3606: Blast Zone (451755 effect#3)
+Labels           : 3606: Blast Zone (451755 effect#3), Blast Zone (451755 effect#4)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17250,19 +17273,19 @@ Effects          :
 #1 (id=1150790)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1154915)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1154938)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1156750)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Hot Streak has a $s4% chance to grant you Lit Fuse.
 
 $@spellicon450716 $@spellname450716:
-Your next Fire Blast turns up to three nearby targets into a Living Bomb that explodes after $217694d, dealing $44461s2 Fire damage to the target and reduced damage to all other enemies within $44461A2 yds.
+Your next Fire Blast turns up to $s2 nearby $Ltarget:targets; into a Living Bomb that explodes after $217694d, dealing $44461s2 Fire damage to the target and reduced damage to all other enemies within $44461A2 yds.
 
-Up to five enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
+Up to $s3 enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
 
-Name             : Down in Flames (id=450746) [Spell Family (3), Passive, Hidden] 
+Name             : Scald (id=450746) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Physical
@@ -17320,9 +17343,9 @@ Effects          :
 #1 (id=1150967)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1155019)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1155020)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : If Phoenix Flames only hits $s1 target, it deals $s2% increased damage and applies Ignite at $s3% effectiveness.
 
 Name             : Fire's Ire (id=450831) [Spell Family (3), Passive] 
@@ -17371,11 +17394,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1151352)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1151353)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Conjuring a Spellfire Sphere increases the damage of your next $?c1[Arcane Blast by $451049s2% or your next Arcane Barrage by $451049s4%][Pyroblast by $451049s1% or your next Flamestrike by $451049s3%].
-Tooltip          : Your next $?c1[Arcane Blast or Arcane Barrage][Pyroblast or Flamestrike] deals increased damage.
 
 Name             : Arcane Soul (id=451038) [Spell Family (3)] 
 Class            : Mage
@@ -17413,8 +17433,10 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Stacks           : 1 maximum
-Proc Chance      : 101%
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -17426,7 +17448,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1151371)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
 #2 (id=1151372)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17442,7 +17464,7 @@ Effects          :
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
 Description      : $@spelldesc451035
-Tooltip          : $@spellaura451035
+Tooltip          : Your next $?c1[Arcane Blast deals $s2% increased damage or your next Arcane Barrage deals $s4% increased damage][Pyroblast deals $s1% increased damage or your next Flamestrike deals $s3% increased damage].
 
 Name             : Glorious Incandescence (id=451073) [Spell Family (3)] 
 Class            : Mage
@@ -17526,8 +17548,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1152086)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Pyroblast or Flamestrike while Hot Streak is active has an $s1% chance to repeat the spell cast at 100% effectiveness.
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1170814)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Casting Pyroblast or Flamestrike while Hot Streak is active has an $s1% chance to repeat the spell cast at $s2% effectiveness.
 
 This effect counts as consuming Hot Streak.
 
@@ -17547,14 +17571,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1152485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1155099)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1155100)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3606 (Label)
                    Affected Spells (Label): Lit Fuse (450716)
-#4 (id=1155101)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12
+#4 (id=1155101)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 3606 (Label)
+                   Affected Spells (Label): Lit Fuse (450716)
 Description      : Lit Fuse now turns up to $s1 targets into Living Bombs.
 
 Living Bombs can now spread to $s2 enemies.
@@ -17575,35 +17600,37 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1152487)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Combustion grants Lit Fuse.
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1171109)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Casting Combustion grants Lit Fuse and Living Bomb's damage is increased by $s2% while under the effects of Combustion.$?a450716[
 
-Your chance of gaining Lit Fuse is increased to $s1% while under the effects of Combustion.
+Your chance of gaining Lit Fuse is increased by $s1% while under the effects of Combustion.][]
 
-Name             : Explosive Ingenuity (id=451760) [Spell Family (3), Passive] 
+Name             : Explosive Ingenuity (id=451760) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1152493)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1154994)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Living Bomb (44457), Living Bomb (44461), Living Bomb (217694), Living Bomb (244813), Lit Fuse (453207), Living Bomb (453251)
                    Family Flags: 48, 49
-Description      : Your chance of gaining Lit Fuse when consuming Hot Streak is increased to $s1%.
+Description      : Your chance of gaining Lit Fuse when consuming Hot Streak is increased by $s1%.
 
-Living Bomb damage increased by 50%.
+Living Bomb damage increased by $s2%.
 
 Name             : Spontaneous Combustion (id=451875) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
@@ -17627,7 +17654,7 @@ Effects          :
 Description      : Casting Combustion refreshes up to $s1 charges of Fire Blast and up to $s2 charges of Phoenix Flames.
 
 Name             : Leysight (id=452187) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -17649,7 +17676,7 @@ Effects          :
 Description      : Nether Precision damage bonus increased to $s2%.
 
 Name             : Leydrinker (id=452196) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -17670,7 +17697,7 @@ Effects          :
 Description      : Consuming Nether Precision has a $s1% chance to make your next Arcane Blast or Arcane Barrage echo, repeating its damage at $s2% effectiveness to the primary target and up to four nearby enemies.
 
 Name             : Eureka (id=452198) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -17690,8 +17717,29 @@ Effects          :
                    Family Flags: 21
 Description      : When a spell consumes Clearcasting, its damage is increased by $s1%.
 
+Name             : Time Loop (id=452924) [Spell Family (3), Passive] 
+Talent Entry     : Arcane [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1154416)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When you apply a stack of Arcane Debilitation, you have a $s1% chance to apply another stack of Arcane Debilitation.
+
+This effect can trigger off of itself.
+
 Name             : Energized Familiar (id=452997) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -17712,7 +17760,7 @@ Description      : During Arcane Surge, your Familiar fires $s1 bolts instead of
 Damage from your Arcane Familiar has a small chance to grant you up to $454020s1% of your maximum mana.
 
 Name             : Improved Touch of the Magi (id=453002) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -17783,6 +17831,10 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Affecting spells : Norgannon's Foresight (236380 effect#1), Explosive Ingenuity (451760 effect#2)
 Family Flags     : 49, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17805,7 +17857,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x..... x..x....   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -17979,7 +18031,7 @@ Effects          :
 Description      : $@spelldesc449700
 
 Name             : Arcane Debilitation (id=453598) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=1, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.5, 1)]
                  : Effect#2 [op=set, values=(0.5, 1)]
 Class            : Mage
@@ -18003,7 +18055,7 @@ Effects          :
 #2 (id=1156291)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3636 (Label) | Target: Self (1)
                    Affected Spells (Label): Arcane Debilitation (453599)
-Description      : Damaging a target with Arcane Missiles increases the damage they take from Arcane Missiles, Arcane Barrage, and Arcane Blast by ${$s1}.1%. Multiple instances may overlap.
+Description      : Damaging a target with Arcane Missiles increases the damage they take from Arcane Missiles, Arcane Barrage, and Arcane Blast by ${$s1}.1% for $453599d. Multiple instances may overlap.
 
 Name             : Arcane Debilitation (id=453599) [Spell Family (3)] 
 Class            : Mage
@@ -18025,14 +18077,14 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155576)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Arcane Missiles (5143), Arcane Blast (30451), Arcane Barrage (44425)
                    Family Flags: 11, 29, 47
 Description      : $@spelldesc422880
 Tooltip          : Damage taken from $@auracaster's Arcane Missiles, Arcane Barrage, and Arcane Blast increased by $s1%.
 
 Name             : Aether Attunement (id=453600) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -18204,6 +18256,29 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting Arcane Blast or Arcane Barrage has a $s1% chance to make your next Arcane Barrage deal $455681s1% increased damage and generate $455683s1 Arcane Charges.
 
+Name             : Leydrinker (id=453758) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 30 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1155775)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc452196
+Tooltip          : Your next cast of Arcane Blast or Arcane Barrage is enhanced.
+
 Name             : Leydrinker Echo (id=453770) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -18339,7 +18414,7 @@ Description      : $@spelldesc450206
 Tooltip          : Receiving $s1% increased damage from $@auracaster
 
 Name             : Magi's Spark (id=454016) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Arcane [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -18405,7 +18480,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 99 maximum
+Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18417,7 +18492,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1156857)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1156858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 Description      : $@spelldesc450331
@@ -18576,7 +18651,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 3 (Haste multiplier, Druid, Hunter, Mage, Monk, Priest, Rogue, Shaman, Warlock: 3.0149999999999997)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -18591,7 +18666,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1163194)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Living Bomb explosions have a chance to increase the damage of your next Flamestrike or Pyroblast by $457729s1%.
+#2 (id=1171130)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Living Bomb explosions have a small chance to increase the damage of your next Pyroblast by $457729s1% or Flamestrike by $457729s2% .
 
 Name             : Sparking Cinders (id=457729) [Spell Family (3)] 
 Class            : Mage
@@ -18612,10 +18689,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1163195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flamestrike (2120), Pyroblast (11366)
-                   Family Flags: 2, 22
-Description      : Living Bomb explosions have a chance to increase the damage of your next Flamestrike or Pyroblast by 15%.
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Pyroblast (11366)
+                   Family Flags: 22
+#2 (id=1171127)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Flamestrike (2120)
+                   Family Flags: 2
+Tooltip          : The damage of your next Pyroblast is increased by $s1% or Flamestrike by $s2%.
 
 Name             : Heat Shimmer (id=457735) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=5, col=2, max_rank=1, req_points=8]
@@ -18811,7 +18892,7 @@ Attributes       : .......x ........ .......x ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), DoT Stacking Rule (103), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1165246)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Phoenix Flames (450506), Living Bomb (453251), Magi's Spark (453925), Nether Munitions (454004), Frigid Pulse (460623)
                    Family Flags: 3
 Description      : $@spelldesc457803
@@ -18912,7 +18993,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Stacks           : 5 maximum
+Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -18932,7 +19013,344 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Phoenix Flames (450506), Living Bomb (453251), Magi's Spark (453925), Nether Munitions (454004), Frigid Pulse (460623)
                    Family Flags: 3
-Description      : Increases your spell damage by $s1%. Stacks up to $u times.
+Description      : Increases your spell damage by $?c1[$448604s1][$448604s6]%.
 Tooltip          : Spell damage increased by $w1%.
+
+Name             : High Voltage (id=461248) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Arcane [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1169541)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damage from Arcane Missiles has a $s1% chance to grant you $461524s1 Arcane Charge.
+
+Chance is increased by $461525s1% every time your Arcane Missiles fails to grant you an Arcane Charge.
+
+Name             : Static Cloud (id=461257) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Arcane [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1169567)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time you cast Arcane Explosion, its damage increases by $461515s1%.
+
+Bonus resets after reaching ${$461515s1*$461515u}% damage.
+
+Name             : Consortium's Bauble (id=461260) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Arcane [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1169575)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Arcane Blast (30451)
+                   Family Flags: 29
+#2 (id=1169576)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Arcane Blast (30451)
+                   Family Flags: 29
+Description      : Reduces Arcane Blast's mana cost by $s1% and increases its damage by $s2%.
+
+Name             : Big Brained (id=461261) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Arcane [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1169580)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1169590)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Gaining Clearcasting increases your Intellect by $461531s1% for $461531d. Multiple instances may overlap.
+
+Name             : Resonant Orbs (id=461453) [Spell Family (3), Passive] 
+Talent Entry     : Arcane [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1169917)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Arcane Orb (153640)
+                   Family Flags: 83
+Description      : Arcane Orb damage increased by $s1%.
+
+Name             : Dematerialize (id=461456) [Spell Family (3), Passive] 
+Talent Entry     : Arcane [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1169921)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Spells empowered by Nether Precision cause their target to suffer an additional $s1% of the damage dealt over 6 sec.
+
+Name             : Energy Reconstitution (id=461457) [Spell Family (3), Passive] 
+Talent Entry     : Arcane [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 100%
+Real PPM         : 10
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
+                 : Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1169922)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damage from Dematerialize has a small chance to summon an Arcane Explosion at its target's location at $s1% effectiveness.
+
+Arcane Explosions summoned from $@spellname461457 do not generate Arcane Charges.
+
+Name             : Dematerialize (id=461498) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 6 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : DoT Stacking Rule (103), Aura Points On Client (268), Rolling Periodic (334)
+Effects          :
+#1 (id=1170020)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc461456
+Tooltip          : Suffering $w1 damage every $t sec.
+
+Name             : Static Cloud (id=461515) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 60 seconds
+Stacks           : 4 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Duration (170)
+Effects          :
+#1 (id=1170045)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Arcane Explosion (1449), Time and Space (240689), Arcane Explosion (414381)
+                   Family Flags: 12
+Tooltip          : The damage of your next Arcane Explosion is increased by $s1%.
+
+Name             : High Voltage (id=461524) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1170062)  : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: none | Target: Self (1)
+Description      : $@spelldesc461248
+
+Name             : High Voltage (id=461525) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1170063)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Your chance to gain an Arcane Charge from Arcane Missiles is increased by $s1%.
+
+Name             : Big Brained (id=461531) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 8 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1170073)  : Apply Aura (6) | Modify Attribute% (80)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+Description      : $@spelldesc461261
+Tooltip          : Your Intellect is increased by $s1%.
+
+Name             : Arcane Mage (id=462083) [Spell Family (3), Passive, Hidden] 
+Class            : Arcane Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171311)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Mage (id=462084) [Spell Family (3), Passive, Hidden] 
+Class            : Arcane Fire Frost Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171312)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Fire Mage (id=462085) [Spell Family (3), Passive, Hidden] 
+Class            : Fire Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171313)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+
+Name             : Frost Mage (id=462086) [Spell Family (3), Passive, Hidden] 
+Class            : Frost Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171314)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 
 

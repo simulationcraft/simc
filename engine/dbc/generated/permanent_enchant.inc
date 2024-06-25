@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 11.0.0.55185
+// Permanent item enchants, wow build 11.0.0.55288
 static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -634,12 +634,12 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 3013,  0,  4, 0x00000080, 0x0000001f, "nethercleft_leg_armor"             },
   { 3012,  0,  4, 0x00000080, 0x0000001f, "nethercobra_leg_armor"             },
   { 4223,  0,  4, 0x00000040, 0x0000001e, "nitro_boosts"                      },
-  { 7446,  1,  2, 0x00000000, 0x000ebfff, "oathsworn_tenacity"                },
-  { 7447,  2,  2, 0x00000000, 0x000ebfff, "oathsworn_tenacity"                },
-  { 7448,  3,  2, 0x00000000, 0x000ebfff, "oathsworn_tenacity"                },
   { 7359,  1,  4, 0x00100020, 0x0000001f, "oathsworns_strength"               },
   { 7360,  2,  4, 0x00100020, 0x0000001f, "oathsworns_strength"               },
   { 7361,  3,  4, 0x00100020, 0x0000001f, "oathsworns_strength"               },
+  { 7446,  1,  2, 0x00000000, 0x000ebfff, "oathsworns_tenacity"               },
+  { 7447,  2,  2, 0x00000000, 0x000ebfff, "oathsworns_tenacity"               },
+  { 7448,  3,  2, 0x00000000, 0x000ebfff, "oathsworns_tenacity"               },
   { 6149,  0,  2, 0x00000000, 0x000ebfff, "oceanic_restoration"               },
   { 5275,  0,  2, 0x00000000, 0x0004000c, "oglethorpes_missile_splitter"      },
   { 6196,  0,  2, 0x00000000, 0x0004000c, "optical_target_embiggener"         },
@@ -906,7 +906,7 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 7405,  2,  4, 0x00010000, 0x0000001f, "whisper_of_silken_leech"           },
   { 7406,  3,  4, 0x00010000, 0x0000001f, "whisper_of_silken_leech"           },
   { 7410,  1,  4, 0x00010000, 0x0000001f, "whisper_of_silken_speed"           },
-  { 7414,  2,  4, 0x00010000, 0x0000001f, "whisper_of_silken_speed"           },
+  { 7411,  2,  4, 0x00010000, 0x0000001f, "whisper_of_silken_speed"           },
   { 7412,  3,  4, 0x00010000, 0x0000001f, "whisper_of_silken_speed"           },
   { 4441,  0,  2, 0x00000000, 0x0008a7f3, "windsong"                          },
   { 4098,  0,  2, 0x00000000, 0x000ae7f3, "windwalk"                          },

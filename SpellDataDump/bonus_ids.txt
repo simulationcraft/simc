@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55185 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5576,8 +5576,8 @@ bonus_id={ 10358 }, base_ilevel={ 502 }
 bonus_id={ 10359 }, base_ilevel={ 512 }
 bonus_id={ 10360 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10361 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
-bonus_id={ 10362 }, quality={ uncommon }, ilevel={ 434 @plvl 50 - 532 @plvl 90 }
-bonus_id={ 10363 }, quality={ uncommon }, ilevel={ 434 @plvl 50 - 538 @plvl 90 }
+bonus_id={ 10362 }, ilevel={ 434 @plvl 50 - 532 @plvl 90 }
+bonus_id={ 10363 }, ilevel={ 434 @plvl 50 - 538 @plvl 90 }
 bonus_id={ 10364 }, quality={ rare }, ilevel={ 441 @plvl 50 - 535 @plvl 90 }
 bonus_id={ 10365 }, quality={ rare }, ilevel={ 441 @plvl 50 - 541 @plvl 90 }
 bonus_id={ 10366 }, quality={ epic }, ilevel={ 447 @plvl 50 - 539 @plvl 90 }
@@ -6120,7 +6120,7 @@ bonus_id={ 11069 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
 bonus_id={ 11070 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
 bonus_id={ 11071 }, ilevel={ 5 @plvl 1 - 584 @plvl 80 }
 bonus_id={ 11072 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 541 @plvl 80 }
-bonus_id={ 11073 }, ilevel={ 14 @plvl 1 - 415 @plvl 70 }
+bonus_id={ 11073 }, ilevel={ 14 @plvl 1 - 467 @plvl 70 }
 bonus_id={ 11074 }, ilevel={ 5 @plvl 1 - 571 @plvl 80 }
 bonus_id={ 11075 }, quality={ common }, effects={ Lightning Bulwark (id=442371, index=0, type=equip) }
 bonus_id={ 11076 }, quality={ uncommon }, effects={ Lightning Bulwark (id=442404, index=0, type=equip) }
@@ -6313,3 +6313,11 @@ bonus_id={ 11316 }, stats={ 100% Crit [0.3333] }
 bonus_id={ 11317 }, stats={ 100% Vers [0.3333] }
 bonus_id={ 11318 }, base_ilevel={ 545 }
 bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Delver's Bounty (id=460285, index=0, type=use) }
+bonus_id={ 11329 }, quality={ rare }, ilevel={ 10 @plvl 0 - 10 @plvl 1 }
+bonus_id={ 11330 }, base_ilevel={ 545 }
+bonus_id={ 11331 }, base_ilevel={ 561 }
+bonus_id={ 11332 }, ilevel={ 350 @plvl 0 - 350 @plvl 1 }
+bonus_id={ 11334 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 11335 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 11336 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 11337 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }

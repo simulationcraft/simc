@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.55185
-static const std::array<active_class_spell_t, 307> __active_spells_data { {
+// Active class spells, wow build 11.0.0.55288
+static const std::array<active_class_spell_t, 308> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -196,6 +196,7 @@ static const std::array<active_class_spell_t, 307> __active_spells_data { {
   {  8,    0, 343140,      0, "Portal"                             },
   {  8,   62,  30451,      0, "Arcane Blast"                       },
   {  8,   62,  44425,      0, "Arcane Barrage"                     },
+  {  8,   62, 153626,      0, "Arcane Orb"                         },
   {  8,   63,    133,      0, "Fireball"                           },
   {  8,   63,   2120,      0, "Flamestrike"                        },
   {  8,   64, 190356,      0, "Blizzard"                           },
@@ -309,7 +310,7 @@ static const std::array<active_class_spell_t, 307> __active_spells_data { {
   { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.55185
+// Pet active spells, wow build 11.0.0.55288
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
