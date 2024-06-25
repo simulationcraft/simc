@@ -10617,6 +10617,7 @@ void druid_t::create_buffs()
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
     this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
       ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+      ->add_invalidate( CACHE_AGILITY )
       // ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
       ->add_invalidate( CACHE_ARMOR );
 
