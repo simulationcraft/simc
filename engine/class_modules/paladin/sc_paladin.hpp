@@ -234,6 +234,7 @@ public:
     {
       buff_t* hammer_of_light_ready;
       buff_t* hammer_of_light_free;
+      buff_t* hammer_of_light_cost;
       buff_t* for_whom_the_bell_tolls;
       buff_t* shake_the_heavens;
       buff_t* endless_wrath;
@@ -752,6 +753,7 @@ public:
   void trigger_tyrs_enforcer( action_state_t* s );
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
+  void trigger_lights_deliverance();
   void heartfire( action_state_t* s );
   void t29_4p_prot();
   void t31_4p_prot( action_state_t* s );

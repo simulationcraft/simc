@@ -54,16 +54,19 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
 
-  cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
-  cooldowns.consecration              = get_cooldown( "consecration" );
-  cooldowns.inner_light_icd           = get_cooldown( "inner_light_icd" );
-  cooldowns.inner_light_icd->duration = find_spell( 386556 )->internal_cooldown();
-  cooldowns.righteous_protector_icd   = get_cooldown( "righteous_protector_icd" );
+  
+  cooldowns.avengers_shield                   = get_cooldown( "avengers_shield" );
+  cooldowns.consecration                      = get_cooldown( "consecration" );
+  cooldowns.inner_light_icd                   = get_cooldown( "inner_light_icd" );
+  cooldowns.inner_light_icd->duration         = find_spell( 386556 )->internal_cooldown();
+  cooldowns.righteous_protector_icd           = get_cooldown( "righteous_protector_icd" );
   cooldowns.righteous_protector_icd->duration = find_spell( 204074 )->internal_cooldown();
-  cooldowns.judgment                  = get_cooldown( "judgment" );
-  cooldowns.shield_of_the_righteous   = get_cooldown( "shield_of_the_righteous" );
-  cooldowns.guardian_of_ancient_kings = get_cooldown( "guardian_of_ancient_kings" );
-  cooldowns.ardent_defender           = get_cooldown( "ardent_defender" );
+  cooldowns.judgment                          = get_cooldown( "judgment" );
+  cooldowns.shield_of_the_righteous           = get_cooldown( "shield_of_the_righteous" );
+  cooldowns.guardian_of_ancient_kings         = get_cooldown( "guardian_of_ancient_kings" );
+  cooldowns.ardent_defender                   = get_cooldown( "ardent_defender" );
+  cooldowns.eye_of_tyr                        = get_cooldown( "eye_of_tyr" );
+  
 
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning  = get_cooldown( "final_reckoning" );
@@ -2074,7 +2077,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     double c = holy_power_consumer_t::cost_pct_multiplier();
 
     if ( p()->buffs.templar.hammer_of_light_free->up() )
-      c *= 1.0 - 1.0;
+      c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
     if ( p()->buffs.divine_purpose->up() )
       c *= 1.0 - 1.0;
 
@@ -2217,6 +2220,30 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
     make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
     totalDelay += additionalDelay;
   }
+}
+
+void paladin_t::trigger_lights_deliverance()
+{
+  if ( !talents.templar.lights_deliverance->ok() || !buffs.templar.lights_deliverance->at_max_stacks() )
+    return;
+  
+  // Light's Deliverance does not trigger while EoT/Wake cooldown is ready to be used
+  if ( ( specialization() == PALADIN_PROTECTION && cooldowns.eye_of_tyr->up() ) ||
+       ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
+    return;
+
+  auto cost_reduction = buffs.templar.hammer_of_light_cost->default_value;
+
+  if ( !bugs && buffs.templar.hammer_of_light_ready->up() )
+    return;
+  // 2024-06-25 When we reach 60 stacks of Light's Deliverance while EoT/Wake is already used, but Hammer of Light isn't used yet, the hammer will cost 5 Holy Power
+  else if ( buffs.templar.hammer_of_light_ready->up() )
+    cost_reduction = 0.0;
+
+
+  buffs.templar.hammer_of_light_ready->execute();
+  buffs.templar.hammer_of_light_free->execute(-1, cost_reduction, timespan_t::min());
+  buffs.templar.lights_deliverance->expire();
 }
 
 // Holy Armaments
@@ -3298,8 +3325,12 @@ void paladin_t::create_buffs()
                                                } );
 
 
-  buffs.templar.hammer_of_light_ready = make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 20_s );
-  buffs.templar.hammer_of_light_free  = make_buff( this, "hammer_of_light_free", find_spell(433015) );
+  buffs.templar.hammer_of_light_ready =
+      make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 12_s );
+  buffs.templar.hammer_of_light_free =
+      make_buff( this, "hammer_of_light_free", find_spell( 433015 ) )->set_duration( 12_s );
+  buffs.templar.hammer_of_light_cost = make_buff( this, "hammer_of_light_cost", find_spell( 433732 ) )
+    ->set_default_value_from_effect(1); // Pseudo Buff which contains the cost reduce
 
   buffs.templar.for_whom_the_bell_tolls = make_buff( this, "for_whom_the_bell_tolls", find_spell( 433618 ) );
   buffs.templar.for_whom_the_bell_tolls->set_initial_stack( buffs.templar.for_whom_the_bell_tolls->max_stack() );
@@ -3320,12 +3351,10 @@ void paladin_t::create_buffs()
                                      ->set_default_value_from_effect( 1 );
 
   buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
-                                ->set_expire_at_max_stack( true )
-                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                   if ( !new_ )
-                                   {//TODO: Implement logic to check for EoT/HoL availability, unlikely to come up in sims, but good to have parity
-                                     buffs.templar.hammer_of_light_ready->trigger();
-                                     buffs.templar.hammer_of_light_free->trigger();
+                                 ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+                                   if ( b->at_max_stacks() )
+                                   {
+                                     trigger_lights_deliverance();
                                    }
                                  } );
 }

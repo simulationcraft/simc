@@ -632,6 +632,11 @@ struct eye_of_tyr_t : public paladin_spell_t
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
                           p()->gains.eye_of_tyr );
     }
+    // Mostly only needed for bugged behaviour
+    if ( p()->talents.templar.lights_deliverance->ok() )
+    {
+      p()->trigger_lights_deliverance();
+    }
   }
 
 };
