@@ -703,6 +703,8 @@ public:
 
     // Blood
     absorb_buff_t* blood_shield;
+    propagate_const<buff_t*> bloodied_blade_stacks;
+    propagate_const<buff_t*> bloodied_blade_final;
     buff_t* bone_shield;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
@@ -717,6 +719,10 @@ public:
     propagate_const<buff_t*> tombstone;
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
+    // Tier Sets
+    propagate_const<buff_t*> unbreakable_tww1_2pc;
+    buff_t* unbroken_tww1_2pc;
+    buff_t* piledriver_tww1_4pc;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -861,6 +867,7 @@ public:
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
+    action_t* heart_strike_bloodied_blade;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -1083,7 +1090,7 @@ public:
       player_talent_t tombstone;
       player_talent_t blooddrinker;
       player_talent_t consumption;
-      // NYI TALENT
+      player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
       // Row 9
       player_talent_t shattering_bone;
@@ -1307,12 +1314,15 @@ public:
 
     // Blood
     const spell_data_t* blood_shield;
+    const spell_data_t* bloodied_blade_stacks_buff;
+    const spell_data_t* bloodied_blade_final_buff;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
+    const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
     const spell_data_t* blood_draw_damage;
@@ -1322,6 +1332,10 @@ public:
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
     const spell_data_t* shattering_bone_damage;
+    // Tier Sets
+    const spell_data_t* unbreakable_tww1_2pc;
+    const spell_data_t* unbroken_tww1_2pc;
+    const spell_data_t* piledriver_tww1_4pc;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -1687,6 +1701,7 @@ public:
   void init_procs() override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
+  double composite_attribute( attribute_e ) const;
   double composite_bonus_armor() const override;
   void combat_begin() override;
   void activate() override;
@@ -1694,6 +1709,7 @@ public:
   void arise() override;
   void adjust_dynamic_cooldowns() override;
   void assess_heal( school_e, result_amount_type, action_state_t* ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void do_damage( action_state_t* ) override;
@@ -3314,6 +3330,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_action_t::impact( state );
 
       dk()->buffs.bone_shield->trigger( stack_gain );
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        dk() -> buffs.piledriver_tww1_4pc->trigger( stack_gain );
     }
   };
 
@@ -3365,6 +3383,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_action_t::impact( state );
 
       dk()->buffs.bone_shield->trigger( stack_gain );
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        dk() -> buffs.piledriver_tww1_4pc->trigger( stack_gain );
     }
   };
 
@@ -5225,7 +5245,8 @@ struct apocalyptic_conquest_buff_t final : public death_knight_buff_t
     : death_knight_buff_t( p, name, spell ), nazgrims_conquest( 0 )
   {
     set_default_value( p->pet_spell.apocalyptic_conquest->effectN( 1 ).percent() );
-    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+    add_invalidate( CACHE_STRENGTH );
+    // set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  TODO: bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
   }
 
   // Override the value of the buff to properly capture Apocalyptic Conquest's strength buff behavior
@@ -7374,6 +7395,8 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     if ( p()->talent.blood.insatiable_blade.ok() )
     {
       p()->buffs.bone_shield->trigger( bone_shield_stack_gain );
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( bone_shield_stack_gain );
     }
 
     // Only summon the rune weapons if the buff is down.
@@ -7728,6 +7751,8 @@ struct deaths_caress_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->buffs.bone_shield->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( as<int>( p()->spec.deaths_caress->effectN( 3 ).base_value() ) );
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
@@ -8870,6 +8895,23 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
+struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
+  {
+    heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
+      : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
+    {
+      background = true;
+      aoe        = 2;
+      weapon     = &( p->main_hand_weapon );
+    }
+
+    int n_targets() const override
+    {
+      return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
+                                        : aoe;
+    }
+  };
+
 struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
@@ -9232,6 +9274,8 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( s );
 
     p()->buffs.bone_shield->trigger( as<int>( data().effectN( 3 ).base_value() ) );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger( as<int>( data().effectN( 3 ).base_value() ) );
   }
 };
 
@@ -11745,6 +11789,10 @@ void death_knight_t::create_actions()
     {
       active_spells.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
     }
+    if ( talent.blood.bloodied_blade.ok() )
+    {
+      active_spells.heart_strike_bloodied_blade = get_action<heart_strike_bloodied_blade_t>( "heart_strike_bloodied_blade", this );
+    }
   }
 
   // Unholy
@@ -12459,12 +12507,12 @@ void death_knight_t::init_spells()
   talent.blood.coagulopathy         = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
   talent.blood.bloodworms           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   // Row 8
-  talent.blood.blood_feast   = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
-  talent.blood.mark_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
-  talent.blood.tombstone     = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.blooddrinker  = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
-  talent.blood.consumption   = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
-  // NYI TALENT
+  talent.blood.blood_feast     = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
+  talent.blood.mark_of_blood   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
+  talent.blood.tombstone       = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
+  talent.blood.blooddrinker    = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
+  talent.blood.consumption     = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
+  talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
@@ -12678,13 +12726,16 @@ void death_knight_t::init_spells()
   spell.virulent_erruption = conditional_spell_lookup( spec.outbreak->ok(), 191685 );
 
   // Blood
-  spell.blood_shield         = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
-  spell.bone_shield          = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
-  spell.sanguine_ground      = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
-  spell.ossuary_buff         = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
-  spell.crimson_scourge_buff = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
-  spell.heartbreaker_rp_gain = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
-  spell.heartrend_buff       = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
+  spell.blood_shield                = conditional_spell_lookup( mastery.blood_shield->ok(), 77535 );
+  spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
+  spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
+  spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
+  spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
+  spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
+  spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
+  spell.heartrend_buff              = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
+  spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
   spell.voracious_buff           = conditional_spell_lookup( talent.blood.voracious.ok(), 274009 );
@@ -12693,6 +12744,10 @@ void death_knight_t::init_spells()
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
   spell.shattering_bone_damage   = conditional_spell_lookup( talent.blood.shattering_bone.ok(), 377642 );
+  // Tier Sets
+  spell.unbreakable_tww1_2pc     = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ), 457468 );
+  spell.unbroken_tww1_2pc        = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ), 457473 );
+  spell.piledriver_tww1_4pc      = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ), 457506 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -13276,7 +13331,8 @@ void death_knight_t::create_buffs()
   buffs.visceral_strength =
       make_fallback( talent.sanlayn.visceral_strength, this, "visceral_strength", spell.visceral_strength_buff )
           ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+          ->add_invalidate( CACHE_STRENGTH);
+          // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
@@ -13314,7 +13370,20 @@ void death_knight_t::create_buffs()
             } )
             // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
             ->set_cooldown( 0_ms )
-            ->apply_affecting_aura( talent.blood.reinforced_bones );
+            ->apply_affecting_aura( talent.blood.reinforced_bones )
+            ->set_max_stack( spell.bone_shield->max_stacks() + as<int>( talent.blood.reinforced_bones.ok() ? talent.blood.reinforced_bones->effectN( 2 ).base_value() : 0 ) );  // TODO: Remove this if they fix reinforced bones effect2 to be APPLY_AURA instead of E_APPLY_AREA_AURA_PARTY
+
+    buffs.bloodied_blade_stacks = make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
+                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).base_value() / 10 )
+                                      ->add_invalidate( CACHE_STRENGTH )
+                                      ->set_cooldown( spell.bloodied_blade_stacks_buff->internal_cooldown() );
+                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+
+    buffs.bloodied_blade_final  = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
+                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+                                      ->add_invalidate( CACHE_STRENGTH );
+                                      // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+
 
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
@@ -13401,6 +13470,13 @@ void death_knight_t::create_buffs()
             } );
 
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
+
+    // Tier Sets
+    // TWW1
+    buffs.unbreakable_tww1_2pc = make_buff( this, "unbreakable", spell.unbreakable_tww1_2pc );
+    buffs.unbroken_tww1_2pc    = make_buff( this, "unbroken", spell.unbroken_tww1_2pc )
+                                    ->set_chance( 0.15 );  // TODO Verify this number.  Was found through manual testing, not in spelldata
+    buffs.piledriver_tww1_4pc  = make_buff( this, "piledriver", spell.piledriver_tww1_4pc );
   }
 
   // Frost
@@ -13817,10 +13893,41 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   player_t::assess_heal( school, t, s );
 }
 
+// death_knight_t::assess_damage ============================================
+
+void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
+{
+  player_t::assess_damage( school, type, s );
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD && s-> result == RESULT_PARRY && talent.blood.bloodied_blade->ok() )
+  {
+    if ( buffs.bloodied_blade_stacks->at_max_stacks() )
+    {
+      buffs.bloodied_blade_stacks->expire();
+      buffs.bloodied_blade_final->trigger();
+      active_spells.heart_strike_bloodied_blade->execute_on_target( target );
+    }
+    else if ( ! buffs.bloodied_blade_final->check() )  // Can not proc while the final 10% str boost is up
+      buffs.bloodied_blade_stacks->trigger();
+  }
+}
+
 // death_knight_t::assess_damage_imminent ===================================
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
+  //  TWW1 4pc handling
+  if ( specialization() == DEATH_KNIGHT_BLOOD &&
+        sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) &&
+        buffs.bone_shield->stack() < sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 2 ).base_value() &&
+        rng().roll( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 5 ).percent() ) )
+  {
+    if ( rng().roll( 0.5 ) ) // 50% chance to roll 1 or 2 charges
+      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() );
+    else
+      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() );
+  }
+
   if ( ( ( specialization() == DEATH_KNIGHT_BLOOD && !buffs.bone_shield->check() ) || !cooldown.bone_shield_icd->up() ||
          state->action->special ) )
   {
@@ -13829,7 +13936,13 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
   sim->print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
   if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
     buffs.bone_shield->decrement();
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ) )
+      buffs.unbroken_tww1_2pc->trigger();
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+      buffs.piledriver_tww1_4pc->decrement();
+  }
   cooldown.bone_shield_icd->start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it
   // reduces a cooldown
@@ -13910,6 +14023,43 @@ double death_knight_t::composite_bonus_armor() const
   }
 
   return ba;
+}
+
+// death_knight_t::composite_attribute ======================================
+
+double death_knight_t::composite_attribute( attribute_e attr ) const
+{
+  auto a = player_t::composite_attribute( attr );
+
+  // TODO: remove if fixed.  This implements effect type 80 ( Modify Attribute% )
+  if ( attr == ATTR_STRENGTH )
+  {
+    switch ( specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        if ( buffs.bloodied_blade_stacks->check() )
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
+        if ( buffs.bloodied_blade_final->check() )
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+        if ( buffs.visceral_strength->check() )
+          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        if ( buffs.visceral_strength->check() )
+          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
+        if ( buffs.apocalyptic_conquest->check() )
+          a += base.stats.attribute[ attr ] * buffs.apocalyptic_conquest->check_value();
+        break;
+      case DEATH_KNIGHT_FROST:
+        if ( buffs.apocalyptic_conquest->check() )
+          a += base.stats.attribute[ attr ] * buffs.apocalyptic_conquest->check_value();
+        break;
+      default:
+        break;
+    }
+  }
+
+  return a;
 }
 
 // death_knight_t::combat_begin =============================================
@@ -14216,6 +14366,11 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.dancing_rune_weapon );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield, talent.blood.reinforced_bones );
     parse_effects( buffs.perseverance_of_the_ebon_blade );
+
+    // Tier Sets
+    parse_effects( buffs.unbreakable_tww1_2pc, [ this ] { return buffs.bone_shield->check(); } );
+    parse_effects( buffs.unbroken_tww1_2pc );
+    parse_effects( buffs.piledriver_tww1_4pc );
   }
 
   // Frost
