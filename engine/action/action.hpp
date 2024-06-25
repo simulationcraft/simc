@@ -92,27 +92,27 @@ struct parsed_value_t
   { fmt::format_to( out, "{}", v.value() ); }
 
   // additional operator overrides for timespan_t, as it is used quite often. these are unnecessary for POD
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   bool operator==( const timespan_t& t ) const
   { return value() == t; }
 
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   bool operator<( const timespan_t& t ) const
   { return value() < t; }
 
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   bool operator>( const timespan_t& t ) const
   { return value() > t; }
 
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   bool operator<=( const timespan_t& t ) const
   { return value() <= t; }
 
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   bool operator>=( const timespan_t& t ) const
   { return value() >= t; }
 
-  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
   double total_seconds() const
   { return value().total_seconds(); }
 };
