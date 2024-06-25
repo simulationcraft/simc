@@ -1538,16 +1538,14 @@ using namespace helpers;
       return t;
     }
 
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    double dot_duration_pct_multiplier( const action_state_t* s ) const override
     {
-      double modifier = 1.0;
+      auto mul = warlock_spell_t::dot_duration_pct_multiplier( s );
 
       if ( p()->buffs.nightfall->check() )
-        modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+        mul *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
 
-      timespan_t dur = dot_duration * ( ( s->haste * modifier * base_tick_time ) / base_tick_time );
-
-      return dur;
+      return mul;
     }
 
     void execute() override

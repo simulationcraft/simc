@@ -7370,16 +7370,16 @@ public:
     return m;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    auto d = shaman_spell_t::composite_dot_duration( s );
+    auto mul = shaman_spell_t::dot_duration_pct_multiplier( s );
 
     if ( p()->buff.fire_elemental->check() && p()->spell.fire_elemental->ok() )
     {
-      d *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
+      mul *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
     }
 
-    return d;
+    return mul;
   }
 
   timespan_t tick_time( const action_state_t* state ) const override

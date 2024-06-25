@@ -4520,11 +4520,9 @@ struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat
       add_child( tear );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    timespan_t t = base_t::composite_dot_duration( s );
-
-    return t *= cp( s ) + 1;
+    return base_t::dot_duration_pct_multiplier( s ) * cp( s ) + 1;
   }
 
   void impact( action_state_t* s ) override

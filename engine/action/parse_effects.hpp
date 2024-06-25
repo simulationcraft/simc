@@ -726,6 +726,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> flat_execute_time_effects;
   std::vector<player_effect_t> gcd_effects;
   std::vector<player_effect_t> dot_duration_effects;
+  std::vector<player_effect_t> flat_dot_duration_effects;
   std::vector<player_effect_t> tick_time_effects;
   std::vector<player_effect_t> recharge_multiplier_effects;
   std::vector<player_effect_t> cost_effects;
@@ -912,23 +913,32 @@ public:
 
   timespan_t execute_time_flat_modifier() const override
   {
-    auto base = BASE::execute_time_flat_modifier();
     double add = 0.0;
 
     for ( const auto& i : flat_execute_time_effects )
       add += get_effect_value( i, true );
 
-    return base + timespan_t::from_millis( add );
+    return BASE::execute_time_flat_modifier() + timespan_t::from_millis( add );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    auto dur = BASE::composite_dot_duration( s );
+    auto mul = BASE::dot_duration_pct_multiplier( s );
 
     for ( const auto& i : dot_duration_effects )
-      dur *= 1.0 + get_effect_value( i );
+      mul *= 1.0 + get_effect_value( i );
 
-    return std::max( 0_ms, dur );
+    return mul;
+  }
+
+  timespan_t dot_duration_flat_modifier( const action_state_t* s ) const override
+  {
+    double add = 0.0;
+
+    for ( const auto& i : flat_dot_duration_effects )
+      add += get_effect_value( i );
+
+    return BASE::dot_duration_flat_modifier( s ) + timespan_t::from_millis( add );
   }
 
   timespan_t gcd() const override

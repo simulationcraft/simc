@@ -443,7 +443,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_dd_min -= damage_range;
 
     // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
-    if ( base_execute_time() < 10_ms )
+    if ( base_execute_time < 10_ms )
       base_execute_time = 1.5_s;
   }
 
@@ -660,10 +660,10 @@ struct melee_nuke_t : public enemy_action_t<melee_attack_t>
     base_dd_max = base_dd_min + damage_range;
     base_dd_min -= damage_range;
 
-    if ( base_execute_time() < 0_ms )
+    if ( base_execute_time < 0_ms )
       base_execute_time = 3_s;
 
-    if ( base_execute_time() < trigger_gcd )
+    if ( base_execute_time < trigger_gcd )
     {
       trigger_gcd = base_execute_time;
       min_gcd     = base_execute_time;
@@ -703,10 +703,10 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
     base_dd_max = base_dd_min + damage_range;
     base_dd_min -= damage_range;
 
-    if ( base_execute_time() < 0_ms )
+    if ( base_execute_time < 0_ms )
       base_execute_time = 3_s;
 
-    if ( base_execute_time() < trigger_gcd )
+    if ( base_execute_time < trigger_gcd )
     {
       trigger_gcd = base_execute_time;
       min_gcd     = base_execute_time;
@@ -741,7 +741,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
 
     // Replace damage option
     add_option( opt_float( "damage", base_td ) );
-    add_option( opt_timespan( "dot_duration", dot_duration ) );
+    add_option( opt_timespan( "dot_duration", dot_duration.base ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
@@ -757,7 +757,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
     if ( base_tick_time < timespan_t::zero() )  // User input sanity check
       base_tick_time = timespan_t::from_seconds( 1.0 );
 
-    if ( base_execute_time() < trigger_gcd )
+    if ( base_execute_time < trigger_gcd )
     {
       trigger_gcd = base_execute_time;
       min_gcd     = base_execute_time;
@@ -780,7 +780,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
     base_tick_time = timespan_t::from_seconds( 1.0 );
 
     add_option( opt_float( "damage", base_td ) );
-    add_option( opt_timespan( "dot_duration", dot_duration ) );
+    add_option( opt_timespan( "dot_duration", dot_duration.base ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
@@ -816,7 +816,7 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     base_t::init();
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time() < 10_ms )
+    if ( base_execute_time < 10_ms )
       base_execute_time = 3_s;
   }
 

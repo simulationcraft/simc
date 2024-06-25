@@ -878,13 +878,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       if ( hasted_dot_duration )
       {
-        auto tt = tick_time( s );
-
         // technically it's possible to have hasted dot duration without hasted ticks
         if ( !hasted_ticks )
-          tt *= s->haste;
-
-        return dot_duration * ( tt / base_tick_time );
+          return dot_duration * ( ( base_tick_time * s->haste ) / base_tick_time );
+        else
+          return dot_duration * ( tick_time( s ) / base_tick_time );
       }
 
       return dot_duration;

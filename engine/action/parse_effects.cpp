@@ -1540,7 +1540,9 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
                        []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); } );
     print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
-    print_parsed_type( os, &VEC::dot_duration_effects, "Dot Duration" );
+    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration",
+                       []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); } );
+    print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
     print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
     print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
@@ -1563,6 +1565,7 @@ size_t parse_action_base_t::total_effects_count()
          flat_execute_time_effects.size() +
          gcd_effects.size() +
          dot_duration_effects.size() +
+         flat_dot_duration_effects.size() +
          tick_time_effects.size() +
          recharge_multiplier_effects.size() +
          cost_effects.size() +
@@ -1613,6 +1616,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( flat_execute_time_effects );
   initialize_buff_list_on_vector( gcd_effects );
   initialize_buff_list_on_vector( dot_duration_effects );
+  initialize_buff_list_on_vector( flat_dot_duration_effects );
   initialize_buff_list_on_vector( tick_time_effects );
   initialize_buff_list_on_vector( recharge_multiplier_effects );
   initialize_buff_list_on_vector( cost_effects );

@@ -71,9 +71,6 @@ struct parsed_value_t
   operator T() const
   { return value(); }
 
-  T operator()() const
-  { return value(); }
-
   parsed_value_t& operator=( T v )
   { base = v; flat_add = T(); pct_mul = 1.0; return *this; }
 
@@ -93,6 +90,31 @@ struct parsed_value_t
 
   friend void sc_format_to( const parsed_value_t<T>& v, fmt::format_context::iterator out )
   { fmt::format_to( out, "{}", v.value() ); }
+
+  // additional operator overrides for timespan_t, as it is used quite often. these are unnecessary for POD
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  bool operator==( const timespan_t& t ) const
+  { return value() == t; }
+
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  bool operator<( const timespan_t& t ) const
+  { return value() < t; }
+
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  bool operator>( const timespan_t& t ) const
+  { return value() > t; }
+
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  bool operator<=( const timespan_t& t ) const
+  { return value() <= t; }
+
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  bool operator>=( const timespan_t& t ) const
+  { return value() >= t; }
+
+  template <typename = std::enable_if_t<std::is_same_v<T, timespan_t>>>
+  double total_seconds() const
+  { return value().total_seconds(); }
 };
 
 struct action_t : private noncopyable
@@ -370,7 +392,7 @@ public:
   timespan_t base_tick_time;
 
   /// Default full duration of dot.
-  timespan_t dot_duration;
+  parsed_value_t<timespan_t> dot_duration;
 
   /// Whether or not the dot duration is hasted. Channeled spells generally also have this flag.
   bool hasted_dot_duration;
@@ -859,6 +881,10 @@ public:
   virtual bool usable_precombat() const;
 
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
+
+  virtual timespan_t dot_duration_flat_modifier( const action_state_t* ) const;
+
+  virtual double dot_duration_pct_multiplier( const action_state_t* ) const;
 
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
   { return attack_power_mod.direct; }

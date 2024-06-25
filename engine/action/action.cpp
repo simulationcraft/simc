@@ -2254,7 +2254,7 @@ bool action_t::usable_moving() const
   if ( player->buffs.norgannons_sagacity && player->buffs.norgannons_sagacity->check() )
     return true;
 
-  if ( execute_time() > timespan_t::zero() )
+  if ( execute_time() > 0_ms )
     return false;
 
   if ( channeled )
@@ -2271,7 +2271,7 @@ bool action_t::usable_precombat() const
   if ( !harmful )
     return true;
 
-  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time() > timespan_t::zero() )
+  if ( this->travel_time() > 0_ms || this->base_execute_time > 0_ms )
     return true;
 
   return false;
@@ -2739,7 +2739,7 @@ void action_t::init()
   // the correct (short) GCD.
   min_gcd = std::min( min_gcd, trigger_gcd );
 
-  if ( use_off_gcd && trigger_gcd == timespan_t::zero() )
+  if ( use_off_gcd && trigger_gcd == 0_ms )
   {
     cooldown->add_execute_type( execute_type::OFF_GCD );
     internal_cooldown->add_execute_type( execute_type::OFF_GCD );
@@ -4110,20 +4110,38 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_armor = composite_target_armor( state->target );
 }
 
+// action_t::composite_dot_duration =========================================
+
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
+  auto base = dot_duration.base;
+
+  auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+  if ( mul <= 0 )
+    return 0_ms;
+
   if ( hasted_dot_duration )
   {
-    auto tt = tick_time( s );
-
     // technically it's possible to have hasted dot duration without hasted ticks
     if ( !hasted_ticks )
-      tt *= s->haste;
-
-    return dot_duration * ( tt / base_tick_time );
+      mul *= ( ( base_tick_time * s->haste ) / base_tick_time );
+    else
+      mul *= tick_time( s ) / base_tick_time;
   }
 
-  return dot_duration;
+  auto add = dot_duration.flat_add + dot_duration_flat_modifier( s );
+
+  return ( base + add ) * mul;
+}
+
+timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::dot_duration_pct_multiplier( const action_state_t* ) const
+{
+  return 1.0;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* state )

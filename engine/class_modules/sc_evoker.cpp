@@ -2489,12 +2489,17 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t base_composite_dot_duration( const action_state_t* s ) const
   {
-    auto dur = ab::dot_duration;
+    auto base = ab::dot_duration.base;
 
-    for ( const auto& i : ab::dot_duration_effects )
-      dur *= 1.0 + ab::get_effect_value( i );
+    auto mul = ab::dot_duration.pct_mul * ab::dot_duration_pct_multiplier( s );
+    if ( mul <= 0 )
+      return 0_ms;
 
-    return dur * s->haste;
+    mul *= s->haste;
+
+    auto add = ab::dot_duration.flat_add + ab::dot_duration_flat_modifier( s );
+
+    return ( base + add ) * mul;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3419,8 +3424,10 @@ struct living_flame_base_t : public Base
   living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
     : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
   {
-    base_t::dual         = true;
-    base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
+    base_t::dual = true;
+
+    if ( !p->talent.ruby_embers.ok() )
+      base_t::dot_duration = 0_ms;
   }
 
   int n_targets() const override
@@ -7285,13 +7292,13 @@ void evoker_t::init_finished()
     if ( auto lf = dynamic_cast<spells::living_flame_t*>( *pre ) )
     {
       int actions           = 0;
-      timespan_t time_spent = timespan_t::zero();
+      timespan_t time_spent = 0_ms;
 
       std::for_each( pre + 1, precombat_action_list.end(), [ &actions, &time_spent ]( action_t* a ) {
-        if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+        if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
-          time_spent += std::max( a->base_execute_time(), a->trigger_gcd );
+          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
         }
       } );
 
