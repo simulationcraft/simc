@@ -719,6 +719,10 @@ public:
     propagate_const<buff_t*> tombstone;
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
+    // Tier Sets
+    propagate_const<buff_t*> unbreakable_tww1_2pc;
+    buff_t* unbroken_tww1_2pc;
+    propagate_const<buff_t*> piledriver_tww1_4pc;
 
     // Frost
     propagate_const<buff_t*> breath_of_sindragosa;
@@ -1328,6 +1332,10 @@ public:
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
     const spell_data_t* shattering_bone_damage;
+    // Tier Sets
+    const spell_data_t* unbreakable_tww1_2pc;
+    const spell_data_t* unbroken_tww1_2pc;
+    const spell_data_t* piledriver_tww1_4pc;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -12726,6 +12734,10 @@ void death_knight_t::init_spells()
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
   spell.shattering_bone_damage   = conditional_spell_lookup( talent.blood.shattering_bone.ok(), 377642 );
+  // Tier Sets
+  spell.unbreakable_tww1_2pc     = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ), 457468 );
+  spell.unbroken_tww1_2pc        = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ), 457473 );
+  spell.piledriver_tww1_4pc      = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ), 457506 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -13447,6 +13459,13 @@ void death_knight_t::create_buffs()
             } );
 
     buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )->set_trigger_spell( talent.blood.voracious );
+
+    // Tier Sets
+    // TWW1
+    buffs.unbreakable_tww1_2pc = make_buff( this, "unbreakable", spell.unbreakable_tww1_2pc );
+    buffs.unbroken_tww1_2pc    = make_buff( this, "unbroken", spell.unbroken_tww1_2pc )
+                                    ->set_chance( 0.15 );  // TODO Verify this number.  Was found through manual testing, not in spelldata
+    buffs.piledriver_tww1_4pc  = make_buff( this, "piledriver", spell.piledriver_tww1_4pc );
   }
 
   // Frost
@@ -13894,7 +13913,11 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
   sim->print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
   if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
     buffs.bone_shield->decrement();
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ) )
+      buffs.unbroken_tww1_2pc->trigger();
+  }
   cooldown.bone_shield_icd->start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it
   // reduces a cooldown
@@ -14318,6 +14341,11 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.dancing_rune_weapon );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield, talent.blood.reinforced_bones );
     parse_effects( buffs.perseverance_of_the_ebon_blade );
+
+    // Tier Sets
+    parse_effects( buffs.unbreakable_tww1_2pc, [ this ] { return buffs.bone_shield->check(); } );
+    parse_effects( buffs.unbroken_tww1_2pc );
+    parse_effects( buffs.piledriver_tww1_4pc );
   }
 
   // Frost
