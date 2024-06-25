@@ -1527,7 +1527,7 @@ public:
     if ( ab::background && is_divine_storm )
       return;
 
-    // ToDo: Check what the driver can and cannot do. Pretty sure it can proc DP at least
+    // ToDo (Fluttershy): Check what the driver can and cannot do. Pretty sure it can proc DP at least
     if ( is_hammer_of_light_driver )
       return;
 

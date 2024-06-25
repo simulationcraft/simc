@@ -1961,7 +1961,7 @@ struct rite_of_adjuration_t : public weapon_enchant_t
 
 struct hammer_and_anvil_t : public paladin_spell_t
 { 
-  // ToDo: Find out how Hammer and Anvil behaves above 5 targets
+  // ToDo (Fluttershy): Find out how Hammer and Anvil behaves above 5 targets
   hammer_and_anvil_t( paladin_t* p )
     : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
    {
@@ -2117,6 +2117,7 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
     background          = true;
     may_crit            = false;
     aoe                 = -1;
+    // ToDo (Fluttershy)
     // This spell currently deals full damage to all targets, even above 20.
     // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
     reduced_aoe_targets = -1;
@@ -2330,7 +2331,7 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
     }
     else
     {
-      // ToDo: Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
+      // ToDo (Fluttershy): Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
       // actor. It could also target pets
       for ( auto& _p : sim->player_no_pet_list )
       {
