@@ -110,32 +110,28 @@ struct avengers_shield_base_t : public paladin_spell_t
 {
   heartfire_t* heartfire;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ), heartfire(nullptr)
+    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
+      heartfire( nullptr )
   {
     parse_options( options_str );
     {
       if ( p->tier_sets.heartfire_sentinels_authority_2pc->ok() )
       {
-      heartfire = new heartfire_t( p );
+        heartfire = new heartfire_t( p );
       }
     }
-    if ( ! p->has_shield_equipped() )
+    if ( !p->has_shield_equipped() )
     {
       sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
       background = true;
     }
     may_crit = true;
 
-    if ( !p->talents.focused_enmity->ok() )
+    // Soaring Shield hits +2 targets
+    if ( p->talents.soaring_shield->ok() )
     {
-      aoe = data().effectN( 1 ).chain_target();
-
-      //Soaring Shield hits +2 targets
-      if ( p->talents.soaring_shield->ok() )
-      {
-        aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
-       }
-     }
+      aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
