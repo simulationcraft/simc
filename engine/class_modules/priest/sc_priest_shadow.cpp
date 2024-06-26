@@ -174,14 +174,17 @@ struct mind_spike_t final : public mind_spike_base_t
     parse_options( options_str );
   }
 
-  bool ready() override
+  // Using action_ready here so that: 
+  // - casts are cancelled if the buff falls off mid-cast
+  // - getting a buff mid-cast will cause you to finish the normal cast
+  bool action_ready() override
   {
     if ( priest().buffs.mind_spike_insanity->check() )
     {
       return false;
     }
 
-    return mind_spike_base_t::ready();
+    return mind_spike_base_t::action_ready();
   }
 
   void execute() override
@@ -189,7 +192,6 @@ struct mind_spike_t final : public mind_spike_base_t
     mind_spike_base_t::execute();
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1192
-    // TODO: This will not ever happen currently, getting MSI causes in-flight MS to not finish executing
     if ( priest().bugs && priest().talents.shadow.surge_of_insanity.enabled() )
     {
       if ( priest().buffs.mind_spike_insanity->check() )
