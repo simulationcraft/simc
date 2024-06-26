@@ -324,10 +324,7 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
     other_dot->current_tick     = current_tick;
     other_dot->extra_time       = 0_ms;
     other_dot->tick_time        = tick_time;
-    if ( copy_type == DOT_COPY_CLONE_NO_STACKS )
-      other_dot->stack = 1;
-    else
-      other_dot->stack = stack;
+    other_dot->stack            = stack;
 
     other_dot->ticking   = true;
     other_dot->end_event = make_event<dot_end_event_t>( sim, other_dot, new_duration );

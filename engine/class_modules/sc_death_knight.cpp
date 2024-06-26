@@ -11507,7 +11507,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
     }
     else
     {
-      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE_NO_STACKS );
+      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
     }
 
     cd->start();
