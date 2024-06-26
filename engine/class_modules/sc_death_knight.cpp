@@ -833,6 +833,9 @@ public:
     propagate_const<cooldown_t*> dark_transformation;
     propagate_const<cooldown_t*> vile_contagion;
 
+    // Rider of the Apocalypse
+    propagate_const<target_specific_cooldown_t*> undeath_spread;
+
   } cooldown;
 
   // Active Spells
@@ -1683,6 +1686,9 @@ public:
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
     cooldown.icy_death_torrent_icd  = get_cooldown( "icy_death_torrent_icd" );
+
+    // Target Specific
+    cooldown.undeath_spread = get_target_specific_cooldown( "undeath_spread" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -6135,8 +6141,8 @@ struct undeath_dot_t final : public death_knight_spell_t
       sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
   {
     background = true;
-    may_miss = may_dodge = may_parry = false;
-    dot_behavior                     = DOT_NONE;
+    may_miss = may_dodge = may_parry          = false;
+    dot_behavior                              = DOT_NONE;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const override
@@ -11459,9 +11465,10 @@ void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
 {
   auto td = get_target_data( main_target );
-  td->dot.undeath->increment( pet_spell.undeath_dot->effectN( 3 ).base_value() );
+  td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+  auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  if ( target_list.size() > 1 )
+  if ( target_list.size() > 1 && !cd->down() )
   {
     std::vector<player_t*>& current_targets = target_list;
 
@@ -11476,12 +11483,14 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
 
     if ( undeath_td->dot.undeath->is_ticking() )
     {
-      undeath_td->dot.undeath->increment( pet_spell.undeath_dot->effectN( 3 ).base_value() );
+      undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
     }
     else
     {
       td->dot.undeath->copy( new_target, DOT_COPY_CLONE_NO_STACKS );
     }
+
+    cd->start();
   }
 }
 
@@ -12907,6 +12916,9 @@ void death_knight_t::init_spells()
 
   if ( talent.frost.frigid_executioner.ok() )
     cooldown.frigid_executioner_icd->duration = talent.frost.frigid_executioner->internal_cooldown();
+
+  if( talent.rider.whitemanes_famine.ok() )
+    cooldown.undeath_spread->base_duration = pet_spell.undeath_dot->internal_cooldown();
 }
 
 // death_knight_t::init_action_list =========================================
@@ -13897,9 +13909,9 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
         rng().roll( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 5 ).percent() ) )
   {
     if ( rng().roll( 0.5 ) ) // 50% chance to roll 1 or 2 charges
-      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() );
+      buffs.piledriver_tww1_4pc->trigger( as<int>( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() ) );
     else
-      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() );
+      buffs.piledriver_tww1_4pc->trigger( as<int>( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() ) );
   }
 
   if ( ( ( specialization() == DEATH_KNIGHT_BLOOD && !buffs.bone_shield->check() ) || !cooldown.bone_shield_icd->up() ||
