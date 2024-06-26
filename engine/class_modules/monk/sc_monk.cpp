@@ -1641,8 +1641,11 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       p()->buff.thunder_focus_tea->decrement();
     }
 
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T30, B4 ) )
+    if ( p()->talent.brewmaster.strike_at_dawn->ok() )
       p()->buff.elusive_brawler->trigger();
+
+    if ( p()->talent.brewmaster.black_ox_adept->ok() )
+      p()->buff.ox_stance->trigger();
 
     p()->buff.leverage->expire();
 
@@ -6304,6 +6307,7 @@ void monk_t::parse_player_effects()
   parse_effects( talent.monk.martial_instincts );
 
   // brewmaster talent auras
+  parse_effects( buff.pretense_of_instability );
   // mistweaver talent auras
   // windwalker talent auras
 
@@ -7515,8 +7519,9 @@ void monk_t::create_buffs()
             stagger_rating *= 1.0 + passives.shuffle->effectN( 1 ).percent();
 
           // multiplier is not available in spell data :(
-          if ( buff.ox_stance->up() &&
-               state->result_amount / current_health() > talent.brewmaster.ox_stance->effectN( 1 ).percent() )
+          if ( buff.ox_stance->up() && state->result_amount / current_health() >
+                                           talent.brewmaster.ox_stance->effectN( 1 ).percent() +
+                                               talent.brewmaster.heightened_guard->effectN( 1 ).percent() )
           {
             stagger_rating *= 1.0 + 0.4;
             buff.ox_stance->decrement();
@@ -7651,9 +7656,11 @@ void monk_t::create_buffs()
       make_buff( this, "press_the_advantage", talent.brewmaster.press_the_advantage->effectN( 2 ).trigger() )
           ->set_default_value_from_effect( 1 );
 
-  buff.pretense_of_instability = make_buff( this, "pretense_of_instability", find_spell( 393515 ) )
-                                     ->set_trigger_spell( talent.brewmaster.pretense_of_instability )
-                                     ->add_invalidate( CACHE_DODGE );
+  buff.pretense_of_instability =
+      make_buff_fallback( talent.brewmaster.pretense_of_instability->ok(), this, "pretense_of_instability",
+                          talent.brewmaster.pretense_of_instability->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talent.brewmaster.pretense_of_instability )
+          ->add_invalidate( CACHE_DODGE );
 
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
@@ -8517,8 +8524,6 @@ double monk_t::composite_dodge() const
   if ( specialization() == MONK_BREWMASTER )
   {
     d += buff.elusive_brawler->current_stack * cache.mastery_value();
-
-    d += buff.pretense_of_instability->check() * buff.pretense_of_instability->data().effectN( 1 ).percent();
   }
 
   if ( buff.fortifying_brew->check() )
