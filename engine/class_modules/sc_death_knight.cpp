@@ -5054,6 +5054,7 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -6129,11 +6130,29 @@ public:
 
 struct undeath_dot_t final : public death_knight_spell_t
 {
-  undeath_dot_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
+  undeath_dot_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot ),
+      sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
     dot_behavior                     = DOT_NONE;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m     = death_knight_spell_t::composite_ta_multiplier( state );
+    /*
+    * TWW-TODO: Believe this is what effect2's value is for, but, havent been able to confirm yet. 
+    * Leaving this here for if its confirmed. 
+    auto counter = p()->get_active_dots( p()->active_spells.undeath_dot->get_dot( nullptr ) );
+
+    if ( counter > sqrt_targets )
+    {
+      m *= sqrt( sqrt_targets / counter );
+    }
+    */
+    return m;
   }
 
   void tick( dot_t* d ) override
@@ -6142,6 +6161,9 @@ struct undeath_dot_t final : public death_knight_spell_t
     auto td = p()->get_target_data( d->target );
     td->dot.undeath->increment( 1 );
   }
+
+private:
+  double sqrt_targets;
 };
 
 struct trollbanes_icy_fury_t final : public death_knight_spell_t
@@ -6159,7 +6181,7 @@ struct summon_whitemane_t final : public summon_rider_t
   summon_whitemane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_whitemane )
   {
     p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    add_child( get_action<undeath_dot_t>( "undeath", p ) );
+    add_child( p->active_spells.undeath_dot );
   }
 
   void execute() override
@@ -8937,6 +8959,20 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
     }
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = heart_strike_base_t::composite_crit_chance();
+
+    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
+         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+    {
+      cc = 1.0;
+    }
+
+    return cc;
+  }
+
   void execute() override
   {
     heart_strike_base_t::execute();
@@ -9899,6 +9935,20 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     {
       p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = wound_spender_base_t::composite_crit_chance();
+
+    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
+         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+    {
+      cc = 1.0;
+    }
+
+    return cc;
   }
 
   void execute() override
@@ -11409,7 +11459,7 @@ void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
 {
   auto td = get_target_data( main_target );
-  td->dot.undeath->increment( 1 );
+  td->dot.undeath->increment( pet_spell.undeath_dot->effectN( 3 ).base_value() );
 
   if ( target_list.size() > 1 )
   {
@@ -11427,7 +11477,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
 
     if ( undeath_td->dot.undeath->is_ticking() )
     {
-      undeath_td->dot.undeath->increment( 1 );
+      undeath_td->dot.undeath->increment( pet_spell.undeath_dot->effectN( 3 ).base_value() );
     }
     else
     {
@@ -14303,7 +14353,6 @@ void death_knight_t::parse_player_effects()
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_effects( spec.frost_death_knight );
-    parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );
     parse_effects( buffs.empower_rune_weapon, talent.frost.empower_rune_weapon );
     parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
     parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );
