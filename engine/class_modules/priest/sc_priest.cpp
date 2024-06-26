@@ -714,7 +714,15 @@ struct halo_t final : public priest_spell_t
           // surge_of_light NYI
           break;
         case PRIEST_SHADOW:
-          priest().buffs.surge_of_insanity->trigger();
+          // You get a full buff of MSI or MFI and keep Surge of Insanity state intact
+          if ( priest().talents.shadow.mind_spike.enabled() )
+          {
+            priest().buffs.mind_spike_insanity->trigger();
+          }
+          else
+          {
+            priest().buffs.mind_flay_insanity->trigger();
+          }
         default:
           break;
       }
@@ -726,7 +734,7 @@ private:
   propagate_const<action_t*> _dmg_spell_holy;
   propagate_const<action_t*> _heal_spell_shadow;
   propagate_const<action_t*> _dmg_spell_shadow;
-};
+};  // namespace spells
 
 // ==========================================================================
 // Levitate
@@ -2735,6 +2743,7 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.mind_spike_insanity_munched    = get_proc( "Mind Spike: Insanity stacks consumed by normal Mind Spikes" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );

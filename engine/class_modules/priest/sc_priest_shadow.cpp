@@ -189,9 +189,14 @@ struct mind_spike_t final : public mind_spike_base_t
     mind_spike_base_t::execute();
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1192
+    // TODO: This will not ever happen currently, getting MSI causes in-flight MS to not finish executing
     if ( priest().bugs && priest().talents.shadow.surge_of_insanity.enabled() )
     {
-      priest().buffs.mind_spike_insanity->decrement();
+      if ( priest().buffs.mind_spike_insanity->check() )
+      {
+        priest().buffs.mind_spike_insanity->decrement();
+        priest().procs.mind_spike_insanity_munched->occur();
+      }
     }
   }
 };
