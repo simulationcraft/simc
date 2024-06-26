@@ -15764,13 +15764,14 @@ and become Enrage for 5 sec.][.]
 |cFFFFFFFFGenerates ${$m2/10} Rage.
 
 Name             : Reckless Abandon (id=396749) [Spell Family (4), Passive] 
+Hotfixed         : Proc Flags 1 (1024 -> 16)
 Talent Entry     : Fury [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
-                 : Generic Heal
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

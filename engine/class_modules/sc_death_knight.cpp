@@ -8918,6 +8918,8 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     {
       p()->buffs.dark_talons_icy_talons->trigger();
     }
+
+    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
   }
 
   void impact( action_state_t* state ) override
@@ -9004,7 +9006,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
         p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
       }
     }
-    p()->trigger_sanlayn_execute_talents( true );
   }
 
   void impact( action_state_t* s ) override
@@ -9066,8 +9067,6 @@ struct heart_strike_t : public heart_strike_base_t
         p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
       }
     }
-
-    p()->trigger_sanlayn_execute_talents( false );
   }
 
   void impact( action_state_t* s ) override
@@ -9469,12 +9468,9 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    if ( p()->talent.rider.whitemanes_famine.ok() && td->dot.undeath->is_ticking() )
     {
-      if ( td->dot.undeath->is_ticking() )
-      {
-        p()->trigger_whitemanes_famine( state->target );
-      }
+      p()->trigger_whitemanes_famine( state->target );
     }
   }
 
@@ -10002,12 +9998,9 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    if ( p()->talent.rider.whitemanes_famine.ok() && td->dot.undeath->is_ticking() )
     {
-      if ( td->dot.undeath->is_ticking() )
-      {
-        p()->trigger_whitemanes_famine( state->target );
-      }
+      p()->trigger_whitemanes_famine( state->target );
     }
 
     if ( p()->talent.sanlayn.incite_terror.ok() )
@@ -10023,6 +10016,8 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
       p()->sort_undeath_targets( target_list() );
     }
     death_knight_melee_attack_t::execute();
+
+    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
   }
 
 private:
@@ -10058,12 +10053,6 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     }
 
     return cc;
-  }
-
-  void execute() override
-  {
-    wound_spender_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( true );
   }
 
   void impact( action_state_t* s ) override
@@ -10114,7 +10103,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
       return;
     }
     wound_spender_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( false );
   }
 
   void impact( action_state_t* s ) override
@@ -11582,10 +11570,17 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
   td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
   auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  player_t* undeath_target = undeath_tl[ 0 ] == main_target ? undeath_tl[ 0 ] : undeath_tl[ 1 ];
-
-  if ( !cd->down() )
+  if ( !cd->down() && sim->target_non_sleeping_list.size() > 1 )
   {
+    std::vector<player_t*> tl = undeath_tl;
+    auto it = range::find( tl, main_target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    player_t* undeath_target = tl[ 0 ];
+
     auto undeath_td  = get_target_data( undeath_target );
 
     if ( undeath_td->dot.undeath->is_ticking() )
