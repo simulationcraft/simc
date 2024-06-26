@@ -5340,7 +5340,7 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     callbacks          = true;
     cast_during_sck    = true;
 
-    cooldown->duration *= 1 + p->talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
+    apply_affecting_aura( p->talent.brewmaster.light_brewing );
   }
 
   action_state_t *new_state() override
@@ -7478,6 +7478,17 @@ void monk_t::init_items()
 
 // monk_t::create_buffs =====================================================
 
+struct self_damage_override : stagger_impl::self_damage_t<monk_t>
+{
+  self_damage_override( monk_t *player, stagger_impl::stagger_t<monk_t> *stagger_effect )
+    : stagger_impl::self_damage_t<monk_t>( player, stagger_effect )
+  {
+    dot_duration = player->find_spell( 124273 )->duration();
+    dot_duration +=
+        timespan_t::from_seconds( player->talent.brewmaster.bob_and_weave->effectN( 1 ).base_value() / 10.0 );
+  }
+};
+
 struct debuff_override : stagger_impl::debuff_t<monk_t>
 {
   using base_t = stagger_impl::debuff_t<monk_t>;
@@ -7515,7 +7526,7 @@ struct training_of_niuzao_buff : actions::monk_buff_t
 
 void monk_t::create_buffs()
 {
-  create_stagger<debuff_override>(
+  create_stagger<debuff_override, self_damage_override>(
       { find_spell( 124255 ),
         { { find_spell( 124275 ), 0.0 },
           { find_spell( 124274 ), 0.2 },
