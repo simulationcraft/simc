@@ -1557,9 +1557,79 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
 
 // Rising Sun Kick Damage Trigger ===========================================
 
+template <class base_action_t>
+struct press_the_advantage_t : base_action_t
+{
+  struct child_action_t : base_action_t
+  {
+    const double mod;
+    bool face_palm;
+
+    child_action_t( monk_t *player, std::string_view name )
+      : base_action_t( player, "", name ),
+        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() )
+    {
+      base_action_t::proc        = true;
+      base_action_t::trigger_gcd = 0_s;
+      base_action_t::background  = true;
+      base_action_t::dual        = true;
+
+      base_action_t::force_effect( player->buff.counterstrike, 1 );
+      // effect must still be rolled in execute so it triggers brew cdr
+      base_action_t::force_effect( player->buff.blackout_combo, 1, [ this ]() { return face_palm; } );
+    }
+
+    void execute() override
+    {
+      base_action_t::p()->buff.press_the_advantage->expire();
+
+      face_palm = base_action_t::rng().roll( base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
+      base_action_t::execute();
+
+      if ( face_palm )
+        base_action_t::p()->baseline.brewmaster.brews->adjust(
+            base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+      base_action_t::p()->buff.counterstrike->expire();
+      base_action_t::p()->buff.blackout_combo->expire();
+
+      if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
+        base_action_t::p()->active_actions.chi_surge->execute();
+
+      if ( base_action_t::p()->talent.brewmaster.call_to_arms->ok() && base_action_t::rng().roll( 0.3 ) )
+        base_action_t::p()->active_actions.niuzao_call_to_arms_summon->execute();
+    }
+  };
+
+  child_action_t *action;
+  propagate_const<proc_t *> proc;
+
+  press_the_advantage_t( monk_t *player, std::string_view options_str, std::string_view name )
+    : base_action_t( player, options_str, name ),
+      action( new child_action_t( player, fmt::format( "{}_press_the_advantage", name ) ) )
+  {
+    if ( player->talent.brewmaster.press_the_advantage->ok() )
+      base_action_t::add_child( action );
+
+    proc = player->get_proc( fmt::format( "{} - Press The Advantage", action->data().name_cstr() ) );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    base_action_t::impact( state );
+
+    if ( base_action_t::p()->buff.press_the_advantage->stack() != 10 )
+      return;
+
+    // TODO: Schedule execute with the appropriate delay.
+    base_action_t::p()->buff.press_the_advantage->expire();
+    proc->occur();
+    action->execute();
+  }
+};
+
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 {
-  rising_sun_kick_dmg_t( monk_t *p, util::string_view name )
+  rising_sun_kick_dmg_t( monk_t *p, std::string_view /* options_str */, util::string_view name )
     : monk_melee_attack_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
@@ -1615,13 +1685,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     // Brewmaster RSK also applies the WoO debuff.
     if ( p()->buff.weapons_of_order->up() )
-    {
-      std::vector<player_t *> &tl = target_list();
-      const int target_count      = as<int>( tl.size() );
-
-      for ( int t = 0; t < target_count; t++ )
-        get_td( tl[ t ] )->debuff.weapons_of_order->trigger();
-    }
+      for ( auto &target : target_list() )
+        get_td( target )->debuff.weapons_of_order->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -1653,12 +1718,14 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
-  rising_sun_kick_dmg_t *trigger_attack;
+  rising_sun_kick_dmg_t *trigger_rsk;
+  press_the_advantage_t<rising_sun_kick_dmg_t> *trigger_pta;
   glory_of_the_dawn_t *gotd;
-  bool is_base_rsk;
 
   rising_sun_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick ), is_base_rsk( true )
+    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick ),
+      trigger_rsk( nullptr ),
+      trigger_pta( nullptr )
   {
     parse_options( options_str );
 
@@ -1669,27 +1736,31 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     attack_power_mod.direct = 0;
 
-    trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
-    trigger_attack->stats = stats;
-    is_base_rsk           = true;
+    if ( p->talent.brewmaster.press_the_advantage->ok() )
+    {
+      trigger_pta        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str, "rising_sun_kick_dmg" );
+      trigger_pta->stats = stats;
+    }
+    else
+    {
+      trigger_rsk        = new rising_sun_kick_dmg_t( p, options_str, "rising_sun_kick_dmg" );
+      trigger_rsk->stats = stats;
+    }
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
       gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
-
       add_child( gotd );
     }
-
-    if ( p->talent.brewmaster.press_the_advantage->ok() )
-      add_child( p->active_actions.rising_sun_kick_press_the_advantage );
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
-
-    trigger_attack->set_target( target );
-    trigger_attack->execute();
+    if ( trigger_pta )
+      trigger_pta->execute_on_target( target );
+    else
+      trigger_rsk->execute_on_target( target );
 
     // TODO: Is this the correct way to get character sheet haste %?
     auto gotd_chance = p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
@@ -1711,12 +1782,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->buff.whirling_dragon_punch->trigger();
     }
 
-    if ( p()->buff.press_the_advantage->stack() == 10 && is_base_rsk )
-    {
-      p()->active_actions.rising_sun_kick_press_the_advantage->schedule_execute();
-      p()->buff.press_the_advantage->expire();
-    }
-
     p()->active_actions.chi_wave->execute();
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
@@ -1724,99 +1789,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
-  }
-};
-
-struct rising_sun_kick_press_the_advantage_dmg_t : public rising_sun_kick_dmg_t
-{
-  bool face_palm;
-  bool blackout_combo;
-  bool counterstrike;
-  bool is_base_rsk;
-
-  rising_sun_kick_press_the_advantage_dmg_t( monk_t *p, util::string_view name )
-    : rising_sun_kick_dmg_t( p, name ),
-      face_palm( false ),
-      blackout_combo( false ),
-      counterstrike( false ),
-      is_base_rsk( false )
-  {
-    background = dual = true;
-    proc              = true;
-    trigger_gcd       = 0_s;
-    is_base_rsk       = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = rising_sun_kick_dmg_t::action_multiplier();
-
-    auto pta_modifier = 1.0 - p()->talent.brewmaster.press_the_advantage->effectN( 3 ).percent();
-
-    if ( face_palm )
-      am *= 1.0 + ( p()->talent.brewmaster.face_palm->effectN( 2 ).percent() - 1 ) * pta_modifier;
-
-    if ( blackout_combo )
-      am *= 1.0 + p()->buff.blackout_combo->data().effectN( 1 ).percent() * pta_modifier;
-
-    if ( counterstrike )
-      am *= 1.0 + p()->buff.counterstrike->data().effectN( 1 ).percent() * pta_modifier;
-
-    return am;
-  }
-
-  void execute() override
-  {
-    face_palm      = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
-    blackout_combo = p()->buff.blackout_combo->up();
-    counterstrike  = p()->buff.counterstrike->up();
-
-    if ( blackout_combo )
-      p()->proc.blackout_combo_rising_sun_kick->occur();
-
-    rising_sun_kick_dmg_t::execute();
-
-    p()->buff.counterstrike->expire();
-    p()->buff.blackout_combo->expire();
-
-    if ( p()->talent.brewmaster.chi_surge->ok() )
-      p()->active_actions.chi_surge->execute();
-
-    // 30% chance to trigger estimated from an hour of attempts as of 14-06-2023
-    if ( p()->talent.brewmaster.call_to_arms->ok() && rng().roll( 0.3 ) )
-      p()->active_actions.niuzao_call_to_arms_summon->execute();
-  }
-};
-
-struct rising_sun_kick_press_the_advantage_t : public monk_melee_attack_t
-{
-  rising_sun_kick_press_the_advantage_dmg_t *trigger_attack;
-
-  rising_sun_kick_press_the_advantage_t( monk_t *p )  // , util::string_view options_str
-    : monk_melee_attack_t( p, "rising_sun_kick_press_the_advantage", p->talent.monk.rising_sun_kick )
-  {
-    // parse_options( options_str );
-
-    may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
-    ap_type          = attack_power_type::NONE;
-    cast_during_sck  = true;
-    background = dual = true;
-    trigger_gcd       = 0_s;
-    proc              = true;
-
-    attack_power_mod.direct = 0;
-
-    trigger_attack = new rising_sun_kick_press_the_advantage_dmg_t( p, "rising_sun_kick_press_the_advantage_dmg" );
-    trigger_attack->stats = stats;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    trigger_attack->set_target( target );
-    trigger_attack->execute();
   }
 };
 
@@ -2999,9 +2971,10 @@ struct thunderfist_t : public monk_spell_t
 // Melee
 // ==========================================================================
 
-struct press_the_advantage_t : public monk_spell_t
+struct press_the_advantage_melee_t : public monk_spell_t
 {
-  press_the_advantage_t( monk_t *player ) : monk_spell_t( player, "press_the_advantage", player->find_spell( 418360 ) )
+  press_the_advantage_melee_t( monk_t *player )
+    : monk_spell_t( player, "press_the_advantage", player->find_spell( 418360 ) )
   {
     background = true;
 
@@ -3228,9 +3201,6 @@ struct keg_smash_t : monk_melee_attack_t
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
           .set_value( effect.percent() )
           .set_eff( &effect );
-
-    if ( player->talent.brewmaster.press_the_advantage->ok() && name != "keg_smash_pta" )
-      add_child( player->active_actions.press_the_advantage.keg_smash );
   }
 
   void execute() override
@@ -3243,12 +3213,6 @@ struct keg_smash_t : monk_melee_attack_t
     {
       p()->cooldown.breath_of_fire->reset( true );
       p()->proc.salsalabims_strength->occur();
-    }
-
-    if ( p()->buff.press_the_advantage->stack() == 10 )
-    {
-      p()->buff.press_the_advantage->expire();
-      p()->active_actions.press_the_advantage.keg_smash->schedule_execute();
     }
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
@@ -3270,46 +3234,6 @@ struct keg_smash_t : monk_melee_attack_t
     get_td( state->target )->debuff.keg_smash->trigger();
     if ( p()->buff.weapons_of_order->up() )
       get_td( state->target )->debuff.weapons_of_order->trigger();
-  }
-};
-
-template <class base_action_t>
-struct press_the_advantage_action_t : base_action_t
-{
-  using base_t = base_action_t;
-  const double mod;
-  bool face_palm;
-
-  press_the_advantage_action_t( monk_t *player, std::string_view name )
-    : base_action_t( player, "", name ),
-      mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() )
-  {
-    base_t::proc        = true;
-    base_t::trigger_gcd = 0_s;
-    base_t::background  = true;
-    base_t::dual        = true;
-
-    base_t::force_effect( player->buff.counterstrike, 1 );
-    // effect must still be rolled in execute so it triggers brew cdr
-    base_t::force_effect( player->buff.blackout_combo, 1, [ this ]() { return face_palm; } );
-  }
-
-  void execute() override
-  {
-    face_palm = base_t::rng().roll( base_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
-    base_t::execute();
-
-    if ( face_palm )
-      base_t::p()->baseline.brewmaster.brews->adjust(
-          base_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-    base_t::p()->buff.counterstrike->expire();
-    base_t::p()->buff.blackout_combo->expire();
-
-    if ( base_t::p()->talent.brewmaster.chi_surge->ok() )
-      base_t::p()->active_actions.chi_surge->execute();
-
-    if ( base_t::p()->talent.brewmaster.call_to_arms->ok() && base_t::rng().roll( 0.3 ) )
-      base_t::p()->active_actions.niuzao_call_to_arms_summon->execute();
   }
 };
 
@@ -6473,7 +6397,12 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "invoke_niuzao_the_black_ox" )
     return new niuzao_spell_t( this, options_str );
   if ( name == "keg_smash" )
-    return new keg_smash_t( this, options_str, "keg_smash" );
+  {
+    if ( talent.brewmaster.press_the_advantage->ok() )
+      return new press_the_advantage_t<keg_smash_t>( this, options_str, "keg_smash" );
+    else
+      return new keg_smash_t( this, options_str, "keg_smash" );
+  }
   if ( name == "purifying_brew" )
     return new purifying_brew_t( this, options_str );
   if ( name == "provoke" )
@@ -7396,12 +7325,6 @@ void monk_t::init_spells()
     active_actions.exploding_keg              = new actions::spells::exploding_keg_proc_t( this );
     active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
 
-    active_actions.rising_sun_kick_press_the_advantage =
-        new actions::attacks::rising_sun_kick_press_the_advantage_t( this );
-    active_actions.press_the_advantage.keg_smash =
-        new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_t>( this, "keg_smash_pta" );
-    // active_actions.press_the_advantage.rising_sun_kick =
-    //     new actions::attacks::press_the_advantage_action_t<actions::attacks::keg_smash_t>( this, "keg_smash" );
     active_actions.chi_surge = new actions::spells::chi_surge_t( this );
     if ( sets->has_set_bonus( MONK_BREWMASTER, T31, B2 ) )
       active_actions.charred_dreams_dmg_2p = new actions::attacks::charred_dreams_dmg_2p_t( this );
@@ -7424,7 +7347,7 @@ void monk_t::init_spells()
   // Passive Action Spells
   passive_actions.combat_wisdom_eh    = new actions::heals::expel_harm_t( this, "" );
   passive_actions.thunderfist         = new actions::thunderfist_t( this );
-  passive_actions.press_the_advantage = new actions::press_the_advantage_t( this );
+  passive_actions.press_the_advantage = new actions::press_the_advantage_melee_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -8098,7 +8021,6 @@ void monk_t::init_procs()
   base_t::init_procs();
 
   proc.anvil__stave                   = get_proc( "Anvil & Stave" );
-  proc.attenuation                    = get_proc( "Attenuation" );
   proc.blackout_combo_tiger_palm      = get_proc( "Blackout Combo - Tiger Palm" );
   proc.blackout_combo_breath_of_fire  = get_proc( "Blackout Combo - Breath of Fire" );
   proc.blackout_combo_keg_smash       = get_proc( "Blackout Combo - Keg Smash" );

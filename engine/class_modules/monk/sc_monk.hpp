@@ -450,12 +450,6 @@ public:
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
     propagate_const<action_t *> chi_surge;
-    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
-    struct
-    {
-      propagate_const<action_t *> keg_smash;
-      propagate_const<action_t *> rising_sun_kick;
-    } press_the_advantage;
 
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
@@ -719,7 +713,6 @@ public:
   struct procs_t
   {
     propagate_const<proc_t *> anvil__stave;
-    propagate_const<proc_t *> attenuation;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
     propagate_const<proc_t *> blackout_combo_breath_of_fire;
     propagate_const<proc_t *> blackout_combo_keg_smash;

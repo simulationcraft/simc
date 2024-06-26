@@ -67,7 +67,6 @@ actions+=/rising_sun_kick
 actions+=/breath_of_fire
 actions+=/keg_smash
 actions+=/purifying_brew
-actions+=/celestial_brew
 # actions+=/call_action_list,name=ogcd
 # actions+=/call_action_list,name=igcd,if=time<240
 # actions+=/call_action_list,name=rota,if=time<240
