@@ -1,4 +1,4 @@
-SimulationCraft 1027-01 for World of Warcraft 10.2.7.55165 Live
+SimulationCraft 1027-01 for World of Warcraft 10.2.7.55261 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
