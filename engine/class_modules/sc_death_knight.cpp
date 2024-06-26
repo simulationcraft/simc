@@ -6141,8 +6141,8 @@ struct undeath_dot_t final : public death_knight_spell_t
       sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
   {
     background = true;
-    may_miss = may_dodge = may_parry          = false;
-    dot_behavior                              = DOT_NONE;
+    may_miss = may_dodge = may_parry = false;
+    dot_behavior                     = DOT_NONE;
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const override
@@ -6187,7 +6187,7 @@ struct summon_whitemane_t final : public summon_rider_t
   summon_whitemane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_whitemane )
   {
     p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    add_child( get_action<undeath_dot_t>( "undeath", p ) );
+    add_child( p->active_spells.undeath_dot );
   }
 
   void execute() override
