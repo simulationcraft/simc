@@ -2813,11 +2813,15 @@ class SpellDataGenerator(DataGenerator):
         if state and not self.spell_state(spell, enabled_effects):
             return None
 
-        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+        if spell.id in constants.REMOVE_CLASS_AND_RACE_MASKS:
             mask_class = 0
             mask_race = 0
 
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
+
+        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+            mask_class = 0
+            mask_race = 0
 
         spell_id = spell.id
         # Add spell triggers to the filter list recursively

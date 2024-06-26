@@ -10989,6 +10989,7 @@ Enemies hit are chained to the spear's location for the duration.
 Variables        : $cap=${5}
 
 Name             : Champion's Spear (id=376080) [Spell Family (4)] 
+Hotfixed         : Tooltip
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13818,6 +13819,7 @@ $?a452494[Magic damage taken reduced by an additional $s3%.][]
 $?a137048[][Damage done reduced by $s2%.]
 
 Name             : Champion's Might (id=386284) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -18527,6 +18529,7 @@ Effects          :
 Description      : $?c1[Overpower][Raging Blow] damage increased by $s1%.
 
 Name             : Unrelenting Onslaught (id=444780) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Warrior
 School           : Physical
@@ -18535,11 +18538,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ x.......   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1141378)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)

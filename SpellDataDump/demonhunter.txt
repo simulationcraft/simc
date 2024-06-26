@@ -1752,7 +1752,6 @@ Description      : $@spelldesc198013
 
 Name             : Demonic Wards (id=203513) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
