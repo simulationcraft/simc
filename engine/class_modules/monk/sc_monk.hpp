@@ -450,12 +450,6 @@ public:
     propagate_const<action_t *> niuzao_call_to_arms_summon;
 
     propagate_const<action_t *> chi_surge;
-    propagate_const<action_t *> rising_sun_kick_press_the_advantage;
-    struct
-    {
-      propagate_const<action_t *> keg_smash;
-      propagate_const<action_t *> rising_sun_kick;
-    } press_the_advantage;
 
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
@@ -719,7 +713,6 @@ public:
   struct procs_t
   {
     propagate_const<proc_t *> anvil__stave;
-    propagate_const<proc_t *> attenuation;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
     propagate_const<proc_t *> blackout_combo_breath_of_fire;
     propagate_const<proc_t *> blackout_combo_keg_smash;
@@ -880,6 +873,7 @@ public:
       // row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
+      const spell_data_t *purified_chi;
       player_talent_t autumn_blessing;
       player_talent_t one_with_the_wind;
       player_talent_t zen_meditation;
@@ -1553,6 +1547,11 @@ public:
 template <class Buff>
 Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
 {
+  /*
+   * TODO: Come up with another solution.
+   *  This is very likely UB, but seems to work at least ok-ish.
+   *  Future me shall replace this with a less dangerous solution.
+   */
   return static_cast<Buff *>(
       buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
 }
