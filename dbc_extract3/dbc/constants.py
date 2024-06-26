@@ -207,8 +207,14 @@ ACTIVE_SPELL_WHITELIST = [
   114074,  # Lava Beam (Shaman)
 ]
 
+# Spells that should not propagate their masks to related spells
 IGNORE_CLASS_AND_RACE_MASKS = [
   21009, # Night Elf Elusiveness Racial
+  25046, 28730, 50613, 69179, 80483, 129597, 155145, 202719, 232633, # Blood Elf Arcane Torrent Racial
+]
+
+# Spells that should not have any class or race mask at all
+REMOVE_CLASS_AND_RACE_MASKS = [
   297736, # Vision of Perfection
   297737, # Vision of Perfection
   297738, # Vision of Perfection

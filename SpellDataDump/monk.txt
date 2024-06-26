@@ -4225,7 +4225,6 @@ Effects          :
 
 Name             : Brewmaster Monk (id=137023) [Spell Family (53), Passive, Hidden] 
 Class            : Brewmaster Monk
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4342,7 +4341,6 @@ Effects          :
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4460,7 +4458,6 @@ Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
