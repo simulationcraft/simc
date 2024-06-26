@@ -6187,7 +6187,7 @@ struct summon_whitemane_t final : public summon_rider_t
   summon_whitemane_t( util::string_view name, death_knight_t* p ) : summon_rider_t( name, p, p->spell.summon_whitemane )
   {
     p->pets.whitemane.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    add_child( p->active_spells.undeath_dot );
+    add_child( get_action<undeath_dot_t>( "undeath", p ) );
   }
 
   void execute() override
