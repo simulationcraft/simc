@@ -1344,15 +1344,9 @@ struct flurry_strikes_t : public monk_melee_attack_t
 struct tiger_palm_t : public monk_melee_attack_t
 {
   bool face_palm;
-  bool blackout_combo;
-  bool counterstrike;
-  bool combat_wisdom;
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "tiger_palm", p->spec.tiger_palm ),
-      face_palm( false ),
-      blackout_combo( false ),
-      counterstrike( false )
+    : monk_melee_attack_t( p, "tiger_palm", p->spec.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
 
@@ -1375,6 +1369,15 @@ struct tiger_palm_t : public monk_melee_attack_t
       energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
+
+    apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
+    apply_affecting_aura( p->talent.windwalker.inner_peace );
+
+    parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
+    parse_effects( p->buff.blackout_combo );
+    parse_effects( p->buff.counterstrike );
+    parse_effects( p->buff.combat_wisdom );
+    parse_effects( p->buff.martial_mixture );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -1387,37 +1390,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     return m;
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( blackout_combo )
-      am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
-
-    if ( face_palm )
-      am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
-
-    if ( counterstrike )
-      am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
-
-    if ( combat_wisdom )
-      am *= 1 + p()->talent.windwalker.combat_wisdom->effectN( 2 ).percent();
-
-    am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
-
-    am *= 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
-
-    am *= 1 + p()->buff.martial_mixture->check_stack_value();
-
-    return am;
-  }
-
   bool ready() override
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
     return monk_melee_attack_t::ready();
-    // return !p()->talent.brewmaster.press_the_advantage->ok();
   }
 
   void execute() override
@@ -1426,28 +1403,16 @@ struct tiger_palm_t : public monk_melee_attack_t
     // Pre-Execute
     //============
 
-    if ( rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
-    {
-      face_palm = true;
+    if ( ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
       p()->proc.face_palm->occur();
-    }
 
     if ( p()->buff.blackout_combo->up() )
-    {
-      blackout_combo = true;
       p()->proc.blackout_combo_tiger_palm->occur();
-      p()->buff.blackout_combo->expire();
-    }
+    p()->buff.blackout_combo->expire();
 
     if ( p()->buff.counterstrike->up() )
-    {
-      counterstrike = true;
       p()->proc.counterstrike_tp->occur();
-      p()->buff.counterstrike->expire();
-    }
-
-    if ( p()->buff.combat_wisdom->up() )
-      combat_wisdom = true;
+    p()->buff.counterstrike->expire();
 
     //------------
 
@@ -1478,7 +1443,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( face_palm )
       p()->baseline.brewmaster.brews->adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
-    if ( combat_wisdom )
+    if ( p()->buff.combat_wisdom->up() )
     {
       p()->passive_actions.combat_wisdom_eh->execute();
       p()->buff.combat_wisdom->expire();
@@ -1490,11 +1455,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.tigers_ferocity->expire();
 
     p()->buff.martial_mixture->expire();
-
-    face_palm      = false;
-    blackout_combo = false;
-    counterstrike  = false;
-    combat_wisdom  = false;
   }
 
   void impact( action_state_t *s ) override
