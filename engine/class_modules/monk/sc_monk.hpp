@@ -880,6 +880,7 @@ public:
       // row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
+      const spell_data_t *purified_chi;
       player_talent_t autumn_blessing;
       player_talent_t one_with_the_wind;
       player_talent_t zen_meditation;
@@ -1552,6 +1553,11 @@ public:
 template <class Buff>
 Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
 {
+  /*
+   * TODO: Come up with another solution.
+   *  This is very likely UB, but seems to work at least ok-ish.
+   *  Future me shall replace this with a less dangerous solution.
+   */
   return static_cast<Buff *>(
       buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
 }

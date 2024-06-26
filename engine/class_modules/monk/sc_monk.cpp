@@ -6866,6 +6866,7 @@ void monk_t::init_spells()
     talent.brewmaster.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
     talent.brewmaster.celestial_flames                    = _ST( "Celestial Flames" );
     talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
+    talent.brewmaster.purified_chi                        = find_spell( 325092 );
     talent.brewmaster.autumn_blessing                     = _ST( "Autumn Blessing" );
     talent.brewmaster.one_with_the_wind                   = _ST( "One With the Wind" );
     talent.brewmaster.zen_meditation                      = _ST( "Zen Meditation" );
@@ -7706,6 +7707,11 @@ void monk_t::create_buffs()
   buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
   buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
 
+  buff.purified_chi =
+      make_buff_fallback( talent.brewmaster.celestial_brew->ok(), this, "purified_chi", talent.brewmaster.purified_chi )
+          ->set_trigger_spell( talent.brewmaster.celestial_brew )
+          ->set_default_value_from_effect( 1 );
+
   buff.charred_passions = make_buff( this, "charred_passions", find_spell( 386963 ) )
                               ->set_default_value_from_effect( 1 )
                               ->set_trigger_spell( talent.brewmaster.charred_passions );
@@ -7751,10 +7757,6 @@ void monk_t::create_buffs()
   buff.pretense_of_instability = make_buff( this, "pretense_of_instability", find_spell( 393515 ) )
                                      ->set_trigger_spell( talent.brewmaster.pretense_of_instability )
                                      ->add_invalidate( CACHE_DODGE );
-
-  buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
-                          ->set_trigger_spell( talent.brewmaster.celestial_brew )
-                          ->set_default_value_from_effect( 1 );
 
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
