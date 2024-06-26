@@ -679,6 +679,8 @@ public:
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
   unsigned int vampiric_strike_proc_attempts;  // Number of vampiric strike attempts
 
+  std::vector<player_t*> undeath_tl;
+
   // Buffs
   struct buffs_t
   {
@@ -1649,6 +1651,7 @@ public:
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
       vampiric_strike_proc_attempts( 0 ),
+      undeath_tl(),
       buffs(),
       runeforge(),
       active_spells(),
@@ -1775,7 +1778,8 @@ public:
   // Rider of the Apocalypse
   void summon_rider( timespan_t duration, bool random );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
-  void trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
+  void trigger_whitemanes_famine( player_t* target );
+  void sort_undeath_targets( std::vector<player_t*> tl );
   void start_a_feast_of_souls();
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target, bool is_vampiric );
@@ -9380,11 +9384,11 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() )
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
     {
       if ( td->dot.undeath->is_ticking() )
       {
-        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
+        p()->trigger_whitemanes_famine( state->target );
       }
     }
   }
@@ -9394,6 +9398,11 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     if ( !p()->options.split_obliterate_schools && p()->spec.frostreaper->ok() && p()->buffs.killing_machine->up() )
     {
       school = SCHOOL_FROST;
+    }
+
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      p()->sort_undeath_targets( target_list() );
     }
 
     death_knight_melee_attack_t::execute();
@@ -9908,11 +9917,11 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() )
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
     {
       if ( td->dot.undeath->is_ticking() )
       {
-        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
+        p()->trigger_whitemanes_famine( state->target );
       }
     }
 
@@ -9920,6 +9929,15 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     {
       td->debuff.incite_terror->trigger();
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      p()->sort_undeath_targets( target_list() );
+    }
+    death_knight_melee_attack_t::execute();
   }
 
 private:
@@ -11462,24 +11480,26 @@ void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
   }
 }
 
-void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
+void death_knight_t::sort_undeath_targets( std::vector<player_t*> tl )
+{
+  undeath_tl = tl;
+
+  std::sort( undeath_tl.begin(), undeath_tl.end(), [ this ]( player_t* a, player_t* b ) {
+    return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
+  } );
+}
+
+void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 {
   auto td = get_target_data( main_target );
   td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
   auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  if ( target_list.size() > 1 && !cd->down() )
+  player_t* undeath_target = undeath_tl[ 0 ] == main_target ? undeath_tl[ 0 ] : undeath_tl[ 1 ];
+
+  if ( !cd->down() )
   {
-    std::vector<player_t*>& current_targets = target_list;
-
-    // first target, the action target, needs to be left in place
-    std::sort( current_targets.begin() + 1, current_targets.end(), [ this ]( player_t* a, player_t* b ) {
-      return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
-    } );
-
-    // Set the new target to the 2nd element in the sorted vector
-    auto& new_target = current_targets[ 1 ];
-    auto undeath_td  = get_target_data( new_target );
+    auto undeath_td  = get_target_data( undeath_target );
 
     if ( undeath_td->dot.undeath->is_ticking() )
     {
@@ -11487,10 +11507,12 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
     }
     else
     {
-      td->dot.undeath->copy( new_target, DOT_COPY_CLONE_NO_STACKS );
+      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE_NO_STACKS );
     }
 
     cd->start();
+
+    std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
   }
 }
 
