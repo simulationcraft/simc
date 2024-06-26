@@ -715,6 +715,7 @@ public:
     propagate_const<buff_t*> heartrend;
     propagate_const<buff_t*> hemostasis;
     propagate_const<buff_t*> ossuary;
+    buff_t* ossified_vitriol;
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
     propagate_const<buff_t*> rune_tap;
     propagate_const<buff_t*> sanguine_ground;
@@ -1322,6 +1323,7 @@ public:
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
+    const spell_data_t* ossified_vitriol_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
@@ -7110,6 +7112,8 @@ struct bonestorm_t final : public death_knight_spell_t
     // or in Spelldata.
     int charges = std::max( p()->buffs.bone_shield->check(), 10 );
     p()->buffs.bone_shield->decrement( charges );
+    if( p() -> talent.blood.ossified_vitriol -> ok() )
+      p()->buffs.ossified_vitriol->trigger( charges );
     return base_tick_time * charges / 10;
   }
 
@@ -9336,6 +9340,9 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     {
       p()->buffs.painful_death->expire();
     }
+
+    if ( p()->buffs.ossified_vitriol->up() )
+      p()->buffs.ossified_vitriol->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -10428,6 +10435,8 @@ struct tombstone_t final : public death_knight_spell_t
     p()->resource_gain( RESOURCE_RUNIC_POWER, power, p()->gains.tombstone, this );
     p()->buffs.tombstone->trigger( 1, shield * p()->resources.max[ RESOURCE_HEALTH ] );
     p()->buffs.bone_shield->decrement( charges );
+    if( p() -> talent.blood.ossified_vitriol -> ok() )
+      p()->buffs.ossified_vitriol->trigger( charges );
     p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
                                                charges );
 
@@ -12575,7 +12584,7 @@ void death_knight_t::init_spells()
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
-  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Virtiol" );
+  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Vitriol" );
 
   // Row 5
   talent.blood.leeching_strike     = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
@@ -12826,6 +12835,7 @@ void death_knight_t::init_spells()
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
+  spell.ossified_vitriol_buff       = conditional_spell_lookup( talent.blood.ossified_vitriol.ok(), 458745 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
   spell.heartrend_buff              = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
@@ -13481,6 +13491,8 @@ void death_knight_t::create_buffs()
 
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
 
+    buffs.ossified_vitriol = make_buff( this, "ossified_vitriol", spell.ossified_vitriol_buff );
+
     buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy->effectN( 2 ).trigger() )
                              ->set_trigger_spell( talent.blood.coagulopathy )
                              ->set_default_value_from_effect( 1 );
@@ -14032,6 +14044,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.bone_shield->decrement();
+    if( talent.blood.ossified_vitriol -> ok() )
+      buffs.ossified_vitriol->trigger();
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ) )
       buffs.unbroken_tww1_2pc->trigger();
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
@@ -14307,6 +14321,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.hemostasis );
   parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
+  parse_effects( dk()->buffs.ossified_vitriol );
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
   // parse_effects( dk()->buffs.coagulopathy );
 
@@ -14363,6 +14378,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.coagulopathy );
   parse_effects( p()->buffs.consumption );
   parse_effects( p()->buffs.crimson_scourge );
+  parse_effects( p()->buffs.ossified_vitriol );
   parse_effects( p()->buffs.sanguine_ground );
   parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
   parse_effects( p()->buffs.hemostasis );
