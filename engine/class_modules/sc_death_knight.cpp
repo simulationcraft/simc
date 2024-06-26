@@ -3376,6 +3376,29 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct vampiric_strike_t : public drw_action_t<melee_attack_t>
+  {
+    vampiric_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.vampiric_strike )
+    {
+      attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double cc = drw_action_t::composite_crit_chance();
+
+      // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+      if ( dk()->bugs && dk()->talent.sanlayn.sanguine_scent.ok() &&
+          dk()->target->health_percentage() <= dk()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+      {
+        cc = 1.0;
+      }
+
+      return cc;
+    }
+  };
+
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
     int stack_gain;
@@ -3440,6 +3463,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* marrowrend;
     action_t* soul_reaper;
     action_t* consumption;
+    action_t* vampiric_strike;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" )
@@ -3486,6 +3510,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.blood.consumption.ok() )
     {
       ability.consumption = get_action<consumption_t>( "consumption", this );
+    }
+    if ( dk()->talent.sanlayn.vampiric_strike.ok() )
+    {
+      ability.vampiric_strike = get_action<vampiric_strike_t>( "vampiric_strike", this );
     }
   }
 
@@ -8864,23 +8892,6 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
-struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
-  {
-    heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
-      : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
-    {
-      background = true;
-      aoe        = 2;
-      weapon     = &( p->main_hand_weapon );
-    }
-
-    int n_targets() const override
-    {
-      return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
-                                        : aoe;
-    }
-  };
-
 struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
@@ -8904,19 +8915,6 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     if ( p()->talent.blood.heartrend.ok() )
     {
       p()->buffs.heartrend->trigger();
-    }
-
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-      }
     }
 
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
@@ -8954,18 +8952,29 @@ private:
 
 struct vampiric_strike_blood_t : public heart_strike_base_t
 {
-  vampiric_strike_blood_t( util::string_view n, death_knight_t* p )
+  vampiric_strike_blood_t( util::string_view n, death_knight_t* p, bool bloodied_blade_triggered )
     : heart_strike_base_t( n, p, p->spell.vampiric_strike )
   {
     attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
     energize_amount         = std::fabs( data().powerN( 2 ).cost() );
-    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+
+    if ( bloodied_blade_triggered )
     {
-      add_child( p->active_spells.infliction_of_sorrow );
+      background = true;
     }
-    if ( p->talent.sanlayn.the_blood_is_life.ok() )
+    else
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+      {
+        // We only can have this be a child of a single thing, so parent it to the main vampiric strike
+        add_child( p->active_spells.infliction_of_sorrow );
+      }
+      // In game bloodied blade vamp strikes will proc this. But I have no desire to re-write this all right now, and
+      // expect this to change due to how buggy it is.
+      if ( p->talent.sanlayn.the_blood_is_life.ok() )
+      {
+        p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      }
     }
   }
 
@@ -8986,6 +8995,19 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
   void execute() override
   {
     heart_strike_base_t::execute();
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
+      }
+    }
     p()->trigger_sanlayn_execute_talents( true );
   }
 
@@ -9008,7 +9030,7 @@ struct heart_strike_t : public heart_strike_base_t
     parse_options( options_str );
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
-      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p );
+      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p, false );
       vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
       add_child( vampiric_strike );
     }
@@ -9035,6 +9057,20 @@ struct heart_strike_t : public heart_strike_base_t
       return;
     }
     heart_strike_base_t::execute();
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
+      }
+    }
+
     p()->trigger_sanlayn_execute_talents( false );
   }
 
@@ -9048,6 +9084,56 @@ struct heart_strike_t : public heart_strike_base_t
   }
 
 private:
+  vampiric_strike_blood_t* vampiric_strike;
+  double vampiric_strike_cost;
+};
+
+struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
+{
+  heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
+    : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
+  {
+    background = true;
+    aoe        = 2;
+    weapon     = &( p->main_hand_weapon );
+
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike_bloodied_blade", p, true );
+      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
+      add_child( vampiric_strike );
+    }
+  }
+
+  int n_targets() const override
+  {
+    return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
+                                      : aoe;
+  }
+
+  double cost() const override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike_cost;
+    }
+    else
+      return 0;
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      vampiric_strike->execute();
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+    death_knight_melee_attack_t::execute();
+    p()->trigger_sanlayn_execute_talents( false );
+  }
+
+  private:
   vampiric_strike_blood_t* vampiric_strike;
   double vampiric_strike_cost;
 };
