@@ -490,6 +490,8 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   last_start = sim.current_time();
 
+  player->sim->print_debug( "{} starts cooldown {} with duration {}", *player, name_str, duration );
+
   update_ready_thresholds();
 
   if ( player && player->ready_type == READY_TRIGGER )
