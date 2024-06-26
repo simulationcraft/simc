@@ -11464,7 +11464,6 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
   if ( target_list.size() > 1 )
   {
     std::vector<player_t*>& current_targets = target_list;
-    auto duration                           = td->dot.undeath->remains() - pet_spell.undeath_dot->duration();
 
     // first target, the action target, needs to be left in place
     std::sort( current_targets.begin() + 1, current_targets.end(), [ this ]( player_t* a, player_t* b ) {
@@ -11481,8 +11480,7 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vect
     }
     else
     {
-      active_spells.undeath_dot->execute_on_target( new_target );
-      undeath_td->dot.undeath->adjust_duration( duration );
+      td->dot.undeath->copy( new_target, DOT_COPY_CLONE_NO_STACKS );
     }
   }
 }
