@@ -2546,9 +2546,13 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p )
   : buff_t( p, "shield_of_the_righteous", p->spells.sotr_buff )
 {
   add_invalidate( CACHE_BONUS_ARMOR );
-  set_default_value( p->spells.sotr_buff->effectN( 1 ).percent() );
+  set_default_value_from_effect( 3 );
   set_refresh_behavior( buff_refresh_behavior::EXTEND );
   cooldown->duration = 0_ms;  // handled by the ability
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B2 ) )
+  {
+    apply_affecting_aura( p->sets->set( PALADIN_PROTECTION, TWW1, B2 ) );
+  }
 }
 
 void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -2581,6 +2585,10 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B2 ) )
+    {
+      apply_affecting_aura( p->sets->set( PALADIN_PROTECTION, TWW1, B2 ) );
+    }
   }
 
   shield_of_the_righteous_t( paladin_t* p )
@@ -4021,7 +4029,7 @@ double paladin_t::composite_bonus_armor() const
 
   if ( buffs.shield_of_the_righteous->check() )
   {
-    double bonus = buffs.shield_of_the_righteous->value() * cache.strength();
+    double bonus = spells.sotr_buff->effectN( 1 ).percent() * cache.strength();
     ba += bonus;
   }
   return ba;

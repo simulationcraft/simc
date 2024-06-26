@@ -891,7 +891,6 @@ void paladin_t::target_mitigation( school_e school,
     s->result_amount *= 1.0 + devoRed;
   }
 
-
   if ( buffs.sanctification->up() )
   {
     s->result_amount *= 1.0 + buffs.sanctification->data().effectN( 1 ).percent() * buffs.sanctification->stack();
@@ -899,6 +898,11 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.sanctification_empower->up() )
   {
     s->result_amount *= 1.0 + buffs.sanctification_empower->data().effectN( 4 ).percent();
+  }
+
+  if (buffs.shield_of_the_righteous->up())
+  {
+    s->result_amount *= 1.0 + buffs.shield_of_the_righteous->default_value;
   }
 
   paladin_td_t* td = get_target_data( s->action->player );
