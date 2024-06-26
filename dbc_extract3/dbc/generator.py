@@ -1492,7 +1492,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         458322, 458376, 458580, 459158, # new M+ affixes
+         206150, 461904, 461910, # new M+ affixes
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
