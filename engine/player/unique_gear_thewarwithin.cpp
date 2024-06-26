@@ -2256,16 +2256,22 @@ void high_speakers_accretion( special_effect_t& effect )
       // TODO: confirm ticks once a second, not hasted
       // TODO: confirm buff return has 500ms delay
       params.pulse_time( 1_s )
-        .duration( e.trigger()->duration() )
-        .action( damage )
-        .expiration_callback(
-          [ this,
-            buff,
-            delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ]
-          ( const action_state_t* ) {
-            buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets.size() ) - 1u );
-            make_event( *sim, delay, [ buff ] { buff->trigger(); } );
-          } );
+          .duration( e.trigger()->duration() )
+          .action( damage )
+          .expiration_callback(
+              [ this, buff, delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ](
+                  const action_state_t* ) {
+                // Sometimes fight styles like DungeonSlice can have targets.size() == 0
+                if ( targets.size() == 0 )
+                {
+                  buff->stat_mul = 1.15;
+                }
+                else
+                {
+                  buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets.size() ) - 1u );
+                }
+                make_event( *sim, delay, [ buff ] { buff->trigger(); } );
+              } );
 
       // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
       travel_delay = e.driver()->effectN( 1 ).misc_value1() * 0.001;
