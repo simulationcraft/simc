@@ -161,8 +161,11 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // T33 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
-  parse_effects( p()->buff.tigers_ferocity );
+  if ( p()->specialization() == MONK_WINDWALKER )
+  {
+    parse_effects( p()->buff.tiger_strikes );
+    parse_effects( p()->buff.tigers_ferocity );
+  }
   // parse_effects( p()->buff.flow_of_battle );
 }
 
