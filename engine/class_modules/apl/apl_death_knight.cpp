@@ -447,7 +447,7 @@ void unholy( player_t* p )
   san_fishing->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5" );
   san_fishing->add_action( "death_coil,if=!buff.vampiric_strike.react" );
   san_fishing->add_action( "festering_strike,if=!buff.vampiric_strike.react&(debuff.festering_wound.stack<4|runic_power<30)" );
-  san_fishing->add_action( "wound_spender,if=buff.vampiric_strike.react&buff.vampiric_strike.remains<3" );
+  san_fishing->add_action( "wound_spender,if=buff.vampiric_strike.react" );
 
   san_st->add_action( "wound_spender,if=buff.essence_of_the_blood_queen.remains<3&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd", "Single Target San'layn" );
   san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&buff.essence_of_the_blood_queen.stack>=3&(talent.doomed_bidding|talent.rotten_touch)|rune<2&!buff.runic_corruption.up" );
