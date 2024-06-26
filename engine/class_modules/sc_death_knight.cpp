@@ -6361,7 +6361,7 @@ struct infliction_in_sorrow_t : public death_knight_spell_t
 struct exterminate_aoe_t final : public death_knight_spell_t
 {
   exterminate_aoe_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.exterminate_damage )
+    : death_knight_spell_t( name, p, p->spell.exterminate_aoe )
   {
     background          = true;
     cooldown->duration  = 0_ms;
@@ -6376,14 +6376,6 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     {
       impact_action = get_action<blood_plague_t>( "blood_plague", p );
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( s );
-    // TODO-TWW keep an eye on the mult for the aoe scythe
-    m = ( m / 15 ) * 10;
-    return m;
   }
 };
 
