@@ -601,6 +601,12 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
   {
     return stat_buff_t::buff_stat_stack_amount( stat, s ) * stat_mul;
   }
+
+  void expire_override( int s, timespan_t d )
+  {
+    stat_buff_t::expire_override( s, d );
+    stat_mul = 1.0;
+  }
 };
 
 // Trinkets
@@ -1340,16 +1346,17 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 }
 
 // 446209 driver
-// 449946 counter
+//  e1: buff coeff
+// 449946 on use
 // 449947 jump task
-// 449948 unknown, counter related?
-// 449952 unknown, task?
+// 449948 unknown
+// 449952 unknown
 // 449954 buff
-// 449966 unknown, counter related?
 // 450025 unknown, task?
+// ****************************
 // TODO: retest/redo everything
-// TODO: add options to control task completion, placeholder 4-8s delay
-void malfunctioning_ethereum_module( special_effect_t& effect )
+// ****************************
+void treacherous_transmitter( special_effect_t& effect )
 {
   if ( create_fallback_buffs( effect, { "cryptic_instructions" } ) )
     return;
@@ -1357,16 +1364,10 @@ void malfunctioning_ethereum_module( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449954 ) )
     ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect.item ) );
 
-  auto counter = create_buff<buff_t>( effect.player, effect.trigger() )
-    ->set_expire_at_max_stack( true )
-    // TODO: add options to control task completion, placeholder 4-8s delay
-    ->set_expire_callback( [ buff ]( buff_t*, int, timespan_t ) {
-      make_event( *buff->sim, buff->rng().range( 4_s, 8_s ), [ buff ] { buff->trigger(); } );
-    } );
-
-  effect.custom_buff = counter;
-
-  new dbc_proc_callback_t( effect.player, effect );
+// ****************************
+// TODO: retest/redo everything
+// ****************************
+  effect.custom_buff = buff;
 }
 
 // 443124 on-use
@@ -1414,6 +1415,8 @@ void mad_queens_mandate( special_effect_t& effect )
       // TODO: confirm heal coeff is for entire hot
       heal->base_td = data->effectN( 2 ).average( e.item ) * ( heal->base_tick_time / heal->dot_duration );
     }
+
+    bool usable_moving() const override { return true; }
 
     void execute() override
     {
@@ -2215,16 +2218,17 @@ void skyterrors_corrosive_organ( special_effect_t& e )
 // TODO: confirm ticks once a second, not hasted
 // TODO: confirm buff return has 500ms delay
 // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
+// TODO: confirm buff procs even if no targets are hit
 void high_speakers_accretion( special_effect_t& effect )
 {
   struct high_speakers_accretion_t : public generic_proc_t
   {
     struct high_speakers_accretion_damage_t : public generic_aoe_proc_t
     {
-      std::vector<player_t*>& targets;
+      std::vector<player_t*>& targets_hit;
 
       high_speakers_accretion_damage_t( const special_effect_t& e, std::vector<player_t*>& tl )
-        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets( tl )
+        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets_hit( tl )
       {
         base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
         base_multiplier *= role_mult( e );
@@ -2234,22 +2238,22 @@ void high_speakers_accretion( special_effect_t& effect )
       {
         generic_aoe_proc_t::impact( s );
 
-        if ( as<unsigned>( targets.size() ) < 5u && !range::contains( targets, s->target ) )
-          targets.emplace_back( s->target );
+        if ( as<unsigned>( targets_hit.size() ) < 5u && !range::contains( targets_hit, s->target ) )
+          targets_hit.emplace_back( s->target );
       }
     };
 
     ground_aoe_params_t params;
-    std::vector<player_t*> targets;
+    std::vector<player_t*> targets_hit;
 
     high_speakers_accretion_t( const special_effect_t& e ) : generic_proc_t( e, "high_speakers_accretion", e.driver() )
     {
       // TODO: confirm damage increases by standard 15% per extra target
       auto damage =
-        create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets );
+        create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets_hit );
       damage->stats = stats;
 
-      // TODO: confirm buff increases by 15% per extra taget hit, up to 5.
+      // TODO: confirm buff increases by 15% per extra target hit, up to 5.
       auto buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 451248 ) );
       buff->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 3 ).average( e.item ) );
 
@@ -2261,15 +2265,10 @@ void high_speakers_accretion( special_effect_t& effect )
           .expiration_callback(
               [ this, buff, delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ](
                   const action_state_t* ) {
-                // Sometimes fight styles like DungeonSlice can have targets.size() == 0
-                if ( targets.size() == 0 )
-                {
-                  buff->stat_mul = 1.15;
-                }
-                else
-                {
-                  buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets.size() ) - 1u );
-                }
+                // TODO: confirm buff procs even if no targets  are hit
+                if ( !targets_hit.empty() )
+                  buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets_hit.size() ) - 1u );
+
                 make_event( *sim, delay, [ buff ] { buff->trigger(); } );
               } );
 
@@ -2281,7 +2280,7 @@ void high_speakers_accretion( special_effect_t& effect )
     {
       generic_proc_t::impact( s );
 
-      targets.clear();
+      targets_hit.clear();
       params.start_time( timespan_t::min() ).target( target );  // reset start time
       make_event<ground_aoe_event_t>( *sim, player, params );
     }
@@ -3154,7 +3153,7 @@ void register_special_effects()
   register_special_effect( 444264, items::foul_behemoths_chelicera );
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
-  register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
+  register_special_effect( 446209, items::treacherous_transmitter, true );
   register_special_effect( 443124, items::mad_queens_mandate );
   register_special_effect( 443128, DISABLED_EFFECT );  // mad queen's mandate
   register_special_effect( 443378, items::sigil_of_algari_concordance );

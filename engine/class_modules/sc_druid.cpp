@@ -1273,7 +1273,7 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_attribute( attribute_e ) const;
+  double composite_attribute( attribute_e ) const override;
   double composite_armor() const override;
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
