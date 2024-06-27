@@ -193,6 +193,8 @@ public:
     buff_t* deflecting_light;        // T29 4pc
     buff_t* sanctification;     // T31 2pc building
     buff_t* sanctification_empower;  // T31 2pc consecration effect
+    buff_t* rising_wrath; // TWW1 4pc
+    buff_t* heightened_wrath; // TWW1 4pc
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -753,6 +755,7 @@ public:
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
   void trigger_lights_deliverance();
+  void tww1_4p_prot();
   void heartfire( action_state_t* s );
   void t29_4p_prot();
   void t31_4p_prot( action_state_t* s );
@@ -998,7 +1001,7 @@ public:
         divine_purpose_cost;                                                               // Shared
     bool crusade, hand_of_light, final_reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p;  // Ret
     bool avenging_crusader;                                                                // Holy
-    bool bastion_of_light, sentinel;                                                       // Prot
+    bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
   } affected_by;
 
   // haste scaling bools
@@ -1043,6 +1046,7 @@ public:
     {
       this->affected_by.bastion_of_light = this->data().affected_by( p->talents.bastion_of_light->effectN( 1 ) );
       this->affected_by.sentinel         = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
+      this->affected_by.heightened_wrath = this->data().affected_by( p->buffs.heightened_wrath->data().effectN( 1 ) );
     }
 
     this->affected_by.judgment            = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
@@ -1244,6 +1248,12 @@ public:
          ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+    }
+
+    // TWW1 Prot 4pc
+    if (affected_by.heightened_wrath && p()->buffs.heightened_wrath->up())
+    {
+      am *= 1.0 + p()->buffs.heightened_wrath->value();
     }
 
     if ( affected_by.avenging_crusader )
@@ -1680,6 +1690,10 @@ public:
     if (p->talents.lightsmith.blessed_assurance->ok())
     {
       p->buffs.lightsmith.blessed_assurance->trigger();
+    }
+    if (p->sets->has_set_bonus(PALADIN_PROTECTION, TWW1, B4) && !is_hammer_of_light && !is_hammer_of_light_driver)
+    {
+      p->buffs.rising_wrath->increment();
     }
   }
 };

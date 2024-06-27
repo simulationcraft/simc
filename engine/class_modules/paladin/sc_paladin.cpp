@@ -273,6 +273,7 @@ void avenging_wrath_t::execute()
   p()->buffs.avenging_wrath->trigger();
   if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
     p()->buffs.lightsmith.blessing_of_the_forge->execute();
+  p()->tww1_4p_prot();
 }
 
 // Holy Avenger
@@ -2674,6 +2675,16 @@ struct sacred_word_t : public paladin_heal_t
   }
 };
 
+void paladin_t::tww1_4p_prot()
+{
+  if ( specialization() != PALADIN_PROTECTION )
+    return;
+
+  auto stack_value = buffs.rising_wrath->stack_value() / 1000.0;
+  buffs.rising_wrath->expire();
+  buffs.heightened_wrath->execute( -1, stack_value, timespan_t::min() );
+}
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -3228,6 +3239,9 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
+  buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
+    debug_cast<paladin_t*>( buff->source )->buffs.heightened_wrath->expire();
+  } );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
@@ -3364,6 +3378,10 @@ void paladin_t::create_buffs()
                                      trigger_lights_deliverance();
                                    }
                                  } );
+
+  buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
+    ->set_default_value_from_effect(1);
+  buffs.heightened_wrath = make_buff( this, "heightened_wrath", find_spell( 456759 ) );
 }
 
 // paladin_t::default_potion ================================================
