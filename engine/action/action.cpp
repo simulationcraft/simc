@@ -1150,7 +1150,7 @@ timespan_t action_t::execute_time() const
 
   auto add = base_execute_time.flat_add + execute_time_flat_modifier();
 
-  // TOOD: currently implemented as truncated to ms. determine if it's roundedl like tick_time.
+  // TOOD: currently implemented as truncated to ms. determine if it's rounded like tick_time.
   return ( base + add ) * mul;
 }
 
@@ -4044,7 +4044,10 @@ timespan_t action_t::tick_time( const action_state_t* s ) const
 
   auto add = base_tick_time.flat_add + tick_time_flat_modifier( s );
 
-  // tick time is rounded to nearest ms
+  // Tick time is rounded to nearest ms.
+  // Assuming this applies to all tick time, including hasted duration dots. As tick time is used in calculation for
+  // hasted duration (in order to ensure # of ticks match) using rounding for tick time can have a non-trivial impact
+  // on short duration dots with a large number of ticks, such as eye beam.
   return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
 }
 
@@ -4140,7 +4143,7 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 
   auto add = dot_duration.flat_add + dot_duration_flat_modifier( s );
 
-  // TOOD: currently implemented as truncated to ms. determine if it's roundedl like tick_time.
+  // TOOD: currently implemented as truncated to ms. determine if it's rounded like tick_time.
   return ( base + add ) * mul;
 }
 

@@ -2482,30 +2482,12 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t tick_time( const action_state_t* s ) const override
   {
-    // we need to have the tick time match duration.
-    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
     return composite_dot_duration( s );
-  }
-
-  timespan_t base_composite_dot_duration( const action_state_t* s ) const
-  {
-    auto base = ab::dot_duration.base;
-
-    auto mul = ab::dot_duration.pct_mul * ab::dot_duration_pct_multiplier( s );
-    if ( mul <= 0 )
-      return 0_ms;
-
-    mul *= s->haste;
-
-    auto add = ab::dot_duration.flat_add + ab::dot_duration_flat_modifier( s );
-
-    return ( base + add ) * mul;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
-    auto dur = base_composite_dot_duration( s );
+    auto dur = ab::composite_dot_duration( s );
 
     // hack so we always have a non-zero duration in order to trigger last_tick()
     if ( dur == 0_ms )
@@ -2514,10 +2496,24 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     return dur + lag;
   }
 
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
+  {
+    // action_t::dot_duration_pct_multiplier calls tick_time(), but since tick_time() is overriden to call
+    // composite_dot_duration() we need to entirely bypass action_t::dot_duration_pct_multiplier().
+    //
+    // *** Any non-parsed duration multipliers should be implemented here. ***
+    auto mul = ab::hasted_dot_duration ? s->haste : 1.0;
+
+    for ( const auto& i : ab::dot_duration_effects )
+      mul *= 1.0 + ab::get_effect_value( i );
+
+    return mul;
+  }
+
   timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
   {
     auto base = base_time_to_empower( emp );
-    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+    auto mult = composite_dot_duration( s ) / base_empower_duration;
 
     return base * mult;
   }
