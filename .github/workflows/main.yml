@@ -375,6 +375,7 @@ jobs:
 
       - name: Dump Spell Data
         env:
+          UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
 
