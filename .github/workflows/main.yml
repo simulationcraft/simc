@@ -374,7 +374,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Dump Spell Data
-        run: ${{ runner.workspace }}/SpellDataDump/spelldatadump.sh
+        env:
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
 
       - name: Commit Spell Data
         uses: EndBug/add-and-commit@v9
