@@ -839,17 +839,17 @@ struct smite_base_t : public priest_spell_t
     return d;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t et = priest_spell_t::execute_time();
+    auto mul = priest_spell_t::execute_time_pct_multiplier();
 
     if ( priest().talents.unwavering_will.enabled() &&
          priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
     {
-      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
+      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
     }
 
-    return et;
+    return mul;
   }
 
   void execute() override
@@ -1921,17 +1921,17 @@ struct flash_heal_t final : public priest_heal_t
     }
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t et = priest_heal_t::execute_time();
+    auto mul = priest_heal_t::execute_time_pct_multiplier();
 
     if ( priest().talents.unwavering_will.enabled() &&
          priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
     {
-      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
+      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
     }
 
-    return et;
+    return mul;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

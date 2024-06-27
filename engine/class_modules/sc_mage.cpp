@@ -2875,16 +2875,16 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return c;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
-      return 0_ms;
+      return 0;
 
-    timespan_t t = arcane_mage_spell_t::execute_time();
+    double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
+    mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
-    return t;
+    return mul;
   }
 };
 
@@ -3159,13 +3159,13 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     return full_duration;
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    timespan_t t = arcane_mage_spell_t::tick_time( s );
+    auto mul = arcane_mage_spell_t::tick_time_pct_multiplier( s );
 
-    t *= debug_cast<const am_state_t*>( s )->tick_time_multiplier;
+    mul *= debug_cast<const am_state_t*>( s )->tick_time_multiplier;
 
-    return t;
+    return mul;
   }
 
   void channel_finish()
@@ -3694,14 +3694,14 @@ struct fireball_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = fire_mage_spell_t::execute_time();
+    double mul = fire_mage_spell_t::execute_time_pct_multiplier();
 
     if ( !p()->buffs.flame_accelerant_icd->check() )
-      t *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
+      mul *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
 
-    return t;
+    return mul;
   }
 
   double action_multiplier() const override
@@ -4037,13 +4037,13 @@ struct frostbolt_t final : public frost_mage_spell_t
     return std::max( t, min_gcd );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = frost_mage_spell_t::execute_time();
+    double mul = frost_mage_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
+    mul *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
-    return t;
+    return mul;
   }
 
   double action_multiplier() const override

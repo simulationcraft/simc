@@ -3709,22 +3709,10 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     channeled = tick_zero = tick_may_crit = true;
     dot_duration                          = data().duration();
-    hasted_ticks = false;  // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the
-                           // increase in the number of ticks.
     interrupt_auto_attack = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  timespan_t tick_time( const action_state_t *state ) const override
-  {
-    timespan_t t = base_tick_time;
-    if ( channeled || hasted_ticks )
-    {
-      t *= state->haste;
-    }
-    return t;
   }
 
   double cost_per_tick( resource_e resource ) const override
@@ -4734,13 +4722,13 @@ struct enveloping_mist_t : public monk_heal_t
     mastery = new gust_of_mists_t( p );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t et = monk_heal_t::execute_time();
+    auto mul = monk_heal_t::execute_time_pct_multiplier();
 
-    et *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
+    mul *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
 
-    return et;
+    return mul;
   }
 
   void execute() override

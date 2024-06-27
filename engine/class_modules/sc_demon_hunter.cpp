@@ -2815,12 +2815,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
     p()->trigger_demonsurge( demonsurge_ability::FEL_DESOLATION );
   }
 
-  // Fel Devastation is always a 2s channel
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration;
-  }
-
   void last_tick( dot_t* d ) override
   {
     demon_hunter_spell_t::last_tick( d );

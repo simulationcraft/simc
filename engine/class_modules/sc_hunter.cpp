@@ -3975,14 +3975,14 @@ struct black_arrow_t : public hunter_ranged_attack_t
     tick_zero = true;
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    timespan_t t = hunter_ranged_attack_t::tick_time( state );
+    auto mul = hunter_ranged_attack_t::tick_time_pct_multiplier( state );
 
     if ( sl_tick_adjust && sl_cooldown_buff->up() )
-      t *= 1.0 + sl_tick_adjust;
+      mul *= 1.0 + sl_tick_adjust;
 
-    return t;
+    return mul;
   }
 
   void impact( action_state_t* s ) override
@@ -4454,12 +4454,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> actions.arctic_bola -> execute_on_target( target );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
     if ( p() -> buffs.lock_and_load -> check() )
-      return 0_ms;
+      return 0;
 
-    auto et = hunter_ranged_attack_t::execute_time();
+    auto et = hunter_ranged_attack_t::execute_time_pct_multiplier();
 
     if ( p() -> buffs.streamline -> check() )
       et *= 1 + p() -> buffs.streamline -> check_value();
@@ -4653,16 +4653,16 @@ struct rapid_fire_t: public hunter_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    timespan_t t = hunter_spell_t::tick_time( s );
+    auto mul = hunter_spell_t::tick_time_pct_multiplier( s );
 
     if ( p() -> buffs.rapid_reload -> up() )
     {
-      t *= 1.0 + p() -> tier_set.t31_mm_4pc_buff -> effectN( 2 ).percent();
+      mul *= 1.0 + p() -> tier_set.t31_mm_4pc_buff -> effectN( 2 ).percent();
     }
 
-    return t;
+    return mul;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

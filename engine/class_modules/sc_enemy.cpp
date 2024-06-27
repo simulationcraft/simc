@@ -154,7 +154,7 @@ struct enemy_action_t : public ACTION_TYPE
       aoe_tanks( 0 )
   {
     this->add_option( opt_float( "damage", this->base_dd_min ) );
-    this->add_option( opt_timespan( "attack_speed", this->base_execute_time ) );
+    this->add_option( opt_timespan( "attack_speed", this->base_execute_time.base ) );
     this->add_option( opt_int( "apply_debuff", num_debuff_stacks ) );
     this->add_option( opt_int( "aoe_tanks", aoe_tanks ) );
     this->add_option( opt_float( "range", damage_range ) );
@@ -443,20 +443,16 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     base_dd_min -= damage_range;
 
     // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
-    if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
-      base_execute_time = timespan_t::from_seconds( 1.5 );
+    if ( base_execute_time < 10_ms )
+      base_execute_time = 1.5_s;
   }
 
-  timespan_t execute_time() const override
+  timespan_t execute_time_flat_modifier() const override
   {
-    timespan_t et = base_t::execute_time();
-
     if ( first )
-    {
-      et += this->base_execute_time / 2;
-    }
+      return base_execute_time.base * 0.5;
 
-    return et;
+    return 0_ms;
   }
 };
 
@@ -664,8 +660,8 @@ struct melee_nuke_t : public enemy_action_t<melee_attack_t>
     base_dd_max = base_dd_min + damage_range;
     base_dd_min -= damage_range;
 
-    if ( base_execute_time < timespan_t::zero() )
-      base_execute_time = timespan_t::from_seconds( 3.0 );
+    if ( base_execute_time < 0_ms )
+      base_execute_time = 3_s;
 
     if ( base_execute_time < trigger_gcd )
     {
@@ -707,8 +703,8 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
     base_dd_max = base_dd_min + damage_range;
     base_dd_min -= damage_range;
 
-    if ( base_execute_time < timespan_t::zero() )
-      base_execute_time = timespan_t::from_seconds( 3.0 );
+    if ( base_execute_time < 0_ms )
+      base_execute_time = 3_s;
 
     if ( base_execute_time < trigger_gcd )
     {
@@ -745,8 +741,8 @@ struct spell_dot_t : public enemy_action_t<spell_t>
 
     // Replace damage option
     add_option( opt_float( "damage", base_td ) );
-    add_option( opt_timespan( "dot_duration", dot_duration ) );
-    add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_timespan( "dot_duration", dot_duration.base ) );
+    add_option( opt_timespan( "tick_time", base_tick_time.base ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }
@@ -784,8 +780,8 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
     base_tick_time = timespan_t::from_seconds( 1.0 );
 
     add_option( opt_float( "damage", base_td ) );
-    add_option( opt_timespan( "dot_duration", dot_duration ) );
-    add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_timespan( "dot_duration", dot_duration.base ) );
+    add_option( opt_timespan( "tick_time", base_tick_time.base ) );
     add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }
@@ -820,8 +816,8 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     base_t::init();
 
     base_dd_max = base_dd_min;
-    if ( base_execute_time < timespan_t::from_seconds( 0.01 ) )
-      base_execute_time = timespan_t::from_seconds( 3.0 );
+    if ( base_execute_time < 10_ms )
+      base_execute_time = 3_s;
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override

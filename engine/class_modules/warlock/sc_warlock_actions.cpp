@@ -1074,16 +1074,16 @@ using namespace helpers;
       return c;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
       {
-        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+        mul *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
       }
 
-      return t;
+      return mul;
     }
 
     bool ready() override
@@ -1529,25 +1529,23 @@ using namespace helpers;
       warlock_spell_t::snapshot_state( s, rt );
     }
 
-    timespan_t tick_time( const action_state_t* s ) const override
+    double tick_time_pct_multiplier( const action_state_t* s ) const override
     {
-      timespan_t t = warlock_spell_t::tick_time( s );
+      auto mul = warlock_spell_t::tick_time_pct_multiplier( s );
 
-      t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+      mul *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
 
-      return t;
+      return mul;
     }
 
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    double dot_duration_pct_multiplier( const action_state_t* s ) const override
     {
-      double modifier = 1.0;
+      auto mul = warlock_spell_t::dot_duration_pct_multiplier( s );
 
       if ( p()->buffs.nightfall->check() )
-        modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+        mul *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
 
-      timespan_t dur = dot_duration * ( ( s->haste * modifier * base_tick_time ) / base_tick_time );
-
-      return dur;
+      return mul;
     }
 
     void execute() override
@@ -1987,14 +1985,14 @@ using namespace helpers;
     timespan_t travel_time() const override
     { return 0_ms; }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.blazing_meteor->check() )
-        t *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
+        mul *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
 
-      return t;
+      return mul;
     }
 
     bool ready() override
@@ -2076,14 +2074,14 @@ using namespace helpers;
       triggers.shadow_invocation_direct = true;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.demonic_core->check() )
-        t *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     void execute() override
@@ -2312,14 +2310,14 @@ using namespace helpers;
       return m;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.demonic_calling->check() )
-        t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
+        mul *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
 
-      return t;
+      return mul;
     }
 
     void execute() override
@@ -2998,14 +2996,14 @@ using namespace helpers;
       warlock_spell_t::snapshot_state( s, rt );
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     timespan_t gcd() const override
@@ -3274,21 +3272,21 @@ using namespace helpers;
       return c;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
       if ( p()->buffs.ritual_of_ruin->check() )
-        t *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
+        mul *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
     
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
       if ( p()->buffs.madness_cb->check() )
-        t *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
+        mul *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
 
-      return t;
+      return mul;
     }
 
     double action_multiplier() const override
@@ -4197,14 +4195,14 @@ using namespace helpers;
       immolate->base_dd_multiplier = 0.0;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     timespan_t gcd() const override

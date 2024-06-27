@@ -267,12 +267,6 @@ struct dispersion_t final : public priest_spell_t
     priest_spell_t::execute();
   }
 
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Unhasted, even though it is a channeled spell.
-    return base_tick_time;
-  }
-
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
@@ -950,16 +944,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().refresh_insidious_ire_buff( s );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( priest().buffs.unfurling_darkness->check() )
-    {
-      return 0_ms;
-    }
-
-    return priest_spell_t::execute_time();
   }
 
   void tick( dot_t* d ) override

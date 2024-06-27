@@ -2511,19 +2511,19 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     return ctm;
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
+  double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    auto tt = base_t::tick_time( s );
+    auto mul = base_t::tick_time_pct_multiplier( s );
 
     // flourish effect is a negative percent modifier, so multiply here
     if ( affected_by.flourish && p()->buff.flourish->check() )
-      tt *= 1.0 + p()->buff.flourish->default_value;
+      mul *= 1.0 + p()->buff.flourish->default_value;
 
     // photo effect is a positive dummy value, so divide here
     if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
-      tt /= 1.0 + photo_mul;
+      mul /= 1.0 + photo_mul;
 
-    return tt;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -4520,11 +4520,9 @@ struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat
       add_child( tear );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    timespan_t t = base_t::composite_dot_duration( s );
-
-    return t *= cp( s ) + 1;
+    return base_t::dot_duration_pct_multiplier( s ) * cp( s ) + 1;
   }
 
   void impact( action_state_t* s ) override

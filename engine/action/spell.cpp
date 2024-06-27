@@ -48,20 +48,14 @@ double spell_base_t::cost() const
   return action_t::cost();
 }
 
-timespan_t spell_base_t::execute_time() const
+double spell_base_t::execute_time_pct_multiplier() const
 {
-  timespan_t t = base_execute_time;
-
-  if ( t <= timespan_t::zero() ) {
-    return timespan_t::zero();
-  }
-
-  t *= composite_haste();
+  auto mul = action_t::execute_time_pct_multiplier() * composite_haste();
 
   if ( player->buffs.chilled_clarity )
-    t *= 1.0 - player->buffs.chilled_clarity->check_value();
+    mul *= 1.0 - player->buffs.chilled_clarity->check_value();
 
-  return t;
+  return mul;
 }
 
 result_e spell_base_t::calculate_result( action_state_t* s ) const

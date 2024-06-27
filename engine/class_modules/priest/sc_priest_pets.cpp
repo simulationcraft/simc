@@ -702,8 +702,8 @@ struct fiend_melee_t : public priest_pet_melee_t
     // Check if it is the first swing or not
     timespan_t swing_time = priest_pet_melee_t::execute_time();
 
-    if ( base_execute_time == timespan_t::zero() || swing_time == timespan_t::zero() )
-      return timespan_t::zero();
+    if ( base_execute_time == 0_ms || swing_time == 0_ms )
+      return 0_ms;
 
     // Mindbender inherits haste from the player
     timespan_t hasted_time = base_execute_time * player->cache.spell_cast_speed();

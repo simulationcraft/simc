@@ -535,7 +535,7 @@ struct potion_t : public dbc_consumable_base_t
       if ( a->action_ready() )
       {
         timespan_t delta =
-            std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
         sim->print_debug( "PRECOMBAT: {} pre-pot timing pushed by {} for {}", consumable_name, delta, a->name() );
         pre_pot_time += delta;
 

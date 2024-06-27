@@ -40,12 +40,9 @@ void attack_t::execute()
   action_t::execute();
 }
 
-timespan_t attack_t::execute_time() const
+double attack_t::execute_time_pct_multiplier() const
 {
-  if ( base_execute_time == timespan_t::zero() )
-    return timespan_t::zero();
-
-  return base_execute_time * player->cache.auto_attack_speed();
+  return action_t::execute_time_pct_multiplier() * player->cache.auto_attack_speed();
 }
 
 result_amount_type attack_t::amount_type( const action_state_t*, bool periodic ) const

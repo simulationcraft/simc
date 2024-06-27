@@ -1146,6 +1146,7 @@ public:
                      p().talents.archon.perfected_form );                  // Buffs non-periodic spells
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
+      parse_effects( p().buffs.unfurling_darkness );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {

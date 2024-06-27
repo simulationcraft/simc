@@ -860,34 +860,38 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    // sef_action_base_t uses the source action's tick_time, which ignores base_tick_time adjustment made in the
-    // constructor above. Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *state ) const override
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
+    timespan_t tick_time( const action_state_t *s ) const override
     {
-      timespan_t t = base_tick_time;
-      if ( hasted_ticks )
-      {
-        t *= state->haste;
-      }
-      return t;
+      auto base = base_tick_time.base;
+
+      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
+
+      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
+
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
 
     // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
     // Recalculate composite_dot_duration here.
     timespan_t composite_dot_duration( const action_state_t *s ) const override
     {
-      if ( hasted_dot_duration )
-      {
-        auto tt = tick_time( s );
+      auto base = dot_duration.base;
 
-        // technically it's possible to have hasted dot duration without hasted ticks
-        if ( !hasted_ticks )
-          tt *= s->haste;
+      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
 
-        return dot_duration * ( tt / base_tick_time );
-      }
+      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
 
-      return dot_duration;
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 
@@ -1136,16 +1140,21 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration          = data().duration();
     }
 
-    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
-    // Forcing SEF to use it's own base_tick_time for tick_time.
-    timespan_t tick_time( const action_state_t *state ) const override
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
+    timespan_t tick_time( const action_state_t *s ) const override
     {
-      timespan_t t = base_tick_time;
-      if ( channeled || hasted_ticks )
-      {
-        t *= state->haste;
-      }
-      return t;
+      auto base = base_tick_time.base;
+
+      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
+
+      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
+
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
 
     double cost_per_tick( resource_e ) const override
