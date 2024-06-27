@@ -1583,7 +1583,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     auto stat = e->misc_value1() == -2 ? STAT_STR_AGI_INT
               : e->misc_value1() == -1 ? STAT_ALL
                                        : static_cast<stat_e>( e->misc_value1() + 1 );
-    s << " | Stat: " << util::stat_type_abbrev( stat );
+    if ( stat > STAT_NONE && stat < STAT_MAX )
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::stat_type_abbrev( stat ) );
+    else
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "Invalid (%d)", e->misc_value1() );
+
+    s << " | Stat: " << tmp_buffer.data();
   }
   else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_RATING || e->subtype() == A_MOD_RATING_MULTIPLIER ) )
   {
