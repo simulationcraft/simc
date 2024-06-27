@@ -1809,8 +1809,8 @@ struct entropic_rift_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::travel_time();
 
-    // Entropic Rift activates after 1s, even in melee range.
-    t = std::max( t, 1_s );
+    // Entropic Rift activates after 1.5s, even in melee range.
+    t = std::max( t, 1.5_s );
 
     return t;
   }
@@ -1863,44 +1863,6 @@ struct entropic_rift_t final : public priest_spell_t
     }
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
-
-    // make_event<ground_aoe_event_t>(
-    //    *sim, &priest(),
-    //    ground_aoe_params_t()
-    //        .target( target )
-    //        // Remove 1_s to compensate for travel
-    //        .n_pulses(
-    //            static_cast<uint32_t>( duration / timespan_t::from_seconds( data().effectN( 2 ).base_value() ) ) )
-    //        .pulse_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
-    //        .action( damage )
-    //        .x( target->x_position )
-    //        .y( target->y_position )
-    //        // Keep track of on-going rift events
-    //        .state_callback(
-    //            [ this, size_increase_mod ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-    //              switch ( type )
-    //              {
-    //                case ground_aoe_params_t::EVENT_CREATED:
-    //                  priest().state.active_entropic_rift = event;
-
-    //                  radius = base_radius + ( size_increase_mod * priest().buffs.collapsing_void->stack() );
-    //                  damage->parent_radius = radius;
-    //                  player->sim->print_debug( "{} triggered entropic_rift with size {} radius.", priest(), radius );
-    //                  break;
-    //                case ground_aoe_params_t::EVENT_DESTRUCTED:
-    //                  priest().state.active_entropic_rift = nullptr;
-    //                  break;
-    //                case ground_aoe_params_t::EVENT_STOPPED:
-    //                  priest().buffs.entropic_rift->expire();
-    //                  priest().buffs.voidheart->expire();
-    //                  priest().buffs.darkening_horizon->expire();
-    //                  priest().buffs.collapsing_void->expire();
-    //                  break;
-    //                default:
-    //                  break;
-    //              }
-    //            } ),
-    //    true /* Immediate pulse */ );
   }
 };
 
@@ -3504,7 +3466,7 @@ void priest_t::create_buffs()
         ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
         ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned int tick ) {
           if ( tick < 1 )
-            return 1_s;
+            return 1.5_s;
           return b->buff_period * cache.spell_cast_speed();
         } )
         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -3816,7 +3778,7 @@ void priest_t::combat_begin()
       void execute() override
       {
         // TODO: Add damage event types and make it change the number of affected players. Additionally whether the
-        // priest themselves is affected. This is relevant for random aoe heals (Essence Deovurer) or for self damage
+        // priest themselves is affected. This is relevant for random aoe heals (Essence Devourer) or for self damage
         // from SWD.
         if ( delta_time > 0_ms )
           priest->buffs.twist_of_fate_heal_ally_fake->trigger(

@@ -1521,6 +1521,12 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
+    // Spawn this before Void Torrent so that we get the damage bonus
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
+
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
@@ -1531,11 +1537,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().spawn_idol_of_cthun( s );
-
-    if ( priest().talents.voidweaver.entropic_rift.enabled() )
-    {
-      priest().trigger_entropic_rift();
-    }
   }
 };
 
