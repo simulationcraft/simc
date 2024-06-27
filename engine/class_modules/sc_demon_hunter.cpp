@@ -966,8 +966,6 @@ public:
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
-  double composite_melee_auto_attack_speed() const override;
-  double composite_weapon_attack_power_by_type( attack_power_type type ) const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
@@ -7085,9 +7083,8 @@ void demon_hunter_t::create_buffs()
   buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
   buff.thrill_of_the_fight_attack_speed =
       make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
-          ->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
-          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
-          ->add_invalidate( CACHE_WEAPON_DPS );
+          ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
+          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.thrill_of_the_fight_damage =
       make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
 
@@ -8365,31 +8362,6 @@ double demon_hunter_t::composite_armor_multiplier() const
   }
 
   return am;
-}
-
-double demon_hunter_t::composite_melee_auto_attack_speed() const
-{
-  double h = base_t::composite_melee_auto_attack_speed();
-
-  // Due to a bug in the aura type used, the effect on the buff lowers AP contribution from WDPS
-  // Can be removed if the aura is changed from A_MOD_ATTACKSPEED_NORMALIZED to A_MOD_RANGED_AND_MELEE_ATTACK_SPEED
-  h *= 1.0 / ( 1.0 + buff.thrill_of_the_fight_attack_speed->check_stack_value() );
-
-  return h;
-}
-
-double demon_hunter_t::composite_weapon_attack_power_by_type( attack_power_type type ) const
-{
-  double ap = base_t::composite_weapon_attack_power_by_type( type );
-
-  // Due to a bug in the aura type used, the effect on the buff lowers AP contribution from WDPS
-  // Can be removed if the aura is changed from A_MOD_ATTACKSPEED_NORMALIZED to A_MOD_RANGED_AND_MELEE_ATTACK_SPEED
-  if ( talent.aldrachi_reaver.thrill_of_the_fight->ok() && buff.thrill_of_the_fight_attack_speed->check() )
-  {
-    ap /= ( 1.0 + buff.thrill_of_the_fight_attack_speed->check_stack_value() );
-  }
-
-  return ap;
 }
 
 // demon_hunter_t::composite_melee_haste  ===================================

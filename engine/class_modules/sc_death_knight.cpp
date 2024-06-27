@@ -679,6 +679,8 @@ public:
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
   unsigned int vampiric_strike_proc_attempts;  // Number of vampiric strike attempts
 
+  std::vector<player_t*> undeath_tl;
+
   // Buffs
   struct buffs_t
   {
@@ -713,6 +715,7 @@ public:
     propagate_const<buff_t*> heartrend;
     propagate_const<buff_t*> hemostasis;
     propagate_const<buff_t*> ossuary;
+    buff_t* ossified_vitriol;
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
     propagate_const<buff_t*> rune_tap;
     propagate_const<buff_t*> sanguine_ground;
@@ -832,6 +835,9 @@ public:
     propagate_const<cooldown_t*> army_of_the_dead;
     propagate_const<cooldown_t*> dark_transformation;
     propagate_const<cooldown_t*> vile_contagion;
+
+    // Rider of the Apocalypse
+    propagate_const<target_specific_cooldown_t*> undeath_spread;
 
   } cooldown;
 
@@ -1317,6 +1323,7 @@ public:
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
+    const spell_data_t* ossified_vitriol_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
     const spell_data_t* heartrend_buff;
@@ -1646,6 +1653,7 @@ public:
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
       vampiric_strike_proc_attempts( 0 ),
+      undeath_tl(),
       buffs(),
       runeforge(),
       active_spells(),
@@ -1683,6 +1691,9 @@ public:
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
     cooldown.icy_death_torrent_icd  = get_cooldown( "icy_death_torrent_icd" );
+
+    // Target Specific
+    cooldown.undeath_spread = get_target_specific_cooldown( "undeath_spread" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -1769,7 +1780,8 @@ public:
   // Rider of the Apocalypse
   void summon_rider( timespan_t duration, bool random );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
-  void trigger_whitemanes_famine( player_t* target, std::vector<player_t*>& target_list );
+  void trigger_whitemanes_famine( player_t* target );
+  void sort_undeath_targets( std::vector<player_t*> tl );
   void start_a_feast_of_souls();
   // San'layn
   void trigger_infliction_of_sorrow( player_t* target, bool is_vampiric );
@@ -3366,6 +3378,29 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct vampiric_strike_t : public drw_action_t<melee_attack_t>
+  {
+    vampiric_strike_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.vampiric_strike )
+    {
+      attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double cc = drw_action_t::composite_crit_chance();
+
+      // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+      if ( dk()->bugs && dk()->talent.sanlayn.sanguine_scent.ok() &&
+          dk()->target->health_percentage() <= dk()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+      {
+        cc = 1.0;
+      }
+
+      return cc;
+    }
+  };
+
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
     int stack_gain;
@@ -3430,6 +3465,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* marrowrend;
     action_t* soul_reaper;
     action_t* consumption;
+    action_t* vampiric_strike;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" )
@@ -3476,6 +3512,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.blood.consumption.ok() )
     {
       ability.consumption = get_action<consumption_t>( "consumption", this );
+    }
+    if ( dk()->talent.sanlayn.vampiric_strike.ok() )
+    {
+      ability.vampiric_strike = get_action<vampiric_strike_t>( "vampiric_strike", this );
     }
   }
 
@@ -5054,6 +5094,7 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_default_value( p->talent.frost.pillar_of_frost->effectN( 1 ).percent() );
+    set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -6129,11 +6170,29 @@ public:
 
 struct undeath_dot_t final : public death_knight_spell_t
 {
-  undeath_dot_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
+  undeath_dot_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot ),
+      sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
   {
     background = true;
-    may_miss = may_dodge = may_parry = false;
-    dot_behavior                     = DOT_NONE;
+    may_miss = may_dodge = may_parry          = false;
+    dot_behavior                              = DOT_NONE;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m     = death_knight_spell_t::composite_ta_multiplier( state );
+    /*
+    * TWW-TODO: Believe this is what effect2's value is for, but, havent been able to confirm yet. 
+    * Leaving this here for if its confirmed. 
+    auto counter = p()->get_active_dots( p()->active_spells.undeath_dot->get_dot( nullptr ) );
+
+    if ( counter > sqrt_targets )
+    {
+      m *= sqrt( sqrt_targets / counter );
+    }
+    */
+    return m;
   }
 
   void tick( dot_t* d ) override
@@ -6142,6 +6201,9 @@ struct undeath_dot_t final : public death_knight_spell_t
     auto td = p()->get_target_data( d->target );
     td->dot.undeath->increment( 1 );
   }
+
+private:
+  double sqrt_targets;
 };
 
 struct trollbanes_icy_fury_t final : public death_knight_spell_t
@@ -6299,7 +6361,7 @@ struct infliction_in_sorrow_t : public death_knight_spell_t
 struct exterminate_aoe_t final : public death_knight_spell_t
 {
   exterminate_aoe_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.exterminate_damage )
+    : death_knight_spell_t( name, p, p->spell.exterminate_aoe )
   {
     background          = true;
     cooldown->duration  = 0_ms;
@@ -6314,14 +6376,6 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     {
       impact_action = get_action<blood_plague_t>( "blood_plague", p );
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( s );
-    // TODO-TWW keep an eye on the mult for the aoe scythe
-    m = ( m / 15 ) * 10;
-    return m;
   }
 };
 
@@ -7050,6 +7104,8 @@ struct bonestorm_t final : public death_knight_spell_t
     // or in Spelldata.
     int charges = std::max( p()->buffs.bone_shield->check(), 10 );
     p()->buffs.bone_shield->decrement( charges );
+    if( p() -> talent.blood.ossified_vitriol -> ok() )
+      p()->buffs.ossified_vitriol->trigger( charges );
     return base_tick_time * charges / 10;
   }
 
@@ -8832,23 +8888,6 @@ struct leeching_strike_t final : public death_knight_heal_t
   }
 };
 
-struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
-  {
-    heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
-      : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
-    {
-      background = true;
-      aoe        = 2;
-      weapon     = &( p->main_hand_weapon );
-    }
-
-    int n_targets() const override
-    {
-      return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
-                                        : aoe;
-    }
-  };
-
 struct heart_strike_base_t : public death_knight_melee_attack_t
 {
   heart_strike_base_t( util::string_view n, death_knight_t* p, const spell_data_t* s )
@@ -8874,24 +8913,13 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.heartrend->trigger();
     }
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-      }
-    }
-
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger();
     }
+
+    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
   }
 
   void impact( action_state_t* state ) override
@@ -8922,25 +8950,62 @@ private:
 
 struct vampiric_strike_blood_t : public heart_strike_base_t
 {
-  vampiric_strike_blood_t( util::string_view n, death_knight_t* p )
+  vampiric_strike_blood_t( util::string_view n, death_knight_t* p, bool bloodied_blade_triggered )
     : heart_strike_base_t( n, p, p->spell.vampiric_strike )
   {
     attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
     energize_amount         = std::fabs( data().powerN( 2 ).cost() );
-    if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+
+    if ( bloodied_blade_triggered )
     {
-      add_child( p->active_spells.infliction_of_sorrow );
+      background = true;
     }
-    if ( p->talent.sanlayn.the_blood_is_life.ok() )
+    else
     {
-      p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+      {
+        // We only can have this be a child of a single thing, so parent it to the main vampiric strike
+        add_child( p->active_spells.infliction_of_sorrow );
+      }
+      // In game bloodied blade vamp strikes will proc this. But I have no desire to re-write this all right now, and
+      // expect this to change due to how buggy it is.
+      if ( p->talent.sanlayn.the_blood_is_life.ok() )
+      {
+        p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      }
     }
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = heart_strike_base_t::composite_crit_chance();
+
+    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
+         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+    {
+      cc = 1.0;
+    }
+
+    return cc;
   }
 
   void execute() override
   {
     heart_strike_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( true );
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -8962,7 +9027,7 @@ struct heart_strike_t : public heart_strike_base_t
     parse_options( options_str );
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
-      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p );
+      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p, false );
       vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
       add_child( vampiric_strike );
     }
@@ -8989,7 +9054,19 @@ struct heart_strike_t : public heart_strike_base_t
       return;
     }
     heart_strike_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( false );
+
+    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+    {
+      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
+    }
+
+    if ( p()->talent.blood.everlasting_bond.ok() )
+    {
+      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+      {
+        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -9002,6 +9079,56 @@ struct heart_strike_t : public heart_strike_base_t
   }
 
 private:
+  vampiric_strike_blood_t* vampiric_strike;
+  double vampiric_strike_cost;
+};
+
+struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
+{
+  heart_strike_bloodied_blade_t( util::string_view n, death_knight_t* p )
+    : death_knight_melee_attack_t( n, p, p->spell.heart_strike_bloodied_blade )
+  {
+    background = true;
+    aoe        = 2;
+    weapon     = &( p->main_hand_weapon );
+
+    if ( p->talent.sanlayn.vampiric_strike.ok() )
+    {
+      vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike_bloodied_blade", p, true );
+      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
+      add_child( vampiric_strike );
+    }
+  }
+
+  int n_targets() const override
+  {
+    return p()->in_death_and_decay() ? aoe + as<int>( p()->talent.cleaving_strikes->effectN( 3 ).base_value() )
+                                      : aoe;
+  }
+
+  double cost() const override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      return vampiric_strike_cost;
+    }
+    else
+      return 0;
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
+    {
+      vampiric_strike->execute();
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+    death_knight_melee_attack_t::execute();
+    p()->trigger_sanlayn_execute_talents( false );
+  }
+
+  private:
   vampiric_strike_blood_t* vampiric_strike;
   double vampiric_strike_cost;
 };
@@ -9204,6 +9331,9 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     {
       p()->buffs.painful_death->expire();
     }
+
+    if ( p()->buffs.ossified_vitriol->up() )
+      p()->buffs.ossified_vitriol->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -9338,12 +9468,9 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() )
+    if ( p()->talent.rider.whitemanes_famine.ok() && td->dot.undeath->is_ticking() )
     {
-      if ( td->dot.undeath->is_ticking() )
-      {
-        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
-      }
+      p()->trigger_whitemanes_famine( state->target );
     }
   }
 
@@ -9352,6 +9479,11 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     if ( !p()->options.split_obliterate_schools && p()->spec.frostreaper->ok() && p()->buffs.killing_machine->up() )
     {
       school = SCHOOL_FROST;
+    }
+
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      p()->sort_undeath_targets( target_list() );
     }
 
     death_knight_melee_attack_t::execute();
@@ -9866,18 +9998,26 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
       p()->active_spells.trollbanes_icy_fury->execute_on_target( state->target );
     }
 
-    if ( p()->talent.rider.whitemanes_famine.ok() )
+    if ( p()->talent.rider.whitemanes_famine.ok() && td->dot.undeath->is_ticking() )
     {
-      if ( td->dot.undeath->is_ticking() )
-      {
-        p()->trigger_whitemanes_famine( state->target, death_knight_melee_attack_t::target_list() );
-      }
+      p()->trigger_whitemanes_famine( state->target );
     }
 
     if ( p()->talent.sanlayn.incite_terror.ok() )
     {
       td->debuff.incite_terror->trigger();
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
+    {
+      p()->sort_undeath_targets( target_list() );
+    }
+    death_knight_melee_attack_t::execute();
+
+    p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
   }
 
 private:
@@ -9901,10 +10041,18 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     }
   }
 
-  void execute() override
+  double composite_crit_chance() const override
   {
-    wound_spender_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( true );
+    double cc = wound_spender_base_t::composite_crit_chance();
+
+    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
+    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
+         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
+    {
+      cc = 1.0;
+    }
+
+    return cc;
   }
 
   void impact( action_state_t* s ) override
@@ -9955,7 +10103,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
       return;
     }
     wound_spender_base_t::execute();
-    p()->trigger_sanlayn_execute_talents( false );
   }
 
   void impact( action_state_t* s ) override
@@ -10268,6 +10415,8 @@ struct tombstone_t final : public death_knight_spell_t
     p()->resource_gain( RESOURCE_RUNIC_POWER, power, p()->gains.tombstone, this );
     p()->buffs.tombstone->trigger( 1, shield * p()->resources.max[ RESOURCE_HEALTH ] );
     p()->buffs.bone_shield->decrement( charges );
+    if( p() -> talent.blood.ossified_vitriol -> ok() )
+      p()->buffs.ossified_vitriol->trigger( charges );
     p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
                                                charges );
 
@@ -11406,34 +11555,46 @@ void death_knight_t::extend_rider( double amount, pets::horseman_pet_t* rider )
   }
 }
 
-void death_knight_t::trigger_whitemanes_famine( player_t* main_target, std::vector<player_t*>& target_list )
+void death_knight_t::sort_undeath_targets( std::vector<player_t*> tl )
+{
+  undeath_tl = tl;
+
+  std::sort( undeath_tl.begin(), undeath_tl.end(), [ this ]( player_t* a, player_t* b ) {
+    return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
+  } );
+}
+
+void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 {
   auto td = get_target_data( main_target );
-  td->dot.undeath->increment( 1 );
+  td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+  auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  if ( target_list.size() > 1 )
+  if ( !cd->down() && sim->target_non_sleeping_list.size() > 1 )
   {
-    std::vector<player_t*>& current_targets = target_list;
-    auto duration                           = td->dot.undeath->remains() - pet_spell.undeath_dot->duration();
+    std::vector<player_t*> tl = undeath_tl;
+    auto it = range::find( tl, main_target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
 
-    // first target, the action target, needs to be left in place
-    std::sort( current_targets.begin() + 1, current_targets.end(), [ this ]( player_t* a, player_t* b ) {
-      return get_target_data( a )->dot.undeath->current_stack() > get_target_data( b )->dot.undeath->current_stack();
-    } );
+    player_t* undeath_target = tl[ 0 ];
 
-    // Set the new target to the 2nd element in the sorted vector
-    auto& new_target = current_targets[ 1 ];
-    auto undeath_td  = get_target_data( new_target );
+    auto undeath_td  = get_target_data( undeath_target );
 
     if ( undeath_td->dot.undeath->is_ticking() )
     {
-      undeath_td->dot.undeath->increment( 1 );
+      undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
     }
     else
     {
-      active_spells.undeath_dot->execute_on_target( new_target );
-      undeath_td->dot.undeath->adjust_duration( duration );
+      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
     }
+
+    cd->start();
+
+    std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
   }
 }
 
@@ -12410,7 +12571,7 @@ void death_knight_t::init_spells()
   talent.blood.ossuary                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ossuary" );
   talent.blood.improved_vampiric_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Vampiric Blood" );
   talent.blood.improved_heart_strike   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Heart Strike" );
-  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Virtiol" );
+  talent.blood.ossified_vitriol        = find_talent_spell( talent_tree::SPECIALIZATION, "Ossified Vitriol" );
 
   // Row 5
   talent.blood.leeching_strike     = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
@@ -12661,6 +12822,7 @@ void death_knight_t::init_spells()
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
+  spell.ossified_vitriol_buff       = conditional_spell_lookup( talent.blood.ossified_vitriol.ok(), 458745 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
   spell.heartrend_buff              = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
@@ -12859,6 +13021,9 @@ void death_knight_t::init_spells()
 
   if ( talent.frost.frigid_executioner.ok() )
     cooldown.frigid_executioner_icd->duration = talent.frost.frigid_executioner->internal_cooldown();
+
+  if( talent.rider.whitemanes_famine.ok() )
+    cooldown.undeath_spread->base_duration = pet_spell.undeath_dot->internal_cooldown();
 }
 
 // death_knight_t::init_action_list =========================================
@@ -13312,6 +13477,8 @@ void death_knight_t::create_buffs()
 
 
     buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )->set_default_value_from_effect( 1, 0.1 );
+
+    buffs.ossified_vitriol = make_buff( this, "ossified_vitriol", spell.ossified_vitriol_buff );
 
     buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy->effectN( 2 ).trigger() )
                              ->set_trigger_spell( talent.blood.coagulopathy )
@@ -13849,9 +14016,9 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
         rng().roll( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 5 ).percent() ) )
   {
     if ( rng().roll( 0.5 ) ) // 50% chance to roll 1 or 2 charges
-      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() );
+      buffs.piledriver_tww1_4pc->trigger( as<int>( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 3 ).base_value() ) );
     else
-      buffs.piledriver_tww1_4pc->trigger( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() );
+      buffs.piledriver_tww1_4pc->trigger( as<int>( sets -> set ( DEATH_KNIGHT_BLOOD, TWW1, B4 )->effectN( 4 ).base_value() ) );
   }
 
   if ( ( ( specialization() == DEATH_KNIGHT_BLOOD && !buffs.bone_shield->check() ) || !cooldown.bone_shield_icd->up() ||
@@ -13864,6 +14031,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     buffs.bone_shield->decrement();
+    if( talent.blood.ossified_vitriol -> ok() )
+      buffs.ossified_vitriol->trigger();
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ) )
       buffs.unbroken_tww1_2pc->trigger();
     if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
@@ -14139,6 +14308,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.hemostasis );
   parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
+  parse_effects( dk()->buffs.ossified_vitriol );
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
   // parse_effects( dk()->buffs.coagulopathy );
 
@@ -14195,6 +14365,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.coagulopathy );
   parse_effects( p()->buffs.consumption );
   parse_effects( p()->buffs.crimson_scourge );
+  parse_effects( p()->buffs.ossified_vitriol );
   parse_effects( p()->buffs.sanguine_ground );
   parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
   parse_effects( p()->buffs.hemostasis );
@@ -14303,7 +14474,6 @@ void death_knight_t::parse_player_effects()
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
     parse_effects( spec.frost_death_knight );
-    parse_effects( buffs.pillar_of_frost, USE_CURRENT, talent.frost.pillar_of_frost );
     parse_effects( buffs.empower_rune_weapon, talent.frost.empower_rune_weapon );
     parse_effects( buffs.frostwhelps_aid, talent.frost.frostwhelps_aid );
     parse_effects( buffs.bonegrinder_frost, talent.frost.bonegrinder );

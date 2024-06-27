@@ -726,13 +726,8 @@ self_damage_t<derived_actor_t, residual_type>::self_damage_t( derived_actor_t *p
 {
   // to verify if base_type is of type residual_periodic_action_t<...> we'd need some extra machinery, so we won't check
   // :) static_assert( std::is_base_of_v<residual_action::residual_periodic_action_t)
-  this->hasted_ticks = this->tick_may_crit = false;
-  this->target                             = player;
-  this->stats->type                        = stats_e::STATS_NEUTRAL;
-
-  this->dot_duration = 10_s;
-  this->dot_duration += 3_s;
-  this->base_tick_time = 1_s;
+  residual_type::target      = player;
+  residual_type::stats->type = stats_e::STATS_NEUTRAL;
 }
 
 template <class derived_actor_t, class residual_type>

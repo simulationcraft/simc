@@ -714,7 +714,15 @@ struct halo_t final : public priest_spell_t
           // surge_of_light NYI
           break;
         case PRIEST_SHADOW:
-          priest().buffs.surge_of_insanity->trigger();
+          // You get a full buff of MSI or MFI and keep Surge of Insanity state intact
+          if ( priest().talents.shadow.mind_spike.enabled() )
+          {
+            priest().buffs.mind_spike_insanity->trigger();
+          }
+          else
+          {
+            priest().buffs.mind_flay_insanity->trigger();
+          }
         default:
           break;
       }
@@ -726,7 +734,7 @@ private:
   propagate_const<action_t*> _dmg_spell_holy;
   propagate_const<action_t*> _heal_spell_shadow;
   propagate_const<action_t*> _dmg_spell_shadow;
-};
+};  // namespace spells
 
 // ==========================================================================
 // Levitate
@@ -1534,7 +1542,10 @@ public:
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
         // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
-        if ( save_health_percentage <= depth_of_shadows_threshold && rng().roll( 0.9 ) )
+        // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1203
+        if ( ( ( !priest().bugs && priest().buffs.deathspeaker->check() ) ||
+               save_health_percentage <= depth_of_shadows_threshold ) &&
+             rng().roll( 0.9 ) )
         {
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
         }
@@ -2732,6 +2743,7 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.mind_spike_insanity_munched    = get_proc( "Mind Spike: Insanity stacks consumed by normal Mind Spikes" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -4111,7 +4123,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );

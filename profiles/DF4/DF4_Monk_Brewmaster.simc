@@ -10,8 +10,9 @@ race=tauren
 load_default_gear=1
 enable_all_talents=1
 
-# spec_talents=press_the_advantage:0
+spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0
+# spec_talents=gift_of_the_ox:0/spirit_of_the_ox:0
 
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/fortifying_brew
@@ -65,6 +66,7 @@ actions+=/blackout_kick
 actions+=/rising_sun_kick
 actions+=/breath_of_fire
 actions+=/keg_smash
+actions+=/tiger_palm
 actions+=/purifying_brew
 # actions+=/call_action_list,name=ogcd
 # actions+=/call_action_list,name=igcd,if=time<240
@@ -79,6 +81,6 @@ position=front
 
 actions.precombat=snapshot_stats
 actions=auto_attack,damage=7500000,range=30000,attack_speed=0.5,aoe_tanks=1
-actions+=/melee_nuke,damage=12000000,range=60000,attack_speed=2,cooldown=9000,aoe_tanks=1
-actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=900,aoe_tanks=1,dot_duration=600,bleed=1
-actions+=/pause_action,duration=3000,cooldown=30,if=time>=30
+actions+=/melee_nuke,damage=12000000,range=60000,attack_speed=2,cooldown=30,aoe_tanks=1
+actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=30,aoe_tanks=1,dot_duration=600,bleed=1
+# actions+=/pause_action,duration=30,cooldown=30,if=time>=30

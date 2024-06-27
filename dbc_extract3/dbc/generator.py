@@ -1492,7 +1492,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         458322, 458376, 458580, 459158, # new M+ affixes
+         206150, 461904, 461910, # new M+ affixes
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -2813,11 +2813,15 @@ class SpellDataGenerator(DataGenerator):
         if state and not self.spell_state(spell, enabled_effects):
             return None
 
-        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+        if spell.id in constants.REMOVE_CLASS_AND_RACE_MASKS:
             mask_class = 0
             mask_race = 0
 
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
+
+        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+            mask_class = 0
+            mask_race = 0
 
         spell_id = spell.id
         # Add spell triggers to the filter list recursively

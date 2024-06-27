@@ -18590,11 +18590,12 @@ Effects          :
 Description      : Fel Domination cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Succulent Soul (id=449793) [Spell Family (5)] 
+Hotfixed         : Max stacks (99 -> 4)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 99 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

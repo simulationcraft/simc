@@ -21083,6 +21083,7 @@ Range            : 100 yards
 Duration         : 20 seconds
 Labels           : 3116: Fear No Evil (432834 effect#1)
 Proc Chance      : 101%
+Real PPM         : 8 (Haste multiplier)
 Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

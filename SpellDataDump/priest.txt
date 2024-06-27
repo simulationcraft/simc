@@ -3975,7 +3975,6 @@ Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
 Class            : Shadow Priest
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -17461,7 +17460,6 @@ Description      : $@spelldesc447444
 Name             : Inner Quietus (id=448278) [Spell Family (6), Passive] 
 Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=2, col=3, max_rank=1, req_points=0]
 Class            : Priest
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Labels           : 3886: Discipline Priest (137032 effect#30), Discipline Priest (137032 effect#31), Shadow Priest (137033 effect#21)
@@ -17492,7 +17490,6 @@ Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additiona
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
 Class            : Priest
-Race             : Blood Elf (0x200)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
