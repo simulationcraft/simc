@@ -2387,8 +2387,6 @@ dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source
   sacred_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
   sacred_weapon_effect->spell_id = 432502;
   sacred_weapon_effect->execute_action = sacred_weapon_proc;
-  // From testing, this chance seems to be 10%
-  sacred_weapon_effect->proc_chance_ = .1;
 
   target->special_effects.push_back( sacred_weapon_effect );
 
