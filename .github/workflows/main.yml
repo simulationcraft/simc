@@ -379,6 +379,12 @@ jobs:
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
 
+      - name: Check for Non-Trivial Changes
+        run: |
+          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
+            git checkout -- SpellDataDump/build_info.txt
+          fi
+
       - name: Commit Spell Data
         uses: EndBug/add-and-commit@v9
         with:
