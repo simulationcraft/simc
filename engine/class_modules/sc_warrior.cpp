@@ -515,7 +515,6 @@ public:
 
       player_talent_t reinforced_plates;
       player_talent_t bounding_stride;
-      player_talent_t blood_and_thunder;
       player_talent_t crackling_thunder;
       player_talent_t sidearm;
 
@@ -788,6 +787,7 @@ public:
     struct shared_talents_t
     {
       player_talent_t ravager;
+      player_talent_t rend;
       player_talent_t bloodsurge;
       player_talent_t dance_of_death;
     } shared;
@@ -3178,16 +3178,16 @@ struct thunder_clap_t : public warrior_attack_t
 {
   double rage_gain;
   double shield_slam_reset;
-  warrior_attack_t* blood_and_thunder;
-  double blood_and_thunder_target_cap;
-  double blood_and_thunder_targets_hit;
+  warrior_attack_t* rend;
+  double rend_target_cap;
+  double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
-      blood_and_thunder( nullptr ),
-      blood_and_thunder_target_cap( 0 ),
-      blood_and_thunder_targets_hit( 0 )
+      rend( nullptr ),
+      rend_target_cap( 0 ),
+      rend_targets_hit( 0 )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -3198,18 +3198,18 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p->spec.protection_warrior->ok() )
       rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
 
-    if ( p->talents.warrior.blood_and_thunder.ok() )
+    if ( p->talents.shared.rend.ok() )
     {
-      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 1 ).base_value();
+      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
       if ( p->talents.arms.rend->ok() )
-        blood_and_thunder = new rend_dot_t( p );
+        rend = new rend_dot_t( p );
       if ( p->talents.protection.rend->ok() )
       {
         // Arma: 2022 Nov 4th.  Even if you are prot, the arms rend dot is being applied.
         if ( p->bugs )
-          blood_and_thunder = new rend_dot_t( p );
+          rend = new rend_dot_t( p );
         else
-          blood_and_thunder = new rend_dot_prot_t( p );
+          rend = new rend_dot_prot_t( p );
       }
     }
   }
@@ -3245,7 +3245,7 @@ struct thunder_clap_t : public warrior_attack_t
 
   void execute() override
   {
-    blood_and_thunder_targets_hit = 0;
+    rend_targets_hit = 0;
 
     warrior_attack_t::execute();
 
@@ -3291,13 +3291,12 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( ( p()->talents.arms.rend->ok() || p()->talents.protection.rend->ok() ) &&
-         p()->talents.warrior.blood_and_thunder.ok() )
+    if ( p()->talents.shared.rend.ok() )
     {
-      if ( blood_and_thunder_targets_hit < blood_and_thunder_target_cap )
+      if ( rend_targets_hit < rend_target_cap )
       {
-        blood_and_thunder->execute_on_target( state->target );
-        blood_and_thunder_targets_hit++;
+        rend->execute_on_target( state->target );
+        rend_targets_hit++;
       }
     }
   }
@@ -6581,7 +6580,6 @@ void warrior_t::init_spells()
   talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
   talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
-  talents.warrior.blood_and_thunder                = find_talent_spell( talent_tree::CLASS, "Blood and Thunder" );
   talents.warrior.crackling_thunder                = find_talent_spell( talent_tree::CLASS, "Crackling Thunder" );
 
   talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
@@ -6859,6 +6857,7 @@ void warrior_t::init_spells()
   };
 
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
+  talents.shared.rend = find_shared_talent( { &talents.arms.rend, &talents.protection.rend } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
 
