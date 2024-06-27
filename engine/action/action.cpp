@@ -1150,8 +1150,8 @@ timespan_t action_t::execute_time() const
 
   auto add = base_execute_time.flat_add + execute_time_flat_modifier();
 
-  // TOOD: currently implemented as truncated to ms. determine if it's rounded like tick_time.
-  return ( base + add ) * mul;
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
 }
 
 timespan_t action_t::execute_time_flat_modifier() const
@@ -4143,8 +4143,8 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 
   auto add = dot_duration.flat_add + dot_duration_flat_modifier( s );
 
-  // TOOD: currently implemented as truncated to ms. determine if it's rounded like tick_time.
-  return ( base + add ) * mul;
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
 }
 
 timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
