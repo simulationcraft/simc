@@ -3709,7 +3709,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     channeled = tick_zero = tick_may_crit = true;
     dot_duration                          = data().duration();
-    interrupt_auto_attack = true;
+    interrupt_auto_attack                 = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -5542,7 +5542,7 @@ const char *gift_of_the_ox_t::orb_event_t::name() const
 // Shuffle
 // ==========================================================================
 shuffle_t::shuffle_t( monk_t *player )
-  : monk_buff_t( player, "shuffle", player->passives.shuffle ),
+  : monk_buff_t( player, "shuffle", player->talent.brewmaster.shuffle_buff ),
     accumulator( 0_s ),
     max_duration( 3.0 * base_buff_duration )
 {
@@ -5564,7 +5564,7 @@ void shuffle_t::trigger( timespan_t duration )
   // when you apply a shuffle refresh/application, quick sip's value is multiplied
   // by threshold // accumulator, where // refers to integer division
   timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
-  int count            = timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold );
+  int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
   if ( count > 0 )
     p().stagger[ "Stagger" ]->purify_percent(
         as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
@@ -6192,7 +6192,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     passive_actions(),
     squirm_timer( 0 ),
     spiritual_focus_count( 0 ),
-    shuffle_count_secs( 0_s ),
     efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 ),
@@ -6731,6 +6730,7 @@ void monk_t::init_spells()
     talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
     talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
     talent.brewmaster.shuffle                             = _ST( "Shuffle" );
+    talent.brewmaster.shuffle_buff                        = find_spell( 215479 );
     talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
     talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
     talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox" );
@@ -7155,7 +7155,6 @@ void monk_t::init_spells()
   passives.elusive_brawler              = find_spell( 195630 );
   passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
   passives.gift_of_the_ox_heal          = find_spell( 124507 );
-  passives.shuffle                      = find_spell( 215479 );
   passives.keg_smash_buff               = find_spell( 196720 );
   passives.shaohaos_might               = find_spell( 337570 );
   passives.special_delivery             = find_spell( 196732 );
@@ -7498,7 +7497,7 @@ void monk_t::create_buffs()
             stagger_rating *= 1.0 + talent.monk.fortifying_brew_buff->effectN( 6 ).percent();
 
           if ( buff.shuffle->up() )
-            stagger_rating *= 1.0 + passives.shuffle->effectN( 1 ).percent();
+            stagger_rating *= 1.0 + talent.brewmaster.shuffle_buff->effectN( 1 ).percent();
 
           // multiplier is not available in spell data :(
           if ( buff.ox_stance->up() && state->result_amount / current_health() >
@@ -7854,8 +7853,8 @@ void monk_t::create_buffs()
   buff.against_all_odds =
       make_buff_fallback( talent.shado_pan.against_all_odds->ok(), this, "against_all_odds", find_spell( 451061 ) )
           ->set_default_value_from_effect( 1 )
-//          ->set_default_value_from_effect_type(
-//              A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+          //          ->set_default_value_from_effect_type(
+          //              A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
           ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
           ->add_invalidate( CACHE_AGILITY );
 
@@ -8504,12 +8503,11 @@ double monk_t::composite_attribute( attribute_e attr ) const
   auto a = player_t::composite_attribute( attr );
 
   // TODO: remove if fixed
-//  if ( attr == ATTR_AGILITY && buff.against_all_odds->check() )
-//    a += base.stats.attribute[ attr ] * buff.against_all_odds->check_value();
+  //  if ( attr == ATTR_AGILITY && buff.against_all_odds->check() )
+  //    a += base.stats.attribute[ attr ] * buff.against_all_odds->check_value();
 
   return a;
 }
-
 
 // monk_t::composite_dodge ==============================================
 

@@ -473,7 +473,6 @@ public:
   std::vector<action_t *> combo_strike_actions;
   double squirm_timer;
   double spiritual_focus_count;
-  timespan_t shuffle_count_secs;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
@@ -857,6 +856,7 @@ public:
       // row 2
       player_talent_t purifying_brew;
       player_talent_t shuffle;
+      const spell_data_t *shuffle_buff;
       // row 3
       player_talent_t staggering_strikes;
       player_talent_t gift_of_the_ox;
@@ -1335,7 +1335,6 @@ public:
     const spell_data_t *gift_of_the_ox_heal;
     const spell_data_t *keg_smash_buff;
     const spell_data_t *shaohaos_might;
-    const spell_data_t *shuffle;
     const spell_data_t *special_delivery;
     const spell_data_t *stagger_self_damage;
     const spell_data_t *heavy_stagger;
@@ -1465,7 +1464,7 @@ public:
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute( attribute_e ) const;
+  double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
   double composite_mastery() const override;
   double non_stacking_movement_modifier() const override;
