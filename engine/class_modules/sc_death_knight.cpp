@@ -7102,17 +7102,20 @@ struct bonestorm_t final : public death_knight_spell_t
     // https://www.wowhead.com/news/the-war-within-alpha-development-notes-new-human-racial-replacing-diplomacy-342168
     // Blue post specifically mentions a max of 10 bones consumed, though it doesn't show up in spell description
     // or in Spelldata.
-    int charges = std::max( p()->buffs.bone_shield->check(), 10 );
+    int charges = std::min( p()->buffs.bone_shield->check(), 10 );
     p()->buffs.bone_shield->decrement( charges );
     if( p() -> talent.blood.ossified_vitriol -> ok() )
       p()->buffs.ossified_vitriol->trigger( charges );
-    return base_tick_time * charges / 10;
+    p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
+    return base_tick_time * charges;
   }
 
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    p()->replenish_rune( as<unsigned>( p()->talent.blood.bonestorm->effectN( 3 ).base_value() ), p()->gains.bonestorm );
+    p()->buffs.bone_shield->trigger();
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger();
   }
 };
 
