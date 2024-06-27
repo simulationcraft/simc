@@ -8791,13 +8791,16 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
-    // Currently does not trigger Icy Talons, nor Obliteration rune generation
-    // Can Trigger Runic Empowerment
+    // Currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
     {
       if ( p()->talent.frost.unleashed_frenzy.ok() )
       {
         p()->buffs.unleashed_frenzy->trigger();
+      }
+      if ( p()->talent.icy_talons.ok() )
+      {
+        p()->buffs.icy_talons->trigger();
       }
 
       // TWW-TODO: Re-verify what RP effects Arctic Assault procs
