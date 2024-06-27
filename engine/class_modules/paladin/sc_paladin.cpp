@@ -2677,7 +2677,7 @@ struct sacred_word_t : public paladin_heal_t
 
 void paladin_t::tww1_4p_prot()
 {
-  if ( specialization() != PALADIN_PROTECTION )
+  if ( !sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B4 ) )
     return;
 
   auto stack_value = buffs.rising_wrath->stack_value() / 1000.0;
