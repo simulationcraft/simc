@@ -1148,10 +1148,12 @@ timespan_t action_t::execute_time() const
   if ( mul <= 0 )
     return 0_ms;
 
-  auto add = base_execute_time.flat_add + execute_time_flat_modifier();
+  base += base_execute_time.flat_add + execute_time_flat_modifier();
+  if ( base <= 0_ms )
+    return 0_ms;
 
   // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
-  return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
 }
 
 timespan_t action_t::execute_time_flat_modifier() const
@@ -4042,13 +4044,15 @@ timespan_t action_t::tick_time( const action_state_t* s ) const
   if ( mul <= 0 )
     return 0_ms;
 
-  auto add = base_tick_time.flat_add + tick_time_flat_modifier( s );
+  base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
 
   // Tick time is rounded to nearest ms.
   // Assuming this applies to all tick time, including hasted duration dots. As tick time is used in calculation for
   // hasted duration (in order to ensure # of ticks match) using rounding for tick time can have a non-trivial impact
   // on short duration dots with a large number of ticks, such as eye beam.
-  return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
 }
 
 timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
@@ -4141,10 +4145,12 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
   if ( mul <= 0 )
     return 0_ms;
 
-  auto add = dot_duration.flat_add + dot_duration_flat_modifier( s );
+  base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
 
   // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
-  return timespan_t::from_millis( std::round( static_cast<double>( ( base + add ).total_millis() ) * mul ) );
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
 }
 
 timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
