@@ -148,7 +148,6 @@ void monk_action_t<Base>::apply_buff_effects()
    * Does it apply a buff to a specific action?
    * If so, the aura gets parsed here with `parse_effects`.
    */
-
   // Windwalker
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
@@ -177,9 +176,8 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
-  //    parse_target_effects( []( actor_target_data_t* t ) { return static_cast<monk_td_t*>( t
-  //    )->debuffs.weapons_of_order->check(); },
-  //                          p()->shared.weapons_of_order ); // True, true
+  parse_target_effects( td_fn( &monk_td_t::debuff_t::weapons_of_order ),
+                        p()->talent.brewmaster.weapons_of_order_debuff );
 }
 
 // Utility function to search spell data for matching effect.
@@ -741,10 +739,6 @@ double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
 
   if ( td )
   {
-    if ( base_t::data().affected_by( td->debuff.weapons_of_order->data().effectN( 1 ) ) &&
-         td->debuff.weapons_of_order->check() )
-      tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
-
     if ( base_t::data().affected_by( p()->passives.jadefire_brand_dmg->effectN( 1 ) ) &&
          td->debuff.jadefire_brand->check() )
       tm *= 1 + p()->passives.jadefire_brand_dmg->effectN( 1 ).percent();
@@ -4438,9 +4432,7 @@ struct weapons_of_order_t : public monk_spell_t
     parse_options( options_str );
     may_combo_strike = true;
     // Specifically set for 10.1 class trinket
-    harmful         = p->talent.brewmaster.call_to_arms.enabled() ? true : false;
-    base_dd_min     = 0;
-    base_dd_max     = 0;
+    harmful         = p->talent.brewmaster.call_to_arms->ok() ? true : false;
     cast_during_sck = true;
 
     if ( p->talent.brewmaster.weapons_of_order->ok() && !p->sim->enable_all_talents )
@@ -4455,7 +4447,6 @@ struct weapons_of_order_t : public monk_spell_t
 
     p()->cooldown.keg_smash->reset( true, 1 );
 
-    // TODO: Does this stack with Effusive Anima Accelerator?
     if ( p()->talent.brewmaster.chi_surge->ok() )
       p()->active_actions.chi_surge->execute();
 
@@ -6144,7 +6135,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   debuff.jadefire_stomp = make_buff( *this, "jadefire_stomp_debuff", p->find_spell( 388199 ) )
                               ->set_trigger_spell( p->shared.jadefire_stomp );
 
-  debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->find_spell( 387179 ) )
+  debuff.weapons_of_order = make_buff( *this, "weapons_of_order_debuff", p->talent.brewmaster.weapons_of_order_debuff )
                                 ->set_trigger_spell( p->talent.brewmaster.weapons_of_order )
                                 ->set_default_value_from_effect( 1 );
 
@@ -6273,6 +6264,8 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
+  parse_effects( buff.weapons_of_order, 0b11111110U );
+
   // mistweaver talent auras
   // windwalker talent auras
 
@@ -6763,6 +6756,7 @@ void monk_t::init_spells()
     talent.brewmaster.blackout_combo                      = _ST( "Blackout Combo" );
     talent.brewmaster.press_the_advantage                 = _ST( "Press the Advantage" );
     talent.brewmaster.weapons_of_order                    = _ST( "Weapons of Order" );
+    talent.brewmaster.weapons_of_order_debuff             = find_spell( 387179 );
     talent.brewmaster.black_ox_adept                      = _ST( "Black Ox Adept" );
     talent.brewmaster.heightened_guard                    = _ST( "Heightened Guard" );
     talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
@@ -7638,12 +7632,9 @@ void monk_t::create_buffs()
   buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
                             ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
-  buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                              ->set_trigger_spell( talent.brewmaster.weapons_of_order )
-                              ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
-                              ->set_duration( find_spell( 310454 )->duration() )
-                              ->set_cooldown( timespan_t::zero() )
-                              ->add_invalidate( CACHE_MASTERY );
+  buff.weapons_of_order = make_buff_fallback( talent.brewmaster.weapons_of_order->ok(), this, "weapons_of_order",
+                                              talent.brewmaster.weapons_of_order )
+                              ->set_trigger_spell( talent.brewmaster.weapons_of_order );
 
   buff.recent_purifies = new buffs::purifying_buff_t( this, "recent_purifies", spell_data_t::nil() );
 
@@ -7959,7 +7950,6 @@ void monk_t::init_gains()
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
-  gain.weapons_of_order         = get_gain( "weapons_of_order" );
 }
 
 // monk_t::init_procs =======================================================
@@ -8507,17 +8497,6 @@ double monk_t::composite_dodge() const
   return d;
 }
 
-// monk_t::composite_mastery ===========================================
-
-double monk_t::composite_mastery() const
-{
-  double m = base_t::composite_mastery();
-
-  m += buff.weapons_of_order->check_value();
-
-  return m;
-}
-
 // monk_t::temporary_movement_modifier =====================================
 
 double monk_t::non_stacking_movement_modifier() const
@@ -8556,16 +8535,6 @@ double monk_t::composite_player_target_pet_damage_multiplier( player_t *target, 
   double multiplier = base_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
   auto td = find_target_data( target );
-  if ( td && td->debuff.weapons_of_order->check() )
-  {
-    if ( guardian )
-      multiplier *=
-          1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 3 ).percent() );
-    else
-      multiplier *=
-          1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 2 ).percent() );
-  }
-
   if ( td && td->debuff.jadefire_brand->check() )
   {
     if ( guardian )

@@ -913,6 +913,7 @@ public:
       player_talent_t blackout_combo;
       player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
+      const spell_data_t *weapons_of_order_debuff;
       // row 10
       player_talent_t black_ox_adept;
       player_talent_t heightened_guard;
@@ -1467,7 +1468,6 @@ public:
   double composite_attack_power_multiplier() const override;
   double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
-  double composite_mastery() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
