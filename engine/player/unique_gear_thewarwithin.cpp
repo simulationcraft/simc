@@ -1384,11 +1384,10 @@ struct do_treacherous_transmitter_task_t : public action_t
 
 void treacherous_transmitter( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "cryptic_instructions", "errant_manaforge_emission",
-                                        "realigning_nexus_convergence_divergence", "ethereal_powerlink" } ) )
-  {
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "cryptic_instructions", "errant_manaforge_emission", "realigning_nexus_convergence_divergence",
+                     "ethereal_powerlink" } ) )
     return;
-  }
 
   struct cryptic_instructions_t : public generic_proc_t
   {
@@ -3304,8 +3303,8 @@ void register_hotfixes()
 
 action_t* create_action( player_t* p, util::string_view n, util::string_view options )
 {
-    if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
-    if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
+  if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
+  if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
 
   return nullptr;
 }
