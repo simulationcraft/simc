@@ -1354,19 +1354,18 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 // 449954 primary buff
 struct do_treacherous_transmitter_task_t : public action_t
 {
-  buff_t* buff = nullptr;
   buff_t* task = nullptr;
 
   do_treacherous_transmitter_task_t( player_t* p, std::string_view opt )
-    : action_t( ACTION_OTHER, "do_treacherous_transmitter_task", p )
+    : action_t( ACTION_OTHER, "do_treacherous_transmitter_task", p, spell_data_t::nil() )
   {
     parse_options( opt );
 
-    s_data_reporting = p->find_spell( 449946 );
+    s_data_reporting   = p->find_spell( 446209 );
     name_str_reporting = "Complete Task";
 
     callbacks = harmful = false;
-    trigger_gcd = 0_ms;
+    trigger_gcd         = 0_ms;
   }
 
   bool ready() override
@@ -1379,23 +1378,24 @@ struct do_treacherous_transmitter_task_t : public action_t
 
   void execute() override
   {
-    buff->trigger();
     task->expire();
   }
 };
 
 void treacherous_transmitter( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs(
-           effect, { "cryptic_instructions", "errant_manaforge_emission", "realigning_nexus_convergence_divergence",
-                     "ethereal_powerlink" } ) )
+  if ( create_fallback_buffs( effect, { "cryptic_instructions", "errant_manaforge_emission",
+                                        "realigning_nexus_convergence_divergence", "ethereal_powerlink" } ) )
+  {
     return;
+  }
 
   struct cryptic_instructions_t : public generic_proc_t
   {
     std::vector<buff_t*> tasks;
     buff_t* stat_buff;
-    action_t* action;
+    std::vector<action_t*> apl_actions;
+
     cryptic_instructions_t( const special_effect_t& e ) : generic_proc_t( e, "cryptic_instructions", e.driver() )
     {
       harmful            = false;
@@ -1405,9 +1405,15 @@ void treacherous_transmitter( special_effect_t& effect )
           create_buff<stat_buff_t>( e.player, e.player->find_spell( 449954 ) )
               ->set_stat_from_effect_type( A_MOD_STAT, e.player->find_spell( 446209 )->effectN( 1 ).average( e.item ) );
 
-      action = e.player->find_action( "do_treacherous_transmitter_task" );
+      for ( auto& a : e.player->action_list )
+      {
+        if ( a->name_str == "do_treacherous_transmitter_task" )
+        {
+          apl_actions.push_back( a );
+        }
+      }
 
-      if ( action != nullptr )
+      if ( apl_actions.size() > 0 )
       {
         buff_t* jump_task   = create_buff<buff_t>( e.player, e.player->find_spell( 449947 ) );
         buff_t* collect_orb = create_buff<buff_t>( e.player, e.player->find_spell( 449948 ) );
@@ -1417,19 +1423,34 @@ void treacherous_transmitter( special_effect_t& effect )
         tasks.push_back( collect_orb );
         tasks.push_back( stand_here );
 
-        // Set a default task for the action to check against, will be overwritten later
-        debug_cast<do_treacherous_transmitter_task_t*>( action )->task = tasks[ 0 ];
-        debug_cast<do_treacherous_transmitter_task_t*>( action )->buff = stat_buff;
+        for ( auto& t : tasks )
+        {
+          t->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
+            if ( d > 0_ms )
+            {
+              stat_buff->trigger();
+            }
+          } );
+        }
+
+        // Set a default task for the actions ready() function, will be overwritten later
+        for ( auto& a : apl_actions )
+        {
+          debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
+        }
       }
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      if ( action != nullptr )
+      if ( apl_actions.size() > 0 )
       {
         rng().shuffle( tasks.begin(), tasks.end() );
-        debug_cast<do_treacherous_transmitter_task_t*>( action )->task = tasks[ 0 ];
+        for ( auto& a : apl_actions )
+        {
+          debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
+        }
         tasks[ 0 ]->trigger();
       }
       else
@@ -3283,8 +3304,8 @@ void register_hotfixes()
 
 action_t* create_action( player_t* p, util::string_view n, util::string_view options )
 {
-  if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
-  if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
+    if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
+    if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
 
   return nullptr;
 }
