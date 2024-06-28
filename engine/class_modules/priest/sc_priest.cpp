@@ -3467,10 +3467,10 @@ void priest_t::create_buffs()
         ->set_tick_on_application( false )
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
         ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-        ->set_tick_callback( [ this ]( buff_t*, int tick, timespan_t ) {
-          // Based on initial testing the first tick cannot hit any targets reliably.
+        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+          // Based on initial testing the first tick cannot hit any targets reliably due to the spawn distance/travel time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it to miss the main target.
-          if ( tick >= 2 )
+          if ( b->current_tick >= 2 )
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
