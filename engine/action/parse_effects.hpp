@@ -945,6 +945,8 @@ public:
   timespan_t gcd() const override
   {
     auto g = BASE::gcd();
+    if ( g <= 0_ms )
+      return 0_ms;
 
     for ( const auto& i : gcd_effects )
       g *= 1.0 + get_effect_value( i );

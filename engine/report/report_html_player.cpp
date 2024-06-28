@@ -668,7 +668,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
        << "<th class=\"small\">Tick Results</th>\n"
        << "<th class=\"small\">Refreshes</th>\n"
        << "<th class=\"small\">Execute Time per Execution</th>\n"
-       << "<th class=\"small\">Tick Time per  Tick</th>\n"
+       << "<th class=\"small\">Tick Time per Tick</th>\n"
        << "<th class=\"small\">Actual Amount</th>\n"
        << "<th class=\"small\">Raw Amount</th>\n"
        << "<th class=\"small\">Mitigated</th>\n"

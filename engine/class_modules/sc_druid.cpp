@@ -6462,6 +6462,21 @@ public:
     }
   }
 
+  void init() override
+  {
+    BASE::init();
+
+    // setup umbral for convoke if necessary
+    if ( umbral )
+    {
+      umbral->init();
+      umbral->gain = BASE::gain;
+      umbral->proc = BASE::proc;
+      umbral->trigger_gcd = BASE::trigger_gcd;
+      umbral->action_flags |= BASE::action_flags;
+    }
+  }
+
   void execute() override
   {
     if ( umbral )
@@ -8499,6 +8514,7 @@ struct convoke_the_spirits_t : public trigger_control_of_the_dream_t<druid_spell
     stats->add_child( a->stats );
     a->gain = gain;
     a->proc = true;
+    a->trigger_gcd = 0_ms;  // prevent schedule_ready() fuzziness being added to execute time stat
     // get_convoke_action is called in init() so newly created actions need to be init'd
     a->init();
     return a;
