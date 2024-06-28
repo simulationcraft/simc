@@ -130,6 +130,7 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
+  buff_t* debuffs_champions_might;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_skullsplitter;
@@ -242,7 +243,6 @@ public:
     buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
-    buff_t* champions_might;
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
@@ -1053,6 +1053,8 @@ public:
   void apply_debuff_effects()
   {
     // Shared
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_champions_might ),
+                            p()->talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
     // Arms
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
@@ -1078,6 +1080,7 @@ public:
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
+
     parse_target_effects( d_fn( &warrior_td_t::debuffs_executioners_precision ),
                           p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
                           p()->talents.arms.executioners_precision );
@@ -5619,12 +5622,6 @@ struct champions_spear_damage_t : public warrior_attack_t
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_challenge->effectN( 2 ).percent();
-
-    // dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
-    if ( p->talents.warrior.champions_might->ok() )
-    {
-      dot_duration += timespan_t::from_millis( p->find_spell( 386284 )->effectN( 1 ).base_value() );
-    }
   }
 
   void execute() override
@@ -5653,13 +5650,16 @@ struct champions_spear_t : public warrior_attack_t
     energize_type     = action_energize::NONE;
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    warrior_attack_t::execute();
+    warrior_attack_t::impact( state );
 
     if ( p()->talents.warrior.champions_might->ok() )
     {
-      p()->buff.champions_might->trigger();
+      if ( result_is_hit( state->result ) )
+      {
+        td( state->target )->debuffs_champions_might->trigger();
+      }
     }
   }
 };
@@ -7250,6 +7250,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
+  debuffs_champions_might = make_buff( *this, "champions_might", p.talents.warrior.champions_spear->effectN( 1 ).trigger() )
+                              ->apply_affecting_aura( p.talents.warrior.champions_might );
+
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
                             ->apply_affecting_aura( p.talents.arms.spiteful_serenity )
                             ->apply_affecting_aura( p.talents.arms.blunt_instruments );
@@ -7384,12 +7387,6 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.arms.die_by_the_sword->effectN( 2 ).percent() )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_PARRY );
-
-
-  buff.champions_might = make_buff( this, "champions_might", find_spell( 386286 ) )
-     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() )
-     ->set_duration( find_spell( 376080 )->duration() +
-                     talents.warrior.champions_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
      ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -8418,12 +8415,9 @@ double warrior_t::composite_melee_crit_rating() const
 }
 
 // warrior_t::composite_player_critical_damage_multiplier ==================
-
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  cdm *= 1.0 + buff.champions_might->check_value();
 
   return cdm;
 }
@@ -8770,6 +8764,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   // Shared Auras
   action.apply_affecting_aura( talents.warrior.barbaric_training );
+  action.apply_affecting_aura( talents.warrior.champions_might );
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.crackling_thunder );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );
