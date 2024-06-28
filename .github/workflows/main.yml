@@ -348,7 +348,7 @@ jobs:
   tww-spelldata-dump:
     name: Spell Data Dump
     runs-on: ${{ matrix.os }}
-    needs: [ tww-test ]
+    needs: [ ubuntu-clang-build ]
     if: github.event_name == 'push'
 
     strategy:
