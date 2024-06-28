@@ -3903,15 +3903,10 @@ struct exploding_keg_t : public monk_spell_t
   exploding_keg_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "exploding_keg", p->talent.brewmaster.exploding_keg )
   {
-    cast_during_sck = true;
-
     parse_options( options_str );
-
-    aoe      = -1;
-    radius   = data().effectN( 1 ).radius();
-    range    = data().max_range();
-    gcd_type = gcd_haste_type::NONE;
-
+    cast_during_sck = true;
+    gcd_type        = gcd_haste_type::NONE;
+    aoe             = -1;
     add_child( p->active_actions.exploding_keg );
   }
 
@@ -3921,29 +3916,15 @@ struct exploding_keg_t : public monk_spell_t
     return timespan_t::from_seconds( data().missile_speed() );
   }
 
-  // Ensuring that we can't cast on a target that is too close
-  bool target_ready( player_t *candidate_target ) override
-  {
-    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
-    {
-      return false;
-    }
-
-    return monk_spell_t::target_ready( candidate_target );
-  }
-
   void execute() override
   {
-    monk_spell_t::execute();
-
-    // Buff occurs after the keg finishes travelling
     p()->buff.exploding_keg->trigger();
+    monk_spell_t::execute();
   }
 
   void impact( action_state_t *s ) override
   {
     monk_spell_t::impact( s );
-
     get_td( s->target )->debuff.exploding_keg->trigger();
   }
 };
@@ -8202,21 +8183,13 @@ void monk_t::init_special_effects()
 
   if ( talent.brewmaster.exploding_keg.ok() )
   {
-    create_proc_callback(
-        talent.brewmaster.exploding_keg.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
-          if ( !p->buff.exploding_keg->up() )
-            return false;
-
-          if ( state->action->id == p->passives.breath_of_fire_dot->id() )
-            return false;
-
-          p->active_actions.exploding_keg->set_target( state->target );
-
-          return true;
-        },
-        PF2_ALL_HIT );
+    create_proc_callback( talent.brewmaster.exploding_keg.spell(), []( monk_t *p, action_state_t *state ) {
+      // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
+      if ( !p->buff.exploding_keg->up() )
+        return false;
+      p->active_actions.exploding_keg->set_target( state->target );
+      return true;
+    } );
   }
 
   // ======================================
