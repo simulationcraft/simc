@@ -232,12 +232,14 @@ public:
     buff_t* berserker_rage;
     buff_t* berserker_stance;
     buff_t* bladestorm;
+    buff_t* bloodbath;
     buff_t* bloodcraze;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
     buff_t* collateral_damage;
     buff_t* concussive_blows;
+    buff_t* crushing_blow;
     buff_t* dance_of_death_bladestorm;
     buff_t* dance_of_death_ravager;
     buff_t* dancing_blades;
@@ -259,7 +261,6 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
-    buff_t* reckless_abandon;
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_charge_movement;
@@ -2146,7 +2147,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->buff.reckless_abandon->check() && !background )
+    if ( p()->buff.bloodbath->check() && !background )
     {
       return false;
     }
@@ -2291,7 +2292,7 @@ struct bloodbath_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.reckless_abandon->decrement();
+    p()->buff.bloodbath->decrement();
     p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
@@ -2310,7 +2311,7 @@ struct bloodbath_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p()->buff.reckless_abandon->check() )
+    if ( !p()->buff.bloodbath->check() )
     {
       return false;
     }
@@ -2556,7 +2557,7 @@ struct bladestorm_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
+          if ( bloodbath && p()->buff.bloodbath->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -2667,7 +2668,7 @@ struct torment_bladestorm_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
+          if ( bloodbath && p()->buff.bloodbath->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -4079,7 +4080,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->buff.reckless_abandon->check() )
+    if ( p()->buff.crushing_blow->check() )
     {
       return false;
     }
@@ -4188,7 +4189,7 @@ struct crushing_blow_t : public warrior_attack_t
     }
 
 
-    p()->buff.reckless_abandon->decrement();
+    p()->buff.crushing_blow->decrement();
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
@@ -4204,7 +4205,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->buff.reckless_abandon->check() )
+    if ( !p()->buff.crushing_blow->check() )
     {
       return false;
     }
@@ -4661,9 +4662,11 @@ struct rampage_parent_t : public warrior_attack_t
       const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
       p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
+
     if ( p()->talents.fury.reckless_abandon->ok() )
     {
-      p()->buff.reckless_abandon->trigger();
+      p()->buff.bloodbath->trigger();
+      p()->buff.crushing_blow->trigger();
     }
 
     p()->enrage();
@@ -4787,7 +4790,7 @@ struct ravager_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
+          if ( bloodbath && p()->buff.bloodbath->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -7379,6 +7382,10 @@ void warrior_t::create_buffs()
     ->set_activated( true )
     ->set_default_value( talents.warrior.berserker_stance->effectN( 1 ).percent() );
 
+  // Reckless Abandon
+  buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() );
+  buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() );
+
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7449,8 +7456,6 @@ void warrior_t::create_buffs()
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() )
     ->apply_affecting_aura( talents.fury.depths_of_insanity );
-
-  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
 
