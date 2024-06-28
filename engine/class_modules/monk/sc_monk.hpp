@@ -837,6 +837,9 @@ public:
       const spell_data_t *chi_burst_damage;
       const spell_data_t *chi_burst_heal;
       player_talent_t strength_of_spirit;
+      player_talent_t ferocity_of_xuen;
+      player_talent_t calming_presence;
+      player_talent_t grace_of_the_crane;
 
       player_talent_t fortifying_brew;
       const spell_data_t *fortifying_brew_buff;

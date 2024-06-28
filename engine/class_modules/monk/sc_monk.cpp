@@ -844,8 +844,6 @@ double monk_heal_t::action_multiplier() const
 {
   double am = base_t::action_multiplier();
 
-  am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
-
   player_t *t = ( execute_state ) ? execute_state->target : target;
 
   switch ( p()->specialization() )
@@ -6258,7 +6256,9 @@ void monk_t::parse_player_effects()
   parse_effects( baseline.windwalker.aura );
 
   // class talent auras
-  parse_effects( talent.general.ferocity_of_xuen );
+  parse_effects( talent.monk.grace_of_the_crane );
+  parse_effects( talent.monk.calming_presence );
+  parse_effects( talent.monk.ferocity_of_xuen );
   parse_effects( talent.monk.chi_proficiency );
   parse_effects( talent.monk.martial_instincts );
 
@@ -6688,6 +6688,9 @@ void monk_t::init_spells()
     talent.monk.vigorous_expulsion        = _CT( "Vigorous Expulsion" );
     talent.monk.profound_rebuttal         = _CT( "Profound Rebuttal" );
     talent.monk.rising_sun_kick           = _CT( "Rising Sun Kick" );
+    talent.monk.ferocity_of_xuen          = _CT( "Ferocity of Xuen" );
+    talent.monk.calming_presence          = _CT( "Calming Presence" );
+    talent.monk.grace_of_the_crane        = _CT( "Grace of the Crane" );
 
     talent.monk.chi_wave             = _CT( "Chi Wave" );
     talent.monk.chi_wave_buff        = find_spell( 450380 );
@@ -6794,12 +6797,10 @@ void monk_t::init_spells()
   talent.general.disable           = _CT( "Disable" );
   talent.general.fast_feet         = _CT( "Fast Feet" );
   // Row 3
-  talent.general.grace_of_the_crane = _CT( "Grace of the Crane" );
-  talent.general.bounding_agility   = _CT( "Bounding Agility" );
-  talent.general.calming_presence   = _CT( "Calming Presence" );
-  talent.general.winds_reach        = _CT( "Wind's Reach" );
-  talent.general.detox              = _CT( "Detox" );           // Brewmaster and Windwalker
-  talent.general.improved_detox     = _CT( "Improved Detox" );  // Mistweaver only
+  talent.general.bounding_agility = _CT( "Bounding Agility" );
+  talent.general.winds_reach      = _CT( "Wind's Reach" );
+  talent.general.detox            = _CT( "Detox" );           // Brewmaster and Windwalker
+  talent.general.improved_detox   = _CT( "Improved Detox" );  // Mistweaver only
   // Row 4
   talent.general.vivacious_vivification = _CT( "Vivacious Vivification" );
   talent.general.jade_walk              = _CT( "Jade Walk" );
@@ -6816,7 +6817,6 @@ void monk_t::init_spells()
   // Row 6
   talent.general.quick_footed            = _CT( "Quick Footed" );
   talent.general.hasty_provocation       = _CT( "Hasty Provocation" );
-  talent.general.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
   talent.general.ring_of_peace           = _CT( "Ring of Peace" );
   talent.general.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
   talent.general.spirits_essence         = _CT( "Spirit's Essence" );
@@ -8828,12 +8828,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
                                 ( ( dampen_max_percent - dampen_min_percent ) * ( s->result_amount / max_health() ) ) );
     }
   }
-
-  // Brewmaster's Balance
-  // s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
-
-  // Calming Presence talent
-  s->result_amount *= 1.0 + talent.general.calming_presence->effectN( 1 ).percent();
 
   // Diffuse Magic
   if ( school != SCHOOL_PHYSICAL )
