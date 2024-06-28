@@ -3393,7 +3393,7 @@ void priest_t::init_spells()
   talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
   talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
   talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
-  talents.voidweaver.dark_energy            = HT( "Dark Energy" );   // NYI
+  talents.voidweaver.dark_energy            = HT( "Dark Energy" );
   talents.voidweaver.void_blast             = HT( "Void Blast" );
   talents.voidweaver.void_blast_shadow      = find_spell( 450983 );
   talents.voidweaver.inner_quietus          = HT( "Inner Quietus" );

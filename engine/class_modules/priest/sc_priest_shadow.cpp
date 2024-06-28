@@ -174,7 +174,7 @@ struct mind_spike_t final : public mind_spike_base_t
     parse_options( options_str );
   }
 
-  // Using action_ready here so that: 
+  // Using action_ready here so that:
   // - casts are cancelled if the buff falls off mid-cast
   // - getting a buff mid-cast will cause you to finish the normal cast
   bool action_ready() override
@@ -825,6 +825,11 @@ struct vampiric_touch_t final : public priest_spell_t
 
       mental_fortitude            = p.background_actions.mental_fortitude;
       mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return 1.0;
     }
 
     void trigger( double original_amount )

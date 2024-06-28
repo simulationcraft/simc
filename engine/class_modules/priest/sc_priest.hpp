@@ -1197,7 +1197,7 @@ public:
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
-  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
+  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer multiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
   // The following optional arguments can be used in any order:
