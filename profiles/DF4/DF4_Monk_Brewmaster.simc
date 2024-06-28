@@ -10,7 +10,7 @@ race=tauren
 load_default_gear=1
 enable_all_talents=1
 
-spec_talents=press_the_advantage:0
+# spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0
 # spec_talents=gift_of_the_ox:0/spirit_of_the_ox:0
 
@@ -62,16 +62,18 @@ actions.precombat=snapshot_stats
 
 actions=auto_attack
 actions+=/potion
-actions+=/blackout_kick
-actions+=/rising_sun_kick
-actions+=/breath_of_fire
-actions+=/keg_smash
-actions+=/tiger_palm
-actions+=/purifying_brew
-# actions+=/call_action_list,name=ogcd
-# actions+=/call_action_list,name=igcd,if=time<240
-# actions+=/call_action_list,name=rota,if=time<240
-# actions+=/call_action_list,name=dumb,if=time>240
+# actions+=/blackout_kick
+# actions+=/rising_sun_kick
+# actions+=/breath_of_fire
+# actions+=/rushing_jade_wind
+# actions+=/exploding_keg
+# actions+=/keg_smash
+# actions+=/tiger_palm
+# actions+=/purifying_brew
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=igcd,if=time<240
+actions+=/call_action_list,name=rota,if=time<240
+actions+=/call_action_list,name=dumb,if=time>240
 
 tank_dummy="Fluffy_Pollow"
 level=83

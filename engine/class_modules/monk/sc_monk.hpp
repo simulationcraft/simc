@@ -252,6 +252,7 @@ struct brew_t : base_action_t
 {
   template <typename... Args>
   brew_t( monk_t *player, Args &&...args );
+  void execute() override;
 };
 
 struct brews_t
@@ -473,7 +474,6 @@ public:
   std::vector<action_t *> combo_strike_actions;
   double squirm_timer;
   double spiritual_focus_count;
-  timespan_t shuffle_count_secs;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
@@ -837,6 +837,9 @@ public:
       const spell_data_t *chi_burst_damage;
       const spell_data_t *chi_burst_heal;
       player_talent_t strength_of_spirit;
+      player_talent_t ferocity_of_xuen;
+      player_talent_t calming_presence;
+      player_talent_t grace_of_the_crane;
 
       player_talent_t fortifying_brew;
       const spell_data_t *fortifying_brew_buff;
@@ -857,6 +860,7 @@ public:
       // row 2
       player_talent_t purifying_brew;
       player_talent_t shuffle;
+      const spell_data_t *shuffle_buff;
       // row 3
       player_talent_t staggering_strikes;
       player_talent_t gift_of_the_ox;
@@ -912,6 +916,7 @@ public:
       player_talent_t blackout_combo;
       player_talent_t press_the_advantage;
       player_talent_t weapons_of_order;
+      const spell_data_t *weapons_of_order_debuff;
       // row 10
       player_talent_t black_ox_adept;
       player_talent_t heightened_guard;
@@ -1335,7 +1340,6 @@ public:
     const spell_data_t *gift_of_the_ox_heal;
     const spell_data_t *keg_smash_buff;
     const spell_data_t *shaohaos_might;
-    const spell_data_t *shuffle;
     const spell_data_t *special_delivery;
     const spell_data_t *stagger_self_damage;
     const spell_data_t *heavy_stagger;
@@ -1465,9 +1469,8 @@ public:
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute( attribute_e ) const;
+  double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
-  double composite_mastery() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
