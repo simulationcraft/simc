@@ -155,6 +155,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.bok_proc );
   parse_effects( p()->buff.darting_hurricane );
   parse_effects( p()->buff.pressure_point );
+  parse_effects( p()->buff.blackout_combo );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -1369,7 +1370,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
     parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
-    parse_effects( p->buff.blackout_combo );
     parse_effects( p->buff.counterstrike );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
@@ -3170,9 +3170,9 @@ struct keg_smash_t : monk_melee_attack_t
     if ( p()->buff.blackout_combo->up() )
     {
       reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
-      p()->buff.blackout_combo->expire();
       p()->proc.blackout_combo_keg_smash->occur();
     }
+    p()->buff.blackout_combo->expire();
 
     p()->baseline.brewmaster.brews->adjust( reduction );
   }
@@ -3761,16 +3761,6 @@ struct breath_of_fire_dot_t : public monk_spell_t
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
   }
-
-  double composite_persistent_multiplier( const action_state_t *state ) const override
-  {
-    double cpm = monk_spell_t::composite_persistent_multiplier( state );
-
-    if ( p()->buff.blackout_combo->check() )
-      cpm *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-
-    return cpm;
-  }
 };
 
 struct breath_of_fire_t : public monk_spell_t
@@ -3781,7 +3771,6 @@ struct breath_of_fire_t : public monk_spell_t
     {
       background = true;
       aoe        = -1;
-      parse_effects( player->buff.blackout_combo );
     }
 
     void execute() override
@@ -3807,8 +3796,6 @@ struct breath_of_fire_t : public monk_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     cast_during_sck     = true;
-
-    parse_effects( p->buff.blackout_combo );
 
     add_child( p->active_actions.breath_of_fire );
     add_child( dragonfire_brew );
@@ -3994,8 +3981,8 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
       p()->stagger[ "Stagger" ]->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
-      p()->buff.blackout_combo->expire();
     }
+    p()->buff.blackout_combo->expire();
   }
 };
 
@@ -5278,8 +5265,8 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     {
       p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
       p()->proc.blackout_combo_celestial_brew->occur();
-      p()->buff.blackout_combo->expire();
     }
+    p()->buff.blackout_combo->expire();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
     {
@@ -7560,7 +7547,8 @@ void monk_t::create_buffs()
   buff.ox_stance =
       make_buff_fallback( talent.brewmaster.ox_stance->ok(), this, "ox_stance", talent.brewmaster.ox_stance_buff );
 
-  buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
+  buff.blackout_combo = make_buff_fallback( talent.brewmaster.blackout_combo->ok(), this, "blackout_combo",
+                                            talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
 
   buff.call_to_arms_invoke_niuzao =
       make_buff( this, "call_to_arms_invoke_niuzao", passives.call_to_arms_invoke_niuzao );
