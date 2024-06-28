@@ -1803,14 +1803,12 @@ struct entropic_rift_t final : public priest_spell_t
 {
   entropic_rift_t( priest_t& p ) : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift )
   {
+    min_travel_time = 3;
   }
 
   timespan_t travel_time() const override
   {
     timespan_t t = priest_spell_t::travel_time();
-
-    // Entropic Rift activates after 1.5s, even in melee range.
-    t = std::max( t, 1.5_s );
 
     return t;
   }
@@ -1850,6 +1848,10 @@ struct entropic_rift_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    // TODO: check if it does anything after it arrives. For now assume no.
+
+    /*
+
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {
       priest().buffs.entropic_rift->extend_duration(
@@ -1863,6 +1865,7 @@ struct entropic_rift_t final : public priest_spell_t
     }
 
     double size_increase_mod = priest().bugs ? 0.5 : 1.0;
+    */
   }
 };
 
@@ -3463,14 +3466,12 @@ void priest_t::create_buffs()
         ->set_tick_zero( false )
         ->set_tick_on_application( false )
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
-        ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
-        ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned int tick ) {
-          if ( tick < 1 )
-            return 1.5_s;
-          return b->buff_period * cache.spell_cast_speed();
-        } )
-        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-          background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
+        ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+        ->set_tick_callback( [ this ]( buff_t*, int tick, timespan_t ) {
+          // Based on initial testing the first tick cannot hit any targets reliably.
+          // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it to miss the main target.
+          if ( tick >= 2 )
+            background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
           if ( !new_ )
