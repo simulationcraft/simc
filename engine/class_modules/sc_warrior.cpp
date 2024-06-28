@@ -261,6 +261,7 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
+    buff_t* recklessness_warlords_torment;
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_charge_movement;
@@ -1045,6 +1046,7 @@ public:
     if ( p()->talents.fury.powerful_enrage->ok() )
       parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
     parse_effects( p()->buff.recklessness );
+    parse_effects( p()->buff.recklessness_warlords_torment );
     parse_effects( p()->buff.slaughtering_strikes );
 
     // Protection
@@ -5712,8 +5714,8 @@ struct avatar_t : public warrior_spell_t
 
     if ( p()->talents.warrior.warlords_torment->ok() )
     {
-      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
+      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 1 ).time_value();
+      p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( trigger_duration );
     }
   }
 
@@ -7459,6 +7461,10 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
+  buff.recklessness_warlords_torment = make_buff( this, "recklessness_warlords_torment", spell.recklessness_buff )
+    ->set_cooldown( timespan_t::zero() )
+    ->apply_affecting_aura( talents.fury.depths_of_insanity );
+
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
@@ -8467,7 +8473,7 @@ double warrior_t::composite_leech() const
 
 double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-  if ( buff.recklessness->check() && r == RESOURCE_RAGE )
+  if ( ( buff.recklessness->check() || buff.recklessness_warlords_torment->check() ) && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
 
@@ -8475,7 +8481,12 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
                                   g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
-      a *= 1.0 + spell.recklessness_buff->effectN( 1 ).percent();
+    {
+      if ( buff.recklessness->check() )
+        a *= 1.0 + spell.recklessness_buff->effectN( 1 ).percent();
+      else if ( buff.recklessness_warlords_torment->check() )
+        a *= 1.0 + talents.warrior.warlords_torment->effectN( 2 ).percent();
+    }
   }
 
   if ( buff.unnerving_focus->up() )
