@@ -5750,7 +5750,7 @@ struct torment_avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
-      const timespan_t trigger_duration = timespan_t::from_millis( 4000 ); // value not in spell data
+      const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
     }
     if ( p()->talents.warrior.blademasters_torment->ok() )
@@ -7383,8 +7383,10 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.warrior.berserker_stance->effectN( 1 ).percent() );
 
   // Reckless Abandon
-  buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() );
-  buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() );
+  buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() )
+                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
+  buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() )
+                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
