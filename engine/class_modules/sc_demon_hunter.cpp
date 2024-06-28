@@ -884,6 +884,7 @@ public:
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
+    action_t* soulscar = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -4409,6 +4410,32 @@ struct burning_blades_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct soulscar_trigger_t : public BASE
+{
+  using base_t = soulscar_trigger_t<BASE>;
+
+  soulscar_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                            util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.havoc.soulscar->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.havoc.soulscar->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.soulscar, s->target, dot_damage );
+  }
+};
+
 // Auto Attack ==============================================================
 
 struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
@@ -5791,34 +5818,13 @@ struct soul_cleave_t : public soul_cleave_base_t
 
 struct throw_glaive_t : public demon_hunter_attack_t
 {
-  struct throw_glaive_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
+  struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
   {
-    struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
-    {
-      soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
-      {
-        dual = true;
-      }
-
-      void init() override
-      {
-        base_t::init();
-        update_flags = 0;  // Snapshots on refresh, does not update dynamically
-      }
-    };
-
-    soulscar_t* soulscar;
-
     throw_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : burning_blades_trigger_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), soulscar( nullptr )
+      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() )
     {
       background = dual = true;
       radius            = 10.0;
-
-      if ( p->talent.havoc.soulscar->ok() )
-      {
-        soulscar = p->get_background_action<soulscar_t>( "soulscar" );
-      }
     }
 
     void impact( action_state_t* state ) override
@@ -5827,12 +5833,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( soulscar )
-        {
-          const double dot_damage = state->result_amount * p()->talent.havoc.soulscar->effectN( 1 ).percent();
-          residual_action::trigger( soulscar, state->target, dot_damage );
-        }
-
         if ( p()->spec.burning_wound_debuff->ok() )
         {
           p()->active.burning_wound->execute_on_target( state->target );
@@ -5852,10 +5852,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
   {
     throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage" );
-    if ( damage->soulscar )
-    {
-      add_child( damage->soulscar );
-    }
 
     execute_action        = damage;
     execute_action->stats = stats;
@@ -5925,10 +5921,10 @@ struct throw_glaive_t : public demon_hunter_attack_t
 };
 
 // Reaver's Glaive ==========================================================
-struct reavers_glaive_t : public demon_hunter_attack_t
+struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
 {
   reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
+    : base_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
   {
     if ( p->talent.aldrachi_reaver.keen_engagement->ok() )
     {
@@ -5965,6 +5961,21 @@ struct reavers_glaive_t : public demon_hunter_attack_t
     }
 
     return demon_hunter_attack_t::ready();
+  }
+};
+
+// Soulscar =================================================================
+struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+{
+  soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
+  {
+    dual = true;
+  }
+
+  void init() override
+  {
+    base_t::init();
+    update_flags = 0;  // Snapshots on refresh, does not update dynamically
   }
 };
 
@@ -8028,31 +8039,32 @@ void demon_hunter_t::init_spells()
     chaotic_disposition_cb->activate();
   }
 
-  if ( talent.havoc.demon_blades->ok() )
-  {
-    active.demon_blades = new demon_blades_t( this );
-  }
-
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
     active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish" );
   }
 
+  if ( talent.havoc.demon_blades->ok() )
+  {
+    active.demon_blades = new demon_blades_t( this );
+  }
   if ( talent.havoc.relentless_onslaught->ok() )
   {
     active.relentless_onslaught = get_background_action<chaos_strike_t>( "chaos_strike_onslaught", "", true );
     active.relentless_onslaught_annihilation =
         get_background_action<annihilation_t>( "annihilation_onslaught", "", true );
   }
-
   if ( talent.havoc.inner_demon->ok() )
   {
     active.inner_demon = get_background_action<inner_demon_t>( "inner_demon" );
   }
-
   if ( talent.havoc.ragefire->ok() )
   {
     active.ragefire = get_background_action<ragefire_t>( "ragefire" );
+  }
+  if ( talent.havoc.soulscar->ok() )
+  {
+    active.soulscar = get_background_action<soulscar_t>( "soulscar" );
   }
 
   if ( talent.vengeance.retaliation->ok() )
