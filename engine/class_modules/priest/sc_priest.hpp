@@ -832,6 +832,9 @@ public:
 
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
+
+    // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
+    bool force_devour_matter = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

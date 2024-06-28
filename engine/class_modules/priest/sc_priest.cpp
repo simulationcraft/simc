@@ -1421,6 +1421,11 @@ public:
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     triggers_atonement = true;
+
+    if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
+    {
+      energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
+    }
   }
 
   shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
@@ -1481,6 +1486,11 @@ public:
     if ( cast_state( s )->deathspeaker )
     {
       m *= deathspeaker_mult;
+    }
+
+    if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
+    {
+      m *= 1 + priest().talents.voidweaver.devour_matter->effectN( 1 ).percent();
     }
 
     return m;
@@ -3387,7 +3397,7 @@ void priest_t::init_spells()
   talents.voidweaver.void_blast             = HT( "Void Blast" );
   talents.voidweaver.void_blast_shadow      = find_spell( 450983 );
   talents.voidweaver.inner_quietus          = HT( "Inner Quietus" );
-  talents.voidweaver.devour_matter          = HT( "Devour Matter" );  // NYI
+  talents.voidweaver.devour_matter          = HT( "Devour Matter" );
   talents.voidweaver.void_empowerment       = HT( "Void Empowerment" );
   talents.voidweaver.void_empowerment_buff  = find_spell( 450140 );
   talents.voidweaver.darkening_horizon      = find_talent_spell( 125982 );  // Entry id for Darkening Horizon
@@ -3468,8 +3478,10 @@ void priest_t::create_buffs()
         ->set_tick_behavior( buff_tick_behavior::REFRESH )
         ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
         ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-          // Based on initial testing the first tick cannot hit any targets reliably due to the spawn distance/travel time.
-          // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it to miss the main target.
+          // Based on initial testing the first tick cannot hit any targets reliably due to the spawn distance/travel
+          // time.
+          // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
+          // to miss the main target.
           if ( b->current_tick >= 2 )
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
         } )
@@ -3857,6 +3869,7 @@ void priest_t::create_options()
   add_option( opt_timespan( "priest.twist_of_fate_heal_duration_stddev", options.twist_of_fate_heal_duration_stddev,
                             0_s, timespan_t::max() ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
+  add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
 }
 
 std::string priest_t::create_profile( save_e type )
