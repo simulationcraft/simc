@@ -287,7 +287,7 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
 // TODO: can you randomize into the same stat? same bonus stat? same penalty stats?
 void flask_of_alchemical_chaos( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "flask_of_alchemical_chaos_vers", "flask_of_alchemical_chaos_mastery",
+  if ( unique_gear::create_fallback_buffs( effect, { "flask_of_alchemical_chaos_vers", "flask_of_alchemical_chaos_mastery",
                                         "flask_of_alchemical_chaos_haste", "flask_of_alchemical_chaos_crit" } ) )
   {
     return;
@@ -619,7 +619,7 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
 // TODO: confirm you cannot use without stacking buff present
 void spymasters_web( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
     return;
 
   unsigned equip_id = 444958;
@@ -773,7 +773,7 @@ void void_reapers_chime( special_effect_t& effect )
 // TODO: determine when silence applies
 void aberrant_spellforge( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "aberrant_empowerment", "aberrant_spellforge" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "aberrant_empowerment", "aberrant_spellforge" } ) )
     return;
 
   // sanity check equip effect exists
@@ -1371,7 +1371,10 @@ struct do_treacherous_transmitter_task_t : public action_t
 
   bool ready() override
   {
-    return task->check();
+    if ( task != nullptr )
+      return task->check();
+    else
+      return false;
   }
 
   void execute() override
@@ -1383,7 +1386,9 @@ struct do_treacherous_transmitter_task_t : public action_t
 
 void treacherous_transmitter( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "cryptic_instructions" } ) )
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "cryptic_instructions", "errant_manaforge_emission", "realigning_nexus_convergence_divergence",
+                     "ethereal_powerlink" } ) )
     return;
 
   struct cryptic_instructions_t : public generic_proc_t
@@ -2399,7 +2404,7 @@ struct pickup_entropic_skardyn_core_t : public action_t
 // TODO: determine reasonable default values for core pickup delay
 void entropic_skardyn_core( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "entropic_skardyn_core", "entropic_reclamation" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "entropic_skardyn_core", "entropic_reclamation" } ) )
     return;
 
   struct entropic_skardyn_core_cb_t : public dbc_proc_callback_t
