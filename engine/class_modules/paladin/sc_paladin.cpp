@@ -194,6 +194,34 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     return ret_value;
   }
 };
+struct sacrosanct_crusade_t :public absorb_buff_t
+{
+  sacrosanct_crusade_t(player_t* p) : absorb_buff_t(p, "sacrosanct_crusade", p->find_spell(461867))
+  {
+    set_absorb_source( p->get_stats( "sacrosanct_crusade_absorb" ) );
+  }
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    auto* p        = static_cast<paladin_t*>( player );
+    int max_hp_effect = p->specialization() == PALADIN_RETRIBUTION ? 4 : 1;
+    double shield     = p->talents.templar.sacrosanct_crusade->effectN( max_hp_effect ).percent() *
+                    p->resources.max[ RESOURCE_HEALTH ] * ( 1.0 + p->composite_heal_versatility() );
+
+    double current_shield = p->buffs.templar.sacrosanct_crusade->value();
+
+    if (value > 0) // Hammer of Light overhealing
+    {
+      current_shield += value;
+    }
+    else
+    {
+      current_shield += shield;
+    }
+
+    bool ret_value = absorb_buff_t::trigger( stacks, current_shield, chance, duration );
+    return ret_value;
+  }
+};
 }  // namespace buffs
 
 // end namespace buffs
@@ -920,15 +948,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
   }
 };
 
-struct shield_of_vengeance_sacrosanct_crusade_t : shield_of_vengeance_t
-{
-  shield_of_vengeance_sacrosanct_crusade_t(paladin_t* p) : shield_of_vengeance_t( p, "" )
-  {
-    shield_modifier = p->talents.templar.sacrosanct_crusade->effectN( 1 ).percent();
-    background      = true;
-  }
-};
-
 struct touch_of_light_dmg_t : public paladin_spell_t
 {
   touch_of_light_dmg_t( paladin_t* p ) : paladin_spell_t( "touch_of_light_dmg", p, p -> find_spell( 385354 ) )
@@ -1342,6 +1361,27 @@ struct light_of_the_titans_t : public paladin_heal_t
       }
     }
     paladin_heal_t::impact( s );
+  }
+};
+struct sacrosanct_crusade_heal_t : public paladin_heal_t
+{
+  sacrosanct_crusade_heal_t( paladin_t* p ) : paladin_heal_t( "sacrosanct_crusade_heal", p, p->find_spell( 461885 ) )
+  {
+    background    = true;
+    may_crit      = true;
+    harmful       = false;
+    target        = p;
+    base_pct_heal = 0; // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
+  }
+  void impact( action_state_t* s ) override
+  {
+    auto health_before = p()->resources.current[ RESOURCE_HEALTH ];
+    paladin_heal_t::impact( s );
+    if ( p()->resources.current[ RESOURCE_HEALTH ] >= p()->resources.max[ RESOURCE_HEALTH ] )
+    {
+      double absorb = s->result_total + p()->resources.current[ RESOURCE_HEALTH ] - p()->resources.max[ RESOURCE_HEALTH ];
+      p()->buffs.templar.sacrosanct_crusade->trigger( -1, absorb, -1, timespan_t::min() );
+    }
   }
 };
 
@@ -2107,6 +2147,21 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if (p()->talents.templar.zealous_vindication->ok())
     {
       p()->trigger_empyrean_hammer( target, 2, 0_ms );
+    }
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      int targets = direct_hammer->execute_state->n_targets;
+      int heal_percent_effect = p()->specialization() == PALADIN_RETRIBUTION ? 5 : 2;
+      int additional_heal_per_target_effect = p()->specialization() == PALADIN_RETRIBUTION ? 6 : 3;
+
+      double heal_percent = p()->talents.templar.sacrosanct_crusade->effectN( heal_percent_effect ).percent();
+      double additional_heal_per_target =
+          p()->talents.templar.sacrosanct_crusade->effectN( additional_heal_per_target_effect ).percent();
+
+      double modifier = heal_percent + targets * additional_heal_per_target;
+      double health   = p()->resources.max[ RESOURCE_HEALTH ] * modifier;
+      p()->active.sacrosanct_crusade_heal->base_dd_min = p()->active.sacrosanct_crusade_heal->base_dd_max = health;
+      p()->active.sacrosanct_crusade_heal->execute();
     }
    }
 };
@@ -2952,13 +3007,13 @@ void paladin_t::create_actions()
     active.sacred_word      = new sacred_word_t( this );
   }
   //Templar
- // if (talents.lights_guidance->ok())
+  if (talents.templar.lights_guidance->ok())
   {
     active.empyrean_hammer = new empyrean_hammer_t(this);
   }
   if (talents.templar.sacrosanct_crusade->ok())
   {
-    active.sacrosanct_crusade = new shield_of_vengeance_sacrosanct_crusade_t( this );
+    active.sacrosanct_crusade_heal = new sacrosanct_crusade_heal_t( this );
   }
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
@@ -3154,6 +3209,7 @@ void paladin_t::init_gains()
   // Health
   gains.holy_shield   = get_gain( "holy_shield_absorb" );
   gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
+  gains.sacrosanct_crusade = get_gain( "sacrosanct_crusade_absorb" );
   gains.moment_of_glory  = get_gain( "moment_of_glory_absorb" );
 
 
@@ -3376,6 +3432,8 @@ void paladin_t::create_buffs()
                                      trigger_lights_deliverance();
                                    }
                                  } );
+
+  buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);

@@ -140,7 +140,8 @@ public:
 
     action_t* expurgation;
     action_t* wrathful_sanction;
-    action_t* sacrosanct_crusade;
+
+    action_t* sacrosanct_crusade_heal;
   } active;
 
   // Buffs
@@ -238,6 +239,7 @@ public:
       buff_t* hammer_of_light_cost;
       buff_t* for_whom_the_bell_tolls;
       buff_t* shake_the_heavens;
+      buff_t* sacrosanct_crusade;
       buff_t* endless_wrath;
       buff_t* sanctification;
       buff_t* undisputed_ruling;
@@ -252,6 +254,7 @@ public:
     // Healing/absorbs
     gain_t* holy_shield;
     gain_t* bulwark_of_order;
+    gain_t* sacrosanct_crusade;
     gain_t* blessed_hammer;
     gain_t* moment_of_glory;
 

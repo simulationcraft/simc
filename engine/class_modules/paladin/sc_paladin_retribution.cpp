@@ -1026,6 +1026,20 @@ struct wake_of_ashes_t : public paladin_spell_t
         make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
     }
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      p()->buffs.templar.sacrosanct_crusade->trigger();
+    }
+    // Mostly only needed for bugged behaviour
+    if ( p()->talents.templar.lights_deliverance->ok() )
+    {
+      p()->trigger_lights_deliverance();
+    }
   }
 };
 

@@ -620,7 +620,7 @@ struct eye_of_tyr_t : public paladin_spell_t
 
     if (p()->talents.templar.sacrosanct_crusade->ok())
     {
-      p()->active.sacrosanct_crusade->execute();
+      p()->buffs.templar.sacrosanct_crusade->trigger();
     }
 
     if (p()->talents.templar.undisputed_ruling->ok())
