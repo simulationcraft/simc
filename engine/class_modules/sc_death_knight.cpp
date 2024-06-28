@@ -5730,13 +5730,18 @@ struct melee_t : public death_knight_melee_attack_t
           p()->trigger_killing_machine( 0, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
         }
 
-        // TODO: check if the proc chance in the talent effect 1 is correct
-        if ( p()->talent.frost.icy_death_torrent.ok() &&
-             rng().roll( p()->talent.frost.icy_death_torrent->effectN( 1 ).percent() ) &&
-             p()->cooldown.icy_death_torrent_icd->is_ready() )
+        // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
+        if ( p()->talent.frost.icy_death_torrent.ok() && p()->cooldown.icy_death_torrent_icd->is_ready() )
         {
-          p()->active_spells.icy_death_torrent_damage->execute();
-          p()->cooldown.icy_death_torrent_icd->start();
+          double chance_mult = p()->main_hand_weapon.group() == WEAPON_2H
+                                   ? 1
+                                   : 1 / ( p()->talent.frost.icy_death_torrent->effectN( 1 ).base_value() / 10 );
+
+          if ( rng().roll( p()->talent.frost.icy_death_torrent->proc_chance() * chance_mult ) )
+          {
+            p()->active_spells.icy_death_torrent_damage->execute();
+            p()->cooldown.icy_death_torrent_icd->start();
+          }
         }
 
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
