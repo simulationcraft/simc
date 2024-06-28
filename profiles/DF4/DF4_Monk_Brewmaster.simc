@@ -10,7 +10,7 @@ race=tauren
 load_default_gear=1
 enable_all_talents=1
 
-spec_talents=press_the_advantage:0
+# spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0
 # spec_talents=gift_of_the_ox:0/spirit_of_the_ox:0
 

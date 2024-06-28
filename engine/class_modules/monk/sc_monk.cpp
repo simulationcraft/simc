@@ -2418,10 +2418,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       chi_x->execute();
 
     if ( p()->buff.celestial_flames->up() )
-    {
-      p()->active_actions.breath_of_fire->target = execute_state->target;
-      p()->active_actions.breath_of_fire->execute();
-    }
+      p()->active_actions.breath_of_fire->execute_on_target( execute_state->target );
 
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
@@ -3619,7 +3616,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
 
   void execute() override
   {
-    monk_spell_t::execute();
+    brew_t<monk_spell_t>::execute();
 
     for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
     {
@@ -3633,7 +3630,6 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
                         p()->gain.black_ox_brew_energy );
 
     p()->active_actions.special_delivery->execute();
-    p()->buff.celestial_flames->trigger();
   }
 };
 
@@ -3881,11 +3877,10 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 
   void execute() override
   {
-    monk_spell_t::execute();
+    brew_t<monk_spell_t>::execute();
 
     p()->buff.fortifying_brew->trigger();
     p()->active_actions.special_delivery->execute();
-    p()->buff.celestial_flames->trigger();
   }
 };
 
@@ -3997,10 +3992,9 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   void execute() override
   {
-    monk_spell_t::execute();
+    brew_t<monk_spell_t>::execute();
 
     p()->buff.pretense_of_instability->trigger();
-    p()->buff.celestial_flames->trigger();
     p()->active_actions.special_delivery->execute();
 
     double stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
@@ -5094,6 +5088,7 @@ struct chi_wave_t : public monk_spell_t
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
 
+    stats = damage->stats;
     add_child( heal );
     add_child( damage );
   }
@@ -5140,7 +5135,9 @@ struct chi_burst_t : monk_spell_t
 
   // TODO: Figure out what you have to do to simulate this as a projectile.
   chi_burst_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "chi_burst", player->talent.monk.chi_burst_projectile ),
+    : monk_spell_t( player, "chi_burst",
+                    player->specialization() == MONK_WINDWALKER ? player->talent.monk.chi_burst_projectile
+                                                                : player->talent.monk.chi_burst ),
       damage( new hit_t<monk_spell_t>( player, "damage", player->talent.monk.chi_burst_damage ) ),
       heal( new hit_t<monk_heal_t>( player, "heal", player->talent.monk.chi_burst_heal ) ),
       buff( buff_t::find( player, "chi_burst" ) )
@@ -5153,7 +5150,7 @@ struct chi_burst_t : monk_spell_t
 
   bool ready() override
   {
-    if ( buff->up() )
+    if ( buff->up() || p()->specialization() != MONK_WINDWALKER )
       return monk_spell_t::ready();
     return false;
   }
@@ -5321,11 +5318,10 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
     }
 
-    monk_absorb_t::execute();
+    brew_t<monk_absorb_t>::execute();
 
     p()->buff.purified_chi->expire();
     p()->buff.pretense_of_instability->trigger();
-    p()->buff.celestial_flames->trigger();
     p()->active_actions.special_delivery->execute();
   }
 };
@@ -5358,6 +5354,13 @@ template <typename... Args>
 brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
 {
   player->baseline.brewmaster.brews->insert_cooldown( this );
+}
+
+template <class base_action_t>
+void brew_t<base_action_t>::execute()
+{
+  base_action_t::execute();
+  base_action_t::p()->buff.celestial_flames->trigger();
 }
 
 void brews_t::insert_cooldown( action_t *action )
@@ -6719,7 +6722,7 @@ void monk_t::init_spells()
     talent.monk.chi_wave_heal        = find_spell( 132463 );
     talent.monk.chi_burst            = _CT( "Chi Burst" );
     talent.monk.chi_burst_buff       = find_spell( 460490 );
-    talent.monk.chi_burst_projectile = find_spell( 123986 );
+    talent.monk.chi_burst_projectile = find_spell( 461404 );
     talent.monk.chi_burst_damage     = find_spell( 148135 );
     talent.monk.chi_burst_heal       = find_spell( 130654 );
     talent.monk.strength_of_spirit   = _CT( "Strength of Spirit" );
@@ -8291,7 +8294,7 @@ void monk_t::init_special_effects()
   // ======================================
   // Chi Burst ( Monk Talent )
   // ======================================
-  if ( talent.monk.chi_burst->ok() )
+  if ( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER )
     create_proc_callback( talent.monk.chi_burst.spell(), []( monk_t *, action_state_t * ) { return true; } );
 
   // ======================================
@@ -8896,14 +8899,8 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
   if ( target_data->dot.breath_of_fire->is_ticking() )
-  {
-    // Saved as -5
-    double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
-
-    dmg_reduction += ( buff.celestial_flames->value() * 0.01 );  // Saved as -5
-
-    s->result_amount *= 1.0 + dmg_reduction;
-  }
+    s->result_amount *=
+        1.0 + active_actions.breath_of_fire->data().effectN( 2 ).percent() + buff.celestial_flames->value() / 100.0;
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew->up() )

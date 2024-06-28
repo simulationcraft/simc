@@ -252,6 +252,7 @@ struct brew_t : base_action_t
 {
   template <typename... Args>
   brew_t( monk_t *player, Args &&...args );
+  void execute() override;
 };
 
 struct brews_t
