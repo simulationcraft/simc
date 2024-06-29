@@ -216,7 +216,6 @@ public:
     action_t* deep_wounds_PROT;
     action_t* fatality;
     action_t* torment_avatar;
-    action_t* torment_bladestorm;
     action_t* torment_odyns_fury;
     action_t* torment_recklessness;
     action_t* tough_as_nails;
@@ -1027,9 +1026,12 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
+    // TODO fix this when I am back from vacation.  Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
+    // This one is for Blademaster's Torment, effect 8 is dynamically enabled
+    parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
     parse_effects( p()->buff.dance_of_death_bladestorm );
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
@@ -2521,12 +2523,6 @@ struct bladestorm_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.bladestorm->trigger();
-
-    if ( p()->talents.warrior.blademasters_torment.ok() )
-    {
-      action_t* torment_ability = p()->active.torment_avatar;
-      torment_ability->schedule_execute();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -2581,112 +2577,6 @@ struct bladestorm_t : public warrior_attack_t
     if ( p() -> talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_bladestorm->up() )
     {
       p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
-    }
-  }
-
-// TODO: Mush Torment Bladestorm into regular Bladestorm reporting
-//  void init() override
-//  {
-//    warrior_attack_t::init();
-//    p()->active.torment_bladestorm->stats = stats;
-//  }
-};
-
-// Torment Bladestorm ===============================================================
-
-struct torment_bladestorm_t : public warrior_attack_t
-{
-  attack_t *bladestorm_mh, *bladestorm_oh;
-  mortal_strike_t* mortal_strike;
-  bloodthirst_t* bloodthirst;
-  bloodbath_t* bloodbath;
-
-  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_attack_t( n, p, spell ),
-      bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
-      bladestorm_oh( nullptr ),
-      mortal_strike( nullptr ),
-      bloodthirst( nullptr ),
-      bloodbath( nullptr )
-  {
-    parse_options( options_str );
-    channeled = false;
-    tick_zero = true;
-    interrupt_auto_attack = false;
-    travel_speed = 0;
-    dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-    bladestorm_mh->weapon = &( player->main_hand_weapon );
-    add_child( bladestorm_mh );
-
-    if ( p->talents.arms.unhinged->ok() )
-    {
-      mortal_strike = new mortal_strike_t( "mortal_strike_torment_unhinged", p );
-      add_child( mortal_strike );
-    }
-
-    if ( p->talents.fury.unhinged->ok() )
-    {
-      bloodthirst = new bloodthirst_t( "bloodthirst_torment_unhinged", p );
-      add_child( bloodthirst );
-
-      if ( p->talents.fury.reckless_abandon->ok() )
-      {
-        bloodbath = new bloodbath_t( "bloodbath_torment_unhinged", p );
-        add_child( bloodbath );
-      }
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p()->buff.bladestorm->trigger();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // dont tick if BS buff not up
-    // since first tick is instant the buff won't be up yet
-    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
-    {
-      make_event( sim, [ d ] { d->cancel(); } );
-      return;
-    }
-
-    warrior_attack_t::tick( d );
-    bladestorm_mh->execute();
-
-    // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
-    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 1 == 0 ) )
-    {
-      auto t = p() -> target;
-      if ( ! p() -> target || p() -> target->is_sleeping() )
-        t = select_random_target();
-
-      if ( t )
-      {
-        if ( mortal_strike )
-          mortal_strike->execute_on_target( t );
-        if ( bloodthirst || bloodbath )
-        {
-          if ( bloodbath && p()->buff.bloodbath->check() )
-            bloodbath->execute_on_target( t );
-          else
-            bloodthirst->execute_on_target( t );
-        }
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-    p()->buff.bladestorm->expire();
-
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      p()->buff.merciless_bonegrinder->trigger();
     }
   }
 };
@@ -5703,8 +5593,7 @@ struct avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.blademasters_torment.ok() )
     {
-      action_t* torment_ability = p()->active.torment_bladestorm;
-      torment_ability->schedule_execute();
+      p()->buff.sweeping_strikes->trigger();
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
@@ -5754,20 +5643,6 @@ struct torment_avatar_t : public warrior_spell_t
     {
       const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
-    }
-    if ( p()->talents.warrior.blademasters_torment->ok() )
-    {
-      if ( p()->talents.arms.spiteful_serenity->ok() )
-      {
-        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value()
-                                            + timespan_t::from_millis( 4000 ); // Spiteful doubles duration from 4->8s, not in data
-        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-      }
-      else
-      {
-        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-      }
     }
   }
 };
@@ -7453,7 +7328,8 @@ void warrior_t::create_buffs()
 
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
-    ->set_cooldown(timespan_t::zero());
+    ->set_cooldown(timespan_t::zero())
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
@@ -7953,16 +7829,6 @@ void warrior_t::create_actions()
     active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
     active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
     for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
-  }
-  if ( talents.warrior.blademasters_torment->ok() )
-  {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
-    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ));
-    for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
     {
       action->background  = true;
       action->trigger_gcd = timespan_t::zero();
