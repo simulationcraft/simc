@@ -358,6 +358,7 @@ public:
       actions::rogue_attack_t* fatebound_coin_tails = nullptr;
       actions::rogue_attack_t* fatebound_coin_tails_delivered = nullptr;
       actions::rogue_attack_t* fate_intertwined = nullptr;
+      actions::rogue_attack_t* lucky_coin = nullptr;
     } fatebound;
     struct
     {
@@ -645,6 +646,7 @@ public:
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
+    const spell_data_t* fatebound_lucky_coin_damage;
     const spell_data_t* fatebound_fate_intertwined;
     const spell_data_t* fazed_debuff;
     const spell_data_t* flawless_form_buff;
@@ -7447,6 +7449,20 @@ struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
   }
 };
 
+struct fatebound_lucky_coin_t : public rogue_attack_t
+{
+  fatebound_lucky_coin_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.fatebound_lucky_coin_damage )
+  {
+  }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_caustic_spatter() const override
+  { return true; }
+};
+
 struct fate_intertwined_t : public rogue_attack_t
 {
   fate_intertwined_t( util::string_view name, rogue_t* p ) :
@@ -11273,6 +11289,7 @@ void rogue_t::init_spells()
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.fateful_ending->ok() ? find_spell( 452562 ) : spell_data_t::not_found();
+  spell.fatebound_lucky_coin_damage = talent.fatebound.fateful_ending->ok() ? find_spell( 461818 ) : spell_data_t::not_found();
   spell.fatebound_fate_intertwined = talent.fatebound.fate_intertwined->ok() ? find_spell( 456306 ) : spell_data_t::not_found();
 
   // Trickster
@@ -11592,6 +11609,8 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
+    active.fatebound.lucky_coin =
+      get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
   }
 
   if ( talent.fatebound.fate_intertwined->ok() )
@@ -11996,25 +12015,33 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
   if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
   {
-    // override and hardcode heads coin stack scaling to match what the 20%-per-extra-stack-label implies
-    auto direct_scaling_part = spell.fatebound_coin_heads_buff->effectN( 1 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent();
-    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, direct_scaling_part,
-                                                1.0 + spell.fatebound_coin_heads_buff->effectN( 1 ).percent() - direct_scaling_part );
-    auto periodic_scaling_part = spell.fatebound_coin_heads_buff->effectN( 2 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent();
-    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, periodic_scaling_part,
-                                                  1.0 + spell.fatebound_coin_heads_buff->effectN( 2 ).percent() - periodic_scaling_part );
+    // Combine the 1% per additional stack buff (which we use as the stacking base buff) and 3% from initial stack buff (the fatebound_coin_heads_stacking_buff)
+    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
+                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() - spell.fatebound_coin_heads_buff->effectN( 1 ).percent() );
+    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() - spell.fatebound_coin_heads_buff->effectN( 2 ).percent() );
+    // TODO: fatebound_coin_heads_stacking_buff modifies fatebound_coin_heads_buff for the periodic and direct damage effects, but has an inline 3% auto attack damage effect
+    //  Are we getting an extra 1% AA damage for free? We may never know. Assuming we don't for now.
+    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() - spell.fatebound_coin_heads_buff->effectN( 5 ).percent() );
   }
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
-      if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
-        buffs.fatebound_lucky_coin->trigger();
+      if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+        if ( buffs.fatebound_lucky_coin->check() )
+          active.fatebound.lucky_coin->execute();
+        else
+          buffs.fatebound_lucky_coin->trigger();
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
-      if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
-        buffs.fatebound_lucky_coin->trigger();
+      if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+        if ( buffs.fatebound_lucky_coin->check() )
+          active.fatebound.lucky_coin->execute();
+        else
+          buffs.fatebound_lucky_coin->trigger();
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   if ( talent.fatebound.chosens_revelry->ok() )
@@ -12025,12 +12052,8 @@ void rogue_t::create_buffs()
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
   buffs.fatebound_lucky_coin->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_STAMINA );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY ); // TODO: Add tertiary stats
+  // TODO: lucky coin still has effects for non-primary stat buffs, but definitely only affects primary stat in game
+  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
   buffs.fatebound_lucky_coin->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
     if ( !buffs.fatebound_lucky_coin->check() )
