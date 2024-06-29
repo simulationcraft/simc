@@ -7171,7 +7171,7 @@ void demon_hunter_t::create_buffs()
             if ( new_ > old )
             {
               int target_stacks = static_cast<int>( b->default_value );
-              if ( b->current_stack >= target_stacks && !buff.reavers_glaive->up() )
+              if ( b->current_stack >= target_stacks && !buff.reavers_glaive->check() )
               {
                 // using an event
                 make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
