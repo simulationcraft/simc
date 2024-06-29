@@ -3535,7 +3535,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:howling_rune_3,if=!(talent.rite_of_adjuration|talent.rite_of_sanctification)";
+      return "main_hand:howling_rune_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
       return "main_hand:howling_rune_3";
 
