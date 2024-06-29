@@ -2410,8 +2410,6 @@ struct pickup_entropic_skardyn_core_t : public action_t
 
   void execute() override
   {
-    action_t::execute();
-
     buff->trigger();
     tracker->decrement();
   }
@@ -2447,11 +2445,13 @@ void entropic_skardyn_core( special_effect_t& effect )
         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
         ->set_max_stack( 6 );  // TODO: 'safe' value for 2 rppm. increase if necessary.
 
-      if ( auto action =
-             dynamic_cast<pickup_entropic_skardyn_core_t*>( e.player->find_action( "pickup_entropic_skardyn_core" ) ) )
+      for ( auto a : e.player->action_list )
       {
-        action->buff = buff;
-        action->tracker = tracker;
+        if ( auto pickup = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
+        {
+          pickup->buff = buff;
+          pickup->tracker = tracker;
+        }
       }
     }
 
