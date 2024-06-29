@@ -1178,17 +1178,6 @@ public:
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       p()->cooldowns.higher_calling_icd->start();
     }
-    if ( p()->talents.lightsmith.divine_inspiration->ok() )
-    {
-      // No Spelldata is found, neither chance nor ppm, this is our best estimation
-      if ( ab::rng().roll( 0.01 ) )
-      {
-        // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
-        p()->cast_holy_armaments(
-            p(), paladin::armament::SACRED_WEAPON, false,
-            !p()->bugs || !( p()->next_armament == paladin::armament::HOLY_BULWARK && p()->bugs ) );
-      }
-    }
   }
 
   void impact( action_state_t* s ) override

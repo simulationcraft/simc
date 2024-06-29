@@ -3615,6 +3615,36 @@ void paladin_t::init_special_effects()
     auto cb = new paladin::touch_of_light_cb_t( this, *touch_of_light_driver );
     cb->initialize();
   }
+  if (talents.lightsmith.divine_inspiration->ok())
+  {
+    struct divine_inspiration_cb_t : public dbc_proc_callback_t
+    {
+      paladin_t* p;
+
+      divine_inspiration_cb_t( paladin_t* player, const special_effect_t& effect )
+        : dbc_proc_callback_t( player, effect ), p( player )
+      {
+      }
+
+      void execute( action_t*, action_state_t* ) override
+      {
+        // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
+        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false,
+                                !p->bugs || !( p->next_armament == paladin::armament::HOLY_BULWARK && p->bugs ) );
+      }
+    };
+    auto const divine_inspiration_driver = new special_effect_t( this );
+    divine_inspiration_driver->name_str  = "divine_inspiration_driver";
+    // Since proc chance is hidden, this is just a guess. Average proc rate seems to match, though
+    divine_inspiration_driver->ppm_           = -1.0;
+    divine_inspiration_driver->type      = SPECIAL_EFFECT_EQUIP;
+    divine_inspiration_driver->proc_flags_ =
+        PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_ALL_HEAL;
+    special_effects.push_back( divine_inspiration_driver );
+
+    auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );
+    cb->initialize();
+  }
 }
 
 void paladin_t::init_rng()
