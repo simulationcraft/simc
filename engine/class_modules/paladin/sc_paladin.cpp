@@ -2354,9 +2354,9 @@ struct holy_bulwark_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     if ( p() != target )
-      p()->get_target_data( target )->buffs.holy_bulwark->execute();
+      p()->get_target_data( target )->buffs.holy_bulwark->trigger();
     else
-      p()->buffs.lightsmith.holy_bulwark->execute();
+      p()->buffs.lightsmith.holy_bulwark->trigger();
     sim->print_debug( "{} executes Holy Armament Holy Bulwark on {}", p()->name(), target->name() );
   }
 };
@@ -2924,7 +2924,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
 
 
-  buffs.holy_bulwark  = make_buff( *this, "holy_bulwark_ally", paladin->find_spell( 432496 ) )->set_cooldown( 0_s );
+  buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
+    ->set_cooldown( 0_s );
   buffs.sacred_weapon = make_buff( *this, "sacred_weapon_ally", paladin->find_spell( 432502 ) );
 
   if ( !target->is_enemy() && target != paladin )
@@ -3376,7 +3377,7 @@ void paladin_t::create_buffs()
             this->active.divine_resonance->schedule_execute();
           } );
 
-  buffs.lightsmith.holy_bulwark = make_buff( this, "holy_bulwark", find_spell( 432496 ) )
+  buffs.lightsmith.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
                                       ->set_cooldown( 0_s )
                                       ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
                                         if ( b->remains().total_millis() > 0 )
@@ -3793,6 +3794,8 @@ void paladin_t::init_spells()
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
 
   // Hero Talent Spells
+  spells.lightsmith.holy_bulwark        = find_spell( 432496 );
+  spells.lightsmith.holy_bulwark_absorb = find_spell( 432607 );
   spells.lightsmith.forges_reckoning    = find_spell( 447258 );  // Child spell of blessing of the forge, triggered by casting shield of the righteous
   spells.lightsmith.sacred_word         = find_spell( 447246 ); // Child spell of blessing of the forge, triggered by casting Word of Glory
   spells.templar.hammer_of_light_driver = find_spell( 427453 );

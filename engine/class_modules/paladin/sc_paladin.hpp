@@ -408,6 +408,8 @@ public:
 
     struct
     {
+      const spell_data_t* holy_bulwark;
+      const spell_data_t* holy_bulwark_absorb;
       const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge (Shield of the Righteous)
       const spell_data_t* sacred_word;      // Spell triggered by Blessing of the Forge (Word of Glory)
     } lightsmith;
@@ -950,6 +952,70 @@ struct forbearance_t : public buff_t
   forbearance_t( paladin_td_t* ap, const char* name )
     : buff_t( *ap, name, ap->source->find_spell( 25771 ) ), paladin( debug_cast<paladin_t*>( ap->source ) )
   {
+  }
+};
+
+struct holy_bulwark_absorb_t : public absorb_buff_t
+{
+  paladin_t* caster;
+  holy_bulwark_absorb_t( paladin_td_t* td )
+    : absorb_buff_t( td->target, "holy_bulwark_absorb_"+td->target->name_str,
+                     debug_cast<paladin_t*>( td->source )->spells.lightsmith.holy_bulwark_absorb )
+  {
+    caster                   = debug_cast<paladin_t*>( td->source );
+    set_absorb_source( caster->get_stats( "holy_bulwark_absorb_"+td->target->name_str) );
+  }
+  holy_bulwark_absorb_t( paladin_t* p )
+    : absorb_buff_t( p, "holy_bulwark_absorb", p->spells.lightsmith.holy_bulwark_absorb )
+  {
+    caster = p;
+    set_absorb_source( caster->get_stats( "holy_bulwark_absorb" ) );
+  }
+  bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  {
+    double total_value = this->value();
+    if (value > 0)
+    {
+      total_value += value;
+    }
+    else
+    {
+      total_value += this->player->resources.max[ RESOURCE_HEALTH ] *
+                     ( caster->spells.lightsmith.holy_bulwark->effectN( 4 ).percent() / 10.0 );
+    }
+    total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] * caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent());
+    return absorb_buff_t::trigger( stacks, total_value, chance, duration );
+  }
+};
+
+struct holy_bulwark_buff_t : public buff_t
+{
+  holy_bulwark_absorb_t* absorb;
+  paladin_t* caster;
+  player_t* buff_owner;
+  holy_bulwark_buff_t( paladin_td_t* td )
+    : buff_t( *td, "holy_bulwark_ally_"+td->target->name_str, debug_cast<paladin_t*>( td->source )->spells.lightsmith.holy_bulwark),
+      absorb( new holy_bulwark_absorb_t(td) ),
+      caster( debug_cast<paladin_t*>( td->source ) ),
+      buff_owner( td->target )
+  {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
+  }
+  holy_bulwark_buff_t( paladin_t* p )
+    : buff_t( p, "holy_bulwark", p->spells.lightsmith.holy_bulwark ),
+      absorb( new holy_bulwark_absorb_t(p) ),
+      caster( p ),
+      buff_owner( p )
+  {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { absorb->trigger( -1, 0, -1, timespan_t::min() ); } );
+  }
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool result = buff_t::trigger( stacks, value, chance, duration );
+    // Initial absorb scales with target's max HP, but with caster's stats
+    double initial_absorb = buff_owner->resources.max[ RESOURCE_HEALTH ] * (caster->spells.lightsmith.holy_bulwark->effectN(2).percent()/10) * (1.0 + caster->composite_heal_versatility());
+    absorb->trigger( -1, initial_absorb, -1, timespan_t::min() );
+    return result;
   }
 };
 
