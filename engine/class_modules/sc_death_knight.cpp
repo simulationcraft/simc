@@ -8789,6 +8789,28 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    if ( p()->bugs && p()->talent.rider.a_feast_of_souls.ok() && p()->buffs.a_feast_of_souls->check() )
+    {
+      // Is rolled once when the ability is cast normally.
+      // Number of events is equal to GA Spell Radius / GA Damage Radius to emulate the number of small GA circular
+      // triggers in game.
+      int events = 11;
+      if ( is_arctic_assault )
+      {
+        events += 1;
+      }
+      make_repeating_event(
+          *p()->sim, 25_ms,
+          [ this ] {
+            if ( p()->buffs.a_feast_of_souls->check() &&
+                 rng().roll( p()->talent.rider.a_feast_of_souls->effectN( 2 ).percent() ) )
+            {
+              p()->replenish_rune( 1, p()->gains.feast_of_souls );
+            }
+          },
+          events );
+    }
+
     // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
     // Currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
