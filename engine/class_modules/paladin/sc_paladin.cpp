@@ -3377,16 +3377,26 @@ void paladin_t::create_buffs()
           } );
 
   buffs.lightsmith.holy_bulwark = make_buff( this, "holy_bulwark", find_spell( 432496 ) )
-                              ->set_cooldown( 0_s )
-                              ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                              ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
-                                debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
-                              } );
+                                      ->set_cooldown( 0_s )
+                                      ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+                                        if ( b->remains().total_millis() > 0 )
+                                          debug_cast<paladin_t*>( b->source )->trigger_laying_down_arms();
+                                        timespan_t residual = std::min( d * 0.3, b->remains() );
+                                        return residual + d;
+                                      } )
+                                      ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
+                                        debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                      } );
   buffs.lightsmith.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
-                               ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                               ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
-                                 debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
-                               } );
+                                       ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+                                         if ( b->remains().total_millis() > 0 )
+                                           debug_cast<paladin_t*>( b->source )->trigger_laying_down_arms();
+                                         timespan_t residual = std::min( d * 0.3, b->remains() );
+                                         return residual + d;
+                                       } )
+                                       ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
+                                         debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                       } );
   buffs.lightsmith.blessed_assurance =
       make_buff( this, "blessed_assurance", find_spell( 433019 ) )->set_default_value_from_effect( 1 );
   buffs.lightsmith.divine_guidance = make_buff( this, "divine_guidance", find_spell( 433106 ) )->set_max_stack( 5 );
