@@ -3242,6 +3242,8 @@ void paladin_t::init_procs()
   procs.as_engraved_sigil_wasted  = get_proc( "Avenger's Shield: Engraved Sigil wasted" );
   procs.as_moment_of_glory        = get_proc( "Avenger's Shield: Moment of Glory" );
   procs.as_moment_of_glory_wasted = get_proc( "Avenger's Shield: Moment of Glory wasted" );
+
+  procs.divine_inspiration = get_proc( "Divine Inspiration" );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -3615,7 +3617,7 @@ void paladin_t::init_special_effects()
     auto cb = new paladin::touch_of_light_cb_t( this, *touch_of_light_driver );
     cb->initialize();
   }
-  if (talents.lightsmith.divine_inspiration->ok())
+  if ( talents.lightsmith.divine_inspiration->ok() )
   {
     struct divine_inspiration_cb_t : public dbc_proc_callback_t
     {
@@ -3631,13 +3633,15 @@ void paladin_t::init_special_effects()
         // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
         p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false,
                                 !p->bugs || !( p->next_armament == paladin::armament::HOLY_BULWARK && p->bugs ) );
+        p->procs.divine_inspiration->occur();
       }
     };
     auto const divine_inspiration_driver = new special_effect_t( this );
     divine_inspiration_driver->name_str  = "divine_inspiration_driver";
     // Since proc chance is hidden, this is just a guess. Average proc rate seems to match, though
-    divine_inspiration_driver->ppm_           = -1.0;
-    divine_inspiration_driver->type      = SPECIAL_EFFECT_EQUIP;
+    divine_inspiration_driver->ppm_        = -1.2;
+    divine_inspiration_driver->rppm_scale_ = RPPM_HASTE;
+    divine_inspiration_driver->type        = SPECIAL_EFFECT_EQUIP;
     divine_inspiration_driver->proc_flags_ =
         PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_ALL_HEAL;
     special_effects.push_back( divine_inspiration_driver );

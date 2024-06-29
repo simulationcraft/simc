@@ -376,6 +376,8 @@ public:
     proc_t* as_engraved_sigil_wasted;
     proc_t* as_moment_of_glory;
     proc_t* as_moment_of_glory_wasted;
+
+    proc_t* divine_inspiration;
   } procs;
 
   // Spells
