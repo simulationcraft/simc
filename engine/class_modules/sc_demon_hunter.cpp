@@ -38,6 +38,8 @@ public:
   {
     // Shared
     dot_t* the_hunt;
+    dot_t* sigil_of_flame;
+    dot_t* sigil_of_doom;
 
     // Havoc
     dot_t* burning_wound;
@@ -45,14 +47,13 @@ public:
 
     // Vengeance
     dot_t* fiery_brand;
-    dot_t* sigil_of_flame;
-
   } dots;
 
   struct debuffs_t
   {
     // Shared
     buff_t* sigil_of_flame;
+    buff_t* sigil_of_doom;
 
     // Havoc
     buff_t* burning_wound;
@@ -706,6 +707,8 @@ public:
     const spell_data_t* demonsurge_trigger;
     const spell_data_t* soul_sunder;
     const spell_data_t* spirit_burst;
+    const spell_data_t* sigil_of_doom;
+    const spell_data_t* sigil_of_doom_damage;
   } hero_spec;
 
   // Set Bonus effects
@@ -884,7 +887,7 @@ public:
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
     attack_t* relentless_onslaught_annihilation = nullptr;
-    action_t* soulscar = nullptr;
+    action_t* soulscar                          = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -3075,12 +3078,12 @@ struct glaive_tempest_t : public demon_hunter_spell_t
   }
 };
 
-// Sigil of Flame ===========================================================
+// Sigil of Flame / Sigil of Doom ===========================================
 
-struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
+struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
 {
-  sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
-    : demon_hunter_sigil_t( name, p, p->spell.sigil_of_flame_damage, delay )
+  sigil_of_flame_damage_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+    : demon_hunter_sigil_t( name, p, s, delay )
   {
     tick_on_application = false;
     dot_max_stack       = 1;
@@ -3107,11 +3110,36 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
   {
     demon_hunter_sigil_t::impact( s );
 
-    // Sigil of Flame can apply Frailty if Frailty is talented
+    // Sigil of Flame/Doom can apply Frailty if Frailty is talented
     if ( result_is_hit( s->result ) && p()->talent.vengeance.frailty->ok() )
     {
       td( s->target )->debuffs.frailty->trigger();
     }
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    // 2023-10-21 -- Ascending Flame Sigil of Flame/Doom refreshes use normal DoT REFRESH_DURATION dot_behavior.
+    if ( p()->talent.vengeance.ascending_flame->ok() )
+    {
+      return action_t::calculate_dot_refresh_duration( dot, triggered_duration );
+    }
+    // 2023-10-21 -- Non-Ascending Flame Sigil of Flame/Doom refreshes _truncate_ the existing DoT and apply a fresh
+    // DoT.
+    return triggered_duration - dot->time_to_next_full_tick();
+  }
+};
+
+struct sigil_of_flame_damage_t : public sigil_of_flame_damage_base_t
+{
+  sigil_of_flame_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
+    : sigil_of_flame_damage_base_t( name, p, p->spell.sigil_of_flame_damage, delay )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    sigil_of_flame_damage_base_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
@@ -3137,32 +3165,53 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
 
     return ttm;
   }
+};
 
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+struct sigil_of_doom_damage_t : public sigil_of_flame_damage_base_t
+{
+  sigil_of_doom_damage_t( util::string_view name, demon_hunter_t* p, timespan_t delay )
+    : sigil_of_flame_damage_base_t( name, p, p->hero_spec.sigil_of_doom_damage, delay )
   {
-    // 2023-10-21 -- Ascending Flame Sigil of Flame refreshes use normal DoT REFRESH_DURATION dot_behavior.
-    if ( p()->talent.vengeance.ascending_flame->ok() )
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    sigil_of_flame_damage_base_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
     {
-      return action_t::calculate_dot_refresh_duration( dot, triggered_duration );
+      td( s->target )->debuffs.sigil_of_doom->trigger();
     }
-    // 2023-10-21 -- Non-Ascending Flame Sigil of Flame refreshes _truncate_ the existing DoT and apply a fresh DoT.
-    return triggered_duration - dot->time_to_next_full_tick();
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    if ( !t )
+      t = target;
+    if ( !t )
+      return nullptr;
+    return td( t )->dots.sigil_of_doom;
+  }
+
+  double composite_target_ta_multiplier( player_t* target ) const override
+  {
+    double ttm = demon_hunter_sigil_t::composite_target_ta_multiplier( target );
+
+    double current_stack = td( target )->debuffs.sigil_of_doom->stack();
+    ttm *= current_stack;
+
+    return ttm;
   }
 };
 
-struct sigil_of_flame_t : public demon_hunter_spell_t
+struct sigil_of_flame_base_t : public demon_hunter_spell_t
 {
-  sigil_of_flame_damage_t* sigil;
+  sigil_of_flame_damage_base_t* sigil;
 
-  sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_flame", p, p->spell.sigil_of_flame, options_str ), sigil( nullptr )
+  sigil_of_flame_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : demon_hunter_spell_t( name, p, s, o ), sigil( nullptr )
   {
     may_miss = false;
-
-    sigil        = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
-    sigil->stats = stats;
-
-    set_target( p );  // Can be self-cast for resources without a hostile target
 
     if ( p->spell.sigil_of_flame_fury->ok() )
     {
@@ -3176,7 +3225,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       p->active.frailty_heal = new heals::frailty_heal_t( p );
     }
 
-    // Add damage modifiers in sigil_of_flame_damage_t, not here.
+    // Add damage modifiers in sigil_of_flame_damage_base_t, not here.
   }
 
   void init_finished() override
@@ -3198,8 +3247,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     {
       sigil->place_sigil( execute_state->target );
     }
-
-    p()->trigger_demonsurge( demonsurge_ability::SIGIL_OF_DOOM );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -3214,6 +3261,47 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     // Spell data still has a Vengeance Demon Hunter class association but it's baseline
     return true;
+  }
+};
+
+struct sigil_of_flame_t : public sigil_of_flame_base_t
+{
+  sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
+    : sigil_of_flame_base_t( "sigil_of_flame", p, p->spell.sigil_of_flame, options_str )
+  {
+    sigil        = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
+    sigil->stats = stats;
+
+    // Add damage modifiers in sigil_of_flame_damage_t, not here.
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      return false;
+    }
+    return sigil_of_flame_base_t::ready();
+  }
+};
+
+struct sigil_of_doom_t : public demonsurge_trigger_t<demonsurge_ability::SIGIL_OF_DOOM, sigil_of_flame_base_t>
+{
+  sigil_of_doom_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "sigil_of_doom", p, p->hero_spec.sigil_of_doom, options_str )
+  {
+    sigil        = p->get_background_action<sigil_of_doom_damage_t>( "sigil_of_doom_damage", ground_aoe_duration );
+    sigil->stats = stats;
+
+    // Add damage modifiers in sigil_of_doom_damage_t, not here.
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.demonsurge_hardcast->check() )
+    {
+      return false;
+    }
+    return base_t::ready();
   }
 };
 
@@ -4416,7 +4504,7 @@ struct soulscar_trigger_t : public BASE
   using base_t = soulscar_trigger_t<BASE>;
 
   soulscar_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                            util::string_view o = {} )
+                      util::string_view o = {} )
     : BASE( n, p, s, o )
   {
   }
@@ -5928,9 +6016,9 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
   {
     if ( p->talent.aldrachi_reaver.keen_engagement->ok() )
     {
-      energize_type                    = action_energize::ON_CAST;
-      energize_resource                = data().effectN( 2 ).resource_gain_type();
-      energize_amount                  = p->talent.aldrachi_reaver.keen_engagement->effectN( 1 ).resource( energize_resource );
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = data().effectN( 2 ).resource_gain_type();
+      energize_amount   = p->talent.aldrachi_reaver.keen_engagement->effectN( 1 ).resource( energize_resource );
     }
     else
     {
@@ -6747,10 +6835,18 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                              ->set_max_stack( 2 );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
+  dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
 
   debuffs.sigil_of_flame =
       make_buff( *this, "sigil_of_flame", p.spell.sigil_of_flame_damage )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
+                                                                         : buff_stack_behavior::DEFAULT )
+          ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
+          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger );
+  debuffs.sigil_of_doom =
+      make_buff( *this, "sigil_of_doom", p.hero_spec.sigil_of_doom_damage )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
                                                                          : buff_stack_behavior::DEFAULT )
@@ -6879,6 +6975,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new pick_up_fragment_t( this, options_str );
   if ( name == "sigil_of_flame" )
     return new sigil_of_flame_t( this, options_str );
+  if ( name == "sigil_of_doom" )
+    return new sigil_of_doom_t( this, options_str );
   if ( name == "spirit_bomb" )
     return new spirit_bomb_t( this, options_str );
   if ( name == "spirit_burst" )
@@ -7954,6 +8052,10 @@ void demon_hunter_t::init_spells()
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
   hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
   hero_spec.spirit_burst       = talent.felscarred.demonsurge->ok() ? find_spell( 452437 ) : spell_data_t::not_found();
+  hero_spec.sigil_of_doom =
+      talent.felscarred.demonic_intensity->ok() ? find_spell( 452490 ) : spell_data_t::not_found();
+  hero_spec.sigil_of_doom_damage =
+      talent.felscarred.demonic_intensity->ok() ? find_spell( 462030 ) : spell_data_t::not_found();
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
