@@ -302,6 +302,7 @@ public:
     buff_t* cold_front;
     buff_t* cold_front_ready;
     buff_t* cryopathy;
+    buff_t* deaths_chill;
     buff_t* fingers_of_frost;
     buff_t* freezing_rain;
     buff_t* freezing_winds;
@@ -1254,6 +1255,7 @@ struct icy_veins_t final : public buff_t
       p->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
 
     p->buffs.frigid_empowerment->expire();
+    p->buffs.deaths_chill->expire();
     p->buffs.slick_ice->expire();
 
     // Icy Veins from TA doesn't need the IV talent and the pet might be nullptr
@@ -1408,6 +1410,7 @@ struct mage_spell_t : public spell_t
     // Temporary damage increase
     bool arcane_surge = true;
     bool bone_chilling = true;
+    bool deaths_chill = true;
     bool frigid_empowerment = true;
     bool icicles_aoe = false;
     bool icicles_st = false;
@@ -1543,6 +1546,10 @@ public:
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
+
+    // TODO: in game, it currently doesn't increase damage of any spells
+    if ( affected_by.deaths_chill )
+      m *= 1.0 + p()->buffs.deaths_chill->check_stack_value();
 
     if ( affected_by.frigid_empowerment )
       m *= 1.0 + p()->buffs.frigid_empowerment->check_stack_value();
@@ -4090,6 +4097,9 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    if ( p()->buffs.icy_veins->check() )
+      p()->buffs.deaths_chill->trigger();
+
     if ( s->chain_target != 0 )
       return;
 
@@ -4643,6 +4653,8 @@ struct icy_veins_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->buffs.frigid_empowerment->expire();
+    // TODO: refreshing IV currently breaks Death's chill and no further stacks can be gained
+    p()->buffs.deaths_chill->expire();
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
@@ -5729,6 +5741,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
             mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
+            // TODO: trigger frostfire empowerment
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
@@ -6517,6 +6530,9 @@ void mage_t::create_buffs()
   buffs.cryopathy          = make_buff( this, "cryopathy", find_spell( 417492 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.cryopathy.ok() );
+  buffs.deaths_chill       = make_buff( this, "deaths_chill", find_spell( 454371 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_chance( talents.deaths_chill.ok() );
   buffs.fingers_of_frost   = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.freezing_rain      = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                ->set_default_value_from_effect( 2 )
