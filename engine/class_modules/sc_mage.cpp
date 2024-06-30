@@ -308,6 +308,7 @@ public:
     buff_t* frigid_empowerment;
     buff_t* icicles;
     buff_t* icy_veins;
+    buff_t* permafrost_lances;
     buff_t* ray_of_frost;
     buff_t* slick_ice;
 
@@ -4208,6 +4209,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p()->buffs.freezing_winds->trigger();
+    p()->buffs.permafrost_lances->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
   }
 
@@ -4576,6 +4578,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     double am = frost_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.chain_reaction->check_stack_value();
+    am *= 1.0 + p()->buffs.permafrost_lances->check_value();
 
     return am;
   }
@@ -6533,6 +6536,9 @@ void mage_t::create_buffs()
                                ->set_default_value_from_effect( 1 );
   buffs.icicles            = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins          = make_buff<buffs::icy_veins_t>( this );
+  buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_chance( talents.permafrost_lances.ok() );
   buffs.ray_of_frost       = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                                ->set_default_value_from_effect( 1 );
   buffs.slick_ice          = make_buff( this, "slick_ice", find_spell( 382148 ) )
