@@ -3006,31 +3006,6 @@ struct arcane_assault_t final : public arcane_mage_spell_t
   }
 };
 
-struct arcane_familiar_t final : public arcane_mage_spell_t
-{
-  arcane_familiar_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_familiar )
-  {
-    parse_options( options_str );
-    harmful = track_cd_waste = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    arcane_mage_spell_t::execute();
-    p()->buffs.arcane_familiar->trigger();
-  }
-
-  bool ready() override
-  {
-    if ( p()->buffs.arcane_familiar->check() )
-      return false;
-
-    return arcane_mage_spell_t::ready();
-  }
-};
-
 // Arcane Intellect Spell ===================================================
 
 struct arcane_intellect_t final : public mage_spell_t
@@ -3042,7 +3017,7 @@ struct arcane_intellect_t final : public mage_spell_t
     harmful = false;
     ignore_false_positive = true;
 
-    if ( sim->overrides.arcane_intellect )
+    if ( sim->overrides.arcane_intellect && !p->talents.arcane_familiar.ok() )
       background = true;
   }
 
@@ -3052,6 +3027,8 @@ struct arcane_intellect_t final : public mage_spell_t
 
     if ( !sim->overrides.arcane_intellect )
       sim->auras.arcane_intellect->trigger();
+
+    p()->buffs.arcane_familiar->trigger();
   }
 };
 
@@ -5856,7 +5833,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   // Arcane
   if ( name == "arcane_barrage"    ) return new    arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"      ) return new      arcane_blast_t( name, this, options_str );
-  if ( name == "arcane_familiar"   ) return new   arcane_familiar_t( name, this, options_str );
   if ( name == "arcane_missiles"   ) return new   arcane_missiles_t( name, this, options_str );
   if ( name == "arcane_orb"        ) return new        arcane_orb_t( name, this, options_str );
   if ( name == "arcane_surge"      ) return new      arcane_surge_t( name, this, options_str );
@@ -6447,7 +6423,8 @@ void mage_t::create_buffs()
                                  ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                    { action.arcane_assault->execute_on_target( target ); } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                                   { recalculate_resource_max( RESOURCE_MANA ); } );
+                                   { recalculate_resource_max( RESOURCE_MANA ); } )
+                                 ->set_chance( talents.arcane_familiar.ok() );
   buffs.arcane_harmony       = make_buff( this, "arcane_harmony", find_spell( 384455 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.arcane_harmony.ok() )
