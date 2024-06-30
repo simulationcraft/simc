@@ -3989,13 +3989,13 @@ struct frostbolt_t final : public frost_mage_spell_t
 {
   double fof_chance;
   double bf_chance;
-
-  bool fractured_frost_active = true;
+  double fractured_frost_mul;
 
   frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) ),
     fof_chance(),
-    bf_chance()
+    bf_chance(),
+    fractured_frost_mul()
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
@@ -4009,6 +4009,9 @@ struct frostbolt_t final : public frost_mage_spell_t
     const auto& ft = p->talents.frozen_touch;
     fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = ( 1.0 + ft->effectN( 2 ).percent() ) * p->talents.brain_freeze->effectN( 1 ).percent();
+
+    // TODO: this is currently a flat mod, almost surely a bug
+    fractured_frost_mul = p->find_spell( 378445 )->effectN( 3 ).percent();
 
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
@@ -4024,7 +4027,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   int n_targets() const override
   {
-    if ( p()->talents.fractured_frost.ok() && fractured_frost_active )
+    if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       return as<int>( p()->talents.fractured_frost->effectN( 3 ).base_value() );
     else
       return frost_mage_spell_t::n_targets();
@@ -4054,6 +4057,9 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     am *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
 
+    if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
+      am *= 1.0 + fractured_frost_mul;
+
     return am;
   }
 
@@ -4068,11 +4074,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   void execute() override
   {
-    // We treat Fractured Frost as always active outside of the spell execute, this makes sure
-    // that simc properly invalidates target caches etc.
-    fractured_frost_active = p()->rng().roll( p()->talents.fractured_frost->effectN( 2 ).percent() );
     frost_mage_spell_t::execute();
-    fractured_frost_active = true;
 
     p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
     p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt, p()->talents.splintering_cold->effectN( 2 ).percent() );
