@@ -3309,6 +3309,12 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     am *= 1.0 + p()->resources.pct( RESOURCE_MANA ) * ( data().effectN( 2 ).base_value() - 1.0 );
 
+    if ( p()->talents.surging_urge.ok() )
+    {
+      double per_charge = p()->talents.surging_urge->effectN( 2 ).percent() / p()->talents.surging_urge->effectN( 1 ).base_value();
+      am *= 1.0 + p()->buffs.arcane_charge->check() * per_charge;
+    }
+
     return am;
   }
 
