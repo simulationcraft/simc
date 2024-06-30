@@ -271,6 +271,7 @@ public:
     buff_t* enlightened_damage;
     buff_t* enlightened_mana;
     buff_t* evocation;
+    buff_t* high_voltage;
     buff_t* impetus;
     buff_t* nether_precision;
     buff_t* presence_of_mind;
@@ -3108,7 +3109,24 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.arcane_harmony->trigger();
+
+      if ( p()->talents.high_voltage.ok() )
+      {
+        double chance = p()->talents.high_voltage->effectN( 1 ).percent();
+        chance += p()->buffs.high_voltage->check_stack_value();
+        if ( rng().roll( chance ) )
+        {
+          p()->trigger_arcane_charge();
+          p()->buffs.high_voltage->expire();
+        }
+        else
+        {
+          p()->buffs.high_voltage->trigger();
+        }
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -6468,6 +6486,8 @@ void mage_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->set_cooldown( 0_ms )
                                  ->set_affects_regen( true );
+  buffs.high_voltage         = make_buff( this, "high_voltage", find_spell( 461525 ) )
+                                 ->set_default_value_from_effect( 1, 0.01 );
   buffs.impetus              = make_buff( this, "impetus", find_spell( 393939 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
