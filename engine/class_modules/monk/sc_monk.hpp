@@ -363,9 +363,6 @@ public:
 
     // Shadowland Legendaries
     propagate_const<buff_t *> jadefire_brand;
-
-    // Tier 30
-    propagate_const<buff_t *> shadowflame_vulnerability;
   } debuff;
 
   monk_t &monk;
@@ -649,7 +646,7 @@ public:
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
 
-    // Shadow Panda
+    // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
     propagate_const<buff_t *> flurry_charge;
     propagate_const<buff_t *> veterans_eye;
@@ -660,12 +657,13 @@ public:
     propagate_const<buff_t *> wisdom_of_the_wall_mastery;
 
     // T29 Set Bonus
-    propagate_const<buff_t *> brewmasters_rhythm;
+    propagate_const<buff_t *> kicks_of_flowing_momentum;
+    propagate_const<buff_t *> fists_of_flowing_momentum;
+    propagate_const<buff_t *> fists_of_flowing_momentum_fof;
 
     // T31 Set Bonus
     propagate_const<buff_t *> brewmaster_t31_4p_accumulator;
     propagate_const<buff_t *> brewmaster_t31_4p_fake_absorb;
-    propagate_const<buff_t *> blackout_reinforcement;
 
     // T32 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
@@ -714,9 +712,6 @@ public:
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
     propagate_const<proc_t *> blackout_kick_cdr_oe;
     propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> blackout_reinforcement_melee;
-    propagate_const<proc_t *> blackout_reinforcement_sck;
-    propagate_const<proc_t *> blackout_reinforcement_waste;
     propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;
@@ -733,10 +728,7 @@ public:
     propagate_const<proc_t *> tranquil_spirit_goto;
     propagate_const<proc_t *> xuens_battlegear_reduction;
 
-    // Tier 30
-    propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
     propagate_const<proc_t *> elusive_brawler_preserved;
-
   } proc;
 
   struct talents_t
@@ -1299,9 +1291,6 @@ public:
     propagate_const<cooldown_t *> touch_of_death;
     propagate_const<cooldown_t *> weapons_of_order;
     propagate_const<cooldown_t *> whirling_dragon_punch;
-
-    // T29
-    propagate_const<cooldown_t *> brewmasters_rhythm;
   } cooldown;
 
   struct passives_t
@@ -1394,11 +1383,9 @@ public:
       const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
 
-    // Tier 30
-    const spell_data_t *shadowflame_nova;
-    const spell_data_t *shadowflame_spirit;
-    const spell_data_t *shadowflame_spirit_summon;
-    const spell_data_t *leverage;
+    // Tier 29
+    const spell_data_t *kicks_of_flowing_momentum;
+    const spell_data_t *fists_of_flowing_momentum;
 
     // Tier 31
     const spell_data_t *charred_dreams_dmg;
@@ -1420,7 +1407,6 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
 
     pet_t *bron;
 
