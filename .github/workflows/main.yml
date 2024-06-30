@@ -246,96 +246,96 @@ jobs:
           echo "SPEC_STR=${MATRIX_SPEC##*_}" >> "$GITHUB_ENV"
 
       - name: "Log Debug"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "HTML JSON"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "Starter Talents, No Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, No Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "All Talents, No Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, No Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, No Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, All Sets"
-        if: steps.setup.outcome == 'success'
+        if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
@@ -343,19 +343,19 @@ jobs:
 
       - name: Dump APL
         id: dump_apl
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget'
+        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure()
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            save_actions=${{ matrix.spec }}.txt
+            save_actions=${{ matrix.spec }}.simc
 
       - name: Upload APL
         if: steps.dump_apl.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
-          path: ${{ matrix.spec }}.txt
+          path: ${{ matrix.spec }}.simc
           retention-days: 1
 
   tww-apl-dump:
@@ -392,7 +392,7 @@ jobs:
           message: 'Update APL Dump ${{ env.SHORT_SHA }}'
           default_author: github_actions
           fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
-          add: '*.txt'
+          add: '*.simc'
 
       - name: Cleanup
         uses: geekyeggo/delete-artifact@v5
