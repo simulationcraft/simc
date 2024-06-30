@@ -1581,7 +1581,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
   {
     auto misc1 = e->misc_value1();
-    if ( misc1 < STAT_NONE || misc1 > STAT_MAX )
+    if ( misc1 < -2 || misc1 >= STAT_MAX )
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "Invalid (%d)", e->misc_value1() );
     }
