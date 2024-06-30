@@ -185,12 +185,15 @@ jobs:
             git checkout -- SpellDataDump/build_info.txt
           fi
 
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
       - name: Commit Spell Data
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'Update Spell Data Dump ${{ github.sha }}'
+          message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
           default_author: github_actions
-          fetch: false
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
           add: '*.txt'
 
   tww-test:
@@ -380,10 +383,13 @@ jobs:
           pattern: apl-${{ github.sha }}-*
           merge-multiple: true
 
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
       - name: Commit APLs
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'Update APL Dump ${{ github.sha }}'
+          message: 'Update APL Dump ${{ env.SHORT_SHA }}'
           default_author: github_actions
           fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
           add: '*.txt'
@@ -476,18 +482,14 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_THREADS: 2
-          SIMC_ITERATIONS: 2
-        run: | 
-          ${{ github.workspace }}/generate_profiles_ci.sh
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'
           default_author: github_actions
-          fetch: false
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
           add: '*.simc'
 
   build-osx:
