@@ -2768,6 +2768,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
+    p()->buffs.nether_precision->decrement();
 
     snapshot_charges = -1;
   }
@@ -2798,6 +2799,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
+    am *= 1.0 + p()->buffs.nether_precision->check_value();
 
     return am;
   }
@@ -2863,6 +2865,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
+    // TODO: apparently, you can get two spells on the final stack
+    // this might need to be decremented with a delay (but in a way that
+    // doesn't affect PoM Arcane Blast)
     p()->buffs.nether_precision->decrement();
 
     if ( num_targets_crit > 0 )
