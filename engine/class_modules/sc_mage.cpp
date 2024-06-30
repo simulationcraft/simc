@@ -393,10 +393,10 @@ public:
 
     proc_t* brain_freeze;
     proc_t* brain_freeze_water_jet;
+    proc_t* brain_freeze_time_anomaly;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
-    proc_t* fingers_of_frost_time_anomaly;
     proc_t* fingers_of_frost_wasted;
     proc_t* flurry_cast;
     proc_t* winters_chill_applied;
@@ -5659,7 +5659,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
     TA_COMBUSTION,
     TA_FIRE_BLAST,
     TA_ICY_VEINS,
-    TA_FINGERS_OF_FROST,
+    TA_BRAIN_FREEZE,
     TA_TIME_WARP
   };
 
@@ -5694,8 +5694,8 @@ struct time_anomaly_tick_event_t final : public mage_event_t
         possible_procs.push_back( TA_FIRE_BLAST );
       if ( spec == MAGE_FROST && !mage->buffs.icy_veins->check() )
         possible_procs.push_back( TA_ICY_VEINS );
-      if ( spec == MAGE_FROST && !mage->buffs.fingers_of_frost->at_max_stacks() )
-        possible_procs.push_back( TA_FINGERS_OF_FROST );
+      if ( spec == MAGE_FROST && !mage->buffs.brain_freeze->check() )
+        possible_procs.push_back( TA_BRAIN_FREEZE );
       if ( !mage->buffs.time_warp->check() )
         possible_procs.push_back( TA_TIME_WARP );
 
@@ -5716,8 +5716,9 @@ struct time_anomaly_tick_event_t final : public mage_event_t
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
             break;
-          case TA_FINGERS_OF_FROST:
-            mage->trigger_fof( 1.0, mage->procs.fingers_of_frost_time_anomaly );
+          case TA_BRAIN_FREEZE:
+            // TODO: figure out the delay
+            mage->trigger_brain_freeze( 1.0, mage->procs.brain_freeze_time_anomaly );
             break;
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
@@ -6636,10 +6637,10 @@ void mage_t::init_procs()
     case MAGE_FROST:
       procs.brain_freeze                    = get_proc( "Brain Freeze" );
       procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
+      procs.brain_freeze_time_anomaly       = get_proc( "Brain Freeze from Time Anomaly" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
-      procs.fingers_of_frost_time_anomaly   = get_proc( "Fingers of Frost from Time Anomaly" );
       procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       procs.flurry_cast                     = get_proc( "Flurry cast" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
