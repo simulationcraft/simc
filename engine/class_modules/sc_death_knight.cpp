@@ -4102,7 +4102,7 @@ struct trollbane_pet_t final : public horseman_pet_t
     {
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
-      if ( dk()->bugs && a->target->type == ENEMY_ADD )
+      if ( !dk()->bugs || a->target->type == ENEMY_ADD )
       {
         dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
       }
