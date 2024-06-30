@@ -177,8 +177,9 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
-  parse_target_effects( td_fn( &monk_td_t::debuff_t::weapons_of_order ),
-                        p()->talent.brewmaster.weapons_of_order_debuff );
+  if ( p()->talent.brewmaster.weapons_of_order->ok() )
+    parse_target_effects( td_fn( &monk_td_t::debuff_t::weapons_of_order ),
+                          p()->talent.brewmaster.weapons_of_order_debuff );
 }
 
 // Utility function to search spell data for matching effect.
@@ -1529,9 +1530,13 @@ struct press_the_advantage_t : base_action_t
       base_action_t::background  = true;
       base_action_t::dual        = true;
 
-      base_action_t::force_effect( player->buff.counterstrike, 1 );
+      base_action_t::parse_effects( player->buff.counterstrike,
+                                    affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+                                    player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
       // effect must still be rolled in execute so it triggers brew cdr
-      base_action_t::force_effect( player->buff.blackout_combo, 1, [ this ]() { return face_palm; } );
+      base_action_t::parse_effects(
+          player->buff.blackout_combo, affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+          player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
     }
 
     void execute() override
@@ -1595,30 +1600,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     background = dual = true;
     may_crit          = true;
     trigger_chiji     = true;
-  }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
-
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
-
-    am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage->check();
-
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
-
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage->check();
-
-    return c;
+    parse_effects( p->buff.kicks_of_flowing_momentum );
   }
 
   void execute() override
@@ -1696,13 +1679,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p->talent.brewmaster.press_the_advantage->ok() )
     {
-      trigger_pta        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str, "rising_sun_kick_dmg" );
-      trigger_pta->stats = stats;
+      trigger_pta = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str, "rising_sun_kick_dmg" );
+      stats       = trigger_pta->stats;
     }
     else
     {
-      trigger_rsk        = new rising_sun_kick_dmg_t( p, options_str, "rising_sun_kick_dmg" );
-      trigger_rsk->stats = stats;
+      trigger_rsk = new rising_sun_kick_dmg_t( p, options_str, "rising_sun_kick_dmg" );
+      stats       = trigger_rsk->stats;
     }
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
@@ -1925,6 +1908,10 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
     apply_affecting_aura( p->talent.windwalker.shadowboxing_treads );
     apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
+    apply_affecting_aura( p->talent.windwalker.hardened_soles );
+
+    parse_effects( p->buff.blackout_reinforcement );
+    parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -1940,7 +1927,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( target != p()->target )
+    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
       m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
 
     return m;
@@ -1953,38 +1940,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     // Register how much chi is saved without actually refunding the chi
     if ( p()->buff.bok_proc->up() )
       p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = base_t::composite_crit_chance();
-
-    c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = base_t::composite_crit_damage_bonus_multiplier();
-
-    m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
-
-    am *= 1 + p()->buff.blackout_reinforcement->check_value();
-
-    if ( p()->talent.windwalker.courageous_impulse.ok() && p()->buff.bok_proc->check() )
-      am *= 1 + p()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
-
-    return am;
   }
 
   void execute() override
@@ -2096,11 +2051,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
-    {
       p()->stagger[ "Stagger" ]->purify_flat(
           s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
           "staggering_strikes" );
-    }
 
     // Martial Mixture triggers from each BoK impact
     if ( p()->talent.windwalker.martial_mixture->ok() )
@@ -2212,6 +2165,21 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     if ( p->specialization() == MONK_WINDWALKER )
       ap_type = attack_power_type::WEAPON_BOTH;
+
+    parse_effects( p->talent.windwalker.crane_vortex );
+
+    // kotfm and cs are scripted for SCK, we can add this id to the whitelist instead
+    parse_effects( p->buff.kicks_of_flowing_momentum, affect_list_t( 1 ).adjust_spell( data->id() ) );
+    parse_effects( p->buff.counterstrike, affect_list_t( 1 ).adjust_spell( data->id() ) );
+
+    // // dance of chiji is scripted
+    if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+
+    // TODO: Mark of the Crane parsing
   }
 
   int motc_counter() const
@@ -2261,17 +2229,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     if ( motc_stacks > 0 )
       am *= 1 + ( motc_stacks * p()->passives.cyclone_strikes->effectN( 1 ).percent() );
-
-    if ( p()->buff.dance_of_chiji_hidden->check() )
-      am *= p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
-
-    am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
-
-    am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
-
-    am *= 1 + p()->buff.counterstrike->data().effectN( 2 ).percent();
-
-    am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage_helper->check();
 
     return am;
   }
@@ -2324,6 +2281,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action =
         new sck_tick_action_t( p, "spinning_crane_kick_tick", p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
+    tick_action->stats = stats;
 
     // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
@@ -2452,6 +2410,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
+
+    parse_effects( p->buff.fists_of_flowing_momentum_fof, USE_CURRENT );
+    parse_effects( p->buff.momentum_boost_damage );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -2472,17 +2433,11 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     am *= 1 + p()->buff.transfer_the_power->check_stack_value();
 
-    am *= 1 + p()->buff.fists_of_flowing_momentum_fof->check_value();
-
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.momentum_boost.ok() )
-    {
       am *= 1 + ( ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 ) *
                   p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
-
-      am *= 1 + p()->buff.momentum_boost_damage->check_stack_value();
-    }
 
     return am;
   }
@@ -2523,7 +2478,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     ability_lag = p->world_lag;
 
-    tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+    tick_action        = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+    tick_action->stats = stats;
   }
 
   bool usable_moving() const override
@@ -3755,11 +3711,30 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // ==========================================================================
 struct breath_of_fire_dot_t : public monk_spell_t
 {
+  bool blackout_combo;
+
   breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->passives.breath_of_fire_dot )
   {
     background    = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
+  }
+
+  double composite_persistent_multiplier( const action_state_t *state ) const override
+  {
+    double cpm = monk_spell_t::composite_persistent_multiplier( state );
+    if ( blackout_combo )
+      cpm *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+    return cpm;
+  }
+
+  void execute() override
+  {
+    // blackout combo buffs only one of the breath of fire dot applications from
+    // a single cast
+    monk_spell_t::execute();
+    blackout_combo = p()->buff.blackout_combo->up();
+    p()->buff.blackout_combo->expire();
   }
 };
 
@@ -3792,7 +3767,7 @@ struct breath_of_fire_t : public monk_spell_t
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
 
-    // aoe                 = -1;
+    aoe                 = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     cast_during_sck     = true;
@@ -3822,7 +3797,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_breath_of_fire->occur();
-    p()->buff.blackout_combo->expire();
+    // defer boc consumption to be handled by bof dot
   }
 
   void impact( action_state_t *state ) override
@@ -7868,8 +7843,9 @@ void monk_t::create_buffs()
                                         ->add_invalidate( CACHE_MASTERY );
 
   // Tier 29 Set Bonus
-  buff.kicks_of_flowing_momentum =
-      new buffs::kicks_of_flowing_momentum_t( this, "kicks_of_flowing_momentum", passives.kicks_of_flowing_momentum );
+  buff.kicks_of_flowing_momentum = make_buff_fallback<buffs::kicks_of_flowing_momentum_t>(
+      sets->set( MONK_WINDWALKER, T29, B2 )->ok(), this, "kicks_of_flowing_momentum",
+      passives.kicks_of_flowing_momentum );
 
   buff.fists_of_flowing_momentum = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
                                                        "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
@@ -8762,15 +8738,10 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       // In order to trigger the expire before the hit but not actually remove the buff until AFTER the hit
       // We are setting a 1 millisecond delay on the expire.
 
-      if ( rng().roll( 1.0 - sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 2 ).percent() ) )
-      {
-        buff.elusive_brawler->expire( timespan_t::from_millis( 1 ) );
-      }
+      if ( rng().roll( 1.0 - talent.brewmaster.one_with_the_wind->effectN( 1 ).percent() ) )
+        buff.elusive_brawler->expire();
       else
-      {
         proc.elusive_brawler_preserved->occur();
-      }
-      buff.leverage->trigger();
 
       // Saved as 5/10 base values but need it as 0.5 and 1 base values
       if ( talent.brewmaster.anvil__stave->ok() && cooldown.anvil__stave->up() )
@@ -8787,12 +8758,10 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       buff.counterstrike->trigger();
   }
 
-  if ( action_t::result_is_hit( s->result ) && s->action->id != passives.stagger_self_damage->id() )
-  {
-    // trigger the mastery if the player gets hit by a physical attack; but not from stagger
-    if ( school == SCHOOL_PHYSICAL )
-      buff.elusive_brawler->trigger();
-  }
+  // trigger the mastery if the player gets hit by a physical attack; but not from stagger
+  if ( action_t::result_is_hit( s->result ) && school == SCHOOL_PHYSICAL &&
+       s->action->id != passives.stagger_self_damage->id() )
+    buff.elusive_brawler->trigger();
 
   base_t::assess_damage( school, dtype, s );
 }
