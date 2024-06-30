@@ -275,6 +275,7 @@ public:
     buff_t* nether_precision;
     buff_t* presence_of_mind;
     buff_t* siphon_storm;
+    buff_t* static_cloud;
 
 
     // Fire
@@ -2955,6 +2956,10 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
 
+    if ( p()->buffs.static_cloud->at_max_stacks() )
+      p()->buffs.static_cloud->expire();
+    p()->buffs.static_cloud->trigger();
+
     p()->state.trigger_cc_channel = false;
 
     if ( !background && p()->buffs.arcane_battery->at_max_stacks() )
@@ -2971,6 +2976,15 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     c += p()->buffs.arcane_charge->check() * p()->sets->set( MAGE_ARCANE, T29, B2 )->effectN( 2 ).percent();
 
     return c;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.static_cloud->check_stack_value();
+
+    return am;
   }
 };
 
@@ -6468,6 +6482,9 @@ void mage_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                  ->set_chance( talents.siphon_storm.ok() );
+  buffs.static_cloud         = make_buff( this, "static_cloud", find_spell( 461515 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_chance( talents.static_cloud.ok() );
 
 
   // Fire
