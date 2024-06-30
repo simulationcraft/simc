@@ -1133,7 +1133,8 @@ struct touch_of_the_magi_t final : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    p->action.touch_of_the_magi_explosion->execute_on_target( player, p->talents.touch_of_the_magi->effectN( 1 ).percent() * current_value );
+    double pct = p->talents.touch_of_the_magi->effectN( 1 ).percent() + p->talents.improved_touch_of_the_magi->effectN( 1 ).percent();
+    p->action.touch_of_the_magi_explosion->execute_on_target( player, pct * current_value );
   }
 };
 
