@@ -649,7 +649,7 @@ public:
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
 
-    // Shadow Panda
+    // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
     propagate_const<buff_t *> flurry_charge;
     propagate_const<buff_t *> veterans_eye;
