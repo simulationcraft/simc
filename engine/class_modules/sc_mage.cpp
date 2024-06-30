@@ -451,7 +451,6 @@ public:
     bool fingers_of_frost_active;
     double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
-    bool trigger_cc_channel;
     double spent_mana;
     timespan_t gained_full_icicles;
     bool had_low_mana;
@@ -1196,18 +1195,6 @@ struct clearcasting_buff_t final : public buff_t
     modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-    debug_cast<mage_t*>( player )->state.trigger_cc_channel = check() != 0;
-  }
-
-  void expire_override( int stacks, timespan_t duration ) override
-  {
-    buff_t::expire_override( stacks, duration );
-    debug_cast<mage_t*>( player )->state.trigger_cc_channel = false;
-  }
-
   void decrement( int stacks, double value ) override
   {
     auto p = debug_cast<mage_t*>( player );
@@ -1215,8 +1202,6 @@ struct clearcasting_buff_t final : public buff_t
       p->buffs.concentration->expire();
     else
       buff_t::decrement( stacks, value );
-
-    p->state.trigger_cc_channel = check() != 0;
   }
 };
 
@@ -2968,8 +2953,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.static_cloud->expire();
     p()->buffs.static_cloud->trigger();
 
-    p()->state.trigger_cc_channel = false;
-
     if ( !background && p()->buffs.arcane_battery->at_max_stacks() )
     {
       p()->buffs.arcane_battery->expire();
@@ -3216,8 +3199,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
     {
-      if ( !p()->bugs || p()->state.trigger_cc_channel )
-        p()->buffs.clearcasting_channel->trigger();
+      p()->buffs.clearcasting_channel->trigger();
       p()->trigger_time_manipulation();
     }
     else
@@ -7168,12 +7150,6 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
 
 std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
 {
-  if ( util::str_compare_ci( name, "bugged_clearcasting" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return bugs && !state.trigger_cc_channel; } );
-  }
-
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
