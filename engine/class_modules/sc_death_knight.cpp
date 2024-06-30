@@ -5306,13 +5306,13 @@ struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_
   double value() override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+           p()->buffs.gift_of_the_sanlayn->check_value();
   }
 
   double check_value() const override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+           p()->buffs.gift_of_the_sanlayn->check_value();
   }
 };
 
@@ -5331,12 +5331,12 @@ struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
   }
 
   double check_value() const override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
   }
 };
 
@@ -5371,25 +5371,26 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
   double value() override
   {
     if ( gift_bug && check() )
-      return 14.0; // Why this multiplies it by 14x per stack, i do not know... script bugs are fun. 
+      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
     else if ( !gift_bug && check() )
-      return data().effectN( idx ).percent();
+      return 1.0 + data().effectN( idx ).percent();
     else
-      return 0;
+      return 1.0;
   }
 
   double check_value() const override
   {
     if ( gift_bug && check() )
-      return 14.0; // Why this multiplies it by 14x per stack, i do not know... script bugs are fun. 
+      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
     else if ( !gift_bug && check() )
-      return data().effectN( idx ).percent();
+      return 1.0 + data().effectN( idx ).percent();
     else
-      return 0;
+      return 1.0;
   }
 
 public:
   bool gift_bug;
+
 private:
   unsigned idx;
 };
