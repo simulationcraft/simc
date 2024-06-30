@@ -602,7 +602,7 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
     return stat_buff_t::buff_stat_stack_amount( stat, s ) * stat_mul;
   }
 
-  void expire_override( int s, timespan_t d )
+  void expire_override( int s, timespan_t d ) override
   {
     stat_buff_t::expire_override( s, d );
     stat_mul = 1.0;

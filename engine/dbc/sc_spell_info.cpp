@@ -1580,13 +1580,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
   else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
   {
-    auto stat = e->misc_value1() == -2 ? STAT_STR_AGI_INT
-              : e->misc_value1() == -1 ? STAT_ALL
-                                       : static_cast<stat_e>( e->misc_value1() + 1 );
-    if ( stat > STAT_NONE && stat < STAT_MAX )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::stat_type_abbrev( stat ) );
-    else
+    auto misc1 = e->misc_value1();
+    if ( misc1 < STAT_NONE || misc1 > STAT_MAX )
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "Invalid (%d)", e->misc_value1() );
+    }
+    else
+    {
+      auto stat = misc1 == -2 ? STAT_STR_AGI_INT : misc1 == -1 ? STAT_ALL : static_cast<stat_e>( misc1 + 1 );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::stat_type_abbrev( stat ) );
+    }
 
     s << " | Stat: " << tmp_buffer.data();
   }

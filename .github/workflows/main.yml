@@ -385,6 +385,7 @@ jobs:
         with:
           message: 'Update APL Dump ${{ github.sha }}'
           default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
           add: '*.txt'
 
       - name: Cleanup
