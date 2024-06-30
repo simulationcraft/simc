@@ -283,9 +283,7 @@ struct mind_blast_t final : public mind_blast_base_t
 struct void_blast_shadow_t final : public mind_blast_base_t
 {
   void_blast_shadow_t( priest_t& p, util::string_view options_str )
-    : mind_blast_base_t(
-          p, options_str,
-          p.talents.voidweaver.void_blast.enabled() ? p.talents.voidweaver.void_blast_shadow : spell_data_t::nil() )
+    : mind_blast_base_t( p, options_str, p.talents.voidweaver.void_blast_shadow )
   {
     energize_amount   = -base_costs[ RESOURCE_INSANITY ];
     energize_type     = action_energize::ON_CAST;
@@ -1997,7 +1995,7 @@ struct flash_heal_t final : public priest_heal_t
 };
 
 // ==========================================================================
-// Flash Heal
+// Renew
 // ==========================================================================
 struct renew_t final : public priest_heal_t
 {
