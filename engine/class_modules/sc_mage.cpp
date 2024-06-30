@@ -5219,10 +5219,10 @@ struct slow_t final : public arcane_mage_spell_t
 
 // Supernova Spell ==========================================================
 
-struct supernova_t final : public arcane_mage_spell_t
+struct supernova_t final : public mage_spell_t
 {
   supernova_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.supernova )
+    mage_spell_t( n, p, p->talents.supernova )
   {
     parse_options( options_str );
     aoe = -1;
@@ -5816,7 +5816,6 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "arcane_surge"      ) return new      arcane_surge_t( name, this, options_str );
   if ( name == "evocation"         ) return new         evocation_t( name, this, options_str );
   if ( name == "presence_of_mind"  ) return new  presence_of_mind_t( name, this, options_str );
-  if ( name == "supernova"         ) return new         supernova_t( name, this, options_str );
   if ( name == "touch_of_the_magi" ) return new touch_of_the_magi_t( name, this, options_str );
 
   // Fire
@@ -5859,6 +5858,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "shifting_power"    ) return new    shifting_power_t( name, this, options_str );
   if ( name == "shimmer"           ) return new           shimmer_t( name, this, options_str );
   if ( name == "slow"              ) return new              slow_t( name, this, options_str );
+  if ( name == "supernova"         ) return new         supernova_t( name, this, options_str );
   if ( name == "time_warp"         ) return new         time_warp_t( name, this, options_str );
 
   // Special
