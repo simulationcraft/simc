@@ -1530,9 +1530,13 @@ struct press_the_advantage_t : base_action_t
       base_action_t::background  = true;
       base_action_t::dual        = true;
 
-      base_action_t::force_effect( player->buff.counterstrike, 1 );
+      base_action_t::parse_effects( player->buff.counterstrike,
+                                    affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+                                    player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
       // effect must still be rolled in execute so it triggers brew cdr
-      base_action_t::force_effect( player->buff.blackout_combo, 1, [ this ]() { return face_palm; } );
+      base_action_t::parse_effects(
+          player->buff.blackout_combo, affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+          player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
     }
 
     void execute() override
