@@ -13305,7 +13305,8 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
             {
               p.sim->print_debug( "reapers_mark go boom" );
               p.buffs.grim_reaper->trigger();
-              buff->expire();
+              if ( buff->remains() != timespan_t::zero() ) // prevents an edge case segfault, something to do with the buff ticking in expiration
+                buff->expire();
             }
           } );
 
