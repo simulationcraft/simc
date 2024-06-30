@@ -6473,6 +6473,7 @@ void mage_t::create_buffs()
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                  ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
+                                 ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
                                  ->set_chance( talents.nether_precision.ok() );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
