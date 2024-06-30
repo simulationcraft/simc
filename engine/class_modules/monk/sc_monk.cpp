@@ -1913,7 +1913,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( target != p()->target )
+    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
       m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
 
     return m;
