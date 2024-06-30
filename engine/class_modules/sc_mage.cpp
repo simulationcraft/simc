@@ -2820,6 +2820,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     parse_options( options_str );
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
   }
 
   timespan_t travel_time() const override
