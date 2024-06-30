@@ -362,7 +362,7 @@ jobs:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
     needs: [ tww-test, tww-spelldata-dump ]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && ( success() || failure() )
 
     strategy:
       fail-fast: false
