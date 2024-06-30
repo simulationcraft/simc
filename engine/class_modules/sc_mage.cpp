@@ -861,6 +861,7 @@ public:
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_rating_multiplier( rating_e ) const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
   double matching_gear_multiplier( attribute_e ) const override;
   double stacking_movement_modifier() const override;
   void arise() override;
@@ -6909,6 +6910,21 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
   }
 
   return rm;
+}
+
+double mage_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double mul = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_INTELLECT && sim->auras.arcane_intellect->check() )
+  {
+    double ai_val = sim->auras.arcane_intellect->current_value;
+    double ii_val = talents.inspired_intellect->effectN( 1 ).percent();
+    mul /= 1.0 + ai_val;
+    mul *= 1.0 + ai_val + ii_val;
+  }
+
+  return mul;
 }
 
 double mage_t::composite_melee_crit_chance() const
