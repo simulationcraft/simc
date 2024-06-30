@@ -2682,6 +2682,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = true;
+    base_multiplier *= 1.0 + p->talents.resonant_orbs->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
