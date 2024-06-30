@@ -770,7 +770,7 @@ public:
     // San'layn
     propagate_const<buff_t*> essence_of_the_blood_queen;
     propagate_const<buff_t*> essence_of_the_blood_queen_damage;
-    propagate_const<buff_t*> gift_of_the_sanlayn;
+    buff_t* gift_of_the_sanlayn;
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
     propagate_const<buff_t*> visceral_strength;
@@ -5338,6 +5338,60 @@ struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff
   {
     return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
+};
+
+struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
+{
+  gift_of_the_sanlayn_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : death_knight_buff_t( p, name, spell ), gift_bug( false ), idx( p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+  {
+    set_default_value_from_effect( idx );
+    set_duration( 0_ms );  // Handled by DT and VB
+    add_invalidate( CACHE_HASTE );
+    set_expire_callback( [ p ]( buff_t*, int, timespan_t ) {
+      p->buffs.vampiric_strike->expire();
+      if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+      {
+        p->buffs.infliction_of_sorrow->trigger();
+      }
+    } );
+    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        if ( p->buffs.vampiric_strike->check() )
+        {
+          p->procs.vampiric_strike_waste->occur();
+        }
+        p->buffs.vampiric_strike->predict();
+        p->buffs.vampiric_strike->trigger();
+      }
+    } );
+  }
+
+  double value() override
+  {
+    if ( gift_bug && check() )
+      return 14.0; // Why this multiplies it by 14x per stack, i do not know... script bugs are fun. 
+    else if ( !gift_bug && check() )
+      return data().effectN( idx ).percent();
+    else
+      return 0;
+  }
+
+  double check_value() const override
+  {
+    if ( gift_bug && check() )
+      return 14.0; // Why this multiplies it by 14x per stack, i do not know... script bugs are fun. 
+    else if ( !gift_bug && check() )
+      return data().effectN( idx ).percent();
+    else
+      return 0;
+  }
+
+public:
+  bool gift_bug;
+private:
+  unsigned idx;
 };
 
 // Death and Decay ==========================================================
@@ -10079,6 +10133,23 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     return cc;
   }
 
+  void execute() override
+  {
+    wound_spender_base_t::execute();
+    if ( p()->bugs && !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = true;
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    if ( p()->bugs && p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = false;
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     wound_spender_base_t::impact( s );
@@ -11689,7 +11760,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   }
   else if ( buffs.infliction_of_sorrow->check() )
   {
-    mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    mod = bugs ? spell.infliction_of_sorrow_buff->effectN( 1 ).percent() : talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     buffs.infliction_of_sorrow->expire();
     if ( disease_td->is_ticking() )
     {
@@ -13413,29 +13484,9 @@ void death_knight_t::create_buffs()
                                                                spell.essence_of_the_blood_queen_buff )
           ->set_quiet( true );
 
-  buffs.gift_of_the_sanlayn = make_fallback( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
-                                             spell.gift_of_the_sanlayn_buff )
-                                  ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
-                                  ->set_duration( 0_ms )  // Handled by DT and VB
-                                  ->add_invalidate( CACHE_HASTE )
-                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                    buffs.vampiric_strike->expire();
-                                    if ( talent.sanlayn.infliction_of_sorrow.ok() )
-                                    {
-                                      buffs.infliction_of_sorrow->trigger();
-                                    }
-                                  } )
-                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                    if ( new_ )
-                                    {
-                                      if ( buffs.vampiric_strike->check() )
-                                      {
-                                        procs.vampiric_strike_waste->occur();
-                                      }
-                                      buffs.vampiric_strike->predict();
-                                      buffs.vampiric_strike->trigger();
-                                    }
-                                  } );
+  buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
+                                             spell.gift_of_the_sanlayn_buff );
+
 
   buffs.vampiric_strike =
       make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "vampiric_strike", spell.vampiric_strike_buff );
