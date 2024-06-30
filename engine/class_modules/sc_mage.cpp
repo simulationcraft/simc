@@ -6423,7 +6423,15 @@ void mage_t::create_buffs()
                                  ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                  ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                                   { action.arcane_assault->execute_on_target( target ); } )
+                                   {
+                                     int count = 1;
+                                     // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
+                                     if ( buffs.arcane_surge->check() )
+                                       count += as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
+                                     // TODO: in game, the bolts are slightly delayed, this generally shouldn't matter
+                                     for ( int i = 0; i < count; i++ )
+                                       action.arcane_assault->execute_on_target( target );
+                                   } )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } )
                                  ->set_chance( talents.arcane_familiar.ok() );
