@@ -660,14 +660,7 @@ public:
     propagate_const<buff_t *> wisdom_of_the_wall_mastery;
 
     // T29 Set Bonus
-    propagate_const<buff_t *> kicks_of_flowing_momentum;
-    propagate_const<buff_t *> fists_of_flowing_momentum;
-    propagate_const<buff_t *> fists_of_flowing_momentum_fof;
     propagate_const<buff_t *> brewmasters_rhythm;
-
-    // T30 Set Bonus
-    propagate_const<buff_t *> leverage;
-    propagate_const<buff_t *> leverage_helper;
 
     // T31 Set Bonus
     propagate_const<buff_t *> brewmaster_t31_4p_accumulator;
@@ -1400,10 +1393,6 @@ public:
       const spell_data_t *high_impact;
       const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
-
-    // Tier 29
-    const spell_data_t *kicks_of_flowing_momentum;
-    const spell_data_t *fists_of_flowing_momentum;
 
     // Tier 30
     const spell_data_t *shadowflame_nova;

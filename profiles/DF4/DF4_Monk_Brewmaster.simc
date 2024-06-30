@@ -64,16 +64,17 @@ actions=auto_attack
 actions+=/potion
 # actions+=/blackout_kick
 # actions+=/rising_sun_kick
-# actions+=/breath_of_fire
 # actions+=/rushing_jade_wind
 # actions+=/exploding_keg
-# actions+=/keg_smash
+actions+=/blackout_kick
+actions+=/keg_smash
+actions+=/breath_of_fire,if=buff.blackout_combo.up
 # actions+=/tiger_palm
 # actions+=/purifying_brew
-actions+=/call_action_list,name=ogcd
-actions+=/call_action_list,name=igcd,if=time<240
-actions+=/call_action_list,name=rota,if=time<240
-actions+=/call_action_list,name=dumb,if=time>240
+# actions+=/call_action_list,name=ogcd
+# actions+=/call_action_list,name=igcd,if=time<240
+# actions+=/call_action_list,name=rota,if=time<240
+# actions+=/call_action_list,name=dumb,if=time>240
 
 tank_dummy="Fluffy_Pollow"
 level=83
