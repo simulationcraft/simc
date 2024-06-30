@@ -6437,45 +6437,33 @@ struct exterminate_t final : public death_knight_spell_t
   {
     background         = true;
     cooldown->duration = 0_ms;
-    next_is_secondary  = false;
-    this_is_secondary  = false;
     add_child( second_hit );
   }
 
   void execute() override
   {
-    // Exterminate cannot continously proc Reaper's mark, only the first can
-    // proc happens immediately before the damage does so it generates stacks
-    // If Ex procs a mark, flag the next cast
-    // When executing, check if the next cast is flagged and mark this as the secondary mark if true
-    // clear the secondary flag after
-    if ( next_is_secondary && !this_is_secondary )
-    {
-      this_is_secondary = true;
-      next_is_secondary = false;
-    }
-    if ( !this_is_secondary )
-    {
+
       double chance = p()->talent.deathbringer.painful_death->ok()
                           ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                           : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
       if ( p()->rng().roll( chance ) )
       {
-        get_td( p()->target )->debuff.reapers_mark->trigger();
+        buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
+        if ( rm->up() )
+        {
+          rm->expire();
+        }
+        rm->trigger();
         p()->procs.exterminate_reapers_mark->occur();
-        next_is_secondary = true;
       }
-    }
+    
     death_knight_spell_t::execute();
     make_event( *sim, 500_ms, [ this ]() { second_hit->execute_on_target( this->target ); } );
-    this_is_secondary = false;
   }
 
 private:
   exterminate_aoe_t* second_hit;
-  bool next_is_secondary;
-  bool this_is_secondary;
 };
 
 struct reapers_mark_explosion_t final : public death_knight_spell_t
@@ -6600,7 +6588,12 @@ struct reapers_mark_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
-    get_td( state->target )->debuff.reapers_mark->trigger();
+    buff_t* rm = get_td( state->target )->debuff.reapers_mark;
+    if ( rm->up() )
+    {
+      rm->expire();
+    }
+    rm->trigger();
   }
 
   void execute() override
@@ -13304,14 +13297,14 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           } )
           ->set_tick_callback( [ & ]( buff_t* buff, int, timespan_t ) {
             // 5/7/24 the 35% appears to be in a server script
-            // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
+            // the explosion is triggering anytime the target is below 35%, if the hidden grim reaper buff is down, instantly popping fresh marks
             // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
             size_t targets = p.sim->target_non_sleeping_list.size();
             if ( !p.buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
             {
               p.sim->print_debug( "reapers_mark go boom" );
               p.buffs.grim_reaper->trigger();
-              // buff->expire(); TODO: FIX ME
+              buff->expire();
             }
           } );
 
