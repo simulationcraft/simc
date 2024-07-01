@@ -3113,7 +3113,12 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
       p()->buffs.arcane_harmony->trigger();
 
       if ( p()->talents.arcane_debilitation.ok() )
-        get_td( s->target )->debuffs.arcane_debilitation->trigger();
+      {
+        auto debuff = get_td( s->target )->debuffs.arcane_debilitation;
+        debuff->trigger();
+        while ( rng().roll( p()->talents.time_loop->effectN( 1 ).percent() ) )
+          debuff->trigger();
+      }
 
       if ( p()->talents.high_voltage.ok() )
       {
