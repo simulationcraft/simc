@@ -3670,6 +3670,8 @@ struct evocation_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
+    p()->buffs.clearcasting->trigger();
+
     if ( p()->talents.siphon_storm.ok() )
       p()->trigger_arcane_charge();
 
