@@ -3282,6 +3282,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    affected_by.savant = true;
     triggers.clearcasting = TO_NEVER;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
