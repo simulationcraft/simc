@@ -98,6 +98,7 @@ struct mage_td_t final : public actor_target_data_t
 {
   struct debuffs_t
   {
+    buff_t* arcane_debilitation;
     buff_t* frozen;
     buff_t* improved_scorch;
     buff_t* numbing_blast;
@@ -1404,6 +1405,7 @@ struct mage_spell_t : public spell_t
     bool frost_mage = true;
 
     // Temporary damage increase
+    bool arcane_debilitation = false;
     bool arcane_surge = true;
     bool bone_chilling = true;
     bool deaths_chill = true;
@@ -1592,6 +1594,8 @@ public:
 
     if ( auto td = find_td( target ) )
     {
+      if ( affected_by.arcane_debilitation )
+        m *= 1.0 + td->debuffs.arcane_debilitation->check_stack_value();
       if ( affected_by.improved_scorch )
         m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
       if ( affected_by.numbing_blast )
@@ -2724,6 +2728,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     base_aoe_multiplier *= data().effectN( 2 ).percent();
+    affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
 
     if ( p->talents.orb_barrage.ok() )
@@ -2813,6 +2818,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
+    affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
@@ -3069,7 +3075,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    affected_by.savant = triggers.overflowing_energy = true;
+    affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
@@ -3105,6 +3111,9 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.arcane_harmony->trigger();
+
+      if ( p()->talents.arcane_debilitation.ok() )
+        get_td( s->target )->debuffs.arcane_debilitation->trigger();
 
       if ( p()->talents.high_voltage.ok() )
       {
@@ -5800,15 +5809,20 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs()
 {
   // Baseline
-  debuffs.frozen            = make_buff( *this, "frozen" )
-                                ->set_refresh_behavior( buff_refresh_behavior::MAX );
-  debuffs.improved_scorch   = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
-                                ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
-  debuffs.numbing_blast     = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_chance( mage->talents.glacial_assault.ok() );
-  debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
-  debuffs.winters_chill     = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
+  // TODO: Does the 0.5% per stack actually do anything with only 1 rank of the talent?
+  debuffs.arcane_debilitation = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
+                                  ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
+                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                  ->set_chance( mage->talents.arcane_debilitation.ok() );
+  debuffs.frozen              = make_buff( *this, "frozen" )
+                                  ->set_refresh_behavior( buff_refresh_behavior::MAX );
+  debuffs.improved_scorch     = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
+                                  ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
+  debuffs.numbing_blast       = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->set_chance( mage->talents.glacial_assault.ok() );
+  debuffs.touch_of_the_magi   = make_buff<buffs::touch_of_the_magi_t>( this );
+  debuffs.winters_chill       = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
 
   // Set Bonuses
   debuffs.charring_embers = make_buff( *this, "charring_embers", mage->find_spell( 408665 ) )
