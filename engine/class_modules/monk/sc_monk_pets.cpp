@@ -787,7 +787,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( o()->spec.combat_conditioning->ok() )
+      if ( o()->baseline.windwalker.combat_conditioning->ok() )
         state->target->debuffs.mortal_wounds->trigger();
 
       o()->trigger_mark_of_the_crane( state );
@@ -1297,7 +1297,7 @@ public:
 
     buff.bok_proc_sef =
         make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
-            ->set_trigger_spell( o()->spec.combo_breaker )
+            ->set_trigger_spell( o()->baseline.windwalker.combo_breaker )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
     buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->passives.rushing_jade_wind )

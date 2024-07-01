@@ -1404,7 +1404,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.teachings_of_the_monastery->trigger();
 
     // Combo Breaker calculation
-    if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() && p()->buff.storm_earth_and_fire->up() )
+    if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
+         p()->buff.storm_earth_and_fire->up() )
     {
       p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_FIRE );
       p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
@@ -1622,6 +1623,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
                                            true );
       p()->proc.xuens_battlegear_reduction->occur();
     }
+
+    if ( p()->baseline.windwalker.combat_conditioning->ok() )
+      s->target->debuffs.mortal_wounds->trigger();
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
@@ -1900,8 +1904,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       add_child( bok_totm_proc );
     }
 
-    if ( p->spec.blackout_kick_2->ok() )
-      base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
+    if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
+      base_costs[ RESOURCE_CHI ] +=
+          p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -1942,7 +1947,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
       p()->buff.blackout_combo->trigger();
 
-      if ( p()->spec.blackout_kick_3->ok() )
+      if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
       {
         // Reduce the cooldown of Rising Sun Kick and Fists of Fury
         timespan_t cd_reduction = -1 * p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
@@ -2168,7 +2173,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     if ( p()->specialization() != MONK_WINDWALKER )
       return 0;
 
-    if ( !p()->spec.mark_of_the_crane->ok() )
+    if ( !p()->baseline.windwalker.mark_of_the_crane->ok() )
       return 0;
 
     if ( p()->user_options.motc_override > 0 )
@@ -3251,7 +3256,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
   double pct_health;
   touch_of_karma_dot_t *touch_of_karma_dot;
   touch_of_karma_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "touch_of_karma", p->spec.touch_of_karma ),
+    : monk_melee_attack_t( p, "touch_of_karma", p->baseline.windwalker.touch_of_karma ),
       interval( 100 ),
       interval_stddev( 0.05 ),
       interval_stddev_opt( 0 ),
@@ -3425,9 +3430,9 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   bool first_charge;
   double movement_speed_increase;
   flying_serpent_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "flying_serpent_kick", p->spec.flying_serpent_kick ),
+    : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ),
       first_charge( true ),
-      movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
+      movement_speed_increase( p->baseline.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     may_crit                        = true;
@@ -4138,7 +4143,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->spec.empowered_tiger_lightning->ok();
+    return p()->baseline.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -4153,7 +4158,7 @@ struct fury_of_xuen_empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->spec.empowered_tiger_lightning->ok();
+    return p()->baseline.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -5551,7 +5556,7 @@ struct touch_of_karma_buff_t : public monk_buff_t
   {
     default_value = 0;
     set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p->spec.touch_of_karma );
+    set_trigger_spell( p->baseline.windwalker.touch_of_karma );
 
     set_duration( s->duration() );
   }
@@ -5628,9 +5633,10 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
   static void invoke_xuen_callback( buff_t *b, int, timespan_t )
   {
     auto *p = debug_cast<monk_t *>( b->player );
-    if ( p->spec.empowered_tiger_lightning->ok() )
+    if ( p->baseline.windwalker.empowered_tiger_lightning->ok() )
     {
-      double empowered_tiger_lightning_multiplier = p->spec.empowered_tiger_lightning->effectN( 2 ).percent();
+      double empowered_tiger_lightning_multiplier =
+          p->baseline.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
       for ( auto target : p->sim->target_non_sleeping_list )
       {
@@ -5700,9 +5706,10 @@ struct fury_of_xuen_t : public monk_buff_t
   static void fury_of_xuen_callback( buff_t *b, int, timespan_t )
   {
     auto *p = debug_cast<monk_t *>( b->player );
-    if ( p->spec.empowered_tiger_lightning->ok() )
+    if ( p->baseline.windwalker.empowered_tiger_lightning->ok() )
     {
-      double empowered_tiger_lightning_multiplier = p->spec.empowered_tiger_lightning->effectN( 2 ).percent();
+      double empowered_tiger_lightning_multiplier =
+          p->baseline.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
       for ( auto target : p->sim->target_non_sleeping_list )
       {
@@ -5846,7 +5853,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t
     set_quiet( true );
     set_reverse( true );
     set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p->spec.touch_of_death_3_ww );
+    set_trigger_spell( p->baseline.windwalker.touch_of_death_rank_3 );
 
     set_duration( timespan_t::from_minutes( 3 ) );
     set_period( timespan_t::from_seconds( 1 ) );
@@ -6034,7 +6041,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                            ->set_default_value_from_effect( 1 );
 
   debuff.empowered_tiger_lightning = make_buff( *this, "empowered_tiger_lightning", spell_data_t::nil() )
-                                         ->set_trigger_spell( p->spec.empowered_tiger_lightning )
+                                         ->set_trigger_spell( p->baseline.windwalker.empowered_tiger_lightning )
                                          ->set_quiet( true )
                                          ->set_cooldown( timespan_t::zero() )
                                          ->set_refresh_behavior( buff_refresh_behavior::NONE )
@@ -6042,7 +6049,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                          ->set_default_value( 0 );
   debuff.fury_of_xuen_empowered_tiger_lightning =
       make_buff( *this, "empowered_tiger_lightning_fury_of_xuen", spell_data_t::nil() )
-          ->set_trigger_spell( p->spec.empowered_tiger_lightning )
+          ->set_trigger_spell( p->baseline.windwalker.empowered_tiger_lightning )
           ->set_quiet( true )
           ->set_cooldown( timespan_t::zero() )
           ->set_refresh_behavior( buff_refresh_behavior::NONE )
@@ -6050,10 +6057,11 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_default_value( 0 );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                 ->set_trigger_spell( p->spec.mark_of_the_crane )
+                                 ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
+
+  debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->baseline.windwalker.touch_of_karma )
                               // set the percent of the max hp as the default value.
                               ->set_default_value_from_effect( 3 );
 
@@ -6121,7 +6129,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     gain(),
     proc(),
     talent(),
-    spec(),
     mastery(),
     cooldown(),
     passives(),
@@ -6388,7 +6395,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 {
-  if ( !spec.mark_of_the_crane->ok() )
+  if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return;
 
   if ( !action_t::result_is_hit( s->result ) )
@@ -6459,7 +6466,7 @@ int monk_t::mark_of_the_crane_counter()
   if ( specialization() != MONK_WINDWALKER )
     return 0;
 
-  if ( !spec.mark_of_the_crane->ok() )
+  if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return 0;
 
   if ( user_options.motc_override > 0 )
@@ -6482,7 +6489,7 @@ int monk_t::mark_of_the_crane_counter()
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
-  if ( !spec.mark_of_the_crane->ok() )
+  if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return true;
 
   int count   = mark_of_the_crane_counter();
@@ -6638,27 +6645,21 @@ void monk_t::init_spells()
     baseline.mistweaver.aura              = find_specialization_spell( "Mistweaver Monk" );
     baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
     baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
-    spec.detox                            = find_specialization_spell( "Detox" );
-    spec.reawaken                         = find_specialization_spell( "Reawaken" );
   }
 
   // monk_t::baseline::windwalker
   {
-    current_spec                   = MONK_WINDWALKER;
-    baseline.windwalker.aura       = find_specialization_spell( "Windwalker Monk" );
-    spec.afterlife                 = find_specialization_spell( "Afterlife" );
-    spec.afterlife_2               = find_rank_spell( "Afterlife", "Rank 2" );
-    spec.blackout_kick_2           = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
-    spec.blackout_kick_3           = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
-    spec.combat_conditioning       = find_specialization_spell( "Combat Conditioning" );
-    spec.combo_breaker             = find_specialization_spell( "Combo Breaker" );
-    spec.disable_2                 = find_rank_spell( "Disable", "Rank 2" );
-    spec.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
-    spec.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
-    spec.mark_of_the_crane         = find_specialization_spell( "Mark of the Crane" );
-    spec.spinning_crane_kick_2_ww  = find_rank_spell( "Spinning Crane Kick", "Rank 2", MONK_WINDWALKER );
-    spec.touch_of_death_3_ww       = find_spell( 344361 );
-    spec.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
+    current_spec                                  = MONK_WINDWALKER;
+    baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
+    baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
+    baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
+    baseline.windwalker.combo_breaker             = find_specialization_spell( "Combo Breaker" );
+    baseline.windwalker.combat_conditioning       = find_specialization_spell( "Combat Conditioning" );
+    baseline.windwalker.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
+    baseline.windwalker.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
+    baseline.windwalker.mark_of_the_crane         = find_specialization_spell( "Mark of the Crane" );
+    baseline.windwalker.touch_of_death_rank_3     = find_spell( 344361 );
+    baseline.windwalker.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
   }
 
   // monk_t::talent::monk
@@ -7639,9 +7640,9 @@ void monk_t::create_buffs()
                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Windwalker
-  buff.bok_proc = make_buff_fallback( spec.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
-                      ->set_trigger_spell( spec.combo_breaker )
-                      ->set_chance( spec.combo_breaker->effectN( 1 ).percent() *
+  buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
+                      ->set_trigger_spell( baseline.windwalker.combo_breaker )
+                      ->set_chance( baseline.windwalker.combo_breaker->effectN( 1 ).percent() *
                                     ( 1.0f + talent.windwalker.memory_of_the_monastery->effectN( 1 ).percent() ) );
 
   buff.chi_energy =
@@ -7694,9 +7695,9 @@ void monk_t::create_buffs()
                            ->set_freeze_stacks( true )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
 
-  buff.flying_serpent_kick_movement = make_buff_fallback( spec.flying_serpent_kick->ok(), this,
+  buff.flying_serpent_kick_movement = make_buff_fallback( baseline.windwalker.flying_serpent_kick->ok(), this,
                                                           "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
-                                          ->set_trigger_spell( spec.flying_serpent_kick );
+                                          ->set_trigger_spell( baseline.windwalker.flying_serpent_kick );
 
   buff.fury_of_xuen_stacks =
       new buffs::fury_of_xuen_stacking_buff_t( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
@@ -7866,7 +7867,7 @@ void monk_t::create_buffs()
   movement.chi_torpedo = new monk_movement_t( this, "chi_torpedo_movement", talent.general.chi_torpedo );
   movement.chi_torpedo->set_distance( 10 );
 
-  movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", spec.flying_serpent_kick );
+  movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", baseline.windwalker.flying_serpent_kick );
   movement.flying_serpent_kick->set_distance( 1 );
 
   movement.melee_squirm = new monk_movement_t( this, "melee_squirm" );
@@ -8795,7 +8796,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
   {
-    double percent_HP = spec.touch_of_karma->effectN( 3 ).percent() * max_health();
+    double percent_HP = baseline.windwalker.touch_of_karma->effectN( 3 ).percent() * max_health();
     if ( ( buff.touch_of_karma->value() + s->result_amount ) >= percent_HP )
     {
       double difference = percent_HP - buff.touch_of_karma->value();
@@ -8931,7 +8932,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
    * 4.) SEF does not contribute to ETL while FoX is up
    */
 
-  if ( specialization() != MONK_WINDWALKER || !spec.empowered_tiger_lightning->ok() )
+  if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
     return;
 
   if ( s->result_amount <= 0 )

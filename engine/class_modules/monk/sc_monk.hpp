@@ -1149,35 +1149,6 @@ public:
     const spell_data_t *teachings_of_the_monastery;
   } shared;
 
-  // Specialization
-  // TODO: these are just baseline abilities, renaming this possibly makes sense
-  struct specs_t
-  {
-    // Mistweaver
-    const spell_data_t *detox;
-    const spell_data_t *expel_harm_2_mw;
-    const spell_data_t *expel_harm_3_mw;
-    const spell_data_t *leather_specialization_mw;
-    const spell_data_t *reawaken;
-    // Windwalker
-    const spell_data_t *afterlife;
-    const spell_data_t *afterlife_2;
-    const spell_data_t *blackout_kick_2;
-    const spell_data_t *blackout_kick_3;
-    const spell_data_t *combat_conditioning;
-    const spell_data_t *combo_breaker;
-    const spell_data_t *disable_2;
-    const spell_data_t *empowered_tiger_lightning;
-    const spell_data_t *expel_harm_2_ww;
-    const spell_data_t *flying_serpent_kick;
-    const spell_data_t *leather_specialization_ww;
-    const spell_data_t *mark_of_the_crane;
-    const spell_data_t *spinning_crane_kick_2_ww;
-    const spell_data_t *touch_of_death_3_ww;
-    const spell_data_t *touch_of_karma;
-    const spell_data_t *two_hand_adjustment_ww;
-  } spec;
-
   // new spell data holders
   struct
   {
@@ -1232,6 +1203,15 @@ public:
     struct
     {
       const spell_data_t *aura;
+      const spell_data_t *blackout_kick_rank_2;
+      const spell_data_t *blackout_kick_rank_3;
+      const spell_data_t *combo_breaker;
+      const spell_data_t *combat_conditioning;
+      const spell_data_t *empowered_tiger_lightning;
+      const spell_data_t *flying_serpent_kick;
+      const spell_data_t *mark_of_the_crane;
+      const spell_data_t *touch_of_death_rank_3;
+      const spell_data_t *touch_of_karma;
     } windwalker;
   } baseline;
 
