@@ -271,6 +271,7 @@ public:
     buff_t* arcane_harmony;
     buff_t* arcane_surge;
     buff_t* arcane_tempo;
+    buff_t* big_brained;
     buff_t* chrono_shift;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
@@ -916,7 +917,7 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t adjust = 0_ms );
-  bool trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
+  bool trigger_clearcasting( double chance, timespan_t delay = 0.15_s );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
@@ -1711,7 +1712,7 @@ public:
 
     bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || triggers.clearcasting == TO_DEFAULT && harmful && !background;
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
-      p()->trigger_delayed_buff( p()->buffs.clearcasting, p()->spec.clearcasting->effectN( 2 ).percent() );
+      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent() );
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
@@ -3319,7 +3320,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    p()->buffs.clearcasting->trigger();
+    p()->trigger_clearcasting( 1.0, 0_ms );
   }
 
   void impact( action_state_t* s ) override
@@ -3677,7 +3678,7 @@ struct evocation_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p()->buffs.clearcasting->trigger();
+    p()->trigger_clearcasting( 1.0, 0_ms );
 
     if ( p()->talents.siphon_storm.ok() )
       p()->trigger_arcane_charge();
@@ -5752,7 +5753,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             mage->buffs.arcane_surge->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
             break;
           case TA_CLEARCASTING:
-            mage->buffs.clearcasting->trigger();
+            mage->trigger_clearcasting( 1.0, 0_ms );
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
@@ -6468,6 +6469,12 @@ void mage_t::create_buffs()
                                  ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                  ->set_chance( talents.arcane_tempo.ok() );
+  // TODO: currently only increases base intellect
+  buffs.big_brained          = make_buff( this, "big_brained", find_spell( 461531 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                 ->set_chance( talents.big_brained.ok() );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
@@ -7481,32 +7488,17 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
   }
 }
 
-// Triggers a buff. If the buff was already active, the new application
-// is delayed by the specified amount.
-bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay )
+bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
 {
-  if ( buff->max_stack() == 0 || buff->cooldown->down() )
-    return false;
-
-  bool success;
-  if ( chance < 0.0 )
-  {
-    if ( buff->rppm )
-      success = buff->rppm->trigger();
-    else
-      success = rng().roll( buff->default_chance );
-  }
-  else
-  {
-    success = rng().roll( chance );
-  }
-
+  bool success = rng().roll( chance );
   if ( success )
   {
-    if ( delay > 0_ms && buff->check() )
-      make_event( *sim, delay, [ buff ] { buff->execute(); } );
+    if ( delay > 0_ms && buffs.clearcasting->check() )
+      make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
-      buff->execute();
+      buffs.clearcasting->trigger();
+
+    buffs.big_brained->trigger();
   }
 
   return success;
