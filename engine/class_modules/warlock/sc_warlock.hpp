@@ -417,90 +417,84 @@ public:
     const spell_data_t* demonic_servitude;
 
     // Destruction
-    player_talent_t chaos_bolt;
-
+    player_talent_t chaos_bolt; // TODO: Move to base section
     player_talent_t conflagrate; // Base 2 charges
-    const spell_data_t* conflagrate_2; // Contains Soul Shard information
-    player_talent_t reverse_entropy;
-    const spell_data_t* reverse_entropy_buff;
-    player_talent_t internal_combustion;
-    player_talent_t rain_of_fire;
-    const spell_data_t* rain_of_fire_tick;
+    const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
+    player_talent_t rain_of_fire;
+    const spell_data_t* rain_of_fire_tick;
+
+    player_talent_t roaring_blaze;
+    const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
+    player_talent_t improved_conflagrate; // +1 charge for Conflagrate
+    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
     player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
+    player_talent_t inferno; // TODO: Heavily changed
+    player_talent_t cataclysm;
 
-    player_talent_t roaring_blaze;
-    const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
-    player_talent_t improved_conflagrate; // +1 charge for Conflagrate
+    player_talent_t indiscriminate_flames; // TODO: New
+    player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
+    const spell_data_t* rolling_havoc_buff;
+    player_talent_t scalding_flames; // Increased Immolate damage and duration
+
+    player_talent_t shadowburn;
+    const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
+    // TODO: Summoner's Embrace - may be shared with Affliction?
+    // Grimoire of Sacrifice - shared with Affliction
+    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate TODO: Review behavior
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
-    player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
-    player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
-    const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
-    player_talent_t improved_immolate; // Duration increase
-    player_talent_t inferno; // TOCHECK: Do SL target caps remain in effect?
-    player_talent_t cataclysm;
 
-    player_talent_t soul_fire;
-    const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t shadowburn;
-    const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
-    player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
-    player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
-    const spell_data_t* rolling_havoc_buff;
-    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
-    player_talent_t fire_and_brimstone;
-
-    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown
-    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
+    player_talent_t blistering_atrophy; // TODO: New
+    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
-    const spell_data_t* flashpoint_buff;
-    player_talent_t scalding_flames; // Increased Immolate damage
-
-    player_talent_t ruin; // Damage increase to several spells
-    player_talent_t eradication;
-    const spell_data_t* eradication_debuff;
-    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate
-    // Grimoire of Sacrifice (shared with Affliction)
-
+    player_talent_t emberstorm; // TODO: New
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
-    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
-    player_talent_t ritual_of_ruin;
-    const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
-    const spell_data_t* ritual_of_ruin_buff;
-    
+    player_talent_t fire_and_brimstone;
+    player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
+    const spell_data_t* flashpoint_buff;
+    player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
+
+    player_talent_t fiendish_cruelty; // TODO: New
+    player_talent_t eradication;
+    const spell_data_t* eradication_debuff;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t infernal_brand; // Infernal melees increase Infernal AoE damage
-    player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
-    const spell_data_t* power_overwhelming_buff;
-    player_talent_t madness_of_the_azjaqir; // TODO: REMOVED in 10.2
-    const spell_data_t* madness_cb;
-    const spell_data_t* madness_rof;
-    const spell_data_t* madness_sb;
-    player_talent_t chaosbringer; // Increased damage to Chaos Bolt, Rain of Fire, Shadowburn
-    player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
-    player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
-    const spell_data_t* burn_to_ashes_buff;
-
     player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
-    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
-    player_talent_t chaos_incarnate; // Maximum mastery value for some spells
-    player_talent_t dimensional_rift;
+    player_talent_t reverse_entropy;
+    const spell_data_t* reverse_entropy_buff;
+    player_talent_t internal_combustion;
+    player_talent_t demonfire_mastery; // TODO: New
+
+    player_talent_t devastation; // TODO: New
+    player_talent_t ritual_of_ruin;
+    const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
+    const spell_data_t* ritual_of_ruin_buff;
+    player_talent_t ruin; // Damage increase to several spells TODO: Review behavior
+
+    player_talent_t soul_fire;
+    const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
+    player_talent_t improved_chaos_bolt; // TODO: New
+    player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
+    const spell_data_t* burn_to_ashes_buff;
+    player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
+    player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
+    const spell_data_t* power_overwhelming_buff;
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
+    player_talent_t dimensional_rift; // TODO: Review behavior with loss of tier set
     const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
     const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
     const spell_data_t* rift_shadow_bolt; // Separate ID from Warlock's Shadow Bolt
@@ -509,8 +503,24 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin
-    const spell_data_t* summon_blasphemy;
+
+    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown TODO: New proc behavior?
+    player_talent_t chaos_incarnate; // Maximum mastery value for some spells
+    player_talent_t avatar_of_destruction; // TODO: Behavior changed
+    const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
+    player_talent_t dimension_ripper; // TODO: New
+    player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
+
+    player_talent_t pandemonium; // TODO: Remove
+    player_talent_t cry_havoc; // TODO: Remove
+    const spell_data_t* cry_havoc_proc;
+    player_talent_t improved_immolate; // TODO: Folded into another talent. Remove
+    player_talent_t infernal_brand; // TODO: Remove
+    player_talent_t madness_of_the_azjaqir; // TODO: Remove (leftover from earlier in DF)
+    const spell_data_t* madness_cb;
+    const spell_data_t* madness_rof;
+    const spell_data_t* madness_sb;
+    player_talent_t chaosbringer; // TODO: Remove
   } talents;
 
   struct proc_actions_t
