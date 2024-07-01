@@ -2981,6 +2981,10 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
     am *= 1.0 + p()->buffs.static_cloud->check_stack_value();
 
+    // Seems to affect the echo as well, but only if the mage has CC at that time.
+    if ( p()->buffs.clearcasting->check() )
+      am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
+
     return am;
   }
 };
@@ -3067,6 +3071,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     background = true;
     affected_by.savant = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
     const auto& aa = p->buffs.arcane_artillery->data();
     base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
