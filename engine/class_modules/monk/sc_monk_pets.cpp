@@ -696,7 +696,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_tiger_palm_t : public sef_melee_attack_t
   {
     sef_tiger_palm_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "tiger_palm", player, player->o()->spec.tiger_palm )
+      : sef_melee_attack_t( "tiger_palm", player, player->o()->baseline.monk.tiger_palm )
     {
     }
 
@@ -730,7 +730,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_blackout_kick_totm_proc_t *bok_totm_proc;
 
     sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
+      : sef_melee_attack_t( "blackout_kick", player, player->o()->baseline.monk.blackout_kick )
     {
       aoe = 1 + (int)o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
 
@@ -910,9 +910,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_spinning_crane_kick_tick_t : public sef_tick_action_t
   {
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t *p )
-      : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
+      : sef_tick_action_t( "spinning_crane_kick_tick", p,
+                           p->o()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() )
     {
-      aoe = as<int>( p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value() );
+      aoe = as<int>( p->o()->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value() );
     }
   };
 
@@ -920,7 +921,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   {
     sef_chi_explosion_t *chi_explosion;
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick ),
+      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->baseline.monk.spinning_crane_kick ),
         chi_explosion( nullptr )
     {
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
@@ -1131,7 +1132,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_crackling_jade_lightning_t : public sef_spell_t
   {
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning", player, player->o()->spec.crackling_jade_lightning )
+      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning )
     {
       tick_may_crit = true;
       channeled = tick_zero = true;

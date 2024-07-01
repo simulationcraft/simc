@@ -1153,53 +1153,12 @@ public:
   // TODO: these are just baseline abilities, renaming this possibly makes sense
   struct specs_t
   {
-    // GENERAL
-    const spell_data_t *blackout_kick;
-    const spell_data_t *crackling_jade_lightning;
-    const spell_data_t *expel_harm;
-    const spell_data_t *leg_sweep;
-    const spell_data_t *mystic_touch;
-    const spell_data_t *provoke;
-    const spell_data_t *resuscitate;
-    const spell_data_t *roll;
-    const spell_data_t *spinning_crane_kick;
-    const spell_data_t *tiger_palm;
-    const spell_data_t *touch_of_death;
-    const spell_data_t *touch_of_fatality;
-    const spell_data_t *vivify;
-
-    struct
-    {
-    } general;
-
-    // Brewmaster
-    const spell_data_t *blackout_kick_brm;
-    const spell_data_t *brewmasters_balance;
-    const spell_data_t *brewmaster_monk;
-    const spell_data_t *celestial_fortune;
-    const spell_data_t *expel_harm_2_brm;
-    const spell_data_t *leather_specialization_brm;
-    const spell_data_t *spinning_crane_kick_brm;
-    const spell_data_t *spinning_crane_kick_2_brm;
-    const spell_data_t *stagger;
-    const spell_data_t *touch_of_death_3_brm;
-    const spell_data_t *two_hand_adjustment_brm;
-
-    struct
-    {
-    } brewmaster;
-
     // Mistweaver
     const spell_data_t *detox;
     const spell_data_t *expel_harm_2_mw;
     const spell_data_t *expel_harm_3_mw;
     const spell_data_t *leather_specialization_mw;
     const spell_data_t *reawaken;
-
-    struct
-    {
-    } mistweaver;
-
     // Windwalker
     const spell_data_t *afterlife;
     const spell_data_t *afterlife_2;
@@ -1217,10 +1176,6 @@ public:
     const spell_data_t *touch_of_death_3_ww;
     const spell_data_t *touch_of_karma;
     const spell_data_t *two_hand_adjustment_ww;
-
-    struct
-    {
-    } windwalker;
   } spec;
 
   // new spell data holders
@@ -1234,6 +1189,16 @@ public:
       const spell_data_t *leather_specialization;
       const spell_data_t *expel_harm;
       const spell_data_t *expel_harm_damage;
+      const spell_data_t *blackout_kick;
+      const spell_data_t *crackling_jade_lightning;
+      const spell_data_t *leg_sweep;
+      const spell_data_t *mystic_touch;
+      const spell_data_t *roll;
+      const spell_data_t *spinning_crane_kick;
+      const spell_data_t *tiger_palm;
+      const spell_data_t *touch_of_death;
+      const spell_data_t *vivify;
+      const spell_data_t *provoke;
     } monk;
 
     struct
@@ -1244,7 +1209,12 @@ public:
       const spell_data_t *celestial_fortune_heal;
       const spell_data_t *expel_harm_rank_2;
       const spell_data_t *blackout_kick;
+      const spell_data_t *spinning_crane_kick;
+      const spell_data_t *spinning_crane_kick_rank_2;
+      const spell_data_t *touch_of_death_rank_3;
 
+      const spell_data_t *stagger;
+      const spell_data_t *stagger_self_damage;
       const spell_data_t *light_stagger;
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
@@ -1444,8 +1414,6 @@ public:
     int motc_override;
     double squirm_frequency;
   } user_options;
-
-  // stagger_t *stagger;
 
 public:
   monk_t( sim_t *sim, util::string_view name, race_e r );
