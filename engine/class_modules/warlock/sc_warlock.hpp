@@ -229,78 +229,96 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
-    player_talent_t grand_warlocks_design; // One spell data for all 3 specs. TODO: Changed in 10.2 to be a flat CDR
+    player_talent_t grand_warlocks_design; // TODO: Remove
 
     // Affliction
-    player_talent_t malefic_rapture;
+    player_talent_t malefic_rapture; // TODO: Move to base section
     const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
-
-    player_talent_t unstable_affliction;
+    player_talent_t unstable_affliction; // TODO: Check if higher ranks are still separate spell data
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (learned automatically)
     const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (learned automatically)
+
+    player_talent_t writhe_in_agony;
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
+    player_talent_t dark_virtuosity;
+    player_talent_t absolute_corruption;
+    player_talent_t siphon_life; // TODO: Now a passive, not an ability
+    player_talent_t kindled_malice;
+
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
-    player_talent_t writhe_in_agony;
-    player_talent_t sow_the_seeds;
+    player_talent_t volatile_agony; // TODO: New
+    player_talent_t sow_the_seeds; // TODO: Remove
 
-    player_talent_t shadow_embrace;
-    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
-    player_talent_t dark_virtuosity;
-    player_talent_t kindled_malice;
-    player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
-
+    player_talent_t improved_shadow_bolt; // TODO: New
     player_talent_t drain_soul; // This represents the talent node but not much else
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
-    player_talent_t absolute_corruption;
-    player_talent_t siphon_life;
+    player_talent_t summoners_embrace; // TODO: New
+    // Grimoire of Sacrifice (shared with Destruction)
     player_talent_t phantom_singularity;
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
-    const spell_data_t* pandemic_invocation_proc; // Damage data
-    player_talent_t inevitable_demise; // The talent version of the ability
-    const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
-    player_talent_t soul_swap; // Spend Soul Shard to apply core dots (Corruption, Agony, UA)
-    const spell_data_t* soul_swap_ua; // Separate copy of Unstable Affliction data, since UA is applied even without the talent
-    const spell_data_t* soul_swap_buff; // Buff indicating Soul Swap is holding a copy of data
-    const spell_data_t* soul_swap_exhale; // Second action that replaces Soul Swap while holding a copy, applies the copies to target
-    player_talent_t soul_flame; // AoE damage on kills
-    const spell_data_t* soul_flame_proc; // The actual spell damage data
-    // Grimoire of Sacrifice (shared with Destruction)
-    
-    player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
-    player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
+    player_talent_t haunt; // TODO: Shadow Embrace is applied by other talent
+    player_talent_t shadow_embrace; // TODO: Stack count is 2
+    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
+    player_talent_t summon_darkglare;
+    player_talent_t cunning_cruelty; // TODO: New
+    player_talent_t infirmity; // TODO: Move from tier sets
+    player_talent_t agonizing_corruption; // TODO: Remove
 
-    player_talent_t creeping_death;
-    player_talent_t haunt;
-    player_talent_t summon_darkglare; 
+    player_talent_t improved_haunt; // TODO: New
+    player_talent_t malediction; // TODO: New
+    player_talent_t malevolent_visionary; // TODO: AoE behavior may have changed
+    player_talent_t contagion; // TODO: New
+    player_talent_t cull_the_weak; // TODO: New
+
+    player_talent_t pandemic_invocation; // TODO: Remove
+    const spell_data_t* pandemic_invocation_proc;
+    player_talent_t inevitable_demise; // TODO: Remove
+    const spell_data_t* inevitable_demise_buff;
+    player_talent_t soul_swap; // TODO: Remove. Celebrate.
+    const spell_data_t* soul_swap_ua;
+    const spell_data_t* soul_swap_buff;
+    const spell_data_t* soul_swap_exhale;
+    player_talent_t soul_flame; // TODO: Remove.
+    const spell_data_t* soul_flame_proc;
+
+    player_talent_t creeping_death; 
     player_talent_t soul_rot;
-
-    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
-    player_talent_t seized_vitality; // Additional Haunt damage
-    player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
-    player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
-    const spell_data_t* wrath_of_consumption_buff;
-    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction. TODO: Changed in 10.2 to flat base reduction rather than per-tick effect
 
-    player_talent_t doom_blossom; // Seed of Corruption damage on Unstable Affliction target procs AoE damage
-    const spell_data_t* doom_blossom_proc;
-    player_talent_t dread_touch; // Malefic Rapture on Unstable Affliction target applies debuff increasing DoT damage
-    const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
-    player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
-    const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
-    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
-    player_talent_t grim_reach; // Darkglare hits all targets affected by DoTs
+    player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
+    player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
+    player_talent_t perpetual_unstability; // TODO: New
+    player_talent_t malign_omen; // TODO: New
+    player_talent_t relinquished; // TODO: New
+    player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
+    player_talent_t improved_malefic_rapture; // TODO: New
+
+    player_talent_t oblivion; // TODO: New
+    player_talent_t deaths_embrace; // TODO: New
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;
+    player_talent_t ravenous_afflictions; // TODO: New
+    player_talent_t malefic_touch; // TODO: New
+
+    player_talent_t seized_vitality; // TODO: Remove
+    player_talent_t wrath_of_consumption; // TODO: Remove
+    const spell_data_t* wrath_of_consumption_buff;
+    player_talent_t souleaters_gluttony; // TODO: Remove
+    player_talent_t doom_blossom; // TODO: Remove
+    const spell_data_t* doom_blossom_proc;
+    player_talent_t dread_touch; // TODO: Remove
+    const spell_data_t* dread_touch_debuff;
+    player_talent_t haunted_soul; // TODO: Remove
+    const spell_data_t* haunted_soul_buff;
+    player_talent_t grim_reach; // TODO: Remove
 
     // Demonology
     player_talent_t call_dreadstalkers;
