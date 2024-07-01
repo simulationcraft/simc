@@ -3190,6 +3190,14 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     }
   }
 
+  bool ready() override
+  {
+    if ( !p()->buffs.clearcasting->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+
   void execute() override
   {
     if ( get_dot( target )->is_ticking() )
