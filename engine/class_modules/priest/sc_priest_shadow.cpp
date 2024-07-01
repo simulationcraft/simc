@@ -90,10 +90,12 @@ struct mind_flay_t final : public priest_spell_t
       _insanity_spell->execute();
       priest().buffs.mind_flay_insanity->expire();
 
-      // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
+      // This rolls its own independent chance to crit for the Shadowy Apparition, since it happens on cast.
+      // It is not related to the first tick of MF:I's state
       if ( priest().talents.archon.energy_cycle.enabled() )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi, false );
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi,
+                                              rng().roll( priest().cache.spell_crit_chance() ) );
       }
     }
     else
@@ -221,7 +223,6 @@ struct mind_spike_insanity_t final : public mind_spike_base_t
   {
     priest_spell_t::impact( s );
 
-    // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
     if ( priest().talents.archon.energy_cycle.enabled() )
     {
       priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_msi, s->result == RESULT_CRIT );
@@ -2603,6 +2604,12 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod )
         buffs.last_shadowy_apparition_crit->expire();
       }
     }
+  }
+
+  // Proc tracking since we do not use real crits
+  if ( gets_crit_mod )
+  {
+    procs.shadowy_apparition_crit->occur();
   }
 
   // Idol of Yogg-Saron only triggers for each cast that generates an apparition

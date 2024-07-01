@@ -551,7 +551,9 @@ struct halo_spell_t final : public priest_spell_t
     {
       auto td = p().get_target_data( s->target );
       if ( td )
+      {
         td->buffs.resonant_energy->trigger();
+      }
     }
   }
 
@@ -2717,6 +2719,7 @@ void priest_t::create_procs()
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
   procs.mind_spike_insanity_munched    = get_proc( "Mind Spike: Insanity stacks consumed by normal Mind Spikes" );
+  procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
