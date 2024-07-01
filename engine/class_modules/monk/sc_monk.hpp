@@ -411,9 +411,12 @@ static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack =
 
 struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
-public:
   using base_t = stagger_t<parse_player_effects_t, monk_t>;
 
+private:
+  target_specific_t<monk_td_t> target_data;
+
+public:
   // Active
   action_t *windwalking_aura;
 
@@ -422,19 +425,6 @@ public:
 
   // For Debug reporting, used by create_proc_callback in init_special_effects
   std::map<std::string, std::vector<action_t *>> proc_tracking;
-
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             proc_flag2 PF2_OVERRIDE, action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ),
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
 
   struct active_actions_t
   {
@@ -685,7 +675,6 @@ public:
     propagate_const<hp_triggered_buff_t<monk_t, actions::monk_buff_t> *> flow_of_chi;
   } buff;
 
-public:
   struct gains_t
   {
     propagate_const<gain_t *> black_ox_brew_energy;
@@ -1458,21 +1447,14 @@ public:
 
   // stagger_t *stagger;
 
-private:
-  target_specific_t<monk_td_t> target_data;
-
 public:
   monk_t( sim_t *sim, util::string_view name, race_e r );
 
-  // Default consumables
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
-
-  void parse_player_effects();
-  // player_t overrides
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
@@ -1523,13 +1505,21 @@ public:
     }
     return td;
   }
-  const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype,
-                                              int misc_value               = P_GENERIC,
-                                              const spell_data_t *affected = spell_data_t::nil(),
-                                              effect_type_t type           = E_APPLY_AURA );
-  const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
 
   // Custom Monk Functions
+  void parse_player_effects();
+  void create_proc_callback( const spell_data_t *effect_driver,
+                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
+                             proc_flag2 PF2_OVERRIDE, action_t *proc_action_override = nullptr );
+  void create_proc_callback( const spell_data_t *effect_driver,
+                             bool ( *trigger )( monk_t *player, action_state_t *state ),
+                             action_t *proc_action_override = nullptr );
+  void create_proc_callback( const spell_data_t *effect_driver,
+                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
+                             action_t *proc_action_override = nullptr );
+  void create_proc_callback( const spell_data_t *effect_driver,
+                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
+                             action_t *proc_action_override = nullptr );
   void trigger_celestial_fortune( action_state_t * );
   void trigger_mark_of_the_crane( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );

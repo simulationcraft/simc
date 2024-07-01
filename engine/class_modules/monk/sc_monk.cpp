@@ -202,49 +202,6 @@ void monk_action_t<Base>::apply_debuff_effects()
   parse_target_effects( td_fn( &monk_td_t::dots_t::coalescence ), p()->talent.master_of_harmony.coalescence );
 }
 
-// Utility function to search spell data for matching effect.
-// NOTE: This will return the FIRST effect that matches parameters.
-template <class Base>
-const spelleffect_data_t *monk_action_t<Base>::find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype,
-                                                                 int misc_value, const spell_data_t *affected,
-                                                                 effect_type_t type )
-{
-  for ( size_t i = 1; i <= spell->effect_count(); i++ )
-  {
-    const auto &eff = spell->effectN( i );
-
-    if ( affected->ok() && !affected->affected_by_all( eff ) )
-      continue;
-
-    if ( eff.type() == type && eff.subtype() == subtype )
-    {
-      if ( misc_value != 0 )
-      {
-        if ( eff.misc_value1() == misc_value )
-          return &eff;
-      }
-      else
-        return &eff;
-    }
-  }
-
-  return &spelleffect_data_t::nil();
-}
-
-// Return the appropriate spell when `base` is overriden to another spell by `passive`
-template <class Base>
-const spell_data_t *monk_action_t<Base>::find_spell_override( const spell_data_t *base, const spell_data_t *passive )
-{
-  if ( !passive->ok() )
-    return base;
-
-  auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
-  if ( !id )
-    return base;
-
-  return find_spell( id );
-}
-
 template <class Base>
 std::unique_ptr<expr_t> monk_action_t<Base>::create_expression( util::string_view name_str )
 {
@@ -6593,20 +6550,30 @@ void monk_t::init_spells()
 {
   base_t::init_spells();
 
-  auto spec_tree = specialization();
+  specialization_e current_spec = SPEC_NONE;
 
   // Talents spells =====================================
-  auto _CT = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::CLASS, name ); };
+  // auto _RESOLVE = [ this, &current_spec ]( std::function<) {}
+  auto _CT = [ this, &current_spec ]( std::string_view name ) {
+    return find_talent_spell( talent_tree::CLASS, name, current_spec );
+  };
+  auto _ST = [ this, &current_spec ]( std::string_view name ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, name, current_spec );
+  };
+  auto _HT = [ this, &current_spec ]( std::string_view name ) {
+    return find_talent_spell( talent_tree::HERO, name, current_spec );
+  };
 
-  /* auto _CTID = [ this ]( int id ) {
-      return find_talent_spell( talent_tree::CLASS, id );
-    };
-  */
-  auto _ST = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::SPECIALIZATION, name ); };
+  // auto _CTID = [ this, &current_spec ]( int id ) { return find_talent_spell( talent_tree::CLASS, id, current_spec );
+  // };
+  auto _STID = [ this, &current_spec ]( int id ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, id, current_spec );
+  };
+  // auto _HTID = [ this, &current_spec ]( int id ) { return find_talent_spell( talent_tree::HERO, id, current_spec );
+  // };
 
-  auto _HT = [ this ]( util::string_view name ) { return find_talent_spell( talent_tree::HERO, name ); };
-
-  auto _STID = [ this ]( int id ) { return find_talent_spell( talent_tree::SPECIALIZATION, id ); };
+  // auto _SS = [ this, &current_spec ]( std::string_view name ) { return find_specialization_spell( name, current_spec
+  // ); };
 
   // =================================================================================================
 
@@ -6640,6 +6607,7 @@ void monk_t::init_spells()
 
   // monk_t::baseline::brewmaster
   {
+    current_spec                               = MONK_BREWMASTER;
     baseline.brewmaster.aura                   = find_specialization_spell( "Brewmaster Monk" );
     baseline.brewmaster.brewmasters_balance    = find_specialization_spell( "Brewmaster's Balance" );
     baseline.brewmaster.celestial_fortune      = find_specialization_spell( "Celestial Fortune" );
@@ -7236,7 +7204,7 @@ void monk_t::init_spells()
   active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
 
   // Brewmaster
-  if ( spec_tree == MONK_BREWMASTER )
+  if ( specialization() == MONK_BREWMASTER )
   {
     active_actions.special_delivery           = new actions::special_delivery_t( this );
     active_actions.breath_of_fire             = new actions::spells::breath_of_fire_dot_t( this );
@@ -7254,7 +7222,7 @@ void monk_t::init_spells()
   }
 
   // Windwalker
-  if ( spec_tree == MONK_WINDWALKER )
+  if ( specialization() == MONK_WINDWALKER )
   {
     active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( this );
     active_actions.flurry_of_xuen            = new actions::flurry_of_xuen_t( this );
