@@ -115,58 +115,77 @@ template <class Base>
 void monk_action_t<Base>::apply_buff_effects()
 {
   /*
-   * Permanent action-specific effects go here.
-   * Make sure to use a specific `find_spell` method (i.e. `find_specialization_spell`)
-   * for all of these spells or they will be applied to actors of the incorrect spec.
+   * Permanent action-specific effects that apply to more than one action.
    */
 
-  // class and spec auras
+  // Monk
   apply_affecting_aura( p()->baseline.monk.aura );
-  apply_affecting_aura( p()->baseline.brewmaster.aura );
-  apply_affecting_aura( p()->baseline.mistweaver.aura );
-  apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
-  apply_affecting_aura( p()->baseline.windwalker.aura );
-
   apply_affecting_aura( p()->talent.monk.chi_proficiency );
   apply_affecting_aura( p()->talent.general.fast_feet );
 
+  // Brewmaster
+  apply_affecting_aura( p()->baseline.brewmaster.aura );
+
+  // Mistweaver
+  apply_affecting_aura( p()->baseline.mistweaver.aura );
+  apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
+
   // Windwalker
-  apply_affecting_aura( p()->talent.windwalker.rising_star );
+  apply_affecting_aura( p()->baseline.windwalker.aura );
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
-  //  apply_affecting_aura( p()->talent.windwalker.power_of_the_thunder_king );
+
+  // Conduit of the Celestials
+
+  // Master of Harmony
+  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
 
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
-  apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
-  // T33 Set Effects
-  // apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+  // TWW S1 Set Effects
+  apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+
+  // TWW S2 Set Effects
+
+  // TWW S3 Set Effects
+
+  // TWW S4 Set Effects
 
   /*
-   * Temporary action-specific effects go here.
-   * Does it apply a buff to a specific action?
+   * Temporary action-specific effects that apply to more than one action.
    * If so, the aura gets parsed here with `parse_effects`.
    */
+
+  // Monk
+
+  // Brewmaster
+  parse_effects( p()->buff.blackout_combo );
+
+  // Mistweaver
+
   // Windwalker
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
-  parse_effects( p()->buff.bok_proc );
-  parse_effects( p()->buff.darting_hurricane );
-  parse_effects( p()->buff.pressure_point );
-  parse_effects( p()->buff.blackout_combo );
+
+  // Conduit of the Celestials
+
+  // Master of Harmony
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
-  // T33 Set Effects
-  if ( p()->specialization() == MONK_WINDWALKER )
-  {
-    parse_effects( p()->buff.tiger_strikes );
-    parse_effects( p()->buff.tigers_ferocity );
-  }
-  // parse_effects( p()->buff.flow_of_battle );
+  // TWW S1 Set Effects
+  parse_effects( p()->buff.tiger_strikes );
+  parse_effects( p()->buff.tigers_ferocity );
+  parse_effects( p()->buff.flow_of_battle );
+
+  // TWW S2 Set Effects
+
+  // TWW S3 Set Effects
+
+  // TWW S4 Set Effects
 }
 
 // Action-related parsing of debuffs. Does not work on spells
@@ -180,6 +199,7 @@ void monk_action_t<Base>::apply_debuff_effects()
   if ( p()->talent.brewmaster.weapons_of_order->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::weapons_of_order ),
                           p()->talent.brewmaster.weapons_of_order_debuff );
+  parse_target_effects( td_fn( &monk_td_t::dots_t::coalescence ), p()->talent.master_of_harmony.coalescence );
 }
 
 // Utility function to search spell data for matching effect.
@@ -1374,6 +1394,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_effects( p->buff.counterstrike );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
+    parse_effects( p->buff.darting_hurricane );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -1601,7 +1622,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     may_crit          = true;
     trigger_chiji     = true;
 
+    apply_affecting_aura( p->talent.windwalker.rising_star );
     parse_effects( p->buff.kicks_of_flowing_momentum );
+    parse_effects( p->buff.pressure_point );
   }
 
   void execute() override
@@ -1909,6 +1932,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     apply_affecting_aura( p->talent.windwalker.shadowboxing_treads );
     apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
     apply_affecting_aura( p->talent.windwalker.hardened_soles );
+    apply_affecting_aura( p->talent.shado_pan.vigilant_watch );
 
     parse_effects( p->buff.blackout_reinforcement );
     parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
@@ -3657,6 +3681,8 @@ struct crackling_jade_lightning_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+
+    // parse_effects( p->talent.windwalker.power_of_the_thunder_king );
   }
 
   double cost_per_tick( resource_e resource ) const override
@@ -6119,6 +6145,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   dot.rushing_jade_wind = target->get_dot( "rushing_jade_wind", p );
   dot.soothing_mist     = target->get_dot( "soothing_mist", p );
   dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
+  dot.coalescence       = target->get_dot( "coalescence", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
@@ -6967,7 +6994,11 @@ void monk_t::init_spells()
   // =================================================================================================
 
   // Row 1
-  talent.master_of_harmony.aspect_of_harmony = _HT( "Aspect of Harmony" );
+  talent.master_of_harmony.aspect_of_harmony             = _HT( "Aspect of Harmony" );
+  talent.master_of_harmony.aspect_of_harmony_accumulator = find_spell( 450521 );
+  talent.master_of_harmony.aspect_of_harmony_spender     = find_spell( 450711 );
+  talent.master_of_harmony.aspect_of_harmony_damage      = find_spell( 450763 );
+  talent.master_of_harmony.aspect_of_harmony_heal        = find_spell( 450769 );
   // Row 2
   talent.master_of_harmony.manifestation      = _HT( "Manifestation" );
   talent.master_of_harmony.purified_spirit    = _HT( "Purified Spirit" );
@@ -6985,7 +7016,7 @@ void monk_t::init_spells()
   talent.master_of_harmony.way_of_a_thousand_strikes = _HT( "Way of a Thousand Strikes" );
   talent.master_of_harmony.clarity_of_purpose        = _HT( "Clarity of Purpose" );
   // Row 5
-  talent.master_of_harmony.resonance = _HT( "Resonance" );
+  talent.master_of_harmony.coalescence = _HT( "Coalescence" );
 
   // =================================================================================================
   // Shado-Pan
@@ -7586,11 +7617,13 @@ void monk_t::create_buffs()
 
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
-  buff.tiger_strikes = make_buff( this, "tiger_strikes", find_spell( 454485 ) )
-                           ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B2 ) );
+  buff.tiger_strikes =
+      make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B2 )->ok(), this, "tiger_strikes", find_spell( 454485 ) )
+          ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B2 ) );
 
-  buff.tigers_ferocity = make_buff( this, "tigers_ferocity", find_spell( 454502 ) )
-                             ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
+  buff.tigers_ferocity =
+      make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B4 )->ok(), this, "tigers_ferocity", find_spell( 454502 ) )
+          ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
 
   buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
                             ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );

@@ -336,6 +336,9 @@ public:
     propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
+
+    // Master of Harmony
+    propagate_const<dot_t *> coalescence;
   } dot;
 
   struct debuff_t
@@ -1071,6 +1074,10 @@ public:
     {
       // Row 1
       player_talent_t aspect_of_harmony;
+      const spell_data_t *aspect_of_harmony_accumulator;
+      const spell_data_t *aspect_of_harmony_spender;
+      const spell_data_t *aspect_of_harmony_damage;
+      const spell_data_t *aspect_of_harmony_heal;
       // Row 2
       player_talent_t manifestation;
       player_talent_t purified_spirit;
@@ -1088,7 +1095,7 @@ public:
       player_talent_t way_of_a_thousand_strikes;
       player_talent_t clarity_of_purpose;
       // Row 5
-      player_talent_t resonance;
+      player_talent_t coalescence;
     } master_of_harmony;
 
     // Shado-Pan
