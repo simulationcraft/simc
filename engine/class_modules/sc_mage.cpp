@@ -2855,10 +2855,11 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
-    // TODO: apparently, you can get two spells on the final stack
-    // this might need to be decremented with a delay (but in a way that
-    // doesn't affect PoM Arcane Blast)
-    p()->buffs.nether_precision->decrement();
+    // Nether Precision is slightly delayed, allowing two spells to benefit from the
+    // last stack. Technically, the delay should be on Arcane Barrage as well, but
+    // because it's an instant, it cannot be taken advantage of.
+    // TODO: Check if AB -> PoM AB works (with low latency).
+    make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
@@ -6495,6 +6496,7 @@ void mage_t::create_buffs()
   buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                  ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                  ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
+                                 ->set_activated( false )
                                  ->set_chance( talents.nether_precision.ok() );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
