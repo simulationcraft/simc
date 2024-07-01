@@ -193,7 +193,7 @@ jobs:
         with:
           message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
           default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.txt'
 
   tww-test:
@@ -391,7 +391,7 @@ jobs:
         with:
           message: 'Update APL Dump ${{ env.SHORT_SHA }}'
           default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.simc'
 
       - name: Cleanup
@@ -403,7 +403,7 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
-    if: github.ref == 'refs/heads/dragonflight'
+    if: github.ref_name == 'dragonflight'
 
     strategy:
       fail-fast: false
@@ -454,7 +454,7 @@ jobs:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dragonflight'
+    if: github.event_name == 'push' && github.ref_name == 'dragonflight'
 
     strategy:
       fail-fast: false
@@ -489,7 +489,7 @@ jobs:
         with:
           message: 'Regenerate profiles'
           default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.simc'
 
   build-osx:
@@ -502,7 +502,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: github.ref == 'refs/heads/dragonflight'
+        if: github.ref_name == 'dragonflight'
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -539,5 +539,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: matrix.runSmokeTest && github.ref == 'refs/heads/dragonflight'
+        if: matrix.runSmokeTest && github.ref_name == 'dragonflight'
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
