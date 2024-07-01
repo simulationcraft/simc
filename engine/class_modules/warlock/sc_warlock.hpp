@@ -164,7 +164,7 @@ public:
     const spell_data_t* destruction_warlock; // Spec aura
   } warlock_base;
 
-  // Main pet held in active/last, guardians should be handled by pet spawners. TODO: Use spawner for Infernal/Darkglare?
+  // Main pet held in active, guardians should be handled by pet spawners.
   struct pets_t
   {
     warlock_pet_t* active;
@@ -180,7 +180,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
 
-    // Nether Portal demons (TOCHECK: Are spawn rates still uniform?)
+    // Nether Portal demons (TODO: Remove? Celebrate?)
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
     spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
     spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
@@ -212,14 +212,14 @@ public:
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
-    player_talent_t grim_feast; // Faster Drain Life
-    player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
-    const spell_data_t* summon_soulkeeper_aoe; // The actual active spell which triggers the AoE
-    const spell_data_t* tormented_soul_buff; // Stacks periodically, duration of Summon Soulkeeper is based on stack count
-    const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
-    player_talent_t inquisitors_gaze;
-    const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
-    const spell_data_t* fel_barrage; // Inquisitor's Eye damage spell
+    player_talent_t grim_feast; // TODO: Remove
+    player_talent_t summon_soulkeeper; // TODO: Remove
+    const spell_data_t* summon_soulkeeper_aoe;
+    const spell_data_t* tormented_soul_buff;
+    const spell_data_t* soul_combustion;
+    player_talent_t inquisitors_gaze; // TODO: Remove
+    const spell_data_t* inquisitors_gaze_buff;
+    const spell_data_t* fel_barrage;
     player_talent_t soulburn;
     const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
