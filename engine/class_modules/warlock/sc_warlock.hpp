@@ -321,86 +321,100 @@ public:
     player_talent_t grim_reach; // TODO: Remove
 
     // Demonology
-    player_talent_t call_dreadstalkers;
-    const spell_data_t* call_dreadstalkers_2; // Contains duration data
-
-    player_talent_t demonbolt; // TODO: Remove/refactor when 10.2 goes live
-    player_talent_t demoniac; // 10.2 combines Demonbolt and Demonic Core under this talent
+    player_talent_t demoniac; // TODO: Move from base section
     const spell_data_t* demonbolt_spell;
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
 
-    player_talent_t dreadlash;
-    player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
-    const spell_data_t* annihilan_training_buff; // Applied to pet, not player
+    player_talent_t implosion;
+    const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
+    player_talent_t call_dreadstalkers;
+    const spell_data_t* call_dreadstalkers_2; // Contains duration data TODO: Check if still relevant
+    player_talent_t demonbolt; // TODO: Remove (leftover from earlier in DF)
 
-    player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
-    player_talent_t summon_vilefiend;
-    player_talent_t soul_strike; // TODO: Active player ability moved to pet in 10.2
+    player_talent_t imp_gang_boss;
+    player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
+    player_talent_t dreadlash;
+    player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
+
+    player_talent_t inner_demons;
+    player_talent_t soul_strike; // TODO: Make sure older iterations have been cleaned up
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
-    const spell_data_t* the_houndmasters_stratagem_debuff; // Debuff applied by Dreadstalker's Dreadbite
 
-    player_talent_t implosion;
-    const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
-    player_talent_t shadows_bite; // Demonbolt damage increase after Dreadstalkers despawn
-    const spell_data_t* shadows_bite_buff;
-    player_talent_t fel_invocation; // New in 10.2. Buffs either Soul Strike or Summon Vilefiend
-    player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
-    player_talent_t shadow_invocation; // New in 10.2 (previously called Volatile Fiends). Bilescourge Bomber damage and proc.
-    player_talent_t fel_and_steel; // Increase's primary Felguard's Legion Strike and Felstorm damage
-    player_talent_t heavy_handed; // Primary Felguard crit chance increase (additive)
+    player_talent_t rune_of_shadows; // TODO: New
+    player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
+    player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
+    player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
+    const spell_data_t* annihilan_training_buff; // Applied to pet, not player
+    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc. TODO: Review proc chances from AoE hits
+    player_talent_t wicked_maw; // TODO: Previously Houndmaster's Strategem. Convert/rename as necessary
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
+    player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
+    const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
+    player_talent_t demonic_knowledge; // TODO: Remove
+    player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
+    const spell_data_t* the_houndmasters_stratagem_debuff;
 
-    player_talent_t bloodbound_imps; // TODO: REMOVED in 10.2
-    player_talent_t spiteful_reconstitution; // New in 10.2. Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
-    player_talent_t inner_demons; // TODO: 10.2 has removed the "Summon Random Demon" proc
-    player_talent_t doom;
+    player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
+    player_talent_t blood_invocation; // TODO: New
+    player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
+    const spell_data_t* umbral_blaze_dot;
+    player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
-    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
+    player_talent_t fiendish_oblation; // TODO: New
+    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
     const spell_data_t* fel_sunder_debuff;
+    player_talent_t bloodbound_imps; // TODO: Remove (leftover from earlier in DF)
 
-    player_talent_t umbral_blaze;
-    const spell_data_t* umbral_blaze_dot;
-    player_talent_t imp_gang_boss;
-    player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
+    player_talent_t doom; // TODO: Heavily changed, now a passive
+    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
+    player_talent_t summon_vilefiend;
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
-    player_talent_t cavitation; // Increased critical strike damage for primary Felguard. TOCHECK: As of 2023-06-21 PTR, this is actually granting double the stated value
+    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave TODO: Check if GFG is benefiting
 
-    player_talent_t nether_portal; // 2023-09-20: Last audit of NP demon damage values
-    const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
-    player_talent_t summon_demonic_tyrant; // TODO: 10.2 has reworked Tyrant, including Wild Imp caps and a smaller pet whitelist.
-    const spell_data_t* demonic_power_buff; // TODO: 10.2 has changed this buff to not be universal, but only applicable to "extended" demons
-    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave (TOCHECK: 2022-10-08 - this is applying to Grimoire: Felguard erratically)
+    player_talent_t doom_eternal; // TODO: New
+    player_talent_t impending_doom; // TODO: New
+    player_talent_t flametouched; // TODO: New
+    player_talent_t foul_mouth; // TODO: New
+    player_talent_t shadowtouched; // TODO: New
+    player_talent_t improved_demonic_tactics; // TODO: Possibly migrated/combined from other effects (Cavitation/Heavy Handed)
+    player_talent_t demonic_brutality; // TODO: New
 
-    player_talent_t nerzhuls_volition; // TODO: Changed in 10.2 to buff demons summoned by Nether Portal (buff on pets inccl. Pit Lord)
-    const spell_data_t* nerzhuls_volition_buff; // New in 10.2
-    player_talent_t stolen_power; // Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage
-    const spell_data_t* stolen_power_stacking_buff; // Triggers final buff when reaching max stacks
-    const spell_data_t* stolen_power_final_buff;
+    player_talent_t pact_of_the_eredruin; // TODO: New
     player_talent_t sacrificed_souls;
-    player_talent_t soulbound_tyrant; // Soul Shards on Tyrant summons
-    player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
-    player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
-    player_talent_t infernal_command; // Increased Wild Imp and Dreadstalker damage while Felguard active
-
-    player_talent_t guldans_ambition; // Summons a Pit Lord at end of Nether Portal. TODO: 10.2 has reworked Pit Lord behavior. 2023-09-20 PTR: Felseeker is not benefitting from guardian aura in-game. Sim IS applying it automatically, TOCHECK near release.
-    const spell_data_t* guldans_ambition_summon; // Contains Pit Lord duration data
-    const spell_data_t* soul_glutton; // Buff on Pit Lord based on demons summoned. TODO: This buff is REMOVED in 10.2
-    player_talent_t reign_of_tyranny; // TODO: 10.2 has capped this at 15 stacks and may have changed other behavior
-    const spell_data_t* demonic_servitude; // TOCHECK: 2023-09-10 On 10.2 PTR, expiring demons will always lower the full amount even if overcapped. When Blizzard fixes it, implement that fix.
-    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
-    player_talent_t immutable_hatred;
+    player_talent_t mark_of_shatug; // TODO: New
+    player_talent_t mark_of_fharg; // TODO: New
+    player_talent_t the_houndmasters_gambit; // TODO: New
+    player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
+
+    player_talent_t kazaaks_final_curse; // TODO: Remove
+    player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
+    player_talent_t nether_portal; // TODO: Remove. Celebrate. Then celebrate again.
+    const spell_data_t* nether_portal_buff;
+    player_talent_t shadows_bite; // TODO: Remove
+    const spell_data_t* shadows_bite_buff;
+    player_talent_t fel_and_steel; // TODO: Remove
+    player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
+    player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
+    player_talent_t nerzhuls_volition; // TODO: Remove
+    const spell_data_t* nerzhuls_volition_buff;
+    player_talent_t stolen_power; // TODO: Remove
+    const spell_data_t* stolen_power_stacking_buff;
+    const spell_data_t* stolen_power_final_buff;
+    player_talent_t soulbound_tyrant; // TODO: Remove
+    player_talent_t infernal_command; // TODO: Remove
+    player_talent_t guldans_ambition; // TODO: Remove
+    const spell_data_t* guldans_ambition_summon;
+    const spell_data_t* soul_glutton;
+    const spell_data_t* demonic_servitude;
 
     // Destruction
     player_talent_t chaos_bolt;
