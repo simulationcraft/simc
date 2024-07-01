@@ -1,5 +1,5 @@
 // Active class spells, wow build 11.0.0.55288
-static const std::array<active_class_spell_t, 308> __active_spells_data { {
+static const std::array<active_class_spell_t, 309> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -176,6 +176,7 @@ static const std::array<active_class_spell_t, 308> __active_spells_data { {
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 192106,      0, "Lightning Shield"                   },
   {  7,    0, 318038,      0, "Flametongue Weapon"                 },
+  {  7,  263, 196884,      0, "Feral Lunge"                        },
   {  7,  264,  52127,      0, "Water Shield"                       },
   {  7,  264,  77130, 440012, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
