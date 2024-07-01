@@ -138,8 +138,9 @@ public:
 
     // Affliction
     const spell_data_t* agony;
-    const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
-    const spell_data_t* xavian_teachings; // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
+    const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks TODO: Check if needed in TWW
+    const spell_data_t* xavian_teachings; // Passive granted only to Affliction. Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
+    const spell_data_t* malefic_rapture; // TODO: Move from talent section
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -148,8 +149,8 @@ public:
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
-    const spell_data_t* demonic_core; // The passive responsible for the proc chance. TODO: 10.2 has made this contingent on the Demonbolt talent, may need shuffling
-    const spell_data_t* demonic_core_buff; // Buff spell data
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance. TODO: Move to talents (if not done already)
+    const spell_data_t* demonic_core_buff; // Buff spell data TODO: Move to talents (if not done already)
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
     const spell_data_t* demonology_warlock; // Spec aura
 
@@ -158,6 +159,7 @@ public:
     const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
     const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
+    const spell_data_t* chaos_bolt; // TODO: Move from talent section
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
     const spell_data_t* destruction_warlock; // Spec aura
   } warlock_base;
