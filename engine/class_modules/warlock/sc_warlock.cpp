@@ -237,6 +237,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
+    hero(),
     proc_actions(),
     tier(),
     cooldowns(),

@@ -523,6 +523,57 @@ public:
     player_talent_t chaosbringer; // TODO: Remove
   } talents;
 
+  struct hero_talents_t
+  {
+    // Diabolist
+    player_talent_t diabolic_ritual;
+
+    player_talent_t cloven_souls;
+    player_talent_t touch_of_rancora;
+    player_talent_t secrets_of_the_coven;
+
+    player_talent_t cruelty_of_kerxan;
+    player_talent_t infernal_machine;
+
+    player_talent_t flames_of_xoroth;
+    player_talent_t abyssal_dominion;
+    player_talent_t gloom_of_nathreza;
+
+    player_talent_t ruination;
+
+    // Hellcaller
+    player_talent_t wither;
+
+    player_talent_t xalans_ferocity;
+    player_talent_t blackened_soul;
+    player_talent_t xalans_cruelty;
+
+    player_talent_t hatefury_rituals;
+    player_talent_t bleakheart_tactics;
+
+    player_talent_t mark_of_xavius;
+    player_talent_t seeds_of_their_demise;
+    player_talent_t mark_of_perotharn;
+
+    player_talent_t malevolence;
+
+    // Soul Harvester
+    player_talent_t demonic_soul;
+    
+    player_talent_t necrolyte_teachings;
+    player_talent_t soul_anathema;
+    player_talent_t demoniacs_fervor;
+
+    player_talent_t shared_fate;
+    player_talent_t feast_of_souls;
+
+    player_talent_t wicked_reaping;
+    player_talent_t quietus;
+    player_talent_t sataiels_volition;
+
+    player_talent_t shadow_of_death;
+  } hero;
+
   struct proc_actions_t
   {
     action_t* soul_flame_proc;
