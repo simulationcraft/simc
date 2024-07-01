@@ -67,6 +67,13 @@ enum target_trigger_type_e
   TT_ALL_TARGETS
 };
 
+enum trigger_override_e
+{
+  TO_DEFAULT,
+  TO_ALWAYS,
+  TO_NEVER
+};
+
 enum hot_streak_trigger_type_e
 {
   HS_HIT,
@@ -1438,6 +1445,8 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e unleashed_inferno = TT_NONE;
 
     target_trigger_type_e calefaction = TT_NONE;
+
+    trigger_override_e clearcasting = TO_DEFAULT;
   } triggers;
 
 public:
@@ -1700,15 +1709,9 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    if ( p()->spec.clearcasting->ok() && harmful && current_resource() == RESOURCE_MANA )
-    {
-      // Mana spending required for 1% chance.
-      double mana_step = p()->spec.clearcasting->cost( POWER_MANA ) * p()->resources.base[ RESOURCE_MANA ];
-      mana_step /= p()->spec.clearcasting->effectN( 1 ).percent();
-      double chance = 0.01 * last_resource_cost / mana_step;
-      chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
-      p()->trigger_delayed_buff( p()->buffs.clearcasting, chance );
-    }
+    bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || triggers.clearcasting == TO_DEFAULT && harmful && !background;
+    if ( p()->spec.clearcasting->ok() && can_trigger_cc )
+      p()->trigger_delayed_buff( p()->buffs.clearcasting, p()->spec.clearcasting->effectN( 2 ).percent() );
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
@@ -2905,6 +2908,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
+    triggers.clearcasting = TO_ALWAYS; // AE Echo seems to also trigger CC, despite being a background action.
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
 
     if ( echo_ )
@@ -3278,6 +3282,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    triggers.clearcasting = TO_NEVER;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
@@ -4158,6 +4163,7 @@ struct frost_nova_t final : public mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.time_manipulation = true;
+    triggers.clearcasting = TO_NEVER; // TODO: Double check if this is the case
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
