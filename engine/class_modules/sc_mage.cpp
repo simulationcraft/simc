@@ -1195,25 +1195,6 @@ struct combustion_t final : public buff_t
   }
 };
 
-struct clearcasting_buff_t final : public buff_t
-{
-  clearcasting_buff_t( mage_t* p ) :
-    buff_t( p, "clearcasting", p->find_spell( 263725 ) )
-  {
-    set_default_value_from_effect( 1 );
-    modify_max_stack( as<int>( p->talents.improved_clearcasting->effectN( 1 ).base_value() ) );
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    auto p = debug_cast<mage_t*>( player );
-    if ( check() && p->buffs.concentration->check() )
-      p->buffs.concentration->expire();
-    else
-      buff_t::decrement( stacks, value );
-  }
-};
-
 struct ice_floes_t final : public buff_t
 {
   ice_floes_t( mage_t* p ) :
@@ -1860,24 +1841,17 @@ struct arcane_mage_spell_t : public mage_spell_t
     // Consume first applicable buff and then stop.
     for ( auto cr : cost_reductions )
     {
-      int before = cr->check();
-      if ( before )
+      if ( cr->check() )
       {
         cr->decrement();
         if ( cr == p()->buffs.clearcasting )
         {
           p()->buffs.nether_precision->trigger();
-
-          // Effects that trigger when Clearcasting is consumed do not trigger
-          // if the buff decrement is skipped because of Concentration.
-          if ( cr->check() < before )
-          {
-            p()->buffs.forethought->trigger();
-            // Technically, the buff disappears immediately when it reaches 3 stacks
-            // and the Artillery buff is applied with a delay. Here, we just use
-            // 3 stacks of the buff to track the delay.
-            p()->buffs.arcane_battery->trigger();
-          }
+          p()->buffs.forethought->trigger();
+          // Technically, the buff disappears immediately when it reaches 3 stacks
+          // and the Artillery buff is applied with a delay. Here, we just use
+          // 3 stacks of the buff to track the delay.
+          p()->buffs.arcane_battery->trigger();
         }
         break;
       }
@@ -2823,6 +2797,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
+    cost_reductions = { p->buffs.concentration };
   }
 
   timespan_t travel_time() const override
@@ -2932,14 +2907,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
         add_child( echo );
       }
     }
-  }
-
-  void consume_cost_reductions() override
-  {
-    if ( p()->bugs && p()->buffs.clearcasting->check() && p()->buffs.concentration->check() )
-      return;
-
-    arcane_mage_spell_t::consume_cost_reductions();
   }
 
   void execute() override
@@ -6503,10 +6470,14 @@ void mage_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
                                  ->set_chance( talents.chrono_shift.ok() );
-  buffs.clearcasting         = make_buff<buffs::clearcasting_buff_t>( this );
+  buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
+                                 ->set_chance( spec.clearcasting->ok() ) ;
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
   buffs.concentration        = make_buff( this, "concentration", find_spell( 384379 ) )
+                                 ->set_default_value_from_effect( 1 )
                                  ->set_activated( false )
                                  ->set_trigger_spell( talents.concentration );
   buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
