@@ -260,8 +260,6 @@ public:
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
 
-    player_talent_t pandemic_invocation; // TODO: Remove
-    const spell_data_t* pandemic_invocation_proc;
     player_talent_t inevitable_demise; // TODO: Remove
     const spell_data_t* inevitable_demise_buff;
     player_talent_t soul_swap; // TODO: Remove. Celebrate.
@@ -560,7 +558,6 @@ public:
   struct proc_actions_t
   {
     action_t* soul_flame_proc;
-    action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list

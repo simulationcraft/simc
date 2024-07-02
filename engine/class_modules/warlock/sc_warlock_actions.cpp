@@ -707,17 +707,6 @@ using namespace helpers;
       }
     }
 
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_corruption->is_ticking()
-        && td( s->target )->dots_corruption->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-    }
-
     dot_t* get_dot( player_t* t ) override
     { return periodic->get_dot( t ); }
   };
@@ -1136,17 +1125,6 @@ using namespace helpers;
       warlock_spell_t::execute();
     }
 
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_unstable_affliction->is_ticking()
-        && td( s->target )->dots_unstable_affliction->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-    }
-
     void last_tick( dot_t* d ) override
     {
       warlock_spell_t::last_tick( d );
@@ -1187,17 +1165,6 @@ using namespace helpers;
         if ( delta > 0 )
           td( execute_state->target )->dots_agony->increment( delta );
       }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_agony->is_ticking()
-        && td( s->target )->dots_agony->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
     }
 
     void tick( dot_t* d ) override
@@ -1452,17 +1419,6 @@ using namespace helpers;
       : warlock_spell_t( "Siphon Life", p, p->talents.siphon_life )
     {
       parse_options( options_str );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation.ok() && td( s->target )->dots_siphon_life->is_ticking()
-        && td( s->target )->dots_siphon_life->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
     }
   };
 
@@ -1828,27 +1784,6 @@ using namespace helpers;
       reduced_aoe_targets = p->talents.soul_flame->effectN( 4 ).base_value();
 
       base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
-    }
-  };
-
-  struct pandemic_invocation_t : public warlock_spell_t
-  {
-    pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "Pandemic Invocation", p, p->talents.pandemic_invocation_proc )
-    {
-      background = true;
-
-      base_dd_multiplier *= 1.0 + p->talents.pandemic_invocation->effectN( 3 ).percent();
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( rng().roll( p()->talents.pandemic_invocation->effectN( 2 ).percent() / 100.0 ) )
-      {
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.pandemic_invocation );
-        p()->procs.pandemic_invocation_shard->occur();
-      }
     }
   };
 
@@ -4536,7 +4471,6 @@ using namespace helpers;
   void warlock_t::create_affliction_proc_actions()
   {
     proc_actions.soul_flame_proc = new soul_flame_t( this );
-    proc_actions.pandemic_invocation_proc = new pandemic_invocation_t( this );
   }
 
   void warlock_t::create_demonology_proc_actions()

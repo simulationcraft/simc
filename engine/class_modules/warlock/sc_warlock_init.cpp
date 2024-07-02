@@ -144,9 +144,6 @@ namespace warlock
     talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
     talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
 
-    talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
-    talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
-
     talents.inevitable_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
     talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
 
