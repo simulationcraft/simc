@@ -7036,7 +7036,7 @@ void hunter_t::init_spells()
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
 
   talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
-  talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
+  talents.implosive_trap                    = find_talent_spell( talent_tree::CLASS, "Implosive Trap" );
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
 
   // Marksmanship Tree
