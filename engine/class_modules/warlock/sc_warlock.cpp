@@ -158,20 +158,6 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
-
-  if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
-
-    warlock.buffs.wrath_of_consumption->trigger();
-  }
-
-  if ( dots_corruption->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
-
-    warlock.buffs.wrath_of_consumption->trigger();
-  }
 }
 
 int warlock_td_t::count_affliction_dots() const

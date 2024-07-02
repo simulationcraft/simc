@@ -19,7 +19,6 @@ using namespace helpers;
       bool potent_afflictions_td = false;
       bool potent_afflictions_dd = false;
       bool dread_touch = false;
-      bool wrath_of_consumption = false;
       bool haunted_soul  = false;
       bool creeping_death = false;
 
@@ -61,7 +60,6 @@ using namespace helpers;
       affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
       affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
       affected_by.dread_touch = data().affected_by( p->talents.dread_touch_debuff->effectN( 1 ) );
-      affected_by.wrath_of_consumption = data().affected_by( p->talents.wrath_of_consumption_buff->effectN( 1 ) );
       affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
 
@@ -278,11 +276,6 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
-      }
-
-      if ( p()->talents.wrath_of_consumption.ok() && affected_by.wrath_of_consumption && p()->buffs.wrath_of_consumption->check() )
-      {
-        m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
       }
 
       if ( p()->talents.haunted_soul.ok() && affected_by.haunted_soul && p()->buffs.haunted_soul->check() )

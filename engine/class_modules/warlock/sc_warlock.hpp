@@ -259,8 +259,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t wrath_of_consumption; // TODO: Remove
-    const spell_data_t* wrath_of_consumption_buff;
     player_talent_t souleaters_gluttony; // TODO: Remove
     player_talent_t doom_blossom; // TODO: Remove
     const spell_data_t* doom_blossom_proc;
@@ -591,7 +589,6 @@ public:
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
-    propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> haunted_soul;
     propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul

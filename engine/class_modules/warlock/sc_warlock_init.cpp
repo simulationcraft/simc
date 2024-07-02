@@ -165,9 +165,6 @@ namespace warlock
 
     talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
-    talents.wrath_of_consumption = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath of Consumption" ); // Should be ID 387065
-    talents.wrath_of_consumption_buff = find_spell( 387066 );
-
     talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
 
     talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
@@ -524,9 +521,6 @@ namespace warlock
     buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
                          ->set_cooldown( 0_ms )
                          ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
-
-    buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
-                                 ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
 
     buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
