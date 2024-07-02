@@ -13,12 +13,6 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
-  VERSION_10_2_0,
-  VERSION_10_1_5,
-  VERSION_10_1_0,
-  VERSION_10_0_7,
-  VERSION_10_0_5,
-  VERSION_10_0_0,
   VERSION_ANY
 };
 
@@ -783,7 +777,6 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

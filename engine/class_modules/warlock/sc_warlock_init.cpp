@@ -39,8 +39,6 @@ namespace warlock
   {
     player_t::init_spells();
 
-    version_10_2_0_data = find_spell( 422054 ); // For 10.2 version checking, new Shadow Invocation talent
-
     // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
     // find_class_spell - active_spells.inc
     // find_specialization_spell - specialization_spells.inc
@@ -658,7 +656,7 @@ namespace warlock
 
   void warlock_t::create_buffs_demonology()
   {
-    buffs.demonic_core = make_buff( this, "demonic_core", min_version_check( VERSION_10_2_0 ) ? talents.demonic_core_buff : warlock_base.demonic_core_buff );
+    buffs.demonic_core = make_buff( this, "demonic_core", talents.demonic_core_buff );
 
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                              ->set_default_value_from_effect( 1 );
@@ -674,10 +672,6 @@ namespace warlock
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                warlock_pet_list.wild_imps.spawn();
-                               if ( !min_version_check( VERSION_10_2_0 ) && rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
-                               {
-                                 proc_actions.summon_random_demon->execute();
-                               }
                              } );
 
     buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
@@ -710,7 +704,7 @@ namespace warlock
 
     // TODO: This can be removed once 10.2 goes live
     buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
-                                    ->set_max_stack( !min_version_check( VERSION_10_2_0 ) ? talents.soul_glutton->max_stacks() : 1 )
+                                    ->set_max_stack( 1 )
                                     ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )

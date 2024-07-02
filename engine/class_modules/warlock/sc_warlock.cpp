@@ -348,9 +348,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
-    if ( talents.summon_demonic_tyrant->ok() && !min_version_check( VERSION_10_2_0 ) )
-      m *= 1.0 + buffs.demonic_power->check_value();
-
     if ( buffs.rite_of_ruvaraad->check() )
       m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
@@ -570,13 +567,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
-    case VERSION_10_2_0:
-      return !( version_10_2_0_data == spell_data_t::not_found() );
-    case VERSION_10_1_5:
-    case VERSION_10_1_0:
-    case VERSION_10_0_7:
-    case VERSION_10_0_5:
-    case VERSION_10_0_0:
     case VERSION_ANY:
       return true;
   }
