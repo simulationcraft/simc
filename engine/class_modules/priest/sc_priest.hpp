@@ -871,6 +871,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double composite_leech() const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
   void pre_analyze_hook() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
@@ -1189,11 +1190,6 @@ public:
     if ( p().specialization() == PRIEST_HOLY )
     {
       parse_effects( p().buffs.divine_favor_chastise );
-    }
-
-    if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-    {
-      parse_effects( p().buffs.devouring_chorus );
     }
   }
 

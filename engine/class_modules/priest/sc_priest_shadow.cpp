@@ -2119,6 +2119,9 @@ struct dispersion_t final : public priest_buff_t<buff_t>
     if ( !data().ok() )
       return;
 
+    // Increases duration
+    apply_affecting_aura( priest().talents.archon.heightened_alteration );
+
     set_period( data().effectN( 5 ).period() );
 
     auto eff            = &data().effectN( 5 );

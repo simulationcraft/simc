@@ -2979,6 +2979,21 @@ double priest_t::composite_leech() const
   return l;
 }
 
+double priest_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double mul = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STAMINA && sim->auras.power_word_fortitude->check() )
+  {
+    double pwf_val = sim->auras.power_word_fortitude->current_value;
+    double wof_val = talents.archon.word_of_supremacy->effectN( 1 ).percent();
+    mul /= 1.0 + pwf_val;
+    mul *= 1.0 + pwf_val + wof_val;
+  }
+
+  return mul;
+}
+
 void priest_t::pre_analyze_hook()
 {
   player_t::pre_analyze_hook();
@@ -3360,17 +3375,17 @@ void priest_t::init_spells()
   talents.archon.resonant_energy        = HT( "Resonant Energy" );
   talents.archon.resonant_energy_shadow = find_spell( 453850 );
   talents.archon.manifested_power       = HT( "Manifested Power" );
-  talents.archon.shock_pulse            = HT( "Shock Pulse" );            // NYI
-  talents.archon.incessant_screams      = HT( "Incessant Screams" );      // NYI
-  talents.archon.word_of_supremacy      = HT( "Word of Supremacy" );      // NYI
-  talents.archon.heightened_alteration  = HT( "Heightened Alteration" );  // NYI
+  talents.archon.shock_pulse            = HT( "Shock Pulse" );  // NYI
+  talents.archon.incessant_screams      = HT( "Incessant Screams" );
+  talents.archon.word_of_supremacy      = HT( "Word of Supremacy" );
+  talents.archon.heightened_alteration  = HT( "Heightened Alteration" );
   talents.archon.empowered_surges       = HT( "Empowered Surges" );
   talents.archon.energy_compression     = HT( "Energy Compression" );
   talents.archon.sustained_potency      = HT( "Sustained Potency" );
   talents.archon.sustained_potency_buff = find_spell( 454002 );
-  talents.archon.concentrated_infusion  = HT( "Concentrated Infusion" );  // NYI
+  talents.archon.concentrated_infusion  = HT( "Concentrated Infusion" );
   talents.archon.energy_cycle           = HT( "Energy Cycle" );
-  talents.archon.divine_halo            = HT( "Divine Halo" );  // NYI
+  talents.archon.divine_halo            = HT( "Divine Halo" );
 
   // Oracle Hero Talents (Holy/Discipline)
   talents.oracle.premonition           = HT( "Premonition" );            // NYI
