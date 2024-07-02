@@ -268,10 +268,12 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
+      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
+                     p().o().talents.archon.perfected_form );
       parse_effects( p().o().buffs.shadowform );
       parse_effects( p().o().buffs.devoured_pride );
-      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
+      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
+                     p().o().talents.archon.perfected_form );  // Buffs non-periodic spells
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
