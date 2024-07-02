@@ -73,6 +73,8 @@ struct crusade_t : public paladin_spell_t
 
     if ( ! ( p->talents.crusade->ok() ) )
       background = true;
+    if ( p->talents.radiant_glory->ok() )
+      background = true;
   }
 
   void execute() override
@@ -275,7 +277,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     // ... this appears to be true for the base damage only,
     // and is not automatically obtained from spell data.
-    affected_by.hand_of_light = true;
+    affected_by.highlords_judgment = true;
 
     // unclear why this is needed...
     cooldown->duration = data().cooldown();
@@ -368,7 +370,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       reduced_aoe_targets = 5;
     }
 
-    affected_by.hand_of_light = true;
+    affected_by.highlords_judgment = true;
   }
 
   void execute() override
@@ -788,9 +790,6 @@ struct judgment_ret_t : public judgment_t
   {
     parse_options( options_str );
 
-    if ( p->talents.highlords_judgment->ok() )
-      base_multiplier *= 1.0 + p->talents.highlords_judgment->effectN( 1 ).percent();
-
     if ( p->talents.boundless_judgment->ok() )
     {
       holy_power_generation += as<int>( p->talents.boundless_judgment->effectN( 1 ).base_value() );
@@ -822,9 +821,6 @@ struct judgment_ret_t : public judgment_t
     // This is for Divine Toll's background judgments
     background = true;
     cooldown = p->get_cooldown( "dummy_cd" );
-
-    if ( p->talents.highlords_judgment->ok() )
-      base_multiplier *= 1.0 + p->talents.highlords_judgment->effectN( 1 ).percent();
 
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
@@ -884,6 +880,16 @@ struct judgment_ret_t : public judgment_t
         if ( p()->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
           p()->buffs.echoes_of_wrath->trigger();
       }
+    }
+
+    double mastery_chance = p()->cache.mastery_value() * 2;
+    if ( p()->talents.boundless_judgment->ok() )
+      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+
+    if ( rng().roll( mastery_chance ) )
+    {
+      p()->active.highlords_judgment->set_target( target );
+      p()->active.highlords_judgment->execute();
     }
   }
 };
@@ -1004,6 +1010,16 @@ struct truths_wake_t : public paladin_spell_t
   {
     hasted_ticks = tick_may_crit = true;
   }
+
+  virtual void tick( dot_t* d ) override
+  {
+    paladin_spell_t::tick( d );
+
+    if ( d->state->result == RESULT_CRIT && p()->talents.burn_to_ash->ok() )
+    {
+      d->adjust_duration( timespan_t::from_seconds( p()->talents.burn_to_ash->effectN( 1 ).base_value() ) );
+    }
+  }
 };
 
 struct seething_flames_t : public paladin_spell_t
@@ -1065,11 +1081,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     aoe = -1;
 
-    if ( p->talents.truths_wake->ok() )
-    {
-      truths_wake = new truths_wake_t( p );
-      add_child( truths_wake );
-    }
+    truths_wake = new truths_wake_t( p );
+    add_child( truths_wake );
 
     if ( p->talents.seething_flames->ok() )
     {
@@ -1086,11 +1099,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->talents.truths_wake->ok() )
-      {
-        truths_wake->set_target( s->target );
-        truths_wake->execute();
-      }
+      truths_wake->set_target( s->target );
+      truths_wake->execute();
     }
   }
 
@@ -1103,6 +1113,19 @@ struct wake_of_ashes_t : public paladin_spell_t
       for ( int i = 0; i < as<int>( p()->talents.seething_flames->effectN( 1 ).base_value() ); i++ )
       {
         make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
+      }
+    }
+
+    if ( p()->talents.radiant_glory->ok() )
+    {
+      if ( p()->talents.crusade->ok() )
+      {
+        // TODO: get this from spell data
+        p()->buffs.crusade->trigger( timespan_t::from_seconds( 10 ) );
+      }
+      else if ( p()->talents.avenging_wrath->ok() )
+      {
+        p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
       }
     }
   }
@@ -1347,6 +1370,14 @@ struct wrathful_sanction_t : public paladin_spell_t
   }
 };
 
+struct highlords_judgment_t : public paladin_spell_t
+{
+  highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
+  {
+    background = true;
+    always_do_capstones = true;
+  }
+};
 
 void paladin_t::trigger_es_explosion( player_t* target )
 {
@@ -1412,6 +1443,7 @@ void paladin_t::create_ret_actions()
   {
     active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
     active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
+    active.highlords_judgment = new highlords_judgment_t( this );
   }
 
   if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
@@ -1486,14 +1518,14 @@ void paladin_t::init_spells_retribution()
   talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
   talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
-  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
+  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath" );
   talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
   talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" );
   talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
   talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
-  talents.truths_wake                 = find_talent_spell( talent_tree::SPECIALIZATION, "Truth's Wake" );
+  talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
   talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
   talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
@@ -1524,7 +1556,6 @@ void paladin_t::init_spells_retribution()
   talents.divine_hammer               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Hammer" );
   talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
   talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
-  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
   talents.aegis_of_protection         = find_talent_spell( talent_tree::SPECIALIZATION, "Aegis of Protection" );
   talents.burning_crusade             = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Crusade" );
   talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
@@ -1534,11 +1565,12 @@ void paladin_t::init_spells_retribution()
   talents.searing_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Light" );
   talents.divine_auxiliary            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Auxiliary" );
   talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
+  talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
-  mastery.hand_of_light = find_mastery_spell( PALADIN_RETRIBUTION );
+  mastery.highlords_judgment = find_mastery_spell( PALADIN_RETRIBUTION );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -1553,6 +1585,7 @@ void paladin_t::init_spells_retribution()
 
   spells.crusade = find_spell( 231895 );
   spells.wrathful_sanction = find_spell( 424590 );
+  spells.highlords_judgment_hidden = find_spell( 449198 );
 }
 
 // Action Priority List Generation

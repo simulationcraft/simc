@@ -1605,6 +1605,7 @@ class SpellDataGenerator(DataGenerator):
             ( 431911 , 0),          # Sun's Avatar damage
             ( 431382 , 0),          # Dawnlight aoe healing
             ( 431399 , 0),          # Dawnlight aoe damage
+            ( 449198 , 0),          # Highlord's Judgment hidden spell
         ),
 
         # Hunter:
