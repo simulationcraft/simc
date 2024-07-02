@@ -260,8 +260,6 @@ public:
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
 
-    player_talent_t inevitable_demise; // TODO: Remove
-    const spell_data_t* inevitable_demise_buff;
     player_talent_t soul_swap; // TODO: Remove. Celebrate.
     const spell_data_t* soul_swap_ua;
     const spell_data_t* soul_swap_buff;

@@ -144,9 +144,6 @@ namespace warlock
     talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
     talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
 
-    talents.inevitable_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
-    talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
-
     talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
     talents.soul_swap_ua = find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
     talents.soul_swap_buff = find_spell( 86211 ); // Buff data
@@ -567,9 +564,6 @@ namespace warlock
 
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                           ->set_trigger_spell( talents.nightfall );
-
-    buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
-                                  ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
 
     buffs.soul_swap = make_buff( this, "soul_swap", talents.soul_swap_buff )
                           ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )

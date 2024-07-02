@@ -504,24 +504,10 @@ using namespace helpers;
     struct drain_life_dot_t : public warlock_spell_t
     {
       drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
-      {
-        dual = background = true;
-      }
+      { dual = background = true; }
 
       double cost_per_tick( resource_e ) const override
       { return 0.0; }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() )
-        {
-          m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-        }
-
-        return m;
-      }
     };
     
     drain_life_dot_t* aoe_dot;
@@ -540,14 +526,6 @@ using namespace helpers;
 
     void execute() override
     {
-      if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0 )
-      {
-        if ( p()->buffs.drain_life->check() )
-        {
-          p()->buffs.inevitable_demise->expire();
-        }
-      }
-
       warlock_spell_t::execute();
 
       p()->buffs.drain_life->trigger();
@@ -577,32 +555,12 @@ using namespace helpers;
       if ( r == RESOURCE_MANA && p()->buffs.soul_rot->check() )
         return 0.0;
 
-      auto c = warlock_spell_t::cost_per_tick( r );
-
-      if ( r == RESOURCE_MANA && p()->buffs.inevitable_demise->check() )
-      {
-        c *= 1.0 + p()->talents.inevitable_demise_buff->effectN( 3 ).percent() * p()->buffs.inevitable_demise->check();
-      }
-
-      return c;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() )
-      {
-        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-      }
-
-      return m;
+      return warlock_spell_t::cost_per_tick( r );
     }
 
     void last_tick( dot_t* d ) override
     {
       p()->buffs.drain_life->expire();
-      p()->buffs.inevitable_demise->expire( 1_ms ); // Slight delay added so that the AoE version of Drain Life picks up the benefit of Inevitable Demise
 
       bool early_cancel = d->remains() > 0_ms;
 
@@ -1198,11 +1156,6 @@ using namespace helpers;
           if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B4 ) )
             p()->buffs.cruel_epiphany->trigger( 2 );
         }
-      }
-
-      if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
-      {
-        p()->buffs.inevitable_demise->trigger();
       }
 
       warlock_spell_t::tick( d );
