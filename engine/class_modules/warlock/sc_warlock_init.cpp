@@ -375,11 +375,6 @@ namespace warlock
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
 
-    talents.madness_of_the_azjaqir = find_talent_spell( talent_tree::SPECIALIZATION, "Madness of the Azj'Aqir" ); // Should be ID 387400
-    talents.madness_cb = find_spell( 387409 );
-    talents.madness_rof = find_spell( 387413 );
-    talents.madness_sb = find_spell( 387414 );
-
     talents.chaosbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Chaosbringer" ); // Should be ID 422057
 
     talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
@@ -605,17 +600,6 @@ namespace warlock
                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                    ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
-    buffs.madness_cb = make_buff( this, "madness_cb", talents.madness_cb )
-                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_rof = make_buff( this, "madness_rof", talents.madness_rof )
-                            ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_sb = make_buff( this, "madness_sb", talents.madness_sb )
-                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_rof_snapshot = make_buff( this, "madness_rof_snapshot" );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
                               ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );

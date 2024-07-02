@@ -2984,18 +2984,12 @@ using namespace helpers;
       if ( p()->buffs.backdraft->check() )
         mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      if ( p()->buffs.madness_cb->check() )
-        mul *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
-
       return mul;
     }
 
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        m *= 1.0 + p()->buffs.madness_cb->check_value();
 
       if ( p()->buffs.crashing_chaos->check() )
         m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
@@ -3055,9 +3049,6 @@ using namespace helpers;
       p()->buffs.ritual_of_ruin->expire();
 
       p()->buffs.crashing_chaos->decrement();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_cb->trigger();
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
@@ -3189,16 +3180,6 @@ using namespace helpers;
 
         return m;
       }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->buffs.madness_rof_snapshot->check() )
-          m *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 1 ).percent();
-
-        return m;
-      }
     };
 
     rain_of_fire_t( warlock_t* p, util::string_view options_str )
@@ -3231,14 +3212,6 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
-
-      p()->buffs.madness_rof_snapshot->expire();
-
-      if ( p()->buffs.madness_rof->check() )
-        p()->buffs.madness_rof_snapshot->trigger();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_rof->trigger();
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
@@ -3361,21 +3334,8 @@ using namespace helpers;
         p()->procs.conflagration_of_chaos_sb->occur();
       }
 
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_sb->trigger();
-
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        m *= 1.0 + p()->buffs.madness_sb->check_value();
-
-      return m;
     }
 
     double composite_target_multiplier( player_t* t ) const override

@@ -414,10 +414,6 @@ public:
     player_talent_t dimension_ripper; // TODO: New
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
 
-    player_talent_t madness_of_the_azjaqir; // TODO: Remove (leftover from earlier in DF)
-    const spell_data_t* madness_cb;
-    const spell_data_t* madness_rof;
-    const spell_data_t* madness_sb;
     player_talent_t chaosbringer; // TODO: Remove
   } talents;
 
@@ -575,10 +571,6 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
-    propagate_const<buff_t*> madness_cb;
-    propagate_const<buff_t*> madness_rof;
-    propagate_const<buff_t*> madness_sb;
-    propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
     propagate_const<buff_t*> umbrafire_embers; // T30 4pc buff
