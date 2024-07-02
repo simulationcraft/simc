@@ -101,6 +101,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* arcane_debilitation;
     buff_t* frozen;
     buff_t* improved_scorch;
+    buff_t* nether_munitions;
     buff_t* numbing_blast;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
@@ -1395,6 +1396,7 @@ struct mage_spell_t : public spell_t
     bool icicles_st = false;
     bool improved_scorch = true;
     bool incanters_flow = true;
+    bool nether_munitions = true;
     bool numbing_blast = true;
     bool savant = false;
     bool unleashed_inferno = false;
@@ -1579,6 +1581,8 @@ public:
         m *= 1.0 + td->debuffs.arcane_debilitation->check_stack_value();
       if ( affected_by.improved_scorch )
         m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
+      if ( affected_by.nether_munitions )
+        m *= 1.0 + td->debuffs.nether_munitions->check_value();
       if ( affected_by.numbing_blast )
         m *= 1.0 + td->debuffs.numbing_blast->check_value();
       if ( affected_by.charring_embers )
@@ -5368,6 +5372,15 @@ struct touch_of_the_magi_explosion_t final : public spell_t
     // For some reason, Touch of the Magi triple dips damage reductions.
     return m * std::min( m, 1.0 );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    auto mage = debug_cast<mage_t*>( player );
+    if ( mage->talents.nether_munitions.ok() )
+      mage->get_target_data( s->target )->debuffs.nether_munitions->trigger();
+  }
 };
 
 struct arcane_echo_t final : public arcane_mage_spell_t
@@ -5791,6 +5804,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                   ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch     = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                   ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
+  debuffs.nether_munitions    = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->set_chance( mage->talents.nether_munitions.ok() );
   debuffs.numbing_blast       = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
                                   ->set_default_value_from_effect( 1 )
                                   ->set_chance( mage->talents.glacial_assault.ok() );
