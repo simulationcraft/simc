@@ -217,8 +217,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
-    ss_source( nullptr ),
-    soul_swap_state(),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),

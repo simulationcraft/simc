@@ -1065,12 +1065,6 @@ using namespace helpers;
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
     }
 
-    unstable_affliction_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Affliction", p , p->talents.soul_swap_ua )
-    {
-      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
-    }
-
     void execute() override
     {
       if ( p()->ua_target && p()->ua_target != target )
@@ -1517,15 +1511,6 @@ using namespace helpers;
         cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 1 ).time_value();
     }
 
-    vile_taint_t( warlock_t* p, util::string_view opt, bool soul_swap ) : vile_taint_t( p, opt )
-    {
-      if ( soul_swap )
-      {
-        impact_action->execute_action = nullptr; // Only original Vile Taint triggers secondary effects
-        aoe = 1;
-      }
-    }
-
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
@@ -1678,14 +1663,6 @@ using namespace helpers;
       if ( p->talents.souleaters_gluttony.ok() )
       {
         cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
-      }
-    }
-
-    soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
-    {
-      if ( soul_swap )
-      {
-        aoe = 1;
       }
     }
 

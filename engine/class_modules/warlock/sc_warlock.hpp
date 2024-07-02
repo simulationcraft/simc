@@ -88,27 +88,6 @@ struct warlock_t : public player_t
 public:
   player_t* havoc_target;
   player_t* ua_target; // Used for handling Unstable Affliction target swaps
-  player_t* ss_source; // Needed to track where Soul Swap copies from
-  struct ss_full_state_t
-  {
-    struct ss_action_state_t
-    {
-      action_t* action;
-      bool action_copied;
-      timespan_t duration;
-      int stacks;
-    };
-
-    ss_action_state_t corruption;
-    ss_action_state_t agony;
-    ss_action_state_t unstable_affliction;
-    ss_action_state_t siphon_life;
-    ss_action_state_t haunt;
-    ss_action_state_t soul_rot;
-    ss_action_state_t phantom_singularity;
-    ss_action_state_t vile_taint;
-    // Seed of Corruption is also copied, NYI
-  } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
@@ -260,10 +239,6 @@ public:
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
 
-    player_talent_t soul_swap; // TODO: Remove. Celebrate.
-    const spell_data_t* soul_swap_ua;
-    const spell_data_t* soul_swap_buff;
-    const spell_data_t* soul_swap_exhale;
     player_talent_t soul_flame; // TODO: Remove.
     const spell_data_t* soul_flame_proc;
 
@@ -620,8 +595,6 @@ public:
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> inevitable_demise; // TOCHECK: (noticed 2023-03-16) Having one point in this talent may be getting half the intended value!
-    propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
@@ -781,7 +754,6 @@ public:
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   void create_actions() override;
-  void create_soul_swap_actions();
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
   void create_destruction_proc_actions();

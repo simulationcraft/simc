@@ -144,11 +144,6 @@ namespace warlock
     talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
     talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
 
-    talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
-    talents.soul_swap_ua = find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
-    talents.soul_swap_buff = find_spell( 86211 ); // Buff data
-    talents.soul_swap_exhale = find_spell( 86213 ); // Replacement action while buff active
-
     talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
     talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
 
@@ -564,23 +559,6 @@ namespace warlock
 
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                           ->set_trigger_spell( talents.nightfall );
-
-    buffs.soul_swap = make_buff( this, "soul_swap", talents.soul_swap_buff )
-                          ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                            {
-                              if ( cur == 0 )
-                              {
-                                ss_source = nullptr;
-                                soul_swap_state.corruption.action_copied = false;
-                                soul_swap_state.agony.action_copied = false;
-                                soul_swap_state.unstable_affliction.action_copied = false;
-                                soul_swap_state.siphon_life.action_copied = false;
-                                soul_swap_state.haunt.action_copied = false;
-                                soul_swap_state.soul_rot.action_copied = false;
-                                soul_swap_state.phantom_singularity.action_copied = false;
-                                soul_swap_state.vile_taint.action_copied = false;
-                              }
-                            } );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
