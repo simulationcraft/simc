@@ -1693,19 +1693,6 @@ using namespace helpers;
         if ( p()->buffs.blazing_meteor->check() )
           m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
-        if ( p()->talents.malefic_impact.ok() )
-          m *= 1.0 + p()->talents.malefic_impact->effectN( 1 ).percent();
-
-        return m;
-      }
-
-      double composite_crit_chance() const override
-      {
-        double m = warlock_spell_t::composite_crit_chance();
-
-        if ( p()->talents.malefic_impact.ok() )
-          m += p()->talents.malefic_impact->effectN( 2 ).percent();
-
         return m;
       }
 
