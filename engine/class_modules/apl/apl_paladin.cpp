@@ -106,7 +106,6 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
-  cooldowns->add_action( "avengers_shield,if=time=0&(set_bonus.tier29_2pc|set_bonus.DF4_2pc)", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
   cooldowns->add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up" );
   cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
@@ -116,26 +115,28 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
-  standard->add_action( "consecration,if=buff.sanctification_tier.stack=buff.sanctification_tier.max_stack" );
-  standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&(!buff.sanctification_tier.up|buff.sanctification_tier.stack<buff.sanctification_tier.max_stack)", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD). Don't use it when on max sanctification_tier Stacks (Very next GCD will trigger Consecration, so we want the bonus damage)" );
-  standard->add_action( "avengers_shield,if=(set_bonus.tier29_2pc|set_bonus.DF4_2pc)&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd)", "Use Avenger's Shield as First Priority when 2pc buff is missing." );
+  standard->add_action( "hammer_of_light,if=!buff.shake_the_heavens.up" );
+  standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&&!buff.hammer_of_light_ready.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)." );
+  standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up))" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
-  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=!buff.sanctification_tier_empower.up&set_bonus.tier31_2pc", "Use Judgment with higher priority if we need to build sanctification_tier Stacks" );
+  standard->add_action( "eye_of_tyr,if=talent.lights_guidance.enabled" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max" );
-  standard->add_action( "avengers_shield,if=spell_targets.avengers_shield>2|buff.moment_of_glory.up" );
+  standard->add_action( "avengers_shield,if=(spell_targets.avengers_shield>2|buff.moment_of_glory.up)&!buff.shake_the_heavens.up" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
-  standard->add_action( "avengers_shield" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
-  standard->add_action( "consecration,if=!consecration.up&(!buff.sanctification_tier.stack=buff.sanctification_tier.max_stack|!set_bonus.tier31_2pc)" );
+  standard->add_action( "avengers_shield" );
+  standard->add_action( "consecration,if=!consecration.up" );
   standard->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3" );
+  standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2&cooldown.avenging_wrath.remains>=30", "Takes advantage of a bug which guarantees Divine Inspiration to give a sacred weapon if the current armament is bulwark" );
+  standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(buff.sacred_weapon.remains<6&buff.avenging_wrath.up)" );
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
   standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled&raid_event.adds.in>=60|spell_targets.shield_of_the_righteous>=3" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
-  standard->add_action( "consecration,if=!buff.sanctification_tier_empower.up" );
+  standard->add_action( "consecration" );
 
   trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
   trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
