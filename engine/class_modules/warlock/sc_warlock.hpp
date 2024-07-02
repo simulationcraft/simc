@@ -288,6 +288,7 @@ public:
     player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
     const spell_data_t* umbral_blaze_dot;
     player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
+    const spell_data_t* demonic_servitude;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation; // TODO: New
@@ -323,7 +324,7 @@ public:
     player_talent_t guldans_ambition; // TODO: Remove
     const spell_data_t* guldans_ambition_summon;
     const spell_data_t* soul_glutton;
-    const spell_data_t* demonic_servitude;
+
 
     // Destruction
     player_talent_t chaos_bolt; // TODO: Move to base section
