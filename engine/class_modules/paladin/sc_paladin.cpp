@@ -4702,7 +4702,10 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     }
     double evaluate() override
     {
-      return paladin.next_armament;
+      if ( paladin.talents.lightsmith.holy_armaments->ok() )
+        return paladin.next_armament;
+      else
+        return -1.0;
     }
   };
 
