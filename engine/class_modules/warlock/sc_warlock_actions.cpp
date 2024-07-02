@@ -1581,12 +1581,7 @@ using namespace helpers;
   struct haunt_t : public warlock_spell_t
   {
     haunt_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Haunt", p, p->talents.haunt )
-    {
-      parse_options( options_str );
-
-      if ( p->talents.seized_vitality->ok() )
-        base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
-    }
+    { parse_options( options_str ); }
 
     void impact( action_state_t* s ) override
     {

@@ -259,7 +259,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t seized_vitality; // TODO: Remove
     player_talent_t wrath_of_consumption; // TODO: Remove
     const spell_data_t* wrath_of_consumption_buff;
     player_talent_t souleaters_gluttony; // TODO: Remove
