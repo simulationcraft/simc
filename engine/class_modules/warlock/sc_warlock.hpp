@@ -320,9 +320,6 @@ public:
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
     player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t stolen_power; // TODO: Remove
-    const spell_data_t* stolen_power_stacking_buff;
-    const spell_data_t* stolen_power_final_buff;
     player_talent_t soulbound_tyrant; // TODO: Remove
     player_talent_t infernal_command; // TODO: Remove
     player_talent_t guldans_ambition; // TODO: Remove
@@ -575,8 +572,6 @@ public:
     propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> fel_covenant;
-    propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
-    propagate_const<buff_t*> stolen_power_final;
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
     propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff

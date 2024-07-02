@@ -1236,14 +1236,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     return m;
   }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    if ( p()->o()->talents.stolen_power.ok() )
-      p()->o()->buffs.stolen_power_building->trigger();
-  }
 };
 
 void wild_imp_pet_t::create_actions()

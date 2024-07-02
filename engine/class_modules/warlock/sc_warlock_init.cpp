@@ -256,10 +256,6 @@ namespace warlock
 
     talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
-    talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
-    talents.stolen_power_stacking_buff = find_spell( 387603 );
-    talents.stolen_power_final_buff = find_spell( 387604 );
-
     talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
 
     talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
@@ -552,20 +548,6 @@ namespace warlock
 
     buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                               ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
-
-    buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
-                                      ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
-                                      {
-                                        if ( cur == b->max_stack() )
-                                        {
-                                          make_event( sim, 0_ms, [ this, b ] { 
-                                            buffs.stolen_power_final->trigger();
-                                            b->expire();
-                                          } );
-                                        };
-                                      } );
-
-    buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
 
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data

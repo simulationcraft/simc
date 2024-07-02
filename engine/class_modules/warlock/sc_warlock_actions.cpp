@@ -684,8 +684,6 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling->ok() )
         p()->buffs.demonic_calling->trigger();
-
-      p()->buffs.stolen_power_final->expire();
     }
 
     void impact( action_state_t* s ) override
@@ -720,11 +718,6 @@ using namespace helpers;
       if ( p()->talents.sacrificed_souls.ok() )
       {
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
-      }
-
-      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
-      {
-        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
       }
 
       return m;
@@ -1908,8 +1901,6 @@ using namespace helpers;
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
 
-      p()->buffs.stolen_power_final->expire();
-
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.3 ) )
       {
         p()->buffs.blazing_meteor->trigger();
@@ -1926,9 +1917,6 @@ using namespace helpers;
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
-
-      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
-        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
         m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
