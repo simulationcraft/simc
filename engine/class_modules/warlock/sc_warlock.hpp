@@ -414,7 +414,6 @@ public:
     player_talent_t dimension_ripper; // TODO: New
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
 
-    player_talent_t infernal_brand; // TODO: Remove
     player_talent_t madness_of_the_azjaqir; // TODO: Remove (leftover from earlier in DF)
     const spell_data_t* madness_cb;
     const spell_data_t* madness_rof;

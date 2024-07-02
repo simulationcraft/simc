@@ -292,9 +292,6 @@ void warlock_pet_t::demise()
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
-  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 387476 ) )
-                              ->set_default_value( pet.o()->talents.infernal_brand->effectN( 1 ).percent() );
-
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
@@ -1735,33 +1732,13 @@ struct immolation_tick_t : public warlock_pet_spell_t
     aoe = -1;
     background = may_crit = true;
   }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
-
-    if ( p()->o()->talents.infernal_brand->ok() )
-      m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
-
-    return m;
-  }
 };
 
 struct infernal_melee_t : warlock_pet_melee_t
 {
   infernal_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
     warlock_pet_melee_t ( p, wm, name )
-  {  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_pet_melee_t::impact( s );
-
-    if ( p()->o()->talents.infernal_brand->ok() )
-    {
-      pet_td( s->target )->debuff_infernal_brand->trigger();
-    }
-  }
+  { }
 };
 
 void infernal_t::init_base_stats()

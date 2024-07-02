@@ -16,7 +16,6 @@ struct warlock_pet_t;
 
 struct warlock_pet_td_t : public actor_target_data_t
 {
-  propagate_const<buff_t*> debuff_infernal_brand;
   propagate_const<buff_t*> debuff_whiplash;
 
   warlock_pet_t& pet;
