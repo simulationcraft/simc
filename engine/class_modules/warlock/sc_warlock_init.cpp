@@ -107,8 +107,6 @@ namespace warlock
 
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
-    talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
-
     talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
     talents.summon_soulkeeper_aoe = find_spell( 386256 );
     talents.tormented_soul_buff = find_spell( 386251 );

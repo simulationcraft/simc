@@ -506,9 +506,6 @@ using namespace helpers;
       drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
       {
         dual = background = true;
-
-        dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
-        base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
       }
 
       double cost_per_tick( resource_e ) const override
@@ -537,9 +534,6 @@ using namespace helpers;
       add_child( aoe_dot );
 
       channeled = true;
-
-      dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
-      base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
 
       triggers.shadow_invocation_tick = true;
     }

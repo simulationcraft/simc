@@ -206,7 +206,6 @@ public:
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
-    player_talent_t grim_feast; // TODO: Remove
     player_talent_t summon_soulkeeper; // TODO: Remove
     const spell_data_t* summon_soulkeeper_aoe;
     const spell_data_t* tormented_soul_buff;
