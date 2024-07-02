@@ -94,7 +94,7 @@ struct lockable_t
   { if ( !locked ) data = o; return *this; }
 };
 
-struct druid_td_t : public actor_target_data_t
+struct druid_td_t final : public actor_target_data_t
 {
   struct dots_t
   {
@@ -474,7 +474,7 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   }
 }
 
-struct druid_t : public parse_player_effects_t
+struct druid_t final : public parse_player_effects_t
 {
 private:
   form_e form = form_e::NO_FORM;  // Active druid form
@@ -1340,9 +1340,9 @@ namespace pets
 // ==========================================================================
 
 // Denizen of the Dream =============================================
-struct denizen_of_the_dream_t : public pet_t
+struct denizen_of_the_dream_t final : public pet_t
 {
-  struct fey_missile_t : public parse_action_effects_t<spell_t>
+  struct fey_missile_t final : public parse_action_effects_t<spell_t>
   {
     druid_t* o;
     double mastery_passive;
@@ -1432,9 +1432,9 @@ struct treant_base_t : public pet_t
 };
 
 // Force of Nature ==================================================
-struct force_of_nature_t : public treant_base_t
+struct force_of_nature_t final : public treant_base_t
 {
-  struct fon_melee_t : public melee_attack_t
+  struct fon_melee_t final : public melee_attack_t
   {
     bool first_attack = true;
 
@@ -1467,7 +1467,7 @@ struct force_of_nature_t : public treant_base_t
     }
   };
 
-  struct auto_attack_t : public melee_attack_t
+  struct auto_attack_t final : public melee_attack_t
   {
     auto_attack_t( pet_t* pet ) : melee_attack_t( "auto_attack", pet )
     {
@@ -1531,7 +1531,7 @@ struct force_of_nature_t : public treant_base_t
 };
 
 // Grove Guardian ===========================================================
-struct grove_guardian_t : public treant_base_t
+struct grove_guardian_t final : public treant_base_t
 {
   grove_guardian_t( druid_t* p ) : treant_base_t( p )
   {
@@ -2190,7 +2190,7 @@ public:
 template <typename BASE, typename DOT_BASE>
 struct ravage_base_t : public BASE
 {
-  struct dreadful_wound_t : public DOT_BASE
+  struct dreadful_wound_t final : public DOT_BASE
   {
     dreadful_wound_t( druid_t* p, std::string_view n, flag_e f ) : DOT_BASE( n, p, p->spec.dreadful_wound, f )
     {
@@ -2914,7 +2914,7 @@ public:
 };
 
 // Bear Form ================================================================
-struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
+struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
 {
   double rage_gain;
 
@@ -2969,7 +2969,7 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
 };
 
 // Cat Form =================================================================
-struct cat_form_buff_t : public druid_buff_t, public swap_melee_t
+struct cat_form_buff_t final : public druid_buff_t, public swap_melee_t
 {
   cat_form_buff_t( druid_t* p ) : base_t( p, "cat_form", p->find_class_spell( "Cat Form" ) ), swap_melee_t( p )
   {
@@ -3000,7 +3000,7 @@ struct cat_form_buff_t : public druid_buff_t, public swap_melee_t
 };
 
 // Moonkin Form =============================================================
-struct moonkin_form_buff_t : public druid_buff_t
+struct moonkin_form_buff_t final : public druid_buff_t
 {
   moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->spec.moonkin_form )
   {
@@ -3011,7 +3011,7 @@ struct moonkin_form_buff_t : public druid_buff_t
 };
 
 // Bloodtalons Tracking Buff ================================================
-struct bt_dummy_buff_t : public druid_buff_t
+struct bt_dummy_buff_t final : public druid_buff_t
 {
   int count;
 
@@ -3051,7 +3051,7 @@ struct bt_dummy_buff_t : public druid_buff_t
 };
 
 // Brambles =================================================================
-struct brambles_buff_t : public druid_absorb_buff_t
+struct brambles_buff_t final : public druid_absorb_buff_t
 {
   action_t*& damage;
   double coeff;
@@ -3085,7 +3085,7 @@ struct brambles_buff_t : public druid_absorb_buff_t
 };
 
 // Earthwarden ==============================================================
-struct earthwarden_buff_t : public druid_absorb_buff_t
+struct earthwarden_buff_t final : public druid_absorb_buff_t
 {
   double absorb_pct;
 
@@ -3116,7 +3116,7 @@ struct earthwarden_buff_t : public druid_absorb_buff_t
 };
 
 // Fury of Elune AP =========================================================
-struct fury_of_elune_buff_t : public druid_buff_t
+struct fury_of_elune_buff_t final : public druid_buff_t
 {
   fury_of_elune_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
   {
@@ -3135,7 +3135,7 @@ struct fury_of_elune_buff_t : public druid_buff_t
 };
 
 // Matted Fur ================================================================
-struct matted_fur_buff_t : public druid_absorb_buff_t
+struct matted_fur_buff_t final : public druid_absorb_buff_t
 {
   double coeff;
 
@@ -3151,7 +3151,7 @@ struct matted_fur_buff_t : public druid_absorb_buff_t
 };
 
 // Rage of the Sleeper =======================================================
-struct rage_of_the_sleeper_buff_t : public druid_absorb_buff_t
+struct rage_of_the_sleeper_buff_t final : public druid_absorb_buff_t
 {
   action_t* damage = nullptr;
   double absorb_pct;
@@ -3182,7 +3182,7 @@ struct rage_of_the_sleeper_buff_t : public druid_absorb_buff_t
 };
 
 // Shooting Stars ============================================================
-struct shooting_stars_buff_t : public druid_buff_t
+struct shooting_stars_buff_t final : public druid_buff_t
 {
   std::vector<dot_t*>& dot_list;
   action_t*& damage;
@@ -3337,7 +3337,7 @@ struct druid_form_t : public druid_spell_t
 };
 
 // Bear Form Spell ==========================================================
-struct bear_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
+struct bear_form_t final : public trigger_call_of_the_elder_druid_t<druid_form_t>
 {
   DRUID_ABILITY( bear_form_t, base_t, "bear_form", p->find_class_spell( "Bear Form" ) )
   {
@@ -3353,7 +3353,7 @@ struct bear_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
 };
 
 // Cat Form Spell ===========================================================
-struct cat_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
+struct cat_form_t final : public trigger_call_of_the_elder_druid_t<druid_form_t>
 {
   DRUID_ABILITY( cat_form_t, base_t, "cat_form", p->find_class_spell( "Cat Form" ) )
   {
@@ -3362,7 +3362,7 @@ struct cat_form_t : public trigger_call_of_the_elder_druid_t<druid_form_t>
 };
 
 // Moonkin Form Spell =======================================================
-struct moonkin_form_t : public druid_form_t
+struct moonkin_form_t final : public druid_form_t
 {
   DRUID_ABILITY( moonkin_form_t, druid_form_t, "moonkin_form", p->spec.moonkin_form )
   {
@@ -3371,7 +3371,7 @@ struct moonkin_form_t : public druid_form_t
 };
 
 // Cancelform (revert to caster form)========================================
-struct cancel_form_t : public druid_form_t
+struct cancel_form_t final : public druid_form_t
 {
   DRUID_ABILITY( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil() )
   {
@@ -3581,9 +3581,9 @@ struct trigger_thrashing_claws_t : public BASE
 };
 
 // Adaptive Swarm ===========================================================
-struct adaptive_swarm_t : public cat_attack_t
+struct adaptive_swarm_t final : public cat_attack_t
 {
-  struct adaptive_swarm_state_t : public action_state_t
+  struct adaptive_swarm_state_t final : public action_state_t
   {
     double range = 0.0;
     int stacks = 0;
@@ -3769,7 +3769,7 @@ struct adaptive_swarm_t : public cat_attack_t
   using damage_swarm_t = adaptive_swarm_base_t<cat_attack_t, druid_heal_t>;
   using healing_swarm_t = adaptive_swarm_base_t<druid_heal_t, cat_attack_t>;
 
-  struct adaptive_swarm_damage_t : public damage_swarm_t
+  struct adaptive_swarm_damage_t final : public damage_swarm_t
   {
     adaptive_swarm_damage_t( druid_t* p ) : damage_swarm_t( p, "adaptive_swarm_damage", p->spec.adaptive_swarm_damage )
     {}
@@ -3842,7 +3842,7 @@ struct adaptive_swarm_t : public cat_attack_t
     }
   };
 
-  struct adaptive_swarm_heal_t : public healing_swarm_t
+  struct adaptive_swarm_heal_t final : public healing_swarm_t
   {
     adaptive_swarm_heal_t( druid_t* p ) : healing_swarm_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
@@ -3962,7 +3962,7 @@ struct berserk_cat_base_t : public cat_attack_t
   }
 };
 
-struct berserk_cat_t : public berserk_cat_base_t
+struct berserk_cat_t final : public berserk_cat_base_t
 {
   DRUID_ABILITY( berserk_cat_t, berserk_cat_base_t, "berserk_cat",
                  p->talent.incarnation_cat.ok() ? spell_data_t::not_found() : p->spec.berserk_cat )
@@ -3971,7 +3971,7 @@ struct berserk_cat_t : public berserk_cat_base_t
   }
 };
 
-struct incarnation_cat_t : public berserk_cat_base_t
+struct incarnation_cat_t final : public berserk_cat_base_t
 {
   DRUID_ABILITY( incarnation_cat_t, berserk_cat_base_t, "incarnation_avatar_of_ashamane", p->talent.incarnation_cat )
   {
@@ -3987,7 +3987,7 @@ struct incarnation_cat_t : public berserk_cat_base_t
 };
 
 // Bloodseeker Vines ========================================================
-struct bloodseeker_vines_t : public cat_attack_t
+struct bloodseeker_vines_t final : public cat_attack_t
 {
   timespan_t orig_dur;
   double twin_pct;
@@ -4025,9 +4025,9 @@ struct bloodseeker_vines_t : public cat_attack_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t : public trigger_claw_rampage_t<DRUID_FERAL,
-                                 trigger_wildpower_surge_t<DRUID_FERAL,
-                                   trigger_thrashing_claws_t<cp_generator_t>>>
+struct brutal_slash_t final : public trigger_claw_rampage_t<DRUID_FERAL,
+                                       trigger_wildpower_surge_t<DRUID_FERAL,
+                                         trigger_thrashing_claws_t<cp_generator_t>>>
 {
   DRUID_ABILITY( brutal_slash_t, base_t, "brutal_slash", p->talent.brutal_slash )
   {
@@ -4053,7 +4053,7 @@ struct brutal_slash_t : public trigger_claw_rampage_t<DRUID_FERAL,
 };
 
 // Bursting Growth ==========================================================
-struct bursting_growth_t : public cat_attack_t
+struct bursting_growth_t final : public cat_attack_t
 {
   bursting_growth_t( druid_t* p ) : cat_attack_t( "bursting_growth", p, p->find_spell( 440122 ) )
   {
@@ -4064,9 +4064,9 @@ struct bursting_growth_t : public cat_attack_t
 };
 
 // Feral Frenzy =============================================================
-struct feral_frenzy_t : public cat_attack_t
+struct feral_frenzy_t final : public cat_attack_t
 {
-  struct feral_frenzy_tick_t : public cp_generator_t
+  struct feral_frenzy_tick_t final : public cp_generator_t
   {
     bool is_direct_damage = false;
 
@@ -4133,7 +4133,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     }
   };
 
-  struct rampant_ferocity_t : public cat_attack_t
+  struct rampant_ferocity_t final : public cat_attack_t
   {
     using state_t = druid_action_state_t<rampant_ferocity_data_t>;
 
@@ -4283,9 +4283,9 @@ struct ferocious_bite_base_t : public cat_finisher_t
   }
 };
 
-struct ferocious_bite_t : public ferocious_bite_base_t
+struct ferocious_bite_t final : public ferocious_bite_base_t
 {
-  struct ravage_ferocious_bite_t : public ravage_base_t<ferocious_bite_base_t, use_dot_list_t<cat_attack_t>>
+  struct ravage_ferocious_bite_t final : public ravage_base_t<ferocious_bite_base_t, use_dot_list_t<cat_attack_t>>
   {
     ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
@@ -4337,7 +4337,7 @@ struct ferocious_bite_t : public ferocious_bite_base_t
 };
 
 // Frenzied Assault =========================================================
-struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+struct frenzied_assault_t final : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) )
   {
@@ -4346,7 +4346,7 @@ struct frenzied_assault_t : public residual_action::residual_periodic_action_t<c
 };
 
 // Lunar Inspiration ========================================================
-struct lunar_inspiration_t : public cp_generator_t
+struct lunar_inspiration_t final : public cp_generator_t
 {
   DRUID_ABILITY( lunar_inspiration_t, cp_generator_t, "lunar_inspiration",
                  p->talent.lunar_inspiration.ok() ? p->find_spell( 155625 ) : spell_data_t::not_found() )
@@ -4370,7 +4370,7 @@ struct lunar_inspiration_t : public cp_generator_t
 };
 
 // Maim =====================================================================
-struct maim_t : public cat_finisher_t
+struct maim_t final : public cat_finisher_t
 {
   DRUID_ABILITY( maim_t, cat_finisher_t, "maim", p->talent.maim ) {}
 
@@ -4381,9 +4381,9 @@ struct maim_t : public cat_finisher_t
 };
 
 // Rake =====================================================================
-struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
+struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 {
-  struct rake_bleed_t : public trigger_thriving_growth_t<2, trigger_waning_twilight_t<cat_attack_t>>
+  struct rake_bleed_t final : public trigger_thriving_growth_t<2, trigger_waning_twilight_t<cat_attack_t>>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
@@ -4474,9 +4474,9 @@ struct rake_t : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 };
 
 // Rip ======================================================================
-struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat_finisher_t>>
+struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat_finisher_t>>
 {
-  struct tear_t : public druid_residual_action_t<cat_attack_t, true>
+  struct tear_t final : public druid_residual_action_t<cat_attack_t, true>
   {
     tear_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 391356 ), f )
     {
@@ -4552,7 +4552,7 @@ struct rip_t : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat
 
 // Primal Wrath =============================================================
 // NOTE: must be defined AFTER rip_T
-struct primal_wrath_t : public cat_finisher_t
+struct primal_wrath_t final : public cat_finisher_t
 {
   rip_t* rip;
 
@@ -4603,10 +4603,10 @@ struct primal_wrath_t : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t : public use_fluid_form_t<DRUID_FERAL,
-                          trigger_claw_rampage_t<DRUID_FERAL,
-                            trigger_wildpower_surge_t<DRUID_FERAL,
-                              trigger_thrashing_claws_t<cp_generator_t>>>>
+struct shred_t final : public use_fluid_form_t<DRUID_FERAL,
+                                trigger_claw_rampage_t<DRUID_FERAL,
+                                  trigger_wildpower_surge_t<DRUID_FERAL,
+                                    trigger_thrashing_claws_t<cp_generator_t>>>>
 {
   double stealth_mul = 0.0;
 
@@ -4658,9 +4658,9 @@ struct shred_t : public use_fluid_form_t<DRUID_FERAL,
 };
 
 // Swipe (Cat) ====================================================================
-struct swipe_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
-                              trigger_wildpower_surge_t<DRUID_FERAL,
-                                trigger_thrashing_claws_t<cp_generator_t>>>
+struct swipe_cat_t final : public trigger_claw_rampage_t<DRUID_FERAL,
+                                    trigger_wildpower_surge_t<DRUID_FERAL,
+                                      trigger_thrashing_claws_t<cp_generator_t>>>
 {
   DRUID_ABILITY( swipe_cat_t, base_t, "swipe_cat", p->apply_override( p->spec.swipe, p->spec.cat_form_override ) )
   {
@@ -4683,7 +4683,7 @@ struct swipe_cat_t : public trigger_claw_rampage_t<DRUID_FERAL,
 };
 
 // Tiger's Fury =============================================================
-struct tigers_fury_t : public cat_attack_t
+struct tigers_fury_t final : public cat_attack_t
 {
   DRUID_ABILITY( tigers_fury_t, cat_attack_t, "tigers_fury", p->talent.tigers_fury )
   {
@@ -4714,9 +4714,9 @@ struct tigers_fury_t : public cat_attack_t
 };
 
 // Thrash (Cat) =============================================================
-struct thrash_cat_t : public trigger_claw_rampage_t<DRUID_FERAL, cp_generator_t>
+struct thrash_cat_t final : public trigger_claw_rampage_t<DRUID_FERAL, cp_generator_t>
 {
-  struct thrash_cat_bleed_t : public trigger_waning_twilight_t<cat_attack_t>
+  struct thrash_cat_bleed_t final : public trigger_waning_twilight_t<cat_attack_t>
   {
     thrash_cat_bleed_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.thrash_cat_bleed, f )
     {
@@ -4885,7 +4885,7 @@ struct berserk_bear_base_t : public bear_attack_t
   }
 };
 
-struct berserk_bear_t : public berserk_bear_base_t
+struct berserk_bear_t final : public berserk_bear_base_t
 {
   DRUID_ABILITY( berserk_bear_t, berserk_bear_base_t, "berserk_bear",
                  p->talent.incarnation_bear.ok() ? spell_data_t::not_found() : p->spec.berserk_bear )
@@ -4894,7 +4894,7 @@ struct berserk_bear_t : public berserk_bear_base_t
   }
 };
 
-struct incarnation_bear_t : public berserk_bear_base_t
+struct incarnation_bear_t final : public berserk_bear_base_t
 {
   DRUID_ABILITY( incarnation_bear_t, berserk_bear_base_t, "incarnation_guardian_of_ursoc", p->spec.incarnation_bear )
   {
@@ -4903,7 +4903,7 @@ struct incarnation_bear_t : public berserk_bear_base_t
 };
 
 // Brambles Reflect =========================================================
-struct brambles_reflect_t : public druid_residual_action_t<bear_attack_t>
+struct brambles_reflect_t final : public druid_residual_action_t<bear_attack_t>
 {
   brambles_reflect_t( druid_t* p ) : base_t( "brambles", p, p->find_spell( 203958 ) )
   {
@@ -4912,7 +4912,7 @@ struct brambles_reflect_t : public druid_residual_action_t<bear_attack_t>
 };
 
 // Bristling Fur Spell ======================================================
-struct bristling_fur_t : public bear_attack_t
+struct bristling_fur_t final : public bear_attack_t
 {
   DRUID_ABILITY( bristling_fur_t, bear_attack_t, "bristling_fur", p->talent.bristling_fur )
   {
@@ -4929,7 +4929,7 @@ struct bristling_fur_t : public bear_attack_t
 };
 
 // Growl ====================================================================
-struct growl_t : public bear_attack_t
+struct growl_t final : public bear_attack_t
 {
   DRUID_ABILITY( growl_t, bear_attack_t, "growl", p->find_class_spell( "Growl" ) )
   {
@@ -4947,7 +4947,7 @@ struct growl_t : public bear_attack_t
 };
 
 // Incapacitating Roar ======================================================
-struct incapacitating_roar_t : public bear_attack_t
+struct incapacitating_roar_t final : public bear_attack_t
 {
   DRUID_ABILITY( incapacitating_roar_t, bear_attack_t, "incapacitating_roar", p->talent.incapacitating_roar )  
   {
@@ -4959,9 +4959,9 @@ struct incapacitating_roar_t : public bear_attack_t
 };
 
 // Ironfur ==================================================================
-struct ironfur_t : public rage_spender_t<>
+struct ironfur_t final : public rage_spender_t<>
 {
-  struct thorns_of_iron_t : public bear_attack_t
+  struct thorns_of_iron_t final : public bear_attack_t
   {
     double mul;
 
@@ -5036,9 +5036,9 @@ struct ironfur_t : public rage_spender_t<>
 };
 
 // Lunar Beam ===============================================================
-struct lunar_beam_t : public bear_attack_t
+struct lunar_beam_t final : public bear_attack_t
 {
-  struct lunar_beam_heal_t : public druid_heal_t
+  struct lunar_beam_heal_t final : public druid_heal_t
   {
     lunar_beam_heal_t( druid_t* p, flag_e f ) : druid_heal_t( "lunar_beam_heal", p, p->find_spell( 204069 ), f )
     {
@@ -5049,7 +5049,7 @@ struct lunar_beam_t : public bear_attack_t
     }
   };
 
-  struct lunar_beam_tick_t : public trigger_atmospheric_exposure_t<bear_attack_t>
+  struct lunar_beam_tick_t final : public trigger_atmospheric_exposure_t<bear_attack_t>
   {
     lunar_beam_tick_t( druid_t* p, flag_e f ) : base_t( "lunar_beam_tick", p, p->find_spell( 414613 ), f )
     {
@@ -5095,10 +5095,10 @@ struct lunar_beam_t : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t : public use_fluid_form_t<DRUID_GUARDIAN,
-                           trigger_claw_rampage_t<DRUID_GUARDIAN,
-                             trigger_aggravate_wounds_t<DRUID_GUARDIAN,
-                               trigger_wildpower_surge_t<DRUID_GUARDIAN, bear_attack_t>>>>
+struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
+                                 trigger_claw_rampage_t<DRUID_GUARDIAN,
+                                   trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                                     trigger_wildpower_surge_t<DRUID_GUARDIAN, bear_attack_t>>>>
 {
   int inc_targets = 0;
 
@@ -5182,9 +5182,9 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
   }
 };
 
-struct maul_t : public maul_base_t
+struct maul_t final : public maul_base_t
 {
-  struct ravage_maul_t : public ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>
+  struct ravage_maul_t final : public ravage_base_t<maul_base_t, use_dot_list_t<bear_attack_t>>
   {
     ravage_maul_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441605 ), f ) {}
   };
@@ -5223,7 +5223,7 @@ struct maul_t : public maul_base_t
 };
 
 // Pulverize ================================================================
-struct pulverize_t : public bear_attack_t
+struct pulverize_t final : public bear_attack_t
 {
   int consume;
 
@@ -5253,9 +5253,9 @@ struct pulverize_t : public bear_attack_t
 };
 
 // Rage of the Sleeper ======================================================
-struct rage_of_the_sleeper_t : public bear_attack_t
+struct rage_of_the_sleeper_t final : public bear_attack_t
 {
-  struct rage_of_the_sleeper_reflect_t : public bear_attack_t
+  struct rage_of_the_sleeper_reflect_t final : public bear_attack_t
   {
     rage_of_the_sleeper_reflect_t( druid_t* p )
       : bear_attack_t( "rage_of_the_sleeper_reflect", p, p->find_spell( 219432 ) )
@@ -5288,8 +5288,8 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
-                         trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
+struct raze_t final : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                               trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t<>>>>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
   {
@@ -5327,9 +5327,9 @@ struct raze_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 };
 
 // Swipe (Bear) =============================================================
-struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
-                               trigger_aggravate_wounds_t<DRUID_GUARDIAN,
-                                 trigger_gore_t<bear_attack_t>>>
+struct swipe_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
+                                     trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                                       trigger_gore_t<bear_attack_t>>>
 {
   DRUID_ABILITY( swipe_bear_t, base_t, "swipe_bear",
                  p->apply_override( p->spec.swipe, p->spec.bear_form_override ) )
@@ -5344,11 +5344,12 @@ struct swipe_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 };
 
 // Thrash (Bear) ============================================================
-struct thrash_bear_t : public trigger_claw_rampage_t<DRUID_GUARDIAN,
-                                trigger_aggravate_wounds_t<DRUID_GUARDIAN,
-                                  trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>>
+struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
+                                      trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+                                        trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>>
 {
-  struct thrash_bear_bleed_t : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
+  struct thrash_bear_bleed_t final
+    : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
   {
     thrash_bear_bleed_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.thrash_bear_bleed, f )
     {
@@ -5418,7 +5419,7 @@ namespace heals
 template <typename BASE>
 struct trigger_lethal_preservation_t : public BASE
 {
-  struct lethal_preservation_heal_t : public druid_heal_t
+  struct lethal_preservation_heal_t final : public druid_heal_t
   {
     double mul;
 
@@ -5472,7 +5473,7 @@ public:
 };
 
 // After the Wildfire =======================================================
-struct after_the_wildfire_heal_t : public druid_heal_t
+struct after_the_wildfire_heal_t final : public druid_heal_t
 {
   after_the_wildfire_heal_t( druid_t* p ) : druid_heal_t( "after_the_wildfire", p, p->find_spell( 371982 ) )
   {
@@ -5482,7 +5483,7 @@ struct after_the_wildfire_heal_t : public druid_heal_t
 };
 
 // Boundless Moonlight Heal =================================================
-struct boundless_moonlight_heal_t : public druid_residual_action_t<druid_heal_t>
+struct boundless_moonlight_heal_t final : public druid_residual_action_t<druid_heal_t>
 {
   boundless_moonlight_heal_t( druid_t* p ) : base_t( "boundless_moonlight", p, p->find_spell( 425206 ) )
   {
@@ -5491,9 +5492,9 @@ struct boundless_moonlight_heal_t : public druid_residual_action_t<druid_heal_t>
 };
 
 // Cenarion Ward ============================================================
-struct cenarion_ward_t : public druid_heal_t
+struct cenarion_ward_t final : public druid_heal_t
 {
-  struct cenarion_ward_hot_t : public druid_heal_t
+  struct cenarion_ward_hot_t final : public druid_heal_t
   {
     cenarion_ward_hot_t( druid_t* p )
       : druid_heal_t( "cenarion_ward_hot", p, p->talent.cenarion_ward->effectN( 1 ).trigger() )
@@ -5525,14 +5526,14 @@ struct cenarion_ward_t : public druid_heal_t
 };
 
 // Efflorescence ============================================================
-struct efflorescence_t : public druid_heal_t
+struct efflorescence_t final : public druid_heal_t
 {
-  struct spring_blossoms_t : public druid_heal_t
+  struct spring_blossoms_t final : public druid_heal_t
   {
     spring_blossoms_t( druid_t* p ) : druid_heal_t( "spring_blossoms", p, p->find_spell( 207386 ) ) {}
   };
 
-  struct efflorescence_tick_t : public druid_heal_t
+  struct efflorescence_tick_t final : public druid_heal_t
   {
     action_t* spring = nullptr;
 
@@ -5623,7 +5624,7 @@ struct efflorescence_t : public druid_heal_t
 };
 
 // Elune's Favored ==========================================================
-struct elunes_favored_heal_t : public druid_residual_action_t<druid_heal_t>
+struct elunes_favored_heal_t final : public druid_residual_action_t<druid_heal_t>
 {
   elunes_favored_heal_t( druid_t* p ) : base_t( "elunes_favored", p, p->find_spell( 370602 ) )
   {
@@ -5632,7 +5633,7 @@ struct elunes_favored_heal_t : public druid_residual_action_t<druid_heal_t>
 };
 
 // Frenzied Regeneration ====================================================
-struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_t>
+struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<druid_heal_t>
 {
   cooldown_t* dummy_cd;
   cooldown_t* orig_cd;
@@ -5696,7 +5697,7 @@ struct frenzied_regeneration_t : public bear_attacks::rage_spender_t<druid_heal_
 };
 
 // Flourish =================================================================
-struct flourish_t : public druid_heal_t
+struct flourish_t final : public druid_heal_t
 {
   timespan_t ext;
 
@@ -5728,7 +5729,7 @@ struct flourish_t : public druid_heal_t
 };
 
 // Ironbark =================================================================
-struct ironbark_t : public druid_heal_t
+struct ironbark_t final : public druid_heal_t
 {
   DRUID_ABILITY( ironbark_t, druid_heal_t, "ironbark", p->talent.ironbark ) {}
 
@@ -5741,9 +5742,9 @@ struct ironbark_t : public druid_heal_t
 };
 
 // Lifebloom ================================================================
-struct lifebloom_t : public druid_heal_t
+struct lifebloom_t final : public druid_heal_t
 {
-  struct lifebloom_bloom_t : public druid_heal_t
+  struct lifebloom_bloom_t final : public druid_heal_t
   {
     lifebloom_bloom_t( druid_t* p ) : druid_heal_t( "lifebloom_bloom", p, p->find_spell( 33778 ) )
     {
@@ -5809,13 +5810,13 @@ struct lifebloom_t : public druid_heal_t
 };
 
 // Nature's Cure ============================================================
-struct natures_cure_t : public trigger_lethal_preservation_t<druid_heal_t>
+struct natures_cure_t final : public trigger_lethal_preservation_t<druid_heal_t>
 {
   DRUID_ABILITY( natures_cure_t, base_t, "natures_cure", p->find_specialization_spell( "Nature's Cure" ) ) {}
 };
 
 // Nature's Swiftness =======================================================
-struct natures_swiftness_t : public trigger_control_of_the_dream_t<druid_heal_t>
+struct natures_swiftness_t final : public trigger_control_of_the_dream_t<druid_heal_t>
 {
   DRUID_ABILITY( natures_swiftness_t, base_t, "natures_swiftness", p->talent.natures_swiftness ) {}
 
@@ -5841,7 +5842,7 @@ struct natures_swiftness_t : public trigger_control_of_the_dream_t<druid_heal_t>
 };
 
 // Nourish ==================================================================
-struct nourish_t : public druid_heal_t
+struct nourish_t final : public druid_heal_t
 {
   DRUID_ABILITY( nourish_t, druid_heal_t, "nourish", p->talent.nourish ) {}
 
@@ -5852,7 +5853,7 @@ struct nourish_t : public druid_heal_t
 };
 
 // Regrowth =================================================================
-struct regrowth_t : public druid_heal_t
+struct regrowth_t final : public druid_heal_t
 {
   timespan_t gcd_add;
   double bonus_crit;
@@ -5960,7 +5961,7 @@ struct regrowth_t : public druid_heal_t
 // Rejuvenation =============================================================
 struct rejuvenation_base_t : public druid_heal_t
 {
-  struct cultivation_t : public druid_heal_t
+  struct cultivation_t final : public druid_heal_t
   {
     cultivation_t( druid_t* p ) : druid_heal_t( "cultivation", p, p->find_spell( 200389 ) ) {}
   };
@@ -6014,9 +6015,9 @@ struct rejuvenation_base_t : public druid_heal_t
   }
 };
 
-struct rejuvenation_t : public rejuvenation_base_t
+struct rejuvenation_t final : public rejuvenation_base_t
 {
-  struct germination_t : public rejuvenation_base_t
+  struct germination_t final : public rejuvenation_base_t
   {
     germination_t( druid_t* p, flag_e f ) : rejuvenation_base_t( "germination", p, p->find_spell( 155777 ), f ) {}
   };
@@ -6048,13 +6049,13 @@ struct rejuvenation_t : public rejuvenation_base_t
 };
 
 // Remove Corruption ========================================================
-struct remove_corruption_t : public trigger_lethal_preservation_t<druid_heal_t>
+struct remove_corruption_t final : public trigger_lethal_preservation_t<druid_heal_t>
 {
   DRUID_ABILITY( remove_corruption_t, base_t, "remove_corruption", p->talent.remove_corruption ) {}
 };
 
 // Renewal ==================================================================
-struct renewal_t : public druid_heal_t
+struct renewal_t final : public druid_heal_t
 {
   double mul;
 
@@ -6071,13 +6072,13 @@ struct renewal_t : public druid_heal_t
 };
 
 // Soothe ===================================================================
-struct soothe_t : public trigger_lethal_preservation_t<druid_heal_t>
+struct soothe_t final : public trigger_lethal_preservation_t<druid_heal_t>
 {
   DRUID_ABILITY( soothe_t, base_t, "soothe", p->talent.soothe ) {}
 };
 
 // Swiftmend ================================================================
-struct swiftmend_t : public druid_heal_t
+struct swiftmend_t final : public druid_heal_t
 {
   DRUID_ABILITY( swiftmend_t, druid_heal_t, "swiftmend", p->find_specialization_spell( "Swiftmend" ) ) {}
 
@@ -6116,9 +6117,9 @@ struct swiftmend_t : public druid_heal_t
 };
 
 // Tranquility ==============================================================
-struct tranquility_t : public druid_heal_t
+struct tranquility_t final : public druid_heal_t
 {
-  struct tranquility_tick_t : public druid_heal_t
+  struct tranquility_tick_t final : public druid_heal_t
   {
     tranquility_tick_t( druid_t* p )
       : druid_heal_t( "tranquility_tick", p, find_trigger( p->talent.tranquility ).trigger() )
@@ -6151,7 +6152,7 @@ struct tranquility_t : public druid_heal_t
 // where:
 //   t = time of tick = current_time - start_time
 //   D = full duration of WG
-struct wild_growth_t : public druid_heal_t
+struct wild_growth_t final : public druid_heal_t
 {
   double decay_coeff;
   double sotf_mul;
@@ -6202,7 +6203,7 @@ struct wild_growth_t : public druid_heal_t
 };
 
 // Ysera's Gift =============================================================
-struct yseras_gift_t : public druid_heal_t
+struct yseras_gift_t final : public druid_heal_t
 {
   double mul;
 
@@ -6237,7 +6238,7 @@ struct yseras_gift_t : public druid_heal_t
 
 // Overgrowth ===============================================================
 // NOTE: this must come last since it requires other spell definitions
-struct overgrowth_t : public druid_heal_t
+struct overgrowth_t final : public druid_heal_t
 {
   std::vector<action_t*> spell_list;
 
@@ -6390,7 +6391,7 @@ protected:
   using base_t = umbral_embrace_t<E, BASE>;
 
 public:
-  struct _umbral_t : public BASE
+  struct _umbral_t final : public BASE
   {
     _umbral_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::UMBRAL )
     {
@@ -6562,9 +6563,9 @@ struct astral_smolder_t
 };
 
 // Barkskin =================================================================
-struct barkskin_t : public druid_spell_t
+struct barkskin_t final : public druid_spell_t
 {
-  struct brambles_pulse_t : public bear_attack_t
+  struct brambles_pulse_t final : public bear_attack_t
   {
     brambles_pulse_t( druid_t* p, std::string_view n ) : bear_attack_t( n, p, p->find_spell( 213709 ) )
     {
@@ -6633,14 +6634,14 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
   }
 };
 
-struct celestial_alignment_t : public celestial_alignment_base_t
+struct celestial_alignment_t final : public celestial_alignment_base_t
 {
   DRUID_ABILITY( celestial_alignment_t, celestial_alignment_base_t, "celestial_alignment",
                  p->talent.incarnation_moonkin.ok() ? spell_data_t::not_found() : p->spec.celestial_alignment )
   {}
 };
 
-struct incarnation_moonkin_t : public celestial_alignment_base_t
+struct incarnation_moonkin_t final : public celestial_alignment_base_t
 {
   DRUID_ABILITY( incarnation_moonkin_t, celestial_alignment_base_t, "incarnation_chosen_of_elune",
                  p->spec.incarnation_moonkin )
@@ -6652,7 +6653,7 @@ struct incarnation_moonkin_t : public celestial_alignment_base_t
 };
 
 // Dash =====================================================================
-struct dash_t : public druid_spell_t
+struct dash_t final : public druid_spell_t
 {
   buff_t* buff_on_cast;
   double gcd_mul;
@@ -6678,7 +6679,7 @@ struct dash_t : public druid_spell_t
 };
 
 // Dream Burst ==============================================================
-struct dream_burst_t : public druid_spell_t
+struct dream_burst_t final : public druid_spell_t
 {
   dream_burst_t( druid_t* p ) : druid_spell_t( "dream_burst", p, p->find_spell( 433850 ) )
   {
@@ -6689,7 +6690,7 @@ struct dream_burst_t : public druid_spell_t
 };
 
 // Entangling Roots =========================================================
-struct entangling_roots_t : public druid_spell_t
+struct entangling_roots_t final : public druid_spell_t
 {
   timespan_t gcd_add;
 
@@ -6719,7 +6720,7 @@ struct entangling_roots_t : public druid_spell_t
 };
 
 // Force of Nature ==========================================================
-struct force_of_nature_t : public trigger_control_of_the_dream_t<druid_spell_t>
+struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   unsigned num;
   unsigned dream_surge_num = 0;
@@ -6759,9 +6760,9 @@ struct force_of_nature_t : public trigger_control_of_the_dream_t<druid_spell_t>
 };
 
 // Fury of Elune =========================================================
-struct fury_of_elune_t : public druid_spell_t
+struct fury_of_elune_t final : public druid_spell_t
 {
-  struct fury_of_elune_tick_t : public trigger_atmospheric_exposure_t<druid_spell_t>
+  struct fury_of_elune_tick_t final : public trigger_atmospheric_exposure_t<druid_spell_t>
   {
     fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f )
     {
@@ -6779,7 +6780,7 @@ struct fury_of_elune_t : public druid_spell_t
     }
   };
 
-  struct boundless_moonlight_t : public druid_spell_t
+  struct boundless_moonlight_t final : public druid_spell_t
   {
     boundless_moonlight_t( druid_t* p, std::string_view n, flag_e f )
       : druid_spell_t( n, p, p->find_spell( 428682 ), f )
@@ -6859,7 +6860,7 @@ struct fury_of_elune_t : public druid_spell_t
 };
 
 // Heart of the Wild ========================================================
-struct heart_of_the_wild_t : public druid_spell_t
+struct heart_of_the_wild_t final : public druid_spell_t
 {
   DRUID_ABILITY( heart_of_the_wild_t, druid_spell_t, "heart_of_the_wild", p->talent.heart_of_the_wild )
   {
@@ -6875,7 +6876,7 @@ struct heart_of_the_wild_t : public druid_spell_t
 };
 
 // Incarnation (Tree) =========================================================
-struct incarnation_tree_t : public trigger_control_of_the_dream_t<druid_spell_t>
+struct incarnation_tree_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   DRUID_ABILITY( incarnation_tree_t, base_t, "incarnation_tree_of_life", p->talent.incarnation_tree )
   {
@@ -6893,7 +6894,7 @@ struct incarnation_tree_t : public trigger_control_of_the_dream_t<druid_spell_t>
 };
 
 // Innervate ================================================================
-struct innervate_t : public druid_spell_t
+struct innervate_t final : public druid_spell_t
 {
   DRUID_ABILITY( innervate_t, druid_spell_t, "innervate", p->talent.innervate )
   {
@@ -6909,7 +6910,7 @@ struct innervate_t : public druid_spell_t
 };
 
 // Mark of the Wild =========================================================
-struct mark_of_the_wild_t : public druid_spell_t
+struct mark_of_the_wild_t final : public druid_spell_t
 {
   DRUID_ABILITY( mark_of_the_wild_t, druid_spell_t, "mark_of_the_wild", p->find_class_spell( "Mark of the Wild" ) )
   {
@@ -6932,7 +6933,7 @@ struct mark_of_the_wild_t : public druid_spell_t
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
-  struct minor_moon_t : public druid_spell_t
+  struct minor_moon_t final : public druid_spell_t
   {
     minor_moon_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 424588 ), f )
     {
@@ -7034,7 +7035,7 @@ struct moon_base_t : public druid_spell_t
 };
 
 // New Moon Spell ===========================================================
-struct new_moon_t : public moon_base_t
+struct new_moon_t final : public moon_base_t
 {
   DRUID_ABILITY( new_moon_t, moon_base_t, "new_moon", p->talent.new_moon )
   {
@@ -7046,7 +7047,7 @@ struct new_moon_t : public moon_base_t
 };
 
 // Half Moon Spell ==========================================================
-struct half_moon_t : public moon_base_t
+struct half_moon_t final : public moon_base_t
 {
   DRUID_ABILITY( half_moon_t, moon_base_t, "half_moon", p->spec.half_moon )
   {
@@ -7058,7 +7059,7 @@ struct half_moon_t : public moon_base_t
 };
 
 // Full Moon Spell ==========================================================
-struct full_moon_t : public trigger_atmospheric_exposure_t<moon_base_t>
+struct full_moon_t final : public trigger_atmospheric_exposure_t<moon_base_t>
 {
   DRUID_ABILITY( full_moon_t, base_t, "full_moon", p->spec.full_moon )
   {
@@ -7195,9 +7196,9 @@ struct moon_proxy_t : public druid_spell_t
 };
 
 // Moonfire Spell ===========================================================
-struct moonfire_t : public druid_spell_t
+struct moonfire_t final : public druid_spell_t
 {
-  struct moonfire_damage_t : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
+  struct moonfire_damage_t final : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
   {
     moonfire_damage_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.moonfire_dmg, f )
     {
@@ -7327,7 +7328,7 @@ struct moonfire_t : public druid_spell_t
 
 // Nature's Vigil =============================================================
 template <typename Base>
-struct natures_vigil_tick_t : public Base
+struct natures_vigil_tick_t final : public Base
 {
   natures_vigil_tick_t( druid_t* p )
     : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) )
@@ -7345,7 +7346,7 @@ struct natures_vigil_tick_t : public Base
 };
 
 template <typename Base>
-struct natures_vigil_t : public Base
+struct natures_vigil_t final : public Base
 {
 
   DRUID_ABILITY( natures_vigil_t, Base, "natures_vigil", p->talent.natures_vigil )
@@ -7377,7 +7378,7 @@ struct natures_vigil_t : public Base
 };
 
 // Prowl ====================================================================
-struct prowl_t : public druid_spell_t
+struct prowl_t final : public druid_spell_t
 {
   DRUID_ABILITY( prowl_t, druid_spell_t, "prowl", p->find_class_spell( "Prowl" ) )
   {
@@ -7416,7 +7417,7 @@ struct prowl_t : public druid_spell_t
 };
 
 // Proxy Swipe Spell ========================================================
-struct swipe_proxy_t : public druid_spell_t
+struct swipe_proxy_t final : public druid_spell_t
 {
   cat_attacks::swipe_cat_t* swipe_cat;
   bear_attacks::swipe_bear_t* swipe_bear;
@@ -7503,7 +7504,7 @@ struct swipe_proxy_t : public druid_spell_t
 };
 
 // Proxy Thrash =============================================================
-struct thrash_proxy_t : public druid_spell_t
+struct thrash_proxy_t final : public druid_spell_t
 {
   bear_attacks::thrash_bear_t* thrash_bear;
   cat_attacks::thrash_cat_t* thrash_cat;
@@ -7606,7 +7607,7 @@ struct thrash_proxy_t : public druid_spell_t
 };
 
 // Shooting Stars ===========================================================
-struct shooting_stars_t : public druid_spell_t
+struct shooting_stars_t final : public druid_spell_t
 {
   shooting_stars_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
   {
@@ -7628,13 +7629,13 @@ struct shooting_stars_t : public druid_spell_t
 };
 
 // Skull Bash ===============================================================
-struct skull_bash_t : public druid_interrupt_t
+struct skull_bash_t final : public druid_interrupt_t
 {
   DRUID_ABILITY( skull_bash_t, druid_interrupt_t, "skull_bash", p->talent.skull_bash ) {}
 };
 
 // Solar Beam ===============================================================
-struct solar_beam_t : public druid_interrupt_t
+struct solar_beam_t final : public druid_interrupt_t
 {
   DRUID_ABILITY( solar_beam_t, druid_interrupt_t, "solar_beam", p->talent.solar_beam )
   {
@@ -7647,7 +7648,7 @@ struct solar_beam_t : public druid_interrupt_t
 };
 
 // Stampeding Roar ==========================================================
-struct stampeding_roar_t : public druid_spell_t
+struct stampeding_roar_t final : public druid_spell_t
 {
   DRUID_ABILITY( stampeding_roar_t, druid_spell_t, "stampeding_roar", p->talent.stampeding_roar )
   {
@@ -7668,9 +7669,9 @@ struct stampeding_roar_t : public druid_spell_t
 };
 
 // Starfall Spell ===========================================================
-struct starfall_t : public ap_spender_t
+struct starfall_t final : public ap_spender_t
 {
-  struct starfall_damage_t : public druid_spell_t
+  struct starfall_damage_t final : public druid_spell_t
   {
     starfall_damage_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 191037 ), f )
     {
@@ -7696,7 +7697,7 @@ struct starfall_t : public ap_spender_t
     }
   };
 
-  struct starfall_driver_t : public druid_spell_t
+  struct starfall_driver_t final : public druid_spell_t
   {
     starfall_damage_t* damage;
 
@@ -7916,13 +7917,13 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   }
 };
 
-struct starfire_t : public umbral_embrace_t<eclipse_e::LUNAR, starfire_base_t>
+struct starfire_t final : public umbral_embrace_t<eclipse_e::LUNAR, starfire_base_t>
 {
   DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ) {}
 };
 
 // Starsurge Spell ==========================================================
-struct starsurge_offspec_t : public trigger_call_of_the_elder_druid_t<druid_spell_t>
+struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<druid_spell_t>
 {
   DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
@@ -7940,9 +7941,9 @@ struct starsurge_offspec_t : public trigger_call_of_the_elder_druid_t<druid_spel
   }
 };
 
-struct starsurge_t : public ap_spender_t
+struct starsurge_t final : public ap_spender_t
 {
-  struct goldrinns_fang_t : public druid_spell_t
+  struct goldrinns_fang_t final : public druid_spell_t
   {
     goldrinns_fang_t( druid_t* p, std::string_view n, flag_e f )
       : druid_spell_t( n, p, find_trigger( p->talent.power_of_goldrinn ).trigger(), f )
@@ -8027,7 +8028,7 @@ struct starsurge_t : public ap_spender_t
 };
 
 // Stellar Flare ============================================================
-struct stellar_flare_t : public trigger_waning_twilight_t<druid_spell_t>
+struct stellar_flare_t final : public trigger_waning_twilight_t<druid_spell_t>
 {
   DRUID_ABILITY( stellar_flare_t, base_t, "stellar_flare", p->talent.stellar_flare )
   {
@@ -8036,9 +8037,9 @@ struct stellar_flare_t : public trigger_waning_twilight_t<druid_spell_t>
 };
 
 // Sunfire Spell ============================================================
-struct sunfire_t : public druid_spell_t
+struct sunfire_t final : public druid_spell_t
 {
-  struct sunfire_damage_t : public use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>
+  struct sunfire_damage_t final : public use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>
   {
     sunfire_damage_t( druid_t* p, flag_e f ) : base_t( "sunfire_dmg", p, p->spec.sunfire_dmg, f )
     {
@@ -8087,7 +8088,7 @@ struct sunfire_t : public druid_spell_t
 };
 
 // Survival Instincts =======================================================
-struct survival_instincts_t : public druid_spell_t
+struct survival_instincts_t final : public druid_spell_t
 {
   DRUID_ABILITY( survival_instincts_t, druid_spell_t, "survival_instincts", p->talent.survival_instincts )
   {
@@ -8106,7 +8107,7 @@ struct survival_instincts_t : public druid_spell_t
 };
 
 // Orbital Strike ===========================================================
-struct orbital_strike_t : public druid_spell_t
+struct orbital_strike_t final : public druid_spell_t
 {
   action_t* flare;
 
@@ -8131,7 +8132,7 @@ struct orbital_strike_t : public druid_spell_t
 };
 
 // Warrior of Elune =========================================================
-struct warrior_of_elune_t : public druid_spell_t
+struct warrior_of_elune_t final : public druid_spell_t
 {
   DRUID_ABILITY( warrior_of_elune_t, druid_spell_t, "warrior_of_elune", p->talent.warrior_of_elune )
   {
@@ -8150,7 +8151,7 @@ struct warrior_of_elune_t : public druid_spell_t
 };
 
 // Wild Charge ==============================================================
-struct wild_charge_t : public druid_spell_t
+struct wild_charge_t final : public druid_spell_t
 {
   double movement_speed_increase = 5.0;
 
@@ -8200,14 +8201,14 @@ struct wild_charge_t : public druid_spell_t
 };
 
 // Wild Mushroom ============================================================
-struct wild_mushroom_t : public druid_spell_t
+struct wild_mushroom_t final : public druid_spell_t
 {
-  struct fungal_growth_t : public trigger_waning_twilight_t<druid_spell_t>
+  struct fungal_growth_t final : public trigger_waning_twilight_t<druid_spell_t>
   {
     fungal_growth_t( druid_t* p, flag_e f ) : base_t( "fungal_growth", p, p->find_spell( 81281 ), f ) {}
   };
 
-  struct wild_mushroom_damage_t : public druid_spell_t
+  struct wild_mushroom_damage_t final : public druid_spell_t
   {
     action_t* fungal = nullptr;
     double ap_per = 4.0;  // not in spell data
@@ -8374,7 +8375,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   }
 };
 
-struct wrath_t : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
+struct wrath_t final : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
 {
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
   {
@@ -8396,7 +8397,7 @@ struct wrath_t : public umbral_embrace_t<eclipse_e::SOLAR, wrath_base_t>
 
 // Convoke the Spirits ======================================================
 // NOTE must be defined after all other spells
-struct convoke_the_spirits_t : public trigger_control_of_the_dream_t<druid_spell_t>
+struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   enum convoke_cast_e
   {
@@ -8935,7 +8936,7 @@ struct druid_melee_t : public Base
 };
 
 // Caster Melee Attack ======================================================
-struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
+struct caster_melee_t final : public druid_melee_t<druid_attack_t<melee_attack_t>>
 {
   caster_melee_t( druid_t* p ) : base_t( "caster_melee", p )
   {
@@ -8944,7 +8945,7 @@ struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
 };
 
 // Bear Melee Attack ========================================================
-struct bear_melee_t : public druid_melee_t<bear_attack_t>
+struct bear_melee_t final : public druid_melee_t<bear_attack_t>
 {
   proc_t* tnc_proc = nullptr;
 
@@ -8974,7 +8975,7 @@ struct bear_melee_t : public druid_melee_t<bear_attack_t>
 };
 
 // Cat Melee Attack =========================================================
-struct cat_melee_t : public druid_melee_t<cat_attack_t>
+struct cat_melee_t final : public druid_melee_t<cat_attack_t>
 {
   cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
   {
@@ -8986,7 +8987,7 @@ struct cat_melee_t : public druid_melee_t<cat_attack_t>
 };
 
 // Auto Attack (Action)========================================================
-struct auto_attack_t : public melee_attack_t
+struct auto_attack_t final : public melee_attack_t
 {
   auto_attack_t( druid_t* p ) : melee_attack_t( "auto_attack", p, spell_data_t::nil() )
   {
@@ -9017,7 +9018,7 @@ struct auto_attack_t : public melee_attack_t
 // Persistent Delay Event ===================================================
 // Delay triggering the event a random amount. This prevents fixed-period drivers from ticking at the exact same times
 // on every iteration. Buffs that use the event to activate should implement tick_zero-like behavior.
-struct persistent_delay_event_t : public event_t
+struct persistent_delay_event_t final : public event_t
 {
   std::function<void()> exec_fn;
 
@@ -9036,7 +9037,7 @@ struct persistent_delay_event_t : public event_t
   void execute() override { exec_fn(); }
 };
 
-struct astral_power_decay_event_t : public event_t
+struct astral_power_decay_event_t final : public event_t
 {
 private:
   druid_t* p_;
@@ -9065,7 +9066,7 @@ public:
 };
 
 // Denizen of the Dream Proxy Action ========================================
-struct denizen_of_the_dream_t : public action_t
+struct denizen_of_the_dream_t final : public action_t
 {
   druid_t* druid;
 
@@ -11267,7 +11268,7 @@ void druid_t::init_special_effects()
   // bear form rage from being attacked
   if ( uses_bear_form() )
   {
-    struct rage_from_being_attacked_cb_t : public druid_cb_t
+    struct rage_from_being_attacked_cb_t final : public druid_cb_t
     {
       gain_t* gain;
       double rage;
@@ -11295,7 +11296,7 @@ void druid_t::init_special_effects()
 
   if ( talent.natures_vigil.ok() )
   {
-    struct natures_vigil_cb_t : public druid_cb_t
+    struct natures_vigil_cb_t final : public druid_cb_t
     {
       double mul;
 
@@ -11343,7 +11344,7 @@ void druid_t::init_special_effects()
   // Balance
   if ( talent.denizen_of_the_dream.ok() )
   {
-    struct denizen_of_the_dream_cb_t : public druid_cb_t
+    struct denizen_of_the_dream_cb_t final : public druid_cb_t
     {
       proc_t* catto_proc;
 
@@ -11375,7 +11376,7 @@ void druid_t::init_special_effects()
 
   if ( spec.moonkin_form->ok() )
   {
-    struct owlkin_frenzy_cb_t : public druid_cb_t
+    struct owlkin_frenzy_cb_t final : public druid_cb_t
     {
       owlkin_frenzy_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
@@ -11403,9 +11404,9 @@ void druid_t::init_special_effects()
   // Guardian
   if ( mastery.natures_guardian->ok() )
   {
-    struct natures_guardian_cb_t : public druid_cb_t
+    struct natures_guardian_cb_t final : public druid_cb_t
     {
-      struct natures_guardian_t : public druid_heal_t
+      struct natures_guardian_t final : public druid_heal_t
       {
         natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
         {
@@ -11451,7 +11452,7 @@ void druid_t::init_special_effects()
 
   if ( talent.bristling_fur.ok() )
   {
-    struct bristling_fur_cb_t : public druid_cb_t
+    struct bristling_fur_cb_t final : public druid_cb_t
     {
       gain_t* gain;
       action_t* action;
@@ -11481,7 +11482,7 @@ void druid_t::init_special_effects()
 
   if ( talent.dream_of_cenarius_bear.ok() )
   {
-    struct dream_of_cenarius_cb_t : public druid_cb_t
+    struct dream_of_cenarius_cb_t final : public druid_cb_t
     {
       dream_of_cenarius_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
@@ -11505,7 +11506,7 @@ void druid_t::init_special_effects()
 
   if ( talent.elunes_favored.ok() )
   {
-    struct elunes_favored_cb_t : public druid_cb_t
+    struct elunes_favored_cb_t final : public druid_cb_t
     {
       double mul;
 
@@ -11541,7 +11542,7 @@ void druid_t::init_special_effects()
 
   if ( talent.galactic_guardian.ok() )
   {
-    struct galactic_guardian_cb_t : public druid_cb_t
+    struct galactic_guardian_cb_t final : public druid_cb_t
     {
       proc_t* gg_proc;
 
@@ -11573,9 +11574,9 @@ void druid_t::init_special_effects()
 
   if ( talent.moonless_night.ok() )
   {
-    struct moonless_night_cb_t : public druid_cb_t
+    struct moonless_night_cb_t final : public druid_cb_t
     {
-      struct moonless_night_t : public druid_residual_action_t<bear_attack_t>
+      struct moonless_night_t final : public druid_residual_action_t<bear_attack_t>
       {
         moonless_night_t( druid_t* p ) : base_t( "moonless_night", p, p->find_spell( 400360 ) )
         {
@@ -11622,7 +11623,7 @@ void druid_t::init_special_effects()
   // Hero talents
   if ( talent.boundless_moonlight.ok() && talent.lunar_beam.ok() )
   {
-    struct boundless_moonlight_heal_cb_t : public druid_cb_t
+    struct boundless_moonlight_heal_cb_t final : public druid_cb_t
     {
       double mul;
 
@@ -11655,7 +11656,7 @@ void druid_t::init_special_effects()
 
   if ( talent.implant.ok() && active.bloodseeker_vines )
   {
-    struct implant_cb_t : public druid_cb_t
+    struct implant_cb_t final : public druid_cb_t
     {
       timespan_t dur;
 
@@ -13879,7 +13880,7 @@ private:
 };
 
 // DRUID MODULE INTERFACE ===================================================
-struct druid_module_t : public module_t
+struct druid_module_t final : public module_t
 {
   druid_module_t() : module_t( DRUID ) {}
 
