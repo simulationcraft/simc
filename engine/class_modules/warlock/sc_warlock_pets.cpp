@@ -65,10 +65,6 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
                               ->set_default_value_from_effect( 1 );
 
-  buffs.soul_glutton = make_buff( this, "soul_glutton", o()->talents.soul_glutton )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
-
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
   buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
@@ -1665,78 +1661,6 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 }
 
 /// Demonic Tyrant End
-
-/// Pit Lord Begin
-
-pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, true )
-{
-  owner_coeff.ap_from_sp = 1.25;
-  owner_coeff.sp_from_sp = 1.25;
-
-  soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
-
-  action_list_str = "felseeker";
-}
-
-struct felseeker_t : warlock_pet_spell_t
-{
-  felseeker_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Felseeker", p, p->find_spell( 427688 ) )
-  {
-    hasted_ticks = true;
-
-    channeled = true;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warlock_pet_spell_t::last_tick( d );
-
-    // Ensure the Pit Lord does not try to cast a second time
-    make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-  }
-};
-
-action_t* pit_lord_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "felseeker" )
-    return new felseeker_t( this );
-
-  return warlock_pet_t::create_action( name, options_str );
-}
-
-
-void pit_lord_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-}
-
-void pit_lord_t::arise()
-{
-  warlock_pet_t::arise();
-}
-
-double pit_lord_t::composite_player_multiplier( school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school );
-
-  if ( buffs.soul_glutton->check() )
-  {
-    m *= 1.0 + soul_glutton_damage_bonus * buffs.soul_glutton->current_stack;
-  }
-
-  return m;
-}
-
-double pit_lord_t::composite_melee_auto_attack_speed() const
-{
-  double m = warlock_pet_t::composite_melee_auto_attack_speed();
-
-  m /= 1.0 + buffs.soul_glutton->check_stack_value();
-
-  return m;
-}
-
-/// Pit Lord End
 
 /// Doomfiend Begin
 

@@ -848,7 +848,6 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
-    pit_lords( "pit_lord", w ),
     doomfiends( "doomfiend", w )
 {
 }

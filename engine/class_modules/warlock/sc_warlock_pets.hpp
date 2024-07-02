@@ -41,7 +41,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> infernal_command;
-    propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent
@@ -470,18 +469,6 @@ struct demonic_tyrant_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
-};
-
-
-struct pit_lord_t : public warlock_pet_t
-{
-  double soul_glutton_damage_bonus;
-  pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
-  action_t* create_action( util::string_view, util::string_view ) override;
-  void init_base_stats() override;
-  void arise() override;
-  double composite_player_multiplier( school_e ) const override;
-  double composite_melee_auto_attack_speed() const override;
 };
 
 struct doomfiend_t : public warlock_pet_t

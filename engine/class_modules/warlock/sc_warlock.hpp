@@ -150,8 +150,6 @@ public:
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-
-    spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
     spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
@@ -321,10 +319,6 @@ public:
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
     player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t guldans_ambition; // TODO: Remove
-    const spell_data_t* guldans_ambition_summon;
-    const spell_data_t* soul_glutton;
-
 
     // Destruction
     player_talent_t chaos_bolt; // TODO: Move to base section

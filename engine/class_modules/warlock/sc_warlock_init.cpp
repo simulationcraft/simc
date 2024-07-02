@@ -262,10 +262,6 @@ namespace warlock
 
     talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
 
-    talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
-    talents.guldans_ambition_summon = find_spell( 387590 );
-    talents.soul_glutton = find_spell( 387595 );
-
     talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
     talents.demonic_servitude = find_spell( 390193 );
 
