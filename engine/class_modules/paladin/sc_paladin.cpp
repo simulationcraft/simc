@@ -2117,6 +2117,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     direct_hammer               = new hammer_of_light_damage_t( p, options_str );
     direct_hammer->travel_delay = p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() / 1000.0;
     add_child( direct_hammer );
+    background = !p->talents.templar.lights_guidance->ok();
   }
 
   double cost_pct_multiplier() const override
@@ -2380,6 +2381,7 @@ struct holy_armaments_t : public paladin_spell_t
     name_str_reporting = "Holy Armaments";
     if ( p->talents.lightsmith.forewarning->ok() )
       apply_affecting_aura( p->talents.lightsmith.forewarning );
+    background = !p->talents.lightsmith.holy_armaments->ok();
   }
 
   timespan_t execute_time() const override
