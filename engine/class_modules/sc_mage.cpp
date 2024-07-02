@@ -101,6 +101,9 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* arcane_debilitation;
     buff_t* frozen;
     buff_t* improved_scorch;
+    buff_t* magis_spark_ab;
+    buff_t* magis_spark_abar;
+    buff_t* magis_spark_am;
     buff_t* nether_munitions;
     buff_t* numbing_blast;
     buff_t* touch_of_the_magi;
@@ -241,6 +244,8 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* magis_spark;
+    action_t* magis_spark_echo;
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
@@ -1881,6 +1886,32 @@ struct arcane_mage_spell_t : public mage_spell_t
     mastery *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
 
     return 1.0 + p()->buffs.arcane_charge->check() * ( base + mastery );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( auto td = find_td( s->target ) )
+    {
+      buff_t* debuff;
+      switch ( id )
+      {
+        case 7268:  debuff = td->debuffs.magis_spark_am;   break;
+        case 30451: debuff = td->debuffs.magis_spark_ab;   break;
+        case 44425: debuff = td->debuffs.magis_spark_abar; break;
+        default:    debuff = nullptr;                      break;
+      }
+
+      if ( !debuff || !debuff->check() )
+        return;
+
+      p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
+      debuff->expire();
+
+      if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
+        p()->action.magis_spark->execute_on_target( s->target );
+    }
   }
 };
 
@@ -5331,9 +5362,16 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      auto debuff = get_td( s->target )->debuffs.touch_of_the_magi;
-      debuff->expire();
-      debuff->trigger();
+      const auto& td = get_td( s->target )->debuffs;
+      td.touch_of_the_magi->expire();
+      td.touch_of_the_magi->trigger();
+
+      if ( p()->talents.magis_spark.ok() )
+      {
+        td.magis_spark_ab->trigger();
+        td.magis_spark_abar->trigger();
+        td.magis_spark_am->trigger();
+      }
     }
   }
 
@@ -5394,6 +5432,29 @@ struct arcane_echo_t final : public arcane_mage_spell_t
     callbacks = false;
   }
 };
+
+struct magis_spark_t final : public arcane_mage_spell_t
+{
+  magis_spark_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 453925 ) )
+  {
+    aoe = -1;
+    background = true;
+    callbacks = false;
+  }
+};
+
+struct magis_spark_echo_t final : public spell_t
+{
+  magis_spark_echo_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 458375 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+    base_dd_min = base_dd_max = 1.0;
+  }
+};
+
 
 // Shifting Power Spell =====================================================
 
@@ -5802,6 +5863,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                   ->set_chance( mage->talents.arcane_debilitation.ok() );
   debuffs.frozen              = make_buff( *this, "frozen" )
                                   ->set_refresh_behavior( buff_refresh_behavior::MAX );
+  debuffs.magis_spark_ab      = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
+  debuffs.magis_spark_abar    = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
+  debuffs.magis_spark_am      = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
   debuffs.improved_scorch     = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                   ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
   debuffs.nether_munitions    = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
@@ -5958,6 +6022,12 @@ void mage_t::create_actions()
 
   if ( talents.cold_front.ok() )
     action.cold_front_frozen_orb = get_action<frozen_orb_t>( "cold_front_frozen_orb", this, "", true );
+
+  if ( talents.magis_spark.ok() )
+  {
+    action.magis_spark = get_action<magis_spark_t>( "magis_spark", this );
+    action.magis_spark_echo = get_action<magis_spark_echo_t>( "magis_spark_echo", this );
+  }
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
