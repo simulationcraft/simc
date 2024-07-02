@@ -2824,7 +2824,6 @@ using namespace helpers;
 
         // TOCHECK: Is this necessary?
         spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
-        dot_duration += p->talents.improved_immolate->effectN( 1 ).time_value();
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
       }
 
