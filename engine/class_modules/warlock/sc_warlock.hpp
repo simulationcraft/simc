@@ -306,7 +306,6 @@ public:
     player_talent_t fiendish_oblation; // TODO: New
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
     const spell_data_t* fel_sunder_debuff;
-    player_talent_t bloodbound_imps; // TODO: Remove (leftover from earlier in DF)
 
     player_talent_t doom; // TODO: Heavily changed, now a passive
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute

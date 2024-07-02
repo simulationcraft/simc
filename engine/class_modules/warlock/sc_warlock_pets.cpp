@@ -1365,9 +1365,6 @@ void wild_imp_pet_t::demise()
     {
       double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
 
-      if ( o()->talents.bloodbound_imps.ok() )
-        core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
-
       if ( !o()->talents.demoniac->ok() )
         core_chance = 0.0;
 
