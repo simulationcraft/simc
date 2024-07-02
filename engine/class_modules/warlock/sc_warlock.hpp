@@ -64,7 +64,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
-  propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
   propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -330,7 +329,6 @@ public:
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
 
-    player_talent_t kazaaks_final_curse; // TODO: Remove
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
     player_talent_t nether_portal; // TODO: Remove. Celebrate. Then celebrate again.
     const spell_data_t* nether_portal_buff;

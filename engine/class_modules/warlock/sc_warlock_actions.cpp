@@ -2442,32 +2442,12 @@ using namespace helpers;
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     { return s->action->tick_time( s ); }
 
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double m = warlock_spell_t::composite_ta_multiplier( s );
-
-      if ( p()->talents.kazaaks_final_curse.ok() )
-        m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
-
-      return m;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      warlock_spell_t::impact( s );
-
-      if ( p()->talents.kazaaks_final_curse.ok() )
-        td( s->target )->debuffs_kazaaks_final_curse->trigger( 1, pet_counter() * p()->talents.kazaaks_final_curse->effectN( 1 ).percent() );
-    }
-
     void last_tick( dot_t* d ) override
     {
       if ( d->time_to_next_full_tick() > 0_ms )
         gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom );
 
       warlock_spell_t::last_tick( d );
-
-      td( d->target )->debuffs_kazaaks_final_curse->expire();
     }
 
   private:
