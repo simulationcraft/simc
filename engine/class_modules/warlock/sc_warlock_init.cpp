@@ -256,9 +256,6 @@ namespace warlock
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
 
-    talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
-    talents.nether_portal_buff = find_spell( 267218 );
-
     talents.summon_demonic_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Demonic Tyrant" ); // Should be ID 265187
     talents.demonic_power_buff = find_spell( 265273 );
 
@@ -561,14 +558,6 @@ namespace warlock
                                warlock_pet_list.wild_imps.spawn();
                              } );
 
-    buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-                                if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
-                                {
-                                  warlock_pet_list.pit_lords.spawn( talents.guldans_ambition_summon->duration(), 1u );
-                                };
-                              } );
-
     buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                               ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
@@ -588,11 +577,6 @@ namespace warlock
                                       } );
 
     buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
-
-    // TODO: This can be removed once 10.2 goes live
-    buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
-                                    ->set_max_stack( 1 )
-                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
@@ -797,7 +781,6 @@ namespace warlock
 
   void warlock_t::init_procs_demonology()
   {
-    procs.summon_random_demon = get_proc( "summon_random_demon" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );

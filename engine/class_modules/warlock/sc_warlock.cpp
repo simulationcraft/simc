@@ -848,16 +848,6 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
-    shivarra( "shivarra", w ),
-    darkhounds( "darkhound", w ),
-    bilescourges( "bilescourge", w ),
-    urzuls( "urzul", w ),
-    void_terrors( "void_terror", w ),
-    wrathguards( "wrathguard", w ),
-    vicious_hellhounds( "vicious_hellhound", w ),
-    illidari_satyrs( "illidari_satyr", w ),
-    eyes_of_guldan( "eye_of_guldan", w ),
-    prince_malchezaar( "prince_malchezaar", w ),
     pit_lords( "pit_lord", w ),
     doomfiends( "doomfiend", w )
 {

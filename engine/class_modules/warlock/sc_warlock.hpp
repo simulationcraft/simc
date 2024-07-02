@@ -151,18 +151,6 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
 
-    // Nether Portal demons (TODO: Remove? Celebrate?)
-    spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
-    spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
-    spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
-    spawner::pet_spawner_t<pets::demonology::random_demons::urzul_t, warlock_t> urzuls;
-    spawner::pet_spawner_t<pets::demonology::random_demons::void_terror_t, warlock_t> void_terrors;
-    spawner::pet_spawner_t<pets::demonology::random_demons::wrathguard_t, warlock_t> wrathguards;
-    spawner::pet_spawner_t<pets::demonology::random_demons::vicious_hellhound_t, warlock_t> vicious_hellhounds;
-    spawner::pet_spawner_t<pets::demonology::random_demons::illidari_satyr_t, warlock_t> illidari_satyrs;
-    spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
-    spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
-
     spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
     spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
@@ -330,8 +318,6 @@ public:
     player_talent_t guillotine;
 
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
-    player_talent_t nether_portal; // TODO: Remove. Celebrate. Then celebrate again.
-    const spell_data_t* nether_portal_buff;
     player_talent_t shadows_bite; // TODO: Remove
     const spell_data_t* shadows_bite_buff;
     player_talent_t fel_and_steel; // TODO: Remove
@@ -511,8 +497,6 @@ public:
   {
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
-    action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
-    action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
@@ -587,7 +571,6 @@ public:
     propagate_const<buff_t*> power_siphon; // Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
-    propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; // Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
     propagate_const<buff_t*> dreadstalkers; // Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
@@ -600,7 +583,6 @@ public:
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
     propagate_const<buff_t*> stolen_power_final;
-    propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
     propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
@@ -674,7 +656,6 @@ public:
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
-    proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
