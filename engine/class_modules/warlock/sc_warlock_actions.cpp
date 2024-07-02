@@ -1705,18 +1705,6 @@ using namespace helpers;
     }
   };
 
-  struct soul_flame_t : public warlock_spell_t
-  {
-    soul_flame_t( warlock_t* p ) : warlock_spell_t( "Soul Flame", p, p->talents.soul_flame_proc )
-    {
-      background = true;
-      aoe = -1;
-      reduced_aoe_targets = p->talents.soul_flame->effectN( 4 ).base_value();
-
-      base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
-    }
-  };
-
   // Affliction Actions End
   // Demonology Actions Begin
 
@@ -4399,9 +4387,7 @@ using namespace helpers;
   }
 
   void warlock_t::create_affliction_proc_actions()
-  {
-    proc_actions.soul_flame_proc = new soul_flame_t( this );
-  }
+  { }
 
   void warlock_t::create_demonology_proc_actions()
   {

@@ -172,13 +172,6 @@ void warlock_td_t::target_demise()
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
-
-  if ( warlock.talents.soul_flame->ok() && !warlock.proc_actions.soul_flame_proc->target_list().empty() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
-
-    warlock.proc_actions.soul_flame_proc->execute();
-  }
 }
 
 int warlock_td_t::count_affliction_dots() const

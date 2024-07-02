@@ -239,9 +239,6 @@ public:
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
 
-    player_talent_t soul_flame; // TODO: Remove.
-    const spell_data_t* soul_flame_proc;
-
     player_talent_t creeping_death; 
     player_talent_t soul_rot;
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
@@ -530,7 +527,6 @@ public:
 
   struct proc_actions_t
   {
-    action_t* soul_flame_proc;
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
