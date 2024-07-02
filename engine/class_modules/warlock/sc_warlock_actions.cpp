@@ -1151,22 +1151,11 @@ using namespace helpers;
     }
   };
 
-  struct doom_blossom_t : public warlock_spell_t
-  {
-    doom_blossom_t( warlock_t* p )
-      : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
-    {
-      background = dual = true;
-      aoe = -1;
-    }
-  };
-
   struct seed_of_corruption_t : public warlock_spell_t
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
       corruption_t* corr;
-      doom_blossom_t* doom_blossom;
       bool cruel_epiphany;
       bool umbrafire_kindling;
 
@@ -1174,8 +1163,7 @@ using namespace helpers;
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corr( new corruption_t( p, "", true ) ),
         cruel_epiphany( false ),
-        umbrafire_kindling( false ),
-        doom_blossom( new doom_blossom_t( p ) )
+        umbrafire_kindling( false )
       {
         aoe = -1;
         background = dual = true;
@@ -1183,8 +1171,6 @@ using namespace helpers;
         corr->background = true;
         corr->dual = true;
         corr->base_costs[ RESOURCE_MANA ] = 0;
-
-        add_child( doom_blossom );
       }
 
       void impact( action_state_t* s ) override
@@ -1199,12 +1185,6 @@ using namespace helpers;
           {
             tdata->soc_threshold = 0;
             tdata->dots_seed_of_corruption->cancel();
-          }
-
-          if ( p()->talents.doom_blossom.ok() && tdata->dots_unstable_affliction->is_ticking() )
-          {
-            doom_blossom->execute_on_target( s->target );
-            p()->procs.doom_blossom->occur();
           }
           
           corr->execute_on_target( s->target );

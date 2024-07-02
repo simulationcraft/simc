@@ -259,8 +259,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t doom_blossom; // TODO: Remove
-    const spell_data_t* doom_blossom_proc;
     player_talent_t dread_touch; // TODO: Remove
     const spell_data_t* dread_touch_debuff;
     player_talent_t haunted_soul; // TODO: Remove
@@ -683,7 +681,6 @@ public:
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
-    proc_t* doom_blossom;
     proc_t* cruel_inspiration; // T29 2pc
 
     // Demonology

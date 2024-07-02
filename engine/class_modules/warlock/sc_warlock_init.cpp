@@ -165,9 +165,6 @@ namespace warlock
 
     talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
-    talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
-    talents.doom_blossom_proc = find_spell( 416699 ); // AoE damage data
-
     talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
     talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
 
@@ -823,7 +820,6 @@ namespace warlock
     procs.nightfall = get_proc( "nightfall" );
     procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
-    procs.doom_blossom = get_proc( "doom_blossom" );
     procs.cruel_inspiration = get_proc( "cruel_inspiration" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
