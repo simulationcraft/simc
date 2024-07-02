@@ -235,7 +235,6 @@ public:
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
     player_talent_t volatile_agony; // TODO: New
-    player_talent_t sow_the_seeds; // TODO: Remove
 
     player_talent_t improved_shadow_bolt; // TODO: New
     player_talent_t drain_soul; // This represents the talent node but not much else

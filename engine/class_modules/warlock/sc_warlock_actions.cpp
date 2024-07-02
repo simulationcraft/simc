@@ -1351,11 +1351,6 @@ using namespace helpers;
 
       umbrafire_explosion->umbrafire_kindling = true;
       add_child( umbrafire_explosion );
-
-      if ( p->talents.sow_the_seeds.ok() )
-      {
-        aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
-      }
     }
 
     void init() override

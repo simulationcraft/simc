@@ -90,8 +90,6 @@ namespace warlock
     talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
     talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
 
-    talents.grand_warlocks_design = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Warlock's Design" ); // All 3 specs. Should be ID 387084
-
     talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
     talents.havoc_debuff = find_spell( 80240 );
 
@@ -125,8 +123,6 @@ namespace warlock
     talents.nightfall_buff = find_spell( 264571 );
 
     talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
-  
-    talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
     talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
     talents.shadow_embrace_debuff = find_spell( 32390 );
