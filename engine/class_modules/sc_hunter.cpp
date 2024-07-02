@@ -505,6 +505,7 @@ public:
     spell_data_ptr_t beast_master; 
     spell_data_ptr_t arctic_bola;
     spell_data_ptr_t serrated_shots; 
+    spell_data_ptr_t death_chakram; 
 
     // Marksmanship
     spell_data_ptr_t hunters_knowledge;
@@ -552,12 +553,11 @@ public:
 
     spell_data_ptr_t explosive_shot; //Verify functionality remains same
 
-    spell_data_ptr_t trigger_finger; //NYI - You have your pet have 2.5% increase attack speed. This effect is increased by 100% if you do not have a pet active.
-    spell_data_ptr_t high_explosive_trap; //Verify functionality remains same
-    spell_data_ptr_t steel_trap; //Verify functionality remains same
-    spell_data_ptr_t keen_eyesight;
     spell_data_ptr_t bursting_shot; //Verify functionality remains same after move from Marksmanship tree
     spell_data_ptr_t scatter_shot; // NYI - 
+    spell_data_ptr_t trigger_finger; //NYI - You have your pet have 2.5% increase attack speed. This effect is increased by 100% if you do not have a pet active.
+    spell_data_ptr_t steel_trap; //Verify functionality remains same
+    spell_data_ptr_t keen_eyesight;
 
     spell_data_ptr_t quick_load; //NYI - When you fall below 40% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every 25 sec.
 
@@ -565,7 +565,8 @@ public:
     spell_data_ptr_t born_to_be_wild;
     spell_data_ptr_t improved_traps;
 
-    spell_data_ptr_t death_chakram; 
+    spell_data_ptr_t high_explosive_trap; //Verify functionality remains same
+    spell_data_ptr_t implosive_trap; // NYI
     spell_data_ptr_t unnatural_causes; //NYI - Your damage over time effects deal 10% increase damage. This effect is increased by 50% on targets below 20% health.
     
     // Shared
@@ -616,7 +617,7 @@ public:
     spell_data_ptr_t hydras_bite; // TODO - Verify functionality after moving to MM + removal of serpent sting
     spell_data_ptr_t volley;
 
-    spell_data_ptr_t legacy_of_the_windrunners;
+    spell_data_ptr_t legacy_of_the_windrunners; // TODO - Reworked
     spell_data_ptr_t trueshot;
     spell_data_ptr_t focused_aim;
 
@@ -649,8 +650,8 @@ public:
     spell_data_ptr_t improved_kill_command; // TODO - Verify functionality after being moved to BM tree
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
-    spell_data_ptr_t venoms_bite; // NYI - Kill Shot applies Serpent Sting for 18 seconds.
     spell_data_ptr_t hunters_prey;
+    spell_data_ptr_t venoms_bite; // NYI - Kill Shot applies Serpent Sting for 18 seconds.
 
     spell_data_ptr_t stomp;
     spell_data_ptr_t kindred_spirits;
@@ -691,7 +692,7 @@ public:
     spell_data_ptr_t tip_of_the_spear;
 
     spell_data_ptr_t lunge;
-    spell_data_ptr_t quick_shot;
+    spell_data_ptr_t quick_shot; // TODO - Reworked
     spell_data_ptr_t mongoose_bite;
     spell_data_ptr_t flankers_advantage;
 
@@ -703,7 +704,7 @@ public:
     spell_data_ptr_t terms_of_engagement;
 
     spell_data_ptr_t grenade_juggler; // NYI - Wildfire Bomb deals 5% increased damage and has a 25% chance to also cast an Explosive Shot at your target at 100% effectiveness. Explosive Shot reduces the cooldown of Wildfire Bomb by 2 seconds.
-    spell_data_ptr_t flanking_strike;
+    spell_data_ptr_t flanking_strike; // TODO - Reworked
     spell_data_ptr_t frenzy_strikes;
     spell_data_ptr_t merciless_blows; // NYI - Casting Butchery makes your next Raptor Strike or Mongoose Bite hit 3 targets.
     spell_data_ptr_t vipers_venom; // TODO verify functionality after Serpent Sting was removed
@@ -721,13 +722,13 @@ public:
     spell_data_ptr_t killer_companion;
 
     spell_data_ptr_t fury_of_the_eagle;
-    spell_data_ptr_t coordinated_assault;
+    spell_data_ptr_t coordinated_assault; // TODO - Reworked
     spell_data_ptr_t spearhead;
 
     spell_data_ptr_t ruthless_marauder;
     spell_data_ptr_t symbiotic_adrenaline; // NYI - The cooldown of Coordinated Assault is reduced by 60 seconds. 
     spell_data_ptr_t relentless_primal_ferocity; // NYI - Coordinated Assault sends you and your pet into a state of primal power. For the duration of Coordinated Assault, Kill Command generates 1 additional stack of Tip of the Spear, you gain 10% haste, and Tip of the Spear's damage bonus is increased by 50%.
-    spell_data_ptr_t bombardier;
+    spell_data_ptr_t bombardier; // TODO - Reworked
     spell_data_ptr_t deadly_duo;
 
     // Dark Ranger
@@ -7004,6 +7005,7 @@ void hunter_t::init_spells()
   talents.beast_master                      = find_talent_spell( talent_tree::CLASS, "Beast Master" );
   talents.arctic_bola                       = find_talent_spell( talent_tree::CLASS, "Arctic Bola" );
   talents.serrated_shots                    = find_talent_spell( talent_tree::CLASS, "Serrated Shots" );
+  talents.death_chakram                     = find_talent_spell( talent_tree::CLASS, "Death Chakram" );
   // END TODO
 
   // Hunter Tree
@@ -7021,12 +7023,11 @@ void hunter_t::init_spells()
 
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
 
+  talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
+  talents.scatter_shot                      = find_talent_spell( talent_tree::CLASS, "Scatter Shot" );  
   talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
-  talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
   talents.steel_trap                        = find_talent_spell( talent_tree::CLASS, "Steel Trap" );
   talents.keen_eyesight                     = find_talent_spell( talent_tree::CLASS, "Keen Eyesight" );
-  talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
-  talents.scatter_shot                      = find_talent_spell( talent_tree::CLASS, "Scatter Shot" );
 
   talents.quick_load                        = find_talent_spell( talent_tree::CLASS, "Quick Load" );
 
@@ -7034,7 +7035,8 @@ void hunter_t::init_spells()
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
   talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
 
-  talents.death_chakram                     = find_talent_spell( talent_tree::CLASS, "Death Chakram" );
+  talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
+  talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
 
   // Marksmanship Tree
@@ -7132,12 +7134,12 @@ void hunter_t::init_spells()
     talents.laceration                        = find_talent_spell( talent_tree::SPECIALIZATION, "Laceration", HUNTER_BEAST_MASTERY );
 
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
-    talents.improved_kill_command             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Kill Command", HUNTER_BEAST_MASTERY );
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
+    talents.improved_kill_command             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Kill Command", HUNTER_BEAST_MASTERY );
     talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY );
     talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
-    talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
     talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
+    talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
     talents.kindred_spirits                   = find_talent_spell( talent_tree::SPECIALIZATION, "Kindred Spirits", HUNTER_BEAST_MASTERY );
