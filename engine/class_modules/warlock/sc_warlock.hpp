@@ -215,7 +215,6 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
-    player_talent_t grand_warlocks_design; // TODO: Remove
 
     // Affliction
     player_talent_t malefic_rapture; // TODO: Move to base section
