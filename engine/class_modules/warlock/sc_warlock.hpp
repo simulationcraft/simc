@@ -320,8 +320,6 @@ public:
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
     player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t nerzhuls_volition; // TODO: Remove
-    const spell_data_t* nerzhuls_volition_buff;
     player_talent_t stolen_power; // TODO: Remove
     const spell_data_t* stolen_power_stacking_buff;
     const spell_data_t* stolen_power_final_buff;

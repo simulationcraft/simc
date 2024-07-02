@@ -72,9 +72,6 @@ void warlock_pet_t::create_buffs()
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
 
-  buffs.nerzhuls_volition = make_buff( this, "nerzhuls_volition", o()->talents.nerzhuls_volition_buff )
-                                ->set_default_value( o()->talents.nerzhuls_volition->effectN( 1 ).percent() );
-
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
   buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
@@ -126,7 +123,6 @@ void warlock_pet_t::create_buffs()
   buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
-  buffs.nerzhuls_volition->quiet = true;
   buffs.demonic_power->quiet = true;
   buffs.the_expendables->quiet = true;
 }
@@ -218,9 +214,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
-
-  if ( buffs.nerzhuls_volition->check() )
-    m *= 1.0 + buffs.nerzhuls_volition->check_value();
 
   if ( buffs.demonic_power->check() )
     m *= 1.0 + buffs.demonic_power->check_value();

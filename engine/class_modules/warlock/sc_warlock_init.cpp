@@ -256,9 +256,6 @@ namespace warlock
 
     talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
-    talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
-    talents.nerzhuls_volition_buff = find_spell( 421970 );
-
     talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
     talents.stolen_power_stacking_buff = find_spell( 387603 );
     talents.stolen_power_final_buff = find_spell( 387604 );
