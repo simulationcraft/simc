@@ -379,7 +379,7 @@ bool monk_action_t<Base>::is_combo_break()
 template <class Base>
 void monk_action_t<Base>::combo_strikes_trigger()
 {
-  if ( !p()->mastery.combo_strikes->ok() )
+  if ( !p()->baseline.windwalker.mastery->ok() )
     return;
 
   if ( is_combo_strike() )
@@ -1095,7 +1095,7 @@ struct windwalking_aura_t : public monk_spell_t
 struct high_impact_t : public monk_spell_t
 {
   high_impact_t( monk_t *p )
-    : monk_spell_t( p, "high_impact", p->passives.shado_pan.high_impact->effectN( 1 ).trigger() )  // 451039
+    : monk_spell_t( p, "high_impact", p->talent.shado_pan.high_impact_debuff->effectN( 1 ).trigger() )  // 451039
   {
     aoe        = -1;
     background = dual = true;
@@ -1106,7 +1106,7 @@ struct high_impact_t : public monk_spell_t
 struct flurry_strike_wisdom_t : public monk_spell_t
 {
   flurry_strike_wisdom_t( monk_t *p )
-    : monk_spell_t( p, "flurry_strike_wisdom", p->passives.shado_pan.wisdom_of_the_wall_flurry )
+    : monk_spell_t( p, "flurry_strike_wisdom", p->talent.shado_pan.wisdom_of_the_wall_flurry )
   {
     aoe        = -1;
     background = dual = true;
@@ -1142,7 +1142,7 @@ struct flurry_strike_t : public monk_melee_attack_t
   }
 
   flurry_strike_t( monk_t *p )
-    : monk_melee_attack_t( p, "flurry_strike", p->passives.shado_pan.flurry_strike ), flurry_strikes_counter( 0 )
+    : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ), flurry_strikes_counter( 0 )
   {
     background = dual = true;
 
@@ -4558,7 +4558,8 @@ struct soothing_mist_t : public monk_heal_t
 
 struct gust_of_mists_t : public monk_heal_t
 {
-  gust_of_mists_t( monk_t *p ) : monk_heal_t( p, "gust_of_mists", p->mastery.gust_of_mists->effectN( 2 ).trigger() )
+  gust_of_mists_t( monk_t *p )
+    : monk_heal_t( p, "gust_of_mists", p->baseline.mistweaver.mastery->effectN( 2 ).trigger() )
   {
     background = dual      = true;
     spell_power_mod.direct = 1;
@@ -4708,7 +4709,7 @@ struct vivify_t : public monk_heal_t
       p()->buff.lifecycles_enveloping_mist->trigger();
     }
 
-    if ( p()->mastery.gust_of_mists->ok() )
+    if ( p()->baseline.mistweaver.mastery->ok() )
       mastery->execute();
 
     p()->active_actions.chi_wave->execute();
@@ -6038,7 +6039,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 
   // Shado-Pan
 
-  debuff.high_impact = make_buff( *this, "high_impact", p->passives.shado_pan.high_impact )
+  debuff.high_impact = make_buff( *this, "high_impact", p->talent.shado_pan.high_impact_debuff )
                            ->set_trigger_spell( p->talent.shado_pan.high_impact )
                            ->set_quiet( true );
 
@@ -6088,12 +6089,15 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     buff(),
     gain(),
     proc(),
-    talent(),
-    mastery(),
     cooldown(),
-    passives(),
+    talent(),
+    baseline(),
+    tier(),
     pets( this ),
-    user_options( options_t() )
+    user_options( options_t() ),
+    mastery(),
+    shared(),
+    passives()
 {
   // actives
   windwalking_aura = nullptr;
@@ -6581,6 +6585,7 @@ void monk_t::init_spells()
   // monk_t::baseline::brewmaster
   {
     current_spec                                   = MONK_BREWMASTER;
+    baseline.brewmaster.mastery                    = find_mastery_spell( MONK_BREWMASTER );
     baseline.brewmaster.aura                       = find_specialization_spell( "Brewmaster Monk" );
     baseline.brewmaster.brewmasters_balance        = find_specialization_spell( "Brewmaster's Balance" );
     baseline.brewmaster.celestial_fortune          = find_specialization_spell( "Celestial Fortune" );
@@ -6602,6 +6607,7 @@ void monk_t::init_spells()
   // monk_t::baseline::mistweaver
   {
     current_spec                          = MONK_MISTWEAVER;
+    baseline.mistweaver.mastery           = find_mastery_spell( MONK_MISTWEAVER );
     baseline.mistweaver.aura              = find_specialization_spell( "Mistweaver Monk" );
     baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
     baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
@@ -6610,6 +6616,7 @@ void monk_t::init_spells()
   // monk_t::baseline::windwalker
   {
     current_spec                                  = MONK_WINDWALKER;
+    baseline.windwalker.mastery                   = find_mastery_spell( MONK_WINDWALKER );
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
@@ -6972,12 +6979,14 @@ void monk_t::init_spells()
   // monk_t::talent::shado-pan
   {
     // Row 1
-    talent.shado_pan.flurry_strikes = _HT( "Flurry Strikes" );
+    talent.shado_pan.flurry_strikes     = _HT( "Flurry Strikes" );
+    talent.shado_pan.flurry_strikes_hit = find_spell( 450617 );
     // Row 2
-    talent.shado_pan.pride_of_pandaria = _HT( "Pride of Pandaria" );
-    talent.shado_pan.high_impact       = _HT( "High Impact" );
-    talent.shado_pan.veterans_eye      = _HT( "Veteran's Eye" );
-    talent.shado_pan.martial_precision = _HT( "Martial Precision" );
+    talent.shado_pan.pride_of_pandaria  = _HT( "Pride of Pandaria" );
+    talent.shado_pan.high_impact        = _HT( "High Impact" );
+    talent.shado_pan.high_impact_debuff = find_spell( 451037 );
+    talent.shado_pan.veterans_eye       = _HT( "Veteran's Eye" );
+    talent.shado_pan.martial_precision  = _HT( "Martial Precision" );
     // Row 3
     talent.shado_pan.protect_and_serve   = _HT( "Protect and Serve" );
     talent.shado_pan.lead_from_the_front = _HT( "Lead from the Front" );
@@ -6989,7 +6998,8 @@ void monk_t::init_spells()
     talent.shado_pan.efficient_training = _HT( "Efficient Training" );
     talent.shado_pan.vigilant_watch     = _HT( "Vigilant Watch" );
     // Row 5
-    talent.shado_pan.wisdom_of_the_wall = _HT( "Wisdom of the Wall" );
+    talent.shado_pan.wisdom_of_the_wall        = _HT( "Wisdom of the Wall" );
+    talent.shado_pan.wisdom_of_the_wall_flurry = find_spell( 451250 );
   }
 
   // Passives =========================================
@@ -7024,9 +7034,6 @@ void monk_t::init_spells()
   passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
 
   // Shado-Pan
-  passives.shado_pan.flurry_strike             = find_spell( 450617 );
-  passives.shado_pan.high_impact               = find_spell( 451037 );
-  passives.shado_pan.wisdom_of_the_wall_flurry = find_spell( 451250 );
 
   // Tier 29
   passives.kicks_of_flowing_momentum = find_spell( 394944 );
@@ -7047,9 +7054,6 @@ void monk_t::init_spells()
   passives.t33_ww_4pc = find_spell( 454505 );
 
   // Mastery spells =========================================
-  mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
-  mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
-  mastery.gust_of_mists   = find_mastery_spell( MONK_MISTWEAVER );
 
   //================================================================================
   // Shared Spells
@@ -7432,7 +7436,7 @@ void monk_t::create_buffs()
           ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
           ->set_default_value_from_effect( 1 );
 
-  buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
+  buff.elusive_brawler = make_buff( this, "elusive_brawler", baseline.brewmaster.mastery->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
   buff.exploding_keg =
@@ -7545,8 +7549,8 @@ void monk_t::create_buffs()
           ->set_default_value_from_effect( 1 );
 
   buff.combo_strikes =
-      make_buff_fallback( mastery.combo_strikes->ok(), this, "combo_strikes" )
-          ->set_trigger_spell( mastery.combo_strikes )
+      make_buff_fallback( baseline.windwalker.mastery->ok(), this, "combo_strikes" )
+          ->set_trigger_spell( baseline.windwalker.mastery )
           ->set_duration( timespan_t::from_minutes( 60 ) )
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -8307,7 +8311,7 @@ double monk_t::composite_attack_power_multiplier() const
 {
   double ap = base_t::composite_attack_power_multiplier();
 
-  ap *= 1.0 + cache.mastery() * mastery.elusive_brawler->effectN( 2 ).mastery_value();
+  ap *= 1.0 + cache.mastery() * baseline.brewmaster.mastery->effectN( 2 ).mastery_value();
 
   return ap;
 }

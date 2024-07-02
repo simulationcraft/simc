@@ -736,6 +736,38 @@ public:
 
   } proc;
 
+  struct cooldowns_t
+  {
+    propagate_const<cooldown_t *> anvil__stave;
+    propagate_const<cooldown_t *> blackout_kick;
+    propagate_const<cooldown_t *> breath_of_fire;
+    propagate_const<cooldown_t *> chi_torpedo;
+    propagate_const<cooldown_t *> drinking_horn_cover;
+    propagate_const<cooldown_t *> expel_harm;
+    propagate_const<cooldown_t *> jadefire_stomp;
+    propagate_const<cooldown_t *> fists_of_fury;
+    propagate_const<cooldown_t *> flying_serpent_kick;
+    propagate_const<cooldown_t *> healing_elixir;
+    propagate_const<cooldown_t *> invoke_niuzao;
+    propagate_const<cooldown_t *> invoke_xuen;
+    propagate_const<cooldown_t *> invoke_yulon;
+    propagate_const<cooldown_t *> keg_smash;
+    propagate_const<cooldown_t *> rising_sun_kick;
+    propagate_const<cooldown_t *> refreshing_jade_wind;
+    propagate_const<cooldown_t *> roll;
+    propagate_const<cooldown_t *> rushing_jade_wind_brm;
+    propagate_const<cooldown_t *> rushing_jade_wind_ww;
+    propagate_const<cooldown_t *> storm_earth_and_fire;
+    propagate_const<cooldown_t *> strike_of_the_windlord;
+    propagate_const<cooldown_t *> thunder_focus_tea;
+    propagate_const<cooldown_t *> touch_of_death;
+    propagate_const<cooldown_t *> weapons_of_order;
+    propagate_const<cooldown_t *> whirling_dragon_punch;
+
+    // T29
+    propagate_const<cooldown_t *> brewmasters_rhythm;
+  } cooldown;
+
   struct talents_t
   {
     struct
@@ -1083,9 +1115,11 @@ public:
     {
       // Row 1
       player_talent_t flurry_strikes;
+      const spell_data_t *flurry_strikes_hit;
       // Row 2
       player_talent_t pride_of_pandaria;
       player_talent_t high_impact;
+      const spell_data_t *high_impact_debuff;
       player_talent_t veterans_eye;
       player_talent_t martial_precision;
       // Row 3
@@ -1100,6 +1134,7 @@ public:
       player_talent_t vigilant_watch;
       // Row 5
       player_talent_t wisdom_of_the_wall;
+      const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
 
     // Conduit of the Celestials
@@ -1128,19 +1163,6 @@ public:
     } conduit_of_the_celestials;
   } talent;
 
-  // Shared
-  // TODO: exterminate this struct
-  struct shared_t
-  {
-    const spell_data_t *jadefire_stomp;
-    const spell_data_t *healing_elixir;
-    const spell_data_t *invokers_delight;
-    const spell_data_t *rushing_jade_wind;
-    const spell_data_t *shadowboxing_treads;
-    const spell_data_t *teachings_of_the_monastery;
-  } shared;
-
-  // new spell data holders
   struct
   {
     struct
@@ -1165,6 +1187,7 @@ public:
 
     struct
     {
+      const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
@@ -1186,6 +1209,7 @@ public:
 
     struct
     {
+      const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
       const spell_data_t *expel_harm_rank_2;
@@ -1193,6 +1217,7 @@ public:
 
     struct
     {
+      const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
@@ -1206,49 +1231,57 @@ public:
     } windwalker;
   } baseline;
 
-  // end
+  struct
+  {
+  } tier;
 
-  struct mastery_spells_t
+  struct pets_t
+  {
+    std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
+    spawner::pet_spawner_t<pet_t, monk_t> xuen;
+    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> yulon;
+    spawner::pet_spawner_t<pet_t, monk_t> chiji;
+    spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
+    spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
+    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
+
+    pet_t *bron;
+
+    pets_t( monk_t *p );
+  } pets;
+
+  // Options
+  struct options_t
+  {
+    int initial_chi;
+    double expel_harm_effectiveness;
+    double jadefire_stomp_uptime;
+    int chi_burst_healing_targets;
+    int motc_override;
+    double squirm_frequency;
+  } user_options;
+
+  // exterminate these structs
+  struct
   {
     const spell_data_t *combo_strikes;    // Windwalker
     const spell_data_t *elusive_brawler;  // Brewmaster
     const spell_data_t *gust_of_mists;    // Mistweaver
   } mastery;
 
-  // Cooldowns
-  struct cooldowns_t
+  struct
   {
-    propagate_const<cooldown_t *> anvil__stave;
-    propagate_const<cooldown_t *> blackout_kick;
-    propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> chi_torpedo;
-    propagate_const<cooldown_t *> drinking_horn_cover;
-    propagate_const<cooldown_t *> expel_harm;
-    propagate_const<cooldown_t *> jadefire_stomp;
-    propagate_const<cooldown_t *> fists_of_fury;
-    propagate_const<cooldown_t *> flying_serpent_kick;
-    propagate_const<cooldown_t *> healing_elixir;
-    propagate_const<cooldown_t *> invoke_niuzao;
-    propagate_const<cooldown_t *> invoke_xuen;
-    propagate_const<cooldown_t *> invoke_yulon;
-    propagate_const<cooldown_t *> keg_smash;
-    propagate_const<cooldown_t *> rising_sun_kick;
-    propagate_const<cooldown_t *> refreshing_jade_wind;
-    propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> rushing_jade_wind_brm;
-    propagate_const<cooldown_t *> rushing_jade_wind_ww;
-    propagate_const<cooldown_t *> storm_earth_and_fire;
-    propagate_const<cooldown_t *> strike_of_the_windlord;
-    propagate_const<cooldown_t *> thunder_focus_tea;
-    propagate_const<cooldown_t *> touch_of_death;
-    propagate_const<cooldown_t *> weapons_of_order;
-    propagate_const<cooldown_t *> whirling_dragon_punch;
+    const spell_data_t *jadefire_stomp;
+    const spell_data_t *healing_elixir;
+    const spell_data_t *invokers_delight;
+    const spell_data_t *rushing_jade_wind;
+    const spell_data_t *shadowboxing_treads;
+    const spell_data_t *teachings_of_the_monastery;
+  } shared;
 
-    // T29
-    propagate_const<cooldown_t *> brewmasters_rhythm;
-  } cooldown;
-
-  struct passives_t
+  struct
   {
     // General
     const spell_data_t *rushing_jade_wind;
@@ -1285,18 +1318,6 @@ public:
     const spell_data_t *whirling_dragon_punch_aoe_tick;
     const spell_data_t *whirling_dragon_punch_st_tick;
 
-    struct
-    {
-    } windwalker;
-
-    // Shado-Pan
-    struct
-    {
-      const spell_data_t *flurry_strike;
-      const spell_data_t *high_impact;
-      const spell_data_t *wisdom_of_the_wall_flurry;
-    } shado_pan;
-
     // Tier 29
     const spell_data_t *kicks_of_flowing_momentum;
     const spell_data_t *fists_of_flowing_momentum;
@@ -1316,34 +1337,6 @@ public:
     const spell_data_t *t33_ww_4pc;
 
   } passives;
-
-  struct pets_t
-  {
-    std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
-    spawner::pet_spawner_t<pet_t, monk_t> xuen;
-    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> yulon;
-    spawner::pet_spawner_t<pet_t, monk_t> chiji;
-    spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
-    spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
-
-    pet_t *bron;
-
-    pets_t( monk_t *p );
-  } pets;
-
-  // Options
-  struct options_t
-  {
-    int initial_chi;
-    double expel_harm_effectiveness;
-    double jadefire_stomp_uptime;
-    int chi_burst_healing_targets;
-    int motc_override;
-    double squirm_frequency;
-  } user_options;
 
 public:
   monk_t( sim_t *sim, util::string_view name, race_e r );
