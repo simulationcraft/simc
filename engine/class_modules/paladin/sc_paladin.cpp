@@ -94,6 +94,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammerfall_icd           = get_cooldown( "hammerfall_icd" );
   cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
 
+  cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
+  cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -288,6 +291,9 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
     background = true;
   if ( p->talents.sentinel->ok() )
     background = true;
+  if ( p->talents.radiant_glory->ok() )
+    background = true;
+
   harmful = false;
 
   // link needed for Righteous Protector / SotR cooldown reduction
@@ -1030,7 +1036,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blades_of_light->ok() )
     {
-      affected_by.hand_of_light = true;
+      affected_by.highlords_judgment = true;
     }
 
     if ( p->talents.blessed_champion->ok() )
@@ -1226,7 +1232,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.blades_of_light->ok() )
     {
-      affected_by.hand_of_light = true;
+      affected_by.highlords_judgment = true;
     }
 
     if ( p->talents.swift_justice->ok() )
@@ -1592,9 +1598,9 @@ void judgment_t::impact( action_state_t* s )
     if ( p()->talents.greater_judgment->ok() )
     {
       int num_stacks = 1;
-      if ( p()->talents.highlords_judgment->ok() )
+      if ( p()->talents.highlords_wrath->ok() )
       {
-        num_stacks += as<int>( p()->talents.highlords_judgment->effectN( 1 ).base_value() );
+        num_stacks += as<int>( p()->talents.highlords_wrath->effectN( 1 ).base_value() );
       }
       td( s->target )->debuff.judgment->trigger( num_stacks );
     }
@@ -2574,9 +2580,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.adjudication->ok() )
     {
-      if ( s->result == RESULT_CRIT && s->chain_target == 0 )
+      // TODO: verify this is right
+      double mastery_chance = p()->cache.mastery_value() * 2;
+      if ( rng().roll( mastery_chance ) )
       {
-        p()->active.background_blessed_hammer->schedule_execute();
+        p()->active.highlords_judgment->set_target( target );
+        p()->active.highlords_judgment->execute();
       }
     }
 
@@ -2935,6 +2944,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   }
 
   dots.expurgation = target->get_dot( "expurgation", paladin );
+  dots.truths_wake = target->get_dot( "truths_wake", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()

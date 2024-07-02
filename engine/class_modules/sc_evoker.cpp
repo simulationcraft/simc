@@ -2482,25 +2482,12 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t tick_time( const action_state_t* s ) const override
   {
-    // we need to have the tick time match duration.
-    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
     return composite_dot_duration( s );
-  }
-
-  timespan_t base_composite_dot_duration( const action_state_t* s ) const
-  {
-    auto dur = ab::dot_duration;
-
-    for ( const auto& i : ab::dot_duration_effects )
-      dur *= 1.0 + ab::get_effect_value( i );
-
-    return dur * s->haste;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
-    auto dur = base_composite_dot_duration( s );
+    auto dur = ab::composite_dot_duration( s );
 
     // hack so we always have a non-zero duration in order to trigger last_tick()
     if ( dur == 0_ms )
@@ -2509,10 +2496,24 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     return dur + lag;
   }
 
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
+  {
+    // action_t::dot_duration_pct_multiplier calls tick_time(), but since tick_time() is overriden to call
+    // composite_dot_duration() we need to entirely bypass action_t::dot_duration_pct_multiplier().
+    //
+    // *** Any non-parsed duration multipliers should be implemented here. ***
+    auto mul = ab::hasted_dot_duration ? s->haste : 1.0;
+
+    for ( const auto& i : ab::dot_duration_effects )
+      mul *= 1.0 + ab::get_effect_value( i );
+
+    return mul;
+  }
+
   timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
   {
     auto base = base_time_to_empower( emp );
-    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+    auto mult = composite_dot_duration( s ) / base_empower_duration;
 
     return base * mult;
   }
@@ -3419,8 +3420,10 @@ struct living_flame_base_t : public Base
   living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
     : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
   {
-    base_t::dual         = true;
-    base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
+    base_t::dual = true;
+
+    if ( !p->talent.ruby_embers.ok() )
+      base_t::dot_duration = 0_ms;
   }
 
   int n_targets() const override
@@ -3572,16 +3575,16 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    timespan_t t = base_t::tick_time( state );
+    auto mul = base_t::tick_time_pct_multiplier( state );
 
     if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
     {
-      t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+      mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
     }
 
-    return t;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -3668,16 +3671,16 @@ struct fire_breath_t : public empowered_charge_spell_t
       }
     }
 
-    timespan_t tick_time( const action_state_t* state ) const override
+    double tick_time_pct_multiplier( const action_state_t* state ) const override
     {
-      timespan_t t = base_t::tick_time( state );
+      auto mul = base_t::tick_time_pct_multiplier( state );
 
       if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
       {
-        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+        mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
 
-      return t;
+      return mul;
     }
 
     void trigger_dot( action_state_t* state ) override
@@ -7285,13 +7288,13 @@ void evoker_t::init_finished()
     if ( auto lf = dynamic_cast<spells::living_flame_t*>( *pre ) )
     {
       int actions           = 0;
-      timespan_t time_spent = timespan_t::zero();
+      timespan_t time_spent = 0_ms;
 
       std::for_each( pre + 1, precombat_action_list.end(), [ &actions, &time_spent ]( action_t* a ) {
-        if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+        if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
-          time_spent += std::max( a->base_execute_time, a->trigger_gcd );
+          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
         }
       } );
 

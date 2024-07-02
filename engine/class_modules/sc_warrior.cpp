@@ -130,6 +130,7 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_concussive_blows;
+  buff_t* debuffs_champions_might;
   buff_t* debuffs_executioners_precision;
   buff_t* debuffs_fatal_mark;
   buff_t* debuffs_skullsplitter;
@@ -215,7 +216,6 @@ public:
     action_t* deep_wounds_PROT;
     action_t* fatality;
     action_t* torment_avatar;
-    action_t* torment_bladestorm;
     action_t* torment_odyns_fury;
     action_t* torment_recklessness;
     action_t* tough_as_nails;
@@ -231,18 +231,19 @@ public:
     buff_t* berserker_rage;
     buff_t* berserker_stance;
     buff_t* bladestorm;
+    buff_t* bloodbath;
     buff_t* bloodcraze;
     buff_t* bounding_stride;
     buff_t* brace_for_impact;
     buff_t* charge_movement;
     buff_t* collateral_damage;
     buff_t* concussive_blows;
+    buff_t* crushing_blow;
     buff_t* dance_of_death_bladestorm;
     buff_t* dance_of_death_ravager;
     buff_t* dancing_blades;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
-    buff_t* champions_might;
     buff_t* enrage;
     buff_t* frenzy;
     buff_t* heroic_leap_movement;
@@ -259,7 +260,7 @@ public:
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
-    buff_t* reckless_abandon;
+    buff_t* recklessness_warlords_torment;
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_charge_movement;
@@ -515,7 +516,6 @@ public:
 
       player_talent_t reinforced_plates;
       player_talent_t bounding_stride;
-      player_talent_t blood_and_thunder;
       player_talent_t crackling_thunder;
       player_talent_t sidearm;
 
@@ -788,6 +788,7 @@ public:
     struct shared_talents_t
     {
       player_talent_t ravager;
+      player_talent_t rend;
       player_talent_t bloodsurge;
       player_talent_t dance_of_death;
     } shared;
@@ -1025,9 +1026,12 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_effects( p()->buff.avatar, p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
+    // TODO fix this when I am back from vacation.  Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
+    // This one is for Blademaster's Torment, effect 8 is dynamically enabled
+    parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
     parse_effects( p()->buff.dance_of_death_bladestorm );
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
@@ -1044,6 +1048,7 @@ public:
     if ( p()->talents.fury.powerful_enrage->ok() )
       parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
     parse_effects( p()->buff.recklessness );
+    parse_effects( p()->buff.recklessness_warlords_torment );
     parse_effects( p()->buff.slaughtering_strikes );
 
     // Protection
@@ -1053,6 +1058,8 @@ public:
   void apply_debuff_effects()
   {
     // Shared
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_champions_might ),
+                            p()->talents.warrior.champions_spear->effectN( 1 ).trigger() );
 
     // Arms
     // Arms deep wounds spell data contains T30 2pc bonus, which is disabled/enabled via script.
@@ -1078,6 +1085,7 @@ public:
     parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
                           p()->spell.colossus_smash_debuff,
                           p()->talents.arms.blunt_instruments, p()->talents.arms.spiteful_serenity );
+
     parse_target_effects( d_fn( &warrior_td_t::debuffs_executioners_precision ),
                           p()->talents.arms.executioners_precision->effectN( 1 ).trigger(),
                           p()->talents.arms.executioners_precision );
@@ -2143,7 +2151,7 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->buff.reckless_abandon->check() && !background )
+    if ( p()->buff.bloodbath->check() && !background )
     {
       return false;
     }
@@ -2288,7 +2296,7 @@ struct bloodbath_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.reckless_abandon->decrement();
+    p()->buff.bloodbath->decrement();
     p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
@@ -2307,7 +2315,7 @@ struct bloodbath_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p()->buff.reckless_abandon->check() )
+    if ( !p()->buff.bloodbath->check() )
     {
       return false;
     }
@@ -2515,12 +2523,6 @@ struct bladestorm_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.bladestorm->trigger();
-
-    if ( p()->talents.warrior.blademasters_torment.ok() )
-    {
-      action_t* torment_ability = p()->active.torment_avatar;
-      torment_ability->schedule_execute();
-    }
   }
 
   void tick( dot_t* d ) override
@@ -2553,7 +2555,7 @@ struct bladestorm_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
+          if ( bloodbath && p()->buff.bloodbath->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -2575,112 +2577,6 @@ struct bladestorm_t : public warrior_attack_t
     if ( p() -> talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_bladestorm->up() )
     {
       p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
-    }
-  }
-
-// TODO: Mush Torment Bladestorm into regular Bladestorm reporting
-//  void init() override
-//  {
-//    warrior_attack_t::init();
-//    p()->active.torment_bladestorm->stats = stats;
-//  }
-};
-
-// Torment Bladestorm ===============================================================
-
-struct torment_bladestorm_t : public warrior_attack_t
-{
-  attack_t *bladestorm_mh, *bladestorm_oh;
-  mortal_strike_t* mortal_strike;
-  bloodthirst_t* bloodthirst;
-  bloodbath_t* bloodbath;
-
-  torment_bladestorm_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_attack_t( n, p, spell ),
-      bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
-      bladestorm_oh( nullptr ),
-      mortal_strike( nullptr ),
-      bloodthirst( nullptr ),
-      bloodbath( nullptr )
-  {
-    parse_options( options_str );
-    channeled = false;
-    tick_zero = true;
-    interrupt_auto_attack = false;
-    travel_speed = 0;
-    dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-    bladestorm_mh->weapon = &( player->main_hand_weapon );
-    add_child( bladestorm_mh );
-
-    if ( p->talents.arms.unhinged->ok() )
-    {
-      mortal_strike = new mortal_strike_t( "mortal_strike_torment_unhinged", p );
-      add_child( mortal_strike );
-    }
-
-    if ( p->talents.fury.unhinged->ok() )
-    {
-      bloodthirst = new bloodthirst_t( "bloodthirst_torment_unhinged", p );
-      add_child( bloodthirst );
-
-      if ( p->talents.fury.reckless_abandon->ok() )
-      {
-        bloodbath = new bloodbath_t( "bloodbath_torment_unhinged", p );
-        add_child( bloodbath );
-      }
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p()->buff.bladestorm->trigger();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // dont tick if BS buff not up
-    // since first tick is instant the buff won't be up yet
-    if ( d->ticks_left() < d->num_ticks() && !p()->buff.bladestorm->up() )
-    {
-      make_event( sim, [ d ] { d->cancel(); } );
-      return;
-    }
-
-    warrior_attack_t::tick( d );
-    bladestorm_mh->execute();
-
-    // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
-    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 1 == 0 ) )
-    {
-      auto t = p() -> target;
-      if ( ! p() -> target || p() -> target->is_sleeping() )
-        t = select_random_target();
-
-      if ( t )
-      {
-        if ( mortal_strike )
-          mortal_strike->execute_on_target( t );
-        if ( bloodthirst || bloodbath )
-        {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
-            bloodbath->execute_on_target( t );
-          else
-            bloodthirst->execute_on_target( t );
-        }
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-    p()->buff.bladestorm->expire();
-
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      p()->buff.merciless_bonegrinder->trigger();
     }
   }
 };
@@ -3178,16 +3074,16 @@ struct thunder_clap_t : public warrior_attack_t
 {
   double rage_gain;
   double shield_slam_reset;
-  warrior_attack_t* blood_and_thunder;
-  double blood_and_thunder_target_cap;
-  double blood_and_thunder_targets_hit;
+  warrior_attack_t* rend;
+  double rend_target_cap;
+  double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
-      blood_and_thunder( nullptr ),
-      blood_and_thunder_target_cap( 0 ),
-      blood_and_thunder_targets_hit( 0 )
+      rend( nullptr ),
+      rend_target_cap( 0 ),
+      rend_targets_hit( 0 )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -3198,18 +3094,18 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p->spec.protection_warrior->ok() )
       rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
 
-    if ( p->talents.warrior.blood_and_thunder.ok() )
+    if ( p->talents.shared.rend.ok() )
     {
-      blood_and_thunder_target_cap = p->talents.warrior.blood_and_thunder->effectN( 1 ).base_value();
+      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
       if ( p->talents.arms.rend->ok() )
-        blood_and_thunder = new rend_dot_t( p );
+        rend = new rend_dot_t( p );
       if ( p->talents.protection.rend->ok() )
       {
         // Arma: 2022 Nov 4th.  Even if you are prot, the arms rend dot is being applied.
         if ( p->bugs )
-          blood_and_thunder = new rend_dot_t( p );
+          rend = new rend_dot_t( p );
         else
-          blood_and_thunder = new rend_dot_prot_t( p );
+          rend = new rend_dot_prot_t( p );
       }
     }
   }
@@ -3245,7 +3141,7 @@ struct thunder_clap_t : public warrior_attack_t
 
   void execute() override
   {
-    blood_and_thunder_targets_hit = 0;
+    rend_targets_hit = 0;
 
     warrior_attack_t::execute();
 
@@ -3291,13 +3187,12 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( ( p()->talents.arms.rend->ok() || p()->talents.protection.rend->ok() ) &&
-         p()->talents.warrior.blood_and_thunder.ok() )
+    if ( p()->talents.shared.rend.ok() )
     {
-      if ( blood_and_thunder_targets_hit < blood_and_thunder_target_cap )
+      if ( rend_targets_hit < rend_target_cap )
       {
-        blood_and_thunder->execute_on_target( state->target );
-        blood_and_thunder_targets_hit++;
+        rend->execute_on_target( state->target );
+        rend_targets_hit++;
       }
     }
   }
@@ -4077,7 +3972,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->buff.reckless_abandon->check() )
+    if ( p()->buff.crushing_blow->check() )
     {
       return false;
     }
@@ -4186,7 +4081,7 @@ struct crushing_blow_t : public warrior_attack_t
     }
 
 
-    p()->buff.reckless_abandon->decrement();
+    p()->buff.crushing_blow->decrement();
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
@@ -4202,7 +4097,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->buff.reckless_abandon->check() )
+    if ( !p()->buff.crushing_blow->check() )
     {
       return false;
     }
@@ -4659,9 +4554,11 @@ struct rampage_parent_t : public warrior_attack_t
       const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
       p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
+
     if ( p()->talents.fury.reckless_abandon->ok() )
     {
-      p()->buff.reckless_abandon->trigger();
+      p()->buff.bloodbath->trigger();
+      p()->buff.crushing_blow->trigger();
     }
 
     p()->enrage();
@@ -4785,7 +4682,7 @@ struct ravager_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.reckless_abandon->check() )
+          if ( bloodbath && p()->buff.bloodbath->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -5620,12 +5517,6 @@ struct champions_spear_damage_t : public warrior_attack_t
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_challenge->effectN( 2 ).percent();
-
-    // dot_duration += timespan_t::from_millis( p -> find_spell( 357996 ) -> effectN( 1 ).base_value() );
-    if ( p->talents.warrior.champions_might->ok() )
-    {
-      dot_duration += timespan_t::from_millis( p->find_spell( 386284 )->effectN( 1 ).base_value() );
-    }
   }
 
   void execute() override
@@ -5654,13 +5545,16 @@ struct champions_spear_t : public warrior_attack_t
     energize_type     = action_energize::NONE;
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    warrior_attack_t::execute();
+    warrior_attack_t::impact( state );
 
     if ( p()->talents.warrior.champions_might->ok() )
     {
-      p()->buff.champions_might->trigger();
+      if ( result_is_hit( state->result ) )
+      {
+        td( state->target )->debuffs_champions_might->trigger();
+      }
     }
   }
 };
@@ -5699,8 +5593,7 @@ struct avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.blademasters_torment.ok() )
     {
-      action_t* torment_ability = p()->active.torment_bladestorm;
-      torment_ability->schedule_execute();
+      p()->buff.sweeping_strikes->trigger();
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
@@ -5710,8 +5603,8 @@ struct avatar_t : public warrior_spell_t
 
     if ( p()->talents.warrior.warlords_torment->ok() )
     {
-      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 2 ).time_value();
-      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
+      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 1 ).time_value();
+      p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( trigger_duration );
     }
   }
 
@@ -5748,22 +5641,8 @@ struct torment_avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
-      const timespan_t trigger_duration = timespan_t::from_millis( 4000 ); // value not in spell data
+      const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
-    }
-    if ( p()->talents.warrior.blademasters_torment->ok() )
-    {
-      if ( p()->talents.arms.spiteful_serenity->ok() )
-      {
-        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value()
-                                            + timespan_t::from_millis( 4000 ); // Spiteful doubles duration from 4->8s, not in data
-        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-      }
-      else
-      {
-        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-      }
     }
   }
 };
@@ -6581,7 +6460,6 @@ void warrior_t::init_spells()
   talents.warrior.spell_reflection                 = find_talent_spell( talent_tree::CLASS, "Spell Reflection" );
   talents.warrior.rallying_cry                     = find_talent_spell( talent_tree::CLASS, "Rallying Cry" );
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
-  talents.warrior.blood_and_thunder                = find_talent_spell( talent_tree::CLASS, "Blood and Thunder" );
   talents.warrior.crackling_thunder                = find_talent_spell( talent_tree::CLASS, "Crackling Thunder" );
 
   talents.warrior.honed_reflexes                   = find_talent_spell( talent_tree::CLASS, "Honed Reflexes" );
@@ -6859,6 +6737,7 @@ void warrior_t::init_spells()
   };
 
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
+  talents.shared.rend = find_shared_talent( { &talents.arms.rend, &talents.protection.rend } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
 
@@ -7251,6 +7130,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
 
+  debuffs_champions_might = make_buff( *this, "champions_might", p.talents.warrior.champions_spear->effectN( 1 ).trigger() )
+                              ->apply_affecting_aura( p.talents.warrior.champions_might );
+
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff )
                             ->apply_affecting_aura( p.talents.arms.spiteful_serenity )
                             ->apply_affecting_aura( p.talents.arms.blunt_instruments );
@@ -7377,6 +7259,12 @@ void warrior_t::create_buffs()
     ->set_activated( true )
     ->set_default_value( talents.warrior.berserker_stance->effectN( 1 ).percent() );
 
+  // Reckless Abandon
+  buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() )
+                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
+  buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() )
+                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
+
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7385,12 +7273,6 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.arms.die_by_the_sword->effectN( 2 ).percent() )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_PARRY );
-
-
-  buff.champions_might = make_buff( this, "champions_might", find_spell( 386286 ) )
-     ->set_default_value( find_spell( 386286 )->effectN( 1 ).percent() )
-     ->set_duration( find_spell( 376080 )->duration() +
-                     talents.warrior.champions_might->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
      ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -7446,7 +7328,8 @@ void warrior_t::create_buffs()
 
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
-    ->set_cooldown(timespan_t::zero());
+    ->set_cooldown(timespan_t::zero())
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
@@ -7454,7 +7337,9 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
-  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 396752 ) );
+  buff.recklessness_warlords_torment = make_buff( this, "recklessness_warlords_torment", spell.recklessness_buff )
+    ->set_cooldown( timespan_t::zero() )
+    ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
 
@@ -7949,16 +7834,6 @@ void warrior_t::create_actions()
       action->trigger_gcd = timespan_t::zero();
     }
   }
-  if ( talents.warrior.blademasters_torment->ok() )
-  {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
-    active.torment_bladestorm   = new torment_bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ));
-    for ( action_t* action : { active.torment_avatar, active.torment_bladestorm } )
-    {
-      action->background  = true;
-      action->trigger_gcd = timespan_t::zero();
-    }
-  }
   if ( talents.warrior.titans_torment->ok() )
   {
     active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
@@ -8419,12 +8294,9 @@ double warrior_t::composite_melee_crit_rating() const
 }
 
 // warrior_t::composite_player_critical_damage_multiplier ==================
-
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  cdm *= 1.0 + buff.champions_might->check_value();
 
   return cdm;
 }
@@ -8467,7 +8339,7 @@ double warrior_t::composite_leech() const
 
 double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* action )
 {
-  if ( buff.recklessness->check() && r == RESOURCE_RAGE )
+  if ( ( buff.recklessness->check() || buff.recklessness_warlords_torment->check() ) && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
 
@@ -8475,7 +8347,12 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
                                   g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
-      a *= 1.0 + spell.recklessness_buff->effectN( 1 ).percent();
+    {
+      if ( buff.recklessness->check() )
+        a *= 1.0 + spell.recklessness_buff->effectN( 1 ).percent();
+      else if ( buff.recklessness_warlords_torment->check() )
+        a *= 1.0 + talents.warrior.warlords_torment->effectN( 2 ).percent();
+    }
   }
 
   if ( buff.unnerving_focus->up() )
@@ -8771,6 +8648,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   // Shared Auras
   action.apply_affecting_aura( talents.warrior.barbaric_training );
+  action.apply_affecting_aura( talents.warrior.champions_might );
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.crackling_thunder );
   action.apply_affecting_aura( talents.warrior.cruel_strikes );

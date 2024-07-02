@@ -743,6 +743,7 @@ public:
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
     propagate_const<proc_t*> mind_spike_insanity_munched;
+    propagate_const<proc_t*> shadowy_apparition_crit;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -832,6 +833,9 @@ public:
 
     // The amount of allies to assume for Cauterizing Shadows healing
     int cauterizing_shadows_allies = 3;
+
+    // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
+    bool force_devour_matter = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -867,6 +871,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double composite_leech() const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
   void pre_analyze_hook() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
@@ -1146,6 +1151,7 @@ public:
                      p().talents.archon.perfected_form );                  // Buffs non-periodic spells
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
+      parse_effects( p().buffs.unfurling_darkness );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
@@ -1163,6 +1169,11 @@ public:
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
       {
         parse_effects( p().buffs.deaths_torment );
+      }
+
+      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
+      {
+        parse_effects( p().buffs.devouring_chorus );
       }
     }
 
@@ -1185,15 +1196,10 @@ public:
     {
       parse_effects( p().buffs.divine_favor_chastise );
     }
-
-    if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-    {
-      parse_effects( p().buffs.devouring_chorus );
-    }
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
-  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
+  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer multiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
   // The following optional arguments can be used in any order:

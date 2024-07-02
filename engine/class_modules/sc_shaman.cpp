@@ -1693,21 +1693,21 @@ public:
     );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    auto et = ab::execute_time();
+    auto mul = ab::execute_time_pct_multiplier();
 
     if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
-      et *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
+      mul *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
     }
 
     if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
     {
-      et *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
+      mul *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
     }
 
-    return et;
+    return mul;
   }
 
   double cost_flat_modifier() const override
@@ -2061,14 +2061,13 @@ public:
     return mw_stacks;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    auto t = ab::execute_time();
+    auto mul = ab::execute_time_pct_multiplier();
 
-    t *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() *
-      maelstrom_weapon_stacks();
+    mul *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() * maelstrom_weapon_stacks();
 
-    return std::max( t, 0_s );
+    return mul;
   }
 
   double action_multiplier() const override
@@ -2240,17 +2239,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = base_t::execute_time();
+    auto mul = base_t::execute_time_pct_multiplier();
 
     if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       // stormkeeper has a -100% value as effect 1
-      t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
+      mul *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
     }
 
-    return t;
+    return mul;
   }
 
   void execute() override
@@ -4982,13 +4981,13 @@ struct chain_lightning_t : public chained_base_t
     return shaman_spell_t::consume_maelstrom_weapon();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = chained_base_t::execute_time();
+    auto mul = chained_base_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+    mul *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    return t;
+    return mul;
   }
 
   int n_targets() const override
@@ -6087,13 +6086,13 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = shaman_spell_t::execute_time();
+    auto mul = shaman_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+    mul *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    return t;
+    return mul;
   }
 
   timespan_t gcd() const override
@@ -7371,27 +7370,27 @@ public:
     return m;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    auto d = shaman_spell_t::composite_dot_duration( s );
+    auto mul = shaman_spell_t::dot_duration_pct_multiplier( s );
 
     if ( p()->buff.fire_elemental->check() && p()->spell.fire_elemental->ok() )
     {
-      d *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
+      mul *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
     }
 
-    return d;
+    return mul;
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    auto tt = shaman_spell_t::tick_time( state );
+    auto mul = shaman_spell_t::tick_time_pct_multiplier( state );
 
-    tt *= 1.0 + p()->buff.fire_elemental->stack_value();
+    mul *= 1.0 + p()->buff.fire_elemental->stack_value();
 
-    tt *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
+    mul *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
 
-    return tt;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -7943,16 +7942,16 @@ struct healing_wave_t : public shaman_heal_t
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t c = shaman_heal_t::execute_time();
+    auto mul = shaman_heal_t::execute_time_pct_multiplier();
 
     if ( p()->buff.tidal_waves->up() )
     {
-      c *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
+      mul *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
     }
 
-    return c;
+    return mul;
   }
 };
 
@@ -7967,16 +7966,16 @@ struct greater_healing_wave_t : public shaman_heal_t
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t c = shaman_heal_t::execute_time();
+    auto mul = shaman_heal_t::execute_time_pct_multiplier();
 
     if ( p()->buff.tidal_waves->up() )
     {
-      c *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
+      mul *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
     }
 
-    return c;
+    return mul;
   }
 };
 
@@ -8628,10 +8627,6 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
     return shaman_spell_t::ready();
   }
 
-  timespan_t tick_time( const action_state_t* /* s */ ) const override
-  {
-    return base_tick_time;
-  }
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );

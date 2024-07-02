@@ -1138,6 +1138,34 @@ double action_t::cost_per_tick( resource_e r ) const
   return base_costs_per_tick[ r ];
 }
 
+// action_t::execute_time ===================================================
+
+timespan_t action_t::execute_time() const
+{
+  auto base = base_execute_time.base;
+
+  auto mul = base_execute_time.pct_mul * execute_time_pct_multiplier();
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += base_execute_time.flat_add + execute_time_flat_modifier();
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::execute_time_flat_modifier() const
+{
+  return 0_ms;
+}
+
+double action_t::execute_time_pct_multiplier() const
+{
+  return 1.0;
+}
+
 // action_t::gcd ============================================================
 
 timespan_t action_t::gcd() const
@@ -2229,7 +2257,7 @@ bool action_t::usable_moving() const
   if ( player->buffs.norgannons_sagacity && player->buffs.norgannons_sagacity->check() )
     return true;
 
-  if ( execute_time() > timespan_t::zero() )
+  if ( execute_time() > 0_ms )
     return false;
 
   if ( channeled )
@@ -2246,7 +2274,7 @@ bool action_t::usable_precombat() const
   if ( !harmful )
     return true;
 
-  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+  if ( this->travel_time() > 0_ms || this->base_execute_time > 0_ms )
     return true;
 
   return false;
@@ -2714,7 +2742,7 @@ void action_t::init()
   // the correct (short) GCD.
   min_gcd = std::min( min_gcd, trigger_gcd );
 
-  if ( use_off_gcd && trigger_gcd == timespan_t::zero() )
+  if ( use_off_gcd && trigger_gcd == 0_ms )
   {
     cooldown->add_execute_type( execute_type::OFF_GCD );
     internal_cooldown->add_execute_type( execute_type::OFF_GCD );
@@ -4008,14 +4036,36 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
 }
 
-timespan_t action_t::tick_time( const action_state_t* state ) const
+timespan_t action_t::tick_time( const action_state_t* s ) const
 {
-  timespan_t t = base_tick_time;
+  auto base = base_tick_time.base;
+
+  auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // Tick time is rounded to nearest ms.
+  // Assuming this applies to all tick time, including hasted duration dots. As tick time is used in calculation for
+  // hasted duration (in order to ensure # of ticks match) using rounding for tick time can have a non-trivial impact
+  // on short duration dots with a large number of ticks, such as eye beam.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
+{
   if ( hasted_ticks )
-  {
-    t *= state->haste;
-  }
-  return t;
+    return s->haste;
+
+  return 1.0;
 }
 
 void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt )
@@ -4085,20 +4135,41 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_armor = composite_target_armor( state->target );
 }
 
+// action_t::composite_dot_duration =========================================
+
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
+{
+  auto base = dot_duration.base;
+
+  auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
 {
   if ( hasted_dot_duration )
   {
-    auto tt = tick_time( s );
-
     // technically it's possible to have hasted dot duration without hasted ticks
     if ( !hasted_ticks )
-      tt *= s->haste;
-
-    return dot_duration * ( tt / base_tick_time );
+      return ( base_tick_time * s->haste ) / base_tick_time;
+    else
+      return tick_time( s ) / base_tick_time;
   }
 
-  return dot_duration;
+  return 1.0;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* state )

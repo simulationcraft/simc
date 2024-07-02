@@ -18,9 +18,6 @@ using namespace helpers;
       // Affliction
       bool potent_afflictions_td = false;
       bool potent_afflictions_dd = false;
-      bool dread_touch = false;
-      bool wrath_of_consumption = false;
-      bool haunted_soul  = false;
       bool creeping_death = false;
 
       // Demonology
@@ -60,9 +57,6 @@ using namespace helpers;
 
       affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
       affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
-      affected_by.dread_touch = data().affected_by( p->talents.dread_touch_debuff->effectN( 1 ) );
-      affected_by.wrath_of_consumption = data().affected_by( p->talents.wrath_of_consumption_buff->effectN( 1 ) );
-      affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
@@ -209,11 +203,6 @@ using namespace helpers;
     {
       double m = spell_t::composite_target_multiplier( t );
 
-      if ( p()->talents.dread_touch.ok() && affected_by.dread_touch && td( t )->debuffs_dread_touch->check() )
-      {
-        m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
-      }
-
       if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
       {
         m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
@@ -278,16 +267,6 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
-      }
-
-      if ( p()->talents.wrath_of_consumption.ok() && affected_by.wrath_of_consumption && p()->buffs.wrath_of_consumption->check() )
-      {
-        m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
-      }
-
-      if ( p()->talents.haunted_soul.ok() && affected_by.haunted_soul && p()->buffs.haunted_soul->check() )
-      {
-        m *= 1.0 + p()->buffs.haunted_soul->check_stack_value();
       }
 
       return m;
@@ -504,27 +483,10 @@ using namespace helpers;
     struct drain_life_dot_t : public warlock_spell_t
     {
       drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
-      {
-        dual = background = true;
-
-        dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
-        base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
-      }
+      { dual = background = true; }
 
       double cost_per_tick( resource_e ) const override
       { return 0.0; }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() )
-        {
-          m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-        }
-
-        return m;
-      }
     };
     
     drain_life_dot_t* aoe_dot;
@@ -538,22 +500,11 @@ using namespace helpers;
 
       channeled = true;
 
-      dot_duration *= 1.0 + p->talents.grim_feast->effectN( 1 ).percent();
-      base_tick_time *= 1.0 + p->talents.grim_feast->effectN( 2 ).percent();
-
       triggers.shadow_invocation_tick = true;
     }
 
     void execute() override
     {
-      if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0 )
-      {
-        if ( p()->buffs.drain_life->check() )
-        {
-          p()->buffs.inevitable_demise->expire();
-        }
-      }
-
       warlock_spell_t::execute();
 
       p()->buffs.drain_life->trigger();
@@ -583,32 +534,12 @@ using namespace helpers;
       if ( r == RESOURCE_MANA && p()->buffs.soul_rot->check() )
         return 0.0;
 
-      auto c = warlock_spell_t::cost_per_tick( r );
-
-      if ( r == RESOURCE_MANA && p()->buffs.inevitable_demise->check() )
-      {
-        c *= 1.0 + p()->talents.inevitable_demise_buff->effectN( 3 ).percent() * p()->buffs.inevitable_demise->check();
-      }
-
-      return c;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() )
-      {
-        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-      }
-
-      return m;
+      return warlock_spell_t::cost_per_tick( r );
     }
 
     void last_tick( dot_t* d ) override
     {
       p()->buffs.drain_life->expire();
-      p()->buffs.inevitable_demise->expire( 1_ms ); // Slight delay added so that the AoE version of Drain Life picks up the benefit of Inevitable Demise
 
       bool early_cancel = d->remains() > 0_ms;
 
@@ -713,17 +644,6 @@ using namespace helpers;
       }
     }
 
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_corruption->is_ticking()
-        && td( s->target )->dots_corruption->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-    }
-
     dot_t* get_dot( player_t* t ) override
     { return periodic->get_dot( t ); }
   };
@@ -764,8 +684,6 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling->ok() )
         p()->buffs.demonic_calling->trigger();
-
-      p()->buffs.stolen_power_final->expire();
     }
 
     void impact( action_state_t* s ) override
@@ -800,11 +718,6 @@ using namespace helpers;
       if ( p()->talents.sacrificed_souls.ok() )
       {
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
-      }
-
-      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
-      {
-        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 1 ).percent();
       }
 
       return m;
@@ -999,12 +912,6 @@ using namespace helpers;
 
         auto target_data = td( s->target );
 
-        if ( p()->talents.dread_touch.ok() )
-        {
-          if ( target_data->dots_unstable_affliction->is_ticking() )
-            target_data->debuffs_dread_touch->trigger();
-        }
-
         if ( p()->buffs.umbrafire_kindling->check() )
         {
           if ( target_data->dots_agony->is_ticking() )
@@ -1074,16 +981,16 @@ using namespace helpers;
       return c;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
       {
-        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+        mul *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
       }
 
-      return t;
+      return mul;
     }
 
     bool ready() override
@@ -1124,12 +1031,6 @@ using namespace helpers;
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
     }
 
-    unstable_affliction_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Affliction", p , p->talents.soul_swap_ua )
-    {
-      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
-    }
-
     void execute() override
     {
       if ( p()->ua_target && p()->ua_target != target )
@@ -1140,17 +1041,6 @@ using namespace helpers;
       p()->ua_target = target;
 
       warlock_spell_t::execute();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_unstable_affliction->is_ticking()
-        && td( s->target )->dots_unstable_affliction->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
     }
 
     void last_tick( dot_t* d ) override
@@ -1195,17 +1085,6 @@ using namespace helpers;
       }
     }
 
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation->ok() && td( s->target )->dots_agony->is_ticking()
-        && td( s->target )->dots_agony->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-    }
-
     void tick( dot_t* d ) override
     {
       // Blizzard has not publicly released the formula for Agony's chance to generate a Soul Shard.
@@ -1239,24 +1118,9 @@ using namespace helpers;
         }
       }
 
-      if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
-      {
-        p()->buffs.inevitable_demise->trigger();
-      }
-
       warlock_spell_t::tick( d );
 
       td( d->state->target )->dots_agony->increment( 1 );
-    }
-  };
-
-  struct doom_blossom_t : public warlock_spell_t
-  {
-    doom_blossom_t( warlock_t* p )
-      : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
-    {
-      background = dual = true;
-      aoe = -1;
     }
   };
 
@@ -1265,7 +1129,6 @@ using namespace helpers;
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
       corruption_t* corr;
-      doom_blossom_t* doom_blossom;
       bool cruel_epiphany;
       bool umbrafire_kindling;
 
@@ -1273,8 +1136,7 @@ using namespace helpers;
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corr( new corruption_t( p, "", true ) ),
         cruel_epiphany( false ),
-        umbrafire_kindling( false ),
-        doom_blossom( new doom_blossom_t( p ) )
+        umbrafire_kindling( false )
       {
         aoe = -1;
         background = dual = true;
@@ -1282,8 +1144,6 @@ using namespace helpers;
         corr->background = true;
         corr->dual = true;
         corr->base_costs[ RESOURCE_MANA ] = 0;
-
-        add_child( doom_blossom );
       }
 
       void impact( action_state_t* s ) override
@@ -1298,18 +1158,6 @@ using namespace helpers;
           {
             tdata->soc_threshold = 0;
             tdata->dots_seed_of_corruption->cancel();
-          }
-
-          if ( p()->talents.doom_blossom.ok() && tdata->dots_unstable_affliction->is_ticking() )
-          {
-            doom_blossom->execute_on_target( s->target );
-            p()->procs.doom_blossom->occur();
-          }
-
-          // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
-          if ( p()->talents.agonizing_corruption.ok() && tdata->dots_agony->is_ticking() )
-          {
-            tdata->dots_agony->increment( (int)( p()->talents.agonizing_corruption->effectN( 1 ).base_value() ) ); 
           }
           
           corr->execute_on_target( s->target );
@@ -1357,11 +1205,6 @@ using namespace helpers;
 
       umbrafire_explosion->umbrafire_kindling = true;
       add_child( umbrafire_explosion );
-
-      if ( p->talents.sow_the_seeds.ok() )
-      {
-        aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
-      }
     }
 
     void init() override
@@ -1470,17 +1313,6 @@ using namespace helpers;
     {
       parse_options( options_str );
     }
-
-    void impact( action_state_t* s ) override
-    {
-      bool pi_trigger = p()->talents.pandemic_invocation.ok() && td( s->target )->dots_siphon_life->is_ticking()
-        && td( s->target )->dots_siphon_life->remains() < p()->talents.pandemic_invocation->effectN( 1 ).time_value();
-
-      warlock_spell_t::impact( s );
-
-      if ( pi_trigger )
-        p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-    }
   };
 
   struct drain_soul_t : public warlock_spell_t
@@ -1529,25 +1361,23 @@ using namespace helpers;
       warlock_spell_t::snapshot_state( s, rt );
     }
 
-    timespan_t tick_time( const action_state_t* s ) const override
+    double tick_time_pct_multiplier( const action_state_t* s ) const override
     {
-      timespan_t t = warlock_spell_t::tick_time( s );
+      auto mul = warlock_spell_t::tick_time_pct_multiplier( s );
 
-      t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+      mul *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
 
-      return t;
+      return mul;
     }
 
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    double dot_duration_pct_multiplier( const action_state_t* s ) const override
     {
-      double modifier = 1.0;
+      auto mul = warlock_spell_t::dot_duration_pct_multiplier( s );
 
       if ( p()->buffs.nightfall->check() )
-        modifier += p()->talents.nightfall_buff->effectN( 4 ).percent();
+        mul *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
 
-      timespan_t dur = dot_duration * ( ( s->haste * modifier * base_tick_time ) / base_tick_time );
-
-      return dur;
+      return mul;
     }
 
     void execute() override
@@ -1627,15 +1457,6 @@ using namespace helpers;
         cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 1 ).time_value();
     }
 
-    vile_taint_t( warlock_t* p, util::string_view opt, bool soul_swap ) : vile_taint_t( p, opt )
-    {
-      if ( soul_swap )
-      {
-        impact_action->execute_action = nullptr; // Only original Vile Taint triggers secondary effects
-        aoe = 1;
-      }
-    }
-
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
@@ -1706,12 +1527,7 @@ using namespace helpers;
   struct haunt_t : public warlock_spell_t
   {
     haunt_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Haunt", p, p->talents.haunt )
-    {
-      parse_options( options_str );
-
-      if ( p->talents.seized_vitality->ok() )
-        base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
-    }
+    { parse_options( options_str ); }
 
     void impact( action_state_t* s ) override
     {
@@ -1784,19 +1600,6 @@ using namespace helpers;
 
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
         apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
-
-      if ( p->talents.souleaters_gluttony.ok() )
-      {
-        cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
-      }
-    }
-
-    soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
-    {
-      if ( soul_swap )
-      {
-        aoe = 1;
-      }
     }
 
     void execute() override
@@ -1835,39 +1638,6 @@ using namespace helpers;
       }
 
       return m;
-    }
-  };
-
-  struct soul_flame_t : public warlock_spell_t
-  {
-    soul_flame_t( warlock_t* p ) : warlock_spell_t( "Soul Flame", p, p->talents.soul_flame_proc )
-    {
-      background = true;
-      aoe = -1;
-      reduced_aoe_targets = p->talents.soul_flame->effectN( 4 ).base_value();
-
-      base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
-    }
-  };
-
-  struct pandemic_invocation_t : public warlock_spell_t
-  {
-    pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "Pandemic Invocation", p, p->talents.pandemic_invocation_proc )
-    {
-      background = true;
-
-      base_dd_multiplier *= 1.0 + p->talents.pandemic_invocation->effectN( 3 ).percent();
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( rng().roll( p()->talents.pandemic_invocation->effectN( 2 ).percent() / 100.0 ) )
-      {
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.pandemic_invocation );
-        p()->procs.pandemic_invocation_shard->occur();
-      }
     }
   };
 
@@ -1923,19 +1693,6 @@ using namespace helpers;
         if ( p()->buffs.blazing_meteor->check() )
           m *= 1.0 + p()->buffs.blazing_meteor->check_value();
 
-        if ( p()->talents.malefic_impact.ok() )
-          m *= 1.0 + p()->talents.malefic_impact->effectN( 1 ).percent();
-
-        return m;
-      }
-
-      double composite_crit_chance() const override
-      {
-        double m = warlock_spell_t::composite_crit_chance();
-
-        if ( p()->talents.malefic_impact.ok() )
-          m += p()->talents.malefic_impact->effectN( 2 ).percent();
-
         return m;
       }
 
@@ -1987,14 +1744,14 @@ using namespace helpers;
     timespan_t travel_time() const override
     { return 0_ms; }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.blazing_meteor->check() )
-        t *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
+        mul *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
 
-      return t;
+      return mul;
     }
 
     bool ready() override
@@ -2011,12 +1768,6 @@ using namespace helpers;
       impact_spell->shards_used = shards_used;
 
       warlock_spell_t::execute();
-
-      if ( p()->talents.demonic_knowledge.ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
-      {
-        p()->buffs.demonic_core->trigger();
-        p()->procs.demonic_knowledge->occur();
-      }
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
@@ -2076,14 +1827,14 @@ using namespace helpers;
       triggers.shadow_invocation_direct = true;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.demonic_core->check() )
-        t *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.demonic_core_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     void execute() override
@@ -2137,8 +1888,6 @@ using namespace helpers;
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
 
-      p()->buffs.stolen_power_final->expire();
-
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.3 ) )
       {
         p()->buffs.blazing_meteor->trigger();
@@ -2155,12 +1904,6 @@ using namespace helpers;
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
-
-      if ( p()->talents.shadows_bite.ok() )
-        m *= 1.0 + p()->buffs.shadows_bite->check_value();
-
-      if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
-        m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
         m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
@@ -2312,14 +2055,14 @@ using namespace helpers;
       return m;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.demonic_calling->check() )
-        t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
+        mul *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
 
-      return t;
+      return mul;
     }
 
     void execute() override
@@ -2564,9 +2307,6 @@ using namespace helpers;
       timespan_t extraTyrantTime = rng().gauss<380,220>();
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
-      if ( p()->talents.soulbound_tyrant.ok() )
-        p()->resource_gain( RESOURCE_SOUL_SHARD, p()-> talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
-
       timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
       int wild_imp_counter = 0;
@@ -2671,32 +2411,12 @@ using namespace helpers;
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     { return s->action->tick_time( s ); }
 
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double m = warlock_spell_t::composite_ta_multiplier( s );
-
-      if ( p()->talents.kazaaks_final_curse.ok() )
-        m *= 1.0 + td( s->target )->debuffs_kazaaks_final_curse->check_value();
-
-      return m;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      warlock_spell_t::impact( s );
-
-      if ( p()->talents.kazaaks_final_curse.ok() )
-        td( s->target )->debuffs_kazaaks_final_curse->trigger( 1, pet_counter() * p()->talents.kazaaks_final_curse->effectN( 1 ).percent() );
-    }
-
     void last_tick( dot_t* d ) override
     {
       if ( d->time_to_next_full_tick() > 0_ms )
         gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom );
 
       warlock_spell_t::last_tick( d );
-
-      td( d->target )->debuffs_kazaaks_final_curse->expire();
     }
 
   private:
@@ -2998,14 +2718,14 @@ using namespace helpers;
       warlock_spell_t::snapshot_state( s, rt );
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     timespan_t gcd() const override
@@ -3104,7 +2824,6 @@ using namespace helpers;
 
         // TOCHECK: Is this necessary?
         spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
-        dot_duration += p->talents.improved_immolate->effectN( 1 ).time_value();
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
       }
 
@@ -3223,21 +2942,7 @@ using namespace helpers;
 
   struct chaos_bolt_t : public warlock_spell_t
   {
-    struct cry_havoc_t : public warlock_spell_t
-    {
-      cry_havoc_t( warlock_t* p )
-        : warlock_spell_t( "Cry Havoc", p, p->talents.cry_havoc )
-      {
-        background = dual = true;
-        aoe = -1;
-
-        // TOCHECK: Historically, base talent has doubled the sp_coeff
-        base_multiplier *= 1.0 + p->talents.cry_havoc->effectN( 1 ).percent();
-      }
-    };
-
     internal_combustion_t* internal_combustion;
-    cry_havoc_t* cry_havoc;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
@@ -3248,19 +2953,10 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate->ok();
 
-      if ( p->talents.chaosbringer.ok() )
-        base_dd_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 1 ).percent();
-
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
         add_child( internal_combustion );
-      }
-
-      if ( p->talents.cry_havoc.ok() )
-      {
-        cry_havoc = new cry_havoc_t( p );
-        add_child( cry_havoc );
       }
     }
 
@@ -3274,29 +2970,23 @@ using namespace helpers;
       return c;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
       if ( p()->buffs.ritual_of_ruin->check() )
-        t *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
+        mul *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
     
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      if ( p()->buffs.madness_cb->check() )
-        t *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 2 ).percent();
-
-      return t;
+      return mul;
     }
 
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        m *= 1.0 + p()->buffs.madness_cb->check_value();
 
       if ( p()->buffs.crashing_chaos->check() )
         m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
@@ -3338,9 +3028,6 @@ using namespace helpers;
       if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
         internal_combustion->execute_on_target( s->target );
 
-      if ( p()->talents.cry_havoc.ok() && td( s->target )->debuffs_havoc->check() )
-        cry_havoc->execute_on_target( s->target );
-
       if ( p()->talents.eradication.ok() && result_is_hit( s->result ) )
         td( s->target )->debuffs_eradication->trigger();
     }
@@ -3359,9 +3046,6 @@ using namespace helpers;
       p()->buffs.ritual_of_ruin->expire();
 
       p()->buffs.crashing_chaos->decrement();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_cb->trigger();
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
@@ -3467,7 +3151,6 @@ using namespace helpers;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
-        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 2 ).percent();
       }
       
       void impact( action_state_t* s ) override
@@ -3490,16 +3173,6 @@ using namespace helpers;
 
         if ( p()->buffs.crashing_chaos->check() )
           m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
-
-        return m;
-      }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->buffs.madness_rof_snapshot->check() )
-          m *= 1.0 + p()->talents.madness_of_the_azjaqir->effectN( 1 ).percent();
 
         return m;
       }
@@ -3535,14 +3208,6 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
-
-      p()->buffs.madness_rof_snapshot->expire();
-
-      if ( p()->buffs.madness_rof->check() )
-        p()->buffs.madness_rof_snapshot->trigger();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_rof->trigger();
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
@@ -3635,9 +3300,6 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
-
-      if ( p->talents.chaosbringer.ok() )
-        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 3 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3665,21 +3327,8 @@ using namespace helpers;
         p()->procs.conflagration_of_chaos_sb->occur();
       }
 
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        p()->buffs.madness_sb->trigger();
-
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.madness_of_the_azjaqir.ok() )
-        m *= 1.0 + p()->buffs.madness_sb->check_value();
-
-      return m;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -4197,14 +3846,14 @@ using namespace helpers;
       immolate->base_dd_multiplier = 0.0;
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::execute_time();
+      auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
 
-      return t;
+      return mul;
     }
 
     timespan_t gcd() const override
@@ -4553,10 +4202,7 @@ using namespace helpers;
   }
 
   void warlock_t::create_affliction_proc_actions()
-  {
-    proc_actions.soul_flame_proc = new soul_flame_t( this );
-    proc_actions.pandemic_invocation_proc = new pandemic_invocation_t( this );
-  }
+  { }
 
   void warlock_t::create_demonology_proc_actions()
   {

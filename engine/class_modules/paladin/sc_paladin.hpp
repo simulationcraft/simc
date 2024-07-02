@@ -61,6 +61,7 @@ struct paladin_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* expurgation;
+    dot_t* truths_wake;
   } dots;
 
   struct buffs_t
@@ -142,6 +143,7 @@ public:
     action_t* wrathful_sanction;
 
     action_t* sacrosanct_crusade_heal;
+    action_t* highlords_judgment;
   } active;
 
   // Buffs
@@ -325,6 +327,7 @@ public:
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
+    cooldown_t* radiant_glory_icd;
 
     cooldown_t* eye_of_tyr;          // Light's Deliverance
     cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
@@ -357,6 +360,7 @@ public:
   {
     const spell_data_t* divine_bulwark;    // Prot
     const spell_data_t* divine_bulwark_2;  // Rank 2 - consecration DR
+    const spell_data_t* highlords_judgment; // Ret
     const spell_data_t* hand_of_light;     // Ret
     const spell_data_t* lightbringer;      // Holy
   } mastery;
@@ -421,6 +425,8 @@ public:
       const spell_data_t* empyrean_hammer;
       const spell_data_t* empyrean_hammer_wd; // Wrathful Descent triggered damage
     } templar;
+
+    const spell_data_t* highlords_judgment_hidden;
   } spells;
 
   // Talents
@@ -564,63 +570,66 @@ public:
     // 0
     const spell_data_t* blade_of_justice;
     const spell_data_t* divine_storm;
-    const spell_data_t* art_of_war;
-    const spell_data_t* holy_blade;
-    const spell_data_t* shield_of_vengeance;
-
-    // 8
-    const spell_data_t* highlords_judgment;
-    const spell_data_t* sanctify;
-    const spell_data_t* wake_of_ashes;
-    const spell_data_t* expurgation;
-    const spell_data_t* heartfire;
-    const spell_data_t* boundless_judgment;
-    const spell_data_t* crusade;
-    const spell_data_t* truths_wake;
-    const spell_data_t* empyrean_power;
-    const spell_data_t* consecrated_ground_ret;  // NYI
-    const spell_data_t* tempest_of_the_lightbringer;
-    const spell_data_t* justicars_vengeance;
-
-    // 20
-    const spell_data_t* execution_sentence;  // ?
-    const spell_data_t* empyrean_legacy;
-    const spell_data_t* final_verdict;      // sort of implemented
-    const spell_data_t* executioners_will;  // ?
-    const spell_data_t* final_reckoning;
-    const spell_data_t* vanguards_momentum;
 
     const spell_data_t* swift_justice;
     const spell_data_t* light_of_justice;
+    const spell_data_t* expurgation;
     const spell_data_t* judgment_of_justice;
     const spell_data_t* improved_blade_of_justice;
+    const spell_data_t* holy_blade;
+
+    const spell_data_t* final_verdict;
+    const spell_data_t* justicars_vengeance;
+    const spell_data_t* lights_celerity; // TODO: implement or drop
+    const spell_data_t* guided_prayer; // TODO: implement or drop
+    const spell_data_t* art_of_war;
     const spell_data_t* righteous_cause;
-    const spell_data_t* consecrated_blade;
 
     const spell_data_t* jurisdiction;
     const spell_data_t* inquisitors_ire;
+    const spell_data_t* tempest_of_the_lightbringer;
+    const spell_data_t* crusade;
+    // const spell_data_t* avenging_wrath_might; // available up in prot
+    const spell_data_t* vanguards_momentum;
+    const spell_data_t* sanctify;
     const spell_data_t* zealots_fervor;
     const spell_data_t* rush_of_light;
+    const spell_data_t* consecrated_ground_ret; // TODO: implement or drop
+
     const spell_data_t* improved_judgment;
+    const spell_data_t* boundless_judgment;
     const spell_data_t* crusading_strikes;
     const spell_data_t* templar_strikes;
     const spell_data_t* divine_wrath;
+    const spell_data_t* consecrated_blade;
     const spell_data_t* divine_hammer;
-    const spell_data_t* penitence;
     const spell_data_t* blade_of_vengeance;
+    const spell_data_t* empyrean_legacy;
+
     const spell_data_t* vanguard_of_justice;
     const spell_data_t* heart_of_the_crusader;
+    const spell_data_t* highlords_wrath;
+    const spell_data_t* wake_of_ashes;
     const spell_data_t* blessed_champion;
+    const spell_data_t* empyrean_power;
     const spell_data_t* judge_jury_and_executioner;
 
     const spell_data_t* adjudication;
+    const spell_data_t* shield_of_vengeance;
     const spell_data_t* aegis_of_protection;
-    const spell_data_t* divine_retribution;
+    const spell_data_t* penitence;
+
     const spell_data_t* blades_of_light;
-    const spell_data_t* burning_crusade;
-    const spell_data_t* divine_arbiter;
-    const spell_data_t* divine_auxiliary;
+    const spell_data_t* final_reckoning;
+    const spell_data_t* execution_sentence;
     const spell_data_t* seething_flames;
+    const spell_data_t* burning_crusade;
+
+    const spell_data_t* divine_arbiter;
+    const spell_data_t* executioners_will;
+    const spell_data_t* divine_auxiliary;
+    const spell_data_t* radiant_glory;
+    const spell_data_t* burn_to_ash;
     const spell_data_t* searing_light;
 
     // Hero Talents
@@ -669,6 +678,27 @@ public:
       const spell_data_t* lights_deliverance;
     } templar;
 
+    struct {
+      const spell_data_t* dawnlight;
+
+      const spell_data_t* morning_star;
+      const spell_data_t* gleaming_rays;
+      const spell_data_t* eternal_flame;
+      const spell_data_t* luminosity;
+
+      const spell_data_t* illumine;
+      const spell_data_t* will_of_the_dawn;
+      const spell_data_t* blessing_of_anshe;
+      const spell_data_t* lingering_radiance;
+      const spell_data_t* sun_sear;
+
+      const spell_data_t* aurora;
+      const spell_data_t* solar_grace;
+      const spell_data_t* second_sunrise;
+
+      const spell_data_t* suns_avatar;
+    } herald_of_the_sun;
+
   } talents;
 
   struct tier_sets_t
@@ -679,7 +709,6 @@ public:
     const spell_data_t* heartfire_sentinels_authority_4pc;
     const spell_data_t* t31_2pc;
     const spell_data_t* t31_4pc;
-
   } tier_sets;
 
   // Paladin options
@@ -1069,8 +1098,8 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
-        divine_purpose_cost;                                                               // Shared
-    bool crusade, hand_of_light, final_reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p;  // Ret
+      divine_purpose_cost;                                                               // Shared
+    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
   } affected_by;
@@ -1080,6 +1109,7 @@ public:
   bool hasted_gcd;
 
   bool searing_light_disabled;
+  bool always_do_capstones;
   bool clears_judgment;
 
   bool triggers_higher_calling;
@@ -1091,6 +1121,7 @@ public:
       hasted_gcd( false ),
       searing_light_disabled( false ),
       clears_judgment( false ),
+      always_do_capstones(false),
       triggers_higher_calling( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
@@ -1099,7 +1130,9 @@ public:
     if ( p->specialization() == PALADIN_RETRIBUTION )
     {
       // Mastery
-      this->affected_by.hand_of_light = this->data().affected_by( p->mastery.hand_of_light->effectN( 1 ) );
+      this->affected_by.highlords_judgment = this->data().affected_by( p->mastery.highlords_judgment->effectN( 1 ) );
+      this->affected_by.highlords_judgment_hidden = this->data().affected_by( p->spells.highlords_judgment_hidden->effectN( 1 ) ) ||
+                                                    this->data().affected_by( p->spells.highlords_judgment_hidden->effectN( 3 ) );
 
       // Temporary damage modifiers
       this->affected_by.crusade         = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
@@ -1165,8 +1198,6 @@ public:
     {
       int label                        = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
       this->affected_by.divine_arbiter = this->data().affected_by_label( label );
-      if ( this->affected_by.divine_arbiter )
-        ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
     }
     else
     {
@@ -1223,12 +1254,12 @@ public:
   {
     ab::execute();
 
-    if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
+    if ( ( this->affected_by.divine_arbiter || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
     {
       p()->buffs.divine_arbiter->trigger( 1 );
     }
 
-    if ( ab::get_school() == SCHOOL_RADIANT && !searing_light_disabled && p()->talents.searing_light->ok() )
+    if ( ( ab::get_school() == SCHOOL_RADIANT || always_do_capstones ) && !searing_light_disabled && p()->talents.searing_light->ok() )
     {
       if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
       {
@@ -1282,9 +1313,15 @@ public:
 
     if ( p()->specialization() == PALADIN_RETRIBUTION )
     {
-      if ( affected_by.hand_of_light )
+      if ( affected_by.highlords_judgment )
       {
         am *= 1.0 + p()->cache.mastery_value();
+      }
+
+      if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
+      {
+        // TODO: this has gotta be wrong. Where's the actual spell data for this?
+        am *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
       }
 
       if ( affected_by.crusade && p()->buffs.crusade->up() )
@@ -1376,6 +1413,17 @@ public:
     }
 
     return ctm;
+  }
+
+  virtual double composite_target_ta_multiplier( player_t* target ) const override
+  {
+    double cttm = ab::composite_target_ta_multiplier( target );
+
+    paladin_td_t* td = this->td( target );
+    if ( td->dots.truths_wake->is_ticking() && ab::id != 403695 && p()->talents.burn_to_ash->ok() )
+      cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+
+    return cttm;
   }
 
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override

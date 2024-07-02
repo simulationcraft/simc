@@ -32,23 +32,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_cooldown( 0_ms )
-                      ->set_stack_change_callback( [ &p ]( buff_t*, int prev, int cur ) {
-                          if ( cur < prev )
-                          {
-                            p.buffs.active_haunts->decrement();
-                          }
-                          else if ( cur > prev )
-                          {
-                            p.buffs.active_haunts->trigger();
-                          }
-                        } );
+                      ->set_cooldown( 0_ms );
 
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
-
-  debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
-                            ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
 
   debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany_dummy" );
 
@@ -79,9 +66,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
-                      ->set_duration( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() + p.talents.pandemonium->effectN( 1 ).time_value() )
+                      ->set_duration( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )
                       ->set_cooldown( p.talents.mayhem->ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
-                      ->set_chance( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 1 ).percent() + p.talents.pandemonium->effectN( 2 ).percent() : p.talents.havoc->proc_chance() )
+                      ->set_chance( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 1 ).percent() : p.talents.havoc->proc_chance() )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
@@ -105,9 +92,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
-
-  debuffs_kazaaks_final_curse = make_buff( *this, "kazaaks_final_curse", p.talents.kazaaks_final_curse )
-                                    ->set_default_value( 0 );
 
   debuffs_doom_brand = make_buff( *this, "doom_brand", p.tier.doom_brand_debuff )
                            ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
@@ -158,34 +142,6 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
-
-  if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
-
-    warlock.buffs.wrath_of_consumption->trigger();
-  }
-
-  if ( dots_corruption->is_ticking() && warlock.talents.wrath_of_consumption->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
-
-    warlock.buffs.wrath_of_consumption->trigger();
-  }
-
-  if ( warlock.talents.soul_flame->ok() && !warlock.proc_actions.soul_flame_proc->target_list().empty() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
-
-    warlock.proc_actions.soul_flame_proc->execute();
-  }
-
-  if ( warlock.talents.summon_soulkeeper->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock gains 1 stack of Tormented Soul.", target->name(), warlock.name() );
-
-    warlock.buffs.tormented_soul->trigger();
-  }
 }
 
 int warlock_td_t::count_affliction_dots() const
@@ -224,8 +180,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
-    ss_source( nullptr ),
-    soul_swap_state(),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
@@ -237,6 +191,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
+    hero(),
     proc_actions(),
     tier(),
     cooldowns(),
@@ -346,9 +301,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   {
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
-
-    if ( talents.summon_demonic_tyrant->ok() && !min_version_check( VERSION_10_2_0 ) )
-      m *= 1.0 + buffs.demonic_power->check_value();
 
     if ( buffs.rite_of_ruvaraad->check() )
       m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
@@ -569,13 +521,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
-    case VERSION_10_2_0:
-      return !( version_10_2_0_data == spell_data_t::not_found() );
-    case VERSION_10_1_5:
-    case VERSION_10_1_0:
-    case VERSION_10_0_7:
-    case VERSION_10_0_5:
-    case VERSION_10_0_0:
     case VERSION_ANY:
       return true;
   }
@@ -903,17 +848,6 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
-    shivarra( "shivarra", w ),
-    darkhounds( "darkhound", w ),
-    bilescourges( "bilescourge", w ),
-    urzuls( "urzul", w ),
-    void_terrors( "void_terror", w ),
-    wrathguards( "wrathguard", w ),
-    vicious_hellhounds( "vicious_hellhound", w ),
-    illidari_satyrs( "illidari_satyr", w ),
-    eyes_of_guldan( "eye_of_guldan", w ),
-    prince_malchezaar( "prince_malchezaar", w ),
-    pit_lords( "pit_lord", w ),
     doomfiends( "doomfiend", w )
 {
 }

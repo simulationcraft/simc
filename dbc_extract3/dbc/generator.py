@@ -1605,6 +1605,7 @@ class SpellDataGenerator(DataGenerator):
             ( 431911 , 0),          # Sun's Avatar damage
             ( 431382 , 0),          # Dawnlight aoe healing
             ( 431399 , 0),          # Dawnlight aoe damage
+            ( 449198 , 0),          # Highlord's Judgment hidden spell
         ),
 
         # Hunter:
@@ -2209,6 +2210,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395414, 3 ), # Fae Exposure Damage Debuff
           ( 451968, 3 ), # Combat Wisdom Expel Harm
           ( 452117, 3 ), # Flurry of Xuen Driver
+          ( 461404, 3 ), # WW Chi Burst Cast
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
@@ -2239,7 +2241,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 33
           ( 457271, 1 ), # BrM 4-piece Flow of Battle
-          
+
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
 

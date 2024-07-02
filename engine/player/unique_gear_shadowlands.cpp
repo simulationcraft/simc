@@ -2406,7 +2406,7 @@ void shadowed_orb_of_torment( special_effect_t& effect )
           if ( a->action_ready() )
           {
             timespan_t delta =
-                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+                std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
             sim->print_debug( "PRECOMBAT: Shadowed Orb of Torment prechannel timing pushed by {} for {}", delta,
                               a->name() );
             time += delta;
@@ -2455,11 +2455,6 @@ void shadowed_orb_of_torment( special_effect_t& effect )
         if ( cdgrp_dur > 0_ms )
           cdgrp->start( cdgrp_dur );
       }
-    }
-
-    timespan_t tick_time( const action_state_t* ) const override
-    {
-      return base_tick_time;
     }
 
     void trigger_dot( action_state_t* s ) override

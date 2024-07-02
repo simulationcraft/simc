@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 11.0.0.55288
-static const std::array<specialization_spell_entry_t, 492> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 494> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -246,6 +246,8 @@ static const std::array<specialization_spell_entry_t, 492> __specialization_spel
   {  7,  263, 137041,      0, "Enhancement Shaman"                , 0 },
   {  7,  263, 157444,      0, "Critical Strikes"                  , 0 },
   {  7,  263, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
+  {  7,  263, 187880,      0, "Maelstrom Weapon"                  , 0 },
+  {  7,  263, 196884,      0, "Feral Lunge"                       , 0 },
   {  7,  263, 201845,      0, "Stormbringer"                      , 0 },
   {  7,  263, 462106,      0, "Shaman"                            , 0 },
   {  7,  263, 462108,      0, "Enhancement Shaman"                , 0 },

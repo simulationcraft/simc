@@ -90,10 +90,12 @@ struct mind_flay_t final : public priest_spell_t
       _insanity_spell->execute();
       priest().buffs.mind_flay_insanity->expire();
 
-      // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
+      // This rolls its own independent chance to crit for the Shadowy Apparition, since it happens on cast.
+      // It is not related to the first tick of MF:I's state
       if ( priest().talents.archon.energy_cycle.enabled() )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi, false );
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi,
+                                              rng().roll( priest().cache.spell_crit_chance() ) );
       }
     }
     else
@@ -174,7 +176,7 @@ struct mind_spike_t final : public mind_spike_base_t
     parse_options( options_str );
   }
 
-  // Using action_ready here so that: 
+  // Using action_ready here so that:
   // - casts are cancelled if the buff falls off mid-cast
   // - getting a buff mid-cast will cause you to finish the normal cast
   bool action_ready() override
@@ -221,7 +223,6 @@ struct mind_spike_insanity_t final : public mind_spike_base_t
   {
     priest_spell_t::impact( s );
 
-    // TODO: Determine how the crit mod is passed here, might be like tormented spirits in execute()
     if ( priest().talents.archon.energy_cycle.enabled() )
     {
       priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_msi, s->result == RESULT_CRIT );
@@ -265,12 +266,6 @@ struct dispersion_t final : public priest_spell_t
     priest().buffs.dispersion->trigger();
 
     priest_spell_t::execute();
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Unhasted, even though it is a channeled spell.
-    return base_tick_time;
   }
 
   void last_tick( dot_t* d ) override
@@ -833,6 +828,11 @@ struct vampiric_touch_t final : public priest_spell_t
       mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return 1.0;
+    }
+
     void trigger( double original_amount )
     {
       base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
@@ -950,16 +950,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().refresh_insidious_ire_buff( s );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( priest().buffs.unfurling_darkness->check() )
-    {
-      return 0_ms;
-    }
-
-    return priest_spell_t::execute_time();
   }
 
   void tick( dot_t* d ) override
@@ -1521,6 +1511,12 @@ struct void_torrent_t final : public priest_spell_t
 
   void execute() override
   {
+    // Spawn this before Void Torrent so that we get the damage bonus
+    if ( priest().talents.voidweaver.entropic_rift.enabled() )
+    {
+      priest().trigger_entropic_rift();
+    }
+
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
@@ -1531,11 +1527,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().spawn_idol_of_cthun( s );
-
-    if ( priest().talents.voidweaver.entropic_rift.enabled() )
-    {
-      priest().trigger_entropic_rift();
-    }
   }
 };
 
@@ -2128,6 +2119,9 @@ struct dispersion_t final : public priest_buff_t<buff_t>
     if ( !data().ok() )
       return;
 
+    // Increases duration
+    apply_affecting_aura( priest().talents.archon.heightened_alteration );
+
     set_period( data().effectN( 5 ).period() );
 
     auto eff            = &data().effectN( 5 );
@@ -2613,6 +2607,12 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod )
         buffs.last_shadowy_apparition_crit->expire();
       }
     }
+  }
+
+  // Proc tracking since we do not use real crits
+  if ( gets_crit_mod )
+  {
+    procs.shadowy_apparition_crit->occur();
   }
 
   // Idol of Yogg-Saron only triggers for each cast that generates an apparition

@@ -200,7 +200,7 @@ void arms( player_t* p )
 
   aoe->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
   aoe->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
-  aoe->add_action( "thunder_clap,if=talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
+  aoe->add_action( "thunder_clap,if=talent.thunder_clap&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
   aoe->add_action( "sweeping_strikes,if=cooldown.bladestorm.remains>15|talent.improved_sweeping_strikes&cooldown.bladestorm.remains>21|!talent.bladestorm|!talent.bladestorm&talent.blademasters_torment&cooldown.avatar.remains>15|!talent.bladestorm&talent.blademasters_torment&talent.improved_sweeping_strikes&cooldown.avatar.remains>21" );
   aoe->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment|target.time_to_die<20" );
   aoe->add_action( "warbreaker,if=raid_event.adds.in>22|active_enemies>1" );
@@ -231,13 +231,13 @@ void arms( player_t* p )
   single_target->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
   single_target->add_action( "sweeping_strikes,if=active_enemies>1" );
   single_target->add_action( "execute,if=(buff.juggernaut.up&buff.juggernaut.remains<gcd)|(buff.sudden_death.react&dot.deep_wounds.remains&set_bonus.tier31_2pc|buff.sudden_death.react&!dot.rend.remains&set_bonus.tier31_4pc)" );
-  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder&talent.blademasters_torment" );
+  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.rend&talent.blademasters_torment" );
   single_target->add_action( "thunderous_roar,if=raid_event.adds.in>15" );
   single_target->add_action( "avatar,if=raid_event.adds.in>15|target.time_to_die<20" );
   single_target->add_action( "colossus_smash" );
   single_target->add_action( "warbreaker,if=raid_event.adds.in>22" );
   single_target->add_action( "mortal_strike" );
-  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder" );
+  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.rend" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&debuff.colossus_smash.up" );
   single_target->add_action( "bladestorm,if=talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
   single_target->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up" );

@@ -770,7 +770,7 @@ public:
     // San'layn
     propagate_const<buff_t*> essence_of_the_blood_queen;
     propagate_const<buff_t*> essence_of_the_blood_queen_damage;
-    propagate_const<buff_t*> gift_of_the_sanlayn;
+    buff_t* gift_of_the_sanlayn;
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
     propagate_const<buff_t*> visceral_strength;
@@ -4102,20 +4102,11 @@ struct trollbane_pet_t final : public horseman_pet_t
     {
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
-      dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
+      if ( !dk()->bugs || a->target->type == ENEMY_ADD )
+      {
+        dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
+      }
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
-    }
-
-    bool ready() override
-    {
-      if ( dk()->bugs )
-      {
-        return dk()->target->type == ENEMY_ADD && cooldown->is_ready();
-      }
-      else
-      {
-        return horseman_spell_t::ready();
-      }
     }
   };
 
@@ -5315,13 +5306,13 @@ struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_
   double value() override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+           p()->buffs.gift_of_the_sanlayn->check_value();
   }
 
   double check_value() const override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+           p()->buffs.gift_of_the_sanlayn->check_value();
   }
 };
 
@@ -5340,13 +5331,68 @@ struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
   }
 
   double check_value() const override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
   }
+};
+
+struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
+{
+  gift_of_the_sanlayn_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
+    : death_knight_buff_t( p, name, spell ), gift_bug( false ), idx( p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+  {
+    set_default_value_from_effect( idx );
+    set_duration( 0_ms );  // Handled by DT and VB
+    add_invalidate( CACHE_HASTE );
+    set_expire_callback( [ p ]( buff_t*, int, timespan_t ) {
+      p->buffs.vampiric_strike->expire();
+      if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
+      {
+        p->buffs.infliction_of_sorrow->trigger();
+      }
+    } );
+    set_stack_change_callback( [ p ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+      {
+        if ( p->buffs.vampiric_strike->check() )
+        {
+          p->procs.vampiric_strike_waste->occur();
+        }
+        p->buffs.vampiric_strike->predict();
+        p->buffs.vampiric_strike->trigger();
+      }
+    } );
+  }
+
+  double value() override
+  {
+    if ( gift_bug && check() )
+      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
+    else if ( !gift_bug && check() )
+      return 1.0 + data().effectN( idx ).percent();
+    else
+      return 1.0;
+  }
+
+  double check_value() const override
+  {
+    if ( gift_bug && check() )
+      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
+    else if ( !gift_bug && check() )
+      return 1.0 + data().effectN( idx ).percent();
+    else
+      return 1.0;
+  }
+
+public:
+  bool gift_bug;
+
+private:
+  unsigned idx;
 };
 
 // Death and Decay ==========================================================
@@ -5739,13 +5785,18 @@ struct melee_t : public death_knight_melee_attack_t
           p()->trigger_killing_machine( 0, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
         }
 
-        // TODO: check if the proc chance in the talent effect 1 is correct
-        if ( p()->talent.frost.icy_death_torrent.ok() &&
-             rng().roll( p()->talent.frost.icy_death_torrent->effectN( 1 ).percent() ) &&
-             p()->cooldown.icy_death_torrent_icd->is_ready() )
+        // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
+        if ( p()->talent.frost.icy_death_torrent.ok() && p()->cooldown.icy_death_torrent_icd->is_ready() )
         {
-          p()->active_spells.icy_death_torrent_damage->execute();
-          p()->cooldown.icy_death_torrent_icd->start();
+          double chance_mult = p()->main_hand_weapon.group() == WEAPON_2H
+                                   ? 1
+                                   : 1 / ( p()->talent.frost.icy_death_torrent->effectN( 1 ).base_value() / 10 );
+
+          if ( rng().roll( p()->talent.frost.icy_death_torrent->proc_chance() * chance_mult ) )
+          {
+            p()->active_spells.icy_death_torrent_damage->execute();
+            p()->cooldown.icy_death_torrent_icd->start();
+          }
         }
 
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
@@ -6387,45 +6438,33 @@ struct exterminate_t final : public death_knight_spell_t
   {
     background         = true;
     cooldown->duration = 0_ms;
-    next_is_secondary  = false;
-    this_is_secondary  = false;
     add_child( second_hit );
   }
 
   void execute() override
   {
-    // Exterminate cannot continously proc Reaper's mark, only the first can
-    // proc happens immediately before the damage does so it generates stacks
-    // If Ex procs a mark, flag the next cast
-    // When executing, check if the next cast is flagged and mark this as the secondary mark if true
-    // clear the secondary flag after
-    if ( next_is_secondary && !this_is_secondary )
-    {
-      this_is_secondary = true;
-      next_is_secondary = false;
-    }
-    if ( !this_is_secondary )
-    {
+
       double chance = p()->talent.deathbringer.painful_death->ok()
                           ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                           : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
       if ( p()->rng().roll( chance ) )
       {
-        get_td( p()->target )->debuff.reapers_mark->trigger();
+        buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
+        if ( rm->up() )
+        {
+          rm->expire();
+        }
+        rm->trigger();
         p()->procs.exterminate_reapers_mark->occur();
-        next_is_secondary = true;
       }
-    }
+    
     death_knight_spell_t::execute();
     make_event( *sim, 500_ms, [ this ]() { second_hit->execute_on_target( this->target ); } );
-    this_is_secondary = false;
   }
 
 private:
   exterminate_aoe_t* second_hit;
-  bool next_is_secondary;
-  bool this_is_secondary;
 };
 
 struct reapers_mark_explosion_t final : public death_knight_spell_t
@@ -6550,7 +6589,12 @@ struct reapers_mark_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
     // TODO-TWW implement 10ms delay
-    get_td( state->target )->debuff.reapers_mark->trigger();
+    buff_t* rm = get_td( state->target )->debuff.reapers_mark;
+    if ( rm->up() )
+    {
+      rm->expire();
+    }
+    rm->trigger();
   }
 
   void execute() override
@@ -7102,17 +7146,20 @@ struct bonestorm_t final : public death_knight_spell_t
     // https://www.wowhead.com/news/the-war-within-alpha-development-notes-new-human-racial-replacing-diplomacy-342168
     // Blue post specifically mentions a max of 10 bones consumed, though it doesn't show up in spell description
     // or in Spelldata.
-    int charges = std::max( p()->buffs.bone_shield->check(), 10 );
+    int charges = std::min( p()->buffs.bone_shield->check(), 10 );
     p()->buffs.bone_shield->decrement( charges );
     if( p() -> talent.blood.ossified_vitriol -> ok() )
       p()->buffs.ossified_vitriol->trigger( charges );
-    return base_tick_time * charges / 10;
+    p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
+    return base_tick_time * charges;
   }
 
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    p()->replenish_rune( as<unsigned>( p()->talent.blood.bonestorm->effectN( 3 ).base_value() ), p()->gains.bonestorm );
+    p()->buffs.bone_shield->trigger();
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+        p() -> buffs.piledriver_tww1_4pc->trigger();
   }
 };
 
@@ -8790,14 +8837,39 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    if ( p()->bugs && p()->talent.rider.a_feast_of_souls.ok() && p()->buffs.a_feast_of_souls->check() )
+    {
+      // Is rolled once when the ability is cast normally.
+      // Number of events is equal to GA Spell Radius / GA Damage Radius to emulate the number of small GA circular
+      // triggers in game.
+      int events = 11;
+      if ( is_arctic_assault )
+      {
+        events += 1;
+      }
+      make_repeating_event(
+          *p()->sim, 25_ms,
+          [ this ] {
+            if ( p()->buffs.a_feast_of_souls->check() &&
+                 rng().roll( p()->talent.rider.a_feast_of_souls->effectN( 2 ).percent() ) )
+            {
+              p()->replenish_rune( 1, p()->gains.feast_of_souls );
+            }
+          },
+          events );
+    }
+
     // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
-    // Currently does not trigger Icy Talons, nor Obliteration rune generation
-    // Can Trigger Runic Empowerment
+    // Currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
     {
       if ( p()->talent.frost.unleashed_frenzy.ok() )
       {
         p()->buffs.unleashed_frenzy->trigger();
+      }
+      if ( p()->talent.icy_talons.ok() )
+      {
+        p()->buffs.icy_talons->trigger();
       }
 
       // TWW-TODO: Re-verify what RP effects Arctic Assault procs
@@ -10053,6 +10125,23 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     }
 
     return cc;
+  }
+
+  void execute() override
+  {
+    wound_spender_base_t::execute();
+    if ( p()->bugs && !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = true;
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    if ( p()->bugs && p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = false;
+      p()->invalidate_cache( CACHE_HASTE );
+      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -11665,7 +11754,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   }
   else if ( buffs.infliction_of_sorrow->check() )
   {
-    mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    mod = bugs ? spell.infliction_of_sorrow_buff->effectN( 1 ).percent() : talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     buffs.infliction_of_sorrow->expire();
     if ( disease_td->is_ticking() )
     {
@@ -13209,14 +13298,14 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           } )
           ->set_tick_callback( [ & ]( buff_t* buff, int, timespan_t ) {
             // 5/7/24 the 35% appears to be in a server script
-            // the explosion is triggering anytime the target is below 35%, instantly popping fresh marks
+            // the explosion is triggering anytime the target is below 35%, if the hidden grim reaper buff is down, instantly popping fresh marks
             // trigger is on a one second dummy periodic, giving a slight window to acquire stacks
             size_t targets = p.sim->target_non_sleeping_list.size();
             if ( !p.buffs.grim_reaper->check() && targets == 1 && buff->player->health_percentage() < 35 )
             {
               p.sim->print_debug( "reapers_mark go boom" );
               p.buffs.grim_reaper->trigger();
-              // buff->expire(); TODO: FIX ME
+              make_event( p.sim, 0_ms, [ buff ]() { buff->expire(); } );
             }
           } );
 
@@ -13389,29 +13478,9 @@ void death_knight_t::create_buffs()
                                                                spell.essence_of_the_blood_queen_buff )
           ->set_quiet( true );
 
-  buffs.gift_of_the_sanlayn = make_fallback( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
-                                             spell.gift_of_the_sanlayn_buff )
-                                  ->set_default_value_from_effect( specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
-                                  ->set_duration( 0_ms )  // Handled by DT and VB
-                                  ->add_invalidate( CACHE_HASTE )
-                                  ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                    buffs.vampiric_strike->expire();
-                                    if ( talent.sanlayn.infliction_of_sorrow.ok() )
-                                    {
-                                      buffs.infliction_of_sorrow->trigger();
-                                    }
-                                  } )
-                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                    if ( new_ )
-                                    {
-                                      if ( buffs.vampiric_strike->check() )
-                                      {
-                                        procs.vampiric_strike_waste->occur();
-                                      }
-                                      buffs.vampiric_strike->predict();
-                                      buffs.vampiric_strike->trigger();
-                                    }
-                                  } );
+  buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
+                                             spell.gift_of_the_sanlayn_buff );
+
 
   buffs.vampiric_strike =
       make_fallback( talent.sanlayn.vampiric_strike.ok(), this, "vampiric_strike", spell.vampiric_strike_buff );

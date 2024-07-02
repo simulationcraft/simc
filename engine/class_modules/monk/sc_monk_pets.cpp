@@ -696,7 +696,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_tiger_palm_t : public sef_melee_attack_t
   {
     sef_tiger_palm_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "tiger_palm", player, player->o()->spec.tiger_palm )
+      : sef_melee_attack_t( "tiger_palm", player, player->o()->baseline.monk.tiger_palm )
     {
     }
 
@@ -711,7 +711,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
   {
     sef_blackout_kick_totm_proc_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "blackout_kick_totm_proc", player, player->o()->passives.totm_bok_proc )
+      : sef_melee_attack_t( "blackout_kick_totm_proc", player,
+                            player->o()->talent.windwalker.teachings_of_the_monastery_blackout_kick )
     {
       background = dual = true;
       trigger_gcd       = timespan_t::zero();
@@ -730,7 +731,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_blackout_kick_totm_proc_t *bok_totm_proc;
 
     sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
+      : sef_melee_attack_t( "blackout_kick", player, player->o()->baseline.monk.blackout_kick )
     {
       aoe = 1 + (int)o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
 
@@ -787,7 +788,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( o()->spec.combat_conditioning->ok() )
+      if ( o()->baseline.windwalker.combat_conditioning->ok() )
         state->target->debuffs.mortal_wounds->trigger();
 
       o()->trigger_mark_of_the_crane( state );
@@ -860,34 +861,38 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    // sef_action_base_t uses the source action's tick_time, which ignores base_tick_time adjustment made in the
-    // constructor above. Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *state ) const override
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
+    timespan_t tick_time( const action_state_t *s ) const override
     {
-      timespan_t t = base_tick_time;
-      if ( hasted_ticks )
-      {
-        t *= state->haste;
-      }
-      return t;
+      auto base = base_tick_time.base;
+
+      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
+
+      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
+
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
 
     // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
     // Recalculate composite_dot_duration here.
     timespan_t composite_dot_duration( const action_state_t *s ) const override
     {
-      if ( hasted_dot_duration )
-      {
-        auto tt = tick_time( s );
+      auto base = dot_duration.base;
 
-        // technically it's possible to have hasted dot duration without hasted ticks
-        if ( !hasted_ticks )
-          tt *= s->haste;
+      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
 
-        return dot_duration * ( tt / base_tick_time );
-      }
+      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
 
-      return dot_duration;
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 
@@ -906,9 +911,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_spinning_crane_kick_tick_t : public sef_tick_action_t
   {
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t *p )
-      : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
+      : sef_tick_action_t( "spinning_crane_kick_tick", p,
+                           p->o()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() )
     {
-      aoe = as<int>( p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value() );
+      aoe = as<int>( p->o()->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value() );
     }
   };
 
@@ -916,7 +922,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   {
     sef_chi_explosion_t *chi_explosion;
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick ),
+      : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->baseline.monk.spinning_crane_kick ),
         chi_explosion( nullptr )
     {
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
@@ -1093,7 +1099,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "chi_wave_damage", player, player->o()->passives.chi_wave_damage )
+      : sef_spell_t( "chi_wave_damage", player, player->o()->talent.monk.chi_wave_damage )
     {
       dual = true;
     }
@@ -1106,7 +1112,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_chi_wave_damage_t *wave;
 
     sef_chi_wave_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "chi_wave", player, player->o()->talent.general.chi_wave ),
+      : sef_spell_t( "chi_wave", player, player->o()->talent.monk.chi_wave ),
         wave( new sef_chi_wave_damage_t( player ) )
     {
       may_crit = may_miss = hasted_ticks = false;
@@ -1127,7 +1133,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_crackling_jade_lightning_t : public sef_spell_t
   {
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning", player, player->o()->spec.crackling_jade_lightning )
+      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning )
     {
       tick_may_crit = true;
       channeled = tick_zero = true;
@@ -1136,16 +1142,21 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration          = data().duration();
     }
 
-    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
-    // Forcing SEF to use it's own base_tick_time for tick_time.
-    timespan_t tick_time( const action_state_t *state ) const override
+    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
+    // Recalculate tick_time here.
+    timespan_t tick_time( const action_state_t *s ) const override
     {
-      timespan_t t = base_tick_time;
-      if ( channeled || hasted_ticks )
-      {
-        t *= state->haste;
-      }
-      return t;
+      auto base = base_tick_time.base;
+
+      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
+
+      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
+
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
 
     double cost_per_tick( resource_e ) const override
@@ -1287,7 +1298,7 @@ public:
 
     buff.bok_proc_sef =
         make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
-            ->set_trigger_spell( o()->spec.combo_breaker )
+            ->set_trigger_spell( o()->baseline.windwalker.combo_breaker )
             ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
 
     buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->passives.rushing_jade_wind )
@@ -1453,7 +1464,7 @@ struct niuzao_pet_t : public monk_pet_t
   struct stomp_t : public pet_melee_attack_t
   {
     stomp_t( niuzao_pet_t *pet, std::string_view options_str )
-      : pet_melee_attack_t( "stomp", pet, pet->o()->passives.stomp )
+      : pet_melee_attack_t( "stomp", pet, pet->o()->talent.brewmaster.invoke_niuzao_the_black_ox_stomp )
     {
       parse_options( options_str );
       aoe      = -1;
@@ -1628,7 +1639,7 @@ private:
   struct claw_of_the_white_tiger_t : public pet_spell_t
   {
     claw_of_the_white_tiger_t( white_tiger_statue_t *p, util::string_view options_str )
-      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->passives.claw_of_the_white_tiger )
+      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->talent.monk.claw_of_the_white_tiger )
     {
       parse_options( options_str );
       aoe = -1;
@@ -1815,7 +1826,7 @@ public:
   spirit_of_forged_vermillion_t( monk_t *owner )
     : monk_pet_t( owner, "spirit_of_forged_vermillion", PET_MONK, false, true )
   {
-    npc_id = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
+    npc_id = owner->tier.t30.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
     _spec  = owner->specialization();
 
     main_hand_weapon.type       = WEAPON_SWORD;
@@ -1836,7 +1847,7 @@ public:
   {
     // Initialize pet spells
     for ( auto action : owner->action_list )
-      if ( action->data().affected_by( o()->passives.shadowflame_spirit->effectN( 2 ) ) )
+      if ( action->data().affected_by( o()->tier.t30.shadowflame_spirit->effectN( 2 ) ) )
         sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
 
     monk_pet_t::init_spells();
@@ -1872,7 +1883,7 @@ public:
     }
 
     // Apply the affecting SFS effect aura
-    ( *pet_action )->apply_affecting_aura( o()->passives.shadowflame_spirit );
+    ( *pet_action )->apply_affecting_aura( o()->tier.t30.shadowflame_spirit );
 
     // Execute action
     ( *pet_action )->set_target( s->target );

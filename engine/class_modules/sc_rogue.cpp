@@ -349,7 +349,6 @@ public:
       actions::rogue_attack_t* clear_the_witnesses = nullptr;
       actions::rogue_attack_t* corrupt_the_blood = nullptr;
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
-      actions::rogue_attack_t* flensing_knives = nullptr;
       actions::rogue_attack_t* hunt_them_down = nullptr;
       actions::rogue_attack_t* singular_focus = nullptr;
     } deathstalker;
@@ -358,6 +357,7 @@ public:
       actions::rogue_attack_t* fatebound_coin_tails = nullptr;
       actions::rogue_attack_t* fatebound_coin_tails_delivered = nullptr;
       actions::rogue_attack_t* fate_intertwined = nullptr;
+      actions::rogue_attack_t* lucky_coin = nullptr;
     } fatebound;
     struct
     {
@@ -645,10 +645,10 @@ public:
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
+    const spell_data_t* fatebound_lucky_coin_damage;
     const spell_data_t* fatebound_fate_intertwined;
     const spell_data_t* fazed_debuff;
     const spell_data_t* flawless_form_buff;
-    const spell_data_t* flensing_knives_damage;
     const spell_data_t* hunt_them_down_damage;
     const spell_data_t* lingering_darkness_buff;
     const spell_data_t* momentum_of_despair_buff;
@@ -1056,7 +1056,7 @@ public:
       player_talent_t hunt_them_down;
       player_talent_t singular_focus;
 
-      player_talent_t flensing_knives;
+      player_talent_t fatal_intent;         // NYI -- Spell data is a bit wonky
       player_talent_t corrupt_the_blood;
       player_talent_t lingering_darkness;
       player_talent_t symbolic_victory;
@@ -1112,10 +1112,10 @@ public:
 
       player_talent_t disorienting_strikes;
       player_talent_t cloud_cover;
-      player_talent_t no_scruples;        // NYI?? (Dummy effect, no proper spell data)
+      player_talent_t no_scruples;
       player_talent_t nimble_flurry;
 
-      player_talent_t coup_de_grace;
+      player_talent_t coup_de_grace;      // TODO: Needs to be reimplemented
 
     } trickster;
 
@@ -2351,6 +2351,10 @@ public:
   virtual bool procs_blade_flurry() const
   { return false; }
 
+  // Generic rules for proccing Nimble Flurry, used by rogue_t::trigger_nimble_flurry()
+  virtual bool procs_nimble_flurry() const
+  { return false; }
+
   // Generic rules for proccing Shadow Blades, used by rogue_t::trigger_shadow_blades_attack()
   virtual bool procs_shadow_blades_damage() const
   { return true; }
@@ -2451,8 +2455,7 @@ public:
   void trigger_cloud_cover( const action_state_t* state );
   void trigger_coup_de_grace( const action_state_t* state );
   void trigger_deathstalkers_mark( const action_state_t* state );
-  void trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
-  void trigger_flensing_knives( const action_state_t* state );
+  bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_nimble_flurry( const action_state_t* state );
   virtual bool trigger_t31_subtlety_set_bonus( const action_state_t* state, rogue_attack_t* action = nullptr );
@@ -2963,6 +2966,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_main_gauche( state );
     trigger_fatal_flourish( state );
     trigger_blade_flurry( state );
+    trigger_nimble_flurry( state );
     trigger_shadow_blades_attack( state );
     trigger_dashing_scoundrel( state );
     trigger_caustic_spatter( state );
@@ -3559,8 +3563,6 @@ struct melee_t : public rogue_attack_t
       {
         p()->active.deathstalker.hunt_them_down->execute_on_target( state->target );
       }
-
-      trigger_nimble_flurry( state );
     }
   }
 
@@ -3607,6 +3609,9 @@ struct melee_t : public rogue_attack_t
   { return weapon->slot == SLOT_MAIN_HAND; }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_nimble_flurry() const override
   { return true; }
 };
 
@@ -3856,11 +3861,6 @@ struct backstab_t : public rogue_attack_t
       {
         add_child( p()->active.lingering_shadow );
       }
-
-      if ( p()->active.deathstalker.flensing_knives && !p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.deathstalker.flensing_knives );
-      }
     }
   }
 
@@ -3881,9 +3881,7 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_perforated_veins( state );
-    trigger_flensing_knives( state );
     trigger_unseen_blade( state );
-    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() && p()->position() == POSITION_BACK )
@@ -3909,6 +3907,9 @@ struct backstab_t : public rogue_attack_t
 
     return rogue_attack_t::verify_actor_spec();
   }
+
+  bool procs_nimble_flurry() const override
+  { return true; }
 };
 
 // Dispatch =================================================================
@@ -4759,7 +4760,6 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( bonus_attack && td( state->target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
     {
-      trigger_nimble_flurry( state ); // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
       bonus_attack->last_eviscerate_cp = cast_state( state )->get_combo_points();
       bonus_attack->execute_on_target( state->target );
     }
@@ -4778,6 +4778,9 @@ struct eviscerate_t : public rogue_attack_t
 
   bool consumes_escalating_blade() const override
   { return true; }
+
+  bool procs_nimble_flurry() const override
+  { return true; } // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
 };
 
 // Fan of Knives ============================================================
@@ -5078,11 +5081,6 @@ struct gloomblade_t : public rogue_attack_t
       {
         add_child( p()->active.lingering_shadow );
       }
-
-      if ( p()->active.deathstalker.flensing_knives && p()->talent.subtlety.gloomblade->ok() )
-      {
-        add_child( p()->active.deathstalker.flensing_knives );
-      }
     }
   }
 
@@ -5091,9 +5089,7 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_perforated_veins( state );
-    trigger_flensing_knives( state ); // ALPHA TOCHECK -- Not in description, but seems like it should be intended?
     trigger_unseen_blade( state );
-    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.gloomblade );
 
     if ( state->result == RESULT_CRIT && p()->talent.subtlety.improved_backstab->ok() )
@@ -5111,6 +5107,9 @@ struct gloomblade_t : public rogue_attack_t
       p()->buffs.t29_subtlety_4pc_black_powder->trigger();
     }
   }
+
+  bool procs_nimble_flurry() const override
+  { return true; }
 };
 
 // Kick =====================================================================
@@ -5400,7 +5399,6 @@ struct mutilate_t : public rogue_attack_t
       rogue_attack_t::impact( state );
       trigger_doomblade( state );
       trigger_vicious_venoms( state, vicious_venoms_attack );
-      trigger_flensing_knives( state );
     }
 
     bool procs_seal_fate() const override
@@ -5439,11 +5437,6 @@ struct mutilate_t : public rogue_attack_t
     if ( p->active.doomblade )
     {
       add_child( p->active.doomblade );
-    }
-
-    if ( p->active.deathstalker.flensing_knives )
-    {
-      add_child( p->active.deathstalker.flensing_knives );
     }
   }
 
@@ -6133,7 +6126,6 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_unseen_blade( state );
-    trigger_nimble_flurry( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_find_weakness( state );
     trigger_inevitability( state );
@@ -6173,6 +6165,9 @@ struct shadowstrike_t : public rogue_attack_t
 
     return 0;
   }
+
+  bool procs_nimble_flurry() const override
+  { return true; }
 };
 
 // Black Powder =============================================================
@@ -7088,6 +7083,9 @@ struct goremaws_bite_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.goremaws_bite->trigger();
   }
+
+  bool procs_nimble_flurry() const override
+  { return true; }
 };
 
 // Echoing Reprimand ========================================================
@@ -7130,6 +7128,9 @@ struct echoing_reprimand_t : public rogue_attack_t
   }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_nimble_flurry() const override
   { return true; }
 };
 
@@ -7376,18 +7377,6 @@ struct deathstalkers_mark_t : public rogue_attack_t
   }
 };
 
-struct flensing_knives_t : public rogue_attack_t
-{
-  flensing_knives_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->spell.flensing_knives_damage )
-  {
-  }
-
-  // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
-  bool procs_shadow_blades_damage() const override
-  { return false; }
-};
-
 struct hunt_them_down_t : public rogue_attack_t
 {
   hunt_them_down_t( util::string_view name, rogue_t* p ) :
@@ -7447,6 +7436,20 @@ struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
   }
 };
 
+struct fatebound_lucky_coin_t : public rogue_attack_t
+{
+  fatebound_lucky_coin_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.fatebound_lucky_coin_damage )
+  {
+  }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_caustic_spatter() const override
+  { return true; }
+};
+
 struct fate_intertwined_t : public rogue_attack_t
 {
   fate_intertwined_t( util::string_view name, rogue_t* p ) :
@@ -7496,6 +7499,9 @@ struct unseen_blade_t : public rogue_attack_t
       p()->buffs.flawless_form->trigger();
     }
   }
+
+  bool procs_nimble_flurry() const override
+  { return true; }
 };
 
 struct nimble_flurry_t : public rogue_attack_t
@@ -9582,9 +9588,13 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
        cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
-    trigger_deathstalkers_mark_debuff( state, true );
-    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
-    return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
+    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
+    // ALPHA TOCHECK -- Does this also apply to Darkest Night?
+    if ( trigger_deathstalkers_mark_debuff( state, true ) )
+    {
+      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
+      return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
+    }
   }
 
   if ( !p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() )
@@ -9611,17 +9621,23 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night )
+bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night )
 {
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
-    return;
+    return false;
 
   if ( !p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && !from_darkest_night )
-    return;
+    return false;
 
   buff_t*& debuff = p()->deathstalkers_mark_debuff;
-  if ( debuff && debuff->check() && debuff->player != state->target )
+  if ( debuff && debuff->check() )
+  {
+    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
+    if ( debuff->player == state->target )
+      return false;
+
     debuff->expire();
+  }
 
   const int stacks = as<int>( from_darkest_night ? p()->spell.darkest_night_buff->effectN( 3 ).base_value() :
                               p()->talent.deathstalker.deathstalkers_mark->effectN( 1 ).base_value() );
@@ -9630,18 +9646,8 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   debuff->trigger( stacks );
 
   p()->buffs.clear_the_witnesses->trigger();
-}
 
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_flensing_knives( const action_state_t* state )
-{
-  if ( !p()->talent.deathstalker.flensing_knives->ok() || !ab::result_is_hit( state->result ) )
-    return;
-
-  if ( !p()->buffs.slice_and_dice->check() )
-    return;
-
-  p()->active.deathstalker.flensing_knives->execute_on_target( state->target );
+  return true;
 }
 
 template <typename Base>
@@ -9666,17 +9672,17 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_nimble_flurry( const action_state_t* state )
 {
-  if ( !p()->talent.trickster.nimble_flurry->ok() )
+  // Outlaw gains a bonus to Blade Flurry instead of triggering this effect
+  if ( !p()->talent.trickster.nimble_flurry->ok() || p()->specialization() != ROGUE_SUBTLETY )
     return;
 
-  // Outlaw gains a bonus to Blade Flurry instead of triggering this effect
-  if ( p()->specialization() != ROGUE_SUBTLETY )
+  if ( !procs_nimble_flurry() )
     return;
 
   if ( p()->sim->active_enemies == 1 )
     return;
 
-  if ( !p()->buffs.flawless_form->check() )
+  if ( !ab::result_is_hit( state->result ) || !p()->buffs.flawless_form->check() )
     return;
 
   double multiplier = p()->talent.trickster.nimble_flurry->effectN( 3 ).percent();
@@ -9872,6 +9878,19 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       {
         source->buffs.flagellation->increment( 10 );
         source->buffs.flagellation->expire(); // Triggers persist buff
+      }
+    } );
+  }
+
+  // Darkest Night On-Death Buff Trigger
+  if ( source->talent.deathstalker.darkest_night->ok() )
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
+      if ( debuffs.deathstalkers_mark->check() )
+      {
+        // ALPHA TOCHECK -- Does this give the resource gain as well? Or just the buff?
+        source->resource_gain( RESOURCE_ENERGY, source->spell.darkest_night_buff->effectN( 1 ).resource(), source->gains.darkest_night );
+        source->buffs.darkest_night->trigger();
       }
     } );
   }
@@ -11185,7 +11204,6 @@ void rogue_t::init_spells()
   talent.deathstalker.hunt_them_down = find_talent_spell( talent_tree::HERO, "Hunt Them Down" );
   talent.deathstalker.singular_focus = find_talent_spell( talent_tree::HERO, "Singular Focus" );
 
-  talent.deathstalker.flensing_knives = find_talent_spell( talent_tree::HERO, "Flensing Knives" );
   talent.deathstalker.corrupt_the_blood = find_talent_spell( talent_tree::HERO, "Corrupt the Blood" );
   talent.deathstalker.lingering_darkness = find_talent_spell( talent_tree::HERO, "Lingering Darkness" );
   talent.deathstalker.symbolic_victory = find_talent_spell( talent_tree::HERO, "Symbolic Victory" );
@@ -11260,7 +11278,6 @@ void rogue_t::init_spells()
   spell.deathstalkers_mark_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_debuff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457129 ) : spell_data_t::not_found();
-  spell.flensing_knives_damage = talent.deathstalker.flensing_knives->ok() ? find_spell( 457020 ) : spell_data_t::not_found();
   spell.hunt_them_down_damage = talent.deathstalker.hunt_them_down->ok() ? find_spell( 457193 ) : spell_data_t::not_found();
   spell.lingering_darkness_buff = talent.deathstalker.lingering_darkness->ok() ? find_spell( 457273 ) : spell_data_t::not_found();
   spell.momentum_of_despair_buff = talent.deathstalker.momentum_of_despair->effectN( 1 ).trigger();
@@ -11273,6 +11290,7 @@ void rogue_t::init_spells()
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.fateful_ending->ok() ? find_spell( 452562 ) : spell_data_t::not_found();
+  spell.fatebound_lucky_coin_damage = talent.fatebound.fateful_ending->ok() ? find_spell( 461818 ) : spell_data_t::not_found();
   spell.fatebound_fate_intertwined = talent.fatebound.fate_intertwined->ok() ? find_spell( 456306 ) : spell_data_t::not_found();
 
   // Trickster
@@ -11570,11 +11588,6 @@ void rogue_t::init_spells()
     active.deathstalker.deathstalkers_mark = get_background_action<actions::deathstalkers_mark_t>( "deathstalkers_mark" );
   }
 
-  if ( talent.deathstalker.flensing_knives->ok() )
-  {
-    active.deathstalker.flensing_knives = get_background_action<actions::flensing_knives_t>( "flensing_knives" );
-  }
-
   if ( talent.deathstalker.hunt_them_down->ok() )
   {
     active.deathstalker.hunt_them_down = get_background_action<actions::hunt_them_down_t>( "hunt_them_down" );
@@ -11592,6 +11605,8 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
+    active.fatebound.lucky_coin =
+      get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
   }
 
   if ( talent.fatebound.fate_intertwined->ok() )
@@ -11996,25 +12011,33 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
   if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
   {
-    // override and hardcode heads coin stack scaling to match what the 20%-per-extra-stack-label implies
-    auto direct_scaling_part = spell.fatebound_coin_heads_buff->effectN( 1 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent();
-    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, direct_scaling_part,
-                                                1.0 + spell.fatebound_coin_heads_buff->effectN( 1 ).percent() - direct_scaling_part );
-    auto periodic_scaling_part = spell.fatebound_coin_heads_buff->effectN( 2 ).percent() * spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent();
-    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, periodic_scaling_part,
-                                                  1.0 + spell.fatebound_coin_heads_buff->effectN( 2 ).percent() - periodic_scaling_part );
+    // Combine the 1% per additional stack buff (which we use as the stacking base buff) and 3% from initial stack buff (the fatebound_coin_heads_stacking_buff)
+    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
+                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() - spell.fatebound_coin_heads_buff->effectN( 1 ).percent() );
+    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() - spell.fatebound_coin_heads_buff->effectN( 2 ).percent() );
+    // TODO: fatebound_coin_heads_stacking_buff modifies fatebound_coin_heads_buff for the periodic and direct damage effects, but has an inline 3% auto attack damage effect
+    //  Are we getting an extra 1% AA damage for free? We may never know. Assuming we don't for now.
+    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() - spell.fatebound_coin_heads_buff->effectN( 5 ).percent() );
   }
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
-      if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
-        buffs.fatebound_lucky_coin->trigger();
+      if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+        if ( buffs.fatebound_lucky_coin->check() )
+          active.fatebound.lucky_coin->execute();
+        else
+          buffs.fatebound_lucky_coin->trigger();
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
-      if ( new_stacks >= 7 && talent.fatebound.fateful_ending->ok() )
-        buffs.fatebound_lucky_coin->trigger();
+      if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+        if ( buffs.fatebound_lucky_coin->check() )
+          active.fatebound.lucky_coin->execute();
+        else
+          buffs.fatebound_lucky_coin->trigger();
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   if ( talent.fatebound.chosens_revelry->ok() )
@@ -12025,12 +12048,8 @@ void rogue_t::create_buffs()
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
   buffs.fatebound_lucky_coin->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_STAMINA );
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY ); // TODO: Add tertiary stats
+  // TODO: lucky coin still has effects for non-primary stat buffs, but definitely only affects primary stat in game
+  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
   buffs.fatebound_lucky_coin->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
     if ( !buffs.fatebound_lucky_coin->check() )
