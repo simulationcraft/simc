@@ -259,7 +259,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t souleaters_gluttony; // TODO: Remove
     player_talent_t doom_blossom; // TODO: Remove
     const spell_data_t* doom_blossom_proc;
     player_talent_t dread_touch; // TODO: Remove

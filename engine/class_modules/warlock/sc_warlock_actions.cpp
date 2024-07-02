@@ -1647,11 +1647,6 @@ using namespace helpers;
 
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
         apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
-
-      if ( p->talents.souleaters_gluttony.ok() )
-      {
-        cooldown->duration += p->talents.souleaters_gluttony->effectN( 1 ).time_value();
-      }
     }
 
     void execute() override
