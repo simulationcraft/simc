@@ -165,9 +165,6 @@ namespace warlock
 
     talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
-    talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
-    talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
-
     talents.haunted_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Haunted Soul" ); // Should be ID 387301
     talents.haunted_soul_buff = find_spell( 387310 );
 

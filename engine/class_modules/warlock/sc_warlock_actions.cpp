@@ -18,7 +18,6 @@ using namespace helpers;
       // Affliction
       bool potent_afflictions_td = false;
       bool potent_afflictions_dd = false;
-      bool dread_touch = false;
       bool haunted_soul  = false;
       bool creeping_death = false;
 
@@ -59,7 +58,6 @@ using namespace helpers;
 
       affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
       affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
-      affected_by.dread_touch = data().affected_by( p->talents.dread_touch_debuff->effectN( 1 ) );
       affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
 
@@ -206,11 +204,6 @@ using namespace helpers;
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.dread_touch.ok() && affected_by.dread_touch && td( t )->debuffs_dread_touch->check() )
-      {
-        m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
-      }
 
       if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
       {
@@ -932,12 +925,6 @@ using namespace helpers;
         warlock_spell_t::impact( s );
 
         auto target_data = td( s->target );
-
-        if ( p()->talents.dread_touch.ok() )
-        {
-          if ( target_data->dots_unstable_affliction->is_ticking() )
-            target_data->debuffs_dread_touch->trigger();
-        }
 
         if ( p()->buffs.umbrafire_kindling->check() )
         {

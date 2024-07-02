@@ -45,7 +45,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
   propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
@@ -259,8 +258,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t dread_touch; // TODO: Remove
-    const spell_data_t* dread_touch_debuff;
     player_talent_t haunted_soul; // TODO: Remove
     const spell_data_t* haunted_soul_buff;
     player_talent_t grim_reach; // TODO: Remove
