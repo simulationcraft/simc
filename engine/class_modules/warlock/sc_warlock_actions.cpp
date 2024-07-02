@@ -2320,9 +2320,6 @@ using namespace helpers;
       timespan_t extraTyrantTime = rng().gauss<380,220>();
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
-      if ( p()->talents.soulbound_tyrant.ok() )
-        p()->resource_gain( RESOURCE_SOUL_SHARD, p()-> talents.soulbound_tyrant->effectN( 1 ).base_value() / 10.0, p()->gains.soulbound_tyrant );
-
       timespan_t extension_time = p()->talents.demonic_power_buff->effectN( 3 ).time_value();
 
       int wild_imp_counter = 0;

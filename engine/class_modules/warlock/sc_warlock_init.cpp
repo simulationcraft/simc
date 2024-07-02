@@ -258,8 +258,6 @@ namespace warlock
 
     talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
 
-    talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
-
     talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
 
     talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
@@ -693,7 +691,6 @@ namespace warlock
 
   void warlock_t::init_gains_demonology()
   {
-    gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
     gains.doom = get_gain( "doom" );
     gains.soul_strike = get_gain( "soul_strike" );
   }

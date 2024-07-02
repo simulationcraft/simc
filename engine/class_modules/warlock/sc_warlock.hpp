@@ -320,7 +320,6 @@ public:
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
     player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t soulbound_tyrant; // TODO: Remove
     player_talent_t infernal_command; // TODO: Remove
     player_talent_t guldans_ambition; // TODO: Remove
     const spell_data_t* guldans_ambition_summon;
@@ -620,7 +619,6 @@ public:
 
     // Demonology
     gain_t* doom;
-    gain_t* soulbound_tyrant;
     gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
