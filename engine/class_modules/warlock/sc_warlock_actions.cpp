@@ -1789,12 +1789,6 @@ using namespace helpers;
 
       warlock_spell_t::execute();
 
-      if ( p()->talents.demonic_knowledge.ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
-      {
-        p()->buffs.demonic_core->trigger();
-        p()->procs.demonic_knowledge->occur();
-      }
-
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
 

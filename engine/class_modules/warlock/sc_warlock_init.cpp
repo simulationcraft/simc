@@ -197,8 +197,6 @@ namespace warlock
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
     talents.annihilan_training_buff = find_spell( 386176 );
 
-    talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
-
     talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
     talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
@@ -804,7 +802,6 @@ namespace warlock
   void warlock_t::init_procs_demonology()
   {
     procs.summon_random_demon = get_proc( "summon_random_demon" );
-    procs.demonic_knowledge = get_proc( "demonic_knowledge" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );

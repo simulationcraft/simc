@@ -293,7 +293,6 @@ public:
     player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
-    player_talent_t demonic_knowledge; // TODO: Remove
     player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
     const spell_data_t* the_houndmasters_stratagem_debuff;
 
@@ -674,7 +673,6 @@ public:
     proc_t* cruel_inspiration; // T29 2pc
 
     // Demonology
-    proc_t* demonic_knowledge;
     proc_t* demonic_calling;
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
