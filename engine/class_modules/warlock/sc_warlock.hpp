@@ -206,9 +206,6 @@ public:
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
-    player_talent_t inquisitors_gaze; // TODO: Remove
-    const spell_data_t* inquisitors_gaze_buff;
-    const spell_data_t* fel_barrage;
     player_talent_t soulburn;
     const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
@@ -575,7 +572,6 @@ public:
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
-    action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
     action_t* channel_demonfire; // Destruction T30 proc
   } proc_actions;
 
@@ -626,7 +622,6 @@ public:
     // Shared Buffs
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     propagate_const<buff_t*> demonic_synergy;
-    propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
     propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 

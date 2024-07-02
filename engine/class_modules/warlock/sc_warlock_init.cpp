@@ -107,10 +107,6 @@ namespace warlock
 
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
-    talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
-    talents.inquisitors_gaze_buff = find_spell( 388068 );
-    talents.fel_barrage = find_spell( 388070 );
-
     talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
     talents.soulburn_buff = find_spell( 387626 );
   }
@@ -539,12 +535,6 @@ namespace warlock
 
     buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
                                 ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-    buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
-                                 ->set_period( 1_s )
-                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                   proc_actions.fel_barrage->execute_on_target( target );
-                                 } );
 
     buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
 
