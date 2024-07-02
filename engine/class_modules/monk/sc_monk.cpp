@@ -1287,7 +1287,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       aoe                 = -1;
       full_amount_targets = 1;
-      reduced_aoe_targets = p->passives.t33_ww_4pc->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
     }
 
     ww_mastery       = true;
@@ -1318,7 +1318,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
-      m *= p()->passives.t33_ww_4pc->effectN( 1 ).percent();
+      m *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
 
     return m;
   }
@@ -2161,7 +2161,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
+    c += p()->tier.t30.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
 
     return c;
   }
@@ -3449,7 +3449,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 struct charred_dreams_dmg_2p_t : public monk_melee_attack_t
 {
   charred_dreams_dmg_2p_t( monk_t *player )
-    : monk_melee_attack_t( player, "charred_dreams_dmg_2p", player->passives.charred_dreams_dmg )
+    : monk_melee_attack_t( player, "charred_dreams_dmg_2p", player->tier.t31.charred_dreams_dmg )
   {
     background = true;
     proc       = true;
@@ -3459,7 +3459,7 @@ struct charred_dreams_dmg_2p_t : public monk_melee_attack_t
 struct charred_dreams_dmg_4p_t : public monk_melee_attack_t
 {
   charred_dreams_dmg_4p_t( monk_t *player )
-    : monk_melee_attack_t( player, "charred_dreams_dmg_4p", player->passives.charred_dreams_dmg )
+    : monk_melee_attack_t( player, "charred_dreams_dmg_4p", player->tier.t31.charred_dreams_dmg )
   {
     background = true;
     proc       = true;
@@ -5132,7 +5132,7 @@ struct celestial_fortune_t : public monk_heal_t
 struct charred_dreams_heal_2p_t : public monk_heal_t
 {
   charred_dreams_heal_2p_t( monk_t *player )
-    : monk_heal_t( player, "charred_dreams_heal_2p", player->passives.charred_dreams_heal )
+    : monk_heal_t( player, "charred_dreams_heal_2p", player->tier.t31.charred_dreams_heal )
   {
     background = true;
     proc       = true;
@@ -6090,12 +6090,11 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     gain(),
     proc(),
     cooldown(),
-    talent(),
     baseline(),
+    talent(),
     tier(),
     pets( this ),
     user_options( options_t() ),
-    mastery(),
     shared(),
     passives()
 {
@@ -6557,7 +6556,7 @@ void monk_t::init_spells()
    * If they are not owned by a specific spec, they get placed in `monk.`
    * If they are owned by a specific spec, they get placed in `spec_name`.
    *
-   * Talent spells for the class and specs get placed in `talents`. (TODO: RENAME talents->talent)
+   * Talent spells for the class and specs get placed in `talents`.
    * If they are class talents, they get placed in `monk`.
    * If they are spec or hero talents, they get placed in `spec/ht_name`.
    */
@@ -7002,6 +7001,23 @@ void monk_t::init_spells()
     talent.shado_pan.wisdom_of_the_wall_flurry = find_spell( 451250 );
   }
 
+  // monk_t::talent::tier
+  {
+    tier.t29.kicks_of_flowing_momentum = find_spell( 394944 );
+    tier.t29.fists_of_flowing_momentum = find_spell( 394949 );
+
+    tier.t30.leverage                  = find_spell( 408503 );
+    tier.t30.shadowflame_nova          = find_spell( 410139 );
+    tier.t30.shadowflame_spirit        = find_spell( 410159 );
+    tier.t30.shadowflame_spirit_summon = find_spell( 410153 );
+
+    tier.t31.charred_dreams_dmg  = find_spell( 425299 );
+    tier.t31.charred_dreams_heal = find_spell( 425298 );
+    tier.t31.t31_celestial_brew  = find_spell( 425965 );
+
+    tier.tww1.ww_4pc = find_spell( 454505 );
+  }
+
   // Passives =========================================
   // General
   passives.rushing_jade_wind      = find_spell( 116847 );
@@ -7032,28 +7048,6 @@ void monk_t::init_spells()
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_aoe_tick   = find_spell( 158221 );
   passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
-
-  // Shado-Pan
-
-  // Tier 29
-  passives.kicks_of_flowing_momentum = find_spell( 394944 );
-  passives.fists_of_flowing_momentum = find_spell( 394949 );
-
-  // Tier 30
-  passives.leverage                  = find_spell( 408503 );
-  passives.shadowflame_nova          = find_spell( 410139 );
-  passives.shadowflame_spirit        = find_spell( 410159 );
-  passives.shadowflame_spirit_summon = find_spell( 410153 );
-
-  // Tier 31
-  passives.charred_dreams_dmg  = find_spell( 425299 );
-  passives.charred_dreams_heal = find_spell( 425298 );
-  passives.t31_celestial_brew  = find_spell( 425965 );
-
-  // Tier 33
-  passives.t33_ww_4pc = find_spell( 454505 );
-
-  // Mastery spells =========================================
 
   //================================================================================
   // Shared Spells
@@ -7491,7 +7485,7 @@ void monk_t::create_buffs()
 
   buff.recent_purifies = new buffs::purifying_buff_t( this, "recent_purifies", spell_data_t::nil() );
 
-  buff.leverage = make_buff( this, "leverage", passives.leverage )
+  buff.leverage = make_buff( this, "leverage", tier.t30.leverage )
                       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ) )
                       ->add_invalidate( CACHE_CRIT_CHANCE )
                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7735,10 +7729,10 @@ void monk_t::create_buffs()
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum = make_buff_fallback<buffs::kicks_of_flowing_momentum_t>(
       sets->set( MONK_WINDWALKER, T29, B2 )->ok(), this, "kicks_of_flowing_momentum",
-      passives.kicks_of_flowing_momentum );
+      tier.t29.kicks_of_flowing_momentum );
 
   buff.fists_of_flowing_momentum = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
-                                                       "fists_of_flowing_momentum", passives.fists_of_flowing_momentum )
+                                                       "fists_of_flowing_momentum", tier.t29.fists_of_flowing_momentum )
                                        ->set_default_value_from_effect( 1 );
 
   buff.fists_of_flowing_momentum_fof = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,

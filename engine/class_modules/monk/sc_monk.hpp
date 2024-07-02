@@ -768,6 +768,74 @@ public:
     propagate_const<cooldown_t *> brewmasters_rhythm;
   } cooldown;
 
+  struct
+  {
+    struct
+    {
+      const spell_data_t *aura;
+      const spell_data_t *critical_strikes;
+      const spell_data_t *two_hand_adjustment;
+      const spell_data_t *leather_specialization;
+      const spell_data_t *expel_harm;
+      const spell_data_t *expel_harm_damage;
+      const spell_data_t *blackout_kick;
+      const spell_data_t *crackling_jade_lightning;
+      const spell_data_t *leg_sweep;
+      const spell_data_t *mystic_touch;
+      const spell_data_t *roll;
+      const spell_data_t *spinning_crane_kick;
+      const spell_data_t *tiger_palm;
+      const spell_data_t *touch_of_death;
+      const spell_data_t *vivify;
+      const spell_data_t *provoke;
+    } monk;
+
+    struct
+    {
+      const spell_data_t *mastery;
+      const spell_data_t *aura;
+      const spell_data_t *brewmasters_balance;
+      const spell_data_t *celestial_fortune;
+      const spell_data_t *celestial_fortune_heal;
+      const spell_data_t *expel_harm_rank_2;
+      const spell_data_t *blackout_kick;
+      const spell_data_t *spinning_crane_kick;
+      const spell_data_t *spinning_crane_kick_rank_2;
+      const spell_data_t *touch_of_death_rank_3;
+
+      const spell_data_t *stagger;
+      const spell_data_t *stagger_self_damage;
+      const spell_data_t *light_stagger;
+      const spell_data_t *moderate_stagger;
+      const spell_data_t *heavy_stagger;
+
+      actions::brews_t *brews;
+    } brewmaster;
+
+    struct
+    {
+      const spell_data_t *mastery;
+      const spell_data_t *aura;
+      const spell_data_t *aura_2;
+      const spell_data_t *expel_harm_rank_2;
+    } mistweaver;
+
+    struct
+    {
+      const spell_data_t *mastery;
+      const spell_data_t *aura;
+      const spell_data_t *blackout_kick_rank_2;
+      const spell_data_t *blackout_kick_rank_3;
+      const spell_data_t *combo_breaker;
+      const spell_data_t *combat_conditioning;
+      const spell_data_t *empowered_tiger_lightning;
+      const spell_data_t *flying_serpent_kick;
+      const spell_data_t *mark_of_the_crane;
+      const spell_data_t *touch_of_death_rank_3;
+      const spell_data_t *touch_of_karma;
+    } windwalker;
+  } baseline;
+
   struct talents_t
   {
     struct
@@ -1167,72 +1235,29 @@ public:
   {
     struct
     {
-      const spell_data_t *aura;
-      const spell_data_t *critical_strikes;
-      const spell_data_t *two_hand_adjustment;
-      const spell_data_t *leather_specialization;
-      const spell_data_t *expel_harm;
-      const spell_data_t *expel_harm_damage;
-      const spell_data_t *blackout_kick;
-      const spell_data_t *crackling_jade_lightning;
-      const spell_data_t *leg_sweep;
-      const spell_data_t *mystic_touch;
-      const spell_data_t *roll;
-      const spell_data_t *spinning_crane_kick;
-      const spell_data_t *tiger_palm;
-      const spell_data_t *touch_of_death;
-      const spell_data_t *vivify;
-      const spell_data_t *provoke;
-    } monk;
+      const spell_data_t *kicks_of_flowing_momentum;
+      const spell_data_t *fists_of_flowing_momentum;
+    } t29;
 
     struct
     {
-      const spell_data_t *mastery;
-      const spell_data_t *aura;
-      const spell_data_t *brewmasters_balance;
-      const spell_data_t *celestial_fortune;
-      const spell_data_t *celestial_fortune_heal;
-      const spell_data_t *expel_harm_rank_2;
-      const spell_data_t *blackout_kick;
-      const spell_data_t *spinning_crane_kick;
-      const spell_data_t *spinning_crane_kick_rank_2;
-      const spell_data_t *touch_of_death_rank_3;
-
-      const spell_data_t *stagger;
-      const spell_data_t *stagger_self_damage;
-      const spell_data_t *light_stagger;
-      const spell_data_t *moderate_stagger;
-      const spell_data_t *heavy_stagger;
-
-      actions::brews_t *brews;
-    } brewmaster;
+      const spell_data_t *leverage;
+      const spell_data_t *shadowflame_nova;
+      const spell_data_t *shadowflame_spirit;
+      const spell_data_t *shadowflame_spirit_summon;
+    } t30;
 
     struct
     {
-      const spell_data_t *mastery;
-      const spell_data_t *aura;
-      const spell_data_t *aura_2;
-      const spell_data_t *expel_harm_rank_2;
-    } mistweaver;
+      const spell_data_t *charred_dreams_dmg;
+      const spell_data_t *charred_dreams_heal;
+      const spell_data_t *t31_celestial_brew;
+    } t31;
 
     struct
     {
-      const spell_data_t *mastery;
-      const spell_data_t *aura;
-      const spell_data_t *blackout_kick_rank_2;
-      const spell_data_t *blackout_kick_rank_3;
-      const spell_data_t *combo_breaker;
-      const spell_data_t *combat_conditioning;
-      const spell_data_t *empowered_tiger_lightning;
-      const spell_data_t *flying_serpent_kick;
-      const spell_data_t *mark_of_the_crane;
-      const spell_data_t *touch_of_death_rank_3;
-      const spell_data_t *touch_of_karma;
-    } windwalker;
-  } baseline;
-
-  struct
-  {
+      const spell_data_t *ww_4pc;
+    } tww1;
   } tier;
 
   struct pets_t
@@ -1264,13 +1289,6 @@ public:
   } user_options;
 
   // exterminate these structs
-  struct
-  {
-    const spell_data_t *combo_strikes;    // Windwalker
-    const spell_data_t *elusive_brawler;  // Brewmaster
-    const spell_data_t *gust_of_mists;    // Mistweaver
-  } mastery;
-
   struct
   {
     const spell_data_t *jadefire_stomp;
@@ -1317,25 +1335,6 @@ public:
     const spell_data_t *touch_of_karma_tick;
     const spell_data_t *whirling_dragon_punch_aoe_tick;
     const spell_data_t *whirling_dragon_punch_st_tick;
-
-    // Tier 29
-    const spell_data_t *kicks_of_flowing_momentum;
-    const spell_data_t *fists_of_flowing_momentum;
-
-    // Tier 30
-    const spell_data_t *shadowflame_nova;
-    const spell_data_t *shadowflame_spirit;
-    const spell_data_t *shadowflame_spirit_summon;
-    const spell_data_t *leverage;
-
-    // Tier 31
-    const spell_data_t *charred_dreams_dmg;
-    const spell_data_t *charred_dreams_heal;
-    const spell_data_t *t31_celestial_brew;
-
-    // Tier 33
-    const spell_data_t *t33_ww_4pc;
-
   } passives;
 
 public:

@@ -1826,7 +1826,7 @@ public:
   spirit_of_forged_vermillion_t( monk_t *owner )
     : monk_pet_t( owner, "spirit_of_forged_vermillion", PET_MONK, false, true )
   {
-    npc_id = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
+    npc_id = owner->tier.t30.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
     _spec  = owner->specialization();
 
     main_hand_weapon.type       = WEAPON_SWORD;
@@ -1847,7 +1847,7 @@ public:
   {
     // Initialize pet spells
     for ( auto action : owner->action_list )
-      if ( action->data().affected_by( o()->passives.shadowflame_spirit->effectN( 2 ) ) )
+      if ( action->data().affected_by( o()->tier.t30.shadowflame_spirit->effectN( 2 ) ) )
         sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
 
     monk_pet_t::init_spells();
@@ -1883,7 +1883,7 @@ public:
     }
 
     // Apply the affecting SFS effect aura
-    ( *pet_action )->apply_affecting_aura( o()->passives.shadowflame_spirit );
+    ( *pet_action )->apply_affecting_aura( o()->tier.t30.shadowflame_spirit );
 
     // Execute action
     ( *pet_action )->set_target( s->target );
