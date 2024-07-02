@@ -413,8 +413,6 @@ public:
     const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
     player_talent_t dimension_ripper; // TODO: New
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
-
-    player_talent_t chaosbringer; // TODO: Remove
   } talents;
 
   struct hero_talents_t

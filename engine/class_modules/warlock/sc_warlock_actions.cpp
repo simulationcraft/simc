@@ -2953,9 +2953,6 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate->ok();
 
-      if ( p->talents.chaosbringer.ok() )
-        base_dd_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 1 ).percent();
-
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
@@ -3154,7 +3151,6 @@ using namespace helpers;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
-        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 2 ).percent();
       }
       
       void impact( action_state_t* s ) override
@@ -3304,9 +3300,6 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
-
-      if ( p->talents.chaosbringer.ok() )
-        base_multiplier *= 1.0 + p->talents.chaosbringer->effectN( 3 ).percent();
     }
 
     void impact( action_state_t* s ) override

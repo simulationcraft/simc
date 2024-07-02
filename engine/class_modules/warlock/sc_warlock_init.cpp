@@ -375,8 +375,6 @@ namespace warlock
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
 
-    talents.chaosbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Chaosbringer" ); // Should be ID 422057
-
     talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
     talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
