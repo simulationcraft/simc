@@ -107,11 +107,6 @@ namespace warlock
 
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
-    talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
-    talents.summon_soulkeeper_aoe = find_spell( 386256 );
-    talents.tormented_soul_buff = find_spell( 386251 );
-    talents.soul_combustion = find_spell( 386265 );
-
     talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
     talents.inquisitors_gaze_buff = find_spell( 388068 );
     talents.fel_barrage = find_spell( 388070 );
@@ -544,16 +539,6 @@ namespace warlock
 
     buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
                                 ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-    buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
-
-    buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
-                                         ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
-                                         ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                             buffs.tormented_soul->trigger();
-                                           } );
-    buffs.tormented_soul_generator->quiet = true;
 
     buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
                                  ->set_period( 1_s )
@@ -1003,9 +988,6 @@ namespace warlock
   void warlock_t::combat_begin()
   {
     player_t::combat_begin();
-
-    if ( talents.summon_soulkeeper->ok() )
-      buffs.tormented_soul_generator->trigger();
 
     if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
       buffs.inner_demons->trigger();

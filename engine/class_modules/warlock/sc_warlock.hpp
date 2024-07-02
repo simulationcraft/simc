@@ -206,10 +206,6 @@ public:
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
-    player_talent_t summon_soulkeeper; // TODO: Remove
-    const spell_data_t* summon_soulkeeper_aoe;
-    const spell_data_t* tormented_soul_buff;
-    const spell_data_t* soul_combustion;
     player_talent_t inquisitors_gaze; // TODO: Remove
     const spell_data_t* inquisitors_gaze_buff;
     const spell_data_t* fel_barrage;
@@ -630,8 +626,6 @@ public:
     // Shared Buffs
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     propagate_const<buff_t*> demonic_synergy;
-    propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
-    propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
     propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking

@@ -179,13 +179,6 @@ void warlock_td_t::target_demise()
 
     warlock.proc_actions.soul_flame_proc->execute();
   }
-
-  if ( warlock.talents.summon_soulkeeper->ok() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock gains 1 stack of Tormented Soul.", target->name(), warlock.name() );
-
-    warlock.buffs.tormented_soul->trigger();
-  }
 }
 
 int warlock_td_t::count_affliction_dots() const
