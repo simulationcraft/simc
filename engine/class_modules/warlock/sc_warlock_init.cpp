@@ -165,9 +165,6 @@ namespace warlock
 
     talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
-    talents.haunted_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Haunted Soul" ); // Should be ID 387301
-    talents.haunted_soul_buff = find_spell( 387310 );
-
     talents.grim_reach = find_talent_spell( talent_tree::SPECIALIZATION, "Grim Reach" ); // Should be ID 389992
 
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
@@ -542,23 +539,6 @@ namespace warlock
                           ->set_trigger_spell( talents.nightfall );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
-
-    buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
-                             ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
-
-    buffs.active_haunts = make_buff( this, "active_haunts" )
-                              ->set_max_stack( 20 )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
-                                {
-                                  if ( talents.haunted_soul->ok() )
-                                  {
-                                    if ( cur == 0 )
-                                      buffs.haunted_soul->expire();
-                                    else if ( cur > 0 && prev == 0 )
-                                      buffs.haunted_soul->trigger();
-                                  }
-                                } );
-    buffs.active_haunts->quiet = true;
 
     buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )

@@ -18,7 +18,6 @@ using namespace helpers;
       // Affliction
       bool potent_afflictions_td = false;
       bool potent_afflictions_dd = false;
-      bool haunted_soul  = false;
       bool creeping_death = false;
 
       // Demonology
@@ -58,7 +57,6 @@ using namespace helpers;
 
       affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
       affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
-      affected_by.haunted_soul = data().affected_by( p->talents.haunted_soul_buff->effectN( 1 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
@@ -269,11 +267,6 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
-      }
-
-      if ( p()->talents.haunted_soul.ok() && affected_by.haunted_soul && p()->buffs.haunted_soul->check() )
-      {
-        m *= 1.0 + p()->buffs.haunted_soul->check_stack_value();
       }
 
       return m;

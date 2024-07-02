@@ -258,8 +258,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t haunted_soul; // TODO: Remove
-    const spell_data_t* haunted_soul_buff;
     player_talent_t grim_reach; // TODO: Remove
 
     // Demonology
@@ -584,8 +582,6 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> tormented_crescendo;
-    propagate_const<buff_t*> haunted_soul;
-    propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> cruel_inspiration; // T29 2pc
