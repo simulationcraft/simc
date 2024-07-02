@@ -322,8 +322,6 @@ namespace warlock
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
 
-    talents.pandemonium = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemonium" ); // Should be ID 387509
-
     talents.cry_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Cry Havoc" ); // Should be ID 387522
     talents.cry_havoc_proc = find_spell( 387547 );
 
