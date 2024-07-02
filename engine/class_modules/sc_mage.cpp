@@ -5440,7 +5440,6 @@ struct magis_spark_t final : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
-    callbacks = false;
   }
 };
 
@@ -5450,7 +5449,6 @@ struct magis_spark_echo_t final : public spell_t
     spell_t( n, p, p->find_spell( 458375 ) )
   {
     background = true;
-    may_miss = may_crit = callbacks = false;
     base_dd_min = base_dd_max = 1.0;
   }
 };
