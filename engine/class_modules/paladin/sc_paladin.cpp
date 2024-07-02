@@ -2908,13 +2908,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   {
     debuff.judgment->apply_affecting_aura( paladin->spec.protection_paladin );
   }
-  if ( paladin->talents.highlords_judgment->ok() )
-  {
-    debuff.judgment =
-        debuff.judgment->set_max_stack( as<int>( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() ) )
-            ->modify_duration(
-                timespan_t::from_millis( paladin->talents.highlords_judgment->effectN( 3 ).base_value() ) );
-  }
 
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
 
