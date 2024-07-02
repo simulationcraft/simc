@@ -253,7 +253,6 @@ public:
     player_talent_t summon_darkglare;
     player_talent_t cunning_cruelty; // TODO: New
     player_talent_t infirmity; // TODO: Move from tier sets
-    player_talent_t agonizing_corruption; // TODO: Remove
 
     player_talent_t improved_haunt; // TODO: New
     player_talent_t malediction; // TODO: New

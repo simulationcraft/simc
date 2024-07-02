@@ -1299,12 +1299,6 @@ using namespace helpers;
             doom_blossom->execute_on_target( s->target );
             p()->procs.doom_blossom->occur();
           }
-
-          // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
-          if ( p()->talents.agonizing_corruption.ok() && tdata->dots_agony->is_ticking() )
-          {
-            tdata->dots_agony->increment( (int)( p()->talents.agonizing_corruption->effectN( 1 ).base_value() ) ); 
-          }
           
           corr->execute_on_target( s->target );
         }
