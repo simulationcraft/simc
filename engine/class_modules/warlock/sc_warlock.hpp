@@ -268,7 +268,6 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data TODO: Check if still relevant
-    player_talent_t demonbolt; // TODO: Remove (leftover from earlier in DF)
 
     player_talent_t imp_gang_boss;
     player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
