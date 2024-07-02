@@ -1927,9 +1927,6 @@ using namespace helpers;
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
 
-      if ( p()->talents.shadows_bite.ok() )
-        m *= 1.0 + p()->buffs.shadows_bite->check_value();
-
       if ( p()->talents.stolen_power.ok() && p()->buffs.stolen_power_final->check() )
         m *= 1.0 + p()->talents.stolen_power_final_buff->effectN( 2 ).percent();
 

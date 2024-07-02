@@ -1548,9 +1548,6 @@ void dreadstalker_t::demise()
     {
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
     }
-
-    if ( o()->talents.shadows_bite->ok() )
-      o()->buffs.shadows_bite->trigger();
   }
 
   warlock_pet_t::demise();

@@ -212,9 +212,6 @@ namespace warlock
     talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
     talents.implosion_aoe = find_spell( 196278 );
 
-    talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
-    talents.shadows_bite_buff = find_spell( 272945 );
-
     talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
 
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
@@ -560,9 +557,6 @@ namespace warlock
 
     buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                               ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
-
-    buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
-                             ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
 
     buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
                                       ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )

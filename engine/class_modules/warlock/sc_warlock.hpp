@@ -318,8 +318,6 @@ public:
     player_talent_t guillotine;
 
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
-    player_talent_t shadows_bite; // TODO: Remove
-    const spell_data_t* shadows_bite_buff;
     player_talent_t fel_and_steel; // TODO: Remove
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
     player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
@@ -579,7 +577,6 @@ public:
     propagate_const<buff_t*> prince_malchezaar; // Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> shadows_bite;
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
     propagate_const<buff_t*> stolen_power_final;
