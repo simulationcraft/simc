@@ -188,7 +188,6 @@ public:
   double composite_crit_damage_bonus_multiplier() const override;
   double composite_ta_multiplier( const action_state_t *state ) const override;
   double composite_da_multiplier( const action_state_t *state ) const override;
-  double composite_target_multiplier( player_t *target ) const override;
   void trigger_storm_earth_and_fire( const action_t *action );
   void trigger_mystic_touch( action_state_t *state );
 };
@@ -204,7 +203,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 struct monk_heal_t : public monk_action_t<heal_t>
 {
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double composite_persistent_multiplier( const action_state_t *action_state ) const override;
   double action_multiplier() const override;
 };
 
@@ -740,12 +738,12 @@ public:
 
   struct talents_t
   {
-    // General Talents
     struct
     {
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
+      player_talent_t rising_sun_kick;
       // Row 2
       player_talent_t elusive_mists;
       player_talent_t tigers_lust;
@@ -765,10 +763,17 @@ public:
       player_talent_t pressure_points;
       player_talent_t spear_hand_strike;
       player_talent_t ancient_arts;
-      // 8 Required
       // Row 5
       player_talent_t chi_wave;
+      const spell_data_t *chi_wave_buff;
+      const spell_data_t *chi_wave_driver;
+      const spell_data_t *chi_wave_damage;
+      const spell_data_t *chi_wave_heal;
       player_talent_t chi_burst;
+      const spell_data_t *chi_burst_buff;
+      const spell_data_t *chi_burst_projectile;
+      const spell_data_t *chi_burst_damage;
+      const spell_data_t *chi_burst_heal;
       player_talent_t transcendence;
       player_talent_t energy_transfer;
       player_talent_t celerity;
@@ -787,16 +792,19 @@ public:
       player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t peace_and_prosperity;
+      player_talent_t fortifying_brew;
+      const spell_data_t *fortifying_brew_buff;
       player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
-      // 20 Required
       // Row 8
       player_talent_t save_them_all;
       player_talent_t swift_art;
+      player_talent_t strength_of_spirit;
       player_talent_t profound_rebuttal;
       player_talent_t summon_black_ox_statue;
       player_talent_t summon_jade_serpent_statue;
       player_talent_t summon_white_tiger_statue;
+      const spell_data_t *claw_of_the_white_tiger;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t celestial_determination;
@@ -814,34 +822,6 @@ public:
       player_talent_t fatal_touch;
       player_talent_t rushing_reflexes;
       player_talent_t clash;
-    } general;
-
-    struct
-    {
-      player_talent_t chi_wave;
-      const spell_data_t *chi_wave_buff;
-      const spell_data_t *chi_wave_driver;
-      const spell_data_t *chi_wave_damage;
-      const spell_data_t *chi_wave_heal;
-      player_talent_t chi_burst;
-      const spell_data_t *chi_burst_buff;
-      const spell_data_t *chi_burst_projectile;
-      const spell_data_t *chi_burst_damage;
-      const spell_data_t *chi_burst_heal;
-      player_talent_t strength_of_spirit;
-      player_talent_t ferocity_of_xuen;
-      player_talent_t calming_presence;
-      player_talent_t grace_of_the_crane;
-
-      player_talent_t fortifying_brew;
-      const spell_data_t *fortifying_brew_buff;
-      player_talent_t ironshell_brew;
-      player_talent_t expeditious_fortification;
-      player_talent_t chi_proficiency;
-      player_talent_t martial_instincts;
-      player_talent_t vigorous_expulsion;
-      player_talent_t profound_rebuttal;
-      player_talent_t rising_sun_kick;
     } monk;
 
     // Brewmaster
@@ -865,6 +845,7 @@ public:
       player_talent_t hit_scheme;
       player_talent_t elixir_of_determination;
       player_talent_t special_delivery;
+      const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
       // row 5
       player_talent_t celestial_flames;
@@ -876,8 +857,11 @@ public:
       player_talent_t strike_at_dawn;
       // row 6
       player_talent_t breath_of_fire;
+      const spell_data_t *breath_of_fire_dot;
       player_talent_t gai_plins_imperial_brew;
+      const spell_data_t *gai_plins_imperial_brew_heal;
       player_talent_t invoke_niuzao_the_black_ox;
+      const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       player_talent_t tranquil_spirit;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
@@ -894,6 +878,7 @@ public:
       player_talent_t counterstrike;
       // row 8
       player_talent_t dragonfire_brew;
+      const spell_data_t *dragonfire_brew_hit;
       player_talent_t charred_passions;
       player_talent_t high_tolerance;
       player_talent_t exploding_keg;
@@ -913,6 +898,7 @@ public:
       player_talent_t black_ox_adept;
       player_talent_t heightened_guard;
       player_talent_t call_to_arms;
+      const spell_data_t *call_to_arms_buff;
       player_talent_t chi_surge;
     } brewmaster;
 
@@ -1006,6 +992,7 @@ public:
       // Row 4
       player_talent_t crane_vortex;
       player_talent_t teachings_of_the_monastery;
+      const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
       // 8 Required
       // Row 5
@@ -1045,6 +1032,8 @@ public:
       player_talent_t transfer_the_power;
       player_talent_t jadefire_fists;
       player_talent_t jadefire_stomp;
+      const spell_data_t *jadefire_stomp_damage;
+      const spell_data_t *jadefire_stomp_ww_damage;
       player_talent_t communion_with_wind;
       // Row 10
       player_talent_t power_of_the_thunder_king;
@@ -1055,6 +1044,8 @@ public:
       player_talent_t path_of_jade;
       player_talent_t singularly_focused_jade;
       player_talent_t jadefire_harmony;
+      const spell_data_t *jadefire_brand_dmg;
+      const spell_data_t *jadefire_brand_heal;
       player_talent_t darting_hurricane;
     } windwalker;
 
@@ -1260,49 +1251,8 @@ public:
   struct passives_t
   {
     // General
-    const spell_data_t *aura_monk;
-    const spell_data_t *chi_burst_damage;
-    const spell_data_t *chi_burst_energize;
-    const spell_data_t *chi_burst_heal;
-    const spell_data_t *chi_wave_driver;
-    const spell_data_t *chi_wave_damage;
-    const spell_data_t *chi_wave_heal;
-    const spell_data_t *claw_of_the_white_tiger;
-    const spell_data_t *jadefire_stomp_damage;
-    const spell_data_t *jadefire_stomp_ww_damage;
-    const spell_data_t *healing_elixir;
-    const spell_data_t *mystic_touch;
     const spell_data_t *rushing_jade_wind;
     const spell_data_t *rushing_jade_wind_tick;
-
-    // Brewmaster
-    const spell_data_t *breath_of_fire_dot;
-    const spell_data_t *call_to_arms_invoke_niuzao;
-    const spell_data_t *celestial_fortune;
-    const spell_data_t *dragonfire_brew;
-    const spell_data_t *elusive_brawler;
-    const spell_data_t *face_palm;
-    const spell_data_t *gai_plins_imperial_brew_heal;
-    const spell_data_t *gift_of_the_ox_heal;
-    const spell_data_t *keg_smash_buff;
-    const spell_data_t *shaohaos_might;
-    const spell_data_t *special_delivery;
-    const spell_data_t *stagger_self_damage;
-    const spell_data_t *heavy_stagger;
-    const spell_data_t *stomp;
-
-    // Mistweaver
-    const spell_data_t *renewing_mist_heal;
-    const spell_data_t *soothing_mist_heal;
-    const spell_data_t *soothing_mist_statue;
-    const spell_data_t *totm_bok_proc;
-    const spell_data_t *zen_pulse_heal;
-    const spell_data_t *zen_pulse_echo_damage;
-    const spell_data_t *zen_pulse_echo_heal;
-
-    struct
-    {
-    } mistweaver;
 
     // Windwalker
     const spell_data_t *bok_proc;
@@ -1410,8 +1360,6 @@ public:
   double composite_dodge() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t *, bool guardian ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t *target, bool guardian ) const override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;

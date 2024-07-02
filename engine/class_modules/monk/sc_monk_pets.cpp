@@ -711,7 +711,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
   {
     sef_blackout_kick_totm_proc_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "blackout_kick_totm_proc", player, player->o()->passives.totm_bok_proc )
+      : sef_melee_attack_t( "blackout_kick_totm_proc", player,
+                            player->o()->talent.windwalker.teachings_of_the_monastery_blackout_kick )
     {
       background = dual = true;
       trigger_gcd       = timespan_t::zero();
@@ -1098,7 +1099,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "chi_wave_damage", player, player->o()->passives.chi_wave_damage )
+      : sef_spell_t( "chi_wave_damage", player, player->o()->talent.monk.chi_wave_damage )
     {
       dual = true;
     }
@@ -1111,7 +1112,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_chi_wave_damage_t *wave;
 
     sef_chi_wave_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "chi_wave", player, player->o()->talent.general.chi_wave ),
+      : sef_spell_t( "chi_wave", player, player->o()->talent.monk.chi_wave ),
         wave( new sef_chi_wave_damage_t( player ) )
     {
       may_crit = may_miss = hasted_ticks = false;
@@ -1463,7 +1464,7 @@ struct niuzao_pet_t : public monk_pet_t
   struct stomp_t : public pet_melee_attack_t
   {
     stomp_t( niuzao_pet_t *pet, std::string_view options_str )
-      : pet_melee_attack_t( "stomp", pet, pet->o()->passives.stomp )
+      : pet_melee_attack_t( "stomp", pet, pet->o()->talent.brewmaster.invoke_niuzao_the_black_ox_stomp )
     {
       parse_options( options_str );
       aoe      = -1;
@@ -1638,7 +1639,7 @@ private:
   struct claw_of_the_white_tiger_t : public pet_spell_t
   {
     claw_of_the_white_tiger_t( white_tiger_statue_t *p, util::string_view options_str )
-      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->passives.claw_of_the_white_tiger )
+      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->talent.monk.claw_of_the_white_tiger )
     {
       parse_options( options_str );
       aoe = -1;
