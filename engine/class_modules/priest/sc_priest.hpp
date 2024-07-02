@@ -1170,6 +1170,11 @@ public:
       {
         parse_effects( p().buffs.deaths_torment );
       }
+
+      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
+      {
+        parse_effects( p().buffs.devouring_chorus );
+      }
     }
 
     // DISCIPLINE BUFF EFFECTS
