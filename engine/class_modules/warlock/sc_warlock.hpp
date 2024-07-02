@@ -13,12 +13,6 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
-  VERSION_10_2_0,
-  VERSION_10_1_5,
-  VERSION_10_1_0,
-  VERSION_10_0_7,
-  VERSION_10_0_5,
-  VERSION_10_0_0,
   VERSION_ANY
 };
 
@@ -51,7 +45,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
   propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
@@ -71,7 +64,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
-  propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
   propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
@@ -94,27 +86,6 @@ struct warlock_t : public player_t
 public:
   player_t* havoc_target;
   player_t* ua_target; // Used for handling Unstable Affliction target swaps
-  player_t* ss_source; // Needed to track where Soul Swap copies from
-  struct ss_full_state_t
-  {
-    struct ss_action_state_t
-    {
-      action_t* action;
-      bool action_copied;
-      timespan_t duration;
-      int stacks;
-    };
-
-    ss_action_state_t corruption;
-    ss_action_state_t agony;
-    ss_action_state_t unstable_affliction;
-    ss_action_state_t siphon_life;
-    ss_action_state_t haunt;
-    ss_action_state_t soul_rot;
-    ss_action_state_t phantom_singularity;
-    ss_action_state_t vile_taint;
-    // Seed of Corruption is also copied, NYI
-  } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
@@ -179,20 +150,6 @@ public:
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-
-    // Nether Portal demons (TODO: Remove? Celebrate?)
-    spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
-    spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
-    spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
-    spawner::pet_spawner_t<pets::demonology::random_demons::urzul_t, warlock_t> urzuls;
-    spawner::pet_spawner_t<pets::demonology::random_demons::void_terror_t, warlock_t> void_terrors;
-    spawner::pet_spawner_t<pets::demonology::random_demons::wrathguard_t, warlock_t> wrathguards;
-    spawner::pet_spawner_t<pets::demonology::random_demons::vicious_hellhound_t, warlock_t> vicious_hellhounds;
-    spawner::pet_spawner_t<pets::demonology::random_demons::illidari_satyr_t, warlock_t> illidari_satyrs;
-    spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
-    spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
-
-    spawner::pet_spawner_t<pets::demonology::pit_lord_t, warlock_t> pit_lords;
     spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
@@ -212,14 +169,6 @@ public:
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
-    player_talent_t grim_feast; // TODO: Remove
-    player_talent_t summon_soulkeeper; // TODO: Remove
-    const spell_data_t* summon_soulkeeper_aoe;
-    const spell_data_t* tormented_soul_buff;
-    const spell_data_t* soul_combustion;
-    player_talent_t inquisitors_gaze; // TODO: Remove
-    const spell_data_t* inquisitors_gaze_buff;
-    const spell_data_t* fel_barrage;
     player_talent_t soulburn;
     const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
@@ -229,7 +178,6 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
-    player_talent_t grand_warlocks_design; // TODO: Remove
 
     // Affliction
     player_talent_t malefic_rapture; // TODO: Move to base section
@@ -250,7 +198,6 @@ public:
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
     player_talent_t volatile_agony; // TODO: New
-    player_talent_t sow_the_seeds; // TODO: Remove
 
     player_talent_t improved_shadow_bolt; // TODO: New
     player_talent_t drain_soul; // This represents the talent node but not much else
@@ -269,24 +216,12 @@ public:
     player_talent_t summon_darkglare;
     player_talent_t cunning_cruelty; // TODO: New
     player_talent_t infirmity; // TODO: Move from tier sets
-    player_talent_t agonizing_corruption; // TODO: Remove
 
     player_talent_t improved_haunt; // TODO: New
     player_talent_t malediction; // TODO: New
     player_talent_t malevolent_visionary; // TODO: AoE behavior may have changed
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
-
-    player_talent_t pandemic_invocation; // TODO: Remove
-    const spell_data_t* pandemic_invocation_proc;
-    player_talent_t inevitable_demise; // TODO: Remove
-    const spell_data_t* inevitable_demise_buff;
-    player_talent_t soul_swap; // TODO: Remove. Celebrate.
-    const spell_data_t* soul_swap_ua;
-    const spell_data_t* soul_swap_buff;
-    const spell_data_t* soul_swap_exhale;
-    player_talent_t soul_flame; // TODO: Remove.
-    const spell_data_t* soul_flame_proc;
 
     player_talent_t creeping_death; 
     player_talent_t soul_rot;
@@ -308,18 +243,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t seized_vitality; // TODO: Remove
-    player_talent_t wrath_of_consumption; // TODO: Remove
-    const spell_data_t* wrath_of_consumption_buff;
-    player_talent_t souleaters_gluttony; // TODO: Remove
-    player_talent_t doom_blossom; // TODO: Remove
-    const spell_data_t* doom_blossom_proc;
-    player_talent_t dread_touch; // TODO: Remove
-    const spell_data_t* dread_touch_debuff;
-    player_talent_t haunted_soul; // TODO: Remove
-    const spell_data_t* haunted_soul_buff;
-    player_talent_t grim_reach; // TODO: Remove
-
     // Demonology
     player_talent_t demoniac; // TODO: Move from base section
     const spell_data_t* demonbolt_spell;
@@ -330,7 +253,6 @@ public:
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data TODO: Check if still relevant
-    player_talent_t demonbolt; // TODO: Remove (leftover from earlier in DF)
 
     player_talent_t imp_gang_boss;
     player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
@@ -356,7 +278,6 @@ public:
     player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
-    player_talent_t demonic_knowledge; // TODO: Remove
     player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
     const spell_data_t* the_houndmasters_stratagem_debuff;
 
@@ -365,12 +286,12 @@ public:
     player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
     const spell_data_t* umbral_blaze_dot;
     player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
+    const spell_data_t* demonic_servitude;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation; // TODO: New
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
     const spell_data_t* fel_sunder_debuff;
-    player_talent_t bloodbound_imps; // TODO: Remove (leftover from earlier in DF)
 
     player_talent_t doom; // TODO: Heavily changed, now a passive
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
@@ -395,26 +316,8 @@ public:
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
 
-    player_talent_t kazaaks_final_curse; // TODO: Remove
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
-    player_talent_t nether_portal; // TODO: Remove. Celebrate. Then celebrate again.
-    const spell_data_t* nether_portal_buff;
-    player_talent_t shadows_bite; // TODO: Remove
-    const spell_data_t* shadows_bite_buff;
-    player_talent_t fel_and_steel; // TODO: Remove
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
-    player_talent_t malefic_impact; // Increased damage and critical strike chance for Hand of Gul'dan (NOTE: Temporarily named 'Dirty Hands' on PTR)
-    player_talent_t nerzhuls_volition; // TODO: Remove
-    const spell_data_t* nerzhuls_volition_buff;
-    player_talent_t stolen_power; // TODO: Remove
-    const spell_data_t* stolen_power_stacking_buff;
-    const spell_data_t* stolen_power_final_buff;
-    player_talent_t soulbound_tyrant; // TODO: Remove
-    player_talent_t infernal_command; // TODO: Remove
-    player_talent_t guldans_ambition; // TODO: Remove
-    const spell_data_t* guldans_ambition_summon;
-    const spell_data_t* soul_glutton;
-    const spell_data_t* demonic_servitude;
 
     // Destruction
     player_talent_t chaos_bolt; // TODO: Move to base section
@@ -510,17 +413,6 @@ public:
     const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
     player_talent_t dimension_ripper; // TODO: New
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
-
-    player_talent_t pandemonium; // TODO: Remove
-    player_talent_t cry_havoc; // TODO: Remove
-    const spell_data_t* cry_havoc_proc;
-    player_talent_t improved_immolate; // TODO: Folded into another talent. Remove
-    player_talent_t infernal_brand; // TODO: Remove
-    player_talent_t madness_of_the_azjaqir; // TODO: Remove (leftover from earlier in DF)
-    const spell_data_t* madness_cb;
-    const spell_data_t* madness_rof;
-    const spell_data_t* madness_sb;
-    player_talent_t chaosbringer; // TODO: Remove
   } talents;
 
   struct hero_talents_t
@@ -576,17 +468,12 @@ public:
 
   struct proc_actions_t
   {
-    action_t* soul_flame_proc;
-    action_t* pandemic_invocation_proc;
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
-    action_t* summon_random_demon; // Basic version, currently shares overlap with Nether Portal list
-    action_t* summon_nether_portal_demon; // Separate version for Nether Portal based summons due to Ner'zhul's Volition
     action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
-    action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
     action_t* channel_demonfire; // Destruction T30 proc
   } proc_actions;
 
@@ -637,22 +524,14 @@ public:
     // Shared Buffs
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     propagate_const<buff_t*> demonic_synergy;
-    propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
-    propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
-    propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
     propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> inevitable_demise; // TOCHECK: (noticed 2023-03-16) Having one point in this talent may be getting half the intended value!
-    propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
-    propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
-    propagate_const<buff_t*> haunted_soul;
-    propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> cruel_inspiration; // T29 2pc
@@ -665,7 +544,6 @@ public:
     propagate_const<buff_t*> power_siphon; // Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
-    propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; // Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
     propagate_const<buff_t*> dreadstalkers; // Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
@@ -674,11 +552,7 @@ public:
     propagate_const<buff_t*> prince_malchezaar; // Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> shadows_bite;
     propagate_const<buff_t*> fel_covenant;
-    propagate_const<buff_t*> stolen_power_building; // Stacking buff, triggers final buff as a separate buff at max stacks
-    propagate_const<buff_t*> stolen_power_final;
-    propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
     propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
@@ -695,10 +569,6 @@ public:
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
-    propagate_const<buff_t*> madness_cb;
-    propagate_const<buff_t*> madness_rof;
-    propagate_const<buff_t*> madness_sb;
-    propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
     propagate_const<buff_t*> umbrafire_embers; // T30 4pc buff
@@ -727,7 +597,6 @@ public:
 
     // Demonology
     gain_t* doom;
-    gain_t* soulbound_tyrant;
     gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
@@ -745,16 +614,13 @@ public:
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
-    proc_t* doom_blossom;
     proc_t* cruel_inspiration; // T29 2pc
 
     // Demonology
-    proc_t* demonic_knowledge;
     proc_t* demonic_calling;
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
-    proc_t* summon_random_demon;
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
@@ -783,7 +649,6 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -808,7 +673,6 @@ public:
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   void create_actions() override;
-  void create_soul_swap_actions();
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
   void create_destruction_proc_actions();
