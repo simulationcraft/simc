@@ -65,9 +65,6 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
                               ->set_default_value_from_effect( 1 );
 
-  buffs.infernal_command = make_buff( this, "infernal_command", find_spell( 387552 ) )
-                               ->set_default_value( o()->talents.infernal_command->effectN( 1 ).percent() );
-
   buffs.soul_glutton = make_buff( this, "soul_glutton", o()->talents.soul_glutton )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
@@ -120,7 +117,6 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service->quiet = true;
   buffs.annihilan_training->quiet = true;
   buffs.antoran_armaments->quiet = true;
-  buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
   buffs.fury_of_ruvaraad->quiet = true;
   buffs.demonic_power->quiet = true;
@@ -211,9 +207,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.the_expendables->check() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
-
-  if ( buffs.infernal_command->check() )
-    m *= 1.0 + buffs.infernal_command->check_value();
 
   if ( buffs.demonic_power->check() )
     m *= 1.0 + buffs.demonic_power->check_value();
@@ -1300,12 +1293,6 @@ void wild_imp_pet_t::arise()
     o()->procs.imp_gang_boss->occur();
   }
 
-  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
-  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
-  {
-    buffs.infernal_command->trigger();
-  }
-
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -1480,11 +1467,6 @@ void dreadstalker_t::arise()
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
-
-  if ( o()->talents.infernal_command->ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
-  {
-    buffs.infernal_command->trigger();
-  }
 
   dreadbite_executes = 1;
 
