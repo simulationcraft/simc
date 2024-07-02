@@ -258,8 +258,6 @@ public:
     player_talent_t ravenous_afflictions; // TODO: New
     player_talent_t malefic_touch; // TODO: New
 
-    player_talent_t grim_reach; // TODO: Remove
-
     // Demonology
     player_talent_t demoniac; // TODO: Move from base section
     const spell_data_t* demonbolt_spell;

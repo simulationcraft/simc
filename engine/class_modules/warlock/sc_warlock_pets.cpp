@@ -2463,21 +2463,8 @@ darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
-  struct grim_reach_t : public warlock_pet_spell_t
-  {
-    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Grim Reach", p, p->find_spell( 390097 ) )
-    {
-      background = dual = true;
-
-      base_dd_min = base_dd_max = 0.0;
-    }
-  };
-  
-  grim_reach_t* grim_reach;
   eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->find_spell( 205231 ) )
-  {
-    grim_reach = new grim_reach_t( p );
-  }
+  { }
 
   double composite_target_multiplier( player_t* target ) const override
   {
@@ -2496,23 +2483,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   }
 
   void impact( action_state_t* s ) override
-  {
-    warlock_pet_spell_t::impact( s );
-
-    auto raw_damage = s->result_total;
-
-    if ( p()->o()->talents.grim_reach->ok() )
-    {
-      grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
-      for ( player_t* target : sim->target_non_sleeping_list )
-      {
-        if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
-        {
-          grim_reach->execute_on_target( target );
-        }
-      }
-    }
-  }
+  { warlock_pet_spell_t::impact( s ); }
 };
 
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )

@@ -165,8 +165,6 @@ namespace warlock
 
     talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
-    talents.grim_reach = find_talent_spell( talent_tree::SPECIALIZATION, "Grim Reach" ); // Should be ID 389992
-
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
 
