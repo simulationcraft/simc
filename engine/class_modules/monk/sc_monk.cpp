@@ -201,7 +201,8 @@ void monk_action_t<Base>::apply_debuff_effects()
     parse_target_effects( td_fn( &monk_td_t::debuff_t::weapons_of_order ),
                           p()->talent.brewmaster.weapons_of_order_debuff );
   parse_target_effects( td_fn( &monk_td_t::dots_t::coalescence ), p()->talent.master_of_harmony.coalescence );
-  parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
+  if ( p()->talent.windwalker.jadefire_harmony->ok() )
+    parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
   parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
                         p()->talent.windwalker.acclamation->effectN( 1 ).trigger() );
 }
