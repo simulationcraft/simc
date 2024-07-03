@@ -16,6 +16,11 @@ enum version_check_e
   VERSION_ANY
 };
 
+// Finds an action with the given name. If no action exists, a new one will
+// be created.
+//
+// Use this with secondary background actions to ensure the player only has
+// one copy of the action.
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
