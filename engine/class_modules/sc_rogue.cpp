@@ -4156,6 +4156,19 @@ struct blade_flurry_t : public rogue_attack_t
       }
     }
 
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_da_multiplier( state );
+
+      // Manually implement here instead of the damage buff due to the values not matching
+      if ( p()->talent.trickster.nimble_flurry->ok() && p()->buffs.flawless_form->check() )
+      {
+        m *= 1.0 + p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
     bool procs_main_gauche() const override
     { return true; }
   };
