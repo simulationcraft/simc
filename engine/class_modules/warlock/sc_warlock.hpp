@@ -625,10 +625,10 @@ public:
   void init_special_effects() override;
   void reset() override;
   void create_options() override;
-  int get_spawning_imp_count();
-  timespan_t time_to_imps( int count );
-  int active_demon_count() const;
-  void expendables_trigger_helper( warlock_pet_t* source );
+  int get_spawning_imp_count(); // TODO: Decide if still needed
+  timespan_t time_to_imps( int count ); // TODO: Decide if still needed
+  int active_demon_count() const; // TODO: Move to helpers?
+  void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;
   void create_affliction_proc_actions();
