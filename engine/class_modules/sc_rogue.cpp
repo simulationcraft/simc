@@ -8934,9 +8934,10 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     }
   }
 
+  // ALPHA TOCHECK -- Not totally sure what the intended functionality is, but it's not additive right now
   if ( p()->talent.trickster.nimble_flurry->ok() && p()->buffs.flawless_form->check() )
   {
-    multiplier += p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
+    multiplier *= 1.0 + p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
   }
 
   p()->active.blade_flurry->trigger_residual_action( state, multiplier );
