@@ -71,9 +71,7 @@ struct warlock_td_t : public actor_target_data_t
   warlock_td_t( player_t* target, warlock_t& p );
 
   void reset()
-  {
-    soc_threshold = 0;
-  }
+  { soc_threshold = 0; }
 
   void target_demise();
 
