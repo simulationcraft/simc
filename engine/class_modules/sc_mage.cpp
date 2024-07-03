@@ -445,6 +445,7 @@ public:
     const spell_data_t* arcane_charge;
     const spell_data_t* arcane_mage;
     const spell_data_t* clearcasting;
+    const spell_data_t* mana_adept;
     const spell_data_t* savant;
 
     // Fire
@@ -569,54 +570,49 @@ public:
     player_talent_t arcing_cleave;
 
     // Row 4
-    player_talent_t impetus;
+    player_talent_t arcane_familiar;
     player_talent_t arcane_surge;
     player_talent_t improved_clearcasting;
 
     // Row 5
-    player_talent_t reverberate;
-    player_talent_t arcane_familiar;
-    player_talent_t mana_adept;
+    player_talent_t big_brained;
+    player_talent_t energized_familiar;
+    player_talent_t presence_of_mind;
     player_talent_t surging_urge;
     player_talent_t slipstream;
-    player_talent_t dematerialize;
-    player_talent_t big_brained;
-
-    // Row 6
-    player_talent_t presence_of_mind;
-    player_talent_t energized_familiar;
-    player_talent_t chrono_shift;
-    player_talent_t touch_of_the_magi;
-    player_talent_t eureka;
-    player_talent_t energy_reconstitution;
+    player_talent_t static_cloud;
     player_talent_t resonance;
 
+    // Row 6
+    player_talent_t impetus;
+    player_talent_t touch_of_the_magi;
+    player_talent_t dematerialize;
+
     // Row 7
-    player_talent_t evocation;
-    player_talent_t illuminated_thoughts;
-    player_talent_t improved_arcane_missiles;
-    player_talent_t improved_touch_of_the_magi;
-    player_talent_t crackling_energy;
-    player_talent_t static_cloud;
     player_talent_t resonant_orbs;
+    player_talent_t illuminated_thoughts;
+    player_talent_t evocation;
+    player_talent_t improved_touch_of_the_magi;
+    player_talent_t eureka;
+    player_talent_t energy_reconstitution;
+    player_talent_t reverberate;
 
     // Row 8
-    player_talent_t siphon_storm;
     player_talent_t arcane_debilitation;
     player_talent_t arcane_echo;
     player_talent_t prodigious_savant;
 
     // Row 9
     player_talent_t time_loop;
-    player_talent_t high_voltage;
+    player_talent_t aether_attunement;
     player_talent_t enlightened;
     player_talent_t arcane_bombardment;
     player_talent_t leysight;
     player_talent_t concentration;
 
     // Row 10
+    player_talent_t high_voltage;
     player_talent_t arcane_harmony;
-    player_talent_t aether_attunement;
     player_talent_t magis_spark;
     player_talent_t nether_munitions;
     player_talent_t orb_barrage;
@@ -670,7 +666,7 @@ public:
     player_talent_t improved_combustion;
     player_talent_t spontaneous_combustion;
     player_talent_t feel_the_burn;
-    player_talent_t mark_of_the_fire_lord;
+    player_talent_t mark_of_the_firelord;
 
     // Row 8
     player_talent_t fevered_incantation;
@@ -2767,7 +2763,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->talents.mana_adept->effectN( 1 ).percent();
+    double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
@@ -6244,48 +6240,43 @@ void mage_t::init_spells()
   talents.consortiums_bauble         = find_talent_spell( talent_tree::SPECIALIZATION, "Consortium's Bauble"        );
   talents.arcing_cleave              = find_talent_spell( talent_tree::SPECIALIZATION, "Arcing Cleave"              );
   // Row 4
-  talents.impetus                    = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"                    );
+  talents.arcane_familiar            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Familiar"            );
   talents.arcane_surge               = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Surge"               );
   talents.improved_clearcasting      = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Clearcasting"      );
   // Row 5
-  talents.reverberate                = find_talent_spell( talent_tree::SPECIALIZATION, "Reverberate"                );
-  talents.arcane_familiar            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Familiar"            );
-  talents.mana_adept                 = find_talent_spell( talent_tree::SPECIALIZATION, "Mana Adept"                 );
+  talents.big_brained                = find_talent_spell( talent_tree::SPECIALIZATION, "Big Brained"                );
+  talents.energized_familiar         = find_talent_spell( talent_tree::SPECIALIZATION, "Energized Familiar"         );
+  talents.presence_of_mind           = find_talent_spell( talent_tree::SPECIALIZATION, "Presence of Mind"           );
   talents.surging_urge               = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Urge"               );
   talents.slipstream                 = find_talent_spell( talent_tree::SPECIALIZATION, "Slipstream"                 );
-  talents.dematerialize              = find_talent_spell( talent_tree::SPECIALIZATION, "Dematerialize"              );
-  talents.big_brained                = find_talent_spell( talent_tree::SPECIALIZATION, "Big Brained"                );
+  talents.static_cloud               = find_talent_spell( talent_tree::SPECIALIZATION, "Static Cloud"               );
+  talents.resonance                  = find_talent_spell( talent_tree::SPECIALIZATION, "Resonance"                  );
   // Row 6
-  talents.presence_of_mind           = find_talent_spell( talent_tree::SPECIALIZATION, "Presence of Mind"           );
-  talents.energized_familiar         = find_talent_spell( talent_tree::SPECIALIZATION, "Energized Familiar"         );
-  talents.chrono_shift               = find_talent_spell( talent_tree::SPECIALIZATION, "Chrono Shift"               );
+  talents.impetus                    = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"                    );
   talents.touch_of_the_magi          = find_talent_spell( talent_tree::SPECIALIZATION, "Touch of the Magi"          );
+  talents.dematerialize              = find_talent_spell( talent_tree::SPECIALIZATION, "Dematerialize"              );
+  // Row 7
+  talents.resonant_orbs              = find_talent_spell( talent_tree::SPECIALIZATION, "Resonant Orbs"              );
+  talents.illuminated_thoughts       = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"       );
+  talents.evocation                  = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"                  );
+  talents.improved_touch_of_the_magi = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Touch of the Magi" );
   talents.eureka                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eureka"                     );
   talents.energy_reconstitution      = find_talent_spell( talent_tree::SPECIALIZATION, "Energy Reconstitution"      );
-  talents.resonance                  = find_talent_spell( talent_tree::SPECIALIZATION, "Resonance"                  );
-  // Row 7
-  talents.evocation                  = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"                  );
-  talents.illuminated_thoughts       = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"       );
-  talents.improved_arcane_missiles   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Arcane Missiles"   );
-  talents.improved_touch_of_the_magi = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Touch of the Magi" );
-  talents.crackling_energy           = find_talent_spell( talent_tree::SPECIALIZATION, "Crackling Energy"           );
-  talents.static_cloud               = find_talent_spell( talent_tree::SPECIALIZATION, "Static Cloud"               );
-  talents.resonant_orbs              = find_talent_spell( talent_tree::SPECIALIZATION, "Resonant Orbs"              );
+  talents.reverberate                = find_talent_spell( talent_tree::SPECIALIZATION, "Reverberate"                );
   // Row 8
-  talents.siphon_storm               = find_talent_spell( talent_tree::SPECIALIZATION, "Siphon Storm"               );
   talents.arcane_debilitation        = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Debilitation"        );
   talents.arcane_echo                = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Echo"                );
   talents.prodigious_savant          = find_talent_spell( talent_tree::SPECIALIZATION, "Prodigious Savant"          );
   // Row 9
   talents.time_loop                  = find_talent_spell( talent_tree::SPECIALIZATION, "Time Loop"                  );
-  talents.high_voltage               = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"               );
+  talents.aether_attunement          = find_talent_spell( talent_tree::SPECIALIZATION, "Aether Attunement"          );
   talents.enlightened                = find_talent_spell( talent_tree::SPECIALIZATION, "Enlightened"                );
   talents.arcane_bombardment         = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Bombardment"         );
   talents.leysight                   = find_talent_spell( talent_tree::SPECIALIZATION, "Leysight"                   );
   talents.concentration              = find_talent_spell( talent_tree::SPECIALIZATION, "Concentration"              );
   // Row 10
+  talents.high_voltage               = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"               );
   talents.arcane_harmony             = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Harmony"             );
-  talents.aether_attunement          = find_talent_spell( talent_tree::SPECIALIZATION, "Aether Attunement"          );
   talents.magis_spark                = find_talent_spell( talent_tree::SPECIALIZATION, "Magi's Spark"               );
   talents.nether_munitions           = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Munitions"           );
   talents.orb_barrage                = find_talent_spell( talent_tree::SPECIALIZATION, "Orb Barrage"                );
@@ -6332,7 +6323,7 @@ void mage_t::init_spells()
   talents.improved_combustion    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Combustion"    );
   talents.spontaneous_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Spontaneous Combustion" );
   talents.feel_the_burn          = find_talent_spell( talent_tree::SPECIALIZATION, "Feel the Burn"          );
-  talents.mark_of_the_fire_lord  = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of the Fire Lord"  );
+  talents.mark_of_the_firelord   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of the Firelord"   );
   // Row 8
   talents.fevered_incantation    = find_talent_spell( talent_tree::SPECIALIZATION, "Fevered Incantation"    );
   talents.kindling               = find_talent_spell( talent_tree::SPECIALIZATION, "Kindling"               );
@@ -6471,6 +6462,7 @@ void mage_t::init_spells()
   spec.arcane_charge                 = find_specialization_spell( "Arcane Charge"                 );
   spec.arcane_mage                   = find_specialization_spell( "Arcane Mage"                   );
   spec.clearcasting                  = find_specialization_spell( "Clearcasting"                  );
+  spec.mana_adept                    = find_specialization_spell( "Mana Adept"                    );
   spec.fire_mage                     = find_specialization_spell( "Fire Mage"                     );
   spec.fuel_the_fire                 = find_specialization_spell( "Fuel the Fire"                 );
   spec.pyroblast_clearcasting_driver = find_specialization_spell( "Pyroblast Clearcasting Driver" );
