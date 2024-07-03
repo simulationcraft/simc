@@ -66,9 +66,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   // Use havoc_debuff where we need the data but don't have the active talent
   debuffs_havoc = make_buff( *this, "havoc", p.talents.havoc_debuff )
-                      ->set_duration( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )
-                      ->set_cooldown( p.talents.mayhem->ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
-                      ->set_chance( p.talents.mayhem->ok() ? p.talents.mayhem->effectN( 1 ).percent() : p.talents.havoc->proc_chance() )
+                      ->set_duration( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 3 ).time_value() : p.talents.havoc->duration() )
+                      ->set_cooldown( p.talents.mayhem.ok() ? p.talents.mayhem->internal_cooldown() : 0_ms )
+                      ->set_chance( p.talents.mayhem.ok() ? p.talents.mayhem->effectN( 1 ).percent() : p.talents.havoc->proc_chance() )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
@@ -98,6 +98,7 @@ void warlock_td_t::target_demise()
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
+
   if ( dots_drain_soul->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(), warlock.name() );
@@ -195,7 +196,6 @@ void warlock_t::invalidate_cache( cache_e c )
       if ( warlock_base.master_demonologist->ok() )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
-
     default:
       break;
   }
@@ -209,10 +209,10 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( talents.haunt->ok() )
+    if ( talents.haunt.ok() )
       m *= 1.0 + td->debuffs_haunt->check_value();
 
-    if ( talents.shadow_embrace->ok() )
+    if ( talents.shadow_embrace.ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
 
     if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
@@ -221,7 +221,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( talents.eradication->ok() )
+    if ( talents.eradication.ok() )
       m *= 1.0 + td->debuffs_eradication->check_value();
 
     if ( td->debuffs_pyrogenics->check() && td->debuffs_pyrogenics->has_common_school( school ) )
