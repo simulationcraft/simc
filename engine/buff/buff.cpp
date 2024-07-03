@@ -3757,7 +3757,7 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
-    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER && multiplier != 0.0 )
     {
       if ( e.property_type() == P_GENERIC )
       {
