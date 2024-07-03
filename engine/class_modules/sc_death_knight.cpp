@@ -828,7 +828,6 @@ public:
     propagate_const<cooldown_t*> chill_streak;
     propagate_const<cooldown_t*> empower_rune_weapon;
     propagate_const<cooldown_t*> frostscythe;
-    propagate_const<cooldown_t*> icy_death_torrent_icd;
 
     // Unholy
     propagate_const<cooldown_t*> apocalypse;
@@ -1690,7 +1689,6 @@ public:
     cooldown.chill_streak           = get_cooldown( "chill_streak" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
-    cooldown.icy_death_torrent_icd  = get_cooldown( "icy_death_torrent_icd" );
 
     // Target Specific
     cooldown.undeath_spread = get_target_specific_cooldown( "undeath_spread" );
@@ -5786,7 +5784,7 @@ struct melee_t : public death_knight_melee_attack_t
         }
 
         // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
-        if ( p()->talent.frost.icy_death_torrent.ok() && p()->cooldown.icy_death_torrent_icd->is_ready() )
+        if ( p()->talent.frost.icy_death_torrent.ok() )
         {
           double chance_mult = p()->main_hand_weapon.group() == WEAPON_2H
                                    ? 1
@@ -5795,7 +5793,6 @@ struct melee_t : public death_knight_melee_attack_t
           if ( rng().roll( p()->talent.frost.icy_death_torrent->proc_chance() * chance_mult ) )
           {
             p()->active_spells.icy_death_torrent_damage->execute();
-            p()->cooldown.icy_death_torrent_icd->start();
           }
         }
 
@@ -8837,28 +8834,6 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p()->bugs && p()->talent.rider.a_feast_of_souls.ok() && p()->buffs.a_feast_of_souls->check() )
-    {
-      // Is rolled once when the ability is cast normally.
-      // Number of events is equal to GA Spell Radius / GA Damage Radius to emulate the number of small GA circular
-      // triggers in game.
-      int events = 11;
-      if ( is_arctic_assault )
-      {
-        events += 1;
-      }
-      make_repeating_event(
-          *p()->sim, 25_ms,
-          [ this ] {
-            if ( p()->buffs.a_feast_of_souls->check() &&
-                 rng().roll( p()->talent.rider.a_feast_of_souls->effectN( 2 ).percent() ) )
-            {
-              p()->replenish_rune( 1, p()->gains.feast_of_souls );
-            }
-          },
-          events );
-    }
-
     // Killing Machine glacial advcances trigger Unleashed Frenzy without spending Runic Power
     // Currently does not trigger Obliteration rune generation
     if ( is_arctic_assault )
@@ -11048,12 +11023,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
         extend_rider( amount, pets.nazgrim.active_pet() );
       if ( pets.trollbane.active_pet() != nullptr )
         extend_rider( amount, pets.trollbane.active_pet() );
-    }
-
-    if ( talent.rider.a_feast_of_souls.ok() && buffs.a_feast_of_souls->check() &&
-         rng().roll( talent.rider.a_feast_of_souls->effectN( 2 ).percent() ) )
-    {
-      replenish_rune( 1, gains.feast_of_souls );
     }
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ) && rppm.tww1_fdk_4pc->trigger() )
