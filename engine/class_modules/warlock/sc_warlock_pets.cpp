@@ -108,7 +108,7 @@ void warlock_pet_t::init_base_stats()
 {
   pet_t::init_base_stats();
 
-  resources.base[ RESOURCE_ENERGY ]                  = 200;
+  resources.base[ RESOURCE_ENERGY ] = 200;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
   base.spell_power_per_intellect = 1.0;
@@ -116,7 +116,7 @@ void warlock_pet_t::init_base_stats()
   intellect_per_owner = 0;
   stamina_per_owner   = 0;
 
-  main_hand_weapon.type       = WEAPON_BEAST;
+  main_hand_weapon.type = WEAPON_BEAST;
   main_hand_weapon.swing_time = 2_s;
 }
 
@@ -165,13 +165,12 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 
-  if ( buffs.the_expendables->check() )
+  if ( o()->talents.the_expendables.ok() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
 
-  if ( buffs.demonic_power->check() )
-    m *= 1.0 + buffs.demonic_power->check_value();
+  m *= 1.0 + buffs.demonic_power->check_value();
 
-  if ( is_main_pet && o()->talents.wrathful_minion->ok() )
+  if ( is_main_pet && o()->talents.wrathful_minion.ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
 
   return m;
@@ -181,7 +180,7 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -191,7 +190,7 @@ double warlock_pet_t::composite_spell_cast_speed() const
 {
   double m = pet_t::composite_spell_cast_speed();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -201,7 +200,7 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
   double m = pet_t::composite_melee_auto_attack_speed();
 
-  if ( is_main_pet && o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -256,6 +255,7 @@ void warlock_pet_t::demise()
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
+  // TODO: Add Whiplash to base warlock data
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
@@ -265,22 +265,17 @@ namespace pets
 {
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt )
   : warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
-{
-  resource_regeneration = regen_type::DISABLED;
-}
+{ resource_regeneration = regen_type::DISABLED; }
 
 timespan_t warlock_simple_pet_t::available() const
 {
   if ( !special_ability || !special_ability->cooldown )
-  {
     return warlock_pet_t::available();
-  }
 
   timespan_t cd_remains = special_ability->cooldown->ready - sim->current_time();
+  
   if ( cd_remains <= 1_ms )
-  {
     return warlock_pet_t::available();
-  }
 
   return cd_remains;
 }
