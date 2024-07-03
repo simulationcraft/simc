@@ -51,6 +51,13 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
 
+  // Demo
+  propagate_const<dot_t*> dots_doom;
+
+  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
+  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
+
   // Destro
   propagate_const<dot_t*> dots_immolate;
   propagate_const<dot_t*> dots_searing_bolt;
@@ -60,13 +67,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_havoc;
   propagate_const<buff_t*> debuffs_pyrogenics;
   propagate_const<buff_t*> debuffs_conflagrate;
-
-  // Demo
-  propagate_const<dot_t*> dots_doom;
-
-  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
-  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
-  propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
