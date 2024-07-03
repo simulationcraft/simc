@@ -937,7 +937,6 @@ public:
     propagate_const<gain_t*> festering_wound;
 
     // Rider of the Apocalypse
-    propagate_const<gain_t*> feast_of_souls;
     propagate_const<gain_t*> antimagic_shell_horsemen;  // RP from magic damage absorbed
   } gains;
 
@@ -2830,7 +2829,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd                = get_cooldown( "gnaw" );
     gnaw_cd->duration      = owner->pet_spell.gnaw->cooldown();
-    owner_coeff.ap_from_ap = 0.705672;
+    owner_coeff.ap_from_ap = 0.6351048;
     if ( owner->talent.unholy.raise_dead.ok() && !owner->talent.sacrificial_pact.ok() )
     {
       dynamic = false;
@@ -2963,7 +2962,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
     if ( name_str == "apoc_ghoul" )
     {
       // Currently has a 1.12x modifier, also not in spell data
-      owner_coeff.ap_from_ap *= 1.176;
+      owner_coeff.ap_from_ap *= 0.9996;
     }
   }
 
@@ -3672,6 +3671,7 @@ struct magus_pet_t : public death_knight_pet_t
     // Shares a value with Army of the Dead/Apocalypse, stored in death_knight_pet_t
     // Ensures parity between all pets that share this ap_from_ap mod.
     owner_coeff.ap_from_ap = army_ghoul_ap_mod;
+    owner_coeff.ap_from_ap *= 0.85;
   }
 
   void init_action_list() override
@@ -3744,6 +3744,8 @@ struct blood_beast_pet_t : public death_knight_pet_t
     {
       background = true;
       aoe        = -1;
+      may_crit   = false;
+      reduced_aoe_targets = 8;
     }
   };
 
@@ -3763,8 +3765,8 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     if ( !sim->event_mgr.canceled )
     {
-      blood_eruption->base_dd_min = blood_eruption->base_dd_max = accumulator * blood_beast_mod;
-      blood_eruption->execute();
+      the_blood_is_life->base_dd_min = the_blood_is_life->base_dd_max = accumulator * blood_beast_mod;
+      the_blood_is_life->execute();
       accumulator = 0;
     }
 
@@ -3792,7 +3794,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   void init_spells() override
   {
     death_knight_pet_t::init_spells();
-    blood_eruption = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
+    the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
   }
 
   void init_action_list() override
@@ -3821,7 +3823,7 @@ public:
   double accumulator;
 
 private:
-  action_t* blood_eruption;
+  action_t* the_blood_is_life;
   double blood_beast_mod;
 };
 
@@ -4044,7 +4046,23 @@ struct whitemane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       parse_options( options_str );
-      cooldown->duration = 12_s;  // Overriding the data cooldown to more closely represent actual in game behavior
+      cooldown->duration = 14_s;  // Overriding the data cooldown to more closely represent actual in game behavior
+    }
+  };
+
+  struct undeath_whitemane_t final : public horseman_spell_t
+  {
+    undeath_whitemane_t( util::string_view name, horseman_pet_t* p, util::string_view options_str )
+      : horseman_spell_t( p, name, p->dk()->pet_spell.undeath_range )
+    {
+      parse_options( options_str );
+      impact_action = p->dk()->active_spells.undeath_dot;
+    }
+
+    bool ready() override
+    {
+      death_knight_td_t* td = dk()->get_target_data( target );
+      return !td->dot.undeath->is_ticking();
     }
   };
 
@@ -4052,12 +4070,6 @@ struct whitemane_pet_t final : public horseman_pet_t
   {
     npc_id                      = owner->spell.summon_whitemane->effectN( 1 ).misc_value1();
     main_hand_weapon.swing_time = 2_s;
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( c )
-      {
-        dk()->active_spells.undeath_dot->execute_on_target( dk()->target );
-      }
-    } );
   }
 
   void init_action_list() override
@@ -4066,6 +4078,7 @@ struct whitemane_pet_t final : public horseman_pet_t
 
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "undeath" );
     def->add_action( "death_coil" );
   }
 
@@ -4073,6 +4086,8 @@ struct whitemane_pet_t final : public horseman_pet_t
   {
     if ( name == "death_coil" )
       return new death_coil_whitemane_t( "death_coil", this, options_str );
+    if ( name == "undeath" )
+      return new undeath_whitemane_t( "undeath", this, options_str );
 
     return horseman_pet_t::create_action( name, options_str );
   }
@@ -11723,7 +11738,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   }
   else if ( buffs.infliction_of_sorrow->check() )
   {
-    mod = bugs ? spell.infliction_of_sorrow_buff->effectN( 1 ).percent() : talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     buffs.infliction_of_sorrow->expire();
     if ( disease_td->is_ticking() )
     {
@@ -13051,7 +13066,7 @@ void death_knight_t::init_spells()
   pet_spell.trollbanes_chains_of_ice_debuff  = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444828 );
   pet_spell.trollbanes_icy_fury_ability   = conditional_spell_lookup( talent.rider.trollbanes_icy_fury.ok(), 444834 );
   pet_spell.undeath_dot                   = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444633 );
-  pet_spell.undeath_range                 = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444631 );
+  pet_spell.undeath_range                 = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444634 );
   pet_spell.mograines_death_and_decay     = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444474 );
   pet_spell.mograines_might_buff          = conditional_spell_lookup( talent.rider.mograines_might.ok(), 444505 );
   pet_spell.rider_ams                     = conditional_spell_lookup( talent.rider.riders_champion.ok(), 444741 );
@@ -13819,7 +13834,6 @@ void death_knight_t::init_gains()
   gains.festering_wound = get_gain( "Festering Wound" );
 
   // Rider of the Apocalypse
-  gains.feast_of_souls           = get_gain( "A Feast of Souls" );
   gains.antimagic_shell_horsemen = get_gain( "Antimagic Shell Horsemen" );
 }
 
