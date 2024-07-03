@@ -592,7 +592,6 @@ public:
 
   // Character Definition
   void init_spells() override;
-  void init_items() override;
   void init_base_stats() override;
   void create_buffs() override;
   void init_gains() override;
