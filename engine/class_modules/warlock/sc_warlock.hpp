@@ -478,7 +478,7 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
+    const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
     const spell_data_t* umbrafire_kindling; // T31 4pc buff after casting Soul Rot. Empowers Malefic Rapture or Seed of Corruption
 
     // Demonology

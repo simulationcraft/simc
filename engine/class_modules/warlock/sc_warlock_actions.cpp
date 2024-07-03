@@ -1382,9 +1382,6 @@ using namespace helpers;
         execute_action->background = true;
         execute_action->dual = true;
         execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
-
-        if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
-          base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
       }
 
       void last_tick( dot_t* d ) override
@@ -1402,9 +1399,6 @@ using namespace helpers;
 
       impact_action = new vile_taint_dot_t( p );
       add_child( impact_action );
-
-      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
-        cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 1 ).time_value();
     }
 
     void impact( action_state_t* s ) override
@@ -1426,9 +1420,6 @@ using namespace helpers;
         background = dual = true;
         may_miss = false;
         aoe = -1;
-
-        if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
-          base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
       }
     };
 
@@ -1441,9 +1432,6 @@ using namespace helpers;
       tick_action = new phantom_singularity_tick_t( p );
 
       spell_power_mod.tick = 0;
-
-      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
-        cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 2 ).time_value();
     }
 
     void init() override
