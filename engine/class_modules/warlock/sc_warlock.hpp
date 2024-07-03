@@ -45,7 +45,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
-  propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -479,7 +478,6 @@ public:
   {
     // Affliction
     const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
-    const spell_data_t* umbrafire_kindling; // T31 4pc buff after casting Soul Rot. Empowers Malefic Rapture or Seed of Corruption
 
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
@@ -530,7 +528,6 @@ public:
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
-    propagate_const<buff_t*> umbrafire_kindling; // T31 4pc buff
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)

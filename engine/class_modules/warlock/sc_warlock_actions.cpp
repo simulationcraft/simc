@@ -878,11 +878,8 @@ using namespace helpers;
   {
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
-      timespan_t t31_soulstealer_extend;
-
       malefic_rapture_damage_t( warlock_t* p )
-        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg ),
-        t31_soulstealer_extend( p->sets->set( WARLOCK_AFFLICTION, T31, B4 )->effectN( 1 ).time_value() )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
       {
         background = dual = true;
         spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
@@ -898,41 +895,7 @@ using namespace helpers;
         if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
 
-        if ( p()->buffs.umbrafire_kindling->check() )
-          m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 1 ).percent();
-
         return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        auto target_data = td( s->target );
-
-        if ( p()->buffs.umbrafire_kindling->check() )
-        {
-          if ( target_data->dots_agony->is_ticking() )
-            target_data->dots_agony->adjust_duration( t31_soulstealer_extend );
-
-          if ( target_data->dots_corruption->is_ticking() )
-            target_data->dots_corruption->adjust_duration( t31_soulstealer_extend );
-
-          if ( target_data->dots_unstable_affliction->is_ticking() )
-            target_data->dots_unstable_affliction->adjust_duration( t31_soulstealer_extend );
-
-          if ( target_data->debuffs_haunt->up() )
-            target_data->debuffs_haunt->extend_duration( p(), t31_soulstealer_extend );
-
-          if ( target_data->dots_vile_taint->is_ticking() )
-            target_data->dots_vile_taint->adjust_duration( t31_soulstealer_extend );
-
-          if ( target_data->dots_phantom_singularity->is_ticking() )
-            target_data->dots_phantom_singularity->adjust_duration( t31_soulstealer_extend );
-
-          if ( target_data->dots_soul_rot->is_ticking() )
-            target_data->dots_soul_rot->adjust_duration( t31_soulstealer_extend );
-        }
       }
 
       void execute() override
@@ -946,11 +909,6 @@ using namespace helpers;
         }
 
         warlock_spell_t::execute();
-
-        if ( p()->buffs.umbrafire_kindling->check() )
-        {
-          p()->buffs.soul_rot->extend_duration( p(), t31_soulstealer_extend );
-        }
       }
     };
 
@@ -1002,7 +960,6 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
-      p()->buffs.umbrafire_kindling->decrement();
     }
 
     size_t available_targets( std::vector<player_t*>& tl )
@@ -1114,12 +1071,10 @@ using namespace helpers;
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
       corruption_t* corr;
-      bool umbrafire_kindling;
 
       seed_of_corruption_aoe_t( warlock_t* p )
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corr( new corruption_t( p, "", true ) ),
-        umbrafire_kindling( false )
+        corr( new corruption_t( p, "", true ) )
       {
         aoe = -1;
         background = dual = true;
@@ -1146,27 +1101,13 @@ using namespace helpers;
           corr->execute_on_target( s->target );
         }
       }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_da_multiplier( s );
-
-        if ( umbrafire_kindling )
-        {
-          m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 2 ).percent();
-        }
-
-        return m;
-      }
     };
 
     seed_of_corruption_aoe_t* explosion;
-    seed_of_corruption_aoe_t* umbrafire_explosion;
 
     seed_of_corruption_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
-      explosion( new seed_of_corruption_aoe_t( p ) ),
-      umbrafire_explosion( new seed_of_corruption_aoe_t( p ) )
+      explosion( new seed_of_corruption_aoe_t( p ) )
     {
       parse_options( options_str );
       may_crit = false;
@@ -1175,9 +1116,6 @@ using namespace helpers;
       hasted_ticks = false;
 
       add_child( explosion );
-
-      umbrafire_explosion->umbrafire_kindling = true;
-      add_child( umbrafire_explosion );
     }
 
     void init() override
@@ -1214,13 +1152,6 @@ using namespace helpers;
       return tl.size();
     }
 
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      p()->buffs.umbrafire_kindling->decrement();
-    }
-
     void impact( action_state_t* s ) override
     {
       if ( result_is_hit( s->result ) )
@@ -1229,11 +1160,6 @@ using namespace helpers;
       }
 
       warlock_spell_t::impact( s );
-
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
-      {
-        td( s->target )->debuffs_umbrafire_kindling->trigger();
-      }
     }
 
     // If Seed of Corruption is refreshed on a target, it will extend the duration
@@ -1249,17 +1175,8 @@ using namespace helpers;
 
     void last_tick( dot_t* d ) override
     {
-      if ( td( d->target )->debuffs_umbrafire_kindling->check() )
-      {
-        make_event( *sim, 0_ms, [this, t = d->target ] { umbrafire_explosion->execute_on_target( t ); } );
-      }
-      else
-      {
-        explosion->set_target( d->target );
-        explosion->schedule_execute();
-      }
-
-      td( d->target )->debuffs_umbrafire_kindling->expire();
+      explosion->set_target( d->target );
+      explosion->schedule_execute();
 
       warlock_spell_t::last_tick( d );
     }
@@ -1534,9 +1451,6 @@ using namespace helpers;
     {
       parse_options( options_str );
       aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
-
-      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B2 ) )
-        apply_affecting_aura( p->sets->set( WARLOCK_AFFLICTION, T31, B2 ) );
     }
 
     void execute() override
@@ -1544,11 +1458,6 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.soul_rot->trigger();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
-      {
-        p()->buffs.umbrafire_kindling->trigger();
-      }
     }
 
     void impact( action_state_t* s ) override

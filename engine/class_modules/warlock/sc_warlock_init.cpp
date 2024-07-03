@@ -172,9 +172,6 @@ namespace warlock
 
     // T30 (Aberrus, the Shadowed Crucible)
     tier.infirmity = find_spell( 409765 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.umbrafire_kindling = find_spell( 423765 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -453,8 +450,7 @@ namespace warlock
     create_buffs_affliction();
 
     buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                         ->set_cooldown( 0_ms )
-                         ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
+                         ->set_cooldown( 0_ms );
 
     buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -484,9 +480,6 @@ namespace warlock
                           ->set_trigger_spell( talents.nightfall );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
-
-    buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
-                                   ->set_reverse( true );
   }
 
   void warlock_t::create_buffs_demonology()
