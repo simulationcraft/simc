@@ -4057,12 +4057,7 @@ struct whitemane_pet_t final : public horseman_pet_t
     {
       parse_options( options_str );
       impact_action = p->dk()->active_spells.undeath_dot;
-    }
-
-    bool ready() override
-    {
-      death_knight_td_t* td = dk()->get_target_data( target );
-      return !td->dot.undeath->is_ticking();
+      cooldown->duration = p->dk()->pet_spell.undeath_dot->duration();
     }
   };
 
@@ -4115,10 +4110,7 @@ struct trollbane_pet_t final : public horseman_pet_t
     {
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
-      if ( !dk()->bugs || a->target->type == ENEMY_ADD )
-      {
-        dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
-      }
+      dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
     }
   };
