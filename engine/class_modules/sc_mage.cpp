@@ -3116,6 +3116,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
+    // TODO: Arcane Debilitation currently affects the AM channel (which doesn't do damage) rather than the ticks
     affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
