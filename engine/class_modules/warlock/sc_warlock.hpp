@@ -524,7 +524,6 @@ public:
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
