@@ -8686,17 +8686,26 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     convoke_cast_e type_ = base_type;
 
     if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
+    {
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+    }
     else if ( base_type == CAST_MAIN )
+    {
       type_ = CAST_FEROCIOUS_BITE;
+      conv_tar = p()->target;
+    }
     else if ( base_type == CAST_SPEC )
     {
       auto dist = chances;
-
       type_ = get_cast_from_dist( dist );
     }
+    else if ( base_type == CAST_FERAL_FRENZY )
+    {
+      conv_tar = p()->target;
+    }
 
-    conv_tar = tl.at( rng().range( tl.size() ) );
+    if ( !conv_tar )
+      conv_tar = tl.at( rng().range( tl.size() ) );
 
     auto target_data = td( conv_tar );
 
@@ -8724,8 +8733,6 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     convoke_cast_e type_ = base_type;
     std::vector<std::pair<convoke_cast_e, double>> dist;
     unsigned adjust = guidance ? 1 : 0;
-
-    conv_tar = tl.at( rng().range( tl.size() ) );
 
     if ( type_ == CAST_SPEC )
     {
@@ -8770,9 +8777,18 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
 
       type_ = get_cast_from_dist( dist );
 
-      if ( type_ == CAST_MOONFIRE )
+      if ( type_ == CAST_STARSURGE )
+        conv_tar = p()->target;
+      else if ( type_ == CAST_MOONFIRE )
         conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
     }
+    else if ( type_ == CAST_FULL_MOON )
+    {
+      conv_tar = p()->target;
+    }
+
+    if ( !conv_tar )
+      conv_tar = tl.at( rng().range( tl.size() ) );
 
     if ( type_ == CAST_STARSURGE )
       main_count++;
