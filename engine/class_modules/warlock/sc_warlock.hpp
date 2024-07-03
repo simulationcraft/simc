@@ -90,7 +90,7 @@ public:
   double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
-  std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
+  std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
 
   unsigned active_pets;
 
