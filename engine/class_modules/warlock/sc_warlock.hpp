@@ -593,12 +593,10 @@ public:
     proc_t* soul_conduit;
     proc_t* demonic_inspiration;
     proc_t* wrathful_minion;
-    proc_t* inquisitors_gaze; // Random proc as of 10.0.5
 
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
-    proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
 
     // Demonology

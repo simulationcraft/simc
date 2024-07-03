@@ -674,13 +674,11 @@ namespace warlock
     procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
     procs.demonic_inspiration = get_proc( "demonic_inspiration" );
     procs.wrathful_minion = get_proc( "wrathful_minion" );
-    procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
   }
 
   void warlock_t::init_procs_affliction()
   {
     procs.nightfall = get_proc( "nightfall" );
-    procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
