@@ -625,7 +625,6 @@ struct player_t : public actor_t
   struct spells_t
   {
     action_t* leech;
-    action_t* heartbeat;
   } spells;
 
   struct procs_t
