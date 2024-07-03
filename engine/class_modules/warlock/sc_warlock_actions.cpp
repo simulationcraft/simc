@@ -119,15 +119,6 @@ using namespace helpers;
         {
           p()->buffs.power_overwhelming->trigger( base_shards );
         }
-
-        // 2022-10-17: Spell data is missing the % chance!
-        // Need to test further, but chance appears independent of shard cost
-        // Also procs even if the cast is free due to other effects
-        if ( base_shards > 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B2 ) && rng().roll( 0.2 ) )
-        {
-          p()->buffs.chaos_maelstrom->trigger();
-          p()->procs.chaos_maelstrom->occur();
-        }
       }
     }
 
@@ -256,18 +247,6 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
       {
         m *= 1.0 + p()->cache.mastery_value();
-      }
-
-      return m;
-    }
-
-    double composite_crit_damage_bonus_multiplier() const override
-    {
-      double m = spell_t::composite_crit_damage_bonus_multiplier();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T29, B4 ) )
-      {
-        m += p()->sets->set( WARLOCK_DESTRUCTION, T29, B4 )->effectN( 1 ).percent();
       }
 
       return m;

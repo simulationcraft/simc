@@ -472,8 +472,7 @@ public:
 
     // Demonology
 
-    // Destruction 
-    const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
+    // Destruction
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -528,7 +527,6 @@ public:
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
     propagate_const<buff_t*> burn_to_ashes;
-    propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
   } buffs;
 
   // Gains - Many are automatically handled
@@ -588,7 +586,6 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
-    proc_t* chaos_maelstrom; // T29 2pc
   } procs;
 
   int initial_soul_shards;

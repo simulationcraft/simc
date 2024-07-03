@@ -381,9 +381,6 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
-
-    // T29 (Vault of the Incarnates)
-    tier.chaos_maelstrom = find_spell( 394679 );
   }
 
   void warlock_t::init_base_stats()
@@ -546,10 +543,6 @@ namespace warlock
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
                               ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
-
-    buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                ->set_default_value_from_effect( 1 );
   }
 
   void warlock_t::create_pets()
@@ -660,7 +653,6 @@ namespace warlock
   {
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
-    procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
   }
 
   void warlock_t::init_rng()
