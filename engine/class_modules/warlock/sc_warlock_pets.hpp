@@ -38,15 +38,12 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> infernal_command;
-    propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
-    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent
+    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent TODO: Confirm no issues with this or Demonic Servitude
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
-    propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
-    propagate_const<buff_t*> demonic_power; // Starting in 10.2, this buff is on the pets rather than the player
+    propagate_const<buff_t*> demonic_power;
   } buffs;
 
   bool is_main_pet          = false;
