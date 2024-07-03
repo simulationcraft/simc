@@ -1273,7 +1273,6 @@ public:
   void datacollection_end() override;
   void analyze( sim_t& ) override;
   timespan_t available() const override;
-  double composite_attribute( attribute_e ) const override;
   double composite_armor() const override;
   double composite_block() const override { return 0; }
   double composite_dodge_rating() const override;
@@ -10631,9 +10630,9 @@ void druid_t::create_buffs()
 
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
     this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
-      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
-      ->add_invalidate( CACHE_AGILITY )
-      // ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      // ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE ) TODO: still bugged, missing misc_value2
+      ->set_default_value( 0.0 )
+      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
       ->add_invalidate( CACHE_ARMOR );
 
   buff.killing_strikes_combat =
@@ -12053,16 +12052,6 @@ void druid_t::invalidate_cache( cache_e c )
 }
 
 // Composite combat stat override functions =================================
-double druid_t::composite_attribute( attribute_e attr ) const
-{
-  auto a = player_t::composite_attribute( attr );
-
-  // TODO: remove if fixed
-  if ( attr == ATTR_AGILITY && buff.killing_strikes->check() )
-    a += base.stats.attribute[ attr ] * buff.killing_strikes->check_value();
-
-  return a;
-}
 
 // Armor ====================================================================
 double druid_t::composite_armor() const
