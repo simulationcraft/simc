@@ -207,8 +207,6 @@ using namespace helpers;
     {
       double m = spell_t::action_multiplier();
 
-      m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
-
       if ( demonology() && affected_by.master_demonologist_dd )
       {
         m *= 1.0 + p()->cache.mastery_value();

@@ -86,8 +86,6 @@ void warlock_pet_t::create_buffs()
                      } );
 
   // All Specs
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
-                              ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -148,24 +146,6 @@ void warlock_pet_t::init_action_list()
       summon_stats->add_child( action_list[ i ]->stats );
 }
 
-void warlock_pet_t::init_special_effects()
-{
-  pet_t::init_special_effects();
-
-  if ( o()->talents.grimoire_of_synergy->ok() && is_main_pet )
-  {
-    auto const syn_effect = new special_effect_t( this );
-    syn_effect->name_str = "demonic_synergy_pet_effect";
-    syn_effect->spell_id = o()->talents.grimoire_of_synergy->id();
-    syn_effect->custom_buff = o()->buffs.demonic_synergy;
-    special_effects.push_back( syn_effect );
-
-    auto cb = new dbc_proc_callback_t( this, *syn_effect );
-
-    cb->initialize();
-  }
-}
-
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
@@ -193,9 +173,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
-
-  if ( buffs.demonic_synergy->check() )
-    m *= 1.0 + buffs.demonic_synergy->check_value();
 
   if ( buffs.the_expendables->check() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();

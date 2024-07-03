@@ -33,7 +33,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
@@ -62,7 +61,6 @@ struct warlock_pet_t : public pet_t
   double composite_spell_haste() const override;
   double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
-  void init_special_effects() override;
   void arise() override;
   void demise() override;
   void apply_affecting_auras( action_t& action ) override;

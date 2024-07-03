@@ -155,8 +155,6 @@ public:
 
     player_talent_t demonic_inspiration; // Primary pet attack speed increase
     player_talent_t wrathful_minion; // Primary pet damage increase
-    player_talent_t grimoire_of_synergy;
-    const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
@@ -489,7 +487,6 @@ public:
   {
     // Shared Buffs
     propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
-    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 

@@ -97,9 +97,6 @@ namespace warlock
 
     talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
 
-    talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
-    talents.demonic_synergy = find_spell( 171982 );
-
     talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
     talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
 
@@ -414,9 +411,6 @@ namespace warlock
     // Shared buffs
     buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
                                       ->set_chance( 1.0 );
-
-    buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
-                                ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
     buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
 
