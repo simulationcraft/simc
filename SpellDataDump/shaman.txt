@@ -21299,31 +21299,34 @@ Description      : $@spelldesc108270
 Tooltip          : Absorbing up to $w1 damage.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
-Hotfixed         : Proc Chance (20 -> 101), Proc Flags 1 (4 -> 65536), Internal Cooldown (100 -> 1000), Attributes, Description, Tooltip
+Hotfixed         : Tooltip
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=307289)
 Spell Level      : 16
+Range            : 40 yards
 GCD              : 1.5 seconds
-Internal Cooldown: 1 seconds
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Duration         : 3600 seconds
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 20%
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee
+Attributes       : ........ ........ x....... ........   ........ ..x..... .x...... ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1173055)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Raid in Area (56)
-Hotfixed         : Type (6 -> 3), Sub Type (318 -> 0), Base Value (2 -> 0), Target 1 (118 -> 56)
-Description      : $@spelldesc462840
+#1 (id=1173055)  : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Friendly or Raid (118)
+Description      : Harness the fury of the Windlord to grant a target ally $s1% Mastery and empower their auto attacks to have a $h% chance to instantly strike again for $d.
+
+If the target is in your party or raid, all party and raid members will be affected.
 Tooltip          : Mastery increased by $w1% and auto attacks have a $h% chance to instantly strike again.
 
 Name             : Lightning Conduit (id=462862) [Spell Family (11), Passive, Hidden] 

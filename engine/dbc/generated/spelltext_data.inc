@@ -26174,7 +26174,7 @@ static const std::array<spelltext_data_t, 26180> __spelltext_data { {
   { 462841, "$@spelldesc462840", "After casting a damaging Nature$?a462841[ and a Fire][] spell, you additionally cast an Elemental Blast at your target.", 0 },
   { 462843, "$@spelldesc462840", "After casting a damaging Fire$?a462841[ and a Nature][] spell, you additionally cast an Elemental Blast at your target.", 0 },
   { 462844, "$@spelldesc108270", "Absorbing up to $w1 damage.", 0 },
-  { 462854, "$@spelldesc462840", "Mastery increased by $w1% and auto attacks have a $h% chance to instantly strike again.", 0 },
+  { 462854, "Harness the fury of the Windlord to grant a target ally $s1% Mastery and empower their auto attacks to have a $h% chance to instantly strike again for $d.\r\n\r\nIf the target is in your party or raid, all party and raid members will be affected.", "Mastery increased by $w1% and auto attacks have a $h% chance to instantly strike again.", 0 },
   { 462862, "While Lightning Shield is active, your Nature damage dealt is increased by $s1%.", 0, 0 },
   { 462864, "When your Storm Elemental or Fire Elemental expires, it leaves behind a lesser Elemental to continue attacking your enemies for $462865d.", 0, 0 },
   { 462865, "$@spelldesc462864", 0, 0 },
@@ -26183,7 +26183,7 @@ static const std::array<spelltext_data_t, 26180> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55399
-static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix_data { {
   {   45284,  0, "Casts a bolt of lightning at the target for $s1 Nature damage.", "Casts a bolt of lightning at the target for $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Nature damage." },
   {   45297,  0, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.", "Hurls a lightning bolt at the enemy, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets." },
   {  120588,  0, "$@spelldesc117014", "Harnesses the raw power of the elements, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d." },
@@ -26191,7 +26191,6 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix
   {  285466,  0, "$@spelldesc51505", "Hurls molten lava at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.\r\n\r\nGenerates $343725s4 Maelstrom.|r" },
   {  381725,  0, "$@spelldesc8042", "Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1} Nature damage." },
   {  383222,  0, "Healing Rain instantly restores $383223s1 health to $s3 allies within its area, and its radius is increased by $s1 $Lyard:yards;.", "$?a455630[Surging Totem][Healing Rain] instantly restores $383223s1 health to $s3 allies within its area, and its radius is increased by $s1 $Lyard:yards;." },
-  {  462854,  0, "Harness the fury of the Windlord to grant a target ally $s1% Mastery and empower their auto attacks to have a $h% chance to instantly strike again for $d.\r\n\r\nIf the target is in your party or raid, all party and raid members will be affected.", "$@spelldesc462840" },
   {  462854,  1, "Mastery increased by $w1% and auto attacks have a $h chance to instantly strike again.", "Mastery increased by $w1% and auto attacks have a $h% chance to instantly strike again." },
 } };
 

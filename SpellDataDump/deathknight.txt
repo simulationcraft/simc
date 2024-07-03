@@ -2539,8 +2539,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=214692)   : School Damage (2): shadow
+#2 (id=214692)   : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32140 | PvP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 131072)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
@@ -17108,6 +17109,7 @@ Effects          :
 Description      : $@spelldesc315443
 
 Name             : Vampiric Strike (id=433895) [Spell Family (15)] 
+Hotfixed         : Max Targets (8 -> 9)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -17115,7 +17117,7 @@ Resource         : 1 Rune (5) (id=305979)
 Resource         : -15 Runic Power (6) (id=305981) w/ Blood Death Knight (id=137008)
 Resource         : -10 Runic Power (6) (id=305982) w/ Unholy Death Knight (id=137007)
 Range            : 5 yards
-Max Targets      : 8
+Max Targets      : 9
 GCD              : 1.5 seconds
 Affecting spells : Blood Plague (55078 effect#3), Mastery: Dreadblade (77515 effects: #1, #2), Death Knight (137005 effect#2), Blood Death Knight (137008 effect#18), Death and Decay (188290 effects: #2, #3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Blood for Blood (356456 effect#1), Improved Heart Strike (374717 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Gift of the San'layn (434153 effect#3), Mawsworn Menace (444099 effect#3), Vampiric Strike (445669 effect#1), Incite Terror (458478 effect#4)
 Family Flags     : 0, 24, 59, 78, 127
@@ -17129,8 +17131,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123513)  : School Damage (2): shadow
+#1 (id=1123513)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.04000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 131072)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
