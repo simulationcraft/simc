@@ -44,21 +44,21 @@ void warlock_pet_t::create_buffs()
                                ->set_cooldown( 0_ms );
 
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
-                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
+                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() ); // TODO: Add Grimoire of Service data to talent struct
 
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
-  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) );
+  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) ); // TODO: Add pet's Dread Calling buff to talent struct 
 
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", find_spell( 387458 ) )
-                            ->set_default_value_from_effect( 2 );
+                            ->set_default_value_from_effect( 2 ); // TODO: Add Imp Gang Boss buff to talent struct
 
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
-                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
+                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
 
   buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
-                              ->set_default_value_from_effect( 1 );
+                              ->set_default_value_from_effect( 1 ); // TODO: Add Expendables buff to talent struct
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
@@ -67,7 +67,7 @@ void warlock_pet_t::create_buffs()
                                ->set_max_stack( 99 );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
-                             ->set_default_value_from_effect( 1 );
+                             ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
@@ -78,7 +78,7 @@ void warlock_pet_t::create_buffs()
                      ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                        o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
-                     } );
+                     } ); // TODO: Add Embers buff to talent struct
 
   // All Specs
 
@@ -89,13 +89,9 @@ void warlock_pet_t::create_buffs()
   player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
                             {
                               if ( cur > prev )
-                              {
                                 o()->buffs.pet_movement->trigger();
-                              }
                               else if ( cur < prev )
-                              {
                                 o()->buffs.pet_movement->decrement();
-                              }
                             } );
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
