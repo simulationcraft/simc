@@ -381,18 +381,6 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
-
-    // T29 (Vault of the Incarnates)
-    tier.chaos_maelstrom = find_spell( 394679 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.channel_demonfire = find_spell( 409890 );
-    tier.umbrafire_embers = find_spell( 409652 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.dimensional_cinder = find_spell( 427285 );
-    tier.flame_rift = find_spell( 423874 );
-    tier.searing_bolt = find_spell( 423886 );
   }
 
   void warlock_t::init_base_stats()
@@ -555,14 +543,6 @@ namespace warlock
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
                               ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
-
-    buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                ->set_default_value_from_effect( 1 );
-
-    buffs.umbrafire_embers = make_buff( this, "umbrafire_embers", tier.umbrafire_embers )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   void warlock_t::create_pets()
@@ -620,7 +600,6 @@ namespace warlock
     gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
-    gains.inferno = get_gain( "inferno" );
   }
 
   void warlock_t::init_procs()
@@ -673,9 +652,6 @@ namespace warlock
   {
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
-    procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
-    procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
-    procs.dimensional_refund = get_proc( "dimensional_refund" );
   }
 
   void warlock_t::init_rng()
@@ -779,9 +755,6 @@ namespace warlock
     ua_target                          = nullptr;
     agony_accumulator                  = rng().range( 0.0, 0.99 );
     corruption_accumulator             = rng().range( 0.0, 0.99 );
-    cdf_accumulator                    = rng().range( 0.0, 0.99 );
-    dimensional_accumulator            = rng().range( 0.0, 0.99 );
-    incinerate_last_target_count       = 0;
     shadow_invocation_proc_chance        = 0.2;
     wild_imp_spawns.clear();
   }

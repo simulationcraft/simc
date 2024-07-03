@@ -43,8 +43,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 
-  dots_searing_bolt = target->get_dot( "searing_bolt", &p );
-
   debuffs_eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
                             ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
 
@@ -164,9 +162,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    cdf_accumulator( 0.0 ),
-    dimensional_accumulator( 0.0 ),
-    incinerate_last_target_count( 0 ),
     shadow_invocation_proc_chance( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
@@ -183,9 +178,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
-  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
 
