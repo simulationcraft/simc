@@ -1132,8 +1132,6 @@ namespace buffs {
 
 // Custom buffs =============================================================
 
-// Touch of the Magi debuff =================================================
-
 struct touch_of_the_magi_t final : public buff_t
 {
   touch_of_the_magi_t( mage_td_t* td ) :
@@ -2538,8 +2536,6 @@ struct frost_mage_spell_t : public mage_spell_t
   }
 };
 
-// Icicles ==================================================================
-
 struct icicle_t final : public frost_mage_spell_t
 {
   icicle_t( std::string_view n, mage_t* p ) :
@@ -2577,8 +2573,6 @@ struct icicle_t final : public frost_mage_spell_t
   { return frost_mage_spell_t::spell_direct_power_coefficient( s ) + icicle_sp_coefficient(); }
 };
 
-// Presence of Mind Spell ===================================================
-
 struct presence_of_mind_t final : public arcane_mage_spell_t
 {
   presence_of_mind_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -2602,8 +2596,6 @@ struct presence_of_mind_t final : public arcane_mage_spell_t
     p()->buffs.presence_of_mind->trigger();
   }
 };
-
-// Ignite Spell =============================================================
 
 // TODO: 2022-10-02 Phoenix Reborn is not flagged to scale with spec auras, etc.
 // If this is fixed, change spell_t to mage_spell_t or fire_mage_spell_t.
@@ -2681,8 +2673,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
   }
 };
 
-// Arcane Orb Spell =========================================================
-
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
@@ -2729,8 +2719,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge();
   }
 };
-
-// Arcane Barrage Spell =====================================================
 
 struct arcane_barrage_t final : public arcane_mage_spell_t
 {
@@ -2832,8 +2820,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
   }
 };
-
-// Arcane Blast Spell =======================================================
 
 struct arcane_blast_t final : public arcane_mage_spell_t
 {
@@ -2944,8 +2930,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   }
 };
 
-// Arcane Explosion Spell ===================================================
-
 struct arcane_explosion_t final : public arcane_mage_spell_t
 {
   action_t* echo = nullptr;
@@ -3032,8 +3016,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
   }
 };
 
-// Arcane Familiar Spell ====================================================
-
 struct arcane_assault_t final : public arcane_mage_spell_t
 {
   arcane_assault_t( std::string_view n, mage_t* p ) :
@@ -3043,8 +3025,6 @@ struct arcane_assault_t final : public arcane_mage_spell_t
     callbacks = false;
   }
 };
-
-// Arcane Intellect Spell ===================================================
 
 struct arcane_intellect_t final : public mage_spell_t
 {
@@ -3069,8 +3049,6 @@ struct arcane_intellect_t final : public mage_spell_t
     p()->buffs.arcane_familiar->trigger();
   }
 };
-
-// Arcane Missiles Spell ====================================================
 
 struct am_state_t final : public mage_spell_state_t
 {
@@ -3342,8 +3320,6 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   }
 };
 
-// Arcane Surge Spell =======================================================
-
 struct arcane_surge_t final : public arcane_mage_spell_t
 {
   double energize_pct;
@@ -3402,8 +3378,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
   }
 };
 
-// Blast Wave Spell =========================================================
-
 struct blast_wave_t final : public fire_mage_spell_t
 {
   blast_wave_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3414,8 +3388,6 @@ struct blast_wave_t final : public fire_mage_spell_t
     cooldown->duration += p->talents.volatile_detonation->effectN( 1 ).time_value();
   }
 };
-
-// Blink Spell ==============================================================
 
 struct blink_t final : public mage_spell_t
 {
@@ -3433,8 +3405,6 @@ struct blink_t final : public mage_spell_t
       background = true;
   }
 };
-
-// Blizzard Spell ===========================================================
 
 struct blizzard_shard_t final : public frost_mage_spell_t
 {
@@ -3510,8 +3480,6 @@ struct blizzard_t final : public frost_mage_spell_t
   }
 };
 
-// Cold Snap Spell ==========================================================
-
 struct cold_snap_t final : public frost_mage_spell_t
 {
   cold_snap_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3530,8 +3498,6 @@ struct cold_snap_t final : public frost_mage_spell_t
       p()->cooldowns.cone_of_cold->reset( false );
   }
 };
-
-// Combustion Spell =========================================================
 
 struct combustion_t final : public fire_mage_spell_t
 {
@@ -3554,8 +3520,6 @@ struct combustion_t final : public fire_mage_spell_t
     p()->expression_support.kindling_reduction = 0_ms;
   }
 };
-
-// Comet Storm Spell ========================================================
 
 struct comet_storm_projectile_t final : public frost_mage_spell_t
 {
@@ -3607,8 +3571,6 @@ struct comet_storm_t final : public frost_mage_spell_t
   }
 };
 
-// Cone of Cold Spell =======================================================
-
 struct cone_of_cold_t final : public frost_mage_spell_t
 {
   cone_of_cold_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3653,8 +3615,6 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   }
 };
 
-// Counterspell Spell =======================================================
-
 struct counterspell_t final : public mage_spell_t
 {
   counterspell_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3683,8 +3643,6 @@ struct counterspell_t final : public mage_spell_t
   }
 };
 
-// Dragon's Breath Spell ====================================================
-
 struct dragons_breath_t final : public fire_mage_spell_t
 {
   dragons_breath_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3706,8 +3664,6 @@ struct dragons_breath_t final : public fire_mage_spell_t
     p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
 };
-
-// Evocation Spell ==========================================================
 
 struct evocation_t final : public arcane_mage_spell_t
 {
@@ -3771,8 +3727,6 @@ struct evocation_t final : public arcane_mage_spell_t
     return arcane_mage_spell_t::usable_moving();
   }
 };
-
-// Fireball Spell ===========================================================
 
 struct fireball_t final : public fire_mage_spell_t
 {
@@ -3859,8 +3813,6 @@ struct fireball_t final : public fire_mage_spell_t
   }
 };
 
-// Flame Patch Spell ========================================================
-
 struct flame_patch_t final : public fire_mage_spell_t
 {
   flame_patch_t( std::string_view n, mage_t* p ) :
@@ -3876,8 +3828,6 @@ struct flame_patch_t final : public fire_mage_spell_t
     return result_amount_type::DMG_OVER_TIME;
   }
 };
-
-// Flamestrike Spell ========================================================
 
 struct flamestrike_t final : public hot_streak_spell_t
 {
@@ -3926,8 +3876,6 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 };
-
-// Flurry Spell =============================================================
 
 struct glacial_assault_t final : public frost_mage_spell_t
 {
@@ -4080,8 +4028,6 @@ struct flurry_t final : public frost_mage_spell_t
   }
 };
 
-// Frostbolt Spell ==========================================================
-
 struct frostbolt_t final : public frost_mage_spell_t
 {
   double fof_chance;
@@ -4220,8 +4166,6 @@ struct frostbolt_t final : public frost_mage_spell_t
   }
 };
 
-// Frost Nova Spell =========================================================
-
 struct frost_nova_t final : public mage_spell_t
 {
   frost_nova_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -4240,8 +4184,6 @@ struct frost_nova_t final : public mage_spell_t
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
-
-// Frozen Orb Spell =========================================================
 
 struct frozen_orb_bolt_t final : public frost_mage_spell_t
 {
@@ -4334,8 +4276,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
       .action( frozen_orb_bolt ), true );
   }
 };
-
-// Glacial Spike Spell ======================================================
 
 // TODO: this spell currently benefits from all target mods, double check before 10.2 goes live
 struct glacial_blast_t final : public spell_t
@@ -4477,8 +4417,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
   }
 };
 
-// Ice Floes Spell ==========================================================
-
 struct ice_floes_t final : public mage_spell_t
 {
   ice_floes_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -4496,8 +4434,6 @@ struct ice_floes_t final : public mage_spell_t
     p()->buffs.ice_floes->trigger();
   }
 };
-
-// Ice Lance Spell ==========================================================
 
 struct ice_lance_state_t final : public mage_spell_state_t
 {
@@ -4703,8 +4639,6 @@ struct ice_lance_t final : public frost_mage_spell_t
   }
 };
 
-// Ice Nova Spell ===========================================================
-
 struct ice_nova_t final : public frost_mage_spell_t
 {
   ice_nova_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -4727,8 +4661,6 @@ struct ice_nova_t final : public frost_mage_spell_t
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
-
-// Icy Veins Spell ==========================================================
 
 struct icy_veins_t final : public frost_mage_spell_t
 {
@@ -4756,8 +4688,6 @@ struct icy_veins_t final : public frost_mage_spell_t
       p()->pets.water_elemental->dismiss();
   }
 };
-
-// Fire Blast Spell =========================================================
 
 struct fire_blast_t final : public fire_mage_spell_t
 {
@@ -4809,8 +4739,6 @@ struct fire_blast_t final : public fire_mage_spell_t
     return m;
   }
 };
-
-// Living Bomb Spell ========================================================
 
 struct living_bomb_dot_t final : public fire_mage_spell_t
 {
@@ -4880,8 +4808,6 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     callbacks = false;
   }
 };
-
-// Meteor Spell =============================================================
 
 // Old implementation details from Celestalon:
 // http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
@@ -4982,8 +4908,6 @@ struct meteor_t final : public fire_mage_spell_t
   }
 };
 
-// Mirror Image Spell =======================================================
-
 struct mirror_image_t final : public mage_spell_t
 {
   mirror_image_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5012,8 +4936,6 @@ struct mirror_image_t final : public mage_spell_t
       image->summon( data().duration() );
   }
 };
-
-// Phoenix Flames Spell =====================================================
 
 struct phoenix_flames_splash_t final : public fire_mage_spell_t
 {
@@ -5102,8 +5024,6 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   }
 };
 
-// Pyroblast Spell ==========================================================
-
 struct pyroblast_t final : public hot_streak_spell_t
 {
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5154,8 +5074,6 @@ struct pyroblast_t final : public hot_streak_spell_t
     return c;
   }
 };
-
-// Ray of Frost Spell =======================================================
 
 struct splintering_ray_t final : public spell_t
 {
@@ -5250,8 +5168,6 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
-// Scorch Spell =============================================================
-
 struct scorch_t final : public fire_mage_spell_t
 {
   scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5297,8 +5213,6 @@ struct scorch_t final : public fire_mage_spell_t
   { return true; }
 };
 
-// Shimmer Spell ============================================================
-
 struct shimmer_t final : public mage_spell_t
 {
   shimmer_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5313,8 +5227,6 @@ struct shimmer_t final : public mage_spell_t
   }
 };
 
-// Slow Spell ===============================================================
-
 struct slow_t final : public arcane_mage_spell_t
 {
   slow_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5324,8 +5236,6 @@ struct slow_t final : public arcane_mage_spell_t
     ignore_false_positive = true;
   }
 };
-
-// Supernova Spell ==========================================================
 
 struct supernova_t final : public mage_spell_t
 {
@@ -5341,8 +5251,6 @@ struct supernova_t final : public mage_spell_t
     base_aoe_multiplier /= sn_mult;
   }
 };
-
-// Time Warp Spell ==========================================================
 
 struct time_warp_t final : public mage_spell_t
 {
@@ -5378,8 +5286,6 @@ struct time_warp_t final : public mage_spell_t
     return mage_spell_t::ready();
   }
 };
-
-// Touch of the Magi Spell ==================================================
 
 struct touch_of_the_magi_t final : public arcane_mage_spell_t
 {
@@ -5495,9 +5401,6 @@ struct magis_spark_echo_t final : public spell_t
   }
 };
 
-
-// Shifting Power Spell =====================================================
-
 struct shifting_power_pulse_t final : public mage_spell_t
 {
   shifting_power_pulse_t( std::string_view n, mage_t* p ) :
@@ -5577,8 +5480,6 @@ struct leydrinker_echo_t final : public spell_t
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
-
-// Proxy Water Elemental Actions ======================================================
 
 struct proxy_action_t : public action_t
 {
