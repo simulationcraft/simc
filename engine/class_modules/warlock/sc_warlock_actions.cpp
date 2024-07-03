@@ -2667,12 +2667,6 @@ using namespace helpers;
       {
         warlock_spell_t::impact( s );
 
-        if ( p()->talents.inferno.ok() && result_is_hit( s->result ) )
-        {
-          if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
-        }
-
         if ( p()->talents.pyrogenics.ok() )
           td( s->target )->debuffs_pyrogenics->trigger();
       }

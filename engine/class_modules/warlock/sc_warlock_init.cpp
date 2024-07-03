@@ -600,7 +600,6 @@ namespace warlock
     gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
-    gains.inferno = get_gain( "inferno" );
   }
 
   void warlock_t::init_procs()

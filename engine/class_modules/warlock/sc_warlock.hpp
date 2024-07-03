@@ -549,7 +549,6 @@ public:
     gain_t* immolate_crits;
     gain_t* infernal;
     gain_t* shadowburn_refund;
-    gain_t* inferno;
   } gains;
 
   // Procs
