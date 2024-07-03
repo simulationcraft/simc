@@ -279,7 +279,6 @@ public:
     buff_t* arcane_surge;
     buff_t* arcane_tempo;
     buff_t* big_brained;
-    buff_t* chrono_shift;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
     buff_t* concentration;
@@ -877,7 +876,6 @@ public:
   double composite_rating_multiplier( rating_e ) const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   double matching_gear_multiplier( attribute_e ) const override;
-  double stacking_movement_modifier() const override;
   void arise() override;
   void combat_begin() override;
   void copy_from( player_t* ) override;
@@ -2775,14 +2773,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     snapshot_charges = -1;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->buffs.chrono_shift->trigger();
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = arcane_mage_spell_t::composite_da_multiplier( s );
@@ -2826,7 +2816,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     parse_options( options_str );
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
-    base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
     cost_reductions = { p->buffs.concentration };
@@ -2924,7 +2913,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     aoe = -1;
     affected_by.savant = true;
     triggers.clearcasting = TO_ALWAYS; // AE Echo seems to also trigger CC, despite being a background action.
-    base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
 
     if ( echo_ )
     {
@@ -3075,7 +3063,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
-    base_multiplier *= 1.0 + p->talents.improved_arcane_missiles->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
     const auto& aa = p->buffs.arcane_artillery->data();
@@ -3665,7 +3652,6 @@ struct evocation_t final : public arcane_mage_spell_t
     parse_options( options_str );
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
-    dot_duration *= 1.0 + p->talents.siphon_storm->effectN( 1 ).percent();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -3684,9 +3670,6 @@ struct evocation_t final : public arcane_mage_spell_t
 
       double mana_regen_multiplier = 1.0 + p()->buffs.evocation->default_value;
       mana_regen_multiplier /= p()->cache.spell_cast_speed();
-      // TODO (10.1.5 PTR): the mana regen multiplier is currently wrong on PTR, so we can't
-      // simply modify the default value of the Evo buff, double check when/if they fix it
-      mana_regen_multiplier += p()->talents.siphon_storm->effectN( 2 ).percent();
 
       p()->buffs.evocation->trigger( 1, mana_regen_multiplier - 1.0, -1.0, composite_dot_duration( s ) );
     }
@@ -3697,9 +3680,7 @@ struct evocation_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_clearcasting( 1.0, 0_ms );
-
-    if ( p()->talents.siphon_storm.ok() )
-      p()->trigger_arcane_charge();
+    p()->trigger_arcane_charge();
 
     if ( is_precombat && execute_state )
       cooldown->adjust( -composite_dot_duration( execute_state ) );
@@ -6543,10 +6524,6 @@ void mage_t::create_buffs()
                                  ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_chance( talents.big_brained.ok() );
-  buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->add_invalidate( CACHE_RUN_SPEED )
-                                 ->set_chance( talents.chrono_shift.ok() );
   buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
@@ -6583,8 +6560,7 @@ void mage_t::create_buffs()
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
   buffs.siphon_storm         = make_buff( this, "siphon_storm", find_spell( 384267 ) )
                                  ->set_default_value_from_effect( 1 )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                                 ->set_chance( talents.siphon_storm.ok() );
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
   buffs.static_cloud         = make_buff( this, "static_cloud", find_spell( 461515 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.static_cloud.ok() );
@@ -7130,15 +7106,6 @@ void mage_t::reset()
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
   expression_support = expression_support_t();
-}
-
-double mage_t::stacking_movement_modifier() const
-{
-  double ms = player_t::stacking_movement_modifier();
-
-  ms += buffs.chrono_shift->check_value();
-
-  return ms;
 }
 
 void mage_t::arise()
