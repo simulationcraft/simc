@@ -110,15 +110,11 @@ using namespace helpers;
           int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
           p()->buffs.impending_ruin->trigger( shards_used ); // Stack change callback switches Impending Ruin to Ritual of Ruin if max stacks reached
           if ( overflow > 0 )
-          {
             make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-          }
         }
 
-        if ( p()->talents.power_overwhelming->ok() && base_shards > 0 )
-        {
+        if ( p()->talents.power_overwhelming.ok() && base_shards > 0 )
           p()->buffs.power_overwhelming->trigger( base_shards );
-        }
       }
     }
 
@@ -127,9 +123,7 @@ using namespace helpers;
       spell_t::execute();
 
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
-      {
         p()->buffs.rolling_havoc->trigger();
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -139,9 +133,7 @@ using namespace helpers;
       if ( p()->talents.reverse_entropy.ok() )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
-        {
           p()->procs.reverse_entropy->occur();
-        }
       }
 
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
@@ -160,7 +152,7 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.shadow_invocation->ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
@@ -174,9 +166,7 @@ using namespace helpers;
       if ( p()->talents.reverse_entropy.ok() )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
-        {
           p()->procs.reverse_entropy->occur();
-        }
       }
 
       if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_tick && rng().roll( p()->shadow_invocation_proc_chance ) )
@@ -191,14 +181,10 @@ using namespace helpers;
       double m = spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
-      {
         m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
-      }
 
-      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze && td( t )->debuffs_conflagrate->check() )
-      {
+      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
-      }
 
       return m;
     }
@@ -208,9 +194,7 @@ using namespace helpers;
       double m = spell_t::action_multiplier();
 
       if ( demonology() && affected_by.master_demonologist_dd )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       if ( destruction() && affected_by.chaotic_energies )
       {
@@ -231,9 +215,7 @@ using namespace helpers;
       double m = spell_t::composite_da_multiplier( s );
 
       if ( affliction() && affected_by.potent_afflictions_dd )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       return m;
     }
@@ -243,9 +225,7 @@ using namespace helpers;
       double m = spell_t::composite_ta_multiplier( s );
 
       if ( affliction() && affected_by.potent_afflictions_td )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       return m;
     }
@@ -324,9 +304,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.creeping_death.ok() && affected_by.creeping_death )
-      {
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-      }
     }
 
     bool affliction() const
