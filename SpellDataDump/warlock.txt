@@ -9467,7 +9467,7 @@ Name             : Malefic Rapture (id=324540) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
-Spell Level      : 11
+Spell Level      : 43
 Range            : 100 yards
 Affecting spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1), Deliberate Malice (364437 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Cruel Epiphany (394253 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Succulent Soul (449793 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Affliction 11.0 Class Set 2pc (453643 effects: #1, #2), Demonic Brutality (453908 effect#1), Improved Malefic Rapture (454378 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 73
