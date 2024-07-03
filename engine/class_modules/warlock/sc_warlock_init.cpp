@@ -262,9 +262,6 @@ namespace warlock
 
     // Additional Tier Set spell data
 
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.rite_of_ruvaraad = find_spell( 409725 );
-
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
@@ -495,9 +492,6 @@ namespace warlock
 
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
-
-    buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
-                                 ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
 
     // Pet tracking buffs
     buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );

@@ -1671,13 +1671,6 @@ using namespace helpers;
 
       p()->buffs.demonic_core->decrement();
 
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
-      {
-        timespan_t reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
-
-        p()->cooldowns.grimoire_felguard->adjust( reduction );
-      }
-
       if ( p()->talents.power_siphon.ok() )
         p()->buffs.power_siphon->decrement();
 
@@ -1694,9 +1687,6 @@ using namespace helpers;
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
 
       return m;
     }
@@ -2141,9 +2131,6 @@ using namespace helpers;
       if ( p()->buffs.grimoire_felguard->check() )
       {
         p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
-          p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
       }
 
       if ( p()->buffs.vilefiend->check() )

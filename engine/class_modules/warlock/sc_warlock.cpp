@@ -279,9 +279,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   {
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
-
-    if ( buffs.rite_of_ruvaraad->check() )
-      m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
