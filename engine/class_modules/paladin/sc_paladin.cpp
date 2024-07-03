@@ -181,20 +181,6 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
         p->options.fake_sov ? max_absorb : current_value;
     p->active.shield_of_vengeance_damage->execute();
   }
-  // Shield of Vengeance now needs to function for both Prot and Ret. Since there are instances where Prot also takes no damage, we'll just always deal the maximum absorb as damage, too
-  // For this, we need to know what the maximum amount of absorb was at execution time (Since we sometimes actually lose HP as Prot)
-  // For Ret, it's possible to stack both SoVs, so they add to each other
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    auto* p = static_cast<paladin_t*>( player );
-    bool add = p->buffs.shield_of_vengeance->up();
-    double prev_val = current_value;
-    bool ret_value = absorb_buff_t::trigger( stacks, value, chance, duration );
-    // 2024-06-23 Currently, if you overwrite SoV with a SC proc (or overwrite a SC proc with SoV), only the current amount of absorb goes into SoV's final damage
-    double value_to_add_to = p->bugs ? prev_val : max_absorb;
-    max_absorb          = add ? value_to_add_to + value : value;
-    return ret_value;
-  }
 };
 struct sacrosanct_crusade_t :public absorb_buff_t
 {
@@ -3730,9 +3716,8 @@ void paladin_t::init_spells()
   talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
   // spec talents shared among specs
-  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
+  talents.avenging_wrath_might  = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.relentless_inquisitor = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
-  talents.shield_of_vengeance            = find_spell( 184662 );
 
   talents.divine_toll      = find_talent_spell( talent_tree::CLASS, "Divine Toll" );
   talents.divine_resonance = find_talent_spell( talent_tree::CLASS, "Divine Resonance" );
