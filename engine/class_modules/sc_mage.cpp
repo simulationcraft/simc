@@ -273,6 +273,8 @@ public:
   struct buffs_t
   {
     // Arcane
+    buff_t* aether_attunement;
+    buff_t* aether_attunement_counter;
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
     buff_t* arcane_harmony;
@@ -1851,11 +1853,16 @@ struct arcane_mage_spell_t : public mage_spell_t
         if ( cr == p()->buffs.clearcasting )
         {
           p()->buffs.nether_precision->trigger();
-          p()->buffs.forethought->trigger();
+          p()->buffs.aether_attunement_counter->trigger();
+
+          // TODO: Currently doesn't work on beta; figure out how the set bonus and
+          // Aether interact if they ever fix it.
+
+          //p()->buffs.forethought->trigger();
           // Technically, the buff disappears immediately when it reaches 3 stacks
           // and the Artillery buff is applied with a delay. Here, we just use
           // 3 stacks of the buff to track the delay.
-          p()->buffs.arcane_battery->trigger();
+          //p()->buffs.arcane_battery->trigger();
         }
         break;
       }
@@ -2952,6 +2959,12 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.static_cloud->expire();
     p()->buffs.static_cloud->trigger();
 
+    if ( !background && p()->buffs.aether_attunement_counter->at_max_stacks() )
+    {
+      p()->buffs.aether_attunement_counter->expire();
+      p()->buffs.aether_attunement->trigger();
+    }
+
     if ( !background && p()->buffs.arcane_battery->at_max_stacks() )
     {
       p()->buffs.arcane_battery->expire();
@@ -3065,8 +3078,11 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
-    const auto& aa = p->buffs.arcane_artillery->data();
+    const auto& aa = p->buffs.aether_attunement->data();
     base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
+    // TODO: set bonus is currently broken on beta, figure out how these interact together
+    //const auto& aa = p->buffs.arcane_artillery->data();
+    //base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
   }
 
   action_state_t* new_state() override
@@ -3079,9 +3095,13 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     if ( pre_execute_state )
       return debug_cast<am_state_t*>( pre_execute_state )->targets;
 
-    return p()->buffs.arcane_artillery->check()
-      ? as<int>( p()->buffs.arcane_artillery->data().effectN( 2 ).base_value() )
+    return p()->buffs.aether_attunement->check()
+      ? as<int>( p()->buffs.aether_attunement->data().effectN( 2 ).base_value() )
       : arcane_mage_spell_t::n_targets();
+    // TODO: figure out how these two interact together if they ever fix the set bonus
+    //return p()->buffs.arcane_artillery->check()
+    //  ? as<int>( p()->buffs.arcane_artillery->data().effectN( 2 ).base_value() )
+    //  : arcane_mage_spell_t::n_targets();
   }
 
   void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
@@ -3127,6 +3147,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
+    am *= 1.0 + p()->buffs.aether_attunement->check_value();
     am *= 1.0 + p()->buffs.arcane_artillery->check_value();
 
     return am;
@@ -3192,7 +3213,14 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   void channel_finish()
   {
     p()->buffs.clearcasting_channel->expire();
+    p()->buffs.aether_attunement->expire();
     p()->buffs.arcane_artillery->expire();
+
+    if ( p()->buffs.aether_attunement_counter->at_max_stacks() )
+    {
+      p()->buffs.aether_attunement_counter->expire();
+      p()->buffs.aether_attunement->trigger();
+    }
 
     if ( p()->buffs.arcane_battery->at_max_stacks() )
     {
@@ -6485,85 +6513,90 @@ void mage_t::create_buffs()
   player_t::create_buffs();
 
   // Arcane
-  buffs.arcane_charge        = make_buff( this, "arcane_charge", find_spell( 36032 ) )
-                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_period( 3.0_s )
-                                 ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                                 ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                                   {
-                                     int count = 1;
-                                     // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
-                                     if ( buffs.arcane_surge->check() )
-                                       count += as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
-                                     // TODO: in game, the bolts are slightly delayed, this generally shouldn't matter
-                                     for ( int i = 0; i < count; i++ )
-                                       action.arcane_assault->execute_on_target( target );
-                                     // TODO: the bolts also have a chance to generate extra mana, but it doesn't work in game
-                                     // and spell data has no information about proc rate
-                                   } )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                                   { recalculate_resource_max( RESOURCE_MANA ); } )
-                                 ->set_chance( talents.arcane_familiar.ok() );
-  buffs.arcane_harmony       = make_buff( this, "arcane_harmony", find_spell( 384455 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_chance( talents.arcane_harmony.ok() )
-                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.arcane_surge         = make_buff( this, "arcane_surge", find_spell( 365362 ) )
-                                 ->set_default_value_from_effect( 3 )
-                                 ->set_affects_regen( true )
-                                 ->modify_duration( sets->set( MAGE_ARCANE, T30, B2 )->effectN( 3 ).time_value() );
-  buffs.arcane_tempo         = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
-                                 ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                 ->set_chance( talents.arcane_tempo.ok() );
+  buffs.aether_attunement         = make_buff( this, "aether_attunement", find_spell( 453601 ) )
+                                      ->set_default_value_from_effect( 1 );
+  buffs.aether_attunement_counter = make_buff( this, "aether_attunement_counter", find_spell( 458388 ) )
+                                      ->modify_max_stack( 1 ) // AA happens every 4 CCs rather than the claimed 3.
+                                      ->set_chance( talents.aether_attunement.ok() );
+  buffs.arcane_charge             = make_buff( this, "arcane_charge", find_spell( 36032 ) )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.arcane_familiar           = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_period( 3.0_s )
+                                      ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                                      ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                                        {
+                                          int count = 1;
+                                          // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
+                                          if ( buffs.arcane_surge->check() )
+                                            count += as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
+                                          // TODO: in game, the bolts are slightly delayed, this generally shouldn't matter
+                                          for ( int i = 0; i < count; i++ )
+                                            action.arcane_assault->execute_on_target( target );
+                                          // TODO: the bolts also have a chance to generate extra mana, but it doesn't work in game
+                                          // and spell data has no information about proc rate
+                                        } )
+                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                                        { recalculate_resource_max( RESOURCE_MANA ); } )
+                                      ->set_chance( talents.arcane_familiar.ok() );
+  buffs.arcane_harmony            = make_buff( this, "arcane_harmony", find_spell( 384455 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.arcane_harmony.ok() )
+                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.arcane_surge              = make_buff( this, "arcane_surge", find_spell( 365362 ) )
+                                      ->set_default_value_from_effect( 3 )
+                                      ->set_affects_regen( true )
+                                      ->modify_duration( sets->set( MAGE_ARCANE, T30, B2 )->effectN( 3 ).time_value() );
+  buffs.arcane_tempo              = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
+                                      ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                      ->set_chance( talents.arcane_tempo.ok() );
   // TODO: currently only increases base intellect
-  buffs.big_brained          = make_buff( this, "big_brained", find_spell( 461531 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                 ->set_chance( talents.big_brained.ok() );
-  buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
-                                 ->set_chance( spec.clearcasting->ok() ) ;
-  buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
-                                 ->set_quiet( true );
-  buffs.concentration        = make_buff( this, "concentration", find_spell( 384379 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_activated( false )
-                                 ->set_trigger_spell( talents.concentration );
-  buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_affects_regen( true );
-  buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_cooldown( 0_ms )
-                                 ->set_affects_regen( true );
-  buffs.high_voltage         = make_buff( this, "high_voltage", find_spell( 461525 ) )
-                                 ->set_default_value_from_effect( 1, 0.01 );
-  buffs.impetus              = make_buff( this, "impetus", find_spell( 393939 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.nether_precision     = make_buff( this, "nether_precision", find_spell( 383783 ) )
-                                 ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
-                                 ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
-                                 ->set_activated( false )
-                                 ->set_chance( talents.nether_precision.ok() );
-  buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
-                                 ->set_cooldown( 0_ms )
-                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
-  buffs.siphon_storm         = make_buff( this, "siphon_storm", find_spell( 384267 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
-  buffs.static_cloud         = make_buff( this, "static_cloud", find_spell( 461515 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_chance( talents.static_cloud.ok() );
+  buffs.big_brained               = make_buff( this, "big_brained", find_spell( 461531 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                      ->set_chance( talents.big_brained.ok() );
+  buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->modify_max_stack( as<int>( talents.improved_clearcasting->effectN( 1 ).base_value() ) )
+                                      ->set_chance( spec.clearcasting->ok() ) ;
+  buffs.clearcasting_channel      = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
+                                      ->set_quiet( true );
+  buffs.concentration             = make_buff( this, "concentration", find_spell( 384379 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_activated( false )
+                                      ->set_trigger_spell( talents.concentration );
+  buffs.enlightened_damage        = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.enlightened_mana          = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_affects_regen( true );
+  buffs.evocation                 = make_buff( this, "evocation", find_spell( 12051 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_cooldown( 0_ms )
+                                      ->set_affects_regen( true );
+  buffs.high_voltage              = make_buff( this, "high_voltage", find_spell( 461525 ) )
+                                      ->set_default_value_from_effect( 1, 0.01 );
+  buffs.impetus                   = make_buff( this, "impetus", find_spell( 393939 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
+                                      ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
+                                      ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
+                                      ->set_activated( false )
+                                      ->set_chance( talents.nether_precision.ok() );
+  buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
+                                      ->set_cooldown( 0_ms )
+                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                        { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
+  buffs.siphon_storm              = make_buff( this, "siphon_storm", find_spell( 384267 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+  buffs.static_cloud              = make_buff( this, "static_cloud", find_spell( 461515 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.static_cloud.ok() );
 
 
   // Fire
