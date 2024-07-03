@@ -430,7 +430,8 @@ using namespace helpers;
     // target currently affected by Drain Life if possible).
     struct drain_life_dot_t : public warlock_spell_t
     {
-      drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
+      drain_life_dot_t( warlock_t* p )
+        : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
       { dual = background = true; }
 
       double cost_per_tick( resource_e ) const override
@@ -439,10 +440,9 @@ using namespace helpers;
     
     drain_life_dot_t* aoe_dot;
 
-    drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life )
+    drain_life_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life, options_str )
     {
-      parse_options( options_str );
-
       aoe_dot = new drain_life_dot_t( p );
       add_child( aoe_dot );
 
@@ -466,9 +466,7 @@ using namespace helpers;
             continue;
 
           if ( td( t )->dots_soul_rot->is_ticking() )
-          {
             aoe_dot->execute_on_target( t );
-          }
         }
       }
 
@@ -491,7 +489,7 @@ using namespace helpers;
 
       // If this is the end of the channel, the AoE DoTs will expire correctly
       // Otherwise, we need to cancel them on the spot
-      if ( p()->talents.soul_rot->ok() && early_cancel )
+      if ( p()->talents.soul_rot.ok() && early_cancel )
       {
         const auto& tl = target_list();
 
