@@ -162,7 +162,7 @@ public:
     // here.
     // ab::update_flags = ab::snapshot_flags = 0;
 
-    // Residuals snapshot versatility and player damage multipliers. Spell multipliers are likely snapshot as well,
+    // Residuals snapshot versatility and player damage multipliers. Spell multipliers likely snapshot as well,
     // but there currently isn't a residual that could be used to test this.
     ab::update_flags &= ~( STATE_MUL_SPELL_TA | STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
   }
