@@ -1382,7 +1382,8 @@ using namespace helpers;
   {
     struct umbral_blaze_dot_t : public warlock_spell_t
     {
-      umbral_blaze_dot_t( warlock_t* p ) : warlock_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+      umbral_blaze_dot_t( warlock_t* p )
+        : warlock_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
       {
         background = dual = true;
         hasted_ticks = false;
@@ -1448,13 +1449,9 @@ using namespace helpers;
     hog_impact_t* impact_spell;
 
     hand_of_guldan_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
+      : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
-    {
-      parse_options( options_str );
-
-      add_child( impact_spell );
-    }
+    { add_child( impact_spell ); }
 
     timespan_t travel_time() const override
     { return 0_ms; }
@@ -1507,10 +1504,8 @@ using namespace helpers;
   struct demonbolt_t : public warlock_spell_t
   {
     demonbolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found() )
+      : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found(), options_str )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 2.0;
@@ -1632,12 +1627,9 @@ using namespace helpers;
     implosion_aoe_t* explosion;
 
     implosion_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Implosion", p, p->talents.implosion ),
+      : warlock_spell_t( "Implosion", p, p->talents.implosion, options_str ),
       explosion( new implosion_aoe_t( p ) )
-    {
-      parse_options( options_str );
-      add_child( explosion );
-    }
+    { add_child( explosion ); }
 
     bool ready() override
     { return warlock_spell_t::ready() && p()->warlock_pet_list.wild_imps.n_active_pets() > 0; }
@@ -1707,9 +1699,8 @@ using namespace helpers;
   struct call_dreadstalkers_t : public warlock_spell_t
   {
     call_dreadstalkers_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
+      : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers, options_str )
     {
-      parse_options( options_str );
       may_crit = false;
       affected_by.soul_conduit_base_cost = true;
     }
@@ -1790,10 +1781,8 @@ using namespace helpers;
     };
 
     bilescourge_bombers_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers )
+      : warlock_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers, options_str )
     {
-      parse_options( options_str );
-
       dot_duration = 0_ms;
       may_miss = may_crit = false;
       base_tick_time = 500_ms;
@@ -1838,12 +1827,8 @@ using namespace helpers;
   struct demonic_strength_t : public warlock_spell_t
   {
     demonic_strength_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
-    {
-      parse_options( options_str );
-
-      internal_cooldown = p->get_cooldown( "felstorm_icd" );
-    }
+      : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength, options_str )
+    { internal_cooldown = p->get_cooldown( "felstorm_icd" ); }
 
     bool ready() override
     {
@@ -1878,10 +1863,8 @@ using namespace helpers;
   struct power_siphon_t : public warlock_spell_t
   {
     power_siphon_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Power Siphon", p, p->talents.power_siphon )
+      : warlock_spell_t( "Power Siphon", p, p->talents.power_siphon, options_str )
     {
-      parse_options( options_str );
-
       harmful = false;
       ignore_false_positive = true;
 
@@ -1958,10 +1941,8 @@ using namespace helpers;
   struct summon_demonic_tyrant_t : public warlock_spell_t
   {
     summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant )
+      : warlock_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant, options_str )
     {
-      parse_options( options_str );
-
       harmful = true; // Set to true because of 10.1 class trinket
       may_crit = false;
     }
@@ -2021,9 +2002,7 @@ using namespace helpers;
         p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
 
       if ( p()->buffs.grimoire_felguard->check() )
-      {
         p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
-      }
 
       if ( p()->buffs.vilefiend->check() )
         p()->buffs.vilefiend->extend_duration( p(), extension_time );
@@ -2042,12 +2021,8 @@ using namespace helpers;
   struct grimoire_felguard_t : public warlock_spell_t
   {
     grimoire_felguard_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard )
-    {
-      parse_options( options_str );
-
-      harmful = may_crit = false;
-    }
+      : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard, options_str )
+    { harmful = may_crit = false; }
 
     void execute() override
     {
@@ -2061,10 +2036,8 @@ using namespace helpers;
   struct summon_vilefiend_t : public warlock_spell_t
   {
     summon_vilefiend_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend )
+      : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend, options_str )
     {
-      parse_options( options_str );
-
       harmful = may_crit = false;
 
       if ( p->talents.fel_invocation.ok() )
@@ -2083,10 +2056,8 @@ using namespace helpers;
   struct guillotine_t : public warlock_spell_t
   {
     guillotine_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Guillotine", p, p->talents.guillotine )
+      : warlock_spell_t( "Guillotine", p, p->talents.guillotine, options_str )
     {
-      parse_options( options_str );
-      
       may_crit = false;
       internal_cooldown = p->get_cooldown( "felstorm_icd" );
     }
