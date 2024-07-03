@@ -63,6 +63,10 @@ using namespace helpers;
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
     }
 
+    warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
+      : warlock_spell_t( token, p, s )
+    { parse_options( options_str ); }
+
     warlock_t* p()
     { return static_cast<warlock_t*>( player ); }
     
@@ -110,15 +114,11 @@ using namespace helpers;
           int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
           p()->buffs.impending_ruin->trigger( shards_used ); // Stack change callback switches Impending Ruin to Ritual of Ruin if max stacks reached
           if ( overflow > 0 )
-          {
             make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
-          }
         }
 
-        if ( p()->talents.power_overwhelming->ok() && base_shards > 0 )
-        {
+        if ( p()->talents.power_overwhelming.ok() && base_shards > 0 )
           p()->buffs.power_overwhelming->trigger( base_shards );
-        }
       }
     }
 
@@ -127,9 +127,7 @@ using namespace helpers;
       spell_t::execute();
 
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
-      {
         p()->buffs.rolling_havoc->trigger();
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -139,9 +137,7 @@ using namespace helpers;
       if ( p()->talents.reverse_entropy.ok() )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
-        {
           p()->procs.reverse_entropy->occur();
-        }
       }
 
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
@@ -160,7 +156,7 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.shadow_invocation->ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
@@ -174,9 +170,7 @@ using namespace helpers;
       if ( p()->talents.reverse_entropy.ok() )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
-        {
           p()->procs.reverse_entropy->occur();
-        }
       }
 
       if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_tick && rng().roll( p()->shadow_invocation_proc_chance ) )
@@ -191,14 +185,10 @@ using namespace helpers;
       double m = spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
-      {
         m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
-      }
 
-      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze && td( t )->debuffs_conflagrate->check() )
-      {
+      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
-      }
 
       return m;
     }
@@ -207,12 +197,8 @@ using namespace helpers;
     {
       double m = spell_t::action_multiplier();
 
-      m *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
-
       if ( demonology() && affected_by.master_demonologist_dd )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       if ( destruction() && affected_by.chaotic_energies )
       {
@@ -233,9 +219,7 @@ using namespace helpers;
       double m = spell_t::composite_da_multiplier( s );
 
       if ( affliction() && affected_by.potent_afflictions_dd )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       return m;
     }
@@ -245,9 +229,7 @@ using namespace helpers;
       double m = spell_t::composite_ta_multiplier( s );
 
       if ( affliction() && affected_by.potent_afflictions_td )
-      {
         m *= 1.0 + p()->cache.mastery_value();
-      }
 
       return m;
     }
@@ -326,9 +308,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.creeping_death.ok() && affected_by.creeping_death )
-      {
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-      }
     }
 
     bool affliction() const
@@ -450,7 +430,8 @@ using namespace helpers;
     // target currently affected by Drain Life if possible).
     struct drain_life_dot_t : public warlock_spell_t
     {
-      drain_life_dot_t( warlock_t* p ) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
+      drain_life_dot_t( warlock_t* p )
+        : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
       { dual = background = true; }
 
       double cost_per_tick( resource_e ) const override
@@ -459,10 +440,9 @@ using namespace helpers;
     
     drain_life_dot_t* aoe_dot;
 
-    drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life )
+    drain_life_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life, options_str )
     {
-      parse_options( options_str );
-
       aoe_dot = new drain_life_dot_t( p );
       add_child( aoe_dot );
 
@@ -486,9 +466,7 @@ using namespace helpers;
             continue;
 
           if ( td( t )->dots_soul_rot->is_ticking() )
-          {
             aoe_dot->execute_on_target( t );
-          }
         }
       }
 
@@ -511,7 +489,7 @@ using namespace helpers;
 
       // If this is the end of the channel, the AoE DoTs will expire correctly
       // Otherwise, we need to cancel them on the spot
-      if ( p()->talents.soul_rot->ok() && early_cancel )
+      if ( p()->talents.soul_rot.ok() && early_cancel )
       {
         const auto& tl = target_list();
 
@@ -529,7 +507,8 @@ using namespace helpers;
   {
     struct corruption_dot_t : public warlock_spell_t
     {
-      corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
+      corruption_dot_t( warlock_t* p )
+        : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
       {
         tick_zero = false;
         background = dual = true;
@@ -551,7 +530,7 @@ using namespace helpers;
 
         if ( result_is_hit( d->state->result ) )
         {
-          if ( p()->talents.nightfall->ok() )
+          if ( p()->talents.nightfall.ok() )
           {
             // Blizzard did not publicly release how nightfall was changed.
             // We determined this is the probable functionality copied from Agony by first confirming the
@@ -580,9 +559,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_ta_multiplier( s );
 
         if ( p()->talents.sacrolashs_dark_strike.ok() )
-        {
           m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-        }
 
         return m;
       }
@@ -591,10 +568,8 @@ using namespace helpers;
     corruption_dot_t* periodic;
 
     corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption )
+      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption, options_str )
     {
-      parse_options( options_str );
-
       periodic = new corruption_dot_t( p );
       impact_action = periodic;
       add_child( periodic );
@@ -615,10 +590,8 @@ using namespace helpers;
   struct shadow_bolt_t : public warlock_spell_t
   {
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
+      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
-      parse_options( options_str );
-
       triggers.shadow_invocation_direct = true;
 
       if ( demonology() )
@@ -632,9 +605,7 @@ using namespace helpers;
     timespan_t execute_time() const override
     {
       if ( p()->buffs.nightfall->check() )
-      {
         return 0_ms;
-      }
 
       return warlock_spell_t::execute_time();
     }
@@ -646,7 +617,7 @@ using namespace helpers;
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
-      if ( p()->talents.demonic_calling->ok() )
+      if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
     }
 
@@ -656,10 +627,10 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        if ( p()->talents.shadow_embrace->ok() )
+        if ( p()->talents.shadow_embrace.ok() )
           td( s->target )->debuffs_shadow_embrace->trigger();
 
-        if ( p()->talents.tormented_crescendo->ok() )
+        if ( p()->talents.tormented_crescendo.ok() )
         {
           if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
@@ -675,14 +646,10 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-      {
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
-      }
 
       if ( p()->talents.sacrificed_souls.ok() )
-      {
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
-      }
 
       return m;
     }
@@ -692,9 +659,7 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-      {
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
-      }
 
       return m;
     }
@@ -703,9 +668,8 @@ using namespace helpers;
   struct grimoire_of_sacrifice_t : public warlock_spell_t
   {
     grimoire_of_sacrifice_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Grimoire of Sacrifice", p, p->talents.grimoire_of_sacrifice )
+      : warlock_spell_t( "Grimoire of Sacrifice", p, p->talents.grimoire_of_sacrifice, options_str )
     {
-      parse_options( options_str );
       harmful = false;
       ignore_false_positive = true;
       target = player;
@@ -748,9 +712,8 @@ using namespace helpers;
   struct soulburn_t : public warlock_spell_t
   {
     soulburn_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soulburn", p, p->talents.soulburn )
+      : warlock_spell_t( "Soulburn", p, p->talents.soulburn, options_str )
     {
-      parse_options( options_str );
       harmful = false;
       may_crit = false;
     }
@@ -868,18 +831,15 @@ using namespace helpers;
         assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
-        {
           p()->procs.malefic_rapture[ d ]->occur();
-        }
 
         warlock_spell_t::execute();
       }
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
+      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture, options_str )
     {
-      parse_options( options_str );
       aoe = -1;
 
       impact_action = new malefic_rapture_damage_t( p );
@@ -891,9 +851,7 @@ using namespace helpers;
       double c= warlock_spell_t::cost_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
-      {
         c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
-      }
 
       return c;
     }
@@ -903,9 +861,7 @@ using namespace helpers;
       auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
-      {
         mul *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
-      }
 
       return mul;
     }
@@ -939,19 +895,13 @@ using namespace helpers;
   struct unstable_affliction_t : public warlock_spell_t
   {
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
-    {
-      parse_options( options_str );
-
-      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
-    }
+      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
+    { dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value(); }
 
     void execute() override
     {
       if ( p()->ua_target && p()->ua_target != target )
-      {
         td( p()->ua_target )->dots_unstable_affliction->cancel();
-      }
 
       p()->ua_target = target;
 
@@ -968,9 +918,9 @@ using namespace helpers;
 
   struct agony_t : public warlock_spell_t
   {
-    agony_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Agony", p, p->warlock_base.agony )
+    agony_t( warlock_t* p, util::string_view options_str ) 
+      : warlock_spell_t( "Agony", p, p->warlock_base.agony, options_str )
     {
-      parse_options( options_str );
       may_crit = false;
 
       dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
@@ -980,9 +930,7 @@ using namespace helpers;
     void last_tick ( dot_t* d ) override
     {
       if ( p()->get_active_dots( d ) == 1 )
-      {
         p()->agony_accumulator = rng().range( 0.0, 0.99 );
-      }
 
       warlock_spell_t::last_tick( d );
     }
@@ -1013,7 +961,7 @@ using namespace helpers;
       increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
       // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
-      if ( p()->talents.creeping_death->ok() )
+      if ( p()->talents.creeping_death.ok() )
         increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
 
       p()->agony_accumulator += rng().range( 0.0, increment_max );
@@ -1070,10 +1018,9 @@ using namespace helpers;
     seed_of_corruption_aoe_t* explosion;
 
     seed_of_corruption_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
+      : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption, options_str ),
       explosion( new seed_of_corruption_aoe_t( p ) )
     {
-      parse_options( options_str );
       may_crit = false;
       tick_zero = false;
       base_tick_time = dot_duration;
@@ -1119,9 +1066,7 @@ using namespace helpers;
     void impact( action_state_t* s ) override
     {
       if ( result_is_hit( s->result ) )
-      {
         td( s->target )->soc_threshold = s->composite_spell_power() * p()->talents.seed_of_corruption->effectN( 1 ).percent();
-      }
 
       warlock_spell_t::impact( s );
     }
@@ -1177,11 +1122,8 @@ using namespace helpers;
     };
 
     drain_soul_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
-    {
-      parse_options( options_str );
-      channeled = true;
-    }
+      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
+    { channeled = true; }
 
     action_state_t* new_state() override
     { return new drain_soul_state_t( this, target ); }
@@ -1224,7 +1166,7 @@ using namespace helpers;
 
       if ( result_is_hit( d->state->result ) )
       {
-        if ( p()->talents.shadow_embrace->ok() )
+        if ( p()->talents.shadow_embrace.ok() )
           td( d->target )->debuffs_shadow_embrace->trigger();
 
         if ( p()->talents.tormented_crescendo.ok() )
@@ -1256,7 +1198,8 @@ using namespace helpers;
   {
     struct vile_taint_dot_t : public warlock_spell_t
     {
-      vile_taint_dot_t( warlock_t* p ) : warlock_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
+      vile_taint_dot_t( warlock_t* p )
+        : warlock_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
       {
         tick_zero = background = true;
         execute_action = new agony_t( p, "" );
@@ -1274,10 +1217,9 @@ using namespace helpers;
       }
     };
     
-    vile_taint_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Vile Taint", p, p->talents.vile_taint )
+    vile_taint_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Vile Taint", p, p->talents.vile_taint, options_str )
     {
-      parse_options( options_str );
-
       impact_action = new vile_taint_dot_t( p );
       add_child( impact_action );
     }
@@ -1305,9 +1247,8 @@ using namespace helpers;
     };
 
     phantom_singularity_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity )
+      : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity, options_str )
     {
-      parse_options( options_str );
       callbacks = false;
       hasted_ticks = true;
       tick_action = new phantom_singularity_tick_t( p );
@@ -1327,9 +1268,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
         td( s->target )->debuffs_infirmity->trigger();
-      }
     }
 
     void last_tick( dot_t* d ) override
@@ -1337,35 +1276,30 @@ using namespace helpers;
       warlock_spell_t::last_tick( d );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
         td( d->target )->debuffs_infirmity->expire();
-      }
     }
   };
 
   struct haunt_t : public warlock_spell_t
   {
-    haunt_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Haunt", p, p->talents.haunt )
-    { parse_options( options_str ); }
+    haunt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
+    { }
 
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
-      {
         td( s->target )->debuffs_haunt->trigger();
-      }
     }
   };
 
   struct summon_darkglare_t : public warlock_spell_t
   {
     summon_darkglare_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
+      : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare, options_str )
     {
-      parse_options( options_str );
-
       harmful = callbacks = true; // Set to true because of 10.1 class trinket
       may_crit = may_miss = false;
     }
@@ -1377,9 +1311,7 @@ using namespace helpers;
       timespan_t summon_duration = p()->talents.summon_darkglare->duration();
 
       if ( p()->talents.malevolent_visionary.ok() )
-      {
         summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
-      }
 
       p()->warlock_pet_list.darkglares.spawn( summon_duration );
 
@@ -1411,11 +1343,8 @@ using namespace helpers;
   struct soul_rot_t : public warlock_spell_t
   {
     soul_rot_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot )
-    {
-      parse_options( options_str );
-      aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
-    }
+      : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot, options_str )
+    { aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() ); }
 
     void execute() override
     {
@@ -1439,13 +1368,8 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
-      // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
-      // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
-      // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
       if ( s->chain_target == 0 && aoe > 1 )
-      {
         m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
-      }
 
       return m;
     }
@@ -1458,7 +1382,8 @@ using namespace helpers;
   {
     struct umbral_blaze_dot_t : public warlock_spell_t
     {
-      umbral_blaze_dot_t( warlock_t* p ) : warlock_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+      umbral_blaze_dot_t( warlock_t* p )
+        : warlock_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
       {
         background = dual = true;
         hasted_ticks = false;
@@ -1524,13 +1449,9 @@ using namespace helpers;
     hog_impact_t* impact_spell;
 
     hand_of_guldan_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan ),
+      : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
-    {
-      parse_options( options_str );
-
-      add_child( impact_spell );
-    }
+    { add_child( impact_spell ); }
 
     timespan_t travel_time() const override
     { return 0_ms; }
@@ -1583,10 +1504,8 @@ using namespace helpers;
   struct demonbolt_t : public warlock_spell_t
   {
     demonbolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found() )
+      : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found(), options_str )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 2.0;
@@ -1708,12 +1627,9 @@ using namespace helpers;
     implosion_aoe_t* explosion;
 
     implosion_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Implosion", p, p->talents.implosion ),
+      : warlock_spell_t( "Implosion", p, p->talents.implosion, options_str ),
       explosion( new implosion_aoe_t( p ) )
-    {
-      parse_options( options_str );
-      add_child( explosion );
-    }
+    { add_child( explosion ); }
 
     bool ready() override
     { return warlock_spell_t::ready() && p()->warlock_pet_list.wild_imps.n_active_pets() > 0; }
@@ -1783,9 +1699,8 @@ using namespace helpers;
   struct call_dreadstalkers_t : public warlock_spell_t
   {
     call_dreadstalkers_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
+      : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers, options_str )
     {
-      parse_options( options_str );
       may_crit = false;
       affected_by.soul_conduit_base_cost = true;
     }
@@ -1866,10 +1781,8 @@ using namespace helpers;
     };
 
     bilescourge_bombers_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers )
+      : warlock_spell_t( "Bilescourge Bombers", p, p->talents.bilescourge_bombers, options_str )
     {
-      parse_options( options_str );
-
       dot_duration = 0_ms;
       may_miss = may_crit = false;
       base_tick_time = 500_ms;
@@ -1914,12 +1827,8 @@ using namespace helpers;
   struct demonic_strength_t : public warlock_spell_t
   {
     demonic_strength_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
-    {
-      parse_options( options_str );
-
-      internal_cooldown = p->get_cooldown( "felstorm_icd" );
-    }
+      : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength, options_str )
+    { internal_cooldown = p->get_cooldown( "felstorm_icd" ); }
 
     bool ready() override
     {
@@ -1954,10 +1863,8 @@ using namespace helpers;
   struct power_siphon_t : public warlock_spell_t
   {
     power_siphon_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Power Siphon", p, p->talents.power_siphon )
+      : warlock_spell_t( "Power Siphon", p, p->talents.power_siphon, options_str )
     {
-      parse_options( options_str );
-
       harmful = false;
       ignore_false_positive = true;
 
@@ -2034,10 +1941,8 @@ using namespace helpers;
   struct summon_demonic_tyrant_t : public warlock_spell_t
   {
     summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant )
+      : warlock_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant, options_str )
     {
-      parse_options( options_str );
-
       harmful = true; // Set to true because of 10.1 class trinket
       may_crit = false;
     }
@@ -2097,9 +2002,7 @@ using namespace helpers;
         p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
 
       if ( p()->buffs.grimoire_felguard->check() )
-      {
         p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
-      }
 
       if ( p()->buffs.vilefiend->check() )
         p()->buffs.vilefiend->extend_duration( p(), extension_time );
@@ -2118,12 +2021,8 @@ using namespace helpers;
   struct grimoire_felguard_t : public warlock_spell_t
   {
     grimoire_felguard_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard )
-    {
-      parse_options( options_str );
-
-      harmful = may_crit = false;
-    }
+      : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard, options_str )
+    { harmful = may_crit = false; }
 
     void execute() override
     {
@@ -2137,10 +2036,8 @@ using namespace helpers;
   struct summon_vilefiend_t : public warlock_spell_t
   {
     summon_vilefiend_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend )
+      : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend, options_str )
     {
-      parse_options( options_str );
-
       harmful = may_crit = false;
 
       if ( p->talents.fel_invocation.ok() )
@@ -2159,10 +2056,8 @@ using namespace helpers;
   struct guillotine_t : public warlock_spell_t
   {
     guillotine_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Guillotine", p, p->talents.guillotine )
+      : warlock_spell_t( "Guillotine", p, p->talents.guillotine, options_str )
     {
-      parse_options( options_str );
-      
       may_crit = false;
       internal_cooldown = p->get_cooldown( "felstorm_icd" );
     }
@@ -2273,11 +2168,9 @@ using namespace helpers;
     incinerate_fnb_t* fnb_action;
 
     incinerate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate ),
+      : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate, options_str ),
       fnb_action( new incinerate_fnb_t( p ) )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = ( p->warlock_base.incinerate_energize->effectN( 1 ).base_value() ) / 10.0;
@@ -2392,10 +2285,8 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
@@ -2413,9 +2304,7 @@ using namespace helpers;
   {
     internal_combustion_t( warlock_t* p )
       : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    {
-      background = dual = true;
-    }
+    { background = dual = true; }
 
     void init() override
     {
@@ -2455,13 +2344,11 @@ using namespace helpers;
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
+      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.chaos_incarnate = p->talents.chaos_incarnate->ok();
+      affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       if ( p->talents.internal_combustion.ok() )
       {
@@ -2562,9 +2449,7 @@ using namespace helpers;
     }
 
     double composite_crit_chance() const override
-    {
-      return 1.0;
-    }
+    { return 1.0; }
 
     double calculate_direct_amount( action_state_t* s ) const override
     {
@@ -2579,10 +2464,8 @@ using namespace helpers;
   struct conflagrate_t : public warlock_spell_t
   {
     conflagrate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate )
+      : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
@@ -2617,7 +2500,7 @@ using namespace helpers;
         p()->procs.conflagration_of_chaos_cf->occur();
       }
 
-      if ( p()->talents.backdraft->ok() )
+      if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
 
       if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
@@ -2683,10 +2566,8 @@ using namespace helpers;
     };
 
     rain_of_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Rain of Fire", p, p->talents.rain_of_fire )
+      : warlock_spell_t( "Rain of Fire", p, p->talents.rain_of_fire, options_str )
     {
-      parse_options( options_str );
-      
       may_miss = may_crit = false;
       base_tick_time = 1_s;
       dot_duration = 0_s;
@@ -2746,12 +2627,8 @@ using namespace helpers;
   struct havoc_t : public warlock_spell_t
   {
     havoc_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Havoc", p, p->talents.havoc )
-    {
-      parse_options( options_str );
-
-      may_crit = false;
-    }
+      : warlock_spell_t( "Havoc", p, p->talents.havoc, options_str )
+    { may_crit = false; }
 
     void impact( action_state_t* s ) override
     {
@@ -2766,11 +2643,9 @@ using namespace helpers;
     immolate_t* immolate;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm ),
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str ),
       immolate( new immolate_t( p, "" ) )
     {
-      parse_options( options_str );
-
       aoe = -1;
 
       affected_by.chaotic_energies = true;
@@ -2793,10 +2668,8 @@ using namespace helpers;
   struct shadowburn_t : public warlock_spell_t
   {
     shadowburn_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn )
+      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str )
     {
-      parse_options( options_str );
-
       cooldown->hasted = true;
       
       affected_by.chaotic_energies = true;
@@ -2907,11 +2780,9 @@ using namespace helpers;
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
+      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire, options_str ),
       channel_demonfire_tick( new channel_demonfire_tick_t( p ) )
     {
-      parse_options( options_str );
-      
       channeled = true;
       hasted_ticks = true;
       may_crit = false;
@@ -3084,10 +2955,8 @@ using namespace helpers;
     chaos_tear_t* chaos_tear;
 
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
+      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
-      parse_options( options_str );
-      
       harmful = true;
 
       energize_type = action_energize::ON_CAST;
@@ -3145,10 +3014,8 @@ using namespace helpers;
   struct summon_infernal_t : public warlock_spell_t
   {
     summon_infernal_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal )
+      : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal, options_str )
     {
-      parse_options( options_str );
-
       may_crit = false;
       impact_action = new infernal_awakening_t( p );
       add_child( impact_action );
@@ -3171,11 +3038,9 @@ using namespace helpers;
     immolate_t* immolate;
 
     soul_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire ),
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str ),
       immolate( new immolate_t( p, "" ) )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
@@ -3407,8 +3272,8 @@ using namespace helpers;
       return new corruption_t( this, options_str, false );
     if ( action_name == "shadow_bolt" && specialization() != WARLOCK_DESTRUCTION )
       return new shadow_bolt_t( this, options_str );
-    if ( action_name == "grimoire_of_sacrifice" )
-      return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
+    if ( action_name == "grimoire_of_sacrifice" && specialization() != WARLOCK_DEMONOLOGY )
+      return new grimoire_of_sacrifice_t( this, options_str );
     if ( action_name == "interrupt" )
       return new interrupt_t( action_name, this, options_str );
     if ( action_name == "soulburn" )

@@ -4,37 +4,6 @@
 
 namespace warlock
 {
-  void warlock_t::init_items()
-  {
-    player_t::init_items();
-  
-    set_bonus_type_e tier_to_enable;
-    switch ( specialization() )
-    {
-      case WARLOCK_AFFLICTION:
-        tier_to_enable = T31;
-        break;
-      case WARLOCK_DEMONOLOGY:
-        tier_to_enable = T31;
-        break;
-      case WARLOCK_DESTRUCTION:
-        tier_to_enable = T29;
-        break;
-      default:
-        return;
-    }
-
-    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    {
-      sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-    }
-
-    if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    {
-      sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
-    }
-  }
-
   void warlock_t::init_spells()
   {
     player_t::init_spells();
@@ -96,9 +65,6 @@ namespace warlock
     talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
 
     talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
-
-    talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
-    talents.demonic_synergy = find_spell( 171982 );
 
     talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
     talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
@@ -415,9 +381,6 @@ namespace warlock
     buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
                                       ->set_chance( 1.0 );
 
-    buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
-                                ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
     buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
 
     buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
@@ -667,12 +630,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_affliction()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_demonology()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_destruction()
   {
@@ -738,24 +699,20 @@ namespace warlock
 
     range::for_each( sim->target_list, [ this ]( const player_t* t ) {
       if ( auto td = target_data[ t ] )
-      {
         td->reset();
-      }
 
       range::for_each( t->pet_list, [ this ]( const player_t* add ) {
         if ( auto td = target_data[ add ] )
-        {
           td->reset();
-        }
       } );
     } );
 
-    warlock_pet_list.active            = nullptr;
-    havoc_target                       = nullptr;
-    ua_target                          = nullptr;
-    agony_accumulator                  = rng().range( 0.0, 0.99 );
-    corruption_accumulator             = rng().range( 0.0, 0.99 );
-    shadow_invocation_proc_chance        = 0.2;
+    warlock_pet_list.active = nullptr;
+    havoc_target = nullptr;
+    ua_target = nullptr;
+    agony_accumulator = rng().range( 0.0, 0.99 );
+    corruption_accumulator = rng().range( 0.0, 0.99 );
+    shadow_invocation_proc_chance = 0.2;
     wild_imp_spawns.clear();
   }
 }

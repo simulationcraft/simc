@@ -33,24 +33,20 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> demonic_synergy;
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> infernal_command;
-    propagate_const<buff_t*> nerzhuls_volition; // Damage buff on Nether Portal demons
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
-    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent
+    propagate_const<buff_t*> reign_of_tyranny; // 10.2 replaces the old buff behavior for this talent TODO: Confirm no issues with this or Demonic Servitude
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
-    propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
-    propagate_const<buff_t*> demonic_power; // Starting in 10.2, this buff is on the pets rather than the player
+    propagate_const<buff_t*> demonic_power;
   } buffs;
 
-  bool is_main_pet          = false;
+  bool is_main_pet = false;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
 
   warlock_pet_t( warlock_t*, util::string_view, pet_e, bool = false );
@@ -62,7 +58,6 @@ struct warlock_pet_t : public pet_t
   double composite_spell_haste() const override;
   double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
-  void init_special_effects() override;
   void arise() override;
   void demise() override;
   void apply_affecting_auras( action_t& action ) override;
@@ -70,9 +65,7 @@ struct warlock_pet_t : public pet_t
   target_specific_t<warlock_pet_td_t> target_data;
 
   const warlock_pet_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
+  { return target_data[ target ]; }
 
   warlock_pet_td_t* get_target_data( player_t* target ) const override
   {
@@ -85,9 +78,7 @@ struct warlock_pet_t : public pet_t
   }
 
   resource_e primary_resource() const override
-  {
-    return RESOURCE_ENERGY;
-  }
+  { return RESOURCE_ENERGY; }
 
   warlock_t* o();
   const warlock_t* o() const;
@@ -100,7 +91,7 @@ struct warlock_pet_t : public pet_t
     double melee_pos;
 
     travel_t( warlock_pet_t* player ) : travel_t( player, "travel" )
-    {  }
+    { }
 
     travel_t( warlock_pet_t* player, util::string_view action_name ) : action_t( ACTION_OTHER, action_name, player )
     {
@@ -110,14 +101,10 @@ struct warlock_pet_t : public pet_t
     }
 
     void execute() override
-    {
-      player->current.distance = melee_pos;
-    }
+    { player->current.distance = melee_pos; }
 
     timespan_t execute_time() const override
-    {
-      return timespan_t::from_seconds( ( player->current.distance - melee_pos ) / speed );
-    }
+    { return timespan_t::from_seconds( ( player->current.distance - melee_pos ) / speed ); }
 
     bool ready() override
     {
@@ -126,9 +113,7 @@ struct warlock_pet_t : public pet_t
     }
 
     bool usable_moving() const override
-    {
-      return true;
-    }
+    { return true; }
   };
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -192,14 +177,10 @@ public:
   }
 
   warlock_pet_t* p()
-  {
-    return static_cast<warlock_pet_t*>( ab::player );
-  }
+  { return static_cast<warlock_pet_t*>( ab::player ); }
 
   const warlock_pet_t* p() const
-  {
-    return static_cast<warlock_pet_t*>( ab::player );
-  }
+  { return static_cast<warlock_pet_t*>( ab::player ); }
 
   virtual void execute()
   {
@@ -207,30 +188,20 @@ public:
 
     // Some aoe pet abilities can actually reduce to 0 targets, so bail out early if we hit that situation
     if ( ab::n_targets() != 0 && ab::target_list().size() == 0 )
-    {
       return;
-    }
   }
 
   warlock_td_t* owner_td( player_t* t )
-  {
-    return p()->o()->get_target_data( t );
-  }
+  { return p()->o()->get_target_data( t ); }
 
   const warlock_td_t* owner_td( player_t* t ) const
-  {
-    return p()->o()->get_target_data( t );
-  }
+  { return p()->o()->get_target_data( t ); }
 
   warlock_pet_td_t* pet_td( player_t* t )
-  {
-    return p()->get_target_data( t );
-  }
+  { return p()->get_target_data( t ); }
 
   const warlock_pet_td_t* pet_td( player_t* t ) const
-  {
-    return p()->get_target_data( t );
-  }
+  { return p()->get_target_data( t ); }
 };
 
 // TODO: Switch to a general autoattack template if one is added
@@ -268,16 +239,13 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
   }
 
   timespan_t execute_time() const override
-  {
-    return first ? 0_ms : warlock_pet_action_t::execute_time();
-  }
+  { return first ? 0_ms : warlock_pet_action_t::execute_time(); }
 
   void execute() override
   {
     if ( first )
-    {
       first = false;
-    }
+
     if ( !player->executing && !player->channeling )
     {
       melee_attack_t::execute();
@@ -305,28 +273,22 @@ private:
 
 public:
   warlock_pet_melee_attack_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
-  {
-    _init_warlock_pet_melee_attack_t();
-  }
+  { _init_warlock_pet_melee_attack_t(); }
 
   warlock_pet_melee_attack_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
-  {
-    _init_warlock_pet_melee_attack_t();
-  }
+  { _init_warlock_pet_melee_attack_t(); }
 };
 
 struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 public:
   warlock_pet_spell_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
-  {
-  }
+  { }
 
   warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
-  {
-  }
+  { }
 };
 
 namespace base
@@ -370,11 +332,7 @@ struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
   action_t* felguard_guillotine;
-  struct hatred_t {
-    action_t* proc;
-    player_t* target;
-  } immutable_hatred;
-  action_t* hatred_proc; // New for 10.2 version, scrap previous struct when 10.2 goes live
+  action_t* hatred_proc;
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
   int demonic_strength_executes;
@@ -420,7 +378,6 @@ struct wild_imp_pet_t : public warlock_pet_t
   action_t* firebolt;
   bool power_siphon;
   bool imploded;
-  bool demonic_consumption;
 
   wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;
@@ -451,7 +408,7 @@ struct dreadstalker_t : public warlock_pet_t
 struct vilefiend_t : public warlock_simple_pet_t
 {
   int bile_spit_executes;
-  buff_t* caustic_presence;
+  buff_t* caustic_presence; // TODO: This was renamed to Infernal Presence for Mark of F'harg
 
   vilefiend_t( warlock_t* );
   void init_base_stats() override;
@@ -464,7 +421,6 @@ struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
-  void arise() override;
   double composite_player_multiplier( school_e ) const override;
 };
 }  // namespace demonology
