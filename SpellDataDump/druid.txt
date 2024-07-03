@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4405,7 +4405,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1070146)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Solar Eclipse increases Wrath's Astral Power generation by $s1% and Lunar Eclipse increases Starfire's Astral Power generation by $s2% for each target hit beyond the first, up to ${$s2*$s3}%.
+Description      : Solar Eclipse increases Wrath's Astral Power generation by $s1% and Lunar Eclipse increases Starfire's damage and Astral Power generation by $s2% for each target hit beyond the first, up to ${$s2*$s3}%.
 
 Name             : Soul of the Forest (id=114108) [Spell Family (7)] 
 Class            : Druid
@@ -5272,15 +5272,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850)
                    Family Flags: 18
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850)
                    Family Flags: 18
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191148)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -5296,7 +5296,7 @@ Effects          :
 #7 (id=260778)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=872569)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=1080967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -5614,25 +5614,6 @@ Effects          :
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
                    Family Flags: 4
 Description      : You can apply Rejuvenation twice to the same target. Rejuvenation's duration is increased by ${$s1/1000} sec.
-
-Name             : Shadow Channel (id=155680) 
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Range            : 10 yards
-Duration         : Aura (infinite)
-Attributes       : ........ ........ .......x ........   ..x..... ........ ........ ....x... 
-                 : ..x..... ........ ........ ........   ........ .....x.. ....x... ....x... 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), Is Channelled (34), No Aura Icon (60), Ignore Line of Sight (66), Hide Channel Bar (109), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow While Stunned (163), No Aura Log (202)
-Effects          :
-#1 (id=216372)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Nearby Target (38)
 
 Name             : Rake (id=155722) [Spell Family (7)] 
 Class            : Druid
@@ -7582,9 +7563,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=298295)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.16300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.17800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11440 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=739525)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d. If dispelled, causes $356474s1 damage to the dispeller and blasts them upwards.
@@ -9652,9 +9633,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -9698,7 +9679,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724053)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 40892.65 (coefficient=16.35583) | PvP Coefficient: 0.50000 | Trigger Spell: 272872 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41834.3 (coefficient=16.35583) | PvP Coefficient: 0.50000 | Trigger Spell: 272872 | Target: Self (1)
 Description      : While Celestial Alignment is active, your damaging spells call a Streaking Star, dealing an additional $s1 damage when they are not a repeat of the previous ability.
 Tooltip          : While Celestial Alignment is active, your damaging spells cause an additional $s1 damage when they are not a repeat of the previous ability.
 
@@ -9993,7 +9974,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=729398)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 46521.91 (coefficient=18.60736) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47593.19 (coefficient=18.60736) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Ferocious Bite has a $s2% chance per combo point to increase the damage of your next Maim by $s1 per combo point.
@@ -10063,7 +10044,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734247)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 858.9597 (coefficient=0.343558) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 878.7392 (coefficient=0.343558) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Starfall's stars deal an additional $s1 damage to nearby enemies when they damage an enemy afflicted by Moonfire.
 
 Name             : Layered Mane (id=279552) [Spell Family (7), Passive] 
@@ -10083,7 +10064,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=735909)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 102.0388 (coefficient=0.22508) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 861.8245 (coefficient=0.22508) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=735910)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=735914)   : Apply Aura (6) | Dummy (4)
@@ -10262,7 +10243,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=737266)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 346332.9 (coefficient=138.5227) | PvP Coefficient: 0.20000 | Trigger Spell: 280161 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 354308 (coefficient=138.5227) | PvP Coefficient: 0.20000 | Trigger Spell: 280161 | Target: Self (1)
 Description      : When you use Barkskin or Survival Instincts, absorb $s1 damage over $280165d.
 
 Name             : Ursoc's Endurance (id=280161) [Spell Family (7), Hidden] 
@@ -10513,7 +10494,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=753603)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 606.1831 (coefficient=1.337136) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5119.853 (coefficient=1.337136) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=753606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consuming Gore grants you $s1 mastery for $289315d and has a $s2% chance to activate Gore.
@@ -15449,7 +15430,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1014956)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517)
                    Family Flags: 59
 #2 (id=1084896)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -15457,7 +15438,7 @@ Effects          :
                    Affected Spells: Eclipse (Lunar) (48518)
                    Family Flags: 42
 #3 (id=1150828)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Eclipse (Lunar) (48518)
                    Family Flags: 42
 Description      : Solar Eclipse increases the damage of Wrath by an additional $s1%. 
@@ -15483,7 +15464,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1014959)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1033069)  : None (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.75000
 Description      : Every $s1th Shooting Star calls down a Full Moon at $s2% effectiveness upon its target.
@@ -16309,7 +16290,7 @@ Effects          :
                    Family Flags: 75
 Description      : Tiger's Fury causes your next $391873n finishing $Lmove:moves; to restore $391874s1 combo $Lpoint:points;.
 
-Tiger's Fury's also increases the periodic damage of your bleeds $?a155680[and Moonfire ][]by an additional $s3% for their full duration.
+Tiger's Fury's also increases the periodic damage of your bleeds $?a155580[and Moonfire ][]by an additional $s3% for their full duration.
 
 Name             : Tiger's Tenacity (id=391873) [Spell Family (7)] 
 Class            : Druid
@@ -17764,7 +17745,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1032875)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.60000 | Misc Value: 3 | Misc Value 2: 2318 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.60000 | Misc Value: 3 | Misc Value 2: 2318 (Label) | Target: Self (1)
                    Affected Spells (Label): Umbral Embrace (393763)
 #2 (id=1032888)  : Apply Aura (6) | Proc Trigger Spell (42): Umbral Embrace
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393763 | Target: Self (1)
@@ -18086,10 +18067,10 @@ Effects          :
 #4 (id=1033286)  : Apply Aura (6) | Dummy (4)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1033287)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2330 (Label) | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2330 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation: Chosen of Elune (102560), Incarnation: Chosen of Elune (390414)
 #6 (id=1033288)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2330 (Label) | Target: Self (1)
+                   Base Value: -120 | Scaled Value: -120 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2330 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation: Chosen of Elune (102560), Incarnation: Chosen of Elune (390414)
 Description      : $@spellicon394013 $@spellname394013
 Reduces the Astral Power cost of Starsurge by ${$s5*-1/10}, and the Astral Power cost of Starfall by ${$s6*-1/10}.
@@ -18170,7 +18151,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033385)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 Description      : $@spelldesc394046
 
 Name             : Balance of All Things (id=394048) [Spell Family (7), Passive] 
@@ -18255,8 +18236,7 @@ Description      : $@spelldesc394048
 Tooltip          : Critical strike chance with Arcane spells increased $w1%.
 
 Name             : Astral Smolder (id=394058) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=5, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=mul, values=(1, 2)]
+Talent Entry     : Balance [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Druid
 School           : Astral
 Spell Type       : None
@@ -18359,7 +18339,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1033467)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1033493)  : None (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Every other Eclipse creates a Fury of Elune at $s1% effectiveness that follows your current target for $s2 sec.
@@ -19670,7 +19650,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1069985)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
 #2 (id=1069990)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -20695,7 +20675,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1101681)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.16600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.44860 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1101682)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=1169121)  : Dummy (3)
@@ -21015,7 +20995,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1109706)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.12000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Target (63) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Target (63) -> At Enemy in Area (16)
 #2 (id=1119703)  : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 #3 (id=1119704)  : Energize Power (30)
@@ -21209,7 +21189,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1113276)  : Apply Pet Area Aura (119) | Periodic Energize Power (24): every 2 seconds
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 8 | Radius: 60 yards | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 8 | Radius: 60 yards | Target: Self (1)
 Description      : $@spelldesc429215
 
 Name             : Minor Cenarion Ward (id=429222) [Spell Family (7)] 
@@ -21459,7 +21439,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1113818)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
 #2 (id=1118640)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -21514,11 +21494,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1113829)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Moonfire (164812)
                    Family Flags: 92
 #2 (id=1117669)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812)
                    Family Flags: 92
 Description      : Moonfire deals 10% additional damage.
@@ -21754,7 +21734,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1117671)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Wrath (5176), Maul (6807), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Architect's Aligner (363789), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Star Burst (406430), Crashing Star (408310), Lunar Beam (414613), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 18, 77
 Description      : $@spelldesc429532
@@ -22602,7 +22582,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133808)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Bloodseeker Thorns expire or you use Ferocious Bite on their target they explode in thorns, dealing $440122s1 physical damage to nearby enemies. Damage reduced above 5 targets.
+Description      : When Bloodseeker Vines expire or you use Ferocious Bite on their target they explode in thorns, dealing $440122s1 physical damage to nearby enemies. Damage reduced above 5 targets.
 
 When Symbiotic Blooms expire or you cast Rejuvenation on their target flowers grow around their target, healing them and up to $440121s2 nearby allies for $440121s1.
 
@@ -22638,13 +22618,13 @@ Affecting spells : Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Ber
 Family Flags     : 98
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1133810)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
@@ -23233,8 +23213,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
-#1 (id=1136554)  : Apply Aura (6) | Modify Attribute% (80) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=1136554)  : Apply Aura (6) | Modify Total Stat% (137) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1136556)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ironfur (192081)
@@ -23846,14 +23826,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Target Procs (113), Aura Points On Client (268)
 Effects          :
 #1 (id=1150047)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Starfall (50286), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Stellar Flare (202347), Shooting Stars (202497), Starfall (359399), Crashing Star (408310)
                    Family Flags: 55, 92, 105, 116, 127
 #2 (id=1150049)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 3041 (Label) | Target: Any Target (25)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3041 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Fungal Growth (81281)
 #3 (id=1150050)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 3529 (Label) | Target: Any Target (25)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3529 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Astral Smolder (394061)
 Description      : $@spelldesc450212
 Tooltip          : Damage over time from $@auracaster increased by $w1%.
@@ -23934,9 +23914,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150218)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1150219)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
 Description      : Casting Wrath in an Eclipse has an $s1% chance to make your next Starsurge free.$?s191034[
 
 Casting Starfire in an Eclipse has a $s2% chance to make your next Starfall free.][]
@@ -24016,7 +23996,7 @@ Name             : Umbral Inspiration (id=450419) [Spell Family (7)]
 Class            : Druid
 School           : Astral
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 6 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -24028,11 +24008,11 @@ Attributes       : ........ ........ ........ .....x..   ........ ........ .....
                  : No Immunities (29), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1150305)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfall (50286), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Stellar Flare (202347), Shooting Stars (202497), Starfall (359399), Crashing Star (408310)
                    Family Flags: 55, 92, 105, 116, 127
 #2 (id=1150306)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starfall (50286), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Stellar Flare (202347), Shooting Stars (202497), Starfall (359399), Crashing Star (408310)
                    Family Flags: 55, 92, 105, 116, 127
 Description      : $@spelldesc450418
@@ -24098,7 +24078,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Always Cast Log (255)
 Effects          :
 #1 (id=1150605)  : Energize Power (30)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc450598
 
 Name             : Dreadful Wound (id=451177) [Spell Family (7)] 

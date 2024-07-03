@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -246,9 +246,9 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 
@@ -4208,6 +4208,9 @@ Name             : Monk (id=137022) [Spell Family (53), Passive, Hidden]
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4538,7 +4541,7 @@ Effects          :
                    Affected Spells: Spinning Crane Kick (101546), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Spinning Crane Kick (322729)
                    Family Flags: 5, 63, 76
 #21 (id=1080990)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.34000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #22 (id=1080991)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -7400,9 +7403,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7857,7 +7860,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=749794)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1515.457 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12799.63 (coefficient=3.342839) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your Combo Strikes grant a stacking ${$287062s3/100}.1% chance for your next Fists of Fury to grant $s1 Haste and invoke Xuen, The White Tiger for $287063d.
 
 Name             : Fury of Xuen (id=287062) [Spell Family (53)] 
@@ -7958,7 +7961,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=752477)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 176792.5 (coefficient=70.71166) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 180863.5 (coefficient=70.71166) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=752478)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #3 (id=754207)   : Dummy (3)
@@ -8173,7 +8176,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=809203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1873 | Target: Self (1)
-Description      : Targets rooted by Binding Shot, knocked back by High Explosive Trap, knocked up by Implosive Trap, incapacitated by Scatter Shot, or stunned by Intimidation deal $s1% less damage to you for $321469d after the effect ends.
+Description      : Targets stunned by Binding Shot, knocked back by High Explosive Trap, knocked up by Implosive Trap, incapacitated by Scatter Shot, or stunned by Intimidation deal $s1% less damage to you for $321469d after the effect ends.
 
 Name             : Binding Shackles (id=321469) [Spell Family (9)] 
 Class            : Hunter, Monk
@@ -15360,7 +15363,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 194471.7 (coefficient=77.78283) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 198949.9 (coefficient=77.78283) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1031559)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1031560)  : Dummy (3)
@@ -19848,8 +19851,8 @@ School           : Physical
 Spell Type       : None
 Labels           : 3600: Path of Resurgence (451084 effect#1), Path of Resurgence (451084 effect#2), Path of Resurgence (451084 effect#3), Path of Resurgence (451084 effect#4)
 Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   .....x.. ........ ........ ........   
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ..x..x.. ........ ........ ........   
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20751,7 +20754,7 @@ Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=4,
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 0.75 seconds
+Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
@@ -21729,7 +21732,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1152062)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc451029
+Description      : $@spelldesc451036
 Tooltip          : Healing for $o1 over $d.
 
 Name             : Martial Mixture (id=451454) [Spell Family (53), Passive] 
@@ -23174,7 +23177,7 @@ Effects          :
 #1 (id=1158360)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 455179 | Target: Self (1)
 #2 (id=1158361)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1158362)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you fall below $s1% health, you gain an absorb for $s2% of your recently Purified damage, or a minimum of $s3% of your maximum health. Cannot occur more than once every $455180d.

@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.0.55288 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -38,7 +38,7 @@ Spell Level      : 2
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #5, #6, #15), Destruction Warlock (137046 effect#13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1), Sacrolash's Dark Strike (386986 effect#1), Haunted Soul (387310 effect#1), Kindled Malice (405330 effects: #2, #3), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #5, #6, #15), Destruction Warlock (137046 effect#13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1), Sacrolash's Dark Strike (386986 effect#1), Haunted Soul (387310 effect#1), Kindled Malice (405330 effects: #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
 Family Flags     : 1
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -66,7 +66,7 @@ Resource         : 1.5% Base Mana (0) (id=43)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -129,7 +129,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Shadowy Inspiration (196606 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Sacrificed Souls (272591 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effect#1), Infirmity (409765 effect#1), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Rune of Shadows (453744 effects: #2, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Shadowy Inspiration (196606 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Sacrificed Souls (272591 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effect#1), Infirmity (409765 effect#1), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Rune of Shadows (453744 effects: #2, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -356,7 +356,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effects: #1, #2), Agony (231792 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Rolling Agony (339481 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effects: #1, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Mark of Xavius (440046 effect#1), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effects: #1, #2), Agony (231792 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Rolling Agony (339481 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effects: #1, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Xavius (440046 effect#1), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 10, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -749,7 +749,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 45 seconds
 Category         : 631
-Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Decimation (457555 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Decimation (457555 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 65
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -846,7 +846,7 @@ Velocity         : 24 yards/sec
 Duration         : 3 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Affecting spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3)
+Affecting spells : Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4)
 Family Flags     : 19, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1011,7 +1011,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 651: Warlock (137042 effect#5)
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387110 effect#1), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387414 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Echo of the Azj'Aqir (455674 effect#1), Blistering Atrophy (456939 effects: #1, #2, #3), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387110 effect#1), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387414 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Echo of the Azj'Aqir (455674 effect#1), Blistering Atrophy (456939 effects: #1, #2, #3), Infirmity (458219 effect#1)
 Family Flags     : 7, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1066,7 +1066,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2), Improved Conflagrate (231793 effect#1), Cinders of the Azj'Aqir (337166 effect#1), Cinders of the Azj'Aqir (337166 effect#2), Explosive Potential (388827 effect#1)
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Flashover (267115 effect#3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387109 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Warlock Destruction 11.0 Class Set 2pc (453647 effect#2), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Flashover (267115 effect#3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Conflagration of Chaos (387109 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Warlock Destruction 11.0 Class Set 2pc (453647 effect#2), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 55, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1184,7 +1184,7 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 22
-Labels           : 3843: Xalan's Cruelty (440040 effect#3)
+Labels           : 3843: Xalan's Ferocity (440044 effect#5)
 Triggered by     : Immolation (19483)
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1369,7 +1369,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 28
 Range            : 50000 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 47, 49
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
@@ -1467,7 +1467,7 @@ GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Sargerei Technique (405955 effect#2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Sargerei Technique (405955 effect#2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 38, 49, 118
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1499,7 +1499,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Unstable Affliction (334315 effect#1), Haunted Soul (387310 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Unstable Affliction (334315 effect#1), Haunted Soul (387310 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1686,7 +1686,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1808,7 +1808,7 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 583.1278 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | PvP Coefficient: 1.00000 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
@@ -1818,7 +1818,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 14
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Norgannon's Foresight (236431 effect#1), Inferno (270545 effects: #2, #3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Norgannon's Foresight (236431 effect#1), Inferno (270545 effects: #2, #3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 92
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -1840,7 +1840,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 27
 Range            : 50000 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Kindled Malice (405330 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Kindled Malice (405330 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4)
 Family Flags     : 47
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... ........ x....... ........ 
@@ -1868,7 +1868,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 18 seconds
 Cooldown         : 15 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Improved Haunt (458034 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Improved Haunt (458034 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 49, 101
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -2209,7 +2209,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 8, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -2842,7 +2842,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#2), Fel Firebolt (334591 effect#1), Socrethar's Guile (405936 effect#2), Imp-erator (416230 effect#1), Sataiel's Volition (449637 effect#2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Fel Firebolt (334591 effect#1), Socrethar's Guile (405936 effect#2), Imp-erator (416230 effect#1), Sataiel's Volition (449637 effect#2)
 Family Flags     : 12
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3656,7 +3656,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effects: #1, #2, #3), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ruin (387103 effect#1), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #3), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ruin (387103 effect#1), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4221,7 +4221,7 @@ Spell Type       : Magic
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4279,7 +4279,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4301,7 +4301,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Infirmity (458219 effect#1)
 Family Flags     : 4, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4744,7 +4744,7 @@ Class            : Warlock
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
-Affecting spells : Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2)
+Affecting spells : Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2)
 Family Flags     : 4, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -4840,7 +4840,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Demonic Inspiration (386858 effect#2), Wrathful Minion (386864 effect#2), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Demonic Inspiration (386858 effect#2), Wrathful Minion (386864 effect#2), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Triggered by     : Grimoire of Sacrifice (196099)
 Family Flags     : 49, 116
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -5106,7 +5106,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ......x. 
@@ -5266,7 +5266,7 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Demonfire Mastery (456946 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Demonfire Mastery (456946 effect#1), Infirmity (458219 effect#1)
 Triggered by     : Channel Demonfire (281362)
 Family Flags     : 15, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5426,7 +5426,7 @@ Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=10748)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effects: #3, #4), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#2), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #3, #4), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effects: #1, #2), Sargerei Technique (405955 effect#3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Necrolyte Teachings (449620 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effects: #3, #4), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#2), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #3, #4), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effects: #1, #2), Sargerei Technique (405955 effect#3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Necrolyte Teachings (449620 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 23, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5653,7 +5653,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 16 seconds
 Cooldown         : 45 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #2, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #2, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5682,7 +5682,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
-Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ..x..... ........ ........ ........   ........ ........ x....... ........ 
@@ -5754,7 +5754,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Malevolent Visionary (387273 effect#1), Xalan's Cruelty (440040 effect#2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Malevolent Visionary (387273 effect#1), Xalan's Cruelty (440040 effect#1)
 Family Flags     : 90
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5775,7 +5775,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 500 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #2, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #2, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x....x. 
@@ -6410,7 +6410,7 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Duration         : 25 seconds
-Affecting spells : Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2)
+Affecting spells : Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Ashen Remains (387252 effect#1), Scalding Flames (388832 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2)
 Family Flags     : 4, 118
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -6514,7 +6514,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6541,7 +6541,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6568,7 +6568,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6595,7 +6595,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6622,7 +6622,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6649,7 +6649,7 @@ Spell Level      : 9
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Inevitable Demise (273525 effect#3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Soul Rot (331623 effect#1), Inevitable Demise (334320 effects: #2, #3), Claw of Endereth (337038 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Soul Rot (386998 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Inevitable Demise (273525 effect#3), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Soul Rot (331623 effect#1), Inevitable Demise (334320 effects: #2, #3), Claw of Endereth (337038 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Soul Rot (386998 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 3, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6722,7 +6722,7 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 12
 Range            : 100 yards
-Affecting spells : Backdraft (117828 effects: #1, #2, #4), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Sargerei Technique (405955 effect#2), Umbrafire Embers (409652 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Wither (445474 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #4), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Sargerei Technique (405955 effect#2), Umbrafire Embers (409652 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1)
 Family Flags     : 38, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -6998,9 +6998,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 881388.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -7085,8 +7085,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=707212)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#1 (id=707212)   : Charge (96)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x9c9f | Trigger Spell: 267964 | Target: Enemy (6)
 Description      : Command your Felguard to strike into the soul of its enemy, dealing $<damage> Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -7716,7 +7716,7 @@ Effects          :
 Description      : Conflagrate deals $s3% increased damage and grants an additional charge of Backdraft.
 
 Name             : Wicked Maw (id=267170) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -7832,7 +7832,7 @@ Effects          :
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -7973,9 +7973,8 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
-Cooldown         : 10 seconds
 Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#2)
-Triggered by     : Soul Strike (428344)
+Triggered by     : Soul Strike (264057), Soul Strike (428344)
 Family Flags     : 37
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8512,6 +8511,7 @@ Spell Type       : None
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
+Labels           : 3934: Shadowtouched (453619 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -8527,9 +8527,9 @@ Effects          :
                    Affected Spells: Hand of Gul'dan (86040), Implosion (196277), Implosion (196278), Hand of Gul'dan (196282), Totem Mastery (226772), Demonbolt (264178), Implosion (370371)
                    Family Flags: 46, 70, 86
 #2 (id=1155647)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Doom (603), Doom Bolt (85692), Fel Firebolt (104318), Soul Effigy (205178), Dreadbite (205196), Bilescourge Bombers (267213), Soul Strike (267964), Demonfire (270481), Doom (453567), Doom Bolt (453616)
-                   Family Flags: 12, 37, 71, 89, 120, 122
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Doom (603), Doom Bolt (85692), Soul Effigy (205178), Dreadbite (205196), Bilescourge Bombers (267213), Soul Strike (267964), Demonfire (270481), Doom (453567), Doom Bolt (453616)
+                   Family Flags: 37, 71, 89, 120, 122
 Description      : $@spelldesc267170
 Tooltip          : Damage taken from the Warlock's Shadowflame damage spells increased by $s1%.
 
@@ -8815,7 +8815,7 @@ Max Targets      : 8
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Unstable Affliction (316099 effect#4), Haunted Soul (387310 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #1, #3, #4), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Unstable Affliction (316099 effect#4), Haunted Soul (387310 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #1, #3, #4), Xalan's Cruelty (440040 effects: #1, #3, #4)
 Family Flags     : 85
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -9062,7 +9062,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=753682)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 17900.12 (coefficient=7.159509) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18312.31 (coefficient=7.159509) | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=753683)   : Dummy (3)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
 #3 (id=753684)   : Dummy (3)
@@ -9291,7 +9291,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (334315 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Perpetual Unstability (459376 effect#2)
 Family Flags     : 40, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9469,7 +9469,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 11
 Range            : 100 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1), Deliberate Malice (364437 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Cruel Epiphany (394253 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Succulent Soul (449793 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Affliction 11.0 Class Set 2pc (453643 effects: #1, #2), Demonic Brutality (453908 effect#1), Improved Malefic Rapture (454378 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1), Deliberate Malice (364437 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Cruel Epiphany (394253 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Succulent Soul (449793 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Affliction 11.0 Class Set 2pc (453643 effects: #1, #2), Demonic Brutality (453908 effect#1), Improved Malefic Rapture (454378 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 73
 Attributes       : ........ ........ ........ x..x...x   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -9574,7 +9574,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 976
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 112
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -11788,7 +11788,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 0.1 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ....x... 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -12057,7 +12057,7 @@ Description      : When Soul Leech absorbs damage, $s1% of damage taken is absor
 Reduces damage taken by ${$s4/10}.1%.
 
 Name             : Annihilan Training (id=386174) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12686,7 +12686,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #1, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Warlock Affliction 10.1 Class Set 2pc (405571 effects: #1, #3, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 85
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -12759,7 +12759,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Eater (340348 effects: #1, #2), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 112
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -12792,7 +12792,7 @@ Spell Level      : 48
 Range            : 40 yards
 Max Targets      : 1
 Duration         : 8 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Unstable Affliction (316099 effect#4), Soul Eater (340348 effects: #1, #2), Haunted Soul (387310 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effect#2), Xalan's Ferocity (440044 effects: #1, #3)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Deadwind Harvester (216708 effect#4), Norgannon's Foresight (236431 effect#1), Unstable Affliction (316099 effect#4), Soul Eater (340348 effects: #1, #2), Haunted Soul (387310 effect#1), Warlock Affliction 10.2 Class Set 2pc (422917 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4)
 Family Flags     : 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -14408,7 +14408,7 @@ School           : Magic
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 24 yards/sec
-Labels           : 3845: Xalan's Cruelty (440040 effect#5)
+Labels           : 3845: Xalan's Ferocity (440044 effect#6)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 91
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15020,7 +15020,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Labels           : 3844: Xalan's Cruelty (440040 effect#4)
+Labels           : 3844: Xalan's Cruelty (440040 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Triggered by     : Shadow Barrage (394237)
 Family Flags     : 49, 91
@@ -15083,7 +15083,7 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 16 yards/sec
-Labels           : 3845: Xalan's Cruelty (440040 effect#5)
+Labels           : 3845: Xalan's Ferocity (440044 effect#6)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 91
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -15805,7 +15805,7 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effect#1), Xalan's Ferocity (440044 effects: #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Demonfire Mastery (456946 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #4), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Demonfire Mastery (456946 effect#1), Infirmity (458219 effect#1)
 Triggered by     : Channel Demonfire (409889)
 Family Flags     : 15, 49
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -15865,7 +15865,7 @@ Effects          :
 Description      : $@spelldesc416219
 
 Name             : Imp-erator (id=416230) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16022,7 +16022,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 64
 Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -16109,7 +16109,7 @@ Description      : $@spelldesc387526
 Tooltip          : Damage done increased by $w1%.
 
 Name             : Shadow Invocation (id=422054) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16583,7 +16583,7 @@ $@spellicon267964 $@spellname267964
 $@spelldesc267964
 
 Name             : Fel Invocation (id=428351) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -17459,7 +17459,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Shadowy Inspiration (196606 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Conflagrate (265931 effect#1), Sacrificed Souls (272591 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effects: #1, #2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Wither (445474 effect#2), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Rune of Shadows (453744 effects: #2, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Shadowy Inspiration (196606 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Conflagrate (265931 effect#1), Sacrificed Souls (272591 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effects: #1, #2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Rune of Shadows (453744 effects: #2, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 0, 38, 49, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17563,7 +17563,7 @@ Spell Type       : None
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 Travel Time      : 1 seconds
-Affecting spells : Backdraft (117828 effects: #1, #2, #3), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effect#2), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Blazing Meteor (394776 effect#2), Umbrafire Embers (409652 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Wither (445474 effect#2), Succulent Soul (449793 effect#3), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2)
+Affecting spells : Backdraft (117828 effects: #1, #2, #3), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effect#2), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Blazing Meteor (394776 effect#2), Umbrafire Embers (409652 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Succulent Soul (449793 effect#3), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2)
 Family Flags     : 21, 45
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17646,21 +17646,21 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133699)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
-                   Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
-#2 (id=1137484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Eye Beam (205231), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
                    Family Flags: 0, 1, 3, 7, 8, 9, 10, 19, 23, 40, 43, 45, 47, 64, 72, 73, 84, 85, 88, 90, 101, 112, 116
-#3 (id=1166858)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
-#4 (id=1166859)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+#2 (id=1137484)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
-#5 (id=1166860)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3845 (Label) | Radius: 60 yards | Target: Self (1)
-Description      : Your Fire spells gain $s1% more critical strike chance from all sources.
-
-Your Shadow spells gain $s2% more critical strike chance from all sources.
+#3 (id=1166858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
+#4 (id=1166859)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
+#5 (id=1166860)  : Apply Aura Pet (174) | Modify Damage Done% (79)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Radius: 60 yards | Target: Self (1)
+Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
@@ -17710,25 +17710,23 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
-                   Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
-#2 (id=1136088)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
-#3 (id=1139023)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
-                   Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
-#4 (id=1139024)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#2 (id=1136088)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
-#5 (id=1166683)  : Apply Aura Pet (174) | Modify Damage Done% (79)
+#3 (id=1139023)  : Apply Aura Pet (174) | Modify Damage Done% (79)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Radius: 60 yards | Target: Self (1)
-#6 (id=1166684)  : Apply Aura Pet (174) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Radius: 60 yards | Target: Self (1)
-Description      : Shadow damage increased by $s1%. Fire damage increased by $s2%.
+#4 (id=1139024)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
+#5 (id=1166683)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
+#6 (id=1166684)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3845 (Label) | Radius: 60 yards | Target: Self (1)
+Description      : Fire damage dealt by your spells and abilities is increased by $s1% and your Fire spells gain $s4% more critical strike chance from all sources.
 
 Name             : Mark of Peroth'arn (id=440045) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=4, col=3, max_rank=1, req_points=1]
@@ -18135,7 +18133,7 @@ Resource         : 1.5% Base Mana (0) (id=306535)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Labels           : 3444: Bleakheart Tactics (440051 effect#1)
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 1, 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -18166,7 +18164,7 @@ Duration         : 18 seconds
 Labels           : 3445: Hatefury Rituals (440048 effect#1), Hatefury Rituals (440048 effect#2), Bleakheart Tactics (440051 effect#2)
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Triggered by     : Wither (445468)
 Family Flags     : 1, 4, 49, 118
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -18590,7 +18588,6 @@ Effects          :
 Description      : Fel Domination cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Succulent Soul (id=449793) [Spell Family (5)] 
-Hotfixed         : Max stacks (99 -> 4)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19408,7 +19405,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Shadowtouched (id=453619) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19422,8 +19419,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1155617)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1155617)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3934 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wicked Maw (270569)
 Description      : Wicked Maw causes the target to take $s1% additional Shadow damage from your demons.
 
 Name             : Warlock Affliction 11.0 Class Set 4pc (id=453642) [Spell Family (5), Passive, Hidden] 
@@ -19560,7 +19558,7 @@ Effects          :
 Description      : Incinerate critical strike chance increased by $s1%. Conflagrate critical strike chance increased by $s2%.
 
 Name             : Flametouched (id=453699) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19606,7 +19604,7 @@ Effects          :
 Description      : $@spelldesc453699
 
 Name             : Rune of Shadows (id=453744) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19635,7 +19633,7 @@ Description      : Increases all damage done by your pet by $s1%.
 Reduces the cast time of Shadow Bolt by $s2% and increases its damage by $s3%.
 
 Name             : Improved Demonic Tactics (id=453800) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19656,7 +19654,7 @@ Effects          :
 Description      : Increases your primary Felguard's critical strike chance equal to $s2% of your critical strike chance.
 
 Name             : Demonic Brutality (id=453908) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19675,13 +19673,13 @@ Effects          :
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Withered Ground (325673), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shadowbolt Volley (453176), Doom (453567), Summon Overfiend (457578), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555)
                    Family Flags: 49
 #2 (id=1156061)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x4364 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x4364 | Target: Self (1)
 #3 (id=1156072)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x17ef3 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x17ef3 | Target: Self (1)
 #4 (id=1156073)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x21288 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x21288 | Target: Self (1)
 #5 (id=1156074)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x350ee | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 0x350ee | Target: Self (1)
 Description      : Critical strikes from your spells and your demons deal $s1% increased damage.
 
 Name             : Improved Malefic Rapture (id=454378) [Spell Family (5), Passive, Hidden] 
@@ -19904,7 +19902,7 @@ Effects          :
 Description      : $@spelldesc455489
 
 Name             : Foul Mouth (id=455502) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19918,8 +19916,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1158978)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1158978)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0x21288 | Target: Self (1)
 Description      : Increases Vilefiend damage by $s1% and your Vilefiend's Bile Spit now applies Wicked Maw.
 
 Name             : Fiendish Oblation (id=455569) [Spell Family (5), Passive] 
@@ -19943,7 +19941,7 @@ Effects          :
 Description      : Damage dealt by Grimoire: Felguard is increased by an additional $s1% and you gain a Demonic Core when Grimoire: Felguard ends.
 
 Name             : The Houndmaster's Gambit (id=455572) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -20050,7 +20048,7 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 1 seconds
+Duration         : 30 seconds
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -20062,7 +20060,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not On Player (167)
 Effects          :
 #1 (id=1159200)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Any Target (25)
                    Affected School(s): All
 Description      : $@spelldesc455572
 Tooltip          : Damage dealt increased by $s1%.
@@ -20082,7 +20080,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
 Effects          :
 #1 (id=1159208)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 50 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
 Description      : $@spelldesc455572
 
 Name             : The Houndmaster's Gambit (id=455621) [Spell Family (5), Hidden] 
@@ -20100,7 +20098,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
 Effects          :
 #1 (id=1159219)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 50 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
 Description      : $@spelldesc455572
 
 Name             : Impending Doom (id=455626) [Spell Family (5)] 
@@ -20507,7 +20505,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 20 yards/sec
 Duration         : 8 seconds
-Affecting spells : Backdraft (117828 effects: #1, #2, #3), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ruin (387103 effect#1), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #2), Xalan's Ferocity (440044 effects: #1, #2, #3, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #3), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ruin (387103 effect#1), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

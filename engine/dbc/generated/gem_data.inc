@@ -1,4 +1,4 @@
-// Gem properties, wow build 11.0.0.55288
+// Gem properties, wow build 11.0.2.55399
 static const std::array<gem_property_data_t, 2271> __gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
@@ -2181,9 +2181,9 @@ static const std::array<gem_property_data_t, 2271> __gem_property_data { {
   { 4156,  7211, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
   { 4157,  7212, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
   { 4158,  7213, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435488s1% Maximum Mana per unique Algari gem color
-  { 4159,  7214, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
-  { 4160,  7215, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
-  { 4161,  7216, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435500s1% Critical Effect per unique Algari gem color
+  { 4159,  7214, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% Critical Effect per unique Algari gem color
+  { 4160,  7215, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% Critical Effect per unique Algari gem color
+  { 4161,  7216, 0x0000000e, 0 }, // +$k1 Primary Stat and +0.15% Critical Effect per unique Algari gem color
   { 4162,  7217, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4163,  7218, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color
   { 4164,  7219, 0x0000000e, 0 }, // +$k1 Primary Stat and +$435501s1% Movement Speed per unique Algari gem color

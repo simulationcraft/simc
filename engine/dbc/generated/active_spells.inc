@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.55288
-static const std::array<active_class_spell_t, 309> __active_spells_data { {
+// Active class spells, wow build 11.0.2.55399
+static const std::array<active_class_spell_t, 310> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -42,7 +42,7 @@ static const std::array<active_class_spell_t, 309> __active_spells_data { {
   {  2,    0, 290608,      0, "Crusader's Direhorn"                },
   {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,    0, 391054,      0, "Intercession"                       },
-  {  2,    0, 453785,      0, "Earthen Judicator's Ramolith"       },
+  {  2,    0, 453785,      0, "Earthen Ordinant's Ramolith"        },
   {  2,   65,    498,      0, "Divine Protection"                  },
   {  2,   65,   4987, 440013, "Cleanse"                            },
   {  2,   65,  53563,      0, "Beacon of Light"                    },
@@ -176,6 +176,7 @@ static const std::array<active_class_spell_t, 309> __active_spells_data { {
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 192106,      0, "Lightning Shield"                   },
   {  7,    0, 318038,      0, "Flametongue Weapon"                 },
+  {  7,    0, 462854,      0, "Skyfury"                            },
   {  7,  263, 196884,      0, "Feral Lunge"                        },
   {  7,  264,  52127,      0, "Water Shield"                       },
   {  7,  264,  77130, 440012, "Purify Spirit"                      },
@@ -311,7 +312,7 @@ static const std::array<active_class_spell_t, 309> __active_spells_data { {
   { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.55288
+// Pet active spells, wow build 11.0.2.55399
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
@@ -446,6 +447,6 @@ static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  9, 171021, "Torch Magic"                        },
   {  9, 171023, "Blaze Magic"                        },
   {  9, 171138, "Shadow Lock"                        },
-  {  9, 267964, "Soul Strike"                        },
+  {  9, 264057, "Soul Strike"                        },
 } };
 

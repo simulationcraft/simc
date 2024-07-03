@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.0.55288
-static const std::array<specialization_spell_entry_t, 494> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.2.55399
+static const std::array<specialization_spell_entry_t, 498> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -231,6 +231,7 @@ static const std::array<specialization_spell_entry_t, 494> __specialization_spel
   {  6,  252, 325554,      0, "Dark Transformation"               , "Rank 2" },
   {  6,  252, 462062,      0, "Death Knight"                      , 0 },
   {  6,  252, 462064,      0, "Unholy Death Knight"               , 0 },
+  {  7,  262,  77756,      0, "Lava Surge"                        , 0 },
   {  7,  262,  86108,      0, "Mail Specialization"               , 0 },
   {  7,  262, 137040,      0, "Elemental Shaman"                  , 0 },
   {  7,  262, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
@@ -238,6 +239,7 @@ static const std::array<specialization_spell_entry_t, 494> __specialization_spel
   {  7,  262, 187828,      0, "Maelstrom"                         , 0 },
   {  7,  262, 190488,      0, "Fulmination Controller"            , 0 },
   {  7,  262, 343725,      0, "Maelstrom"                         , 0 },
+  {  7,  262, 378776,      0, "Inundate"                          , 0 },
   {  7,  262, 462106,      0, "Shaman"                            , 0 },
   {  7,  262, 462107,      0, "Elemental Shaman"                  , 0 },
   {  7,  263,  77223,      0, "Mastery: Enhanced Elements"        , 0 },
@@ -254,6 +256,7 @@ static const std::array<specialization_spell_entry_t, 494> __specialization_spel
   {  7,  264,  52127,      0, "Water Shield"                      , 0 },
   {  7,  264,  77130, 440012, "Purify Spirit"                     , 0 },
   {  7,  264,  77226,      0, "Mastery: Deep Healing"             , 0 },
+  {  7,  264,  77756,      0, "Lava Surge"                        , 0 },
   {  7,  264,  86100,      0, "Mail Specialization"               , 0 },
   {  7,  264, 137039,      0, "Restoration Shaman"                , 0 },
   {  7,  264, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
@@ -270,6 +273,7 @@ static const std::array<specialization_spell_entry_t, 494> __specialization_spel
   {  8,   62, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  8,   62, 190427,      0, "Arcane Charge"                     , 0 },
   {  8,   62, 190740,      0, "Mastery: Savant"                   , 0 },
+  {  8,   62, 321526,      0, "Mana Adept"                        , 0 },
   {  8,   62, 321745,      0, "Improved Prismatic Barrier"        , 0 },
   {  8,   62, 462083,      0, "Arcane Mage"                       , 0 },
   {  8,   62, 462084,      0, "Mage"                              , 0 },

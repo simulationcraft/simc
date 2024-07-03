@@ -1,4 +1,4 @@
-// Item effects, wow build 11.0.0.55288
+// Item effects, wow build 11.0.2.55399
 static const std::array<item_effect_t, 9739> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -6039,11 +6039,11 @@ static const std::array<item_effect_t, 9739> __item_effect_data { {
   {  27303,  92090, 133269,   0,   1,    0,      -1,      -1 }, // Grace
   {  27304,  91003, 133275,   0,   1,    0,      -1,      -1 }, // Crescendo of Suffering
   {  27305,  92200, 133281,   0,   0, 1141,   60000,   10000 }, // Blademaster
-  {  27306,  92099, 133282,   0,   0, 1141,  120000,   20000 }, // Speed of Thought
+  {  27306,  92099, 133282,   0,   0,    0,      -1,      -1 }, // Speed of Thought
   {  27307,  92207, 133291,   0,   1,    0,      -1,      -1 }, // Duelist
   {  27308,  91374, 133300,   0,   0, 1141,   90000,   15000 }, // Battle Prowess
   {  27309,  90986, 133304,   0,   1,    0,      -1,      -1 }, // Dead Winds
-  {  27310,  91308, 133305,   0,   0,    0,  120000,      -1 }, // Egg Shell
+  {  27310,  91308, 133305,   0,   0,    0,      -1,      -1 }, // Egg Shell
   {  27311,  96173, 133305,   1,   1,    0,      -1,      -1 }, // Corrupted Egg Shell
   {  27334, 102658, 133420,   0,   1,    0,      -1,      -1 }, // Arrow of Time
   {  27339,  45054, 133461,   0,   1,    0,      -1,      -1 }, // Augment Pain
@@ -9597,44 +9597,44 @@ static const std::array<item_effect_t, 9739> __item_effect_data { {
   { 186496, 457283, 222732,   0,   0,   11,       0,      -1 }, // Feast of the Divine Day
   { 187295, 457285, 222733,   0,   0,   11,       0,      -1 }, // Feast of the Midnight Masquerade
   { 186499, 455960, 222735,   0,   0,   11,       0,      -1 }, // Everything Stew
-  { 185985, 457301, 222736,   0,   0,    0,       0,      -1 }, // Refreshment
+  { 185985, 457301, 222736,   0,   0,    0,       0,      -1 }, // Chippy Tea
   { 185989, 382242, 222740,   0,   0,    0,       0,      -1 }, // Refreshment
   { 185991, 382242, 222742,   0,   0,    0,       0,      -1 }, // Refreshment
   { 185992, 382242, 222743,   0,   0,    0,       0,      -1 }, // Refreshment
-  { 185999, 457418, 222750,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186500, 457418, 222751,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186501, 457418, 222752,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186502, 457418, 222753,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186503, 457419, 222754,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186504, 457419, 222755,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186505, 457419, 222756,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186506, 457419, 222757,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186507, 457413, 222758,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186508, 457412, 222759,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186509, 457414, 222760,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186510, 457415, 222761,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186511, 457401, 222762,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186512, 457528, 222763,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186513, 457402, 222764,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186514, 457403, 222765,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186515, 457404, 222766,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186516, 457405, 222767,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
+  { 185999, 457418, 222750,   0,   0,   11,       0,      -1 }, // Hearty Tier 1 Meal
+  { 186500, 457418, 222751,   0,   0,   11,       0,      -1 }, // Hearty Tier 1 Meal
+  { 186501, 457418, 222752,   0,   0,   11,       0,      -1 }, // Hearty Tier 1 Meal
+  { 186502, 457418, 222753,   0,   0,   11,       0,      -1 }, // Hearty Tier 1 Meal
+  { 186503, 457419, 222754,   0,   0,   11,       0,      -1 }, // Hearty Tier 2 Meal
+  { 186504, 457419, 222755,   0,   0,   11,       0,      -1 }, // Hearty Tier 2 Meal
+  { 186505, 457419, 222756,   0,   0,   11,       0,      -1 }, // Hearty Tier 2 Meal
+  { 186506, 457419, 222757,   0,   0,   11,       0,      -1 }, // Hearty Tier 2 Meal
+  { 186507, 457413, 222758,   0,   0,   11,       0,      -1 }, // Hearty Meat and Potatoes
+  { 186508, 457412, 222759,   0,   0,   11,       0,      -1 }, // Hearty Rib Stickers
+  { 186509, 457414, 222760,   0,   0,   11,       0,      -1 }, // Hearty Sweet and Sour Meatballs
+  { 186510, 457415, 222761,   0,   0,   11,       0,      -1 }, // Hearty Tender Twilight Jerky
+  { 186511, 457401, 222762,   0,   0,   11,       0,      -1 }, // Hearty Zesty Nibblers
+  { 186512, 457528, 222763,   0,   0,   11,       0,      -1 }, // Hearty Fiery Fish Sticks
+  { 186513, 457402, 222764,   0,   0,   11,       0,      -1 }, // Hearty Ginger Glazed Fillet
+  { 186514, 457403, 222765,   0,   0,   11,       0,      -1 }, // Hearty Salty Dog
+  { 186515, 457404, 222766,   0,   0,   11,       0,      -1 }, // Hearty Deepfin Patty
+  { 186516, 457405, 222767,   0,   0,   11,       0,      -1 }, // Hearty Sweet and Spicy Soup
   { 186517, 462211, 222768,   0,   0,   11,       0,      -1 }, // Hearty Sushi Special
-  { 186518, 457406, 222769,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186519, 457407, 222770,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186520, 457408, 222771,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186521, 457409, 222772,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186522, 457417, 222773,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186523, 457410, 222774,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186524, 457411, 222775,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186525, 457482, 222776,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186526, 457482, 222777,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186527, 457482, 222778,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
-  { 186528, 457482, 222779,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
+  { 186518, 457406, 222769,   0,   0,   11,       0,      -1 }, // Hearty Fish and Chips
+  { 186519, 457407, 222770,   0,   0,   11,       0,      -1 }, // Hearty Salt Baked Seafood
+  { 186520, 457408, 222771,   0,   0,   11,       0,      -1 }, // Hearty Marinated Tenderloins
+  { 186521, 457409, 222772,   0,   0,   11,       0,      -1 }, // Hearty Sizzling Honey Roast
+  { 186522, 457417, 222773,   0,   0,   11,       0,      -1 }, // Hearty Mycobloom Risotto
+  { 186523, 457410, 222774,   0,   0,   11,       0,      -1 }, // Hearty Stuffed Cave Peppers
+  { 186524, 457411, 222775,   0,   0,   11,       0,      -1 }, // Hearty Angler's Delight
+  { 186525, 457482, 222776,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
+  { 186526, 457482, 222777,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
+  { 186527, 457482, 222778,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
+  { 186528, 457482, 222779,   0,   0,   11,       0,      -1 }, // Hearty Tier 4.2 Meal
   { 186529, 462212, 222780,   0,   0,   11,       0,      -1 }, // Hearty Feast of the Divine Day
   { 186530, 462213, 222781,   0,   0,   11,       0,      -1 }, // Hearty Feast of the Midnight Masquerade
   { 186532, 457487, 222783,   0,   0,   11,       0,      -1 }, // Hearty Everything Stew
-  { 186033, 457418, 222784,   0,   0,   11,       0,      -1 }, // Hearty Refreshment
+  { 186033, 457418, 222784,   0,   0,   11,       0,      -1 }, // Hearty Tier 1 Meal
   { 187446, 457629, 222811,   0,   1,    0,      -1,      -1 }, // Warm Sunrise Bracers
   { 186947, 455524, 222812,   0,   1,    0,      -1,      -1 }, // Cool Sunset Bracers
   { 187068, 455786, 222841,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)

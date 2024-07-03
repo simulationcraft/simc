@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 11.0.0.55288
+// Permanent item enchants, wow build 11.0.2.55399
 static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -334,8 +334,8 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 7342,  2,  4, 0x00000800, 0x0000001f, "glimmering_mastery"                },
   { 7343,  3,  4, 0x00000800, 0x0000001f, "glimmering_mastery"                },
   { 7347,  1,  4, 0x00000800, 0x0000001f, "glimmering_versatility"            },
-  { 7349,  2,  4, 0x00000800, 0x0000001f, "glimmering_versatility"            },
-  { 7348,  3,  4, 0x00000800, 0x0000001f, "glimmering_versatility"            },
+  { 7348,  2,  4, 0x00000800, 0x0000001f, "glimmering_versatility"            },
+  { 7349,  3,  4, 0x00000800, 0x0000001f, "glimmering_versatility"            },
   { 2661,  0,  4, 0x00100020, 0x0000001e, "glorious_stats"                    },
   { 3260,  0,  4, 0x00000400, 0x0000001e, "glove_reinforcements"              },
   { 4175,  0,  2, 0x00000000, 0x0004000c, "gnomish_xray_scope"                },
