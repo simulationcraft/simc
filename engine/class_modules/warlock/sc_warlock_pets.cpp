@@ -296,7 +296,7 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
 struct spell_lock_t : public warlock_pet_spell_t
 {
   spell_lock_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) ) // TODO: Add Spell Lock to base warlock data
   {
     parse_options( options_str );
 
@@ -322,6 +322,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
     return new warlock_pet_melee_attack_t( this, "Shadow Bite" );
   if ( name == "spell_lock" )
     return new spell_lock_t( this, options_str );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -330,7 +331,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
 /// Imp Begin
 
 imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_IMP, false ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
+  : warlock_pet_t( owner, name, PET_IMP, false ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) ) // TODO: Add imp firebolt to base warlock data
 {
   action_list_str = "firebolt";
 
@@ -345,6 +346,7 @@ action_t* imp_pet_t::create_action( util::string_view name, util::string_view op
 {
   if ( name == "firebolt" )
     return new warlock_pet_spell_t( "Firebolt", this, this->find_spell( 3110 ) );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -353,17 +355,13 @@ timespan_t imp_pet_t::available() const
   double deficit = resources.current[ RESOURCE_ENERGY ] - firebolt_cost;
 
   if ( deficit >= 0 )
-  {
     return warlock_pet_t::available();
-  }
 
   double time_to_threshold = std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY );
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
 
   return timespan_t::from_seconds( time_to_threshold );
 }
@@ -376,7 +374,7 @@ sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_SAYAAD, false )
 {
   main_hand_weapon.swing_time = 3_s;
-  action_list_str             = "whiplash/lash_of_pain";
+  action_list_str = "whiplash/lash_of_pain";
 
   is_main_pet = true;
 }
@@ -388,14 +386,13 @@ void sayaad_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
 
-  melee_attack                = new warlock_pet_melee_t( this );
+  melee_attack = new warlock_pet_melee_t( this );
 }
 
 struct whiplash_t : public warlock_pet_spell_t
 {
   whiplash_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Whiplash" )
-  {
-  }
+  { }
 
   void impact( action_state_t* s ) override
   {
@@ -409,7 +406,7 @@ double sayaad_pet_t::composite_player_target_multiplier( player_t* target, schoo
 {
   double m = warlock_pet_t::composite_player_target_multiplier( target, school );
 
-  m *= 1 + get_target_data( target )->debuff_whiplash->check_stack_value();
+  m *= 1.0 + get_target_data( target )->debuff_whiplash->check_stack_value();
 
   return m;
 }
@@ -461,6 +458,7 @@ action_t* voidwalker_pet_t::create_action( util::string_view name, util::string_
 {
   if ( name == "consuming_shadows" )
     return new consuming_shadows_t( this );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -484,7 +482,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
 
-  if ( owner->talents.soul_strike->ok() )
+  if ( owner->talents.soul_strike.ok() )
     action_list_str += "/soul_strike";
 
   action_list_str += "/felstorm_demonic_strength";
@@ -565,7 +563,7 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     : warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     parse_options( options_str );
-    aoe    = -1;
+    aoe = -1;
     weapon = &( p->main_hand_weapon );
     main_pet = true;
   }
@@ -605,11 +603,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     double action_multiplier() const override
     {
       double m = warlock_pet_melee_attack_t::action_multiplier();
-
-      if ( p()->buffs.demonic_strength->check() )
-      {
-        m *= 1.0 + p()->buffs.demonic_strength->check_value();
-      }
+      
+      m *= 1.0 + p()->buffs.demonic_strength->check_value();
 
       return m;
     }
@@ -648,13 +643,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     if ( main_pet )
       internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
-
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 5.0;
-  }
+  { return s->action->tick_time( s ) * 5.0; }
 
   void execute() override
   {
@@ -662,9 +654,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
     if ( internal_cooldown )
-    {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
-    }
 
     p()->melee_attack->cancel();
   }
@@ -695,14 +685,13 @@ struct demonic_strength_t : public felstorm_t
 
   // 2022-10-03 - Triggering Demonic Strength seems to ignore energy cost for Felstorm
   double cost() const override
-  {
-    return 0.0;
-  }
+  { return 0.0; }
 
   bool ready() override
   {
     if ( debug_cast< felguard_pet_t* >( p() )->demonic_strength_executes <= 0 )
       return false;
+
     return warlock_pet_melee_attack_t::ready();
   }
 };
@@ -750,10 +739,8 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
-    if ( p()->o()->talents.fel_invocation->ok() )
-    {
+    if ( p()->o()->talents.fel_invocation.ok() )
       p()->o()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->o()->gains.soul_strike );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -764,7 +751,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     warlock_pet_melee_attack_t::impact( s );
     
-    if ( p()->o()->talents.antoran_armaments->ok() )
+    if ( p()->o()->talents.antoran_armaments.ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
 };
@@ -816,21 +803,17 @@ timespan_t felguard_pet_t::available() const
   double time_to_next_event = 0;
 
   if ( time_to_felstorm <= 0 )
-  {
     energy_threshold = min_energy_threshold;
-  }
 
   double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
 
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
-  {
     time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
-  }
 
   // Demonic Strength Felstorms do not have an energy requirement, so Felguard must be ready at any time it is up
   // If Demonic Strength will be available before regular Felstorm but before energy threshold, we will check at that time
-  if ( o()->talents.demonic_strength->ok() )
+  if ( o()->talents.demonic_strength.ok() )
   {
     double time_to_dstr = ( dstr_cd->ready - sim->current_time() ).total_seconds();
     if ( time_to_dstr <= 0 )
@@ -848,21 +831,15 @@ timespan_t felguard_pet_t::available() const
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
 
   // Next event is either going to be the time to felstorm, or the time to gain enough energy for a
   // threshold value
 
   if ( time_to_felstorm <= 0 )
-  {
     time_to_next_event = time_to_threshold;
-  }
   else
-  {
     time_to_next_event = std::min( time_to_felstorm, time_to_threshold );
-  }
 
   if ( sim->debug )
   {
@@ -871,13 +848,9 @@ timespan_t felguard_pet_t::available() const
   }
 
   if ( time_to_next_event < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
   else
-  {
     return timespan_t::from_seconds( time_to_next_event );
-  }
 }
 
 void felguard_pet_t::init_base_stats()
@@ -894,15 +867,11 @@ void felguard_pet_t::init_base_stats()
 
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.guillotine->ok() )
-  {
+  if ( o()->talents.guillotine.ok() )
     felguard_guillotine = new felguard_guillotine_t( this );
-  }
 
-  if ( o()->talents.immutable_hatred->ok() )
-  {
+  if ( o()->talents.immutable_hatred.ok() )
     hatred_proc = new immutable_hatred_t( this );
-  }
 }
 
 action_t* felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -926,19 +895,17 @@ void felguard_pet_t::queue_ds_felstorm()
   demonic_strength_executes++;
 
   if ( !readying && !channeling && !executing )
-  {
     schedule_ready();
-  }
 }
 
 void felguard_pet_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.annihilan_training->ok() )
+  if ( o()->talents.annihilan_training.ok() )
     buffs.annihilan_training->trigger();
 
-  if ( o()->talents.antoran_armaments->ok() )
+  if ( o()->talents.antoran_armaments.ok() )
     buffs.antoran_armaments->trigger();
 }
 
@@ -946,10 +913,10 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.annihilan_training->ok() )
+  if ( o()->talents.annihilan_training.ok() )
     m *= 1.0 + buffs.annihilan_training->check_value();
 
-  if ( o()->talents.antoran_armaments->ok() )
+  if ( o()->talents.antoran_armaments.ok() )
     m *= 1.0 + buffs.antoran_armaments->check_value();
 
   return m;
@@ -968,7 +935,7 @@ double felguard_pet_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  if ( o()->talents.heavy_handed->ok() )
+  if ( o()->talents.heavy_handed.ok() )
     m += o()->talents.heavy_handed->effectN( 1 ).percent();
 
   return m;
@@ -978,7 +945,7 @@ double felguard_pet_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  if ( o()->talents.heavy_handed->ok() )
+  if ( o()->talents.heavy_handed.ok() )
     m += o()->talents.heavy_handed->effectN( 1 ).percent();
 
   return m;
@@ -988,7 +955,7 @@ double felguard_pet_t::composite_player_critical_damage_multiplier( const action
 {
   double m = warlock_pet_t::composite_player_critical_damage_multiplier( s );
 
-  if ( o()->talents.cavitation->ok() )
+  if ( o()->talents.cavitation.ok() )
     m *= 1.0 + o()->talents.cavitation->effectN( 1 ).percent();
 
   return m;
