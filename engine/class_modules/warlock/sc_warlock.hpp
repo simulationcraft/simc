@@ -523,8 +523,6 @@ public:
     propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
-    propagate_const<buff_t*> prince_malchezaar; // Buff for tracking Malchezaar (who is currently disabled in sims)
-    propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent

@@ -504,10 +504,6 @@ namespace warlock
 
     buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
                               ->set_duration( talents.grimoire_felguard->duration() );
-
-    buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
-
-    buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
   }
 
   void warlock_t::create_buffs_destruction()
