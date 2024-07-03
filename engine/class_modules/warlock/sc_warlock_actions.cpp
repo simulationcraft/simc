@@ -63,6 +63,10 @@ using namespace helpers;
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
     }
 
+    warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
+      : warlock_spell_t( token, p, s )
+    { parse_options( options_str ); }
+
     warlock_t* p()
     { return static_cast<warlock_t*>( player ); }
     
