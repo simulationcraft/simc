@@ -384,10 +384,6 @@ namespace warlock
 
     // T29 (Vault of the Incarnates)
     tier.chaos_maelstrom = find_spell( 394679 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.channel_demonfire = find_spell( 409890 );
-    tier.umbrafire_embers = find_spell( 409652 );
   }
 
   void warlock_t::init_base_stats()
@@ -554,10 +550,6 @@ namespace warlock
     buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                 ->set_default_value_from_effect( 1 );
-
-    buffs.umbrafire_embers = make_buff( this, "umbrafire_embers", tier.umbrafire_embers )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   void warlock_t::create_pets()
@@ -669,7 +661,6 @@ namespace warlock
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
-    procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
   }
 
   void warlock_t::init_rng()
@@ -773,8 +764,6 @@ namespace warlock
     ua_target                          = nullptr;
     agony_accumulator                  = rng().range( 0.0, 0.99 );
     corruption_accumulator             = rng().range( 0.0, 0.99 );
-    cdf_accumulator                    = rng().range( 0.0, 0.99 );
-    incinerate_last_target_count       = 0;
     shadow_invocation_proc_chance        = 0.2;
     wild_imp_spawns.clear();
   }
