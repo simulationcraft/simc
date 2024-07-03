@@ -1319,6 +1319,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   if ( !is_pet() && !is_enemy() )
   {
     sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+      if ( in_combat )
+        trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, nullptr, nullptr );
+
       for ( auto& pet : active_pets )
       {
         pet->update_stats();
