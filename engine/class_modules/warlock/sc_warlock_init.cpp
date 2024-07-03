@@ -637,7 +637,6 @@ namespace warlock
     procs.one_shard_hog = get_proc( "one_shard_hog" );
     procs.two_shard_hog = get_proc( "two_shard_hog" );
     procs.three_shard_hog = get_proc( "three_shard_hog" );
-    procs.portal_summon = get_proc( "portal_summon" );
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
@@ -667,9 +666,7 @@ namespace warlock
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
-    procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
-    procs.doomfiend = get_proc( "doomfiend" );
   }
 
   void warlock_t::init_procs_destruction()

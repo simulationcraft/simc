@@ -582,18 +582,15 @@ public:
 
     // Demonology
     proc_t* demonic_calling;
-    proc_t* one_shard_hog;
+    proc_t* one_shard_hog; // TODO: Switch to array like Malefic Rapture
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
-    proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
-    proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
-    proc_t* doomfiend; // T31 4pc
 
     // Destruction
     proc_t* reverse_entropy;
