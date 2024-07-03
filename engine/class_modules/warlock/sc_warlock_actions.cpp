@@ -507,7 +507,8 @@ using namespace helpers;
   {
     struct corruption_dot_t : public warlock_spell_t
     {
-      corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
+      corruption_dot_t( warlock_t* p )
+        : warlock_spell_t( "Corruption", p, p->warlock_base.corruption->effectN( 1 ).trigger() )
       {
         tick_zero = false;
         background = dual = true;
@@ -529,7 +530,7 @@ using namespace helpers;
 
         if ( result_is_hit( d->state->result ) )
         {
-          if ( p()->talents.nightfall->ok() )
+          if ( p()->talents.nightfall.ok() )
           {
             // Blizzard did not publicly release how nightfall was changed.
             // We determined this is the probable functionality copied from Agony by first confirming the
@@ -558,9 +559,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_ta_multiplier( s );
 
         if ( p()->talents.sacrolashs_dark_strike.ok() )
-        {
           m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-        }
 
         return m;
       }
@@ -569,10 +568,8 @@ using namespace helpers;
     corruption_dot_t* periodic;
 
     corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption )
+      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption, options_str )
     {
-      parse_options( options_str );
-
       periodic = new corruption_dot_t( p );
       impact_action = periodic;
       add_child( periodic );
