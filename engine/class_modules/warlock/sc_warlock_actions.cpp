@@ -1526,25 +1526,6 @@ using namespace helpers;
       timespan_t travel_time() const override
       { return meteor_time; }
 
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        m *= shards_used;
-
-        if ( p()->buffs.blazing_meteor->check() )
-          m *= 1.0 + p()->buffs.blazing_meteor->check_value();
-
-        return m;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
-
-        p()->buffs.blazing_meteor->expire();
-      }
-
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -1586,16 +1567,6 @@ using namespace helpers;
     timespan_t travel_time() const override
     { return 0_ms; }
 
-    double execute_time_pct_multiplier() const override
-    {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
-
-      if ( p()->buffs.blazing_meteor->check() )
-        mul *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
-
-      return mul;
-    }
-
     bool ready() override
     {
       if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
@@ -1613,20 +1584,6 @@ using namespace helpers;
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-      {
-        for ( const auto target : p()->sim->target_non_sleeping_list )
-        {
-          warlock_td_t* tdata = td( target );
-
-          if ( !tdata )
-            continue;
-
-          if ( tdata->debuffs_doom_brand->check() )
-            tdata->debuffs_doom_brand->extend_duration( p(), -p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 1 ).time_value() * shards_used );
-        }
-      }
     }
 
     void consume_resource() override
@@ -1700,9 +1657,6 @@ using namespace helpers;
           if ( active_pet->pet_type == PET_FELGUARD )
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-          td( target )->debuffs_doom_brand->trigger();
       }
       else
       {
@@ -1717,24 +1671,11 @@ using namespace helpers;
 
       p()->buffs.demonic_core->decrement();
 
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
-      {
-        timespan_t reduction = -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).time_value();
-
-        p()->cooldowns.grimoire_felguard->adjust( reduction );
-      }
-
       if ( p()->talents.power_siphon.ok() )
         p()->buffs.power_siphon->decrement();
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.3 ) )
-      {
-        p()->buffs.blazing_meteor->trigger();
-        p()->procs.blazing_meteor->occur();
-      }
     }
 
     double action_multiplier() const override
@@ -1746,12 +1687,6 @@ using namespace helpers;
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
 
       return m;
     }
@@ -2196,9 +2131,6 @@ using namespace helpers;
       if ( p()->buffs.grimoire_felguard->check() )
       {
         p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
-          p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
       }
 
       if ( p()->buffs.vilefiend->check() )
@@ -2231,62 +2163,6 @@ using namespace helpers;
 
       p()->warlock_pet_list.grimoire_felguards.spawn( p()->talents.grimoire_felguard->duration() );
       p()->buffs.grimoire_felguard->trigger();
-    }
-  };
-
-  struct doom_t : public warlock_spell_t
-  {
-    doom_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Doom", p, p->talents.doom )
-    {
-      parse_options( options_str );
-
-      energize_type = action_energize::PER_TICK;
-      energize_resource = RESOURCE_SOUL_SHARD;
-      energize_amount = 1.0;
-
-      hasted_ticks = true;
-
-      triggers.shadow_invocation_tick = true;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    { return s->action->tick_time( s ); }
-
-    void last_tick( dot_t* d ) override
-    {
-      if ( d->time_to_next_full_tick() > 0_ms )
-        gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom );
-
-      warlock_spell_t::last_tick( d );
-    }
-
-  private:
-    int pet_counter()
-    {
-      int count = 0;
-
-      for ( auto& pet : p()->pet_list )
-      {
-        auto lock_pet = debug_cast<warlock_pet_t*>( pet );
-        pet_e pet_type = lock_pet->pet_type;
-
-        if ( lock_pet == nullptr )
-          continue;
-
-        if ( lock_pet->is_sleeping() )
-          continue;
-
-        if ( pet_type == PET_DEMONIC_TYRANT || pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM )
-          continue;
-
-        if ( pet_type == PET_VILEFIEND )
-          continue;
-
-        count++;
-      }
-
-      return count;
     }
   };
 
@@ -2350,55 +2226,6 @@ using namespace helpers;
 
         internal_cooldown->start( 6_s );
       }
-    }
-  };
-
-  struct doom_brand_t : public warlock_spell_t
-  {
-    doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
-    {
-      aoe = -1;
-      reduced_aoe_targets = 8.0;
-      background = dual = true;
-      callbacks = false;
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) )
-      {
-        double increment_max = 0.5;
-
-        int debuff_count = 1;
-        for ( auto t : target_list() )
-        {
-          if ( td( t )->debuffs_doom_brand->check() )
-            debuff_count++;
-        }
-
-        increment_max *= std::pow( debuff_count, -1.0 / 2.0 );
-
-        p()->doom_brand_accumulator += rng().range( 0.0, increment_max );
-
-        if ( p()->doom_brand_accumulator >= 1.0 )
-        {
-          p()->warlock_pet_list.doomfiends.spawn();
-          p()->procs.doomfiend->occur();
-          p()->doom_brand_accumulator -= 1.0;
-        }
-      }
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = warlock_spell_t::composite_da_multiplier( s );
-
-      if ( s->n_targets == 1 )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
-
-      return m;
     }
   };
 
@@ -3979,8 +3806,6 @@ using namespace helpers;
       return new demonic_strength_t( this, options_str );
     if ( action_name == "bilescourge_bombers" )
       return new bilescourge_bombers_t( this, options_str );
-    if ( action_name == "doom" )
-      return new doom_t( this, options_str );
     if ( action_name == "power_siphon" )
       return new power_siphon_t( this, options_str );
     if ( action_name == "call_dreadstalkers" )
@@ -4047,7 +3872,6 @@ using namespace helpers;
   void warlock_t::create_demonology_proc_actions()
   {
     proc_actions.bilescourge_bombers_proc = new bilescourge_bombers_proc_t( this );
-    proc_actions.doom_brand_explosion = new doom_brand_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()

@@ -262,18 +262,6 @@ namespace warlock
 
     // Additional Tier Set spell data
 
-    // T29 (Vault of the Incarnates)
-    tier.blazing_meteor = find_spell( 394776 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.rite_of_ruvaraad = find_spell( 409725 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.doom_brand = find_spell( 423585 );
-    tier.doom_brand_debuff = find_spell( 423583 );
-    tier.doom_brand_aoe = find_spell( 423584 );
-    tier.doom_bolt_volley = find_spell( 423734 );
-
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
@@ -486,9 +474,6 @@ namespace warlock
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                              ->set_default_value_from_effect( 1 );
 
-    buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
-                              ->set_default_value_from_effect( 2 );
-
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
 
@@ -505,12 +490,6 @@ namespace warlock
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
 
-    buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
-                               ->set_default_value_from_effect( 1 );
-
-    buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
-                                 ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
-
     // Pet tracking buffs
     buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
@@ -525,10 +504,6 @@ namespace warlock
 
     buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
                               ->set_duration( talents.grimoire_felguard->duration() );
-
-    buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
-
-    buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
   }
 
   void warlock_t::create_buffs_destruction()
@@ -634,7 +609,6 @@ namespace warlock
 
   void warlock_t::init_gains_demonology()
   {
-    gains.doom = get_gain( "doom" );
     gains.soul_strike = get_gain( "soul_strike" );
   }
 
@@ -663,7 +637,6 @@ namespace warlock
     procs.one_shard_hog = get_proc( "one_shard_hog" );
     procs.two_shard_hog = get_proc( "two_shard_hog" );
     procs.three_shard_hog = get_proc( "three_shard_hog" );
-    procs.portal_summon = get_proc( "portal_summon" );
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
@@ -693,10 +666,7 @@ namespace warlock
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
-    procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
-    procs.blazing_meteor = get_proc( "blazing_meteor" );
-    procs.doomfiend = get_proc( "doomfiend" );
   }
 
   void warlock_t::init_procs_destruction()
@@ -811,7 +781,6 @@ namespace warlock
     corruption_accumulator             = rng().range( 0.0, 0.99 );
     cdf_accumulator                    = rng().range( 0.0, 0.99 );
     dimensional_accumulator            = rng().range( 0.0, 0.99 );
-    doom_brand_accumulator             = rng().range( 0.0, 0.99 );
     incinerate_last_target_count       = 0;
     shadow_invocation_proc_chance        = 0.2;
     wild_imp_spawns.clear();

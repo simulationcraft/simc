@@ -89,9 +89,6 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
                               ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  buffs.fury_of_ruvaraad = make_buff( this, "fury_of_ruvaraad", find_spell( 409708 ) )
-                               ->set_default_value_from_effect( 1 );
-
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
   player_t::buffs.movement->quiet = true;
@@ -114,7 +111,6 @@ void warlock_pet_t::create_buffs()
   buffs.annihilan_training->quiet = true;
   buffs.antoran_armaments->quiet = true;
   buffs.embers->quiet = true;
-  buffs.fury_of_ruvaraad->quiet = true;
   buffs.demonic_power->quiet = true;
   buffs.the_expendables->quiet = true;
 }
@@ -652,9 +648,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
         m *= 1.0 + p()->buffs.demonic_strength->check_value();
       }
 
-      if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
-        m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
-
       return m;
     }
 
@@ -1061,12 +1054,6 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    warlock_pet_t::arise();
 
    buffs.grimoire_of_service->trigger();
-
-   if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
-   {
-     buffs.fury_of_ruvaraad->trigger();
-     o()->buffs.rite_of_ruvaraad->trigger();
-   }
  }
 
  // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
@@ -1145,16 +1132,6 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
   return warlock_pet_t::create_action( name, options_str );
 }
 
-double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school );
-
-  if ( buffs.fury_of_ruvaraad->check() )
-    m *= 1.0 + buffs.fury_of_ruvaraad->check_value();
-
-  return m;
-}
-
 /// Grimoire: Felguard End
 
 /// Wild Imp Begin
@@ -1202,13 +1179,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
-
-    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
-    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
-    {
-      // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
-      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
-    }
 
     return c;
   }
@@ -1658,59 +1628,6 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 }
 
 /// Demonic Tyrant End
-
-/// Doomfiend Begin
-
-doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, true )
-{
-  action_list_str = "doom_bolt_volley";
-
-  resource_regeneration = regen_type::DISABLED;
-}
-
-struct doom_bolt_volley_t : public warlock_pet_spell_t
-{
-  doom_bolt_volley_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Doom Bolt Volley", p, p->o()->tier.doom_bolt_volley )
-  {  }
-
-  void consume_resource() override
-  {
-    warlock_pet_spell_t::consume_resource();
-
-    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-    {
-      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-    }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = warlock_pet_spell_t::composite_da_multiplier( s );
-
-    if ( s->n_targets == 1 )
-      m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->effectN( 2 ).percent();
-
-    return m;
-  }
-};
-
-action_t* doomfiend_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "doom_bolt_volley" )
-    return new doom_bolt_volley_t( this );
-
-  return warlock_pet_t::create_action( name, options_str );
-}
-
-void doomfiend_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-
-  resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-}
-
-/// Doomfiend End
 }  // namespace demonology
 
 namespace destruction

@@ -80,22 +80,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       } );
 
   // Demonology
-  dots_doom = target->get_dot( "doom", &p );
-
   debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
                                            ->set_default_value_from_effect( 1 );
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
-
-  debuffs_doom_brand = make_buff( *this, "doom_brand", p.tier.doom_brand_debuff )
-                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
-                               if ( cur == 0 )
-                               {
-                                 p.proc_actions.doom_brand_explosion->execute_on_target( b->player );
-                               }
-                             } );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -179,7 +168,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     dimensional_accumulator( 0.0 ),
     incinerate_last_target_count( 0 ),
     shadow_invocation_proc_chance( 0.0 ),
-    doom_brand_accumulator( 0.0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -195,14 +183,11 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
-  cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
-  cooldowns.grimoire_felguard = get_cooldown( "grimoire_felguard" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
@@ -291,9 +276,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   {
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
     m *= 1.0 + cache.mastery_value();
-
-    if ( buffs.rite_of_ruvaraad->check() )
-      m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -837,10 +819,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
-    wild_imps( "wild_imp", w ),
-    doomfiends( "doomfiend", w )
-{
-}
+    wild_imps( "wild_imp", w )
+{ }
 }  // namespace warlock
 
 const module_t* module_t::warlock()

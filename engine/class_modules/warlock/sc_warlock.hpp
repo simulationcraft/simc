@@ -51,6 +51,10 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
 
+  // Demo
+  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
+  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+
   // Destro
   propagate_const<dot_t*> dots_immolate;
   propagate_const<dot_t*> dots_searing_bolt;
@@ -61,22 +65,13 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_pyrogenics;
   propagate_const<buff_t*> debuffs_conflagrate;
 
-  // Demo
-  propagate_const<dot_t*> dots_doom;
-
-  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
-  propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
-  propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
-
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
 
   void reset()
-  {
-    soc_threshold = 0;
-  }
+  { soc_threshold = 0; }
 
   void target_demise();
 
@@ -95,8 +90,7 @@ public:
   double dimensional_accumulator; // For T31 Destruction tier set
   int incinerate_last_target_count; // For use with T30 Destruction tier set
   double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
-  double doom_brand_accumulator;
-  std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
+  std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
 
   unsigned active_pets;
 
@@ -152,7 +146,6 @@ public:
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-    spawner::pet_spawner_t<pets::demonology::doomfiend_t, warlock_t> doomfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -472,7 +465,6 @@ public:
   {
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
-    action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* channel_demonfire; // Destruction T30 proc
@@ -484,12 +476,6 @@ public:
     const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
 
     // Demonology
-    const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
-    const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
-    const spell_data_t* doom_brand; // T31 2pc debuff which does AoE damage on expiration. Hand of Gul'dan reduces remaining duration on all Brands
-    const spell_data_t* doom_brand_debuff; // Doom Brand primary data isn't really useful to SimC, actual debuff is a separate spell. (Misc Value 1 for primary does hold the NPC ID for Doomfiend, though)
-    const spell_data_t* doom_brand_aoe;
-    const spell_data_t* doom_bolt_volley; // T31 4pc spell used by Doomfiend pet
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
@@ -504,14 +490,11 @@ public:
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
-    propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> dimensional_rift;
-    propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
-    propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
-    propagate_const<cooldown_t*> grimoire_felguard;
+    propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
   } cooldowns;
 
   // Buffs
@@ -531,7 +514,6 @@ public:
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
 
     // Demonology Buffs
-    propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> demonic_core;
     propagate_const<buff_t*> power_siphon; // Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
@@ -541,13 +523,8 @@ public:
     propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
-    propagate_const<buff_t*> prince_malchezaar; // Buff for tracking Malchezaar (who is currently disabled in sims)
-    propagate_const<buff_t*> eyes_of_guldan; // Buff for tracking if rare random summon is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
-    propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
-    propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
@@ -577,6 +554,9 @@ public:
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
 
+    // Demonology
+    gain_t* soul_strike; // Only with Fel Invocation talent
+
     // Destruction
     gain_t* incinerate_crits;
     gain_t* incinerate_fnb_crits;
@@ -585,10 +565,6 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* inferno;
-
-    // Demonology
-    gain_t* doom;
-    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs
@@ -606,19 +582,15 @@ public:
 
     // Demonology
     proc_t* demonic_calling;
-    proc_t* one_shard_hog;
+    proc_t* one_shard_hog; // TODO: Switch to array like Malefic Rapture
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
-    proc_t* portal_summon;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
-    proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
-    proc_t* blazing_meteor; // T29 4pc
-    proc_t* doomfiend; // T31 4pc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -653,10 +625,10 @@ public:
   void init_special_effects() override;
   void reset() override;
   void create_options() override;
-  int get_spawning_imp_count();
-  timespan_t time_to_imps( int count );
-  int active_demon_count() const;
-  void expendables_trigger_helper( warlock_pet_t* source );
+  int get_spawning_imp_count(); // TODO: Decide if still needed
+  timespan_t time_to_imps( int count ); // TODO: Decide if still needed
+  int active_demon_count() const; // TODO: Move to helpers?
+  void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;
   void create_affliction_proc_actions();
