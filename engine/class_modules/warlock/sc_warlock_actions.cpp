@@ -2168,11 +2168,9 @@ using namespace helpers;
     incinerate_fnb_t* fnb_action;
 
     incinerate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate ),
+      : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate, options_str ),
       fnb_action( new incinerate_fnb_t( p ) )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = ( p->warlock_base.incinerate_energize->effectN( 1 ).base_value() ) / 10.0;
@@ -2287,10 +2285,8 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
@@ -2308,9 +2304,7 @@ using namespace helpers;
   {
     internal_combustion_t( warlock_t* p )
       : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    {
-      background = dual = true;
-    }
+    { background = dual = true; }
 
     void init() override
     {
@@ -2350,13 +2344,11 @@ using namespace helpers;
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt )
+      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.chaos_incarnate = p->talents.chaos_incarnate->ok();
+      affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       if ( p->talents.internal_combustion.ok() )
       {
@@ -2457,9 +2449,7 @@ using namespace helpers;
     }
 
     double composite_crit_chance() const override
-    {
-      return 1.0;
-    }
+    { return 1.0; }
 
     double calculate_direct_amount( action_state_t* s ) const override
     {
@@ -2474,10 +2464,8 @@ using namespace helpers;
   struct conflagrate_t : public warlock_spell_t
   {
     conflagrate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate )
+      : warlock_spell_t( "Conflagrate", p, p->talents.conflagrate, options_str )
     {
-      parse_options( options_str );
-
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
@@ -2512,7 +2500,7 @@ using namespace helpers;
         p()->procs.conflagration_of_chaos_cf->occur();
       }
 
-      if ( p()->talents.backdraft->ok() )
+      if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
 
       if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
@@ -2578,10 +2566,8 @@ using namespace helpers;
     };
 
     rain_of_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Rain of Fire", p, p->talents.rain_of_fire )
+      : warlock_spell_t( "Rain of Fire", p, p->talents.rain_of_fire, options_str )
     {
-      parse_options( options_str );
-      
       may_miss = may_crit = false;
       base_tick_time = 1_s;
       dot_duration = 0_s;
@@ -2641,12 +2627,8 @@ using namespace helpers;
   struct havoc_t : public warlock_spell_t
   {
     havoc_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Havoc", p, p->talents.havoc )
-    {
-      parse_options( options_str );
-
-      may_crit = false;
-    }
+      : warlock_spell_t( "Havoc", p, p->talents.havoc, options_str )
+    { may_crit = false; }
 
     void impact( action_state_t* s ) override
     {
@@ -2661,11 +2643,9 @@ using namespace helpers;
     immolate_t* immolate;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm ),
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str ),
       immolate( new immolate_t( p, "" ) )
     {
-      parse_options( options_str );
-
       aoe = -1;
 
       affected_by.chaotic_energies = true;
@@ -2688,10 +2668,8 @@ using namespace helpers;
   struct shadowburn_t : public warlock_spell_t
   {
     shadowburn_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn )
+      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str )
     {
-      parse_options( options_str );
-
       cooldown->hasted = true;
       
       affected_by.chaotic_energies = true;
@@ -2802,11 +2780,9 @@ using namespace helpers;
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire ),
+      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire, options_str ),
       channel_demonfire_tick( new channel_demonfire_tick_t( p ) )
     {
-      parse_options( options_str );
-      
       channeled = true;
       hasted_ticks = true;
       may_crit = false;
@@ -2979,10 +2955,8 @@ using namespace helpers;
     chaos_tear_t* chaos_tear;
 
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift )
+      : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
-      parse_options( options_str );
-      
       harmful = true;
 
       energize_type = action_energize::ON_CAST;
@@ -3040,10 +3014,8 @@ using namespace helpers;
   struct summon_infernal_t : public warlock_spell_t
   {
     summon_infernal_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal )
+      : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal, options_str )
     {
-      parse_options( options_str );
-
       may_crit = false;
       impact_action = new infernal_awakening_t( p );
       add_child( impact_action );
@@ -3066,11 +3038,9 @@ using namespace helpers;
     immolate_t* immolate;
 
     soul_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire ),
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str ),
       immolate( new immolate_t( p, "" ) )
     {
-      parse_options( options_str );
-
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = ( p->talents.soul_fire_2->effectN( 1 ).base_value() ) / 10.0;
