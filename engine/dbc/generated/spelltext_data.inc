@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55399
-static const std::array<spelltext_data_t, 26180> __spelltext_data { {
+static const std::array<spelltext_data_t, 26181> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26076,6 +26076,7 @@ static const std::array<spelltext_data_t, 26180> __spelltext_data { {
   { 461490, "$@spelldesc430714", 0, 0 },
   { 461498, "$@spelldesc461456", "Suffering $w1 damage every $t sec.", 0 },
   { 461499, "$@spelldesc461244", "Absorbs $w1 damage.", 0 },
+  { 461508, "Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[\r\n\r\n|cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]", 0, 0 },
   { 461515, 0, "The damage of your next Arcane Explosion is increased by $s1%.", 0 },
   { 461524, "$@spelldesc461248", 0, 0 },
   { 461525, 0, "Your chance to gain an Arcane Charge from Arcane Missiles is increased by $s1%.", 0 },
