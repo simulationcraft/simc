@@ -421,7 +421,6 @@ struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
-  void arise() override;
   double composite_player_multiplier( school_e ) const override;
 };
 }  // namespace demonology
