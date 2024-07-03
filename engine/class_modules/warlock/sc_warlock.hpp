@@ -52,8 +52,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
 
   // Demo
-  propagate_const<dot_t*> dots_doom;
-
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_doom_brand; // T31 2pc
@@ -587,7 +585,6 @@ public:
     gain_t* inferno;
 
     // Demonology
-    gain_t* doom;
     gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 

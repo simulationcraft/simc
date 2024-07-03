@@ -634,7 +634,6 @@ namespace warlock
 
   void warlock_t::init_gains_demonology()
   {
-    gains.doom = get_gain( "doom" );
     gains.soul_strike = get_gain( "soul_strike" );
   }
 

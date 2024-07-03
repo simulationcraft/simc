@@ -2234,62 +2234,6 @@ using namespace helpers;
     }
   };
 
-  struct doom_t : public warlock_spell_t
-  {
-    doom_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Doom", p, p->talents.doom )
-    {
-      parse_options( options_str );
-
-      energize_type = action_energize::PER_TICK;
-      energize_resource = RESOURCE_SOUL_SHARD;
-      energize_amount = 1.0;
-
-      hasted_ticks = true;
-
-      triggers.shadow_invocation_tick = true;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    { return s->action->tick_time( s ); }
-
-    void last_tick( dot_t* d ) override
-    {
-      if ( d->time_to_next_full_tick() > 0_ms )
-        gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom );
-
-      warlock_spell_t::last_tick( d );
-    }
-
-  private:
-    int pet_counter()
-    {
-      int count = 0;
-
-      for ( auto& pet : p()->pet_list )
-      {
-        auto lock_pet = debug_cast<warlock_pet_t*>( pet );
-        pet_e pet_type = lock_pet->pet_type;
-
-        if ( lock_pet == nullptr )
-          continue;
-
-        if ( lock_pet->is_sleeping() )
-          continue;
-
-        if ( pet_type == PET_DEMONIC_TYRANT || pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM )
-          continue;
-
-        if ( pet_type == PET_VILEFIEND )
-          continue;
-
-        count++;
-      }
-
-      return count;
-    }
-  };
-
   struct summon_vilefiend_t : public warlock_spell_t
   {
     summon_vilefiend_t( warlock_t* p, util::string_view options_str )
@@ -3979,8 +3923,6 @@ using namespace helpers;
       return new demonic_strength_t( this, options_str );
     if ( action_name == "bilescourge_bombers" )
       return new bilescourge_bombers_t( this, options_str );
-    if ( action_name == "doom" )
-      return new doom_t( this, options_str );
     if ( action_name == "power_siphon" )
       return new power_siphon_t( this, options_str );
     if ( action_name == "call_dreadstalkers" )
