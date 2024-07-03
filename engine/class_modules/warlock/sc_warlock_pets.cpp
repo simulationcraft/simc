@@ -15,7 +15,6 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
 {
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
-
   owner_coeff.health = 0.5;
 
   register_on_arise_callback( this, [ owner ]() { owner->active_pets++; } );
@@ -23,20 +22,16 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
 }
 
 warlock_t* warlock_pet_t::o()
-{
-  return static_cast<warlock_t*>( owner );
-}
+{ return static_cast<warlock_t*>( owner ); }
 
 const warlock_t* warlock_pet_t::o() const
-{
-  return static_cast<warlock_t*>( owner );
-}
+{ return static_cast<warlock_t*>( owner ); }
 
 void warlock_pet_t::apply_affecting_auras( action_t& action )
 {
   pet_t::apply_affecting_auras( action );
 
-  action.apply_affecting_aura( o()->talents.socrethars_guile );
+  action.apply_affecting_aura( o()->talents.socrethars_guile ); // TODO: Move this
 }
 
 void warlock_pet_t::create_buffs()
