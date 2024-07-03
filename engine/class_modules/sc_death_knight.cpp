@@ -8218,6 +8218,18 @@ struct epidemic_damage_base_t : public death_knight_spell_t
     return cam;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    if ( p()->talent.unholy.harbinger_of_doom.ok() && p()->buffs.sudden_doom->check() )
+    {
+      m *= 1.0 + p()->talent.unholy.harbinger_of_doom->effectN( 4 ).percent() * p()->buffs.sudden_doom->check();
+    }
+
+    return m;
+  }
+
 public:
   double soft_cap_multiplier;
 };
