@@ -668,9 +668,8 @@ using namespace helpers;
   struct grimoire_of_sacrifice_t : public warlock_spell_t
   {
     grimoire_of_sacrifice_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Grimoire of Sacrifice", p, p->talents.grimoire_of_sacrifice )
+      : warlock_spell_t( "Grimoire of Sacrifice", p, p->talents.grimoire_of_sacrifice, options_str )
     {
-      parse_options( options_str );
       harmful = false;
       ignore_false_positive = true;
       target = player;
@@ -713,9 +712,8 @@ using namespace helpers;
   struct soulburn_t : public warlock_spell_t
   {
     soulburn_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soulburn", p, p->talents.soulburn )
+      : warlock_spell_t( "Soulburn", p, p->talents.soulburn, options_str )
     {
-      parse_options( options_str );
       harmful = false;
       may_crit = false;
     }
