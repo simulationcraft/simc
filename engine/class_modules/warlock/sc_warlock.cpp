@@ -195,12 +195,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.darkglare = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
-  cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
