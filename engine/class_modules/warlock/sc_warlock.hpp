@@ -653,8 +653,6 @@ public:
   int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
-  action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
-  action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   void create_actions() override;
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
