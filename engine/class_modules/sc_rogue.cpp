@@ -545,6 +545,7 @@ public:
     cooldown_t* sprint;
     cooldown_t* symbols_of_death;
     cooldown_t* thistle_tea;
+    cooldown_t* unseen_blade_icd;
     cooldown_t* vanish;
 
     target_specific_cooldown_t* weaponmaster;
@@ -1276,6 +1277,7 @@ public:
     cooldowns.sprint                    = get_cooldown( "sprint" );   
     cooldowns.symbols_of_death          = get_cooldown( "symbols_of_death" );
     cooldowns.thistle_tea               = get_cooldown( "thistle_tea" );
+    cooldowns.unseen_blade_icd          = get_cooldown( "unseen_blade_icd" );
     cooldowns.vanish                    = get_cooldown( "vanish" );
 
     cooldowns.weaponmaster              = get_target_specific_cooldown( "weaponmaster" );
@@ -9669,6 +9671,9 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
   if ( !p()->talent.trickster.unseen_blade->ok() || !ab::result_is_hit( state->result ) )
     return;
 
+  if ( p()->cooldowns.unseen_blade_icd->down() )
+    return;
+
   if ( p()->buffs.unseen_blade_cd->check() && !p()->buffs.disorienting_strikes->check() )
     return;
 
@@ -9680,6 +9685,8 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
     p()->buffs.disorienting_strikes->decrement();
   else
     p()->buffs.unseen_blade_cd->trigger();
+
+  p()->cooldowns.unseen_blade_icd->start();
 }
 
 template <typename Base>
@@ -11630,6 +11637,7 @@ void rogue_t::init_spells()
   // Trickster
   if ( talent.trickster.unseen_blade->ok() )
   {
+    cooldowns.unseen_blade_icd->base_duration = talent.trickster.unseen_blade->internal_cooldown();
     active.trickster.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
   }
 
