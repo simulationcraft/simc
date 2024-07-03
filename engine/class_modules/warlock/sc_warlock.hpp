@@ -476,7 +476,6 @@ public:
     const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
 
     // Demonology
-    const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
     const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
 
     // Destruction 
@@ -534,7 +533,6 @@ public:
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> fel_covenant;
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
-    propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
     propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
 
     // Destruction Buffs
@@ -604,7 +602,6 @@ public:
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
-    proc_t* blazing_meteor; // T29 4pc
     proc_t* doomfiend; // T31 4pc
 
     // Destruction

@@ -262,9 +262,6 @@ namespace warlock
 
     // Additional Tier Set spell data
 
-    // T29 (Vault of the Incarnates)
-    tier.blazing_meteor = find_spell( 394776 );
-
     // T30 (Aberrus, the Shadowed Crucible)
     tier.rite_of_ruvaraad = find_spell( 409725 );
 
@@ -499,9 +496,6 @@ namespace warlock
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
 
-    buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
-                               ->set_default_value_from_effect( 1 );
-
     buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
                                  ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
 
@@ -688,7 +682,6 @@ namespace warlock
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
-    procs.blazing_meteor = get_proc( "blazing_meteor" );
     procs.doomfiend = get_proc( "doomfiend" );
   }
 

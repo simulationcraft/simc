@@ -1526,25 +1526,6 @@ using namespace helpers;
       timespan_t travel_time() const override
       { return meteor_time; }
 
-      double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        m *= shards_used;
-
-        if ( p()->buffs.blazing_meteor->check() )
-          m *= 1.0 + p()->buffs.blazing_meteor->check_value();
-
-        return m;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
-
-        p()->buffs.blazing_meteor->expire();
-      }
-
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -1585,16 +1566,6 @@ using namespace helpers;
 
     timespan_t travel_time() const override
     { return 0_ms; }
-
-    double execute_time_pct_multiplier() const override
-    {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
-
-      if ( p()->buffs.blazing_meteor->check() )
-        mul *= 1.0 + p()->tier.blazing_meteor->effectN( 2 ).percent();
-
-      return mul;
-    }
 
     bool ready() override
     {
@@ -1712,12 +1683,6 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.3 ) )
-      {
-        p()->buffs.blazing_meteor->trigger();
-        p()->procs.blazing_meteor->occur();
-      }
     }
 
     double action_multiplier() const override
@@ -1729,9 +1694,6 @@ using namespace helpers;
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
 
       if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
         m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
