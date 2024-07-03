@@ -3667,7 +3667,7 @@ void generic::skyfury( special_effect_t& effect )
     return;
   }
 
-  // new skyfury_cb_t( effect );  TODO: enable when skyfury is implemented in-game
+  new skyfury_cb_t( effect );
 }
 
 void generic::enable_all_item_effects( special_effect_t& effect )

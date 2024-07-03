@@ -2800,8 +2800,8 @@ void sim_t::init()
                                    ->add_invalidate( CACHE_STAMINA );
 
   auras.skyfury = make_buff( this, "skyfury", dbc::find_spell( this, 462854 ) )
-                    ->set_default_value_from_effect( 1 )
-                    ->add_invalidate( CACHE_MASTERY );
+                      ->set_default_value_from_effect( 1 )
+                      ->add_invalidate( CACHE_MASTERY );
 
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
