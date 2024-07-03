@@ -590,10 +590,8 @@ using namespace helpers;
   struct shadow_bolt_t : public warlock_spell_t
   {
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
+      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
-      parse_options( options_str );
-
       triggers.shadow_invocation_direct = true;
 
       if ( demonology() )
@@ -607,9 +605,7 @@ using namespace helpers;
     timespan_t execute_time() const override
     {
       if ( p()->buffs.nightfall->check() )
-      {
         return 0_ms;
-      }
 
       return warlock_spell_t::execute_time();
     }
@@ -621,7 +617,7 @@ using namespace helpers;
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
-      if ( p()->talents.demonic_calling->ok() )
+      if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
     }
 
@@ -631,10 +627,10 @@ using namespace helpers;
 
       if ( result_is_hit( s->result ) )
       {
-        if ( p()->talents.shadow_embrace->ok() )
+        if ( p()->talents.shadow_embrace.ok() )
           td( s->target )->debuffs_shadow_embrace->trigger();
 
-        if ( p()->talents.tormented_crescendo->ok() )
+        if ( p()->talents.tormented_crescendo.ok() )
         {
           if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
@@ -650,14 +646,10 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-      {
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
-      }
 
       if ( p()->talents.sacrificed_souls.ok() )
-      {
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
-      }
 
       return m;
     }
@@ -667,9 +659,7 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-      {
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
-      }
 
       return m;
     }
