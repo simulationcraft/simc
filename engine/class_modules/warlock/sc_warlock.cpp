@@ -224,13 +224,13 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( talents.eradication.ok() )
       m *= 1.0 + td->debuffs_eradication->check_value();
 
-    if ( td->debuffs_pyrogenics->check() && td->debuffs_pyrogenics->has_common_school( school ) )
+    if ( talents.pyrogenics.ok() && td->debuffs_pyrogenics->has_common_school( school ) )
       m *= 1.0 + td->debuffs_pyrogenics->check_value();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( td->debuffs_fel_sunder->check() )
+    if ( talents.fel_sunder.ok() )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
@@ -243,8 +243,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( buffs.rolling_havoc->check() )
-      m *= 1.0 + buffs.rolling_havoc->check_stack_value();
+    m *= 1.0 + buffs.rolling_havoc->check_stack_value();
   }
 
   return m;
@@ -259,7 +258,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + warlock_base.destruction_warlock->effectN( guardian ? 4 : 3 ).percent();
 
     // 2022-11-27 Rolling Havoc is missing the aura for guardians
-    if ( talents.rolling_havoc->ok() && !guardian )
+    if ( talents.rolling_havoc.ok() && !guardian )
       m *= 1.0 + buffs.rolling_havoc->check_stack_value();
   }
 
@@ -285,15 +284,11 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( talents.haunt->ok() && td->debuffs_haunt->check() )
-    {
+    if ( talents.haunt.ok() && td->debuffs_haunt->check() )
       m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
-    }
 
-    if ( talents.shadow_embrace->ok() )
-    {
-      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
-    }
+    if ( talents.shadow_embrace.ok() )
+      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
 
     if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) && !guardian )
     {
@@ -304,16 +299,14 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( talents.eradication->ok() )
-    {
+    if ( talents.eradication.ok() )
       m *= 1.0 + td->debuffs_eradication->check_value();
-    }
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2022-11-27
-    if ( talents.fel_sunder->ok() && !guardian )
+    if ( talents.fel_sunder.ok() && !guardian )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
@@ -324,7 +317,7 @@ double warlock_t::composite_spell_crit_chance() const
 {
   double m = player_t::composite_spell_crit_chance();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash->ok() )
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
     m += talents.backlash->effectN( 1 ).percent();
 
   return m;
@@ -334,7 +327,7 @@ double warlock_t::composite_melee_crit_chance() const
 {
   double m = player_t::composite_melee_crit_chance();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash->ok() )
+  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
     m += talents.backlash->effectN( 1 ).percent();
 
   return m;
