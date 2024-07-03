@@ -738,9 +738,9 @@ public:
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
   virtual paladin_td_t* get_target_data( player_t* target ) const override;
 
-  bool may_benefit_from_windfury_totem() const override
+  bool may_benefit_from_skyfury() const override
   {
-    return !(talents.crusading_strikes->ok());
+    return !( talents.crusading_strikes->ok() );
   }
 };
 

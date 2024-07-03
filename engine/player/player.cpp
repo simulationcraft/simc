@@ -2168,11 +2168,11 @@ void player_t::create_special_effects()
 
   unique_gear::initialize_racial_effects( this );
 
-  if ( sim->overrides.windfury_totem )
+  if ( sim->overrides.skyfury && may_benefit_from_skyfury() )
   {
     special_effect_t effect( this );
 
-    unique_gear::initialize_special_effect( effect, 327942 );
+    unique_gear::initialize_special_effect( effect, 462854 );
     if ( !effect.custom_init_object.empty() )
     {
       special_effects.push_back( new special_effect_t( effect ) );
@@ -4191,10 +4191,6 @@ void player_t::create_buffs()
 
     if ( !is_pet() )
     {
-      buffs.windfury_totem = make_buff<buff_t>( this, "windfury_totem", find_spell( 327942 ) )
-        ->set_duration( sim->max_time * 3 )
-        ->set_chance( as<double>( sim->overrides.windfury_totem ) );
-
       // 9.0 class buffs
       buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
         ->set_default_value_from_effect( 1 )
@@ -4923,6 +4919,11 @@ double player_t::composite_mastery() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
     cm += b->check_stack_value();
+
+  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
+  {
+    cm += sim->auras.skyfury->check_value();
+  }
 
   return cm;
 }
@@ -5751,11 +5752,6 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_autumn, buffs.blessing_of_autumn );
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
-
-  if ( buffs.windfury_totem && sim->overrides.windfury_totem && may_benefit_from_windfury_totem() )
-  {
-    buffs.windfury_totem->trigger();
-  }
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)

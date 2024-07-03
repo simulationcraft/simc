@@ -214,7 +214,7 @@ struct sim_t : private sc_thread_t
     int battle_shout;
     int mark_of_the_wild;
     int power_word_fortitude;
-    int windfury_totem;
+    int skyfury;
 
     // Debuff overrides
     int chaos_brand;
@@ -235,6 +235,7 @@ struct sim_t : private sc_thread_t
     buff_t* battle_shout;
     buff_t* mark_of_the_wild;
     buff_t* power_word_fortitude;
+    buff_t* skyfury;
   } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.

@@ -465,7 +465,6 @@ struct player_t : public actor_t
 
     buff_t* berserking;
     buff_t* bloodlust;
-    buff_t* windfury_totem;
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
@@ -1326,7 +1325,7 @@ public:
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero(), proc_t* proc = nullptr );
   virtual void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
   virtual void delay_ranged_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
-  virtual bool may_benefit_from_windfury_totem() const
+  virtual bool may_benefit_from_skyfury() const
   { return true; }
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );

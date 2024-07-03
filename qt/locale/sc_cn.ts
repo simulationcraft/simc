@@ -957,7 +957,7 @@ Time Warp</source>
     </message>
     <message>
         <location filename="../sc_OptionsTab.cpp" line="456"/>
-        <source>Windfury Totem</source>
+        <source>Skyfury</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

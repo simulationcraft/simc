@@ -1914,10 +1914,20 @@ void sim_t::combat_begin()
   for ( auto& target : target_list )
     target -> combat_begin();
 
-  if ( overrides.arcane_intellect ) auras.arcane_intellect->override_buff();
-  if ( overrides.battle_shout ) auras.battle_shout->override_buff();
-  if ( overrides.mark_of_the_wild ) auras.mark_of_the_wild->override_buff();
-  if ( overrides.power_word_fortitude ) auras.power_word_fortitude -> override_buff();
+  if ( overrides.arcane_intellect )
+    auras.arcane_intellect->override_buff();
+
+  if ( overrides.battle_shout )
+    auras.battle_shout->override_buff();
+
+  if ( overrides.mark_of_the_wild )
+    auras.mark_of_the_wild->override_buff();
+
+  if ( overrides.power_word_fortitude )
+    auras.power_word_fortitude->override_buff();
+
+  if ( overrides.skyfury )
+    auras.skyfury->override_buff();
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
@@ -2774,20 +2784,24 @@ void sim_t::init()
   auras.fallback = make_buff<fallback_buff_t>( this );
 
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
-                               ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )
+                               ->set_default_value_from_effect( 1 )
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                           ->set_default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
+                           ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
   auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
-                               ->set_default_value( dbc::find_spell( this, 1126 )->effectN( 1 ).percent() )
+                               ->set_default_value_from_effect( 1 )
                                ->add_invalidate( CACHE_VERSATILITY );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
-                                   ->set_default_value( dbc::find_spell( this, 21562 )->effectN( 1 ).percent() )
+                                   ->set_default_value_from_effect( 1 )
                                    ->add_invalidate( CACHE_STAMINA );
+
+  auras.skyfury = make_buff( this, "skyfury", dbc::find_spell( this, 462854 ) )
+                    ->set_default_value_from_effect( 1 )
+                    ->add_invalidate( CACHE_MASTERY );
 
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
@@ -3417,7 +3431,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.battle_shout            = optimal_raid;
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
-  overrides.windfury_totem          = optimal_raid;
+  overrides.skyfury                 = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3684,7 +3698,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
-  add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
+  add_option( opt_int( "override.skyfury", overrides.skyfury ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.hunters_mark", overrides.hunters_mark ) );

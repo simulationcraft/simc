@@ -479,7 +479,7 @@ void SC_OptionsTab::createBuffsDebuffsTab()
                   buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Battle Shout" ), "override.battle_shout", tr( "Battle Shout" ), buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Mark of the Wild" ), "override.mark_of_the_wild", tr( "Mark of the Wild" ), buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Windfury Totem" ), "override.windfury_totem", tr( "Windfury Totem" ),
+  appendCheckBox( tr( "Skyfury" ), "override.skyfury", tr( "Skyfury" ),
                   buffsLayout, buffsButtonGroup );
   buffsLayout->addStretch( 1 );
 

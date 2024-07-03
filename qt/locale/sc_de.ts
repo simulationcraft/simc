@@ -955,8 +955,8 @@ Zeitkrümmung</translation>
     </message>
     <message>
         <location filename="../sc_OptionsTab.cpp" line="456"/>
-        <source>Windfury Totem</source>
-        <translation>Totem des Windzorns</translation>
+        <source>Skyfury</source>
+        <translation>"unfinished"</translation>
     </message>
     <message>
         <location filename="../sc_OptionsTab.cpp" line="460"/>
