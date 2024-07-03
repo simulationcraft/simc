@@ -46,7 +46,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_power;
   } buffs;
 
-  bool is_main_pet          = false;
+  bool is_main_pet = false;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
 
   warlock_pet_t( warlock_t*, util::string_view, pet_e, bool = false );
@@ -65,9 +65,7 @@ struct warlock_pet_t : public pet_t
   target_specific_t<warlock_pet_td_t> target_data;
 
   const warlock_pet_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
+  { return target_data[ target ]; }
 
   warlock_pet_td_t* get_target_data( player_t* target ) const override
   {
@@ -80,9 +78,7 @@ struct warlock_pet_t : public pet_t
   }
 
   resource_e primary_resource() const override
-  {
-    return RESOURCE_ENERGY;
-  }
+  { return RESOURCE_ENERGY; }
 
   warlock_t* o();
   const warlock_t* o() const;
