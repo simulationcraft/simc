@@ -554,6 +554,9 @@ public:
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
 
+    // Demonology
+    gain_t* soul_strike; // Only with Fel Invocation talent
+
     // Destruction
     gain_t* incinerate_crits;
     gain_t* incinerate_fnb_crits;
@@ -562,9 +565,6 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* inferno;
-
-    // Demonology
-    gain_t* soul_strike; // Only with Fel Invocation talent
   } gains;
 
   // Procs
