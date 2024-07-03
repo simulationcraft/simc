@@ -238,6 +238,7 @@ public:
     action_t* arcane_assault;
     action_t* arcane_echo;
     action_t* cold_front_frozen_orb;
+    action_t* dematerialize;
     action_t* firefall_meteor;
     action_t* glacial_assault;
     action_t* ignite;
@@ -473,6 +474,7 @@ public:
     double spent_mana;
     timespan_t gained_full_icicles;
     bool had_low_mana;
+    bool trigger_dematerialize;
     bool trigger_leydrinker;
   } state;
 
@@ -2766,7 +2768,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
-    p()->buffs.nether_precision->decrement();
+
+    if ( p()->buffs.nether_precision->check() )
+    {
+      p()->buffs.nether_precision->decrement();
+      p()->state.trigger_dematerialize = true;
+    }
 
     if ( p()->buffs.leydrinker->check() )
     {
@@ -2812,6 +2819,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    if ( p()->state.trigger_dematerialize )
+    {
+      p()->state.trigger_dematerialize = false;
+      residual_action::trigger( p()->action.dematerialize, s->target, p()->talents.dematerialize->effectN( 1 ).percent() * s->result_total );
+    }
 
     if ( p()->state.trigger_leydrinker )
     {
@@ -2871,11 +2884,16 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
-    // Nether Precision is slightly delayed, allowing two spells to benefit from the
-    // last stack. Technically, the delay should be on Arcane Barrage as well, but
-    // because it's an instant, it cannot be taken advantage of.
-    // TODO: Check if AB -> PoM AB works (with low latency).
-    make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+
+    if ( p()->buffs.nether_precision->check() )
+    {
+      // Nether Precision is slightly delayed, allowing two spells to benefit from the
+      // last stack. Technically, the delay should be on Arcane Barrage as well, but
+      // because it's an instant, it cannot be taken advantage of.
+      // TODO: Check if AB -> PoM AB works (with low latency).
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+      p()->state.trigger_dematerialize = true;
+    }
 
     if ( p()->buffs.leydrinker->check() )
     {
@@ -2921,6 +2939,12 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    if ( p()->state.trigger_dematerialize )
+    {
+      p()->state.trigger_dematerialize = false;
+      residual_action::trigger( p()->action.dematerialize, s->target, p()->talents.dematerialize->effectN( 1 ).percent() * s->result_total );
+    }
 
     if ( p()->state.trigger_leydrinker )
     {
@@ -5477,6 +5501,17 @@ struct leydrinker_echo_t final : public spell_t
   }
 };
 
+struct dematerialize_t final : residual_action::residual_periodic_action_t<spell_t>
+{
+  dematerialize_t( std::string_view n, mage_t* p ) :
+    residual_action_t( n, p, p->find_spell( 461498 ) )
+  {
+    // TODO: seems to benefit from both player and target mods at the moment,
+    // which is very unusual for a residual like that. It double dips stuff like
+    // versatility.
+  }
+};
+
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
@@ -5985,6 +6020,9 @@ void mage_t::create_actions()
 
   if ( talents.leydrinker.ok() )
     action.leydrinker_echo = get_action<leydrinker_echo_t>( "leydrinker_echo", this );
+
+  if ( talents.dematerialize.ok() )
+    action.dematerialize = get_action<dematerialize_t>( "dematerialize", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
