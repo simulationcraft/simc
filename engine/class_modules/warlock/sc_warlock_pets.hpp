@@ -91,7 +91,7 @@ struct warlock_pet_t : public pet_t
     double melee_pos;
 
     travel_t( warlock_pet_t* player ) : travel_t( player, "travel" )
-    {  }
+    { }
 
     travel_t( warlock_pet_t* player, util::string_view action_name ) : action_t( ACTION_OTHER, action_name, player )
     {
@@ -101,14 +101,10 @@ struct warlock_pet_t : public pet_t
     }
 
     void execute() override
-    {
-      player->current.distance = melee_pos;
-    }
+    { player->current.distance = melee_pos; }
 
     timespan_t execute_time() const override
-    {
-      return timespan_t::from_seconds( ( player->current.distance - melee_pos ) / speed );
-    }
+    { return timespan_t::from_seconds( ( player->current.distance - melee_pos ) / speed ); }
 
     bool ready() override
     {
@@ -117,9 +113,7 @@ struct warlock_pet_t : public pet_t
     }
 
     bool usable_moving() const override
-    {
-      return true;
-    }
+    { return true; }
   };
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -183,14 +177,10 @@ public:
   }
 
   warlock_pet_t* p()
-  {
-    return static_cast<warlock_pet_t*>( ab::player );
-  }
+  { return static_cast<warlock_pet_t*>( ab::player ); }
 
   const warlock_pet_t* p() const
-  {
-    return static_cast<warlock_pet_t*>( ab::player );
-  }
+  { return static_cast<warlock_pet_t*>( ab::player ); }
 
   virtual void execute()
   {
@@ -198,30 +188,20 @@ public:
 
     // Some aoe pet abilities can actually reduce to 0 targets, so bail out early if we hit that situation
     if ( ab::n_targets() != 0 && ab::target_list().size() == 0 )
-    {
       return;
-    }
   }
 
   warlock_td_t* owner_td( player_t* t )
-  {
-    return p()->o()->get_target_data( t );
-  }
+  { return p()->o()->get_target_data( t ); }
 
   const warlock_td_t* owner_td( player_t* t ) const
-  {
-    return p()->o()->get_target_data( t );
-  }
+  { return p()->o()->get_target_data( t ); }
 
   warlock_pet_td_t* pet_td( player_t* t )
-  {
-    return p()->get_target_data( t );
-  }
+  { return p()->get_target_data( t ); }
 
   const warlock_pet_td_t* pet_td( player_t* t ) const
-  {
-    return p()->get_target_data( t );
-  }
+  { return p()->get_target_data( t ); }
 };
 
 // TODO: Switch to a general autoattack template if one is added
@@ -259,16 +239,13 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
   }
 
   timespan_t execute_time() const override
-  {
-    return first ? 0_ms : warlock_pet_action_t::execute_time();
-  }
+  { return first ? 0_ms : warlock_pet_action_t::execute_time(); }
 
   void execute() override
   {
     if ( first )
-    {
       first = false;
-    }
+
     if ( !player->executing && !player->channeling )
     {
       melee_attack_t::execute();
@@ -296,28 +273,22 @@ private:
 
 public:
   warlock_pet_melee_attack_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
-  {
-    _init_warlock_pet_melee_attack_t();
-  }
+  { _init_warlock_pet_melee_attack_t(); }
 
   warlock_pet_melee_attack_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
-  {
-    _init_warlock_pet_melee_attack_t();
-  }
+  { _init_warlock_pet_melee_attack_t(); }
 };
 
 struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 public:
   warlock_pet_spell_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
-  {
-  }
+  { }
 
   warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( token, p, s )
-  {
-  }
+  { }
 };
 
 namespace base
