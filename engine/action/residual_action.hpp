@@ -161,6 +161,10 @@ public:
     // flags are parsed and the snapshot_flags/update_flags set in action_t:init(), we don't further override them
     // here.
     // ab::update_flags = ab::snapshot_flags = 0;
+
+    // Residuals snapshot versatility and player damage multipliers. Spell multipliers are likely snapshot as well,
+    // but there currently isn't a residual that could be used to test this.
+    ab::update_flags &= ~( STATE_MUL_SPELL_TA | STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
   }
 };
 
