@@ -831,18 +831,15 @@ using namespace helpers;
         assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
-        {
           p()->procs.malefic_rapture[ d ]->occur();
-        }
 
         warlock_spell_t::execute();
       }
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture )
+      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture, options_str )
     {
-      parse_options( options_str );
       aoe = -1;
 
       impact_action = new malefic_rapture_damage_t( p );
@@ -854,9 +851,7 @@ using namespace helpers;
       double c= warlock_spell_t::cost_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
-      {
         c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
-      }
 
       return c;
     }
@@ -866,9 +861,7 @@ using namespace helpers;
       auto mul = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
-      {
         mul *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
-      }
 
       return mul;
     }
@@ -902,19 +895,13 @@ using namespace helpers;
   struct unstable_affliction_t : public warlock_spell_t
   {
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
-    {
-      parse_options( options_str );
-
-      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
-    }
+      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
+    { dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value(); }
 
     void execute() override
     {
       if ( p()->ua_target && p()->ua_target != target )
-      {
         td( p()->ua_target )->dots_unstable_affliction->cancel();
-      }
 
       p()->ua_target = target;
 
@@ -931,9 +918,9 @@ using namespace helpers;
 
   struct agony_t : public warlock_spell_t
   {
-    agony_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Agony", p, p->warlock_base.agony )
+    agony_t( warlock_t* p, util::string_view options_str ) 
+      : warlock_spell_t( "Agony", p, p->warlock_base.agony, options_str )
     {
-      parse_options( options_str );
       may_crit = false;
 
       dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
@@ -943,9 +930,7 @@ using namespace helpers;
     void last_tick ( dot_t* d ) override
     {
       if ( p()->get_active_dots( d ) == 1 )
-      {
         p()->agony_accumulator = rng().range( 0.0, 0.99 );
-      }
 
       warlock_spell_t::last_tick( d );
     }
@@ -976,7 +961,7 @@ using namespace helpers;
       increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
       // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
-      if ( p()->talents.creeping_death->ok() )
+      if ( p()->talents.creeping_death.ok() )
         increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
 
       p()->agony_accumulator += rng().range( 0.0, increment_max );
@@ -1033,10 +1018,9 @@ using namespace helpers;
     seed_of_corruption_aoe_t* explosion;
 
     seed_of_corruption_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
+      : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption, options_str ),
       explosion( new seed_of_corruption_aoe_t( p ) )
     {
-      parse_options( options_str );
       may_crit = false;
       tick_zero = false;
       base_tick_time = dot_duration;
@@ -1082,9 +1066,7 @@ using namespace helpers;
     void impact( action_state_t* s ) override
     {
       if ( result_is_hit( s->result ) )
-      {
         td( s->target )->soc_threshold = s->composite_spell_power() * p()->talents.seed_of_corruption->effectN( 1 ).percent();
-      }
 
       warlock_spell_t::impact( s );
     }
@@ -1140,11 +1122,8 @@ using namespace helpers;
     };
 
     drain_soul_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
-    {
-      parse_options( options_str );
-      channeled = true;
-    }
+      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
+    { channeled = true; }
 
     action_state_t* new_state() override
     { return new drain_soul_state_t( this, target ); }
@@ -1187,7 +1166,7 @@ using namespace helpers;
 
       if ( result_is_hit( d->state->result ) )
       {
-        if ( p()->talents.shadow_embrace->ok() )
+        if ( p()->talents.shadow_embrace.ok() )
           td( d->target )->debuffs_shadow_embrace->trigger();
 
         if ( p()->talents.tormented_crescendo.ok() )
@@ -1219,7 +1198,8 @@ using namespace helpers;
   {
     struct vile_taint_dot_t : public warlock_spell_t
     {
-      vile_taint_dot_t( warlock_t* p ) : warlock_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
+      vile_taint_dot_t( warlock_t* p )
+        : warlock_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
       {
         tick_zero = background = true;
         execute_action = new agony_t( p, "" );
@@ -1237,10 +1217,9 @@ using namespace helpers;
       }
     };
     
-    vile_taint_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Vile Taint", p, p->talents.vile_taint )
+    vile_taint_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Vile Taint", p, p->talents.vile_taint, options_str )
     {
-      parse_options( options_str );
-
       impact_action = new vile_taint_dot_t( p );
       add_child( impact_action );
     }
@@ -1268,9 +1247,8 @@ using namespace helpers;
     };
 
     phantom_singularity_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity )
+      : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity, options_str )
     {
-      parse_options( options_str );
       callbacks = false;
       hasted_ticks = true;
       tick_action = new phantom_singularity_tick_t( p );
@@ -1290,9 +1268,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
         td( s->target )->debuffs_infirmity->trigger();
-      }
     }
 
     void last_tick( dot_t* d ) override
@@ -1300,35 +1276,30 @@ using namespace helpers;
       warlock_spell_t::last_tick( d );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-      {
         td( d->target )->debuffs_infirmity->expire();
-      }
     }
   };
 
   struct haunt_t : public warlock_spell_t
   {
-    haunt_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Haunt", p, p->talents.haunt )
-    { parse_options( options_str ); }
+    haunt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
+    { }
 
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
-      {
         td( s->target )->debuffs_haunt->trigger();
-      }
     }
   };
 
   struct summon_darkglare_t : public warlock_spell_t
   {
     summon_darkglare_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
+      : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare, options_str )
     {
-      parse_options( options_str );
-
       harmful = callbacks = true; // Set to true because of 10.1 class trinket
       may_crit = may_miss = false;
     }
@@ -1340,9 +1311,7 @@ using namespace helpers;
       timespan_t summon_duration = p()->talents.summon_darkglare->duration();
 
       if ( p()->talents.malevolent_visionary.ok() )
-      {
         summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
-      }
 
       p()->warlock_pet_list.darkglares.spawn( summon_duration );
 
@@ -1374,11 +1343,8 @@ using namespace helpers;
   struct soul_rot_t : public warlock_spell_t
   {
     soul_rot_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot )
-    {
-      parse_options( options_str );
-      aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
-    }
+      : warlock_spell_t( "Soul Rot", p, p->talents.soul_rot, options_str )
+    { aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() ); }
 
     void execute() override
     {
@@ -1402,13 +1368,8 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
-      // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
-      // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
-      // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
       if ( s->chain_target == 0 && aoe > 1 )
-      {
         m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
-      }
 
       return m;
     }
