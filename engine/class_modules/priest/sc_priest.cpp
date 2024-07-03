@@ -1391,8 +1391,8 @@ public:
 
   shadow_word_death_t( priest_t& p, timespan_t execute_override = timespan_t::min() )
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
-      execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
+      execute_percent( data().effectN( 3 ).base_value() ),
+      execute_modifier( data().effectN( 4 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
       deathspeaker_mult(
           p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent() : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
@@ -1418,7 +1418,7 @@ public:
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
 
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
 
     triggers_atonement = true;
 
@@ -1797,6 +1797,15 @@ struct entropic_rift_damage_t final : public priest_spell_t
     radius            = base_radius;
 
     affected_by_shadow_weaving = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    m *= 1.0 + priest().buffs.collapsing_void->check_value();
+
+    return m;
   }
 
   void execute() override
@@ -3520,6 +3529,7 @@ void priest_t::create_buffs()
                                : 1 );
 
   buffs.collapsing_void = make_buff( this, "collapsing_void", talents.voidweaver.collapsing_void )
+                              ->set_default_value_from_effect( specialization() == PRIEST_SHADOW ? 3 : 4, 0.01 )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                               ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
                                 if ( new_ == 0 )
