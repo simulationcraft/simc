@@ -505,6 +505,39 @@ struct leech_t : public heal_t
   double base_da_max( const action_state_t* ) const override { return player->leech_pool; }
 };
 
+// Heartbeat Action ==================================================
+struct heartbeat_t : public action_t
+{
+  heartbeat_t( player_t* player ) : action_t( ACTION_OTHER, "heartbeat", player )
+  {
+    harmful = false;
+    quiet = background = not_a_proc = true;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_HEARTBEAT;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    action_t::impact( state );
+
+    // The default PF2 for these is 0, which we overwrite to PF2_LANDED in init.
+    player->trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, this, state );
+  }
+
+  void execute() override
+  {
+    action_t::execute();
+
+    for ( auto& pet : player->active_pets )
+    {
+      pet->update_stats();
+    }
+  }
+};
+
 struct invulnerable_debuff_t : public buff_t
 {
   invulnerable_debuff_t( player_t* p ) :
@@ -1319,10 +1352,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   if ( !is_pet() && !is_enemy() )
   {
     sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-      for ( auto& pet : active_pets )
-      {
-        pet->update_stats();
-      }
+      if ( spells.heartbeat )
+        spells.heartbeat->execute();
     } );
   }
 }
@@ -3485,6 +3516,11 @@ void player_t::init_background_actions()
     if ( record_healing() )
     {
       spells.leech = new leech_t( this );
+    }
+
+    if ( !is_pet() )
+    {
+      spells.heartbeat = new heartbeat_t( this );
     }
   }
 }
@@ -10283,8 +10319,6 @@ struct invoke_external_buff_t : public action_t
     }
   }
 };
-
-
 }  // UNNAMED NAMESPACE
 
 action_t* player_t::create_action( util::string_view name, util::string_view options_str )
