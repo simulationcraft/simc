@@ -630,12 +630,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_affliction()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_demonology()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_destruction()
   {
@@ -701,24 +699,20 @@ namespace warlock
 
     range::for_each( sim->target_list, [ this ]( const player_t* t ) {
       if ( auto td = target_data[ t ] )
-      {
         td->reset();
-      }
 
       range::for_each( t->pet_list, [ this ]( const player_t* add ) {
         if ( auto td = target_data[ add ] )
-        {
           td->reset();
-        }
       } );
     } );
 
-    warlock_pet_list.active            = nullptr;
-    havoc_target                       = nullptr;
-    ua_target                          = nullptr;
-    agony_accumulator                  = rng().range( 0.0, 0.99 );
-    corruption_accumulator             = rng().range( 0.0, 0.99 );
-    shadow_invocation_proc_chance        = 0.2;
+    warlock_pet_list.active = nullptr;
+    havoc_target = nullptr;
+    ua_target = nullptr;
+    agony_accumulator = rng().range( 0.0, 0.99 );
+    corruption_accumulator = rng().range( 0.0, 0.99 );
+    shadow_invocation_proc_chance = 0.2;
     wild_imp_spawns.clear();
   }
 }
