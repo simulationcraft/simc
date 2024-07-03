@@ -474,9 +474,6 @@ namespace warlock
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                              ->set_default_value_from_effect( 1 );
 
-    buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
-                              ->set_default_value_from_effect( 2 );
-
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
 

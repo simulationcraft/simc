@@ -1180,13 +1180,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
-    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
-    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
-    {
-      // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
-      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
-    }
-
     return c;
   }
 

@@ -514,7 +514,6 @@ public:
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
 
     // Demonology Buffs
-    propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> demonic_core;
     propagate_const<buff_t*> power_siphon; // Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
