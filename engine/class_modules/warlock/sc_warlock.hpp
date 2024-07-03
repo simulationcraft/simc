@@ -470,7 +470,6 @@ public:
     action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
-    action_t* soul_combustion; // Summon Soulkeeper AoE tick
     action_t* channel_demonfire; // Destruction T30 proc
   } proc_actions;
 
