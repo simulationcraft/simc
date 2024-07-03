@@ -2772,7 +2772,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     if ( p()->buffs.nether_precision->check() )
     {
       p()->buffs.nether_precision->decrement();
-      p()->state.trigger_dematerialize = true;
+      if ( p()->talents.dematerialize.ok() )
+        p()->state.trigger_dematerialize = true;
     }
 
     if ( p()->buffs.leydrinker->check() )
@@ -2892,7 +2893,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       // because it's an instant, it cannot be taken advantage of.
       // TODO: Check if AB -> PoM AB works (with low latency).
       make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
-      p()->state.trigger_dematerialize = true;
+      if ( p()->talents.dematerialize.ok() )
+        p()->state.trigger_dematerialize = true;
     }
 
     if ( p()->buffs.leydrinker->check() )
