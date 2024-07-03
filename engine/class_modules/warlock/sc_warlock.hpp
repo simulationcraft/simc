@@ -662,14 +662,8 @@ public:
   void create_pets() override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
-  resource_e primary_resource() const override
-  {
-    return RESOURCE_MANA;
-  }
-  role_e primary_role() const override
-  {
-    return ROLE_SPELL;
-  }
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+  role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_player_multiplier( school_e school ) const override;
