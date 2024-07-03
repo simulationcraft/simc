@@ -388,11 +388,6 @@ namespace warlock
     // T30 (Aberrus, the Shadowed Crucible)
     tier.channel_demonfire = find_spell( 409890 );
     tier.umbrafire_embers = find_spell( 409652 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.dimensional_cinder = find_spell( 427285 );
-    tier.flame_rift = find_spell( 423874 );
-    tier.searing_bolt = find_spell( 423886 );
   }
 
   void warlock_t::init_base_stats()
@@ -675,7 +670,6 @@ namespace warlock
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
     procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
-    procs.dimensional_refund = get_proc( "dimensional_refund" );
   }
 
   void warlock_t::init_rng()
@@ -780,7 +774,6 @@ namespace warlock
     agony_accumulator                  = rng().range( 0.0, 0.99 );
     corruption_accumulator             = rng().range( 0.0, 0.99 );
     cdf_accumulator                    = rng().range( 0.0, 0.99 );
-    dimensional_accumulator            = rng().range( 0.0, 0.99 );
     incinerate_last_target_count       = 0;
     shadow_invocation_proc_chance        = 0.2;
     wild_imp_spawns.clear();
