@@ -479,7 +479,6 @@ public:
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
-    propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!

@@ -178,7 +178,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
