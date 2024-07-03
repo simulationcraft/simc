@@ -686,9 +686,7 @@ public:
   target_specific_t<warlock_td_t> target_data;
 
   const warlock_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
+  { return target_data[ target ]; }
 
   warlock_td_t* get_target_data( player_t* target ) const override
   {
@@ -750,37 +748,4 @@ namespace helpers
 
   bool crescendo_check( warlock_t* p );
 }
-
-namespace buffs
-{
-template <typename Base>
-struct warlock_buff_t : public Base
-{
-public:
-  using base_t = warlock_buff_t;
-  warlock_buff_t( warlock_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                  const item_t* item = nullptr )
-    : Base( p, name, s, item )
-  {
-  }
-
-  warlock_buff_t( warlock_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                  const item_t* item = nullptr )
-    : Base( &p, name, s, item )
-  {
-  }
-
-protected:
-  warlock_t* p()
-  {
-    return static_cast<warlock_t*>( Base::source );
-  }
-  const warlock_t* p() const
-  {
-    return static_cast<warlock_t*>( Base::source );
-  }
-};
-}  // namespace buffs
-
-
 }  // namespace warlock
