@@ -1268,7 +1268,7 @@ public:
         p()->active.searing_light->schedule_execute();
       }
     }
-    if (triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() && p()->cooldowns.higher_calling_icd->up())
+    if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() && p()->cooldowns.higher_calling_icd->up() )
     {
       timespan_t extension = timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() );
       // If Crusading Strikes is triggering, extension is only 500ms
@@ -1349,7 +1349,7 @@ public:
     }
 
     // TWW1 Prot 4pc
-    if (affected_by.heightened_wrath && p()->buffs.heightened_wrath->up())
+    if ( affected_by.heightened_wrath && p()->buffs.heightened_wrath->up() )
     {
       am *= 1.0 + p()->buffs.heightened_wrath->value();
     }
@@ -1677,8 +1677,6 @@ public:
       {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
-            // 23-04-29 Plot twist, this is now in centiseconds! PTR only now, will go live on 23-05-02 - Until then,
-            // live Sims will heavily undersim.
             -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 100 );
         reduction *= num_hopo_spent;
         ab::sim->print_debug(
@@ -1796,11 +1794,11 @@ public:
     {
       p->buffs.lightsmith.divine_guidance->trigger();
     }
-    if (p->talents.lightsmith.blessed_assurance->ok())
+    if ( p->talents.lightsmith.blessed_assurance->ok() )
     {
       p->buffs.lightsmith.blessed_assurance->trigger();
     }
-    if (p->sets->has_set_bonus(PALADIN_PROTECTION, TWW1, B4) && !is_hammer_of_light && !is_hammer_of_light_driver)
+    if ( p->sets->has_set_bonus(PALADIN_PROTECTION, TWW1, B4) && !is_hammer_of_light && !is_hammer_of_light_driver )
     {
       p->buffs.rising_wrath->increment();
     }

@@ -176,8 +176,7 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
 
     auto* p = static_cast<paladin_t*>( player );
-    // do thing
-      // TODO(mserrano): This is a horrible hack
+    // TODO(mserrano): This is a horrible hack
     p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
         p->options.fake_sov ? max_absorb : current_value;
     p->active.shield_of_vengeance_damage->execute();
@@ -207,7 +206,7 @@ struct sacrosanct_crusade_t :public absorb_buff_t
   {
     auto* p        = static_cast<paladin_t*>( player );
     int max_hp_effect = p->specialization() == PALADIN_RETRIBUTION ? 4 : 1;
-    double shield     = p->talents.templar.sacrosanct_crusade->effectN( max_hp_effect ).percent() *
+    double shield = p->talents.templar.sacrosanct_crusade->effectN( max_hp_effect ).percent() *
                     p->resources.max[ RESOURCE_HEALTH ] * ( 1.0 + p->composite_heal_versatility() );
 
     double current_shield = p->buffs.templar.sacrosanct_crusade->value();
@@ -557,18 +556,15 @@ struct consecration_t : public paladin_spell_t
       {
         if ( friendly == p() )  // Always heal ourselves to avoid oversim
           healingAllies.push_back( friendly );
-        else
-        {
-          if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
-            healingAllies.push_back( friendly );
-        }
+        else if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
+          healingAllies.push_back( friendly );
         if ( healingAllies.size() == 5 )
           break;
       }
       // If we hit less than 5 healing targets, we can fill the rest with damage targets
       double healingAlliesSize = healingAllies.size();
       totalTargets             = healingAlliesSize;
-      if (healingAlliesSize < 5)
+      if ( healingAlliesSize < 5 )
       {
         totalTargets = sim->target_non_sleeping_list.size() + healingAlliesSize;
         if ( totalTargets > 5 )
@@ -588,7 +584,7 @@ struct consecration_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     // Damage events come after Consecration cast
-    if (p()->buffs.lightsmith.divine_guidance->up())
+    if ( p()->buffs.lightsmith.divine_guidance->up() )
     {
       // Only create damage events when we're dealing damage, so not to proc stuff accidentally
       if ( p()->active.divine_guidance_damage->base_dd_multiplier > 0 )
@@ -1379,6 +1375,7 @@ struct sacrosanct_crusade_heal_t : public paladin_heal_t
     target        = p;
     base_pct_heal = 0; // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
   }
+
   void impact( action_state_t* s ) override
   {
     auto health_before = p()->resources.current[ RESOURCE_HEALTH ];
@@ -2188,6 +2185,7 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
     // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
     reduced_aoe_targets = -1;
   }
+
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     paladin_spell_t::available_targets( tl );
@@ -2201,6 +2199,7 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
 
     return tl.size();
   }
+
   void impact(action_state_t* s) override
   {
     paladin_spell_t::impact( s );
@@ -2320,10 +2319,7 @@ struct sacred_weapon_proc_t : public paladin_spell_t
     aoe                 = -1;
     reduced_aoe_targets = 5;
   }
-  void execute() override
-  {
-    paladin_spell_t::execute();
-  }
+
   double composite_aoe_multiplier(const action_state_t* state) const override
   {
     double m = paladin_spell_t::composite_aoe_multiplier( state );
@@ -2333,6 +2329,7 @@ struct sacred_weapon_proc_t : public paladin_spell_t
     return m;
   }
 };
+
 // Sacred Weapon Buff
 struct sacred_weapon_t : public paladin_spell_t
 {
@@ -2340,6 +2337,7 @@ struct sacred_weapon_t : public paladin_spell_t
   {
     harmful = false;
   }
+
   void execute() override
   {
     paladin_spell_t::execute();

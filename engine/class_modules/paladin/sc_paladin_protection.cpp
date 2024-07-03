@@ -418,6 +418,7 @@ struct blessed_hammer_t : public paladin_spell_t
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
+  
   double action_multiplier() const override
   {
     double am = paladin_spell_t::action_multiplier();
@@ -564,6 +565,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
+
   double action_multiplier() const override
   {
     double am = paladin_melee_attack_t::action_multiplier();
@@ -618,12 +620,12 @@ struct eye_of_tyr_t : public paladin_spell_t
       p()->buffs.templar.hammer_of_light_ready->trigger();
     }
 
-    if (p()->talents.templar.sacrosanct_crusade->ok())
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
       p()->buffs.templar.sacrosanct_crusade->trigger();
     }
 
-    if (p()->talents.templar.undisputed_ruling->ok())
+    if ( p()->talents.templar.undisputed_ruling->ok() )
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
                           p()->gains.eye_of_tyr );
