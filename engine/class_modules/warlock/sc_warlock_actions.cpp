@@ -895,8 +895,6 @@ using namespace helpers;
 
         m *= td( s->target )->count_affliction_dots();
 
-        m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
-
         if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
 
@@ -1004,7 +1002,6 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
-      p()->buffs.cruel_epiphany->decrement();
       p()->buffs.umbrafire_kindling->decrement();
     }
 
@@ -1104,15 +1101,6 @@ using namespace helpers;
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
         p()->agony_accumulator -= 1.0;
-
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B2 ) && rng().roll( 0.3 ) )
-        {
-          p()->buffs.cruel_inspiration->trigger();
-          p()->procs.cruel_inspiration->occur();
-
-          if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T29, B4 ) )
-            p()->buffs.cruel_epiphany->trigger( 2 );
-        }
       }
 
       warlock_spell_t::tick( d );
@@ -1126,13 +1114,11 @@ using namespace helpers;
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
       corruption_t* corr;
-      bool cruel_epiphany;
       bool umbrafire_kindling;
 
       seed_of_corruption_aoe_t( warlock_t* p )
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corr( new corruption_t( p, "", true ) ),
-        cruel_epiphany( false ),
         umbrafire_kindling( false )
       {
         aoe = -1;
@@ -1165,11 +1151,6 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
-        {
-          m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
-        }
-
         if ( umbrafire_kindling )
         {
           m *= 1.0 + p()->tier.umbrafire_kindling->effectN( 2 ).percent();
@@ -1180,13 +1161,11 @@ using namespace helpers;
     };
 
     seed_of_corruption_aoe_t* explosion;
-    seed_of_corruption_aoe_t* epiphany_explosion;
     seed_of_corruption_aoe_t* umbrafire_explosion;
 
     seed_of_corruption_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
       explosion( new seed_of_corruption_aoe_t( p ) ),
-      epiphany_explosion( new seed_of_corruption_aoe_t( p ) ),
       umbrafire_explosion( new seed_of_corruption_aoe_t( p ) )
     {
       parse_options( options_str );
@@ -1196,9 +1175,6 @@ using namespace helpers;
       hasted_ticks = false;
 
       add_child( explosion );
-
-      epiphany_explosion->cruel_epiphany = true;
-      add_child( epiphany_explosion );
 
       umbrafire_explosion->umbrafire_kindling = true;
       add_child( umbrafire_explosion );
@@ -1242,8 +1218,6 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.cruel_epiphany->decrement();
-
       p()->buffs.umbrafire_kindling->decrement();
     }
 
@@ -1255,11 +1229,6 @@ using namespace helpers;
       }
 
       warlock_spell_t::impact( s );
-
-      if ( s->chain_target == 0 && p()->buffs.cruel_epiphany->check() )
-      {
-        td( s->target )->debuffs_cruel_epiphany->trigger();
-      }
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T31, B4 ) )
       {
@@ -1280,13 +1249,7 @@ using namespace helpers;
 
     void last_tick( dot_t* d ) override
     {
-      // Note: We're PROBABLY okay to do this as an if/else if on tier sets because you can't have two separate 4pc bonuses at once
-      if ( td( d->target )->debuffs_cruel_epiphany->check() )
-      {
-        epiphany_explosion->set_target( d->target );
-        epiphany_explosion->schedule_execute();
-      }
-      else if ( td( d->target )->debuffs_umbrafire_kindling->check() )
+      if ( td( d->target )->debuffs_umbrafire_kindling->check() )
       {
         make_event( *sim, 0_ms, [this, t = d->target ] { umbrafire_explosion->execute_on_target( t ); } );
       }
@@ -1296,7 +1259,6 @@ using namespace helpers;
         explosion->schedule_execute();
       }
 
-      td( d->target )->debuffs_cruel_epiphany->expire();
       td( d->target )->debuffs_umbrafire_kindling->expire();
 
       warlock_spell_t::last_tick( d );

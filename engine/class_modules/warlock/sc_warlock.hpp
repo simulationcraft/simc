@@ -44,7 +44,6 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
   propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
 
@@ -479,8 +478,6 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
-    const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
     const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
     const spell_data_t* umbrafire_kindling; // T31 4pc buff after casting Soul Rot. Empowers Malefic Rapture or Seed of Corruption
 
@@ -533,8 +530,6 @@ public:
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
-    propagate_const<buff_t*> cruel_inspiration; // T29 2pc
-    propagate_const<buff_t*> cruel_epiphany; // T29 4pc
     propagate_const<buff_t*> umbrafire_kindling; // T31 4pc buff
 
     // Demonology Buffs
@@ -613,7 +608,6 @@ public:
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
-    proc_t* cruel_inspiration; // T29 2pc
 
     // Demonology
     proc_t* demonic_calling;

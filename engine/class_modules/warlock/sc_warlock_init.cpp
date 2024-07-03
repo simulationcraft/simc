@@ -170,10 +170,6 @@ namespace warlock
 
     // Additional Tier Set spell data
 
-    // T29 (Vault of the Incarnates)
-    tier.cruel_inspiration = find_spell( 394215 );
-    tier.cruel_epiphany = find_spell( 394253 );
-
     // T30 (Aberrus, the Shadowed Crucible)
     tier.infirmity = find_spell( 409765 );
 
@@ -489,13 +485,6 @@ namespace warlock
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 
-    buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
-                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                  ->set_default_value_from_effect( 1 );
-
-    buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
-                               ->set_default_value_from_effect( 1 );
-
     buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
                                    ->set_reverse( true );
   }
@@ -704,7 +693,6 @@ namespace warlock
     procs.nightfall = get_proc( "nightfall" );
     procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
-    procs.cruel_inspiration = get_proc( "cruel_inspiration" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {

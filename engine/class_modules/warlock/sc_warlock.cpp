@@ -36,8 +36,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
-  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany_dummy" );
-
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
                           ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
