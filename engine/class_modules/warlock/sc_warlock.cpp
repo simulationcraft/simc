@@ -90,9 +90,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 void warlock_td_t::target_demise()
 {
   if ( !( target->is_enemy() ) )
-  {
     return;
-  }
 
   if ( dots_unstable_affliction->is_ticking() )
   {
