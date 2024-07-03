@@ -507,8 +507,6 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.drain_life->trigger();
-
       if ( p()->talents.soul_rot.ok() && p()->buffs.soul_rot->check() )
       {
         const auto& tl = target_list();
@@ -539,8 +537,6 @@ using namespace helpers;
 
     void last_tick( dot_t* d ) override
     {
-      p()->buffs.drain_life->expire();
-
       bool early_cancel = d->remains() > 0_ms;
 
       warlock_spell_t::last_tick( d );

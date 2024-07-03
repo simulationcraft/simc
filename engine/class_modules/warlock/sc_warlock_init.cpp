@@ -473,9 +473,6 @@ namespace warlock
 
   void warlock_t::create_buffs_affliction()
   {
-    buffs.drain_life = make_buff( this, "drain_life" );
-    buffs.drain_life->quiet = true;
-
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                           ->set_trigger_spell( talents.nightfall );
 
@@ -633,7 +630,6 @@ namespace warlock
     gains.agony = get_gain( "agony" );
     gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
     gains.drain_soul = get_gain( "drain_soul" );
-    gains.pandemic_invocation = get_gain( "pandemic_invocation" );
   }
 
   void warlock_t::init_gains_demonology()

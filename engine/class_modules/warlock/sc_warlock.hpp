@@ -519,7 +519,6 @@ public:
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
-    propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> tormented_crescendo;
@@ -572,7 +571,6 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
-    gain_t* pandemic_invocation;
 
     // Destruction
     gain_t* incinerate_crits;
