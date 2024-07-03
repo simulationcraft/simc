@@ -16,6 +16,11 @@ enum version_check_e
   VERSION_ANY
 };
 
+// Finds an action with the given name. If no action exists, a new one will
+// be created.
+//
+// Use this with secondary background actions to ensure the player only has
+// one copy of the action.
 template <typename Action, typename Actor, typename... Args>
 action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
@@ -36,7 +41,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_agony;
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
-  propagate_const<dot_t*> dots_siphon_life;
   propagate_const<dot_t*> dots_phantom_singularity;
   propagate_const<dot_t*> dots_unstable_affliction;
   propagate_const<dot_t*> dots_vile_taint;
@@ -45,9 +49,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
   propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
-  propagate_const<buff_t*> debuffs_umbrafire_kindling; // T31 4pc dummy debuff to track empowered Seeds of Corruption
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -473,17 +475,13 @@ public:
     action_t* doom_brand_explosion; // Demonology T31 2pc
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
-    action_t* soul_combustion; // Summon Soulkeeper AoE tick
     action_t* channel_demonfire; // Destruction T30 proc
   } proc_actions;
 
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
-    const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
-    const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
-    const spell_data_t* umbrafire_kindling; // T31 4pc buff after casting Soul Rot. Empowers Malefic Rapture or Seed of Corruption
+    const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
 
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
@@ -506,12 +504,10 @@ public:
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
-    propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> dimensional_rift;
-    propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
@@ -528,15 +524,11 @@ public:
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
-    propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
-    propagate_const<buff_t*> cruel_inspiration; // T29 2pc
-    propagate_const<buff_t*> cruel_epiphany; // T29 4pc
-    propagate_const<buff_t*> umbrafire_kindling; // T31 4pc buff
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_power; // Buff from Summon Demonic Tyrant (increased demon damage + duration)
@@ -584,7 +576,6 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
-    gain_t* pandemic_invocation;
 
     // Destruction
     gain_t* incinerate_crits;
@@ -607,14 +598,11 @@ public:
     proc_t* soul_conduit;
     proc_t* demonic_inspiration;
     proc_t* wrathful_minion;
-    proc_t* inquisitors_gaze; // Random proc as of 10.0.5
 
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
-    proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
-    proc_t* cruel_inspiration; // T29 2pc
 
     // Demonology
     proc_t* demonic_calling;
@@ -670,8 +658,6 @@ public:
   int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
-  action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
-  action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   void create_actions() override;
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
@@ -681,14 +667,8 @@ public:
   void create_pets() override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
-  resource_e primary_resource() const override
-  {
-    return RESOURCE_MANA;
-  }
-  role_e primary_role() const override
-  {
-    return ROLE_SPELL;
-  }
+  resource_e primary_resource() const override { return RESOURCE_MANA; }
+  role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_player_multiplier( school_e school ) const override;
@@ -711,9 +691,7 @@ public:
   target_specific_t<warlock_td_t> target_data;
 
   const warlock_td_t* find_target_data( const player_t* target ) const override
-  {
-    return target_data[ target ];
-  }
+  { return target_data[ target ]; }
 
   warlock_td_t* get_target_data( player_t* target ) const override
   {
@@ -775,37 +753,4 @@ namespace helpers
 
   bool crescendo_check( warlock_t* p );
 }
-
-namespace buffs
-{
-template <typename Base>
-struct warlock_buff_t : public Base
-{
-public:
-  using base_t = warlock_buff_t;
-  warlock_buff_t( warlock_td_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                  const item_t* item = nullptr )
-    : Base( p, name, s, item )
-  {
-  }
-
-  warlock_buff_t( warlock_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
-                  const item_t* item = nullptr )
-    : Base( &p, name, s, item )
-  {
-  }
-
-protected:
-  warlock_t* p()
-  {
-    return static_cast<warlock_t*>( Base::source );
-  }
-  const warlock_t* p() const
-  {
-    return static_cast<warlock_t*>( Base::source );
-  }
-};
-}  // namespace buffs
-
-
 }  // namespace warlock

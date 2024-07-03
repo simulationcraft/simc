@@ -23,7 +23,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_agony = target->get_dot( "agony", &p );
   dots_drain_soul = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
-  dots_siphon_life = target->get_dot( "siphon_life", &p );
   dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
   dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
@@ -37,13 +36,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
-  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany_dummy" );
-
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
                           ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  debuffs_umbrafire_kindling = make_buff( *this, "umbrafire_kindling_dummy" );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
@@ -169,9 +164,6 @@ int warlock_td_t::count_affliction_dots() const
   if ( dots_soul_rot->is_ticking() )
     count++;
 
-  if ( dots_siphon_life->is_ticking() )
-    count++;
-
   return count;
 }
 
@@ -203,12 +195,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     disable_auto_felstorm( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
-  cooldowns.darkglare = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
   cooldowns.infernal = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
-  cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
