@@ -23,7 +23,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_agony = target->get_dot( "agony", &p );
   dots_drain_soul = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
-  dots_siphon_life = target->get_dot( "siphon_life", &p );
   dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
   dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
@@ -167,9 +166,6 @@ int warlock_td_t::count_affliction_dots() const
     count++;
 
   if ( dots_soul_rot->is_ticking() )
-    count++;
-
-  if ( dots_siphon_life->is_ticking() )
     count++;
 
   return count;

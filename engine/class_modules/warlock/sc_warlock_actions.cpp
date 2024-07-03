@@ -920,9 +920,6 @@ using namespace helpers;
           if ( target_data->dots_corruption->is_ticking() )
             target_data->dots_corruption->adjust_duration( t31_soulstealer_extend );
 
-          if ( target_data->dots_siphon_life->is_ticking() )
-            target_data->dots_siphon_life->adjust_duration( t31_soulstealer_extend );
-
           if ( target_data->dots_unstable_affliction->is_ticking() )
             target_data->dots_unstable_affliction->adjust_duration( t31_soulstealer_extend );
 
@@ -1306,15 +1303,6 @@ using namespace helpers;
     }
   };
 
-  struct siphon_life_t : public warlock_spell_t
-  {
-    siphon_life_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Siphon Life", p, p->talents.siphon_life )
-    {
-      parse_options( options_str );
-    }
-  };
-
   struct drain_soul_t : public warlock_spell_t
   {
     struct drain_soul_state_t : public action_state_t
@@ -1581,7 +1569,6 @@ using namespace helpers;
 
         td->dots_agony->adjust_duration( darkglare_extension );
         td->dots_corruption->adjust_duration( darkglare_extension );
-        td->dots_siphon_life->adjust_duration( darkglare_extension );
         td->dots_phantom_singularity->adjust_duration( darkglare_extension );
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
@@ -4113,8 +4100,6 @@ using namespace helpers;
       return new haunt_t( this, options_str );
     if ( action_name == "phantom_singularity" )
       return new phantom_singularity_t( this, options_str );
-    if ( action_name == "siphon_life" )
-      return new siphon_life_t( this, options_str );
     if ( action_name == "vile_taint" )
       return new vile_taint_t( this, options_str );
     if ( action_name == "malefic_rapture" )
