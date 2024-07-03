@@ -469,13 +469,6 @@ struct demonic_tyrant_t : public warlock_pet_t
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
 };
-
-struct doomfiend_t : public warlock_pet_t
-{
-  doomfiend_t( warlock_t*, util::string_view = "doomfiend" );
-  action_t* create_action( util::string_view, util::string_view ) override;
-  void init_base_stats() override;
-};
 }  // namespace demonology
 
 namespace destruction

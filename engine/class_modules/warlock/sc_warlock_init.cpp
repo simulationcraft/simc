@@ -268,12 +268,6 @@ namespace warlock
     // T30 (Aberrus, the Shadowed Crucible)
     tier.rite_of_ruvaraad = find_spell( 409725 );
 
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.doom_brand = find_spell( 423585 );
-    tier.doom_brand_debuff = find_spell( 423583 );
-    tier.doom_brand_aoe = find_spell( 423584 );
-    tier.doom_bolt_volley = find_spell( 423734 );
-
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
@@ -810,7 +804,6 @@ namespace warlock
     corruption_accumulator             = rng().range( 0.0, 0.99 );
     cdf_accumulator                    = rng().range( 0.0, 0.99 );
     dimensional_accumulator            = rng().range( 0.0, 0.99 );
-    doom_brand_accumulator             = rng().range( 0.0, 0.99 );
     incinerate_last_target_count       = 0;
     shadow_invocation_proc_chance        = 0.2;
     wild_imp_spawns.clear();

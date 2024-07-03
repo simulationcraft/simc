@@ -1613,20 +1613,6 @@ using namespace helpers;
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-      {
-        for ( const auto target : p()->sim->target_non_sleeping_list )
-        {
-          warlock_td_t* tdata = td( target );
-
-          if ( !tdata )
-            continue;
-
-          if ( tdata->debuffs_doom_brand->check() )
-            tdata->debuffs_doom_brand->extend_duration( p(), -p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 1 ).time_value() * shards_used );
-        }
-      }
     }
 
     void consume_resource() override
@@ -1700,9 +1686,6 @@ using namespace helpers;
           if ( active_pet->pet_type == PET_FELGUARD )
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
-
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B2 ) )
-          td( target )->debuffs_doom_brand->trigger();
       }
       else
       {
@@ -2294,55 +2277,6 @@ using namespace helpers;
 
         internal_cooldown->start( 6_s );
       }
-    }
-  };
-
-  struct doom_brand_t : public warlock_spell_t
-  {
-    doom_brand_t( warlock_t* p ) : warlock_spell_t( "Doom Brand", p, p->tier.doom_brand_aoe )
-    {
-      aoe = -1;
-      reduced_aoe_targets = 8.0;
-      background = dual = true;
-      callbacks = false;
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T31, B4 ) )
-      {
-        double increment_max = 0.5;
-
-        int debuff_count = 1;
-        for ( auto t : target_list() )
-        {
-          if ( td( t )->debuffs_doom_brand->check() )
-            debuff_count++;
-        }
-
-        increment_max *= std::pow( debuff_count, -1.0 / 2.0 );
-
-        p()->doom_brand_accumulator += rng().range( 0.0, increment_max );
-
-        if ( p()->doom_brand_accumulator >= 1.0 )
-        {
-          p()->warlock_pet_list.doomfiends.spawn();
-          p()->procs.doomfiend->occur();
-          p()->doom_brand_accumulator -= 1.0;
-        }
-      }
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = warlock_spell_t::composite_da_multiplier( s );
-
-      if ( s->n_targets == 1 )
-        m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T31, B2 )->effectN( 2 ).percent();
-
-      return m;
     }
   };
 
@@ -3989,7 +3923,6 @@ using namespace helpers;
   void warlock_t::create_demonology_proc_actions()
   {
     proc_actions.bilescourge_bombers_proc = new bilescourge_bombers_proc_t( this );
-    proc_actions.doom_brand_explosion = new doom_brand_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()
