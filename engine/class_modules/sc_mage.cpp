@@ -241,6 +241,7 @@ public:
     action_t* firefall_meteor;
     action_t* glacial_assault;
     action_t* ignite;
+    action_t* leydrinker_echo;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
@@ -289,6 +290,7 @@ public:
     buff_t* evocation;
     buff_t* high_voltage;
     buff_t* impetus;
+    buff_t* leydrinker;
     buff_t* nether_precision;
     buff_t* presence_of_mind;
     buff_t* siphon_storm;
@@ -471,6 +473,7 @@ public:
     double spent_mana;
     timespan_t gained_full_icicles;
     bool had_low_mana;
+    bool trigger_leydrinker;
   } state;
 
   struct expression_support_t
@@ -2777,6 +2780,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.bursting_energy->expire();
     p()->buffs.nether_precision->decrement();
 
+    if ( p()->buffs.leydrinker->check() )
+    {
+      p()->buffs.leydrinker->expire();
+      p()->state.trigger_leydrinker = true;
+    }
+
     snapshot_charges = -1;
   }
 
@@ -2810,6 +2819,17 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     c += p()->buffs.bursting_energy->check_stack_value();
 
     return c;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( p()->state.trigger_leydrinker )
+    {
+      p()->state.trigger_leydrinker = false;
+      p()->action.leydrinker_echo->execute_on_target( s->target, p()->talents.leydrinker->effectN( 2 ).percent() * s->result_total );
+    }
   }
 };
 
@@ -2871,6 +2891,12 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     // TODO: Check if AB -> PoM AB works (with low latency).
     make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
 
+    if ( p()->buffs.leydrinker->check() )
+    {
+      p()->buffs.leydrinker->expire();
+      p()->state.trigger_leydrinker = true;
+    }
+
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
   }
@@ -2904,6 +2930,17 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
 
     return mul;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( p()->state.trigger_leydrinker )
+    {
+      p()->state.trigger_leydrinker = false;
+      p()->action.leydrinker_echo->execute_on_target( s->target, p()->talents.leydrinker->effectN( 2 ).percent() * s->result_total );
+    }
   }
 };
 
@@ -5524,6 +5561,19 @@ struct shifting_power_t final : public mage_spell_t
   }
 };
 
+struct leydrinker_echo_t final : public spell_t
+{
+  leydrinker_echo_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 453770 ) )
+  {
+    background = true;
+    base_dd_min = base_dd_max = 1.0;
+    // The delay is probably on action execution rather than travel time,
+    // but because the echo doesn't snapshot any multipliers, this doesn't matter.
+    travel_delay = 0.7;
+  }
+};
+
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
@@ -6031,6 +6081,9 @@ void mage_t::create_actions()
     action.magis_spark = get_action<magis_spark_t>( "magis_spark", this );
     action.magis_spark_echo = get_action<magis_spark_echo_t>( "magis_spark_echo", this );
   }
+
+  if ( talents.leydrinker.ok() )
+    action.leydrinker_echo = get_action<leydrinker_echo_t>( "leydrinker_echo", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -6582,10 +6635,14 @@ void mage_t::create_buffs()
   buffs.impetus                   = make_buff( this, "impetus", find_spell( 393939 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
+                                      ->set_chance( talents.leydrinker->effectN( 1 ).percent() );
   buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                       ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                       ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
                                       ->set_activated( false )
+                                      ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+                                        { if ( cur < old  ) buffs.leydrinker->trigger(); } )
                                       ->set_chance( talents.nether_precision.ok() );
   buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                       ->set_cooldown( 0_ms )
