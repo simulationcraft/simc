@@ -3272,8 +3272,8 @@ using namespace helpers;
       return new corruption_t( this, options_str, false );
     if ( action_name == "shadow_bolt" && specialization() != WARLOCK_DESTRUCTION )
       return new shadow_bolt_t( this, options_str );
-    if ( action_name == "grimoire_of_sacrifice" )
-      return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
+    if ( action_name == "grimoire_of_sacrifice" && specialization() != WARLOCK_DEMONOLOGY )
+      return new grimoire_of_sacrifice_t( this, options_str );
     if ( action_name == "interrupt" )
       return new interrupt_t( action_name, this, options_str );
     if ( action_name == "soulburn" )
