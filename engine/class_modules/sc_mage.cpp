@@ -237,6 +237,7 @@ public:
   {
     action_t* arcane_assault;
     action_t* arcane_echo;
+    action_t* arcane_explosion_energy_recon;
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* firefall_meteor;
@@ -434,6 +435,11 @@ public:
   {
     shuffled_rng_t* time_anomaly;
   } shuffled_rng;
+
+  struct rppms_t
+  {
+    real_ppm_t* energy_reconstitution;
+  } rppm;
 
   // Sample data
   struct sample_data_t
@@ -2958,28 +2964,51 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
 struct arcane_explosion_t final : public arcane_mage_spell_t
 {
-  action_t* echo = nullptr;
+  enum ae_type_e
+  {
+    AE_NORMAL,
+    AE_ECHO,
+    AE_ENERGY_RECON
+  };
 
-  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo_ = false ) :
-    arcane_mage_spell_t( n, p, echo_ ? p->find_spell( 414381 ) : p->find_class_spell( "Arcane Explosion" ) )
+  static const spell_data_t* spell( mage_t* p, ae_type_e type )
+  {
+    switch ( type )
+    {
+      case AE_NORMAL:       return p->find_class_spell( "Arcane Explosion" );
+      case AE_ECHO:         return p->find_spell( 414381 );
+      case AE_ENERGY_RECON: return p->find_spell( 461508 );
+      default:              return nullptr;
+    }
+  }
+
+  action_t* echo = nullptr;
+  ae_type_e type;
+
+  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, ae_type_e type_ = AE_NORMAL ) :
+    arcane_mage_spell_t( n, p, spell( p, type_ ) ),
+    type( type_ )
   {
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
-    triggers.clearcasting = TO_ALWAYS; // AE Echo seems to also trigger CC, despite being a background action.
 
-    if ( echo_ )
-    {
-      background = true;
-    }
-    else
+    // AE Echo seems to also trigger CC, despite being a background action.
+    if ( type == AE_ECHO )
+      triggers.clearcasting = TO_ALWAYS;
+
+    if ( type == AE_NORMAL )
     {
       cost_reductions = { p->buffs.clearcasting };
       if ( p->talents.concentrated_power.ok() )
       {
-        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", true );
+        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", AE_ECHO );
         add_child( echo );
       }
+    }
+    else
+    {
+      background = true;
     }
   }
 
@@ -2989,6 +3018,13 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       make_event( *sim, 500_ms, [ this, t = target ] { echo->execute_on_target( t ); } );
 
     arcane_mage_spell_t::execute();
+
+    if ( p()->buffs.static_cloud->at_max_stacks() )
+      p()->buffs.static_cloud->expire();
+    p()->buffs.static_cloud->trigger();
+
+    if ( type == AE_ENERGY_RECON )
+      return;
 
     if ( !target_list().empty() )
       p()->trigger_arcane_charge();
@@ -3001,10 +3037,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
-
-    if ( p()->buffs.static_cloud->at_max_stacks() )
-      p()->buffs.static_cloud->expire();
-    p()->buffs.static_cloud->trigger();
 
     if ( !background && p()->buffs.aether_attunement_counter->at_max_stacks() )
     {
@@ -3035,7 +3067,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     am *= 1.0 + p()->buffs.static_cloud->check_stack_value();
 
     // Seems to affect the echo as well, but only if the mage has CC at that time.
-    if ( p()->buffs.clearcasting->check() )
+    if ( p()->buffs.clearcasting->check() && type != AE_ENERGY_RECON )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
     return am;
@@ -5513,6 +5545,15 @@ struct dematerialize_t final : residual_action::residual_periodic_action_t<spell
     // which is very unusual for a residual like that. It double dips stuff like
     // versatility.
   }
+
+  void tick( dot_t* d ) override
+  {
+    residual_action_t::tick( d );
+
+    auto mage = debug_cast<mage_t*>( player );
+    if ( mage->rppm.energy_reconstitution->trigger() )
+      mage->action.arcane_explosion_energy_recon->execute_on_target( d->target );
+  }
 };
 
 // ==========================================================================
@@ -5888,6 +5929,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   pets(),
   procs(),
   shuffled_rng(),
+  rppm(),
   sample_data(),
   spec(),
   state(),
@@ -6026,6 +6068,9 @@ void mage_t::create_actions()
 
   if ( talents.dematerialize.ok() )
     action.dematerialize = get_action<dematerialize_t>( "dematerialize", this );
+
+  if ( talents.energy_reconstitution.ok() )
+    action.arcane_explosion_energy_recon = get_action<arcane_explosion_t>( "arcane_explosion_energy_reconstitution", this, "", arcane_explosion_t::AE_ENERGY_RECON );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -6862,6 +6907,7 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
+  rppm.energy_reconstitution = get_rppm( "energy_reconstitution", talents.energy_reconstitution );
 }
 
 void mage_t::init_items()
