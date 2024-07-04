@@ -336,6 +336,11 @@ public:
     buff_t* slick_ice;
 
 
+    // Frostfire
+    buff_t* fire_mastery;
+    buff_t* frost_mastery;
+
+
     // Shared
     buff_t* ice_floes;
     buff_t* incanters_flow;
@@ -1716,6 +1721,14 @@ public:
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
+
+    // TODO: This might need a more fine grained control since some spells behave weirdly
+    // (Blast Wave doesn't trigger Fire mastery, for example).
+    if ( harmful && !background && dbc::is_school( get_school(), SCHOOL_FIRE ) )
+      p()->buffs.fire_mastery->trigger();
+
+    if ( harmful && !background && dbc::is_school( get_school(), SCHOOL_FROST ) )
+      p()->buffs.frost_mastery->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6738,6 +6751,19 @@ void mage_t::create_buffs()
   buffs.slick_ice          = make_buff( this, "slick_ice", find_spell( 382148 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.slick_ice.ok() );
+
+
+  // Frostfire
+  buffs.fire_mastery  = make_buff( this, "fire_mastery", find_spell( 431040 ) )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                          ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.frost_mastery = make_buff( this, "frost_mastery", find_spell( 431039 ) )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                          ->set_default_value_from_effect( 1 )
+                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                          ->set_chance( talents.frostfire_mastery.ok() );
 
 
   // Shared
