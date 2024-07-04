@@ -241,6 +241,7 @@ public:
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* firefall_meteor;
+    action_t* frostfire_infusion;
     action_t* glacial_assault;
     action_t* ignite;
     action_t* leydrinker_echo;
@@ -446,6 +447,7 @@ public:
   struct rppms_t
   {
     real_ppm_t* energy_reconstitution;
+    real_ppm_t* frostfire_infusion;
   } rppm;
 
   // Sample data
@@ -1757,6 +1759,9 @@ public:
 
     if ( tt_applicable( s, triggers.calefaction ) )
       trigger_calefaction( s->target );
+
+    if ( callbacks && dbc::has_common_school( get_school(), SCHOOL_FROSTFIRE ) && s->result_type == result_amount_type::DMG_DIRECT && p()->rppm.frostfire_infusion->trigger() )
+      p()->action.frostfire_infusion->execute_on_target( s->target );
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -5588,6 +5593,22 @@ struct dematerialize_t final : residual_action::residual_periodic_action_t<spell
   }
 };
 
+struct frostfire_infusion_t final : public mage_spell_t
+{
+  frostfire_infusion_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 431171 ) )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->buffs.fire_mastery->trigger();
+    p()->buffs.frost_mastery->trigger();
+  }
+};
+
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
@@ -6105,6 +6126,9 @@ void mage_t::create_actions()
 
   if ( talents.energy_reconstitution.ok() )
     action.arcane_explosion_energy_recon = get_action<arcane_explosion_t>( "arcane_explosion_energy_reconstitution", this, "", arcane_explosion_t::AE_ENERGY_RECON );
+
+  if ( talents.frostfire_infusion.ok() )
+    action.frostfire_infusion = get_action<frostfire_infusion_t>( "frostfire_infusion", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -6955,6 +6979,7 @@ void mage_t::init_rng()
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
   rppm.energy_reconstitution = get_rppm( "energy_reconstitution", talents.energy_reconstitution );
+  rppm.frostfire_infusion = get_rppm( "frostfire_infusion", talents.frostfire_infusion );
 }
 
 void mage_t::init_items()
