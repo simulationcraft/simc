@@ -1102,7 +1102,7 @@ public:
   {
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
-    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning,
+    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
       divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
@@ -1140,7 +1140,8 @@ public:
 
       // Temporary damage modifiers
       this->affected_by.crusade         = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
-      this->affected_by.final_reckoning = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
+      this->affected_by.final_reckoning_st = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
+      this->affected_by.final_reckoning_aoe = this->data().affected_by( p->talents.final_reckoning->effectN( 4 ) );
       this->affected_by.ret_t29_2p =
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
@@ -1408,9 +1409,14 @@ public:
       ctm *= judg_mul;
     }
 
-    if ( affected_by.final_reckoning && td->debuff.final_reckoning->up() )
+    if ( affected_by.final_reckoning_st && td->debuff.final_reckoning->up() )
     {
       ctm *= 1.0 + p()->talents.final_reckoning->effectN( 3 ).percent();
+    }
+
+    if ( affected_by.final_reckoning_aoe && td->debuff.final_reckoning->up() )
+    {
+      ctm *= 1.0 + p()->talents.final_reckoning->effectN( 4 ).percent();
     }
 
     return ctm;
