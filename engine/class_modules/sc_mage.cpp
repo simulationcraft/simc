@@ -1574,9 +1574,6 @@ public:
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
 
-    if ( affected_by.unleashed_inferno && p()->buffs.combustion->check() )
-      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 1 ).percent();
-
     if ( affected_by.forethought )
       m *= 1.0 + p()->buffs.forethought->check_stack_value();
 
@@ -1592,6 +1589,9 @@ public:
 
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
+
+    if ( affected_by.unleashed_inferno && p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 1 ).percent();
 
     if ( affected_by.arcane_overload )
       m *= 1.0 + p()->buffs.arcane_overload->check_value();
@@ -4154,8 +4154,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     // TODO: currently bugged and doesn't trigger Bone Chilling
     triggers.chill = triggers.overflowing_energy = true;
     triggers.calefaction = TT_MAIN_TARGET;
-    base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     // TODO: ticks currently cannot crit, probably a bug
@@ -4207,16 +4207,16 @@ struct frostbolt_t final : public frost_mage_spell_t
     return mul;
   }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = frost_mage_spell_t::action_multiplier();
+    double m = frost_mage_spell_t::composite_da_multiplier( s );
 
-    am *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
+    m *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
-      am *= 1.0 + fractured_frost_mul;
+      m *= 1.0 + fractured_frost_mul;
 
-    return am;
+    return m;
   }
 
   double frozen_multiplier( const action_state_t* s ) const override
