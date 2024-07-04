@@ -1218,11 +1218,6 @@ struct templar_strike_t : public base_templar_strike_t
     {
       cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
     }
-
-    if ( p->spec.improved_crusader_strike )
-    {
-      cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
-    }
   }
 
   void execute() override
