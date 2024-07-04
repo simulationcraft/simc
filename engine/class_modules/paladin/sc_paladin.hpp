@@ -333,6 +333,7 @@ public:
     cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
+    cooldown_t* art_of_war;
   } cooldowns;
 
   // Passives
@@ -1090,16 +1091,17 @@ template <class Base>
 struct paladin_action_t : public Base
 {
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
-  typedef paladin_action_t base_t;
+  using base_t = paladin_action_t;
 
   // Damage increase whitelists
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
-    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
+    bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning,
+      divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
   } affected_by;
@@ -1120,8 +1122,8 @@ public:
       hasted_cd( false ),
       hasted_gcd( false ),
       searing_light_disabled( false ),
-      clears_judgment( false ),
       always_do_capstones(false),
+      clears_judgment( false ),
       triggers_higher_calling( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
@@ -1187,6 +1189,7 @@ public:
     if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
     {
       ab::school = SCHOOL_HOLYSTRIKE;
+      ab::base_multiplier *= 1.0 + p->talents.blades_of_light->effectN( 2 ).percent();
     }
 
     if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
@@ -1198,6 +1201,8 @@ public:
     {
       int label                        = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
       this->affected_by.divine_arbiter = this->data().affected_by_label( label );
+      if ( this->affected_by.divine_arbiter && p->bugs )
+        ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
     }
     else
     {

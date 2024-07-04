@@ -94,6 +94,10 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammerfall_icd           = get_cooldown( "hammerfall_icd" );
   cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
 
+  cooldowns.art_of_war = get_cooldown( "art_of_war" );
+  if ( talents.art_of_war->ok() )
+    cooldowns.art_of_war->duration = talents.art_of_war->internal_cooldown();
+
   cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
   cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
 
@@ -1152,12 +1156,17 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
-        if ( p()->talents.art_of_war->ok() )
+        if ( p()->talents.art_of_war->ok() && p()->cooldowns.art_of_war->up() )
         {
           // Check for BoW procs
           double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
+          if ( execute_state->result == RESULT_CRIT )
+          {
+            aow_proc_chance *= 1.0 + p()->talents.art_of_war->effectN( 2 ).percent();
+          }
           if ( rng().roll( aow_proc_chance ) )
           {
+            p()->cooldowns.art_of_war->start();
             p()->procs.art_of_war->occur();
             p()->cooldowns.blade_of_justice->reset( true );
           }
