@@ -2922,7 +2922,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
-
+  debuff.vanguard_of_justice = make_buff( *this, "vanguard_of_justice", paladin->find_spell( 453451 ) );
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );

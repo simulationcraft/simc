@@ -536,9 +536,23 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( result_is_hit( s->result ) )
     {
+      paladin_td_t* target_data = td( s->target );
       if ( p()->talents.sanctify->ok() )
-        td( s->target )->debuff.sanctify->trigger();
+        target_data->debuff.sanctify->trigger();
+      if ( target_data->debuff.vanguard_of_justice->up() )
+        target_data->debuff.vanguard_of_justice->expire();
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = holy_power_consumer_t::composite_target_multiplier( target );
+
+    paladin_td_t* target_data = td( target );
+    if ( target_data->debuff.vanguard_of_justice->up() )
+      ctm *= 1.0 + target_data->debuff.vanguard_of_justice->stack_value();
+
+    return ctm;
   }
 };
 

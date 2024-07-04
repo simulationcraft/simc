@@ -76,6 +76,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* crusaders_resolve;
     buff_t* heartfire;  // T30 2p Prot
     buff_t* empyrean_hammer;
+    buff_t* vanguard_of_justice;
   } debuff;
 
   struct
@@ -1180,12 +1181,6 @@ public:
       ab::crit_bonus_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
     }
 
-    if ( p->talents.vanguard_of_justice->ok() &&
-         this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
-    {
-      ab::base_multiplier *= 1.0 + p->talents.vanguard_of_justice->effectN( 2 ).percent();
-    }
-
     if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
     {
       ab::school = SCHOOL_HOLYSTRIKE;
@@ -1599,15 +1594,15 @@ template <class Base>
 struct holy_power_consumer_t : public Base
 {
 private:
-  typedef Base ab;  // action base, eg. spell_t
+  using ab = Base;  // action base, eg. spell_t
 public:
-  typedef holy_power_consumer_t base_t;
+  using base_t = holy_power_consumer_t;
   bool is_divine_storm;
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
-  bool is_hammer_of_light_driver;
   bool is_hammer_of_light;
+  bool is_hammer_of_light_driver;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
@@ -1637,19 +1632,6 @@ public:
     return ab::cost();
   }
 
-  double cost_flat_modifier() const override
-  {
-    double c = ab::cost_flat_modifier();
-
-    if ( ab::p()->talents.vanguard_of_justice->ok() &&
-         this->data().affected_by( ab::p()->talents.vanguard_of_justice->effectN( 1 ) ) )
-    {
-      c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
-    }
-
-    return c;
-  }
-
   void impact( action_state_t* s ) override
   {
     paladin_t* p = ab::p();
@@ -1659,6 +1641,7 @@ public:
     {
       p->buffs.rush_of_light->trigger();
     }
+
     if ( !is_hammer_of_light && p->talents.templar.hammerfall->ok() && p->cooldowns.hammerfall_icd->up() )
     {
       int additionalTargets = 0;
@@ -1668,6 +1651,12 @@ public:
                                   timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
                                   true );
       p->cooldowns.hammerfall_icd->start();
+    }
+
+    if ( !is_divine_storm && p->talents.vanguard_of_justice->ok() )
+    {
+      paladin_td_t* td = p->get_target_data( s->target );
+      td->debuff.vanguard_of_justice->trigger();
     }
   }
 
