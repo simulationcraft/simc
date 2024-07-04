@@ -1309,7 +1309,7 @@ public:
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = ab::action_multiplier();
 
@@ -1317,14 +1317,15 @@ public:
     {
       if ( affected_by.highlords_judgment )
       {
-        am *= 1.0 + p()->cache.mastery_value();
+        double mastery_amount = p()->cache.mastery_value();
+        if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
+        {
+          // TODO: this has gotta be wrong. Where's the actual spell data for this?
+          mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
+        }
+        am *= 1.0 + mastery_amount;
       }
 
-      if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
-      {
-        // TODO: this has gotta be wrong. Where's the actual spell data for this?
-        am *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
-      }
 
       if ( affected_by.crusade && p()->buffs.crusade->up() )
       {
