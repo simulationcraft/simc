@@ -6958,18 +6958,8 @@ struct moon_base_t : public druid_spell_t
 
   moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
-    if ( data().ok() && p->talent.boundless_moonlight.ok() )
-    {
-      if ( auto suf = get_suffix( name_str, "full_moon" ); !suf.empty() )
-      {
-        minor = p->get_secondary_action<minor_moon_t>( "minor_moon_" + name_str, f );
-        add_child( minor );
-      }
-      else
-      {
-        minor = p->get_secondary_action<minor_moon_t>( "minor_moon", f );
-      }
-    }
+    if ( data().ok() && p->talent.boundless_moonlight.ok() && p->active.moons )
+      minor = p->get_secondary_action<minor_moon_t>( "minor_moon", f );
   }
 
   void init() override
@@ -7026,6 +7016,11 @@ struct moon_base_t : public druid_spell_t
 
     p()->eclipse_handler.cast_moon( this, stage );
 
+    // TODO: any delay/stagger?
+    if ( minor && num_minor )
+      for ( unsigned i = 0; i < num_minor; i++ )
+        minor->execute_on_target( target );
+
     if ( proc )
     {
       if ( p()->moon_stage == moon_stage_e::MAX_MOON && p()->orbital_bug && p()->bugs )
@@ -7035,11 +7030,6 @@ struct moon_base_t : public druid_spell_t
     }
 
     advance_stage();
-
-    // TODO: any delay/stagger?
-    if ( minor && num_minor )
-      for ( unsigned i = 0; i < num_minor; i++ )
-        minor->execute_on_target( target );
   }
 };
 
@@ -7080,7 +7070,17 @@ struct full_moon_t final : public trigger_atmospheric_exposure_t<moon_base_t>
     if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
 
-    num_minor = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
+    if ( data().ok() && p->talent.boundless_moonlight.ok() )
+    {
+      num_minor = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
+
+      if ( !minor )
+      {
+        auto suf = get_suffix( name_str, "full_moon" );
+        minor = p->get_secondary_action<minor_moon_t>( "minor_moon" + suf, f );
+        add_child( minor );
+      }
+    }
   }
 
   bool check_stage() const override
