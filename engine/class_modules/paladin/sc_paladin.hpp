@@ -220,6 +220,7 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
+    buff_t* judge_jury_and_executioner;
 
     buff_t* echoes_of_wrath;  // T31 4pc
 

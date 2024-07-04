@@ -3629,6 +3629,7 @@ void paladin_t::init_special_effects()
     auto cb = new paladin::touch_of_light_cb_t( this, *touch_of_light_driver );
     cb->initialize();
   }
+
   if ( talents.lightsmith.divine_inspiration->ok() )
   {
     struct divine_inspiration_cb_t : public dbc_proc_callback_t
@@ -3648,6 +3649,7 @@ void paladin_t::init_special_effects()
         p->procs.divine_inspiration->occur();
       }
     };
+
     auto const divine_inspiration_driver = new special_effect_t( this );
     divine_inspiration_driver->name_str  = "divine_inspiration_driver";
     // Since proc chance is hidden, this is just a guess. Average proc rate seems to match, though
@@ -3659,6 +3661,32 @@ void paladin_t::init_special_effects()
     special_effects.push_back( divine_inspiration_driver );
 
     auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );
+    cb->initialize();
+  }
+
+  if ( talents.judge_jury_and_executioner->ok() )
+  {
+    struct jje_cb_t : public dbc_proc_callback_t
+    {
+      paladin_t* p;
+
+      jje_cb_t( paladin_t* player, const special_effect_t& effect )
+        : dbc_proc_callback_t( player, effect ), p( player )
+      {
+      }
+
+      void execute( action_t*, action_state_t* ) override
+      {
+        p->buffs.judge_jury_and_executioner->trigger();
+      }
+    };
+
+    auto const jje_driver = new special_effect_t( this );
+    jje_driver->name_str = "judge_jury_and_executioner_driver";
+    jje_driver->spell_id = talents.judge_jury_and_executioner->id();
+    special_effects.push_back( jje_driver );
+
+    auto cb = new jje_cb_t( this, *jje_driver );
     cb->initialize();
   }
 }

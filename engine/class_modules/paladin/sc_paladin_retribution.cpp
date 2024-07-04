@@ -646,6 +646,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
     }
 
+    if ( p->talents.judge_jury_and_executioner->ok() )
+    {
+      base_aoe_multiplier *= p->talents.judge_jury_and_executioner->effectN( 3 ).percent();
+    }
+
     if ( ! is_fv ) {
       callbacks = false;
       may_block = false;
@@ -656,11 +661,22 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       // Okay, when did this get reset to 1?
       weapon_multiplier = 0;
     }
+
     if ( p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
     {
       echo = new templars_verdict_echo_t( p );
       add_child( echo );
     }
+  }
+
+  int n_targets() const override
+  {
+    int n = holy_power_consumer_t::n_targets();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      n += as<int>( p()->talents.judge_jury_and_executioner->effectN( 2 ).base_value() );
+
+    return n;
   }
 
   void record_data( action_state_t* state ) override {
@@ -686,6 +702,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p()->active.empyrean_legacy->schedule_execute();
       p()->buffs.empyrean_legacy->expire();
+    }
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+    {
+      p()->buffs.judge_jury_and_executioner->expire();
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
@@ -793,11 +814,6 @@ struct judgment_ret_t : public judgment_t
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
-    if ( p->talents.judge_jury_and_executioner->ok() )
-    {
-      base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
-    }
-
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
     {
       crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
@@ -834,11 +850,6 @@ struct judgment_ret_t : public judgment_t
     }
 
     // we don't do the blessed champion stuff here; DT judgments do not seem to cleave
-
-    if ( p->talents.judge_jury_and_executioner->ok() )
-    {
-      base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
-    }
   }
 
   void execute() override
@@ -905,12 +916,29 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
     {
       base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
     }
+
+    if ( p->talents.judge_jury_and_executioner->ok() )
+    {
+      base_aoe_multiplier *= p->talents.judge_jury_and_executioner->effectN( 3 ).percent();
+    }
   }
 
+  int n_targets() const override
+  {
+    int n = holy_power_consumer_t::n_targets();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      n += as<int>( p()->talents.judge_jury_and_executioner->effectN( 2 ).base_value() );
+
+    return n;
+  }
 
   void execute() override
   {
     holy_power_consumer_t::execute();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      p()->buffs.judge_jury_and_executioner->expire();
 
     if ( p()->talents.righteous_cause->ok() )
     {
@@ -1438,7 +1466,8 @@ void paladin_t::create_buffs_retribution()
   buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
                           ->set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
-                          ->set_trigger_spell(talents.empyrean_power);
+                          ->set_trigger_spell( talents.empyrean_power );
+  buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
