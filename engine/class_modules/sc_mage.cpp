@@ -3826,8 +3826,10 @@ struct evocation_t final : public arcane_mage_spell_t
 
 struct fireball_t final : public fire_mage_spell_t
 {
-  fireball_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->find_specialization_spell( "Fireball" ) )
+  bool frostfire;
+
+  fireball_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
+    fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) )
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
@@ -3840,6 +3842,7 @@ struct fireball_t final : public fire_mage_spell_t
   timespan_t travel_time() const override
   {
     timespan_t t = fire_mage_spell_t::travel_time();
+    // TODO: Frostfire Bolt currently doesn't respect the max travel time
     return std::min( t, 0.75_s );
   }
 
@@ -4126,24 +4129,38 @@ struct flurry_t final : public frost_mage_spell_t
 
 struct frostbolt_t final : public frost_mage_spell_t
 {
+  bool frostfire;
+
   double fof_chance;
   double bf_chance;
   double fractured_frost_mul;
 
-  frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) ),
+  frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
+    frost_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_class_spell( "Frostbolt" ) ),
+    frostfire( frostfire_ ),
     fof_chance(),
     bf_chance(),
     fractured_frost_mul()
   {
     parse_options( options_str );
-    parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    // TODO: this is most likely a bug since it breaks some core Frost mechanics
+    if ( !frostfire )
+    {
+      parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
+      calculate_on_impact = true;
+    }
+
+    track_shatter = consumes_winters_chill = true;
+    // TODO: currently bugged and doesn't trigger Bone Chilling
     triggers.chill = triggers.overflowing_energy = true;
     triggers.calefaction = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
+
+    // TODO: ticks currently cannot crit, probably a bug
+    if ( p->bugs )
+      tick_may_crit = false;
 
     const auto& ft = p->talents.frozen_touch;
     fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
@@ -4206,6 +4223,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
+    // TODO: this doesn't work with Frostfire Bolt ingame
     fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
@@ -6013,6 +6031,9 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
 {
   using namespace actions;
 
+  if ( talents.frostfire_bolt.ok() && ( name == "fireball" || name == "frostbolt" ) )
+    return create_action( "frostfire_bolt", options_str );
+
   // Arcane
   if ( name == "arcane_barrage"    ) return new    arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"      ) return new      arcane_blast_t( name, this, options_str );
@@ -6069,6 +6090,11 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   // Special
   if ( name == "blink_any" || name == "any_blink" )
     return create_action( talents.shimmer.ok() ? "shimmer" : "blink", options_str );
+
+  if ( name == "frostfire_bolt" )
+    return specialization() == MAGE_FIRE
+         ? static_cast<action_t*>( new  fireball_t( name, this, options_str, true ) )
+         : static_cast<action_t*>( new frostbolt_t( name, this, options_str, true ) );
 
   return player_t::create_action( name, options_str );
 }
