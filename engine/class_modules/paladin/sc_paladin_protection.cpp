@@ -432,7 +432,6 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::impact( s );
     auto state = hammer->get_state();
     state->copy_state( s );
-    hammer->snapshot_state( state, hammer->amount_type( state ) );
     timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
     // Let strikes be a decimal rather than int, and roll a random number to decide
     // hits each time.
@@ -441,7 +440,6 @@ struct blessed_hammer_t : public paladin_spell_t
       roll_strikes += 1;
     if ( roll_strikes > 0 )
     {
-      // ToDo (Fluttershy): Custom state for hammer is overwritten by ground_aoe_event_t's constructor
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
                                           .target( execute_state->target )
@@ -452,7 +450,7 @@ struct blessed_hammer_t : public paladin_spell_t
                                           .n_pulses( roll_strikes )
                                           .start_time( sim->current_time() + initial_delay )
                                           .action( hammer ),
-                                      true );
+                                      state, true );
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }

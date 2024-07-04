@@ -112,7 +112,13 @@ ground_aoe_event_t::ground_aoe_event_t( player_t* p, const ground_aoe_params_t* 
 // Make a copy of the parameters, and use that object until this event expires
 
 ground_aoe_event_t::ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse )
-  : ground_aoe_event_t( p, get_params( p, param ), nullptr, immediate_pulse )
+  : ground_aoe_event_t( p, param, nullptr, immediate_pulse )
+{
+
+}
+
+ground_aoe_event_t::ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, action_state_t* state, bool immediate_pulse )
+  : ground_aoe_event_t( p, get_params( p, param ), state, immediate_pulse )
 {
   if ( params->state_callback() )
   {

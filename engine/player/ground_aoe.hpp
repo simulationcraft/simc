@@ -144,6 +144,7 @@ protected:
 public:
   // Make a copy of the parameters, and use that object until this event expires
   ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false );
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, action_state_t* s, bool immediate_pulse = false );
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
