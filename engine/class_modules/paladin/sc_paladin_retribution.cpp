@@ -38,29 +38,6 @@ namespace buffs {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_MASTERY );
   }
-
-  struct shield_of_vengeance_buff_t : public absorb_buff_t
-  {
-    shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( p, "shield_of_vengeance", p->find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
-    {
-      cooldown->duration = 0_ms;
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-      auto* p = static_cast<paladin_t*>( player );
-      // do thing
-      if ( p->options.fake_sov )
-      {
-        // TODO(mserrano): This is a horrible hack
-        p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min = current_value;
-        p->active.shield_of_vengeance_damage->execute();
-      }
-    }
-  };
 }
 
 // Crusade
@@ -370,6 +347,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       reduced_aoe_targets = 5;
     }
 
+    triggers_higher_calling   = true;
     affected_by.highlords_judgment = true;
   }
 
@@ -943,63 +921,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
   }
 };
 
-// SoV
-
-struct shield_of_vengeance_proc_t : public paladin_spell_t
-{
-  shield_of_vengeance_proc_t( paladin_t* p ) :
-    paladin_spell_t( "shield_of_vengeance_proc", p, p->find_spell( 184689 ) )
-  {
-    may_miss = may_dodge = may_parry = may_glance = false;
-    background = true;
-    split_aoe_damage = true;
-  }
-
-  void init() override {
-    paladin_spell_t::init();
-    snapshot_flags = 0;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-};
-
-struct shield_of_vengeance_t : public paladin_absorb_t
-{
-  shield_of_vengeance_t( paladin_t* p, util::string_view options_str ) :
-    paladin_absorb_t( "shield_of_vengeance", p, p->talents.shield_of_vengeance )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-
-    // unbreakable spirit reduces cooldown
-    if ( p->talents.unbreakable_spirit->ok() )
-      cooldown->duration = data().cooldown() * ( 1 + p->talents.unbreakable_spirit->effectN( 1 ).percent() );
-  }
-
-  void init() override
-  {
-    paladin_absorb_t::init();
-    snapshot_flags |= (STATE_CRIT | STATE_VERSATILITY);
-  }
-
-  void execute() override
-  {
-    double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
-
-    if ( p()->talents.aegis_of_protection->ok() )
-      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
-
-    shield_amount *= 1.0 + p()->composite_heal_versatility();
-
-    paladin_absorb_t::execute();
-    p()->buffs.shield_of_vengeance->trigger( 1, shield_amount );
-  }
-};
-
 
 // Wake of Ashes (Retribution) ================================================
 
@@ -1114,6 +1035,20 @@ struct wake_of_ashes_t : public paladin_spell_t
       {
         make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
+    }
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      p()->buffs.templar.sacrosanct_crusade->trigger();
+    }
+    // Mostly only needed for bugged behaviour
+    if ( p()->talents.templar.lights_deliverance->ok() )
+    {
+      p()->trigger_lights_deliverance();
     }
 
     if ( p()->talents.radiant_glory->ok() )
@@ -1251,6 +1186,7 @@ struct base_templar_strike_t : public paladin_melee_attack_t
       crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
+    triggers_higher_calling = true;
   }
 
   void impact( action_state_t *s ) override
@@ -1399,7 +1335,6 @@ void paladin_t::trigger_es_explosion( player_t* target )
 
 void paladin_t::create_ret_actions()
 {
-  active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   if ( talents.empyrean_legacy->ok() )
   {
     double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
@@ -1460,7 +1395,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
-  if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
   if ( name == "templar_strike"            ) return new templar_strike_t           ( this, options_str );
   if ( name == "templar_slash"             ) return new templar_slash_t            ( this, options_str );
@@ -1478,8 +1412,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
-
-  buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
 
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )
@@ -1518,7 +1450,7 @@ void paladin_t::init_spells_retribution()
   talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
   talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
-  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath" );
+  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath");
   talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
   talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" );
