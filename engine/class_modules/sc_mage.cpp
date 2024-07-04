@@ -3829,7 +3829,8 @@ struct fireball_t final : public fire_mage_spell_t
   bool frostfire;
 
   fireball_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
-    fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) )
+    fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) ),
+    frostfire( frostfire_ )
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
@@ -3837,6 +3838,9 @@ struct fireball_t final : public fire_mage_spell_t
     affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
+
+    if ( frostfire )
+      base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
   }
 
   timespan_t travel_time() const override
@@ -4148,6 +4152,10 @@ struct frostbolt_t final : public frost_mage_spell_t
     {
       parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
       calculate_on_impact = true;
+    }
+    else
+    {
+      base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
     }
 
     track_shatter = consumes_winters_chill = true;
