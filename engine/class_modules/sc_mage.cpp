@@ -1461,6 +1461,15 @@ public:
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = action_energize::NONE;
+
+    // TODO: the spec check is missing ingame
+    const auto& ea = p->talents.elemental_affinity;
+    if ( p->specialization() == MAGE_FIRE )
+      for ( int ix : { 1, 2, 5 } )
+        apply_affecting_effect( ea->effectN( ix ) );
+
+    if ( p->specialization() == MAGE_FROST )
+      apply_affecting_effect( ea->effectN( 3 ) );
   }
 
   mage_t* p()
