@@ -366,9 +366,11 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* blast_wave;
     cooldown_t* combustion;
     cooldown_t* comet_storm;
     cooldown_t* cone_of_cold;
+    cooldown_t* dragons_breath;
     cooldown_t* fervent_flickering;
     cooldown_t* fire_blast;
     cooldown_t* flurry;
@@ -3577,6 +3579,13 @@ struct cold_snap_t final : public frost_mage_spell_t
     p()->cooldowns.frost_nova->reset( false );
     if ( !p()->talents.coldest_snap.ok() )
       p()->cooldowns.cone_of_cold->reset( false );
+
+    if ( p()->talents.flame_and_frost.ok() )
+    {
+      p()->cooldowns.blast_wave->reset( false );
+      p()->cooldowns.dragons_breath->reset( false );
+      p()->cooldowns.fire_blast->reset( false );
+    }
   }
 };
 
@@ -5960,9 +5969,11 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
+  cooldowns.blast_wave         = get_cooldown( "blast_wave"         );
   cooldowns.combustion         = get_cooldown( "combustion"         );
   cooldowns.comet_storm        = get_cooldown( "comet_storm"        );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
+  cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
   cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
   cooldowns.flurry             = get_cooldown( "flurry"             );
