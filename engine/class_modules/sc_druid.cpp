@@ -6959,7 +6959,17 @@ struct moon_base_t : public druid_spell_t
   moon_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
     if ( data().ok() && p->talent.boundless_moonlight.ok() )
-      minor = p->get_secondary_action<minor_moon_t>( "minor_moon", f );
+    {
+      if ( auto suf = get_suffix( name_str, "full_moon" ); !suf.empty() )
+      {
+        minor = p->get_secondary_action<minor_moon_t>( "minor_moon_" + name_str, f );
+        add_child( minor );
+      }
+      else
+      {
+        minor = p->get_secondary_action<minor_moon_t>( "minor_moon", f );
+      }
+    }
   }
 
   void init() override
@@ -7040,7 +7050,7 @@ struct new_moon_t final : public moon_base_t
   {
     stage = moon_stage_e::NEW_MOON;
 
-    if ( p->talent.the_eternal_moon.ok() )
+    if ( minor && p->talent.the_eternal_moon.ok() )
       num_minor = as<unsigned>( minor->data().effectN( 3 ).base_value() );
   }
 };
@@ -7052,7 +7062,7 @@ struct half_moon_t final : public moon_base_t
   {
     stage = moon_stage_e::HALF_MOON;
 
-    if ( p->talent.the_eternal_moon.ok() )
+    if ( minor && p->talent.the_eternal_moon.ok() )
       num_minor = as<unsigned>( minor->data().effectN( 3 ).base_value() );
   }
 };
@@ -7071,12 +7081,6 @@ struct full_moon_t final : public trigger_atmospheric_exposure_t<moon_base_t>
       energize_type = action_energize::NONE;
 
     num_minor = as<unsigned>( p->talent.boundless_moonlight->effectN( 1 ).base_value() );
-
-    if ( auto suf = get_suffix( name_str, "full_moon" ); !suf.empty() )
-    {
-      minor = p->get_secondary_action<minor_moon_t>( "minor_moon_" + name_str, f );
-      add_child( minor );
-    }
   }
 
   bool check_stage() const override
