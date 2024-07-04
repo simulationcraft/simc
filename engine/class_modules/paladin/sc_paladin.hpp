@@ -1459,6 +1459,36 @@ public:
   }
 };
 
+template <typename Data, typename Base = action_state_t>
+struct paladin_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( static_cast<const paladin_action_state_t*>( o ) );
+  }
+};
+
 // ==========================================================================
 // The damage formula in action_t::calculate_direct_amount in sc_action.cpp is documented here:
 // https://github.com/simulationcraft/simc/wiki/DevelopersDocumentation#damage-calculations

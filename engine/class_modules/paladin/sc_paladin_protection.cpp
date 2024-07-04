@@ -328,34 +328,51 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
 };
 
 
-// Blessed Hammer (Protection) ================================================
-struct blessed_hammer_tick_t : public paladin_spell_t
+struct blessed_hammer_data_t
 {
-  blessed_hammer_tick_t( paladin_t* p )
-      : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
-  {
-    aoe = -1;
-    background = dual = direct_tick = true;
-    callbacks = false;
-    radius = 9.0; // Guess, must be > 8 (cons) but < 10 (HoJ)
-    may_crit = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-    // apply BH debuff to target_data structure
-    // Does not interact with vers.
-    // To Do: Investigate refresh behaviour
-    td( s->target )->debuff.blessed_hammer->trigger(
-      1,
-      s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent()
-    );
-  }
+  double blessed_assurance_mult;
 };
 
 struct blessed_hammer_t : public paladin_spell_t
 {
+  using state_t = paladin_action_state_t<blessed_hammer_data_t>;
+  // Blessed Hammer (Protection) ================================================
+  struct blessed_hammer_tick_t : public paladin_spell_t
+  {
+    blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
+    {
+      aoe        = -1;
+      background = dual = direct_tick = true;
+      callbacks                       = false;
+      radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
+      may_crit                        = true;
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_spell_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+
+      da *= 1.0 + s_->blessed_assurance_mult;
+      return da;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_spell_t::impact( s );
+      // apply BH debuff to target_data structure
+      // Does not interact with vers.
+      // To Do: Investigate refresh behaviour
+      td( s->target )
+          ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+    }
+  };
+
   blessed_hammer_tick_t* hammer;
   double num_strikes;
 
@@ -386,18 +403,45 @@ struct blessed_hammer_t : public paladin_spell_t
     triggers_higher_calling = true;
   }
 
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state(action_state_t* s, result_amount_type rt) override
+  {
+    paladin_spell_t::snapshot_state( s, rt );
+
+    auto s_ = static_cast<state_t*>( s );
+
+    s_->blessed_assurance_mult = p()->buffs.lightsmith.blessed_assurance->stack_value();
+  }
+
   void execute() override
   {
     paladin_spell_t::execute();
+    // Grand Crusader can proc on cast, but not on impact
+    p()->trigger_grand_crusader();
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
+    {
+      p()->t29_4p_prot();
+    }
+  }
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+    auto state = hammer->get_state();
+    state->copy_state( s );
+    hammer->snapshot_state( state, hammer->amount_type( state ) );
     timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
     // Let strikes be a decimal rather than int, and roll a random number to decide
     // hits each time.
-    int roll_strikes = static_cast<int>(floor(num_strikes));
-    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
+    int roll_strikes = static_cast<int>( floor( num_strikes ) );
+    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ) )
       roll_strikes += 1;
     if ( roll_strikes > 0 )
     {
-      hammer->base_multiplier = this->action_multiplier();
+      // ToDo (Fluttershy): Custom state for hammer is overwritten by ground_aoe_event_t's constructor
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
                                           .target( execute_state->target )
@@ -410,20 +454,7 @@ struct blessed_hammer_t : public paladin_spell_t
                                           .action( hammer ),
                                       true );
     }
-    // Grand Crusader can proc on cast, but not on impact
-    p()->trigger_grand_crusader();
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
     p()->buffs.lightsmith.blessed_assurance->expire();
-  }
-  
-  double action_multiplier() const override
-  {
-    double am = paladin_spell_t::action_multiplier();
-    am *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
-    return am;
   }
 };
 
@@ -490,37 +521,57 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
 // Hammer of the Righteous ==================================================
 
-struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
+struct hammer_of_the_righteous_data_t
 {
-  hammer_of_the_righteous_aoe_t( paladin_t* p ) :
-      paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
-  {
-    // AoE effect always hits if single-target attack succeeds
-    // Doesn't proc Grand Crusader
-    may_dodge = may_parry = may_miss = false;
-    background = true;
-    aoe        = -1;
-    trigger_gcd = 0_ms; // doesn't incur GCD (HotR does that already)
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    paladin_melee_attack_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
-  }
+  double blessed_assurance_mult;
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
+  using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;  
+  struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
+  {
+    hammer_of_the_righteous_aoe_t( paladin_t* p )
+      : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
+    {
+      // AoE effect always hits if single-target attack succeeds
+      // Doesn't proc Grand Crusader
+      may_dodge = may_parry = may_miss = false;
+      background                       = true;
+      aoe                              = -1;
+      trigger_gcd                      = 0_ms;  // doesn't incur GCD (HotR does that already)
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+
+      da *= 1.0 + s_->blessed_assurance_mult;
+      return da;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      paladin_melee_attack_t::available_targets( tl );
+
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        if ( tl[ i ] == target )  // Cannot hit the original target.
+        {
+          tl.erase( tl.begin() + i );
+          break;
+        }
+      }
+      return tl.size();
+    }
+  };
+
   hammer_of_the_righteous_aoe_t* hotr_aoe;
   hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
       : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
@@ -539,6 +590,13 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     triggers_higher_calling = true;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+    da *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
+    return da;
+  }
+
   void execute() override
   {
     paladin_melee_attack_t::execute();
@@ -552,25 +610,39 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
 
-      if ( p()->standing_in_consecration() )
-      {
-        hotr_aoe->base_multiplier = this->action_multiplier(); // AoE inherits Blessed Assurance's damage multiplier
-        hotr_aoe->target = execute_state->target;
-        hotr_aoe->execute();
-      }
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
       {
         p()->t29_4p_prot();
       }
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+    if ( p()->standing_in_consecration() )
+    {
+      auto state = hotr_aoe->get_state();
+      state->copy_state( s );
+      hotr_aoe->snapshot_state( state, hotr_aoe->amount_type( state ) );
+      hotr_aoe->target = s->target;
+      hotr_aoe->schedule_execute( state );
+    }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
-  double action_multiplier() const override
+  action_state_t* new_state() override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
-    am *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
-    return am;
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    paladin_melee_attack_t::snapshot_state( s, rt );
+
+    auto s_ = static_cast<state_t*>( s );
+
+    s_->blessed_assurance_mult = p()->buffs.lightsmith.blessed_assurance->stack_value();
   }
 };
 
