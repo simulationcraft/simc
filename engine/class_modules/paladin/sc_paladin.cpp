@@ -2490,11 +2490,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 2 ).percent();
     }
 
-    if ( p->talents.vengeful_wrath->ok() )
-    {
-      base_crit = p->talents.vengeful_wrath->effectN( 1 ).percent();
-    }
-
     if ( p->talents.adjudication->ok() )
     {
       add_child( p->active.background_blessed_hammer );
@@ -2590,11 +2585,19 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
   }
 
-  double action_multiplier() const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double am = paladin_melee_attack_t::action_multiplier();
+    double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
 
-    return am;
+    if ( p()->talents.vengeful_wrath->ok() )
+    {
+      if ( target->health_percentage() <= p()->talents.vengeful_wrath->effectN( 2 ).base_value() )
+      {
+        ctm *= 1.0 + p()->talents.vengeful_wrath->effectN( 1 ).percent();
+      }
+    }
+
+    return ctm;
   }
 };
 
