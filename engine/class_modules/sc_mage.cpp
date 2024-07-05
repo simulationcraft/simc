@@ -339,6 +339,8 @@ public:
 
 
     // Frostfire
+    buff_t* excess_fire;
+    buff_t* excess_frost;
     buff_t* fire_mastery;
     buff_t* frost_mastery;
     buff_t* frostfire_empowerment;
@@ -1845,17 +1847,28 @@ public:
     if ( !is_fire && !is_frost )
       return;
 
+    buff_t* fire = p()->buffs.fire_mastery;
+    buff_t* frost = p()->buffs.frost_mastery;
+
     if ( empowerment )
     {
-      p()->buffs.fire_mastery->expire();
-      p()->buffs.frost_mastery->expire();
+      fire->expire();
+      frost->expire();
     }
 
+    int fire_before = fire->check();
+    int frost_before = frost->check();
+
     if ( is_fire )
-      p()->buffs.fire_mastery->trigger( empowerment ? p()->buffs.fire_mastery->max_stack() : -1 );
+      fire->trigger( empowerment ? fire->max_stack() : -1 );
 
     if ( is_frost )
-      p()->buffs.frost_mastery->trigger( empowerment ? p()->buffs.frost_mastery->max_stack() : -1 );
+      frost->trigger( empowerment ? frost->max_stack() : -1 );
+
+    if ( fire_before < fire->check() && fire->at_max_stacks() )
+      p()->buffs.excess_fire->trigger();
+    if ( frost_before < frost->check() && frost->at_max_stacks() )
+      p()->buffs.excess_frost->trigger();
 
     // Frostfire spells don't seem to trigger Severe Temperatures
     if ( !( is_fire && is_frost ) )
@@ -6969,6 +6982,10 @@ void mage_t::create_buffs()
 
 
   // Frostfire
+  buffs.excess_fire           = make_buff( this, "excess_fire", find_spell( 438624 ) )
+                                  ->set_chance( talents.excess_fire.ok() );
+  buffs.excess_frost          = make_buff( this, "excess_frost", find_spell( 438611 ) )
+                                  ->set_chance( talents.excess_frost.ok() );
   buffs.fire_mastery          = make_buff( this, "fire_mastery", find_spell( 431040 ) )
                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                   ->set_default_value_from_effect( 1 )
