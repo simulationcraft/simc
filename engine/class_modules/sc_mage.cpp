@@ -340,6 +340,7 @@ public:
     // Frostfire
     buff_t* fire_mastery;
     buff_t* frost_mastery;
+    buff_t* severe_temperatures;
 
 
     // Shared
@@ -1737,11 +1738,8 @@ public:
 
     // TODO: This might need a more fine grained control since some spells behave weirdly
     // (Blast Wave doesn't trigger Fire mastery, for example).
-    if ( harmful && !background && dbc::is_school( get_school(), SCHOOL_FIRE ) )
-      p()->buffs.fire_mastery->trigger();
-
-    if ( harmful && !background && dbc::is_school( get_school(), SCHOOL_FROST ) )
-      p()->buffs.frost_mastery->trigger();
+    if ( harmful && !background )
+      trigger_frostfire_mastery();
   }
 
   void impact( action_state_t* s ) override
@@ -1827,6 +1825,25 @@ public:
       // doesn't benefit from the buff it just triggered.
       make_event( *sim, [ b = p()->buffs.flames_fury ] { b->trigger( b->max_stack() ); } );
     }
+  }
+
+  void trigger_frostfire_mastery()
+  {
+    auto s = get_school();
+    bool is_fire = dbc::is_school( s, SCHOOL_FIRE );
+    bool is_frost = dbc::is_school( s, SCHOOL_FROST );
+    if ( !is_fire && !is_frost )
+      return;
+
+    if ( is_fire )
+      p()->buffs.fire_mastery->trigger();
+
+    if ( is_frost )
+      p()->buffs.frost_mastery->trigger();
+
+    // Frostfire spells don't seem to trigger Severe Temperatures
+    if ( !( is_fire && is_frost ) )
+      p()->buffs.severe_temperatures->trigger();
   }
 };
 
@@ -3878,6 +3895,7 @@ struct fireball_t final : public fire_mage_spell_t
       p()->buffs.flame_accelerant_icd->trigger();
 
     p()->buffs.flame_accelerant->expire();
+    p()->buffs.severe_temperatures->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3913,6 +3931,15 @@ struct fireball_t final : public fire_mage_spell_t
     c += p()->buffs.pyrotechnics->check_stack_value();
 
     return c;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
+
+    return m;
   }
 };
 
@@ -4220,6 +4247,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
+    m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       m *= 1.0 + fractured_frost_mul;
@@ -4249,6 +4277,8 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
+
+    p()->buffs.severe_temperatures->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -5630,8 +5660,7 @@ struct frostfire_infusion_t final : public mage_spell_t
   void execute() override
   {
     mage_spell_t::execute();
-    p()->buffs.fire_mastery->trigger();
-    p()->buffs.frost_mastery->trigger();
+    trigger_frostfire_mastery();
   }
 };
 
@@ -6832,16 +6861,19 @@ void mage_t::create_buffs()
 
 
   // Frostfire
-  buffs.fire_mastery  = make_buff( this, "fire_mastery", find_spell( 431040 ) )
-                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                          ->set_chance( talents.frostfire_mastery.ok() );
-  buffs.frost_mastery = make_buff( this, "frost_mastery", find_spell( 431039 ) )
-                          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                          ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.fire_mastery        = make_buff( this, "fire_mastery", find_spell( 431040 ) )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                ->set_default_value_from_effect( 1 )
+                                ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                                ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.frost_mastery       = make_buff( this, "frost_mastery", find_spell( 431039 ) )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                ->set_default_value_from_effect( 1 )
+                                ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                                ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.severe_temperatures = make_buff( this, "severe_temperatures", find_spell( 431190 ) )
+                                ->set_default_value_from_effect( 1 )
+                                ->set_trigger_spell( talents.severe_temperatures );
 
 
   // Shared
