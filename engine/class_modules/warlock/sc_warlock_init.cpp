@@ -43,7 +43,7 @@ namespace warlock
     warlock_base.immolate = find_specialization_spell( "Immolate" ); // Should be ID 193541
     warlock_base.immolate_old = find_spell( 348 ); // This contains the actual direct damage and cast data, but no longer appears in class_spell list
     warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
-    warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
+    warlock_base.incinerate = find_spell( 29722 ); // Should be ID 29722 TODO: 2024-07-05 this spell was missing from the non-PTR class spell list. Fix once this comes back
     warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
     warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
     warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock", WARLOCK_DESTRUCTION ); // Should be ID 137046
