@@ -36,8 +36,6 @@ namespace warlock
     warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
     warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
     warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-    warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
-    warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
     warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
