@@ -2304,7 +2304,7 @@ void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
     lights_deliverance_triggered_during_ready = true;
     return;
   }
-  auto cost_reduction = buffs.templar.hammer_of_light_cost->default_value;
+  auto cost_reduction = buffs.templar.hammer_of_light_free->default_value;
   if ( lights_deliverance_triggered_during_ready )
   {
     cost_reduction = 0.0;
@@ -3433,9 +3433,7 @@ void paladin_t::create_buffs()
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
   buffs.templar.hammer_of_light_free =
-      make_buff( this, "hammer_of_light_free", find_spell( 433015 ) )->set_duration( 12_s );
-  buffs.templar.hammer_of_light_cost = make_buff( this, "hammer_of_light_cost", find_spell( 433732 ) )
-    ->set_default_value_from_effect(1); // Pseudo Buff which contains the cost reduce
+      make_buff( this, "hammer_of_light_free", find_spell( 433732 ) )->set_duration( 12_s )->set_default_value_from_effect(1);
 
   buffs.templar.for_whom_the_bell_tolls = make_buff( this, "for_whom_the_bell_tolls", find_spell( 433618 ) );
   buffs.templar.for_whom_the_bell_tolls->set_initial_stack( buffs.templar.for_whom_the_bell_tolls->max_stack() );
