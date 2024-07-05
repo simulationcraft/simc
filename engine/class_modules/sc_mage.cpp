@@ -240,6 +240,7 @@ public:
     action_t* arcane_explosion_energy_recon;
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
+    action_t* excess_ice_nova;
     action_t* firefall_meteor;
     action_t* frostfire_empowerment;
     action_t* frostfire_infusion;
@@ -383,6 +384,7 @@ public:
     cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
+    cooldown_t* meteor;
     cooldown_t* phoenix_flames;
     cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
@@ -4141,6 +4143,12 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
       make_event( *sim, 1.0_s, [ this, t = s->target ] { p()->action.glacial_assault->execute_on_target( t ); } );
 
+    if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
+    {
+      p()->action.excess_ice_nova->execute_on_target( s->target );
+      p()->buffs.excess_frost->expire();
+    }
+
     if ( p()->action.shattered_ice )
     {
       double pct = p()->sets->set( MAGE_FROST, T30, B2 )->effectN( 2 ).percent();
@@ -4886,8 +4894,8 @@ struct ice_lance_t final : public frost_mage_spell_t
 
 struct ice_nova_t final : public frost_mage_spell_t
 {
-  ice_nova_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-     frost_mage_spell_t( n, p, p->talents.ice_nova )
+  ice_nova_t( std::string_view n, mage_t* p, std::string_view options_str, bool excess = false ) :
+     frost_mage_spell_t( n, p, excess ? p->find_spell( 157997 ) : p->talents.ice_nova )
   {
     parse_options( options_str );
     aoe = -1;
@@ -4897,7 +4905,29 @@ struct ice_nova_t final : public frost_mage_spell_t
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
     }
-    consumes_winters_chill = affected_by.time_manipulation = true;
+
+    if ( excess )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_multiplier *= p->talents.excess_frost->effectN( 1 ).percent();
+    }
+    else
+    {
+      consumes_winters_chill = affected_by.time_manipulation = true;
+    }
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    if ( background )
+    {
+      timespan_t t = -1000 * p()->talents.excess_frost->effectN( 2 ).time_value();
+      p()->cooldowns.comet_storm->adjust( t );
+      p()->cooldowns.meteor->adjust( t );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -5211,6 +5241,12 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     {
       get_td( s->target )->debuffs.charring_embers->trigger();
       p()->buffs.feel_the_burn->trigger();
+
+      if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
+      {
+        p()->action.excess_ice_nova->execute_on_target( s->target );
+        p()->buffs.excess_frost->expire();
+      }
     }
   }
 
@@ -6174,6 +6210,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
   cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
+  cooldowns.meteor             = get_cooldown( "meteor"             );
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
   cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"     );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
@@ -6313,6 +6350,9 @@ void mage_t::create_actions()
 
   if ( talents.frostfire_empowerment.ok() )
     action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
+
+  if ( talents.excess_frost.ok() )
+    action.excess_ice_nova = get_action<ice_nova_t>( "excess_ice_nova", this, "", true );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
