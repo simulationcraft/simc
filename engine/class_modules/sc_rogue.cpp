@@ -3081,7 +3081,6 @@ struct rogue_poison_t : public rogue_attack_t
       deathmark_impact_action->trigger_secondary_action( state->target );
     }
   }
-
 };
 
 // Deadly Poison ============================================================
@@ -4675,6 +4674,8 @@ struct eviscerate_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
       last_eviscerate_cp( 1 )
     {
+      affected_by.darkest_night = !p->bugs; // ALPHA TOCHECK -- Seems to be bugged currently
+
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
         // Spell has the full damage coefficient and is modified via talent scripting
@@ -4730,7 +4731,7 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr ), shadow_eviscerate_attack( nullptr )
   {
     affected_by.t31_subtlety_4pc = true;
-    affected_by.darkest_night = true; // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
+    affected_by.darkest_night = true;
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -9601,38 +9602,32 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
-       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+  // ALPHA TOCHECK -- Echoing Reprimand support?
+  if ( p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() &&
+       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
   {
-    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
-    // ALPHA TOCHECK -- Does this also apply to Darkest Night?
-    if ( trigger_deathstalkers_mark_debuff( state, true ) )
+    p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
+    p()->buffs.deathstalkers_mark->trigger();
+    p()->active.deathstalker.deathstalkers_mark->execute_on_target( state->target );
+
+    if ( p()->talent.deathstalker.shadewalker->ok() )
     {
-      p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
-      return; // ALPHA TOCHECK -- Assume this doesn't auto consume one stack?
+      p()->cooldowns.shadowstep->adjust( p()->talent.deathstalker.shadewalker->effectN( 1 ).time_value() );
+    }
+
+    if ( p()->talent.deathstalker.darkest_night->ok() && !p()->deathstalkers_mark_debuff->check() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->spell.darkest_night_buff->effectN( 1 ).resource(), p()->gains.darkest_night );
+      p()->buffs.darkest_night->trigger();
+      return; // Note: Cannot immediately trigger and consume Darkest Night
     }
   }
 
-  if ( !p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() )
-    return;
-
-  // ALPHA TOCHECK -- Echoing Reprimand support?
-  if ( cast_state( state )->get_combo_points() < as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
-    return;
-
-  p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
-  p()->buffs.deathstalkers_mark->trigger();
-  p()->active.deathstalker.deathstalkers_mark->execute_on_target( state->target );
-
-  if ( p()->talent.deathstalker.darkest_night->ok() && !p()->deathstalkers_mark_debuff->check() )
+  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
-    p()->resource_gain( RESOURCE_ENERGY, p()->spell.darkest_night_buff->effectN( 1 ).resource(), p()->gains.darkest_night );
-    p()->buffs.darkest_night->trigger();
-  }
-
-  if ( p()->talent.deathstalker.shadewalker->ok() )
-  {
-    p()->cooldowns.shadowstep->adjust( p()->talent.deathstalker.shadewalker->effectN( 1 ).time_value() );
+    trigger_deathstalkers_mark_debuff( state, true );
+    p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
   }
 }
 
@@ -9649,7 +9644,8 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() )
   {
     // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
-    if ( debuff->player == state->target )
+    // 2024-07-05 -- Exception being that Darkest Night can refresh the stack
+    if ( debuff->player == state->target && !from_darkest_night )
       return false;
 
     debuff->expire();
