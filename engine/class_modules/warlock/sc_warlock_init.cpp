@@ -26,6 +26,8 @@ namespace warlock
     warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
     warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
     warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
+    warlock_base.malefic_rapture = find_specialization_spell( "Malefic Rapture", WARLOCK_AFFLICTION ); // Should be ID 324536
+    warlock_base.malefic_rapture_dmg = find_spell( 324540 );
     warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
     warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
@@ -78,9 +80,6 @@ namespace warlock
   void warlock_t::init_spells_affliction()
   {
     // Talents
-    talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" ); // Should be ID 324536
-    talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
-
     talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
     talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
     talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration

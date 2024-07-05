@@ -806,10 +806,9 @@ using namespace helpers;
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
       malefic_rapture_damage_t( warlock_t* p )
-        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg )
       {
         background = dual = true;
-        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
       }
 
@@ -838,7 +837,7 @@ using namespace helpers;
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture, options_str )
+      : warlock_spell_t( "Malefic Rapture", p, p->warlock_base.malefic_rapture, options_str )
     {
       aoe = -1;
 

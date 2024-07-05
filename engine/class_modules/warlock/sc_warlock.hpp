@@ -103,7 +103,8 @@ public:
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
     const spell_data_t* xavian_teachings; // Passive granted only to Affliction. Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
-    const spell_data_t* malefic_rapture; // TODO: Move from talent section
+    const spell_data_t* malefic_rapture; // This contains an old sp_coeff value, but it is most likely no longer in use
+    const spell_data_t* malefic_rapture_dmg;
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -169,8 +170,6 @@ public:
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Affliction
-    player_talent_t malefic_rapture; // TODO: Move to base section
-    const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
     player_talent_t unstable_affliction; // TODO: Check if higher ranks are still separate spell data
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (learned automatically)
     const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (learned automatically)
