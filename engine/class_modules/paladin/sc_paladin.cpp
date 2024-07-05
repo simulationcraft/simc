@@ -95,8 +95,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
 
   cooldowns.art_of_war = get_cooldown( "art_of_war" );
-  if ( talents.art_of_war->ok() )
-    cooldowns.art_of_war->duration = talents.art_of_war->internal_cooldown();
+  cooldowns.art_of_war->duration = find_spell( 406064 )->internal_cooldown();
 
   cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
   cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
