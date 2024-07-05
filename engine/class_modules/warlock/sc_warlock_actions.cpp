@@ -1599,6 +1599,8 @@ using namespace helpers;
         aoe = -1;
         background = dual = true;
         callbacks = false;
+
+        affected_by.master_demonologist_dd = true;
       }
 
       double action_multiplier() const override
@@ -1784,6 +1786,8 @@ using namespace helpers;
         radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
 
         base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
+
+        affected_by.master_demonologist_dd = true;
       }
     };
 
