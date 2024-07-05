@@ -40,7 +40,7 @@ namespace warlock
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
     // Destruction
-    warlock_base.immolate = find_specialization_spell( "Immolate" ); // Should be ID 193540
+    warlock_base.immolate = find_specialization_spell( "Immolate" ); // Should be ID 193541
     warlock_base.immolate_old = find_spell( 348 ); // This contains the actual direct damage and cast data, but no longer appears in class_spell list
     warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
     warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
