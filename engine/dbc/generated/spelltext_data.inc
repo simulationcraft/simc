@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55399
-static const std::array<spelltext_data_t, 26181> __spelltext_data { {
+static const std::array<spelltext_data_t, 26185> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23336,6 +23336,10 @@ static const std::array<spelltext_data_t, 26181> __spelltext_data { {
   { 438624, "$@spelldesc438595", "Your next $?c2[Fire Blast]?c3[Ice Lance][] applies Living Bomb at $438595s1% effectiveness.", 0 },
   { 438630, "$@spelldesc435479", 0, 0 },
   { 438653, "$@spelldesc422869", 0, "Black" },
+  { 438671, "$@spelldesc438673", "Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $438674A2 yards.", 0 },
+  { 438672, "$@spelldesc438673", "Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $438674A2 yards, and spreading Living Bomb.", 0 },
+  { 438673, "The target becomes a Living Bomb, taking $438672o1 Fire damage over $438672d, and then exploding to deal an additional $438674s2 Fire damage to the target and reduced damage to all other enemies within $438674A2 yds.\r\n\r\nOther enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.", 0, 0 },
+  { 438674, "$@spelldesc438673", 0, 0 },
   { 438684, "$@spelldesc435479", 0, 0 },
   { 438685, "$@spelldesc435479", "Suffering $435479w4 Nature damage per second.", 0 },
   { 438737, "Add $M2 socket to an amulet or ring. $?{$M3>1}[\r\n\r\nJewelry can have up to $M3 sockets.][]", 0, 0 },
