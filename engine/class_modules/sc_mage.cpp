@@ -81,6 +81,20 @@ enum hot_streak_trigger_type_e
   HS_CUSTOM
 };
 
+enum class ae_type
+{
+  NORMAL,
+  ECHO,
+  ENERGY_RECON
+};
+
+enum class meteor_type
+{
+  NORMAL,
+  FIREFALL,
+  ISOTHERMIC
+};
+
 struct icicle_tuple_t
 {
   action_t* action; // Icicle action corresponding to the source action
@@ -249,6 +263,8 @@ public:
     action_t* frostfire_infusion;
     action_t* glacial_assault;
     action_t* ignite;
+    action_t* isothermic_comet_storm;
+    action_t* isothermic_meteor;
     action_t* leydrinker_echo;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
@@ -3048,28 +3064,21 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
 struct arcane_explosion_t final : public arcane_mage_spell_t
 {
-  enum ae_type_e
-  {
-    AE_NORMAL,
-    AE_ECHO,
-    AE_ENERGY_RECON
-  };
-
-  static const spell_data_t* spell( mage_t* p, ae_type_e type )
+  static const spell_data_t* spell( mage_t* p, ae_type type )
   {
     switch ( type )
     {
-      case AE_NORMAL:       return p->find_class_spell( "Arcane Explosion" );
-      case AE_ECHO:         return p->find_spell( 414381 );
-      case AE_ENERGY_RECON: return p->find_spell( 461508 );
-      default:              return nullptr;
+      case ae_type::NORMAL:       return p->find_class_spell( "Arcane Explosion" );
+      case ae_type::ECHO:         return p->find_spell( 414381 );
+      case ae_type::ENERGY_RECON: return p->find_spell( 461508 );
+      default:                    return nullptr;
     }
   }
 
   action_t* echo = nullptr;
-  const ae_type_e type;
+  const ae_type type;
 
-  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, ae_type_e type_ = AE_NORMAL ) :
+  arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, ae_type type_ = ae_type::NORMAL ) :
     arcane_mage_spell_t( n, p, spell( p, type_ ) ),
     type( type_ )
   {
@@ -3078,15 +3087,15 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     affected_by.savant = true;
 
     // AE Echo seems to also trigger CC, despite being a background action.
-    if ( type == AE_ECHO )
+    if ( type == ae_type::ECHO )
       triggers.clearcasting = TO_ALWAYS;
 
-    if ( type == AE_NORMAL )
+    if ( type == ae_type::NORMAL )
     {
       cost_reductions = { p->buffs.clearcasting };
       if ( p->talents.concentrated_power.ok() )
       {
-        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", AE_ECHO );
+        echo = get_action<arcane_explosion_t>( "arcane_explosion_echo", p, "", ae_type::ECHO );
         add_child( echo );
       }
     }
@@ -3107,7 +3116,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.static_cloud->expire();
     p()->buffs.static_cloud->trigger();
 
-    if ( type == AE_ENERGY_RECON )
+    if ( type == ae_type::ENERGY_RECON )
       return;
 
     if ( !target_list().empty() )
@@ -3151,7 +3160,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     am *= 1.0 + p()->buffs.static_cloud->check_stack_value();
 
     // Seems to affect the echo as well, but only if the mage has CC at that time.
-    if ( p()->buffs.clearcasting->check() && type != AE_ENERGY_RECON )
+    if ( p()->buffs.clearcasting->check() && type != ae_type::ENERGY_RECON )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
     return am;
@@ -3676,8 +3685,8 @@ struct combustion_t final : public fire_mage_spell_t
 
 struct comet_storm_projectile_t final : public frost_mage_spell_t
 {
-  comet_storm_projectile_t( std::string_view n, mage_t* p ) :
-    frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
+  comet_storm_projectile_t( std::string_view n, mage_t* p, bool isothermic_ = false ) :
+    frost_mage_spell_t( n, p, p->find_spell( isothermic_ ? 438609 : 153596 ) )
   {
     aoe = -1;
     background = true;
@@ -3699,15 +3708,24 @@ struct comet_storm_t final : public frost_mage_spell_t
   static constexpr timespan_t pulse_time = 0.2_s;
 
   action_t* projectile;
+  const bool isothermic;
 
-  comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.comet_storm ),
-    projectile( get_action<comet_storm_projectile_t>( "comet_storm_projectile", p ) )
+  comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str, bool isothermic_ = false ) :
+    frost_mage_spell_t( n, p, isothermic_ ? p->find_spell( 153595 ) : p->talents.comet_storm ),
+    projectile( get_action<comet_storm_projectile_t>( isothermic_ ? "isothermic_comet_storm_projectile" : "comet_storm_projectile", p, isothermic_ ) ),
+    isothermic( isothermic_ )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
     travel_delay = p->find_spell( 228601 )->missile_speed();
+
+    if ( isothermic )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3721,6 +3739,17 @@ struct comet_storm_t final : public frost_mage_spell_t
       .target( s->target )
       .n_pulses( pulse_count )
       .action( projectile ) );
+
+    if ( isothermic )
+      trigger_frostfire_mastery();
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    if ( p()->action.isothermic_meteor )
+      p()->action.isothermic_meteor->execute_on_target( target );
   }
 };
 
@@ -4937,6 +4966,7 @@ struct ice_nova_t final : public frost_mage_spell_t
 
     if ( excess )
     {
+      trigger_frostfire_mastery();
       timespan_t t = -1000 * p()->talents.excess_frost->effectN( 2 ).time_value();
       p()->cooldowns.comet_storm->adjust( t );
       p()->cooldowns.meteor->adjust( t );
@@ -5102,6 +5132,14 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     explosion()->execute();
   }
 
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( excess )
+      trigger_frostfire_mastery();
+  }
+
   void trigger_dot( action_state_t* s ) override
   {
     if ( get_dot( s->target )->is_ticking() )
@@ -5160,13 +5198,15 @@ struct meteor_burn_t final : public fire_mage_spell_t
 
 struct meteor_impact_t final : public fire_mage_spell_t
 {
+  const meteor_type type;
   action_t* meteor_burn;
 
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
 
-  meteor_impact_t( std::string_view n, mage_t* p, action_t* burn ) :
-    fire_mage_spell_t( n, p, p->find_spell( 351140 ) ),
+  meteor_impact_t( std::string_view n, mage_t* p, action_t* burn, meteor_type type_ ) :
+    fire_mage_spell_t( n, p, p->find_spell( type_ == meteor_type::ISOTHERMIC ? 438607 : 351140 ) ),
+    type( type_ ),
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
@@ -5190,6 +5230,9 @@ struct meteor_impact_t final : public fire_mage_spell_t
       .target( target )
       .duration( meteor_burn_duration )
       .action( meteor_burn ) );
+
+    if ( type == meteor_type::ISOTHERMIC )
+      trigger_frostfire_mastery();
   }
 };
 
@@ -5197,8 +5240,8 @@ struct meteor_t final : public fire_mage_spell_t
 {
   timespan_t meteor_delay;
 
-  meteor_t( std::string_view n, mage_t* p, std::string_view options_str, bool firefall = false ) :
-    fire_mage_spell_t( n, p, firefall ? p->find_spell( 153561 ) : p->talents.meteor ),
+  meteor_t( std::string_view n, mage_t* p, std::string_view options_str, meteor_type type = meteor_type::NORMAL ) :
+    fire_mage_spell_t( n, p, type == meteor_type::NORMAL ? p->talents.meteor : p->find_spell( 153561 ) ),
     meteor_delay( p->find_spell( 177345 )->duration() )
   {
     parse_options( options_str );
@@ -5208,13 +5251,32 @@ struct meteor_t final : public fire_mage_spell_t
 
     cooldown->duration += p->talents.deep_impact->effectN( 2 ).time_value();
 
-    action_t* meteor_burn = get_action<meteor_burn_t>( firefall ? "firefall_meteor_burn" : "meteor_burn", p );
-    impact_action = get_action<meteor_impact_t>( firefall ? "firefall_meteor_impact" : "meteor_impact", p, meteor_burn );
+    std::string_view burn_name;
+    std::string_view impact_name;
+
+    switch ( type )
+    {
+      case meteor_type::NORMAL:
+        burn_name = "meteor_burn";
+        impact_name = "meteor_impact";
+        break;
+      case meteor_type::FIREFALL:
+        burn_name = "firefall_meteor_burn";
+        impact_name = "firefall_meteor_impact";
+        break;
+      case meteor_type::ISOTHERMIC:
+        burn_name = "isothermic_meteor_burn";
+        impact_name = "isothermic_meteor_impact";
+        break;
+    }
+
+    action_t* meteor_burn = get_action<meteor_burn_t>( burn_name, p );
+    impact_action = get_action<meteor_impact_t>( impact_name, p, meteor_burn, type );
 
     add_child( meteor_burn );
     add_child( impact_action );
 
-    if ( firefall )
+    if ( type != meteor_type::NORMAL )
     {
       background = true;
       cooldown->duration = 0_ms;
@@ -5226,6 +5288,14 @@ struct meteor_t final : public fire_mage_spell_t
   {
     // Travel time cannot go lower than 1 second to give time for Meteor to visually fall.
     return std::max( meteor_delay * p()->cache.spell_cast_speed(), 1.0_s );
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( p()->action.isothermic_comet_storm )
+      p()->action.isothermic_comet_storm->execute_on_target( target );
   }
 };
 
@@ -6369,7 +6439,7 @@ void mage_t::create_actions()
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
   if ( talents.firefall.ok() )
-    action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", true );
+    action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", meteor_type::FIREFALL );
 
   if ( talents.cold_front.ok() )
     action.cold_front_frozen_orb = get_action<frozen_orb_t>( "cold_front_frozen_orb", this, "", true );
@@ -6387,7 +6457,7 @@ void mage_t::create_actions()
     action.dematerialize = get_action<dematerialize_t>( "dematerialize", this );
 
   if ( talents.energy_reconstitution.ok() )
-    action.arcane_explosion_energy_recon = get_action<arcane_explosion_t>( "arcane_explosion_energy_reconstitution", this, "", arcane_explosion_t::AE_ENERGY_RECON );
+    action.arcane_explosion_energy_recon = get_action<arcane_explosion_t>( "arcane_explosion_energy_reconstitution", this, "", ae_type::ENERGY_RECON );
 
   if ( talents.frostfire_infusion.ok() )
     action.frostfire_infusion = get_action<frostfire_infusion_t>( "frostfire_infusion", this );
@@ -6403,6 +6473,14 @@ void mage_t::create_actions()
     action.excess_living_bomb_dot        = get_action<living_bomb_dot_t>( "excess_living_bomb_dot", this, true, true );
     action.excess_living_bomb_dot_spread = get_action<living_bomb_dot_t>( "excess_living_bomb_dot_spread", this, false, true );
     action.excess_living_bomb_explosion  = get_action<living_bomb_explosion_t>( "excess_living_bomb_explosion", this, true );
+  }
+
+  if ( talents.isothermic_core.ok() )
+  {
+    if ( specialization() == MAGE_FIRE )
+      action.isothermic_comet_storm = get_action<comet_storm_t>( "isothermic_comet_storm", this, "", true );
+    if ( specialization() == MAGE_FROST )
+      action.isothermic_meteor = get_action<meteor_t>( "isothermic_meteor", this, "", meteor_type::ISOTHERMIC );
   }
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
