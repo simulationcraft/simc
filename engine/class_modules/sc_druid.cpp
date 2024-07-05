@@ -13358,8 +13358,8 @@ void eclipse_handler_t::print_table( report::sc_html_stream& os )
 {
   if ( !enabled() ) return;
 
-  os << R"(<h3 class="toggle open">Eclipse Data</h3><div class="toggle-content"><table class="sc even"><thead><tr>)"
-     << "<th>Ability</th>"
+  os << R"(<h3 class="toggle open">Eclipse Utilization</h3><div class="toggle-content"><table class="sc even">)"
+     << "<thead><tr><th>Ability</th>"
      << "<th colspan=\"2\">None</th>"
      << "<th colspan=\"2\">Solar</th>"
      << "<th colspan=\"2\">Lunar</th>"
