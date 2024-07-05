@@ -3895,7 +3895,6 @@ struct fireball_t final : public fire_mage_spell_t
       p()->buffs.flame_accelerant_icd->trigger();
 
     p()->buffs.flame_accelerant->expire();
-    p()->buffs.severe_temperatures->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3911,6 +3910,8 @@ struct fireball_t final : public fire_mage_spell_t
 
       if ( !consume_firefall( s->target ) )
         trigger_firefall();
+
+      p()->buffs.severe_temperatures->expire();
     }
   }
 
@@ -4277,8 +4278,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
-
-    p()->buffs.severe_temperatures->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4287,6 +4286,8 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.deaths_chill->trigger();
+
+    p()->buffs.severe_temperatures->expire();
 
     if ( s->chain_target != 0 )
       return;
