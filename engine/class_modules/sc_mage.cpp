@@ -241,6 +241,9 @@ public:
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* excess_ice_nova;
+    action_t* excess_living_bomb_dot;
+    action_t* excess_living_bomb_dot_spread;
+    action_t* excess_living_bomb_explosion;
     action_t* firefall_meteor;
     action_t* frostfire_empowerment;
     action_t* frostfire_infusion;
@@ -431,8 +434,9 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze;
-    proc_t* brain_freeze_water_jet;
+    proc_t* brain_freeze_excess_fire;
     proc_t* brain_freeze_time_anomaly;
+    proc_t* brain_freeze_water_jet;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
@@ -3063,7 +3067,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
   }
 
   action_t* echo = nullptr;
-  ae_type_e type;
+  const ae_type_e type;
 
   arcane_explosion_t( std::string_view n, mage_t* p, std::string_view options_str, ae_type_e type_ = AE_NORMAL ) :
     arcane_mage_spell_t( n, p, spell( p, type_ ) ),
@@ -4863,6 +4867,12 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( !primary )
       record_shatter_source( s, cleave_source );
+
+    if ( p()->buffs.excess_fire->check() )
+    {
+      p()->action.excess_living_bomb_dot->execute_on_target( s->target );
+      p()->buffs.excess_fire->expire();
+    }
   }
 
   double action_multiplier() const override
@@ -4894,8 +4904,11 @@ struct ice_lance_t final : public frost_mage_spell_t
 
 struct ice_nova_t final : public frost_mage_spell_t
 {
-  ice_nova_t( std::string_view n, mage_t* p, std::string_view options_str, bool excess = false ) :
-     frost_mage_spell_t( n, p, excess ? p->find_spell( 157997 ) : p->talents.ice_nova )
+  const bool excess;
+
+  ice_nova_t( std::string_view n, mage_t* p, std::string_view options_str, bool excess_ = false ) :
+    frost_mage_spell_t( n, p, excess_ ? p->find_spell( 157997 ) : p->talents.ice_nova ),
+    excess( excess_ )
   {
     parse_options( options_str );
     aoe = -1;
@@ -4922,7 +4935,7 @@ struct ice_nova_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( background )
+    if ( excess )
     {
       timespan_t t = -1000 * p()->talents.excess_frost->effectN( 2 ).time_value();
       p()->cooldowns.comet_storm->adjust( t );
@@ -5003,7 +5016,15 @@ struct fire_blast_t final : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.feel_the_burn->trigger();
+
+      if ( p()->buffs.excess_fire->check() )
+      {
+        p()->action.excess_living_bomb_dot->execute_on_target( s->target );
+        p()->buffs.excess_fire->expire();
+      }
+    }
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -5022,15 +5043,32 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
   // The game has two spells for the DoT, one for pre-spread one and one for
   // post-spread one. This allows two copies of the DoT to be up on one target.
   const bool primary;
+  const bool excess;
 
-  static unsigned dot_spell_id( bool primary )
-  { return primary ? 217694 : 244813; }
+  static unsigned dot_spell_id( bool primary, bool excess )
+  {
+    if ( excess )
+      return primary ? 438672 : 438671;
+    else
+      return primary ? 217694 : 244813;
+  }
 
-  living_bomb_dot_t( std::string_view n, mage_t* p, bool primary_ ) :
-    fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( primary_ ) ) ),
-    primary( primary_ )
+  living_bomb_dot_t( std::string_view n, mage_t* p, bool primary_, bool excess_ = false ) :
+    fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( primary_, excess_ ) ) ),
+    primary( primary_ ),
+    excess( excess_ )
   {
     background = true;
+  }
+
+  action_t* dot_spread()
+  {
+    return excess ? p()->action.excess_living_bomb_dot_spread : p()->action.living_bomb_dot_spread;
+  }
+
+  action_t* explosion()
+  {
+    return excess ? p()->action.excess_living_bomb_explosion : p()->action.living_bomb_explosion;
   }
 
   void init() override
@@ -5041,21 +5079,27 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
   void trigger_explosion( player_t* target )
   {
-    p()->action.living_bomb_explosion->set_target( target );
+    explosion()->set_target( target );
 
     if ( primary )
     {
-      auto targets = p()->action.living_bomb_explosion->target_list();
+      auto targets = explosion()->target_list();
       for ( auto t : targets )
       {
         if ( t == target )
           continue;
 
-        p()->action.living_bomb_dot_spread->execute_on_target( t );
+        dot_spread()->execute_on_target( t );
+      }
+
+      if ( excess )
+      {
+        p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
+        p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
       }
     }
 
-    p()->action.living_bomb_explosion->execute();
+    explosion()->execute();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -5075,8 +5119,8 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
 struct living_bomb_explosion_t final : public fire_mage_spell_t
 {
-  living_bomb_explosion_t( std::string_view n, mage_t* p ) :
-    fire_mage_spell_t( n, p, p->find_spell( 44461 ) )
+  living_bomb_explosion_t( std::string_view n, mage_t* p, bool excess_ = false ) :
+    fire_mage_spell_t( n, p, p->find_spell( excess_ ? 438674 : 44461 ) )
   {
     aoe = -1;
     reduced_aoe_targets = 1.0;
@@ -6311,7 +6355,7 @@ void mage_t::create_actions()
   if ( talents.arcane_echo.ok() )
     action.arcane_echo = get_action<arcane_echo_t>( "arcane_echo", this );
 
-  if ( talents.lit_fuse.ok() || talents.deep_impact.ok() || talents.excess_fire.ok() )
+  if ( talents.lit_fuse.ok() || talents.deep_impact.ok() )
   {
     action.living_bomb_dot        = get_action<living_bomb_dot_t>( "living_bomb_dot", this, true );
     action.living_bomb_dot_spread = get_action<living_bomb_dot_t>( "living_bomb_dot_spread", this, false );
@@ -6353,6 +6397,13 @@ void mage_t::create_actions()
 
   if ( talents.excess_frost.ok() )
     action.excess_ice_nova = get_action<ice_nova_t>( "excess_ice_nova", this, "", true );
+
+  if ( talents.excess_fire.ok() )
+  {
+    action.excess_living_bomb_dot        = get_action<living_bomb_dot_t>( "excess_living_bomb_dot", this, true, true );
+    action.excess_living_bomb_dot_spread = get_action<living_bomb_dot_t>( "excess_living_bomb_dot_spread", this, false, true );
+    action.excess_living_bomb_explosion  = get_action<living_bomb_explosion_t>( "excess_living_bomb_explosion", this, true );
+  }
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -7141,8 +7192,9 @@ void mage_t::init_procs()
       break;
     case MAGE_FROST:
       procs.brain_freeze                    = get_proc( "Brain Freeze" );
-      procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
+      procs.brain_freeze_excess_fire        = get_proc( "Brain Freeze from Excess Fire" );
       procs.brain_freeze_time_anomaly       = get_proc( "Brain Freeze from Time Anomaly" );
+      procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
@@ -7913,6 +7965,9 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
 
 bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
 {
+  if ( specialization() != MAGE_ARCANE )
+    return false;
+
   bool success = rng().roll( chance );
   if ( success )
   {
@@ -7929,6 +7984,9 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
 
 bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
 {
+  if ( specialization() != MAGE_FROST )
+    return false;
+
   assert( source );
 
   bool success = rng().roll( chance );
@@ -7958,6 +8016,9 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
 
 bool mage_t::trigger_fof( double chance, proc_t* source, int stacks )
 {
+  if ( specialization() != MAGE_FROST )
+    return false;
+
   assert( source );
 
   bool success = buffs.fingers_of_frost->trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
