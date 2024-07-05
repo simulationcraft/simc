@@ -5158,7 +5158,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( excess )
+    if ( primary && excess )
       trigger_frostfire_mastery();
   }
 
