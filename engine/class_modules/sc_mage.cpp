@@ -241,6 +241,7 @@ public:
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* firefall_meteor;
+    action_t* frostfire_empowerment;
     action_t* frostfire_infusion;
     action_t* glacial_assault;
     action_t* ignite;
@@ -340,6 +341,7 @@ public:
     // Frostfire
     buff_t* fire_mastery;
     buff_t* frost_mastery;
+    buff_t* frostfire_empowerment;
     buff_t* severe_temperatures;
 
 
@@ -492,6 +494,7 @@ public:
     bool had_low_mana;
     bool trigger_dematerialize;
     bool trigger_leydrinker;
+    bool trigger_ff_empowerment;
   } state;
 
   struct expression_support_t
@@ -1758,8 +1761,12 @@ public:
     if ( tt_applicable( s, triggers.calefaction ) )
       trigger_calefaction( s->target );
 
-    if ( callbacks && dbc::has_common_school( get_school(), SCHOOL_FROSTFIRE ) && s->result_type == result_amount_type::DMG_DIRECT && p()->rppm.frostfire_infusion->trigger() )
-      p()->action.frostfire_infusion->execute_on_target( s->target );
+    if ( callbacks && dbc::has_common_school( get_school(), SCHOOL_FROSTFIRE ) && s->result_type == result_amount_type::DMG_DIRECT )
+    {
+      if ( p()->rppm.frostfire_infusion->trigger() )
+        p()->action.frostfire_infusion->execute_on_target( s->target );
+      p()->buffs.frostfire_empowerment->trigger();
+    }
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -2981,7 +2988,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   double execute_time_pct_multiplier() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
-      return 0;
+      return 0.0;
 
     double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
 
@@ -3869,6 +3876,9 @@ struct fireball_t final : public fire_mage_spell_t
 
   double execute_time_pct_multiplier() const override
   {
+    if ( p()->buffs.frostfire_empowerment->check() )
+      return 0.0;
+
     double mul = fire_mage_spell_t::execute_time_pct_multiplier();
 
     if ( !p()->buffs.flame_accelerant_icd->check() )
@@ -3895,6 +3905,12 @@ struct fireball_t final : public fire_mage_spell_t
       p()->buffs.flame_accelerant_icd->trigger();
 
     p()->buffs.flame_accelerant->expire();
+
+    if ( p()->buffs.frostfire_empowerment->check() )
+    {
+      p()->buffs.frostfire_empowerment->expire();
+      p()->state.trigger_ff_empowerment = true;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3912,6 +3928,12 @@ struct fireball_t final : public fire_mage_spell_t
         trigger_firefall();
 
       p()->buffs.severe_temperatures->expire();
+
+      if ( p()->state.trigger_ff_empowerment )
+      {
+        p()->state.trigger_ff_empowerment = false;
+        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+      }
     }
   }
 
@@ -3939,6 +3961,17 @@ struct fireball_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
+    m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->buffs.frostfire_empowerment->check() )
+      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
   }
@@ -4236,6 +4269,9 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   double execute_time_pct_multiplier() const override
   {
+    if ( p()->buffs.frostfire_empowerment->check() )
+      return 0.0;
+
     double mul = frost_mage_spell_t::execute_time_pct_multiplier();
 
     mul *= 1.0 + p()->buffs.slick_ice->check_stack_value();
@@ -4249,9 +4285,20 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     m *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
     m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
+    m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       m *= 1.0 + fractured_frost_mul;
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = frost_mage_spell_t::composite_crit_chance_multiplier();
+
+    if ( p()->buffs.frostfire_empowerment->check() )
+      m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
   }
@@ -4278,16 +4325,31 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
+
+    if ( p()->buffs.frostfire_empowerment->check() )
+    {
+      p()->buffs.frostfire_empowerment->expire();
+      p()->state.trigger_ff_empowerment = true;
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    if ( p()->buffs.icy_veins->check() )
-      p()->buffs.deaths_chill->trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      if ( p()->buffs.icy_veins->check() )
+        p()->buffs.deaths_chill->trigger();
 
-    p()->buffs.severe_temperatures->expire();
+      p()->buffs.severe_temperatures->expire();
+
+      if ( p()->state.trigger_ff_empowerment )
+      {
+        p()->state.trigger_ff_empowerment = false;
+        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+      }
+    }
 
     if ( s->chain_target != 0 )
       return;
@@ -5665,6 +5727,26 @@ struct frostfire_infusion_t final : public mage_spell_t
   }
 };
 
+struct frostfire_empowerment_t final : public spell_t
+{
+  frostfire_empowerment_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 431186 ) )
+  {
+    background = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    range::erase_remove( tl, target );
+
+    return tl.size();
+  }
+};
+
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
@@ -6193,6 +6275,9 @@ void mage_t::create_actions()
 
   if ( talents.frostfire_infusion.ok() )
     action.frostfire_infusion = get_action<frostfire_infusion_t>( "frostfire_infusion", this );
+
+  if ( talents.frostfire_empowerment.ok() )
+    action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -6862,19 +6947,22 @@ void mage_t::create_buffs()
 
 
   // Frostfire
-  buffs.fire_mastery        = make_buff( this, "fire_mastery", find_spell( 431040 ) )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                                ->set_chance( talents.frostfire_mastery.ok() );
-  buffs.frost_mastery       = make_buff( this, "frost_mastery", find_spell( 431039 ) )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-                                ->set_chance( talents.frostfire_mastery.ok() );
-  buffs.severe_temperatures = make_buff( this, "severe_temperatures", find_spell( 431190 ) )
-                                ->set_default_value_from_effect( 1 )
-                                ->set_trigger_spell( talents.severe_temperatures );
+  buffs.fire_mastery          = make_buff( this, "fire_mastery", find_spell( 431040 ) )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                                  ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.frost_mastery         = make_buff( this, "frost_mastery", find_spell( 431039 ) )
+                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                                  ->set_chance( talents.frostfire_mastery.ok() );
+  buffs.frostfire_empowerment = make_buff( this, "frostfire_empowerment", find_spell( 431177 ) )
+                                  ->set_default_value_from_effect( 3 )
+                                  ->set_trigger_spell( talents.frostfire_empowerment );
+  buffs.severe_temperatures   = make_buff( this, "severe_temperatures", find_spell( 431190 ) )
+                                  ->set_default_value_from_effect( 1 )
+                                  ->set_trigger_spell( talents.severe_temperatures );
 
 
   // Shared
