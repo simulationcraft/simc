@@ -8501,6 +8501,9 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
   {
     base_t::init();
 
+    if ( !data().ok() )
+      return;
+
     using namespace bear_attacks;
     using namespace cat_attacks;
     using namespace heals;
