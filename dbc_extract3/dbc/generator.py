@@ -2036,7 +2036,7 @@ class SpellDataGenerator(DataGenerator):
           ( 419800, 0 ),                            # Intensifying Flame
           ( 424120, 0 ),                            # Glacial Blast
           ( 461508, 0 ),                            # Energy Reconstitution AE
-          ( 438671, 0 ), ( 438672, 0 ), ( 438671, 0 ), # Excess Fire LB
+          ( 438671, 0 ), ( 438672, 0 ), ( 438674, 0 ), # Excess Fire LB
         ),
 
         # Warlock:
