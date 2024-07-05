@@ -590,7 +590,7 @@ using namespace helpers;
   struct shadow_bolt_t : public warlock_spell_t
   {
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
+      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
       triggers.shadow_invocation_direct = true;
 
