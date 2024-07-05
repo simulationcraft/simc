@@ -2272,8 +2272,6 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        // TOCHECK: Is this necessary?
-        spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
       }
 
@@ -2281,7 +2279,7 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate->effectN( 2 ).percent() ) )
+        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate_old->effectN( 2 ).percent() ) )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
@@ -2292,7 +2290,7 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate, options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
