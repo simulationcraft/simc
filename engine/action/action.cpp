@@ -3893,11 +3893,11 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   }
 
   if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" )
+       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" )
   {
     std::vector<action_t*> in_flight_list;
-    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
-      splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
+    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" ||
+                                 splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" );
     auto action_name  = ( in_flight_singleton ) ? this->name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
@@ -3963,6 +3963,42 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           }
         };
         return std::make_unique<in_flight_to_target_multi_expr_t>( std::move(in_flight_list), *this );
+      }
+      else if ( splits[ 0 ] == "in_flight_to_target_count" ||
+                ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target_count" ) )
+      {
+        struct in_flight_to_target_count_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          action_t& action;
+
+          in_flight_to_target_count_multi_expr_t( std::vector<action_t*> al, action_t& a )
+            : expr_t( "in_flight_to_target_count" ), action_list( std::move( al ) ), action( a )
+          {
+          }
+
+          double evaluate() override
+          {
+            auto count = 0;
+
+            for ( auto i : action_list )
+            {
+              for ( const auto& travel_event : i->travel_events )
+              {
+                if ( travel_event->state->target == action.target )
+                  count++;
+              }
+            }
+
+            return count;
+          }
+
+          bool is_constant() override
+          {
+            return action_list.empty();
+          }
+        };
+        return std::make_unique<in_flight_to_target_count_multi_expr_t>( std::move( in_flight_list ), *this );
       }
       else if ( splits[ 0 ] == "in_flight_remains" ||
         ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
