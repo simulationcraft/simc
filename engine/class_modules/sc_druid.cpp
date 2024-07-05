@@ -288,13 +288,12 @@ struct eclipse_handler_t
   void tick_starfall();
   void tick_fury_of_elune();
 
-  buff_t* get_boat( eclipse_e eclipse ) const;
-  buff_t* get_harmony( eclipse_e eclipse ) const;
-  buff_t* get_eclipse( eclipse_e eclipse ) const;
-  void advance_eclipse( eclipse_e eclipse, bool active );
-  void update_eclipse( eclipse_e eclipse );
-
-  uptime_t* get_uptime( eclipse_e eclipse ) const;
+  template <eclipse_e E> buff_t* get_boat() const;
+  template <eclipse_e E> buff_t* get_harmony() const;
+  template <eclipse_e E> buff_t* get_eclipse() const;
+  template <eclipse_e E> uptime_t* get_uptime() const;
+  template <eclipse_e E> void advance_eclipse( bool active );
+  template <eclipse_e E> void update_eclipse();
 
   bool in_none( uint8_t state ) const { return state == 0; }
   bool in_none() const { return state == 0; }
@@ -344,7 +343,6 @@ struct convoke_counter_t
     range::sort( _list, [ this ]( auto l, auto r ) {
       return data.at( l ).mean() > data.at( r ).mean();
     } );
-
 
     for ( auto a : _list )
     {
@@ -10164,12 +10162,14 @@ void druid_t::create_buffs()
         auto in_solar = eclipse_handler.in_solar();
 
         buff.eclipse_lunar->trigger( d );
-        if ( in_lunar ) eclipse_handler.advance_eclipse( eclipse_e::LUNAR, true );
-        eclipse_handler.update_eclipse( eclipse_e::LUNAR );
+        if ( in_lunar )
+          eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
+        eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
 
         buff.eclipse_solar->trigger( d );
-        if ( in_solar ) eclipse_handler.advance_eclipse( eclipse_e::SOLAR, true );
-        eclipse_handler.update_eclipse( eclipse_e::SOLAR );
+        if ( in_solar )
+          eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
+        eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
 
         if ( active.orbital_strike )
           active.orbital_strike->execute_on_target( target );
@@ -10202,7 +10202,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse( eclipse_e::LUNAR, new_ );
+      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( new_ );
     } );
 
   buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
@@ -10210,7 +10210,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse( eclipse_e::SOLAR, new_ );
+      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( new_ );
     } );
 
   buff.fury_of_elune =
@@ -10234,7 +10234,7 @@ void druid_t::create_buffs()
       ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
       ->set_name_reporting( "Lunar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-        eclipse_handler.update_eclipse( eclipse_e::LUNAR );
+        eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
       } );
 
   buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
@@ -10243,7 +10243,7 @@ void druid_t::create_buffs()
       ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
       ->set_name_reporting( "Solar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-        eclipse_handler.update_eclipse( eclipse_e::SOLAR );
+        eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
       } );
 
   buff.natures_balance = make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
@@ -13155,55 +13155,52 @@ void eclipse_handler_t::tick_fury_of_elune()
     ( *iter.fury_of_elune )[ state ]++;
 }
 
-buff_t* eclipse_handler_t::get_boat( eclipse_e eclipse ) const
+template <eclipse_e E>
+buff_t* eclipse_handler_t::get_boat() const
 {
-  if ( eclipse == eclipse_e::LUNAR )
+  if constexpr ( E == eclipse_e::LUNAR )
     return p->buff.balance_of_all_things_arcane;
-  else if ( eclipse == eclipse_e::SOLAR )
+  else if constexpr ( E == eclipse_e::SOLAR )
     return p->buff.balance_of_all_things_nature;
   else
-    assert( false );
-
-  return nullptr;
+    return nullptr;
 }
 
-buff_t* eclipse_handler_t::get_harmony( eclipse_e eclipse ) const
+template <eclipse_e E>
+buff_t* eclipse_handler_t::get_harmony() const
 {
-  if ( eclipse == eclipse_e::LUNAR )
+  if constexpr ( E == eclipse_e::LUNAR )
     return p->buff.harmony_of_the_heavens_lunar;
-  else if ( eclipse == eclipse_e::SOLAR )
+  else if ( E == eclipse_e::SOLAR )
     return p->buff.harmony_of_the_heavens_solar;
   else
-    assert( false );
-
-  return nullptr;
+    return nullptr;
 }
 
-buff_t* eclipse_handler_t::get_eclipse( eclipse_e eclipse ) const
+template <eclipse_e E>
+buff_t* eclipse_handler_t::get_eclipse() const
 {
-  if ( eclipse == eclipse_e::LUNAR )
+  if constexpr ( E == eclipse_e::LUNAR )
     return p->buff.eclipse_lunar;
-  else if ( eclipse == eclipse_e::SOLAR )
+  else if ( E == eclipse_e::SOLAR )
     return p->buff.eclipse_solar;
   else
-    assert( false );
-
-  return nullptr;
+    return nullptr;
 }
 
-uptime_t* eclipse_handler_t::get_uptime( eclipse_e eclipse ) const
+template <eclipse_e E>
+uptime_t* eclipse_handler_t::get_uptime() const
 {
-  if ( eclipse == eclipse_e::LUNAR )
+  if constexpr ( E == eclipse_e::LUNAR )
     return uptime_lunar;
-  else if ( eclipse == eclipse_e::SOLAR )
+  else if ( E == eclipse_e::SOLAR )
     return uptime_solar;
   else
-    assert( false );
-
-  return nullptr;
+    return nullptr;
 }
 
-void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
+template <eclipse_e E>
+void eclipse_handler_t::advance_eclipse( bool active )
 {
   auto old_state = state;
 
@@ -13211,16 +13208,16 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
 
   if ( active )
   {
-    state |= eclipse;
+    state |= E;
 
     if ( old_state ^ state )
     {
-      get_uptime( eclipse )->update( true, p->sim->current_time() );
+      get_uptime<E>()->update( true, p->sim->current_time() );
       if ( in_none( old_state ) )
         uptime_none->update( false, p->sim->current_time() );
     }
 
-    get_boat( eclipse )->trigger();
+    get_boat<E>()->trigger();
     p->buff.parting_skies->trigger();
     p->buff.solstice->trigger();
     p->buff.cenarius_might->trigger();
@@ -13231,16 +13228,16 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
   }
   else
   {
-    state &= ~eclipse;
+    state &= ~E;
 
     if ( old_state ^ state )
     {
-      get_uptime( eclipse )->update( false, p->sim->current_time() );
+      get_uptime<E>()->update( false, p->sim->current_time() );
       if ( in_none( state ) )
         uptime_none->update( true, p->sim->current_time() );
     }
 
-    get_harmony( eclipse )->expire();
+    get_harmony<E>()->expire();
 
     // only when completely leaving eclipse
     if ( !in_eclipse() )
@@ -13248,15 +13245,16 @@ void eclipse_handler_t::advance_eclipse( eclipse_e eclipse, bool active )
   }
 }
 
-void eclipse_handler_t::update_eclipse( eclipse_e eclipse )
+template <eclipse_e E>
+void eclipse_handler_t::update_eclipse()
 {
-  auto buff = get_eclipse( eclipse );
+  auto buff = get_eclipse<E>();
   if ( !buff->check() )
     return;
 
   auto val = buff->default_value;
 
-  val += get_harmony( eclipse )->check_stack_value();
+  val += get_harmony<E>()->check_stack_value();
 
   if ( p->buff.ca_inc->check() )
     val += ga_mod;
