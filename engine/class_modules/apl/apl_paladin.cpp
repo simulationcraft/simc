@@ -115,7 +115,7 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
-  standard->add_action( "hammer_of_light,if=!buff.shake_the_heavens.up" );
+  standard->add_action( "hammer_of_light,if=!buff.shake_the_heavens.up|(buff.shake_the_heavens.up&buff.shake_the_heavens.remains<2.4)|(buff.hammer_of_light_free.up&buff.hammer_of_light_free.remains<3)|(buff.hammer_of_light_ready.up&buff.hammer_of_light_ready.remains<3)" );
   standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&!buff.hammer_of_light_ready.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)." );
   standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up))" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );

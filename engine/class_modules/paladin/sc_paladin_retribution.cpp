@@ -1087,11 +1087,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       p()->buffs.templar.sacrosanct_crusade->trigger();
     }
-    // Mostly only needed for bugged behaviour
-    if ( p()->talents.templar.lights_deliverance->ok() )
-    {
-      p()->trigger_lights_deliverance();
-    }
 
     if ( p()->talents.radiant_glory->ok() )
     {
@@ -1105,6 +1100,15 @@ struct wake_of_ashes_t : public paladin_spell_t
         p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
       }
     }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    {
+      return false;
+    }
+    return paladin_spell_t::target_ready( candidate_target );
   }
 };
 

@@ -670,7 +670,14 @@ struct eye_of_tyr_t : public paladin_spell_t
     }
   }
 
-
+   bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    {
+      return false;
+    }
+    return paladin_spell_t::target_ready( candidate_target );
+  }
 
   double action_multiplier() const override
   {
@@ -699,11 +706,6 @@ struct eye_of_tyr_t : public paladin_spell_t
     {
       p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
                           p()->gains.eye_of_tyr );
-    }
-    // Mostly only needed for bugged behaviour
-    if ( p()->talents.templar.lights_deliverance->ok() )
-    {
-      p()->trigger_lights_deliverance();
     }
   }
 

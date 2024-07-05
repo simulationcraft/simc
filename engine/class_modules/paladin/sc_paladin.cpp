@@ -32,7 +32,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER ),
     next_armament( HOLY_BULWARK ),
     holy_power_generators_used( 0 ),
-    melee_swing_count( 0 )
+    melee_swing_count( 0 ),
+    lights_deliverance_triggered_during_ready( false )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -2125,7 +2126,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
    bool target_ready( player_t* candidate_target ) override
    {
-    if ( !p()->buffs.templar.hammer_of_light_ready->up() )
+    if ( !(p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up()) )
     {
       return false;
     }
@@ -2140,6 +2141,13 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
       p()->buffs.templar.hammer_of_light_ready->expire();
+      if (p()->buffs.templar.lights_deliverance->at_max_stacks())
+      {
+        p()->trigger_lights_deliverance(true);
+      }
+    }
+    else if (p()->buffs.templar.hammer_of_light_free->up())
+    {
       p()->buffs.templar.hammer_of_light_free->expire();
     }
     if (p()->talents.templar.zealous_vindication->ok())
@@ -2278,7 +2286,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   }
 }
 
-void paladin_t::trigger_lights_deliverance()
+void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
 {
   if ( !talents.templar.lights_deliverance->ok() || !buffs.templar.lights_deliverance->at_max_stacks() )
     return;
@@ -2288,16 +2296,21 @@ void paladin_t::trigger_lights_deliverance()
        ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
     return;
 
-  auto cost_reduction = buffs.templar.hammer_of_light_cost->default_value;
-
   if ( !bugs && buffs.templar.hammer_of_light_ready->up() )
     return;
   // 2024-06-25 When we reach 60 stacks of Light's Deliverance while EoT/Wake is already used, but Hammer of Light isn't used yet, the hammer will cost 5 Holy Power
-  else if ( buffs.templar.hammer_of_light_ready->up() )
+  else if ( bugs && !triggered_by_hol && buffs.templar.hammer_of_light_ready->up() )
+  {
+    lights_deliverance_triggered_during_ready = true;
+    return;
+  }
+  auto cost_reduction = buffs.templar.hammer_of_light_cost->default_value;
+  if ( lights_deliverance_triggered_during_ready )
+  {
     cost_reduction = 0.0;
+    lights_deliverance_triggered_during_ready = false;
+  }
 
-
-  buffs.templar.hammer_of_light_ready->execute();
   buffs.templar.hammer_of_light_free->execute(-1, cost_reduction, timespan_t::min());
   buffs.templar.lights_deliverance->expire();
 }
@@ -3196,6 +3209,7 @@ void paladin_t::reset()
   next_armament = HOLY_BULWARK;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
+  lights_deliverance_triggered_during_ready = false;
 }
 
 // paladin_t::init_gains ====================================================
@@ -3414,7 +3428,10 @@ void paladin_t::create_buffs()
 
 
   buffs.templar.hammer_of_light_ready =
-      make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )->set_duration( 12_s );
+      make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
+          ->set_duration( 12_s )
+          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
+        });
   buffs.templar.hammer_of_light_free =
       make_buff( this, "hammer_of_light_free", find_spell( 433015 ) )->set_duration( 12_s );
   buffs.templar.hammer_of_light_cost = make_buff( this, "hammer_of_light_cost", find_spell( 433732 ) )
