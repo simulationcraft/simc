@@ -1834,19 +1834,28 @@ public:
     }
   }
 
-  void trigger_frostfire_mastery()
+  void trigger_frostfire_mastery( bool empowerment = false )
   {
+    if ( empowerment && !p()->talents.flash_freezeburn.ok() )
+      return;
+
     auto s = get_school();
     bool is_fire = dbc::is_school( s, SCHOOL_FIRE );
     bool is_frost = dbc::is_school( s, SCHOOL_FROST );
     if ( !is_fire && !is_frost )
       return;
 
+    if ( empowerment )
+    {
+      p()->buffs.fire_mastery->expire();
+      p()->buffs.frost_mastery->expire();
+    }
+
     if ( is_fire )
-      p()->buffs.fire_mastery->trigger();
+      p()->buffs.fire_mastery->trigger( empowerment ? p()->buffs.fire_mastery->max_stack() : -1 );
 
     if ( is_frost )
-      p()->buffs.frost_mastery->trigger();
+      p()->buffs.frost_mastery->trigger( empowerment ? p()->buffs.frost_mastery->max_stack() : -1 );
 
     // Frostfire spells don't seem to trigger Severe Temperatures
     if ( !( is_fire && is_frost ) )
@@ -2379,6 +2388,9 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() && p()->buffs.fury_of_the_sun_king->check() )
     {
       expire_skb = true;
+      // Extending Combustion doesn't trigger Frostfire Empowerment
+      if ( !p()->buffs.combustion->check() && p()->talents.flash_freezeburn.ok() )
+        p()->buffs.frostfire_empowerment->execute();
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
@@ -3636,6 +3648,9 @@ struct combustion_t final : public fire_mage_spell_t
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
     p()->buffs.tier31_4pc->trigger();
+    if ( p()->talents.flash_freezeburn.ok() )
+      p()->buffs.frostfire_empowerment->execute();
+
     p()->expression_support.kindling_reduction = 0_ms;
   }
 };
@@ -3910,6 +3925,7 @@ struct fireball_t final : public fire_mage_spell_t
     {
       p()->buffs.frostfire_empowerment->expire();
       p()->state.trigger_ff_empowerment = true;
+      trigger_frostfire_mastery( true );
     }
   }
 
@@ -4330,6 +4346,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     {
       p()->buffs.frostfire_empowerment->expire();
       p()->state.trigger_ff_empowerment = true;
+      trigger_frostfire_mastery( true );
     }
   }
 
@@ -4896,6 +4913,8 @@ struct icy_veins_t final : public frost_mage_spell_t
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
+    if ( p()->talents.flash_freezeburn.ok() )
+      p()->buffs.frostfire_empowerment->execute();
 
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon();
@@ -6042,6 +6061,8 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
+            if ( mage->talents.flash_freezeburn.ok() )
+              mage->buffs.frostfire_empowerment->execute();
             break;
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
@@ -6053,7 +6074,8 @@ struct time_anomaly_tick_event_t final : public mage_event_t
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
             mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
-            // TODO: trigger frostfire empowerment
+            if ( mage->talents.flash_freezeburn.ok() )
+              mage->buffs.frostfire_empowerment->execute();
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
