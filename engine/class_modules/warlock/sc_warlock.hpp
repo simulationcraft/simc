@@ -565,6 +565,7 @@ public:
     proc_t* one_shard_hog; // TODO: Switch to array like Malefic Rapture
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
+    std::array<proc_t*, 4> hand_of_guldan_shards;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;

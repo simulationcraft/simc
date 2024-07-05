@@ -575,9 +575,6 @@ namespace warlock
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_procs_destruction();
 
-    procs.one_shard_hog = get_proc( "one_shard_hog" );
-    procs.two_shard_hog = get_proc( "two_shard_hog" );
-    procs.three_shard_hog = get_proc( "three_shard_hog" );
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
@@ -608,6 +605,11 @@ namespace warlock
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+
+    for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
+    {
+      procs.hand_of_guldan_shards[ i ] = get_proc( fmt::format( "Hand of Gul'dan {}", i + 1 ) );
+    }
   }
 
   void warlock_t::init_procs_destruction()

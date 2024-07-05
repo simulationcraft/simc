@@ -1418,6 +1418,15 @@ using namespace helpers;
       timespan_t travel_time() const override
       { return meteor_time; }
 
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        m *= shards_used;
+
+        return m;
+      }
+
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -1478,12 +1487,11 @@ using namespace helpers;
     {
       warlock_spell_t::consume_resource();
 
-      if ( last_resource_cost == 1.0 )
-        p()->procs.one_shard_hog->occur();
-      if ( last_resource_cost == 2.0 )
-        p()->procs.two_shard_hog->occur();
-      if ( last_resource_cost == 3.0 )
-        p()->procs.three_shard_hog->occur();
+      int lrc = as<int>( last_resource_cost ) - 1;
+
+      assert( lrc < as<int>( p()->procs.hand_of_guldan_shards.size() ) && "The procs.hand_of_guldan_shards array needs to be expanded." );
+
+      p()->procs.hand_of_guldan_shards[ lrc ]->occur();
     }
 
     void impact( action_state_t* s ) override
