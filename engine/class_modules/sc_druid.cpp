@@ -310,6 +310,9 @@ struct eclipse_handler_t
   void datacollection_begin();
   void datacollection_end();
   void merge( const eclipse_handler_t& );
+
+  void print_table( report::sc_html_stream& );
+  void print_line( report::sc_html_stream&, const spell_data_t*, const data_array& );
 };
 
 struct convoke_counter_t
@@ -320,6 +323,40 @@ struct convoke_counter_t
   {
     for ( auto& d : data )
       d.second.analyze();
+  }
+
+  void print_table( report::sc_html_stream& os )
+  {
+    os << R"(<h3 class="toggle open">Convoke Counter</h3><div class="toggle-content"><table class="sc sort even">)"
+       << R"(<thead><tr><th class="toggle-sort" data-sorttype="alpha">Ability</th>)"
+       << R"(<th class="toggle-sort">Avg</th>)"
+       << R"(<th class="toggle-sort">Min</th>)"
+       << R"(<th class="toggle-sort">Max</th>)"
+       << R"(<th class="toggle-sort">StdDev</th>)"
+       << R"(<th class="toggle-sort">Var</th></tr></thead>)";
+
+    std::vector<action_t*> _list;
+
+    for ( const auto& [ a, sample ] : data )
+      if ( sample.mean() )
+        _list.push_back( a );
+
+    range::sort( _list, [ this ]( auto l, auto r ) {
+      return data.at( l ).mean() > data.at( r ).mean();
+    } );
+
+
+    for ( auto a : _list )
+    {
+      const auto& sample = data.at( a );
+
+      os.format(
+        R"(<tr><td class="left">{}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td>)",
+        report_decorators::decorated_action( *a ),
+        sample.mean(), sample.min(), sample.max(), sample.std_dev, sample.variance );
+    }
+
+    os << "</table></div>\n";
   }
 };
 
@@ -8858,9 +8895,10 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     action_t* conv_cast = nullptr;
     player_t* conv_tar  = nullptr;
 
-    auto it   = cast_list.begin() + rng().range( cast_list.size() );
-    auto type = *it;
-    cast_list.erase( it );
+    // pick random spell and remove it
+    std::swap( cast_list.at( rng().range( cast_list.size() ) ), cast_list.back() );
+    auto type = cast_list.back();
+    cast_list.pop_back();
 
     std::vector<player_t*> tl = target_list();
     if ( tl.empty() )
@@ -13316,6 +13354,56 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
     merge( *other.data.full_moon, *data.full_moon );
 }
 
+void eclipse_handler_t::print_table( report::sc_html_stream& os )
+{
+  if ( !enabled() ) return;
+
+  os << R"(<h3 class="toggle open">Eclipse Data</h3><div class="toggle-content"><table class="sc even"><thead><tr>)"
+     << "<th>Ability</th>"
+     << "<th colspan=\"2\">None</th>"
+     << "<th colspan=\"2\">Solar</th>"
+     << "<th colspan=\"2\">Lunar</th>"
+     << "<th colspan=\"2\">Both</th>"
+     << "</tr></thead>";
+
+  print_line( os, p->spec.wrath, *data.wrath );
+  print_line( os, p->talent.starfire, *data.starfire );
+  print_line( os, p->talent.starsurge, *data.starsurge );
+
+  if ( data.starfall )      print_line( os, p->talent.starfall, *data.starfall );
+  if ( data.fury_of_elune ) print_line( os, p->find_spell( 202770 ), *data.fury_of_elune );
+  if ( data.new_moon )      print_line( os, p->find_spell( 274281 ), *data.new_moon );
+  if ( data.half_moon )     print_line( os, p->find_spell( 274282 ), *data.half_moon );
+  if ( data.full_moon )     print_line( os, p->find_spell( 274283 ), *data.full_moon );
+
+  os << "</table></div>\n";
+}
+
+void eclipse_handler_t::print_line( report::sc_html_stream& os, const spell_data_t* spell, const data_array& data )
+{
+  double iter  = data[ 4 ];  // MAX
+  double none  = data[ 0 ];  // NONE
+  double lunar = data[ 1 ];  // LUNAR
+  double solar = data[ 2 ];  // SOLAR
+  double both  = data[ 3 ];  // LUNAR & SOLAR
+  double total = none + solar + lunar + both;
+
+  if ( !total )
+    return;
+
+  os.format(
+    "<tr><td class=\"left\">{}</td>"
+    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
+    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
+    report_decorators::decorated_spell_data( *p->sim, spell ),
+    none / iter, none / total * 100,
+    solar / iter, solar / total * 100,
+    lunar / iter, lunar / total * 100,
+    both / iter, both / total * 100 );
+}
+
 void druid_t::copy_from( player_t* source )
 {
   player_t::copy_from( source );
@@ -13743,103 +13831,16 @@ public:
     if ( p.specialization() == DRUID_FERAL )
       feral_snapshot_table( os );
 
-    if ( p.specialization() == DRUID_BALANCE && p.eclipse_handler.enabled() )
-      balance_eclipse_table( os );
+    if ( p.specialization() == DRUID_BALANCE )
+      p.eclipse_handler.print_table( os );
 
     if ( p.convoke_counter )
-      convoke_table( os );
+      p.convoke_counter->print_table( os );
 
     p.parsed_effects_html( os );
     modified_spell_data_t::parsed_effects_html( os, *p.sim, p.modified_spells );
 
     os << "</div>\n";
-  }
-
-  void balance_print_data( report::sc_html_stream& os, const spell_data_t* spell,
-                           const eclipse_handler_t::data_array& data )
-  {
-    double iter  = data[ 4 ];  // MAX
-    double none  = data[ 0 ];  // NONE
-    double lunar = data[ 1 ];  // LUNAR
-    double solar = data[ 2 ];  // SOLAR
-    double both  = data[ 3 ];  // LUNAR & SOLAR
-    double total = none + solar + lunar + both;
-
-    if ( !total )
-      return;
-
-    os.format(
-      "<tr><td class=\"left\">{}</td>"
-      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-      "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
-      report_decorators::decorated_spell_data( *p.sim, spell ),
-      none / iter, none / total * 100,
-      solar / iter, solar / total * 100,
-      lunar / iter, lunar / total * 100,
-      both / iter, both / total * 100 );
-  }
-
-  void balance_eclipse_table( report::sc_html_stream& os )
-  {
-    os << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
-       << "<div class=\"toggle-content\">\n"
-       << "<table class=\"sc even\">\n"
-       << "<thead><tr><th></th>\n"
-       << "<th colspan=\"2\">None</th><th colspan=\"2\">Solar</th><th colspan=\"2\">Lunar</th><th colspan=\"2\">Both</th>\n"
-       << "</tr></thead>\n";
-
-    balance_print_data( os, p.spec.wrath, *p.eclipse_handler.data.wrath );
-    balance_print_data( os, p.talent.starfire, *p.eclipse_handler.data.starfire );
-    balance_print_data( os, p.talent.starsurge, *p.eclipse_handler.data.starsurge );
-    if ( p.eclipse_handler.data.starfall )
-      balance_print_data( os, p.talent.starfall, *p.eclipse_handler.data.starfall );
-    if ( p.eclipse_handler.data.fury_of_elune )
-      balance_print_data( os, p.find_spell( 202770 ), *p.eclipse_handler.data.fury_of_elune );
-    if ( p.eclipse_handler.data.new_moon )
-      balance_print_data( os, p.find_spell( 274281 ), *p.eclipse_handler.data.new_moon );
-    if ( p.eclipse_handler.data.half_moon )
-      balance_print_data( os, p.find_spell( 274282 ), *p.eclipse_handler.data.half_moon );
-    if ( p.eclipse_handler.data.full_moon )
-      balance_print_data( os, p.find_spell( 274283 ), *p.eclipse_handler.data.full_moon );
-
-    os << "</table>\n"
-       << "</div>\n";
-  }
-
-  void convoke_table( report::sc_html_stream& os )
-  {
-    os << R"(<h3 class="toggle open">Convoke Counter</h3><div class="toggle-content"><table class="sc sort even">)"
-       << R"(<thead><tr><th class="toggle-sort" data-sorttype="alpha">Ability</th>)"
-       << R"(<th class="toggle-sort">Avg</th>)"
-       << R"(<th class="toggle-sort">Min</th>)"
-       << R"(<th class="toggle-sort">Max</th>)"
-       << R"(<th class="toggle-sort">StdDev</th>)"
-       << R"(<th class="toggle-sort">Var</th></tr></thead>)";
-
-    std::vector<action_t*> _list;
-
-    for ( const auto& [ a, sample ] : p.convoke_counter->data )
-      if ( sample.mean() )
-        _list.push_back( a );
-
-    range::sort( _list, [ this ]( auto l, auto r ) {
-      return p.convoke_counter->data.at( l ).mean() > p.convoke_counter->data.at( r ).mean();
-    } );
-
-
-    for ( auto a : _list )
-    {
-      const auto& sample = p.convoke_counter->data.at( a );
-
-      os.format(
-        R"(<tr><td class="left">{}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td>)",
-        report_decorators::decorated_action( *a ),
-        sample.mean(), sample.min(), sample.max(), sample.std_dev, sample.variance );
-    }
-
-    os << "</table></div>\n";
   }
 
   void feral_parse_counter( snapshot_counter_t* counter, feral_counter_data_t& data )
