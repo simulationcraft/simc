@@ -4721,6 +4721,17 @@ struct ice_floes_t final : public mage_spell_t
   }
 };
 
+struct frigid_pulse_t final : public mage_spell_t
+{
+  frigid_pulse_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 460623 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = p->sets->set( MAGE_FROST, TWW1, B4 )->effectN( 1 ).base_value();
+  }
+};
+
 struct ice_lance_state_t final : public mage_spell_state_t
 {
   bool fingers_of_frost;
@@ -4753,6 +4764,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 {
   shatter_source_t* extension_source = nullptr;
   shatter_source_t* cleave_source = nullptr;
+  action_t* frigid_pulse = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.ice_lance )
@@ -4765,6 +4777,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, TWW1, B2 )->effectN( 1 ).percent();
 
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p->talents.splitting_ice.ok() )
@@ -4776,6 +4789,12 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p->talents.hailstones.ok() )
       add_child( p->action.icicle.ice_lance );
+
+    if ( p->sets->has_set_bonus( MAGE_FROST, TWW1, B4 ) )
+    {
+      frigid_pulse = get_action<frigid_pulse_t>( "frigid_pulse", p );
+      add_child( frigid_pulse );
+    }
   }
 
   void init_finished() override
@@ -4902,6 +4921,9 @@ struct ice_lance_t final : public frost_mage_spell_t
       p()->action.excess_living_bomb_dot->execute_on_target( s->target );
       p()->buffs.excess_fire->expire();
     }
+
+    if ( frozen & FF_FINGERS_OF_FROST && frigid_pulse )
+      frigid_pulse->execute_on_target( s->target );
   }
 
   double action_multiplier() const override
