@@ -408,7 +408,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven;
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
