@@ -4462,10 +4462,14 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
           .set_func( [ this ] { return stealthed_any(); } )
           .set_eff( &eff );
 
-        add_parse_entry( bleed->persistent_multiplier_effects )
-          .set_value( eff.percent() )
-          .set_func( [ this ] { return stealthed_any(); } )
-          .set_eff( &eff );
+        // check first since bleed is a secondary action with only one instance
+        if ( !has_parse_entry( bleed->persistent_multiplier_effects, &eff ) )
+        {
+          add_parse_entry( bleed->persistent_multiplier_effects )
+            .set_value( eff.percent() )
+            .set_func( [ this ] { return stealthed_any(); } )
+            .set_eff( &eff );
+        }
       }
     }
 
