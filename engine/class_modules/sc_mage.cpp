@@ -6271,7 +6271,7 @@ struct splinter_t final : public mage_spell_t
     {
       // TODO: The chance isn't in spell data and from early tests it looks like it
       // isn't of the "obvious" procs (static %, rppm, etc). Adjust when more data is available.
-      bool success = rng().roll( p()->specialization() == MAGE_FROST ? 0.03 : 0.015 );
+      bool success = rng().roll( 0.015 );
       if ( success )
       {
         p()->cooldowns.frozen_orb->reset( true );
