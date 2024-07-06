@@ -2746,6 +2746,8 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
   void print_parsed_custom_type( report::sc_html_stream& os ) override
   {
+    base_t::print_parsed_custom_type( os );
+
     base_t::template print_parsed_type<cat_attack_t>( os, &cat_attack_t::persistent_periodic_effects,
                                                       "Snapshots (DOT)" );
     base_t::template print_parsed_type<cat_attack_t>( os, &cat_attack_t::persistent_direct_effects,
