@@ -1455,6 +1455,7 @@ struct mage_spell_t : public spell_t
 
     // Misc
     bool combustion = true;
+    bool force_of_will = true;
     bool ice_floes = false;
     bool overflowing_energy = true;
     bool shatter = true;
@@ -1554,6 +1555,9 @@ public:
 
     if ( affected_by.frost_mage )
       base_multiplier *= 1.0 + p()->spec.frost_mage->effectN( 1 ).percent();
+
+    if ( affected_by.force_of_will )
+      crit_bonus_multiplier *= 1.0 + p()->talents.force_of_will->effectN( 2 ).percent();
 
     if ( affected_by.overflowing_energy )
       crit_bonus_multiplier *= 1.0 + p()->talents.overflowing_energy->effectN( 1 ).percent();
@@ -7590,6 +7594,7 @@ double mage_t::composite_melee_crit_chance() const
   double c = player_t::composite_melee_crit_chance();
 
   c += talents.tome_of_rhonin->effectN( 1 ).percent();
+  c += talents.force_of_will->effectN( 1 ).percent();
 
   return c;
 }
@@ -7600,6 +7605,7 @@ double mage_t::composite_spell_crit_chance() const
 
   c += talents.tome_of_rhonin->effectN( 1 ).percent();
   c += talents.critical_mass->effectN( 1 ).percent();
+  c += talents.force_of_will->effectN( 1 ).percent();
 
   return c;
 }
