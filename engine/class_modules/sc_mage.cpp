@@ -8076,6 +8076,8 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
     else
       buffs.clearcasting->trigger();
 
+    if ( chance >= 1.0 )
+      buffs.clearcasting->predict();
     buffs.big_brained->trigger();
   }
 
