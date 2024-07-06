@@ -536,6 +536,8 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
   base_t::impact( s );
 
+  p()->buff.aspect_of_harmony->trigger( s );
+
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
   {
     p()->trigger_empowered_tiger_lightning( s );
@@ -5208,6 +5210,7 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
     }
 
+    p()->buff.aspect_of_harmony->trigger_spend();
     brew_t<monk_absorb_t>::execute();
 
     p()->buff.purified_chi->expire();
@@ -5964,6 +5967,10 @@ struct blackout_reinforcement_t : public monk_buff_t
     buff_t::decrement( stacks, value );
   }
 };
+
+// ===============================================================================
+// Aspect of Harmony (Master of Harmony)
+// ===============================================================================
 
 }  // namespace buffs
 
@@ -6960,10 +6967,12 @@ void monk_t::init_spells()
     talent.master_of_harmony.aspect_of_harmony_damage      = find_spell( 450763 );
     talent.master_of_harmony.aspect_of_harmony_heal        = find_spell( 450769 );
     // Row 2
-    talent.master_of_harmony.manifestation      = _HT( "Manifestation" );
-    talent.master_of_harmony.purified_spirit    = _HT( "Purified Spirit" );
-    talent.master_of_harmony.harmonic_gambit    = _HT( "Harmonic Gambit" );
-    talent.master_of_harmony.balanced_strategem = _HT( "Balanced Strategem" );
+    talent.master_of_harmony.manifestation          = _HT( "Manifestation" );
+    talent.master_of_harmony.purified_spirit        = _HT( "Purified Spirit" );
+    talent.master_of_harmony.purified_spirit_damage = find_spell( 450820 );
+    talent.master_of_harmony.purified_spirit_heal   = find_spell( 450805 );
+    talent.master_of_harmony.harmonic_gambit        = _HT( "Harmonic Gambit" );
+    talent.master_of_harmony.balanced_strategem     = _HT( "Balanced Strategem" );
     // Row 3
     talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
     talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
@@ -7673,6 +7682,11 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback( talent.windwalker.whirling_dragon_punch->ok(), this,
                                                    "whirling_dragon_punch", find_spell( 196742 ) )
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+  // Conduit of the Celestials
+
+  // Master of Harmony
+  buff.aspect_of_harmony = new aspect_of_harmony_t( this );
 
   // Shado-Pan
 

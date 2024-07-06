@@ -407,6 +407,8 @@ static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack =
   }
 }
 
+struct aspect_of_harmony_t;
+
 struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
   using base_t = stagger_t<parse_player_effects_t, monk_t>;
@@ -639,6 +641,11 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
+
+    // Conduit of the Celestials
+
+    // Master of Harmony
+    aspect_of_harmony_t *aspect_of_harmony;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -1161,6 +1168,8 @@ public:
       // Row 2
       player_talent_t manifestation;
       player_talent_t purified_spirit;
+      const spell_data_t *purified_spirit_damage;
+      const spell_data_t *purified_spirit_heal;
       player_talent_t harmonic_gambit;
       player_talent_t balanced_strategem;
       // Row 3
@@ -1477,5 +1486,183 @@ struct sef_despawn_cb_t
   }
 
   void operator()( player_t * );
+};
+
+struct aspect_of_harmony_t
+{
+private:
+  struct accumulator_t;
+  struct spender_t;
+  propagate_const<accumulator_t *> accumulator;
+  propagate_const<spender_t *> spender;
+
+public:
+  bool fallback;
+
+private:
+  struct accumulator_t : actions::monk_buff_t
+  {
+    const spell_data_t *trigger_data;
+    propagate_const<buff_t *> spender;
+
+    accumulator_t( monk_t *player )
+      : actions::monk_buff_t( player, "aspect_of_harmony_accumulator",
+                              player->talent.master_of_harmony.aspect_of_harmony_accumulator ),
+        trigger_data( player->talent.master_of_harmony.aspect_of_harmony ),
+        spender( nullptr )
+    {
+      set_default_value( 0.0 );
+    }
+
+    void trigger_with_state( action_state_t *state )
+    {
+      if ( spender->check() )
+        return;
+
+      size_t index_offset = p().specialization() == MONK_BREWMASTER ? 0 : 1;
+      switch ( state->result_type )
+      {
+        case result_amount_type::DMG_DIRECT:
+        case result_amount_type::DMG_OVER_TIME:
+          actions::monk_buff_t::trigger(
+              -1, check_value() + state->result_amount * trigger_data->effectN( 1 + index_offset ).percent() );
+          return;
+        case result_amount_type::HEAL_DIRECT:
+        case result_amount_type::HEAL_OVER_TIME:
+          actions::monk_buff_t::trigger(
+              -1, check_value() + state->result_amount * trigger_data->effectN( 3 + index_offset ).percent() );
+          return;
+        default:
+          return;
+      }
+    }
+  };
+
+  struct spender_t : actions::monk_buff_t
+  {
+    template <class base_action_t>
+    struct purified_spirit_t : base_action_t
+    {
+      propagate_const<buff_t *> spender;
+
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data )
+        : base_action_t( player, "purified_spirit", spell_data ),
+          spender( buff_t::find( player, "aspect_of_harmony_spender" ) )
+      {
+      }
+
+      void execute() override
+      {
+        base_action_t::base_td = spender->check_value();
+        base_action_t::execute();
+      }
+    };
+
+    template <class base_action_t>
+    struct tick_t : residual_action::residual_periodic_action_t<base_action_t>
+    {
+      tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+        : residual_action::residual_periodic_action_t<base_action_t>( player, name, spell_data )
+      {
+      }
+    };
+
+    const spell_data_t *trigger_data;
+    propagate_const<action_t *> damage;
+    propagate_const<action_t *> heal;
+    propagate_const<action_t *> purified_spirit;
+    propagate_const<buff_t *> accumulator;
+
+    spender_t( monk_t *player )
+      : actions::monk_buff_t( player, "aspect_of_harmony_spender",
+                              player->talent.master_of_harmony.aspect_of_harmony_spender ),
+        trigger_data( player->talent.master_of_harmony.aspect_of_harmony ),
+        damage( new tick_t<actions::monk_spell_t>( player, "aspect_of_harmony_damage",
+                                                   player->talent.master_of_harmony.aspect_of_harmony_damage ) ),
+        heal( new tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
+                                                player->talent.master_of_harmony.aspect_of_harmony_heal ) ),
+        purified_spirit( nullptr ),
+        accumulator( nullptr )
+    {
+      set_default_value( 0.0 );
+      if ( player->specialization() == MONK_BREWMASTER )
+        purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
+            player, player->talent.master_of_harmony.purified_spirit_damage );
+      if ( player->specialization() == MONK_MISTWEAVER )
+        purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
+            player, player->talent.master_of_harmony.purified_spirit_heal );
+
+      set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
+        if ( !new_ )
+          purified_spirit->execute();
+      } );
+    }
+
+    bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
+                  timespan_t duration = timespan_t::min() ) override
+    {
+      double value = accumulator->check_value();
+      accumulator->expire();
+      return actions::monk_buff_t::trigger( stacks, value, chance, duration );
+    }
+
+    void trigger_with_state( action_state_t *state )
+    {
+      if ( !check() )
+        return;
+
+      double amount = std::min( state->result_amount * trigger_data->effectN( 6 ).percent(), check_value() );
+      if ( amount == check_value() )
+      {
+        expire();
+        return;
+      }
+      current_value -= amount;
+
+      switch ( state->result_type )
+      {
+        case result_amount_type::DMG_DIRECT:
+        case result_amount_type::DMG_OVER_TIME:
+          residual_action::trigger( damage, state->target, amount );
+          return;
+        case result_amount_type::HEAL_DIRECT:
+        case result_amount_type::HEAL_OVER_TIME:
+          residual_action::trigger( heal, state->target, amount );
+          return;
+        default:
+          return;
+      }
+    }
+  };
+
+public:
+  aspect_of_harmony_t( monk_t *player ) : accumulator( nullptr ), spender( nullptr )
+  {
+    if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
+    {
+      fallback = true;
+      return;
+    }
+    accumulator = new accumulator_t( player );
+    spender     = new spender_t( player );
+
+    accumulator->spender = spender;
+    spender->accumulator = accumulator;
+  }
+
+  void trigger( action_state_t *state )
+  {
+    if ( fallback || state->result_amount == 0.0 )
+      return;
+    accumulator->trigger_with_state( state );
+    spender->trigger_with_state( state );
+  }
+
+  void trigger_spend()
+  {
+    if ( fallback )
+      return;
+    spender->trigger();
+  }
 };
 }  // namespace monk
