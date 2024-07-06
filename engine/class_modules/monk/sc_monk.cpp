@@ -3893,6 +3893,9 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     {
       p()->buff.purified_chi->trigger( stacks );
       p()->buff.ox_stance->trigger( stacks );
+      p()->buff.aspect_of_harmony->trigger_flat(
+          stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
+          ( 1.0 + p()->composite_damage_versatility() ) );
     }
 
     double purify_percent = data().effectN( 1 ).percent();
@@ -4988,6 +4991,7 @@ struct chi_wave_t : public monk_spell_t
   {
     if ( !p()->buff.chi_wave->up() )
       return;
+    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
     p()->buff.chi_wave->expire();
     monk_spell_t::execute();
 
@@ -5048,6 +5052,7 @@ struct chi_burst_t : monk_spell_t
 
   void execute() override
   {
+    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
     monk_spell_t::execute();
     if ( buff )
       buff->expire();
@@ -7687,6 +7692,10 @@ void monk_t::create_buffs()
 
   // Master of Harmony
   buff.aspect_of_harmony = new aspect_of_harmony_t( this );
+  buff.aspect_of_harmony->path_of_resurgence =
+      make_buff_fallback( talent.master_of_harmony.path_of_resurgence->ok(), this, "path_of_resurgence",
+                          talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() );
+  buff.aspect_of_harmony->path_of_resurgence->apply_affecting_aura( talent.monk.chi_wave );
 
   // Shado-Pan
 

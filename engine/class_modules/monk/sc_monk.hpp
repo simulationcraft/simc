@@ -194,6 +194,7 @@ public:
 
 struct monk_spell_t : public monk_action_t<spell_t>
 {
+  using base_t = monk_action_t<spell_t>;
   monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
@@ -202,17 +203,20 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
 struct monk_heal_t : public monk_action_t<heal_t>
 {
+  using base_t = monk_action_t<heal_t>;
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double action_multiplier() const override;
 };
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
+  using base_t = monk_action_t<absorb_t>;
   monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
 };
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
+  using base_t = monk_action_t<melee_attack_t>;
   monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double action_multiplier() const override;
@@ -1496,19 +1500,15 @@ private:
   propagate_const<accumulator_t *> accumulator;
   propagate_const<spender_t *> spender;
 
-public:
   bool fallback;
 
-private:
   struct accumulator_t : actions::monk_buff_t
   {
-    const spell_data_t *trigger_data;
     propagate_const<buff_t *> spender;
 
     accumulator_t( monk_t *player )
       : actions::monk_buff_t( player, "aspect_of_harmony_accumulator",
                               player->talent.master_of_harmony.aspect_of_harmony_accumulator ),
-        trigger_data( player->talent.master_of_harmony.aspect_of_harmony ),
         spender( nullptr )
     {
       set_default_value( 0.0 );
@@ -1519,22 +1519,40 @@ private:
       if ( spender->check() )
         return;
 
-      size_t index_offset = p().specialization() == MONK_BREWMASTER ? 0 : 1;
+      size_t result_type_offset = 0;
       switch ( state->result_type )
       {
         case result_amount_type::DMG_DIRECT:
         case result_amount_type::DMG_OVER_TIME:
-          actions::monk_buff_t::trigger(
-              -1, check_value() + state->result_amount * trigger_data->effectN( 1 + index_offset ).percent() );
-          return;
+          result_type_offset = 1;
+          break;
         case result_amount_type::HEAL_DIRECT:
         case result_amount_type::HEAL_OVER_TIME:
-          actions::monk_buff_t::trigger(
-              -1, check_value() + state->result_amount * trigger_data->effectN( 3 + index_offset ).percent() );
-          return;
+          result_type_offset = 3;
+          break;
         default:
+          assert( false && "result_type_offset is zero" );
           return;
       }
+
+      size_t index_offset = p().specialization() == MONK_BREWMASTER ? 0 : 1;
+      double multiplier =
+          p().talent.master_of_harmony.aspect_of_harmony->effectN( result_type_offset + index_offset ).percent();
+
+      if ( p().buff.aspect_of_harmony->path_of_resurgence->up() )
+        multiplier *= 1.0 + p().buff.aspect_of_harmony->path_of_resurgence->data()
+                                .effectN( result_type_offset + index_offset )
+                                .percent();
+
+      const auto whitelist = { p().baseline.brewmaster.blackout_kick->id(),
+                               p().talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
+                               p().baseline.monk.tiger_palm->id() };
+
+      if ( const auto &effect = p().talent.master_of_harmony.way_of_a_thousand_strikes->effectN( 1 );
+           effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
+        multiplier *= 1.0 + effect.percent();
+
+      actions::monk_buff_t::trigger( -1, check_value() + state->result_amount * multiplier );
     }
   };
 
@@ -1567,7 +1585,6 @@ private:
       }
     };
 
-    const spell_data_t *trigger_data;
     propagate_const<action_t *> damage;
     propagate_const<action_t *> heal;
     propagate_const<action_t *> purified_spirit;
@@ -1576,7 +1593,6 @@ private:
     spender_t( monk_t *player )
       : actions::monk_buff_t( player, "aspect_of_harmony_spender",
                               player->talent.master_of_harmony.aspect_of_harmony_spender ),
-        trigger_data( player->talent.master_of_harmony.aspect_of_harmony ),
         damage( new tick_t<actions::monk_spell_t>( player, "aspect_of_harmony_damage",
                                                    player->talent.master_of_harmony.aspect_of_harmony_damage ) ),
         heal( new tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
@@ -1611,7 +1627,8 @@ private:
       if ( !check() )
         return;
 
-      double amount = std::min( state->result_amount * trigger_data->effectN( 6 ).percent(), check_value() );
+      double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
+      double amount     = std::min( state->result_amount * multiplier, check_value() );
       if ( amount == check_value() )
       {
         expire();
@@ -1619,15 +1636,25 @@ private:
       }
       current_value -= amount;
 
+      const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
+                               p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
+
+      auto in_hg_whitelist = [ whitelist, id = state->action->id, this ]() {
+        return p().talent.master_of_harmony.harmonic_gambit->ok() &&
+               std::find( whitelist.begin(), whitelist.end(), id ) != whitelist.end();
+      };
+
       switch ( state->result_type )
       {
         case result_amount_type::DMG_DIRECT:
         case result_amount_type::DMG_OVER_TIME:
-          residual_action::trigger( damage, state->target, amount );
+          if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
+            residual_action::trigger( damage, state->target, amount );
           return;
         case result_amount_type::HEAL_DIRECT:
         case result_amount_type::HEAL_OVER_TIME:
-          residual_action::trigger( heal, state->target, amount );
+          if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
+            residual_action::trigger( heal, state->target, amount );
           return;
         default:
           return;
@@ -1636,16 +1663,17 @@ private:
   };
 
 public:
-  aspect_of_harmony_t( monk_t *player ) : accumulator( nullptr ), spender( nullptr )
+  propagate_const<buff_t *> path_of_resurgence;
+
+  aspect_of_harmony_t( monk_t *player ) : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr )
   {
     if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
     {
       fallback = true;
       return;
     }
-    accumulator = new accumulator_t( player );
-    spender     = new spender_t( player );
-
+    accumulator          = new accumulator_t( player );
+    spender              = new spender_t( player );
     accumulator->spender = spender;
     spender->accumulator = accumulator;
   }
@@ -1656,6 +1684,14 @@ public:
       return;
     accumulator->trigger_with_state( state );
     spender->trigger_with_state( state );
+  }
+
+  void trigger_flat( double amount )
+  {
+    if ( fallback || spender->check() )
+      return;
+
+    accumulator->current_value += amount;
   }
 
   void trigger_spend()
