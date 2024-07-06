@@ -68,7 +68,8 @@ namespace warlock
 
     talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
 
-    talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
+    talents.socrethars_guile = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936
+
     talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
 
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941

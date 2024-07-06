@@ -27,13 +27,6 @@ warlock_t* warlock_pet_t::o()
 const warlock_t* warlock_pet_t::o() const
 { return static_cast<warlock_t*>( owner ); }
 
-void warlock_pet_t::apply_affecting_auras( action_t& action )
-{
-  pet_t::apply_affecting_auras( action );
-
-  action.apply_affecting_aura( o()->talents.socrethars_guile ); // TODO: Move this
-}
-
 void warlock_pet_t::create_buffs()
 {
   pet_t::create_buffs();
@@ -1064,7 +1057,11 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
   fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
-  { repeating = true; }
+  {
+    repeating = true;
+
+    base_dd_multiplier *= 1.0 + p->o()->talents.socrethars_guile->effectN( 2 ).percent();
+  }
 
   void schedule_execute( action_state_t* execute_state ) override
   {

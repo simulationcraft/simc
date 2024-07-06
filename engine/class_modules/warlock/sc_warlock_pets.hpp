@@ -60,7 +60,6 @@ struct warlock_pet_t : public pet_t
   double composite_melee_auto_attack_speed() const override;
   void arise() override;
   void demise() override;
-  void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_pet_td_t> target_data;
 
