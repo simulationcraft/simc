@@ -5894,6 +5894,9 @@ struct shifting_power_t final : public mage_spell_t
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction, false );
+
+    int splinters = as<int>( p()->talents.shifting_shards->effectN( 1 ).base_value() / ( dot_duration / base_tick_time ) );
+    p()->trigger_splinter( nullptr, splinters );
   }
 
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override
