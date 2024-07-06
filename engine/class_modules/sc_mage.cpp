@@ -2808,6 +2808,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     background = true;
     affected_by.savant = true;
     base_multiplier *= 1.0 + p->talents.resonant_orbs->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.splintering_orbs->effectN( 3 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2847,6 +2848,14 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( s->chain_target == 0 )
+      p()->trigger_splinter( s->target, as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() ) );
   }
 };
 
@@ -4507,6 +4516,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T29, B2 )->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.splintering_orbs->effectN( 3 ).percent();
     background = triggers.chill = true;
     affected_by.icicles_aoe = true;
   }
@@ -4587,6 +4597,13 @@ struct frozen_orb_t final : public frost_mage_spell_t
       .target( s->target )
       .n_pulses( pulse_count )
       .action( frozen_orb_bolt ), true );
+
+    if ( p()->talents.splintering_orbs.ok() )
+    {
+      p()->trigger_splinter( nullptr );
+      int count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() ) - 1;
+      make_repeating_event( *sim, pulse_time, [ this ] { p()->trigger_splinter( nullptr ); }, count );
+    }
   }
 };
 
