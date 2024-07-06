@@ -157,6 +157,7 @@ public:
     player_talent_t wrathful_minion; // Primary pet damage increase
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
+    player_talent_t demonic_tactics;
     player_talent_t soul_conduit;
     player_talent_t soulburn;
     const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
@@ -625,6 +626,7 @@ public:
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
+  double composite_rating_multiplier( rating_e ) const override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
