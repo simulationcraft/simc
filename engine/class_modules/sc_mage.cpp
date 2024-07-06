@@ -88,6 +88,13 @@ enum class ae_type
   ENERGY_RECON
 };
 
+enum class ao_type
+{
+  NORMAL,
+  ORB_BARRAGE,
+  SPELLFROST
+};
+
 enum class meteor_type
 {
   NORMAL,
@@ -275,6 +282,7 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
+    action_t* spellfrost_arcane_orb;
     action_t* splinter;
     action_t* touch_of_the_magi_explosion;
     action_t* volatile_magic;
@@ -371,6 +379,7 @@ public:
 
 
     // Spellslinger
+    buff_t* spellfrost_teachings;
     buff_t* unerring_proficiency;
 
 
@@ -2825,11 +2834,20 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
       get_td( s->target )->debuffs.controlled_instincts->trigger();
   }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
+
+    return am;
+  }
 };
 
 struct arcane_orb_t final : public arcane_mage_spell_t
 {
-  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, bool orb_barrage = false ) :
+  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type = ao_type::NORMAL ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) )
   {
     parse_options( options_str );
@@ -2837,10 +2855,27 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
 
-    impact_action = get_action<arcane_orb_bolt_t>( orb_barrage ? "orb_barrage_arcane_orb_bolt" : "arcane_orb_bolt", p );
+    std::string_view bolt_name;
+    switch ( type )
+    {
+      case ao_type::NORMAL:
+        bolt_name = "arcane_orb_bolt";
+        break;
+      case ao_type::ORB_BARRAGE:
+        bolt_name = "orb_barrage_arcane_orb_bolt";
+        break;
+      case ao_type::SPELLFROST:
+        bolt_name = "spellfrost_arcane_orb_bolt";
+        break;
+      default:
+        assert( false );
+        break;
+    }
+
+    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p );
     add_child( impact_action );
 
-    if ( orb_barrage )
+    if ( type != ao_type::NORMAL )
     {
       background = true;
       cooldown->duration = 0_ms;
@@ -2878,7 +2913,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( p->talents.orb_barrage.ok() )
     {
-      orb_barrage = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", p, "", true );
+      orb_barrage = get_action<arcane_orb_t>( "orb_barrage_arcane_orb", p, "", ao_type::ORB_BARRAGE );
       add_child( orb_barrage );
     }
   }
@@ -4540,6 +4575,15 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     if ( hit_any_target )
       p()->trigger_fof( p()->talents.fingers_of_frost->effectN( 2 ).percent(), proc_fof );
   }
+
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
+
+    return am;
+  }
 };
 
 struct frozen_orb_t final : public frost_mage_spell_t
@@ -5355,6 +5399,9 @@ struct meteor_t final : public fire_mage_spell_t
         burn_name = "isothermic_meteor_burn";
         impact_name = "isothermic_meteor_impact";
         break;
+      default:
+        assert( false );
+        break;
     }
 
     action_t* meteor_burn = get_action<meteor_burn_t>( burn_name, p );
@@ -6163,6 +6210,20 @@ struct splinter_t final : public mage_spell_t
         controlled_instincts->execute_on_target( s->target, pct * s->result_total );
       }
     }
+
+    if ( p()->talents.spellfrost_teachings.ok() )
+    {
+      // TODO: The chance isn't in spell data and from early tests it looks like it
+      // isn't of the "obvious" procs (static %, rppm, etc). Adjust when more data is available.
+      bool success = rng().roll( p()->specialization() == MAGE_FROST ? 0.03 : 0.015 );
+      if ( success )
+      {
+        p()->cooldowns.frozen_orb->reset( true );
+        if ( p()->action.spellfrost_arcane_orb && p()->target )
+          p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
+        p()->buffs.spellfrost_teachings->trigger();
+      }
+    }
   }
 };
 
@@ -6481,6 +6542,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             mage->buffs.time_warp->trigger();
             break;
           default:
+            assert( false );
             break;
         }
       }
@@ -6706,6 +6768,9 @@ void mage_t::create_actions()
 
   if ( talents.excess_frost.ok() )
     action.excess_ice_nova = get_action<ice_nova_t>( "excess_ice_nova", this, "", true );
+
+  if ( specialization() == MAGE_ARCANE && talents.spellfrost_teachings.ok() )
+    action.spellfrost_arcane_orb = get_action<arcane_orb_t>( "spellfrost_arcane_orb", this, "", ao_type::SPELLFROST );
 
   if ( talents.excess_fire.ok() )
   {
@@ -7420,6 +7485,9 @@ void mage_t::create_buffs()
 
 
   // Spellslinger
+  buffs.spellfrost_teachings = make_buff( this, "spellfrost_teachings", find_spell( 458411 ) )
+                                 ->set_default_value_from_effect( specialization() == MAGE_FROST ? 3 : 1 )
+                                 ->set_chance( talents.spellfrost_teachings.ok() );
   buffs.unerring_proficiency = make_buff( this, "unerring_proficiency", find_spell( specialization() == MAGE_FROST ? 444976 : 444981 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.unerring_proficiency.ok() );
