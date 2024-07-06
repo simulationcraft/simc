@@ -2024,6 +2024,15 @@ struct arcane_mage_spell_t : public mage_spell_t
         p()->action.magis_spark->execute_on_target( s->target );
     }
   }
+
+  void consume_nether_precision()
+  {
+    if ( !p()->buffs.nether_precision->check() )
+      return;
+
+    p()->buffs.nether_precision->decrement();
+    p()->buffs.leydrinker->trigger();
+  }
 };
 
 
@@ -2881,7 +2890,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.nether_precision->check() )
     {
-      p()->buffs.nether_precision->decrement();
+      consume_nether_precision();
       if ( p()->talents.dematerialize.ok() )
         p()->state.trigger_dematerialize = true;
     }
@@ -3002,7 +3011,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       // last stack. Technically, the delay should be on Arcane Barrage as well, but
       // because it's an instant, it cannot be taken advantage of.
       // TODO: Check if AB -> PoM AB works (with low latency).
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+      make_event( *sim, 15_ms, [ this ] { consume_nether_precision(); } );
       if ( p()->talents.dematerialize.ok() )
         p()->state.trigger_dematerialize = true;
     }
@@ -7067,8 +7076,6 @@ void mage_t::create_buffs()
                                       ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                       ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
                                       ->set_activated( false )
-                                      ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                        { if ( cur < old  ) buffs.leydrinker->trigger(); } )
                                       ->set_chance( talents.nether_precision.ok() );
   buffs.presence_of_mind          = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                       ->set_cooldown( 0_ms )
