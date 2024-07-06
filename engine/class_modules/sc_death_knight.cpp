@@ -9186,6 +9186,9 @@ struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
+      // If we don't have any runes available, we don't want to execute vampiric strike, and we basically just bail out.
+      if ( p()->_runes.runes_full() == 0 )
+        return;
       vampiric_strike->execute();
       stats->add_execute( 0_ms, target );
       return;
