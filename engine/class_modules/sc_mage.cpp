@@ -370,6 +370,10 @@ public:
     buff_t* severe_temperatures;
 
 
+    // Spellslinger
+    buff_t* unerring_proficiency;
+
+
     // Shared
     buff_t* ice_floes;
     buff_t* incanters_flow;
@@ -5038,12 +5042,25 @@ struct ice_nova_t final : public frost_mage_spell_t
       p()->cooldowns.comet_storm->adjust( t );
       p()->cooldowns.meteor->adjust( t );
     }
+
+    if ( p()->specialization() == MAGE_FROST )
+      p()->buffs.unerring_proficiency->expire();
   }
 
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    if ( p()->specialization() == MAGE_FROST )
+      am *= 1.0 + p()->buffs.unerring_proficiency->check_stack_value();
+
+    return am;
   }
 };
 
@@ -5715,6 +5732,24 @@ struct supernova_t final : public mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p()->specialization() == MAGE_ARCANE )
+      p()->buffs.unerring_proficiency->expire();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p()->specialization() == MAGE_ARCANE )
+      am *= 1.0 + p()->buffs.unerring_proficiency->check_stack_value();
+
+    return am;
   }
 };
 
@@ -7383,6 +7418,12 @@ void mage_t::create_buffs()
                                   ->set_trigger_spell( talents.severe_temperatures );
 
 
+  // Spellslinger
+  buffs.unerring_proficiency = make_buff( this, "unerring_proficiency", find_spell( specialization() == MAGE_FROST ? 444976 : 444981 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_chance( talents.unerring_proficiency.ok() );
+
+
   // Shared
   buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
   buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this );
@@ -8279,9 +8320,12 @@ void mage_t::trigger_splinter( player_t* target, int count )
       t = tl[ rng().range( tl.size() ) ];
     }
 
-    action.splinter->execute_on_target( t );
-    if ( ( buffs.icy_veins->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) )
+    int per_conjure = ( buffs.icy_veins->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
+    for ( int j = 0; j < per_conjure; j++ )
+    {
       action.splinter->execute_on_target( t );
+      buffs.unerring_proficiency->trigger();
+    }
   }
 }
 
