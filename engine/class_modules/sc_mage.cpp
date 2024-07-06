@@ -974,7 +974,7 @@ public:
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_merged_buff( buff_t* buff, bool trigger );
-  void trigger_splinter( int count = -1 );
+  void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
   void update_from_the_ashes();
@@ -2034,7 +2034,7 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     p()->buffs.nether_precision->decrement();
     p()->buffs.leydrinker->trigger();
-    p()->trigger_splinter();
+    p()->trigger_splinter( p()->target );
   }
 };
 
@@ -2613,7 +2613,7 @@ struct frost_mage_spell_t : public mage_spell_t
         if ( consumes_winters_chill && td->debuffs.winters_chill->check() )
         {
           td->debuffs.winters_chill->decrement();
-          p()->trigger_splinter();
+          p()->trigger_splinter( p()->target );
 
           proc_winters_chill_consumed->occur();
           p()->procs.winters_chill_consumed->occur();
@@ -3530,6 +3530,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    p()->trigger_splinter( target, as<int>( p()->talents.augury_abounds->effectN( 1 ).base_value() ) );
+
     // Clear any existing surge buffs to trigger the T30 4pc buff.
     p()->buffs.arcane_surge->expire();
     p()->buffs.arcane_surge->trigger();
@@ -3814,7 +3816,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
       // One of the two WC stacks gets instantly consumed (without enabling shatter),
       // which does trigger Splintering Sorcery.
       trigger_winters_chill( s, 1 );
-      p()->trigger_splinter();
+      p()->trigger_splinter( p()->target );
     }
   }
 };
@@ -5034,6 +5036,8 @@ struct icy_veins_t final : public frost_mage_spell_t
 
   void execute() override
   {
+    p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 1 ).base_value() ) );
+
     frost_mage_spell_t::execute();
 
     p()->buffs.frigid_empowerment->expire();
@@ -8134,21 +8138,36 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
   }
 }
 
-void mage_t::trigger_splinter( int count )
+// If the target isn't specified, picks a random target.
+void mage_t::trigger_splinter( player_t* target, int count )
 {
-  if ( !talents.splintering_sorcery.ok() )
+  if ( !talents.splintering_sorcery.ok() || count == 0 )
+    return;
+
+  // Splinters don't fire if the target isn't a valid enemy
+  if ( target && ( !target->is_enemy() || target->is_sleeping() ) )
+    return;
+
+  if ( !target && sim->target_non_sleeping_list.empty() )
     return;
 
   if ( count < 0 )
     count = specialization() == MAGE_FROST ? 1 : as<int>( talents.splintering_sorcery->effectN( 2 ).base_value() );
 
-  // Splinters don't fire if the Mage's target isn't a valid enemy
-  // TODO: add support for random targets
-  if ( !target || target->is_sleeping() )
-    return;
-
+  double chance = talents.augury_abounds->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
-    action.splinter->execute_on_target( target );
+  {
+    player_t* t = target;
+    if ( !t )
+    {
+      const auto& tl = sim->target_non_sleeping_list;
+      t = tl[ rng().range( tl.size() ) ];
+    }
+
+    action.splinter->execute_on_target( t );
+    if ( ( buffs.icy_veins->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) )
+      action.splinter->execute_on_target( t );
+  }
 }
 
 bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
