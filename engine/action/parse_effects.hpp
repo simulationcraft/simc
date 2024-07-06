@@ -213,6 +213,10 @@ struct pack_t
 };
 
 template <typename U>
+static inline bool has_parse_entry( std::vector<U>& vec, const spelleffect_data_t* eff )
+{ return !eff->ok() || range::contains( vec, eff, &U::eff ); }
+
+template <typename U>
 static inline U& add_parse_entry( std::vector<U>& vec ) { return vec.emplace_back(); }
 
 // input interface framework
