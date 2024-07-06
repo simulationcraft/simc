@@ -594,6 +594,8 @@ using namespace helpers;
     {
       triggers.shadow_invocation_direct = true;
 
+      base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+
       if ( demonology() )
       {
         energize_type = action_energize::ON_CAST;
@@ -1125,7 +1127,11 @@ using namespace helpers;
 
     drain_soul_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
-    { channeled = true; }
+    {
+      channeled = true;
+
+      base_td_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 3 ).percent();
+    }
 
     action_state_t* new_state() override
     { return new drain_soul_state_t( this, target ); }
@@ -2118,6 +2124,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
+
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); // TOCHECK: Does this apply in-game correctly?
       }
 
       void init() override
@@ -2192,6 +2200,8 @@ using namespace helpers;
       affected_by.havoc = true;
 
       add_child( fnb_action );
+
+      base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
     double execute_time_pct_multiplier() const override
