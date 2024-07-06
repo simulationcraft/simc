@@ -322,6 +322,8 @@ double warlock_t::composite_spell_crit_chance() const
 {
   double m = player_t::composite_spell_crit_chance();
 
+  m += talents.demonic_tactics->effectN( 1 ).percent();
+
   if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
     m += talents.backlash->effectN( 1 ).percent();
 
@@ -334,6 +336,24 @@ double warlock_t::composite_melee_crit_chance() const
 
   if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
     m += talents.backlash->effectN( 1 ).percent();
+
+  return m;
+}
+
+double warlock_t::composite_rating_multiplier( rating_e r ) const
+{
+  double m = player_t::composite_rating_multiplier( r );
+
+  switch ( r )
+  {
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+    case RATING_SPELL_CRIT:
+      m *= 1.0 + talents.demonic_tactics->effectN( 2 ).percent();
+      break;
+    default:
+      break;
+  }
 
   return m;
 }

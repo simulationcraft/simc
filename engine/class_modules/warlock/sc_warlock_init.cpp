@@ -72,6 +72,8 @@ namespace warlock
 
     talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
 
+    talents.demonic_tactics = find_talent_spell( talent_tree::CLASS, "Demonic Tactics" ); // Should be ID 452894
+
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
     talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
