@@ -200,36 +200,6 @@ void sorttable_help_header( report::sc_html_stream& os, std::string_view header,
   sorttable_header( os, header, flag, helptext );
 }
 
-void print_distribution_chart( report::sc_html_stream& os,    // output stream to html report
-                               const player_t& p,             // player
-                               extended_sample_data_t* data,  // pointer to specific data object
-                               std::string_view name,       // name of the bucket (util::encode_html() first!).
-                               std::string_view token,      // tokenized name used for chart & toggle ID
-                               std::string_view suffix,     // tokenized data name, i.e. "_count"
-                               bool time_element = false )    // true for time based elements like interval
-{
-  bool percent = data->mean() < 1.0 && data->min() < 1.0 && data->max() < 1.0;
-
-  highchart::histogram_chart_t chart( fmt::format("{}{}", token, suffix ), *p.sim );
-  if ( chart::generate_distribution( chart, nullptr, data->distribution, fmt::format("{} {}", name, data->name_str ),
-                                     data->mean(), data->min(), data->max(), percent ) )
-  {
-    chart.set_toggle_id( fmt::format("{}_toggle", token ) );
-    if ( time_element )
-    {
-      chart.set( "xAxis.labels.format", "{value}s" );
-      chart.set( "yAxis.title.text", "# Occurances" );
-      chart.set( "series.0.name", "Occurances" );
-    }
-    else if ( percent )
-    {
-      chart.set( "xAxis.labels.format", "{value}%" );
-    }
-    os << chart.to_target_div();
-    p.sim->add_chart_data( chart );
-  }
-}
-
 std::string output_action_name( const stats_t& s, const player_t* actor, bool simple )
 {
   std::string class_attr;
@@ -4505,10 +4475,10 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
            << "<td colspan=\"" << columns << "\">\n";
 
         if ( show_count )
-          print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
+          report_helper::print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
 
         if ( show_interval )
-          print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
+          report_helper::print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
 
         os << "</td>\n"
            << "</tr>\n";
@@ -4577,10 +4547,10 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
          << "<td colspan=\"" << columns << "\">\n";
 
       if ( show_uptime )
-        print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
+        report_helper::print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
 
       if ( show_duration )
-        print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
+        report_helper::print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
 
       os << "</td>\n"
          << "</tr>\n";
@@ -4630,10 +4600,10 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
            << "<td colspan=\"" << columns << "\">\n";
 
         if ( show_uptime )
-          print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
+          report_helper::print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
 
         if ( show_duration )
-          print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
+          report_helper::print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
 
         os << "</td>\n"
            << "</tr>\n";
@@ -4690,7 +4660,7 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
       os << "<tr class=\"details hide\">\n"
          << "<td colspan=\"" << columns << "\">\n";
 
-      print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
+      report_helper::print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
 
       os << "</td>\n"
          << "</tr>\n";
@@ -4732,7 +4702,7 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
         os << "<tr class=\"details hide\">\n"
            << "<td colspan=\"" << columns << "\">\n";
 
-        print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
+        report_helper::print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
 
         os << "</td>\n"
            << "</tr>\n";

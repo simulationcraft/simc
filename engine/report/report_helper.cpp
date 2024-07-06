@@ -756,3 +756,37 @@ void report_helper::print_html_sample_data( report::sc_html_stream& os, const pl
      << "</tr>\n"
      << "</tbody>\n";
 }
+
+void report_helper::print_distribution_chart( report::sc_html_stream& os,    // output stream to html report
+                                              const player_t& p,             // player
+                                              extended_sample_data_t* data,  // pointer to specific data object
+                                              std::string_view name,         // name of the bucket (util::encode_html() first!).
+                                              std::string_view token,        // tokenized name used for chart & toggle ID
+                                              std::string_view suffix,       // tokenized data name, i.e. "_count"
+                                              bool time_element )            // true for time based elements like interval
+{
+  bool percent = data->mean() < 1.0 && data->min() < 1.0 && data->max() < 1.0;
+
+  highchart::histogram_chart_t chart( fmt::format( "{}{}", token, suffix ), *p.sim );
+
+  if ( chart::generate_distribution( chart, nullptr, data->distribution, fmt::format( "{} {}", name, data->name_str ),
+                                     data->mean(), data->min(), data->max(), percent ) )
+  {
+    chart.set_toggle_id( fmt::format( "{}_toggle", token ) );
+
+    if ( time_element )
+    {
+      chart.set( "xAxis.labels.format", "{value}s" );
+      chart.set( "yAxis.title.text", "# Occurances" );
+      chart.set( "series.0.name", "Occurances" );
+    }
+    else if ( percent )
+    {
+      chart.set( "xAxis.labels.format", "{value}%" );
+    }
+
+    os << chart.to_target_div();
+
+    p.sim->add_chart_data( chart );
+  }
+}

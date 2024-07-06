@@ -40,11 +40,13 @@ void generate_player_buff_lists( player_t&, player_processed_report_information_
 std::vector<std::string> beta_warnings();
 std::string pretty_spell_text( const spell_data_t& default_spell, const std::string& text, const player_t& p );
 inline std::string pretty_spell_text( const spell_data_t& default_spell, const char* text, const player_t& p )
-{
-  return text ? pretty_spell_text( default_spell, std::string( text ), p ) : std::string();
-}
+{ return text ? pretty_spell_text( default_spell, std::string( text ), p ) : std::string(); }
 
 bool check_gear( player_t& p, sim_t& sim );
+
+void print_distribution_chart( report::sc_html_stream& os, const player_t& p, extended_sample_data_t* data,
+                               std::string_view name, std::string_view token, std::string_view suffix,
+                               bool time_element = false );
 
 }  // namespace report_helper
 
