@@ -237,6 +237,9 @@ public:
   // Time Manipulation
   std::vector<cooldown_t*> time_manipulation_cooldowns;
 
+  // Splinters
+  std::vector<dot_t*> embedded_splinters;
+
   // Events
   struct events_t
   {
@@ -245,6 +248,7 @@ public:
     event_t* from_the_ashes;
     event_t* icicle;
     event_t* merged_buff_execute;
+    event_t* splinterstorm;
     event_t* time_anomaly;
   } events;
 
@@ -284,6 +288,9 @@ public:
     action_t* shattered_ice;
     action_t* spellfrost_arcane_orb;
     action_t* splinter;
+    action_t* splinter_dot;
+    action_t* splinter_recall;
+    action_t* splinterstorm;
     action_t* touch_of_the_magi_explosion;
     action_t* volatile_magic;
 
@@ -1848,6 +1855,19 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
+  void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
+  {
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    auto wc = get_td( s->target )->debuffs.winters_chill;
+    if ( stacks < 0 )
+      stacks = wc->max_stack();
+    wc->trigger( stacks );
+    for ( int i = 0; i < stacks; i++ )
+      p()->procs.winters_chill_applied->occur();
+  }
+
   void trigger_tracking_buff( buff_t* counter, buff_t* ready, int offset = 1, int stacks = 1 )
   {
     if ( ready->check() )
@@ -2642,19 +2662,6 @@ struct frost_mage_spell_t : public mage_spell_t
     p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Frostbite only has the initial grace period
-  }
-
-  void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
-  {
-    if ( !result_is_hit( s->result ) )
-      return;
-
-    auto wc = get_td( s->target )->debuffs.winters_chill;
-    if ( stacks < 0 )
-      stacks = wc->max_stack();
-    wc->trigger( stacks );
-    for ( int i = 0; i < stacks; i++ )
-      p()->procs.winters_chill_applied->occur();
   }
 
   void trigger_cold_front( int stacks = 1 )
@@ -6127,6 +6134,16 @@ struct controlled_instincts_t final : public spell_t
   }
 };
 
+struct splinter_recall_t final : public spell_t
+{
+  splinter_recall_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443934 : 444736 ) )
+  {
+    background = true;
+    base_dd_min = base_dd_max = 1.0;
+  }
+};
+
 struct embedded_splinter_t final : public mage_spell_t
 {
   embedded_splinter_t( std::string_view n, mage_t* p ) :
@@ -6157,6 +6174,9 @@ struct embedded_splinter_t final : public mage_spell_t
     mage_spell_t::trigger_dot( s );
     int after = d->current_stack();
 
+    if ( !range::contains( p()->embedded_splinters, d ) )
+      p()->embedded_splinters.push_back( d );
+
     p()->state.embedded_splinters += after - before;
     sim->print_debug( "Embedded Splinters: {} (added {})", p()->state.embedded_splinters, after - before );
   }
@@ -6165,6 +6185,8 @@ struct embedded_splinter_t final : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
     int stack = d->current_stack();
+
+    range::erase_remove( p()->embedded_splinters, d );
 
     p()->state.embedded_splinters -= stack;
     sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
@@ -6180,23 +6202,40 @@ struct embedded_splinter_t final : public mage_spell_t
 
 struct splinter_t final : public mage_spell_t
 {
+  const bool splinterstorm;
   action_t* controlled_instincts = nullptr;
 
-  splinter_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443722 : 443763 ) )
+  static unsigned spell_id( specialization_e spec, bool splinterstorm )
+  {
+    if ( spec == MAGE_FROST )
+      return splinterstorm ? 443747 : 443722;
+    else
+      return splinterstorm ? 444713 : 443763;
+  }
+
+  splinter_t( std::string_view n, mage_t* p, bool splinterstorm_ = false ) :
+    mage_spell_t( n, p, p->find_spell( spell_id( p->specialization(), splinterstorm_ ) ) ),
+    splinterstorm( splinterstorm_ )
   {
     background = true;
-    impact_action = get_action<embedded_splinter_t>( p->specialization() == MAGE_FROST ? "embedded_frost_splinter" : "embedded_arcane_splinter", p );
-    add_child( impact_action );
 
     if ( p->talents.controlled_instincts.ok() )
-    {
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
-      add_child( controlled_instincts );
-    }
 
+    if ( splinterstorm )
+      return;
+
+    impact_action = p->action.splinter_dot;
+    add_child( impact_action );
+
+    if ( controlled_instincts )
+      add_child( controlled_instincts );
     if ( p->action.volatile_magic )
       add_child( p->action.volatile_magic );
+    if ( p->action.splinter_recall )
+      add_child( p->action.splinter_recall );
+    if ( p->action.splinterstorm )
+      add_child( p->action.splinterstorm );
   }
 
   double action_multiplier() const
@@ -6241,6 +6280,9 @@ struct splinter_t final : public mage_spell_t
         p()->buffs.spellfrost_teachings->trigger();
       }
     }
+
+    if ( splinterstorm && p()->specialization() == MAGE_FROST )
+      trigger_winters_chill( s );
   }
 };
 
@@ -6565,8 +6607,54 @@ struct time_anomaly_tick_event_t final : public mage_event_t
       }
     }
 
-    mage->events.time_anomaly = make_event<events::time_anomaly_tick_event_t>(
+    mage->events.time_anomaly = make_event<time_anomaly_tick_event_t>(
       sim(), *mage, mage->talents.time_anomaly->effectN( 1 ).period() );
+  }
+};
+
+struct splinterstorm_event_t final : public mage_event_t
+{
+  splinterstorm_event_t( mage_t& m, timespan_t delta_time ) :
+    mage_event_t( m, delta_time )
+  { }
+
+  const char* name() const override
+  { return "splinterstorm_event"; }
+
+  void execute() override
+  {
+    mage->events.splinterstorm = nullptr;
+
+    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy()
+      && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
+    {
+      int splinters = 0;
+      // Make a copy since dot_t::cancel will be modifying the original
+      std::vector<dot_t*> dots = mage->embedded_splinters;
+      for ( auto d : dots )
+      {
+        assert( d->is_ticking() );
+
+        // calculate_tick_amount destructively modifies the state, make a copy and exclude crit damage
+        auto new_state = d->current_action->get_state( d->state );
+        new_state->result = RESULT_HIT;
+        double tick_damage = d->current_action->calculate_tick_amount( new_state, d->current_stack() );
+        action_state_t::release( new_state );
+
+        double ticks_left = d->ticks_left_fractional();
+        mage->action.splinter_recall->execute_on_target( d->target, ticks_left * tick_damage );
+        splinters += d->current_stack();
+        d->cancel();
+      }
+      assert( mage->state.embedded_splinters == 0 );
+      assert( mage->embedded_splinters.empty() );
+
+      mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 3 ).percent(), 0_ms );
+      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t = mage->target ] { a->execute_on_target( t ); }, splinters );
+    }
+
+    mage->events.splinterstorm = make_event<splinterstorm_event_t>(
+      sim(), *mage, mage->talents.splinterstorm->effectN( 2 ).period() );
   }
 };
 
@@ -6804,12 +6892,21 @@ void mage_t::create_actions()
       action.isothermic_meteor = get_action<meteor_t>( "isothermic_meteor", this, "", meteor_type::ISOTHERMIC );
   }
 
-  // Create Volatile Magic before the splinters so that splinters can easily add_child
   if ( talents.volatile_magic.ok() )
     action.volatile_magic = get_action<volatile_magic_t>( "volatile_magic", this );
 
+  if ( talents.splinterstorm.ok() )
+  {
+    action.splinter_recall = get_action<splinter_recall_t>( "splinter_recall", this );
+    action.splinterstorm = get_action<splinter_t>( "splinterstorm", this, true );
+  }
+
+  // Create Splinters last so that the previous actions can be easily added as children
   if ( talents.splintering_sorcery.ok() )
+  {
+    action.splinter_dot = get_action<embedded_splinter_t>( specialization() == MAGE_FROST ? "embedded_frost_splinter" : "embedded_arcane_splinter", this );
     action.splinter = get_action<splinter_t>( specialization() == MAGE_FROST ? "frost_splinter" : "arcane_splinter", this );
+  }
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -7955,6 +8052,7 @@ void mage_t::reset()
 
   icicles.clear();
   buff_queue.clear();
+  embedded_splinters.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -7994,6 +8092,12 @@ void mage_t::arise()
   {
     timespan_t first_tick = rng().real() * talents.time_anomaly->effectN( 1 ).period();
     events.time_anomaly = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
+  }
+
+  if ( talents.splinterstorm.ok() )
+  {
+    timespan_t first_tick = rng().real() * talents.splinterstorm->effectN( 2 ).period();
+    events.splinterstorm = make_event<events::splinterstorm_event_t>( *sim, *this, first_tick );
   }
 }
 
@@ -8405,17 +8509,17 @@ void mage_t::trigger_splinter( player_t* target, int count )
   double chance = talents.augury_abounds->effectN( 2 ).percent();
   for ( int i = 0; i < count; i++ )
   {
-    player_t* t = target;
-    if ( !t )
+    player_t* t_ = target;
+    if ( !t_ )
     {
       const auto& tl = sim->target_non_sleeping_list;
-      t = tl[ rng().range( tl.size() ) ];
+      t_ = tl[ rng().range( tl.size() ) ];
     }
 
     int per_conjure = ( buffs.icy_veins->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
-      action.splinter->execute_on_target( t );
+      make_event( sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
       buffs.unerring_proficiency->trigger();
     }
   }
