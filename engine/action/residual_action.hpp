@@ -42,14 +42,8 @@ public:
   using base_t = residual_periodic_action_t;
   using residual_action_t = residual_periodic_action_t<Base>;
 
-  template <typename T>
-  residual_periodic_action_t( util::string_view n, T& p, const spell_data_t* s ) : ab( n, p, s )
-  {
-    initialize_();
-  }
-
-  template <typename T>
-  residual_periodic_action_t( util::string_view n, T* p, const spell_data_t* s ) : ab( n, p, s )
+  template <class... Args>
+  residual_periodic_action_t( Args &&...args ) : ab( std::forward<Args>( args )... )
   {
     initialize_();
   }
