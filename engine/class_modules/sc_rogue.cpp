@@ -4693,6 +4693,9 @@ struct eviscerate_t : public rogue_attack_t
     {
       return as<double>( last_eviscerate_cp );
     }
+
+    bool procs_nimble_flurry() const override
+    { return true; }
   };
 
   struct shadow_eviscerate_t : public rogue_attack_t
@@ -4796,7 +4799,7 @@ struct eviscerate_t : public rogue_attack_t
   { return true; }
 
   bool procs_nimble_flurry() const override
-  { return true; } // ALPHA TOCHECK -- Does this apply to Shadowed Finishers?
+  { return true; }
 };
 
 // Fan of Knives ============================================================
@@ -7535,6 +7538,10 @@ struct nimble_flurry_t : public rogue_attack_t
     range::erase_remove( tl, target ); // Cannot hit the primary target
     return tl.size();
   }
+
+  // ALPHA TOCHECK -- Currently not triggering, but probably should?
+  bool procs_shadow_blades_damage() const override
+  { return false; }
 };
 
 // TWW1 Set Bonus ===========================================================
