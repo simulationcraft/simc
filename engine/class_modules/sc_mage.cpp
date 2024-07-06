@@ -6628,11 +6628,11 @@ struct splinterstorm_event_t final : public mage_event_t
     if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy()
       && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
     {
+      int splinters_state = mage->state.embedded_splinters;
       int splinters = 0;
-      // Make a copy since dot_t::cancel will be modifying the original
-      std::vector<dot_t*> dots = mage->embedded_splinters;
-      for ( auto d : dots )
+      while ( !mage->embedded_splinters.empty() )
       {
+        dot_t* d = mage->embedded_splinters.back();
         assert( d->is_ticking() );
 
         // calculate_tick_amount destructively modifies the state, make a copy and exclude crit damage
@@ -6648,6 +6648,7 @@ struct splinterstorm_event_t final : public mage_event_t
       }
       assert( mage->state.embedded_splinters == 0 );
       assert( mage->embedded_splinters.empty() );
+      assert( splinters == splinters_state );
 
       mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 3 ).percent(), 0_ms );
       make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t = mage->target ] { a->execute_on_target( t ); }, splinters );
