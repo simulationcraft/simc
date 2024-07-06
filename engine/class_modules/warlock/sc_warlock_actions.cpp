@@ -590,7 +590,7 @@ using namespace helpers;
   struct shadow_bolt_t : public warlock_spell_t
   {
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul_dot->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
+      : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul->ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
       triggers.shadow_invocation_direct = true;
 
@@ -806,10 +806,9 @@ using namespace helpers;
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
       malefic_rapture_damage_t( warlock_t* p )
-        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->talents.malefic_rapture_dmg )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg )
       {
         background = dual = true;
-        spell_power_mod.direct = p->talents.malefic_rapture->effectN( 1 ).sp_coeff();
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
       }
 
@@ -838,7 +837,7 @@ using namespace helpers;
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Malefic Rapture", p, p->talents.malefic_rapture, options_str )
+      : warlock_spell_t( "Malefic Rapture", p, p->warlock_base.malefic_rapture, options_str )
     {
       aoe = -1;
 
@@ -1419,6 +1418,15 @@ using namespace helpers;
       timespan_t travel_time() const override
       { return meteor_time; }
 
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        m *= shards_used;
+
+        return m;
+      }
+
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -1479,12 +1487,11 @@ using namespace helpers;
     {
       warlock_spell_t::consume_resource();
 
-      if ( last_resource_cost == 1.0 )
-        p()->procs.one_shard_hog->occur();
-      if ( last_resource_cost == 2.0 )
-        p()->procs.two_shard_hog->occur();
-      if ( last_resource_cost == 3.0 )
-        p()->procs.three_shard_hog->occur();
+      int lrc = as<int>( last_resource_cost ) - 1;
+
+      assert( lrc < as<int>( p()->procs.hand_of_guldan_shards.size() ) && "The procs.hand_of_guldan_shards array needs to be expanded." );
+
+      p()->procs.hand_of_guldan_shards[ lrc ]->occur();
     }
 
     void impact( action_state_t* s ) override
@@ -2265,8 +2272,6 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        // TOCHECK: Is this necessary?
-        spell_power_mod.tick = p->warlock_base.immolate_dot->effectN( 1 ).sp_coeff();
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
       }
 
@@ -2274,7 +2279,7 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate->effectN( 2 ).percent() ) )
+        if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate_old->effectN( 2 ).percent() ) )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
@@ -2285,7 +2290,7 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate, options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -2344,7 +2349,7 @@ using namespace helpers;
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str )
+      : warlock_spell_t( "Chaos Bolt", p, p->warlock_base.chaos_bolt, options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;

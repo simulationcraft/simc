@@ -265,7 +265,12 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
-    m *= 1.0 + cache.mastery_value();
+    
+    // Renormalize to use the guardian effect when appropriate, in case the values are ever different
+    if ( !guardian )
+      m *= 1.0 + cache.mastery_value();
+    else
+      m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )

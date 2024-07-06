@@ -26,6 +26,8 @@ namespace warlock
     warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
     warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
     warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
+    warlock_base.malefic_rapture = find_specialization_spell( "Malefic Rapture", WARLOCK_AFFLICTION ); // Should be ID 324536
+    warlock_base.malefic_rapture_dmg = find_spell( 324540 );
     warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
     warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
@@ -34,16 +36,16 @@ namespace warlock
     warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
     warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
     warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-    warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
-    warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
     warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
     // Destruction
-    warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
+    warlock_base.immolate = find_specialization_spell( "Immolate" ); // Should be ID 193541
+    warlock_base.immolate_old = find_spell( 348 ); // This contains the actual direct damage and cast data, but no longer appears in class_spell list
     warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
-    warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
+    warlock_base.incinerate = find_spell( 29722 ); // Should be ID 29722 TODO: 2024-07-05 this spell was missing from the non-PTR class spell list. Fix once this comes back
     warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
+    warlock_base.chaos_bolt = find_specialization_spell( "Chaos Bolt" ); // Should be ID 116858
     warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
     warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock", WARLOCK_DESTRUCTION ); // Should be ID 137046
 
@@ -78,9 +80,6 @@ namespace warlock
   void warlock_t::init_spells_affliction()
   {
     // Talents
-    talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" ); // Should be ID 324536
-    talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
-
     talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
     talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
     talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
@@ -237,8 +236,6 @@ namespace warlock
   void warlock_t::init_spells_destruction()
   {
     // Talents
-    talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
-
     talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
     talents.conflagrate_2 = find_spell( 245330 );
 
@@ -576,9 +573,6 @@ namespace warlock
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_procs_destruction();
 
-    procs.one_shard_hog = get_proc( "one_shard_hog" );
-    procs.two_shard_hog = get_proc( "two_shard_hog" );
-    procs.three_shard_hog = get_proc( "three_shard_hog" );
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
@@ -609,6 +603,11 @@ namespace warlock
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+
+    for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
+    {
+      procs.hand_of_guldan_shards[ i ] = get_proc( fmt::format( "Hand of Gul'dan {}", i + 1 ) );
+    }
   }
 
   void warlock_t::init_procs_destruction()

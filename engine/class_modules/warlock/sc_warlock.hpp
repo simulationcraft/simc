@@ -101,9 +101,10 @@ public:
 
     // Affliction
     const spell_data_t* agony;
-    const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks TODO: Check if needed in TWW
+    const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
     const spell_data_t* xavian_teachings; // Passive granted only to Affliction. Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
-    const spell_data_t* malefic_rapture; // TODO: Move from talent section
+    const spell_data_t* malefic_rapture; // This contains an old sp_coeff value, but it is most likely no longer in use
+    const spell_data_t* malefic_rapture_dmg;
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -112,13 +113,12 @@ public:
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
-    const spell_data_t* demonic_core; // The passive responsible for the proc chance. TODO: Move to talents (if not done already)
-    const spell_data_t* demonic_core_buff; // Buff spell data TODO: Move to talents (if not done already)
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
     const spell_data_t* demonology_warlock; // Spec aura
 
     // Destruction
     const spell_data_t* immolate; // Replaces Corruption
+    const spell_data_t* immolate_old; // For some reason, the spellbook spell is now a new spell, but it points to this old one
     const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
     const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
@@ -169,8 +169,6 @@ public:
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Affliction
-    player_talent_t malefic_rapture; // TODO: Move to base section
-    const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
     player_talent_t unstable_affliction; // TODO: Check if higher ranks are still separate spell data
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (learned automatically)
     const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (learned automatically)
@@ -309,7 +307,6 @@ public:
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
 
     // Destruction
-    player_talent_t chaos_bolt; // TODO: Move to base section
     player_talent_t conflagrate; // Base 2 charges
     const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
 
@@ -566,6 +563,7 @@ public:
     proc_t* one_shard_hog; // TODO: Switch to array like Malefic Rapture
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
+    std::array<proc_t*, 4> hand_of_guldan_shards;
     proc_t* carnivorous_stalkers;
     proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
     proc_t* imp_gang_boss;
