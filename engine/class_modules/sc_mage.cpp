@@ -2918,6 +2918,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
+    base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
 
     if ( p->talents.orb_barrage.ok() )
     {
@@ -3029,6 +3030,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
     cost_reductions = { p->buffs.concentration };
   }
