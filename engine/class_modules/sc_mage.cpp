@@ -6642,6 +6642,7 @@ struct splinterstorm_event_t final : public mage_event_t
         action_state_t::release( new_state );
 
         double ticks_left = d->ticks_left_fractional();
+        sim().print_debug( "Recalling splinter, tick damage: {}, remaining ticks: {}", tick_damage, ticks_left );
         mage->action.splinter_recall->execute_on_target( d->target, ticks_left * tick_damage );
         splinters += d->current_stack();
         d->cancel();
