@@ -6636,7 +6636,9 @@ void mage_t::create_pets()
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
   {
-    for ( int i = 0; i < as<int>( talents.mirror_image->effectN( 2 ).base_value() ); i++ )
+    int images = as<int>( talents.mirror_image->effectN( 2 ).base_value() );
+    images += as<int>( talents.phantasmal_image->effectN( 1 ).base_value() );
+    for ( int i = 0; i < images; i++ )
     {
       auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );
       if ( i > 0 )
