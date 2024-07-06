@@ -307,7 +307,6 @@ public:
     player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
 
     // Destruction
-    player_talent_t chaos_bolt; // TODO: Move to base section
     player_talent_t conflagrate; // Base 2 charges
     const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
 

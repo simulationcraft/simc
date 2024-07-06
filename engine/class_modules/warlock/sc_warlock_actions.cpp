@@ -2349,7 +2349,7 @@ using namespace helpers;
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str )
+      : warlock_spell_t( "Chaos Bolt", p, p->warlock_base.chaos_bolt, options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
