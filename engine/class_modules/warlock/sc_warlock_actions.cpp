@@ -924,6 +924,9 @@ using namespace helpers;
 
       dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
       dot_max_stack += as<int>( p->talents.writhe_in_agony->effectN( 1 ).base_value() ); // TOCHECK: Moved this from init(), is this ok?
+
+      base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
     }
 
     void last_tick ( dot_t* d ) override
@@ -2273,6 +2276,7 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
 
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
       }
 
       void tick( dot_t* d ) override
@@ -2299,6 +2303,7 @@ using namespace helpers;
       add_child( impact_action );
 
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override

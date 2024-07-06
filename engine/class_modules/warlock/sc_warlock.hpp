@@ -420,7 +420,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither;
+    player_talent_t wither; // TODO: Socrethar's Guile
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
