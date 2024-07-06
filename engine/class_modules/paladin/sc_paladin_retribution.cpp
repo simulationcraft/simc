@@ -1482,6 +1482,9 @@ void paladin_t::create_buffs_retribution()
 
 void paladin_t::init_rng_retribution()
 {
+  // TODO(mserrano): is this right? It looks right-ish from logs, but it's hard to say
+  rppm.radiant_glory = get_rppm( "radiant_glory", 1.0 );
+  rppm.judge_jury_and_executioner = get_rppm( "judge_jury_and_executioner", talents.judge_jury_and_executioner );
 }
 
 void paladin_t::init_spells_retribution()

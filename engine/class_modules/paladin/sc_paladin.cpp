@@ -2584,6 +2584,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       // TODO: verify this is right
       double mastery_chance = p()->cache.mastery_value() * 2;
+      if ( p()->talents.boundless_judgment->ok() )
+      {
+        // according to bolas this also increases HoW proc chance
+        mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+      }
+
       if ( rng().roll( mastery_chance ) )
       {
         p()->active.highlords_judgment->set_target( target );
@@ -3677,32 +3683,6 @@ void paladin_t::init_special_effects()
     auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );
     cb->initialize();
   }
-
-  if ( talents.judge_jury_and_executioner->ok() )
-  {
-    struct jje_cb_t : public dbc_proc_callback_t
-    {
-      paladin_t* p;
-
-      jje_cb_t( paladin_t* player, const special_effect_t& effect )
-        : dbc_proc_callback_t( player, effect ), p( player )
-      {
-      }
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        p->buffs.judge_jury_and_executioner->trigger();
-      }
-    };
-
-    auto const jje_driver = new special_effect_t( this );
-    jje_driver->name_str = "judge_jury_and_executioner_driver";
-    jje_driver->spell_id = talents.judge_jury_and_executioner->id();
-    special_effects.push_back( jje_driver );
-
-    auto cb = new jje_cb_t( this, *jje_driver );
-    cb->initialize();
-  }
 }
 
 void paladin_t::init_rng()
@@ -4364,6 +4344,16 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
       {
         holy_power_generators_used -= hpGensNeeded;
         buffs.blessing_of_dawn->trigger();
+      }
+    }
+    if ( !( source->name_str == "arcane_torrent" ) )
+    {
+      if ( talents.judge_jury_and_executioner->ok() )
+      {
+        if ( rppm.judge_jury_and_executioner->trigger() )
+        {
+          buffs.judge_jury_and_executioner->trigger();
+        }
       }
     }
   }

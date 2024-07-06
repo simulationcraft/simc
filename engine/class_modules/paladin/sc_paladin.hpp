@@ -431,6 +431,11 @@ public:
     const spell_data_t* highlords_judgment_hidden;
   } spells;
 
+  struct rppms_t {
+    real_ppm_t* radiant_glory;
+    real_ppm_t* judge_jury_and_executioner;
+  } rppm;
+
   // Talents
   struct talents_t
   {
@@ -1693,6 +1698,23 @@ public:
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3.0;
+
+    if ( p->talents.radiant_glory->ok() )
+    {
+      if ( p->rppm.radiant_glory->trigger() )
+      {
+        // TODO(mserrano): get this from spell data
+        if ( p->talents.crusade->ok() )
+        {
+          p->buffs.crusade->trigger( timespan_t::from_seconds( 5 ) );
+        }
+        else if ( p->talents.avenging_wrath->ok() )
+        {
+          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
+        }
+      }
+    }
+
     if ( p->talents.relentless_inquisitor->ok() )
       p->buffs.relentless_inquisitor->trigger();
 
