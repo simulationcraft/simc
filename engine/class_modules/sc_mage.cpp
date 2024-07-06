@@ -277,6 +277,7 @@ public:
     action_t* shattered_ice;
     action_t* splinter;
     action_t* touch_of_the_magi_explosion;
+    action_t* volatile_magic;
 
     struct icicles_t
     {
@@ -6000,6 +6001,27 @@ struct frostfire_empowerment_t final : public spell_t
   }
 };
 
+// TODO: Doesn't have the usual mage family flags, so it isn't affected by most mage effects
+struct volatile_magic_t final : public spell_t
+{
+  volatile_magic_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 444967 : 444966 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = p->talents.volatile_magic->effectN( 2 ).base_value();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    spell_t::available_targets( tl );
+
+    range::erase_remove( tl, target );
+
+    return tl.size();
+  }
+};
+
 struct controlled_instincts_t final : public spell_t
 {
   controlled_instincts_t( std::string_view n, mage_t* p ) :
@@ -6043,6 +6065,17 @@ struct embedded_splinter_t final : public mage_spell_t
 
     return am;
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    mage_spell_t::last_tick( d );
+
+    if ( p()->action.volatile_magic )
+    {
+      for ( int i = 0; i < d->current_stack(); i++ )
+        p()->action.volatile_magic->execute_on_target( d->target );
+    }
+  }
 };
 
 struct splinter_t final : public mage_spell_t
@@ -6061,6 +6094,9 @@ struct splinter_t final : public mage_spell_t
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
       add_child( controlled_instincts );
     }
+
+    if ( p->action.volatile_magic )
+      add_child( p->action.volatile_magic );
   }
 
   double action_multiplier() const
@@ -6649,6 +6685,10 @@ void mage_t::create_actions()
     if ( specialization() == MAGE_FROST )
       action.isothermic_meteor = get_action<meteor_t>( "isothermic_meteor", this, "", meteor_type::ISOTHERMIC );
   }
+
+  // Create Volatile Magic before the splinters so that splinters can easily add_child
+  if ( talents.volatile_magic.ok() )
+    action.volatile_magic = get_action<volatile_magic_t>( "volatile_magic", this );
 
   if ( talents.splintering_sorcery.ok() )
     action.splinter = get_action<splinter_t>( specialization() == MAGE_FROST ? "frost_splinter" : "arcane_splinter", this );
