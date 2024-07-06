@@ -317,6 +317,9 @@ struct eclipse_handler_t
 struct convoke_counter_t
 {
   std::unordered_map<action_t*, extended_sample_data_t> data;
+  player_t& p;
+
+  convoke_counter_t( player_t& player ) : p( player ) {}
 
   void analyze()
   {
@@ -346,12 +349,20 @@ struct convoke_counter_t
 
     for ( auto a : _list )
     {
-      const auto& sample = data.at( a );
+      auto& sample = data.at( a );
+      auto token = highchart::build_id( p, "_" + a->name_str + "_conv_counter" );
 
-      os.format(
-        R"(<tr><td class="left">{}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td>)",
-        report_decorators::decorated_action( *a ),
-        sample.mean(), sample.min(), sample.max(), sample.std_dev, sample.variance );
+      os.format( R"(<tbody><tr><td class="left"><span id="{}_toggle" class="toggle-details">{}</span></td>)",
+                 token, report_decorators::decorated_action( *a ) );
+
+      os.format( "<td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td>\n",
+                 sample.mean(), sample.min(), sample.max(), sample.std_dev, sample.variance );
+
+      os << R"(<tr class="details hide"><td colspan="6">)";
+
+      report_helper::print_distribution_chart( os, p, &sample, a->name_str, token, "_count" );
+
+      os << "</td></tr></tbody>\n";
     }
 
     os << "</table></div>\n";
@@ -8527,7 +8538,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
       return;
 
     if ( !p->convoke_counter )
-      p->convoke_counter = std::make_unique<convoke_counter_t>();
+      p->convoke_counter = std::make_unique<convoke_counter_t>( *p );
 
     channeled = true;
     harmful = may_miss = false;
