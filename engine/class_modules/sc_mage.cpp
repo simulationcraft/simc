@@ -535,6 +535,7 @@ public:
     bool trigger_dematerialize;
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
+    int embedded_splinters;
   } state;
 
   struct expression_support_t
@@ -6149,13 +6150,29 @@ struct embedded_splinter_t final : public mage_spell_t
     return am;
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    dot_t* d = get_dot( s->target );
+    int before = d->current_stack();
+    mage_spell_t::trigger_dot( s );
+    int after = d->current_stack();
+
+    p()->state.embedded_splinters += after - before;
+    sim->print_debug( "Embedded Splinters: {} (added {})", p()->state.embedded_splinters, after - before );
+  }
+
   void last_tick( dot_t* d ) override
   {
     mage_spell_t::last_tick( d );
+    int stack = d->current_stack();
+
+    p()->state.embedded_splinters -= stack;
+    sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
+    assert( p()->state.embedded_splinters >= 0 );
 
     if ( p()->action.volatile_magic )
     {
-      for ( int i = 0; i < d->current_stack(); i++ )
+      for ( int i = 0; i < stack; i++ )
         p()->action.volatile_magic->execute_on_target( d->target );
     }
   }
@@ -8146,6 +8163,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
 
       return t / ( t + expression_support.kindling_reduction );
     } );
+  }
+
+  if ( util::str_compare_ci( name, "embedded_splinters" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.embedded_splinters; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
