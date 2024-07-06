@@ -403,6 +403,7 @@ public:
     buff_t* forethought;
     buff_t* arcane_battery;
     buff_t* arcane_artillery;
+    buff_t* intuition;
 
     buff_t* calefaction;
     buff_t* flames_fury;
@@ -2910,6 +2911,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 {
   action_t* orb_barrage = nullptr;
   int snapshot_charges = -1;
+  int intuition_charges = 0;
 
   arcane_barrage_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) )
@@ -2919,6 +2921,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
+    intuition_charges = as<int>( p->find_spell( 455683 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
     {
@@ -2968,6 +2971,13 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->state.trigger_leydrinker = true;
     }
 
+    if ( p()->buffs.intuition->check() )
+    {
+      p()->buffs.intuition->expire();
+      p()->trigger_arcane_charge( intuition_charges );
+    }
+    p()->buffs.intuition->trigger();
+
     snapshot_charges = -1;
   }
 
@@ -2990,6 +3000,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
+    am *= 1.0 + p()->buffs.intuition->check_value();
 
     return am;
   }
@@ -3093,6 +3104,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
+
+    p()->buffs.intuition->trigger();
   }
 
   double action_multiplier() const override
@@ -7636,6 +7649,9 @@ void mage_t::create_buffs()
                              ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B4 ) );
   buffs.arcane_artillery = make_buff( this, "arcane_artillery", find_spell( 424331 ) )
                              ->set_default_value_from_effect( 1 );
+  buffs.intuition        = make_buff( this, "intuition", find_spell( 455681 ) )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
   buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
                          ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
