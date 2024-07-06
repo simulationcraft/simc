@@ -274,6 +274,7 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
+    action_t* splinter;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -973,6 +974,7 @@ public:
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_merged_buff( buff_t* buff, bool trigger );
+  void trigger_splinter( int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
   void update_from_the_ashes();
@@ -2032,6 +2034,7 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     p()->buffs.nether_precision->decrement();
     p()->buffs.leydrinker->trigger();
+    p()->trigger_splinter();
   }
 };
 
@@ -2610,6 +2613,8 @@ struct frost_mage_spell_t : public mage_spell_t
         if ( consumes_winters_chill && td->debuffs.winters_chill->check() )
         {
           td->debuffs.winters_chill->decrement();
+          p()->trigger_splinter();
+
           proc_winters_chill_consumed->occur();
           p()->procs.winters_chill_consumed->occur();
         }
@@ -3804,10 +3809,13 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     if ( p()->talents.freezing_cold.ok() )
       p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Freezing Cold only has the initial grace period
 
-    // Cone of Cold currently consumes its own Winter's Chill without benefiting
-    // TODO: this actually triggers splinters for spellslinger frost
     if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
-      trigger_winters_chill( s, p()->bugs ? 1 : -1 );
+    {
+      // One of the two WC stacks gets instantly consumed (without enabling shatter),
+      // which does trigger Splintering Sorcery.
+      trigger_winters_chill( s, 1 );
+      p()->trigger_splinter();
+    }
   }
 };
 
@@ -5964,6 +5972,51 @@ struct frostfire_empowerment_t final : public spell_t
   }
 };
 
+struct embedded_splinter_t final : public mage_spell_t
+{
+  embedded_splinter_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443740 : 444735 ) )
+  {
+    background = true;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration;
+  }
+
+  double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 6 ).mastery_value();
+    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 5 ).mastery_value();
+
+    return am;
+  }
+};
+
+struct splinter_t final : public mage_spell_t
+{
+  splinter_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443722 : 443763 ) )
+  {
+    background = true;
+    impact_action = get_action<embedded_splinter_t>( p->specialization() == MAGE_FROST ? "embedded_frost_splinter" : "embedded_arcane_splinter", p );
+    add_child( impact_action );
+  }
+
+  double action_multiplier() const
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 7 ).mastery_value();
+    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 4 ).mastery_value();
+
+    return am;
+  }
+};
+
 // ==========================================================================
 // Mage Custom Actions
 // ==========================================================================
@@ -6517,6 +6570,9 @@ void mage_t::create_actions()
     if ( specialization() == MAGE_FROST )
       action.isothermic_meteor = get_action<meteor_t>( "isothermic_meteor", this, "", meteor_type::ISOTHERMIC );
   }
+
+  if ( talents.splintering_sorcery.ok() )
+    action.splinter = get_action<splinter_t>( specialization() == MAGE_FROST ? "frost_splinter" : "arcane_splinter", this );
 
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
@@ -8076,6 +8132,23 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
     it->expire = true;
     it->stacks = 0;
   }
+}
+
+void mage_t::trigger_splinter( int count )
+{
+  if ( !talents.splintering_sorcery.ok() )
+    return;
+
+  if ( count < 0 )
+    count = specialization() == MAGE_FROST ? 1 : as<int>( talents.splintering_sorcery->effectN( 2 ).base_value() );
+
+  // Splinters don't fire if the Mage's target isn't a valid enemy
+  // TODO: add support for random targets
+  if ( !target || target->is_sleeping() )
+    return;
+
+  for ( int i = 0; i < count; i++ )
+    action.splinter->execute_on_target( target );
 }
 
 bool mage_t::trigger_clearcasting( double chance, timespan_t delay )
