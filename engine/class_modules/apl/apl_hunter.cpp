@@ -62,7 +62,6 @@ void beast_mastery( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
-  precombat->add_action( "steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap" );
 
   default_->add_action( "variable,name=cotw_ready,value=!raid_event.adds.exists&((!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready|trinket.1.cooldown.remains+cooldown.call_of_the_wild.duration+15>fight_remains)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready|trinket.2.cooldown.remains+cooldown.call_of_the_wild.duration+15>fight_remains)|fight_remains<cooldown.call_of_the_wild.duration+20)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25", "Determine if it is a good time to use Call of the Wild. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up with buff effect trinkets if it won't lose a usage." );
   default_->add_action( "auto_shot" );
@@ -88,7 +87,6 @@ void beast_mastery( player_t* p )
   st->add_action( "call_of_the_wild,if=variable.cotw_ready" );
   st->add_action( "kill_command" );
   st->add_action( "a_murder_of_crows" );
-  st->add_action( "steel_trap" );
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
@@ -96,7 +94,6 @@ void beast_mastery( player_t* p )
   st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
-  st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|target.time_to_die<5" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max" );
@@ -111,7 +108,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
-  cleave->add_action( "steel_trap" );
   cleave->add_action( "a_murder_of_crows" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
@@ -123,7 +119,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
-  cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|fight_remains<5" );
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
@@ -150,7 +145,6 @@ void beast_mastery_ptr( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "steel_trap,precast_time=1.5,if=!talent.wailing_arrow&talent.steel_trap" );
 
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
@@ -175,7 +169,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
-  cleave->add_action( "steel_trap" );
   cleave->add_action( "a_murder_of_crows" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
@@ -187,7 +180,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
-  cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|fight_remains<5" );
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
@@ -201,7 +193,6 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "call_of_the_wild" );
   st->add_action( "kill_command" );
   st->add_action( "a_murder_of_crows" );
-  st->add_action( "steel_trap" );
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
@@ -209,7 +200,6 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
-  st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time|target.time_to_die<5" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "arcane_torrent,if=(focus+focus.regen+15)<focus.max" );
@@ -243,7 +233,6 @@ void marksmanship( player_t* p )
   precombat->add_action( "salvo,precast_time=10" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
-  precombat->add_action( "wailing_arrow,if=active_enemies>2|!talent.steady_focus" );
   precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
 
   default_->add_action( "variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25)", "Determine if it is a good time to use Trueshot. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up buff effect trinkets, and when using Bullseye, delay the last usage of the fight for max stacks." );
@@ -270,15 +259,12 @@ void marksmanship( player_t* p )
   st->add_action( "explosive_shot" );
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
-  st->add_action( "wailing_arrow,if=active_enemies>1" );
   st->add_action( "rapid_fire,if=(talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time)&(focus+cast_regen<focus.max)" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave." );
   st->add_action( "aimed_shot,target_if=max:debuff.latent_poison.stack,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1", "Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line." );
-  st->add_action( "wailing_arrow,if=buff.trueshot.down" );
   st->add_action( "kill_command,if=buff.trueshot.down" );
-  st->add_action( "steel_trap" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -289,7 +275,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
-  trickshots->add_action( "wailing_arrow" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
@@ -301,7 +286,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
-  trickshots->add_action( "steel_trap,if=buff.trueshot.down" );
   trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -333,7 +317,6 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "salvo,precast_time=10" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
-  precombat->add_action( "wailing_arrow,if=active_enemies>2|!talent.steady_focus" );
   precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
 
   default_->add_action( "auto_shot" );
@@ -360,15 +343,12 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "explosive_shot" );
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
-  st->add_action( "wailing_arrow,if=active_enemies>1" );
   st->add_action( "rapid_fire,if=(talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time)&(focus+cast_regen<focus.max)" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave." );
   st->add_action( "aimed_shot,target_if=max:debuff.latent_poison.stack,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1", "Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line." );
-  st->add_action( "wailing_arrow,if=buff.trueshot.down" );
   st->add_action( "kill_command,if=buff.trueshot.down" );
-  st->add_action( "steel_trap" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -379,7 +359,6 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
-  trickshots->add_action( "wailing_arrow" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
@@ -391,7 +370,6 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
-  trickshots->add_action( "steel_trap,if=buff.trueshot.down" );
   trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -423,7 +401,6 @@ void survival( player_t* p )
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "steel_trap,precast_time=2" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.coordinated_assault&!talent.spearhead" );
@@ -466,7 +443,6 @@ void survival( player_t* p )
   cleave->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave->add_action( "carve" );
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
-  cleave->add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
   cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
@@ -498,7 +474,6 @@ void survival( player_t* p )
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&(!dot.wildfire_bomb.ticking&focus+cast_regen<focus.max|active_enemies>1)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
-  st->add_action( "steel_trap" );
   st->add_action( "explosive_shot,if=talent.ranger&(!raid_event.adds.exists|raid_event.adds.in>28)" );
   st->add_action( "fury_of_the_eagle,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   st->add_action( "mongoose_bite" );
@@ -524,7 +499,6 @@ void survival_ptr( player_t* p )
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "steel_trap,precast_time=2" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.coordinated_assault&!talent.spearhead" );
@@ -567,7 +541,6 @@ void survival_ptr( player_t* p )
   cleave->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave->add_action( "carve" );
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
-  cleave->add_action( "steel_trap,if=focus+cast_regen<focus.max" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
   cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
@@ -599,7 +572,6 @@ void survival_ptr( player_t* p )
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&(!dot.wildfire_bomb.ticking&focus+cast_regen<focus.max|active_enemies>1)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
-  st->add_action( "steel_trap" );
   st->add_action( "explosive_shot,if=talent.ranger&(!raid_event.adds.exists|raid_event.adds.in>28)" );
   st->add_action( "fury_of_the_eagle,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   st->add_action( "mongoose_bite" );
