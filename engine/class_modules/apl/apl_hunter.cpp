@@ -86,7 +86,6 @@ void beast_mastery( player_t* p )
   st->add_action( "death_chakram" );
   st->add_action( "call_of_the_wild,if=variable.cotw_ready" );
   st->add_action( "kill_command" );
-  st->add_action( "a_murder_of_crows" );
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
@@ -108,7 +107,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
-  cleave->add_action( "a_murder_of_crows" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
@@ -169,7 +167,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
-  cleave->add_action( "a_murder_of_crows" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
@@ -192,7 +189,6 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "death_chakram" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "kill_command" );
-  st->add_action( "a_murder_of_crows" );
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
