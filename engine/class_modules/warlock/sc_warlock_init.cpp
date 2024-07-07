@@ -119,7 +119,8 @@ namespace warlock
     talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
     talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
-    talents.shadow_embrace_debuff = find_spell( 32390 );
+    talents.shadow_embrace_debuff_ds = find_spell( 32390 );
+    talents.shadow_embrace_debuff_sb = find_spell( 453206 );
 
     talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 

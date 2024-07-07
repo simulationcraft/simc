@@ -33,8 +33,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       ->set_default_value_from_effect( 2 )
                       ->set_cooldown( 0_ms );
 
-  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
-                               ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
+  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.drain_soul.ok() ? p.talents.shadow_embrace_debuff_ds : p.talents.shadow_embrace_debuff_sb )
+                               ->set_default_value_from_effect( 1 );
 
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
                           ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )

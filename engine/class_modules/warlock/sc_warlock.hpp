@@ -199,8 +199,9 @@ public:
     const spell_data_t* vile_taint_dot; // DoT data
 
     player_talent_t haunt;
-    player_talent_t shadow_embrace; // TODO: Stack count is 2
-    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
+    player_talent_t shadow_embrace;
+    const spell_data_t* shadow_embrace_debuff_ds; // Drain Soul applies a debuff with 4 stacks, and a 2% base value
+    const spell_data_t* shadow_embrace_debuff_sb; // Shadow Bolt applies a debuff with 2 stacks, and a 4% base value
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
     player_talent_t summon_darkglare;
     player_talent_t cunning_cruelty; // TODO: New
