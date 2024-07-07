@@ -535,6 +535,7 @@ public:
     spell_data_ptr_t ferocity;
     spell_data_ptr_t energetic_ally;
     spell_data_ptr_t spear_focus;
+    spell_data_ptr_t steel_trap;
 
     //END OF DELETE THESE
 
@@ -549,20 +550,19 @@ public:
     spell_data_ptr_t muzzle; //NYI - TODO Tie up muzzle implementation with this talent
 
     spell_data_ptr_t lone_survivor; //NYI - Reduce the cooldown of Counter Shot and Muzzle by 2 seconds
-    spell_data_ptr_t specialized_arsenal; //NYI - Wildfire Bomb / Aimed Shot / Kill Command deal 10% increased damage. 
+    spell_data_ptr_t specialized_arsenal;
     spell_data_ptr_t disruptive_rounds; //NYI - When Counter Shot interrupts a cast, gain 10 focus. 
 
-    spell_data_ptr_t explosive_shot; //Verify functionality remains same
+    spell_data_ptr_t explosive_shot;
 
     spell_data_ptr_t bursting_shot; //Verify functionality remains same after move from Marksmanship tree
     spell_data_ptr_t scatter_shot; // NYI - 
     spell_data_ptr_t trigger_finger; //NYI - You have your pet have 2.5% increase attack speed. This effect is increased by 100% if you do not have a pet active.
-    spell_data_ptr_t steel_trap; //Verify functionality remains same
     spell_data_ptr_t keen_eyesight;
 
     spell_data_ptr_t quick_load; //NYI - When you fall below 40% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every 25 sec.
 
-    spell_data_ptr_t serrated_tips; //NYI - You gain 5% more critical strike from critical strike sources.
+    spell_data_ptr_t serrated_tips;
     spell_data_ptr_t born_to_be_wild;
     spell_data_ptr_t improved_traps;
 
@@ -920,6 +920,7 @@ public:
 
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
+  double    composite_rating_multiplier( rating_e ) const override;
   double    composite_melee_auto_attack_speed() const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
@@ -8144,6 +8145,26 @@ double hunter_t::composite_spell_crit_chance() const
   crit += buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 1 ).percent();
 
   return crit;
+}
+
+// hunter_t::composite_rating_multiplier ====================================
+
+double hunter_t::composite_rating_multiplier( rating_e r ) const
+{
+  double rm = player_t::composite_rating_multiplier( r );
+
+  switch ( r )
+  {
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+    case RATING_SPELL_CRIT:
+      rm *= 1.0 + talents.serrated_tips -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return rm;
 }
 
 // hunter_t::composite_melee_auto_attack_speed ==============================
