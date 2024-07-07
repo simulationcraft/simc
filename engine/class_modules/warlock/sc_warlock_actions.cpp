@@ -21,6 +21,8 @@ using namespace helpers;
       bool creeping_death = false;
       bool summoners_embrace_dd = false;
       bool summoners_embrace_td = false;
+      bool malediction = false;
+      bool contagion = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -60,6 +62,8 @@ using namespace helpers;
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
       affected_by.summoners_embrace_dd = data().affected_by( p->talents.summoners_embrace->effectN( 1 ) );
       affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
+      affected_by.malediction = data().affected_by( p->talents.malediction->effectN( 1 ) );
+      affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
@@ -182,6 +186,26 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
         p()->procs.shadow_invocation->occur();
       }
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = spell_t::composite_crit_chance();
+
+      if ( affliction() && affected_by.malediction )
+        c += p()->talents.malediction->effectN( 1 ).percent();
+
+      return c;
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      double m = spell_t::composite_crit_damage_bonus_multiplier();
+
+      if ( affliction() && affected_by.contagion )
+        m *= 1.0 + p()->talents.contagion->effectN( 1 ).percent();
+
+      return m;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -856,8 +880,11 @@ using namespace helpers;
   {
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
+      int target_count;
+
       malefic_rapture_damage_t( warlock_t* p )
-        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg ),
+        target_count( 0 )
       {
         background = dual = true;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
@@ -873,6 +900,9 @@ using namespace helpers;
 
         if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
+        if ( p()->talents.cull_the_weak.ok() )
+          m *= 1.0 + ( std::min( target_count, as<int>( p()->talents.cull_the_weak->effectN( 2 ).base_value() ) ) * p()->talents.cull_the_weak->effectN( 1 ).percent() );
 
         return m;
       }
@@ -932,6 +962,13 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      debug_cast<malefic_rapture_damage_t*>( impact_action )->target_count = as<int>( s->n_targets );
     }
 
     size_t available_targets( std::vector<player_t*>& tl )
@@ -1398,36 +1435,63 @@ using namespace helpers;
   {
     haunt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
-    { }
+    { base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent(); }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      if ( p()->talents.improved_haunt.ok() )
+        m *= 1.0 + p()->talents.improved_haunt->effectN( 2 ).percent();
+
+      return m;
+    }
 
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
+      {
         td( s->target )->debuffs_haunt->trigger();
+
+        if ( p()->talents.improved_haunt.ok() )
+          td( s->target )->debuffs_shadow_embrace->trigger();
+      }
     }
   };
 
+
+
   struct summon_darkglare_t : public warlock_spell_t
   {
+    struct malevolent_visionary_t : public warlock_spell_t
+    {
+      malevolent_visionary_t( warlock_t* p )
+        : warlock_spell_t( "Malevolent Visionary", p, p->talents.malevolent_visionary_blast )
+      { background = dual = true; }
+    };
+
+    malevolent_visionary_t* mal_vis;
+
     summon_darkglare_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare, options_str )
     {
       harmful = callbacks = true; // Set to true because of 10.1 class trinket
       may_crit = may_miss = false;
+
+      if ( p->talents.malevolent_visionary.ok() )
+      {
+        mal_vis = new malevolent_visionary_t( p );
+        add_child( mal_vis );
+      }
     }
 
     void execute() override
     {
       warlock_spell_t::execute();
 
-      timespan_t summon_duration = p()->talents.summon_darkglare->duration();
-
-      if ( p()->talents.malevolent_visionary.ok() )
-        summon_duration += p()->talents.malevolent_visionary->effectN( 2 ).time_value();
-
-      p()->warlock_pet_list.darkglares.spawn( summon_duration );
+      p()->warlock_pet_list.darkglares.spawn( p()->talents.summon_darkglare->duration() );
 
       timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
@@ -1450,6 +1514,9 @@ using namespace helpers;
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
         td->dots_soul_rot->adjust_duration( darkglare_extension );
+
+        if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
+          mal_vis->execute_on_target( target );
       }
     }
   };
