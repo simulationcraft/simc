@@ -204,6 +204,7 @@ public:
     const spell_data_t* shadow_embrace_debuff_sb; // Shadow Bolt applies a debuff with 2 stacks, and a 4% base value
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
     player_talent_t summon_darkglare;
+    const spell_data_t* eye_beam; // Darkglare pet ability
     player_talent_t cunning_cruelty; // TODO: New
     player_talent_t infirmity; // TODO: Move from tier sets
 
@@ -423,7 +424,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
