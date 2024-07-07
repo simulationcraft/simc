@@ -929,8 +929,22 @@ using namespace helpers;
     }
   };
 
+  struct volatile_agony_t : public warlock_spell_t
+  {
+    volatile_agony_t( warlock_t* p )
+      : warlock_spell_t( "Volatile Agony", p, p->talents.volatile_agony_aoe )
+    {
+      background = dual = true;
+      aoe = -1;
+
+      reduced_aoe_targets = p->talents.volatile_agony->effectN( 2 ).base_value();
+    }
+  };
+
   struct agony_t : public warlock_spell_t
   {
+    volatile_agony_t* vol_ag;
+
     agony_t( warlock_t* p, util::string_view options_str ) 
       : warlock_spell_t( "Agony", p, p->warlock_base.agony, options_str )
     {
@@ -941,6 +955,12 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
+
+      if ( p->talents.volatile_agony.ok() )
+      {
+        vol_ag = new volatile_agony_t( p );
+        add_child( vol_ag );
+      }
     }
 
     void last_tick ( dot_t* d ) override
@@ -962,6 +982,17 @@ using namespace helpers;
         if ( delta > 0 )
           td( execute_state->target )->dots_agony->increment( delta );
       }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( p()->talents.volatile_agony.ok() )
+      {
+        if( td(s->target)->dots_agony->is_ticking() && td( s->target )->dots_agony->remains() < timespan_t::from_seconds( p()->talents.volatile_agony->effectN( 1 ).base_value() ) )
+          vol_ag->execute_on_target( s->target );
+      }
+
+      warlock_spell_t::impact( s );
     }
 
     void tick( dot_t* d ) override
