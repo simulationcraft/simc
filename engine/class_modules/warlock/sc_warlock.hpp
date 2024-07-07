@@ -198,7 +198,7 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t haunt; // TODO: Shadow Embrace is applied by other talent
+    player_talent_t haunt;
     player_talent_t shadow_embrace; // TODO: Stack count is 2
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
