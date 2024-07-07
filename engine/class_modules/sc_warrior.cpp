@@ -1029,9 +1029,10 @@ public:
     parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     // Arms
-    // TODO fix this when I am back from vacation.  Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
+    // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
     // This one is for Blademaster's Torment, effect 8 is dynamically enabled
-    parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
+    // parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
+
     parse_effects( p()->buff.dance_of_death_bladestorm );
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
@@ -4156,7 +4157,7 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p()->buff.sweeping_strikes->trigger();
+    p()->buff.sweeping_strikes->extend_duration_or_trigger();
   }
 };
 
@@ -5593,7 +5594,7 @@ struct avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.blademasters_torment.ok() )
     {
-      p()->buff.sweeping_strikes->trigger();
+      p()->buff.sweeping_strikes->extend_duration_or_trigger( p()->talents.warrior.blademasters_torment->effectN( 1 ).time_value() );
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
@@ -7217,8 +7218,20 @@ void warrior_t::create_buffs()
       ->set_cooldown( timespan_t::zero() )
       ->apply_affecting_aura( talents.arms.spiteful_serenity )
       -> set_stack_change_callback(
-        [ this ]( buff_t*, int /*ol*/, int /*cur*/ ) {
+        [ this ]( buff_t*, int old_, int new_ ) {
           cooldown.thunder_clap -> adjust_recharge_multiplier();
+          //
+          if ( talents.warrior.blademasters_torment->ok() )
+          {
+            if ( old_ == 0 )  // Gained Avatar
+            {
+              cooldown.cleave->duration += talents.warrior.avatar->effectN( 8 ).time_value();
+            }
+            else if ( new_ == 0 )  // Lost Avatar
+            {
+              cooldown.cleave->duration -= talents.warrior.avatar->effectN( 8 ).time_value();
+            }
+          }
         } );
 
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
@@ -7328,8 +7341,7 @@ void warrior_t::create_buffs()
 
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
-    ->set_cooldown(timespan_t::zero())
-    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+    ->set_cooldown(timespan_t::zero());
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
