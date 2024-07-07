@@ -188,10 +188,10 @@ public:
     player_talent_t volatile_agony;
     const spell_data_t* volatile_agony_aoe;
 
-    player_talent_t improved_shadow_bolt; // TODO: New
+    player_talent_t improved_shadow_bolt;
     player_talent_t drain_soul; // This represents the talent node but not much else
-    const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
-    player_talent_t summoners_embrace; // TODO: New
+    const spell_data_t* drain_soul_dot; // Contains all channel data
+    player_talent_t summoners_embrace;
     // Grimoire of Sacrifice (shared with Destruction)
     player_talent_t phantom_singularity;
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
@@ -410,7 +410,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
