@@ -546,6 +546,7 @@ public:
     spell_data_ptr_t tar_trap;
 
     spell_data_ptr_t counter_shot; //NYI - TODO Tie up counter shot implementation with this talent
+    spell_data_ptr_t muzzle; //NYI - TODO Tie up muzzle implementation with this talent
 
     spell_data_ptr_t lone_survivor; //NYI - Reduce the cooldown of Counter Shot and Muzzle by 2 seconds
     spell_data_ptr_t specialized_arsenal; //NYI - Wildfire Bomb / Aimed Shot / Kill Command deal 10% increased damage. 
@@ -1060,6 +1061,7 @@ public:
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
+    ab::apply_affecting_aura( p -> talents.specialized_arsenal );
     ab::apply_affecting_aura( p -> talents.improved_traps );
     ab::apply_affecting_aura( p -> talents.born_to_be_wild );
     ab::apply_affecting_aura( p -> talents.arctic_bola );
@@ -1562,13 +1564,28 @@ public:
       }
     }
 
-    ab::apply_affecting_aura( o() -> talents.killer_companion );
-    ab::apply_affecting_aura( o() -> talents.improved_kill_command );
-    ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
-    ab::apply_affecting_aura( o() -> talents.killer_command );
-    ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
+    //Shared
+    ab::apply_affecting_aura( o() -> talents.specialized_arsenal );
+
+    //Beast Mastery 
     ab::apply_affecting_aura( o() -> talents.savagery );
+    ab::apply_affecting_aura( o() -> talents.improved_kill_command );
+
+    //Marksmanship
+
+    //Survival
+
+    //Hero Trees
     ab::apply_affecting_aura( o() -> talents.overshadow );
+
+
+    //Tier, Set Bonuses, and Legendaries etc
+    ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
+    ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
+
+    //Unsorted
+    ab::apply_affecting_aura( o() -> talents.killer_companion );
+    ab::apply_affecting_aura( o() -> talents.killer_command );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -7016,6 +7033,7 @@ void hunter_t::init_spells()
   talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
 
   talents.counter_shot                      = find_talent_spell( talent_tree::CLASS, "Counter Shot" );
+  talents.muzzle                            = find_talent_spell( talent_tree::CLASS, "Muzzle" );
 
   talents.lone_survivor                     = find_talent_spell( talent_tree::CLASS, "Lone Survivor" );
   talents.specialized_arsenal               = find_talent_spell( talent_tree::CLASS, "Specialized Arsenal" );
