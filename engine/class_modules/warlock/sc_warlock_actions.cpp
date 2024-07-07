@@ -365,7 +365,7 @@ using namespace helpers;
     { }
 
     summon_pet_t( util::string_view n, warlock_t* p )
-      : summon_pet_t( n, p, p->find_class_spell( n ) )
+      : summon_pet_t( n, p, p->find_class_spell( fmt::format( "Summon {}", n ) ) )
     { }
 
     void init_finished() override
