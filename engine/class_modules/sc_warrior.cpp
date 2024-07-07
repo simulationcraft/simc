@@ -2638,7 +2638,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.slayer.overwhelming_blades->ok() )
+    if ( p()->talents.slayer.overwhelming_blades->ok() && data().id() == 50622 ) // 50622 is MH bladestorm attack.  We only proc overwhelmed debuff from MH hits
     {
       td( state->target )->debuffs_overwhelmed->trigger();
     }
