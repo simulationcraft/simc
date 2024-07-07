@@ -786,9 +786,9 @@ public:
       player_talent_t fierce_followthrough;
       player_talent_t opportunist;
       player_talent_t show_no_mercy;
-      player_talent_t reap_the_storm; // NYI
+      player_talent_t reap_the_storm;
       player_talent_t slayers_malice;
-      player_talent_t unrelenting_onslaught; // NYI
+      player_talent_t unrelenting_onslaught;
     } slayer;
 
     struct mountain_thane_talents_t
@@ -3466,7 +3466,14 @@ struct execute_damage_t : public warrior_attack_t
     }
 
     if ( td( state->target )->debuffs_marked_for_execution->up() )
+    {
+      if ( p()->talents.slayer.unrelenting_onslaught->ok() )
+      {
+        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
+        td( state->target )->debuffs_overwhelmed->trigger( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() );
+      }
       td( state->target )->debuffs_marked_for_execution->expire();
+    }
   }
 };
 
@@ -3638,6 +3645,16 @@ struct execute_main_hand_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( p()->talents.slayer.unrelenting_onslaught->ok() && td( state->target )->debuffs_marked_for_execution->up() )
+    {
+      p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
+      td( state->target )->debuffs_overwhelmed->trigger( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() );
+    }
   }
 };
 
