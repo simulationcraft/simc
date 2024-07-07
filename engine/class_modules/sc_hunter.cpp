@@ -648,7 +648,7 @@ public:
     spell_data_ptr_t laceration; // NYI - When your pets critically strike, they cause their target to bleed for 15% of the damage dealt over 6 sec.
 
     spell_data_ptr_t cobra_senses;
-    spell_data_ptr_t improved_kill_command; // TODO - Verify functionality after being moved to BM tree
+    spell_data_ptr_t improved_kill_command;
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
     spell_data_ptr_t hunters_prey;
@@ -667,7 +667,7 @@ public:
     spell_data_ptr_t huntmasters_call; // NYI - Every 3 casts of Dire Beast sounds the Horn of Valor, summoning either Hati or Fenryr to battle.
     spell_data_ptr_t dire_frenzy;
 
-    spell_data_ptr_t killer_instinct; // TODO - Verify functionality after being moved to BM tree
+    spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
     spell_data_ptr_t explosive_venom; // NYI - Every 5 cast of Explosive Shot or Multi-Shot will apply Serpent Sting to targets hit
@@ -3156,173 +3156,6 @@ struct residual_bleed_base_t : public residual_action::residual_periodic_action_
   }
 };
 
-// Kill Shot =========================================================================
-
-struct kill_shot_t : hunter_ranged_attack_t
-{
-  struct state_data_t
-  {
-    bool razor_fragments_up = false;
-    bool coordinated_assault_empower_up = false;
-
-    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "razor_fragments_up={:d} coordinated_assault_empower_up={:d}", data.razor_fragments_up, data.coordinated_assault_empower_up );
-    }
-  };
-  using state_t = hunter_action_state_t<state_data_t>;
-
-  // Razor Fragments (Talent)
-  struct razor_fragments_t : residual_bleed_base_t
-  {
-    double result_mod;
-
-    razor_fragments_t( util::string_view n, hunter_t* p )
-      : residual_bleed_base_t( n, p, p -> find_spell( 385638 ) )
-    {
-      result_mod = p -> find_spell( 388998 ) -> effectN( 3 ).percent();
-      aoe = as<int>( p -> find_spell( 388998 ) -> effectN( 2 ).base_value() );
-    }
-  };
-
-  // Coordinated Assault
-  struct bleeding_gash_t : residual_bleed_base_t
-  {
-    double result_mod;
-
-    bleeding_gash_t( util::string_view n, hunter_t* p )
-      : residual_bleed_base_t( n, p, p -> find_spell( 361049 ) )
-    {
-      result_mod = p -> find_spell( 361738 ) -> effectN( 1 ).percent();
-    }
-  };
-
-  double health_threshold_pct;
-  razor_fragments_t* razor_fragments = nullptr;
-  bleeding_gash_t* bleeding_gash = nullptr;
-
-  cooldown_t* se_recharge_cooldown = nullptr;
-
-  kill_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
-    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
-  {
-    parse_options( options_str );
-
-    if ( p -> talents.razor_fragments.ok() )
-    {
-      razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
-      add_child( razor_fragments );
-    }
-
-    if ( p -> talents.coordinated_assault.ok() )
-    {
-      bleeding_gash = p -> get_background_action<bleeding_gash_t>( "bleeding_gash" );
-      add_child( bleeding_gash );
-    }
-
-    if ( p->specialization() == HUNTER_MARKSMANSHIP )
-      se_recharge_cooldown = p->cooldowns.aimed_shot;
-
-    if ( p->specialization() == HUNTER_BEAST_MASTERY )
-      se_recharge_cooldown = p->cooldowns.barbed_shot;
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p() -> buffs.deathblow -> decrement();
-    p() -> buffs.razor_fragments -> decrement();
-
-    p() -> buffs.hunters_prey -> decrement();
-
-    if ( p() -> tier_set.t30_mm_4pc.ok() )
-    {
-      p() -> cooldowns.aimed_shot -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
-      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
-    }
-
-    if ( p() -> talents.bombardment.ok() )
-      p() -> buffs.trick_shots -> trigger();
-
-    if ( p()->talents.shadow_erasure.ok() && td( target )->dots.black_arrow->is_ticking() &&
-         rng().roll( p()->talents.shadow_erasure->proc_chance() ) )
-      se_recharge_cooldown->reset( true );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up && s -> chain_target < 1 )
-    {
-      double amount = s -> result_amount * razor_fragments -> result_mod;
-      if ( amount > 0 )
-      {
-        std::vector<player_t*>& tl = target_list();
-        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
-          residual_action::trigger( razor_fragments, t, amount );
-      }
-    }
-
-    // Buff is consumed on first impact but all hits (in the case of Birds of Prey) can trigger the bleed.
-    p() -> buffs.coordinated_assault_empower -> expire();
-    if ( bleeding_gash && debug_cast<state_t*>( s ) -> coordinated_assault_empower_up )
-    {
-      double amount = s -> result_amount * bleeding_gash -> result_mod;
-      if ( amount > 0 )
-        residual_action::trigger( bleeding_gash, s -> target, amount );
-    }
-  }
-
-  int n_targets() const override
-  {
-    if ( p() -> talents.birds_of_prey.ok() && p() -> buffs.coordinated_assault -> check() )
-      return 1 + as<int>( p() -> talents.birds_of_prey -> effectN( 1 ).base_value() );
-
-    return hunter_ranged_attack_t::n_targets();
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
-      ( candidate_target -> health_percentage() <= health_threshold_pct
-        || p() -> buffs.deathblow -> check()
-        || p() -> buffs.hunters_prey -> check()
-        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.razor_fragments -> check_value();
-
-    return am;
-  }
-
-  double recharge_rate_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = hunter_spell_t::recharge_rate_multiplier( cd );
-
-    if ( p() -> buffs.coordinated_assault -> check() )
-      m *= 1 + p() -> talents.coordinated_kill -> effectN( 3 ).percent();
-
-    return m;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type type ) override
-  {
-    hunter_ranged_attack_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
-    debug_cast<state_t*>( s ) -> coordinated_assault_empower_up = p() -> buffs.coordinated_assault_empower -> check();
-  }
-};
 
 // Arcane Shot ========================================================================
 
@@ -3692,6 +3525,194 @@ struct serpent_sting_t final : public serpent_sting_base_t
   {
   }
 };
+
+// Kill Shot =========================================================================
+
+struct kill_shot_t : hunter_ranged_attack_t
+{
+  struct state_data_t
+  {
+    bool razor_fragments_up = false;
+    bool coordinated_assault_empower_up = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "razor_fragments_up={:d} coordinated_assault_empower_up={:d}", data.razor_fragments_up, data.coordinated_assault_empower_up );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
+  // Venoms Bite (Talent)
+  struct serpent_sting_venoms_bite_t final : public serpent_sting_base_t
+  {
+    serpent_sting_venoms_bite_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
+  // Razor Fragments (Talent)
+  struct razor_fragments_t : residual_bleed_base_t
+  {
+    double result_mod;
+
+    razor_fragments_t( util::string_view n, hunter_t* p )
+      : residual_bleed_base_t( n, p, p -> find_spell( 385638 ) )
+    {
+      result_mod = p -> find_spell( 388998 ) -> effectN( 3 ).percent();
+      aoe = as<int>( p -> find_spell( 388998 ) -> effectN( 2 ).base_value() );
+    }
+  };
+
+  // Coordinated Assault
+  struct bleeding_gash_t : residual_bleed_base_t
+  {
+    double result_mod;
+
+    bleeding_gash_t( util::string_view n, hunter_t* p )
+      : residual_bleed_base_t( n, p, p -> find_spell( 361049 ) )
+    {
+      result_mod = p -> find_spell( 361738 ) -> effectN( 1 ).percent();
+    }
+  };
+
+  double health_threshold_pct;
+  serpent_sting_venoms_bite_t* serpent_sting;
+  razor_fragments_t* razor_fragments = nullptr;
+  bleeding_gash_t* bleeding_gash = nullptr;
+
+  cooldown_t* se_recharge_cooldown = nullptr;
+
+  kill_shot_t( hunter_t* p, util::string_view options_str ):
+    hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
+    health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
+  {
+    parse_options( options_str );
+
+    if ( p -> talents.razor_fragments.ok() )
+    {
+      razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
+      add_child( razor_fragments );
+    }
+
+    if ( p -> talents.coordinated_assault.ok() )
+    {
+      bleeding_gash = p -> get_background_action<bleeding_gash_t>( "bleeding_gash" );
+      add_child( bleeding_gash );
+    }
+
+    if ( p->specialization() == HUNTER_MARKSMANSHIP )
+      se_recharge_cooldown = p->cooldowns.aimed_shot;
+
+    if ( p->specialization() == HUNTER_BEAST_MASTERY )
+      se_recharge_cooldown = p->cooldowns.barbed_shot;
+
+    serpent_sting = p -> get_background_action<serpent_sting_venoms_bite_t>( "serpent_sting_venoms_bite" );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> buffs.deathblow -> decrement();
+    p() -> buffs.razor_fragments -> decrement();
+
+    p() -> buffs.hunters_prey -> decrement();
+
+    if ( p() -> tier_set.t30_mm_4pc.ok() )
+    {
+      p() -> cooldowns.aimed_shot -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+    }
+
+    if ( p() -> talents.bombardment.ok() )
+      p() -> buffs.trick_shots -> trigger();
+
+    if ( p()->talents.shadow_erasure.ok() && td( target )->dots.black_arrow->is_ticking() &&
+         rng().roll( p()->talents.shadow_erasure->proc_chance() ) )
+      se_recharge_cooldown->reset( true );
+    
+    if ( p() -> talents.venoms_bite.ok() ) 
+    {
+      serpent_sting -> execute_on_target( target );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up && s -> chain_target < 1 )
+    {
+      double amount = s -> result_amount * razor_fragments -> result_mod;
+      if ( amount > 0 )
+      {
+        std::vector<player_t*>& tl = target_list();
+        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
+          residual_action::trigger( razor_fragments, t, amount );
+      }
+    }
+
+    // Buff is consumed on first impact but all hits (in the case of Birds of Prey) can trigger the bleed.
+    p() -> buffs.coordinated_assault_empower -> expire();
+    if ( bleeding_gash && debug_cast<state_t*>( s ) -> coordinated_assault_empower_up )
+    {
+      double amount = s -> result_amount * bleeding_gash -> result_mod;
+      if ( amount > 0 )
+        residual_action::trigger( bleeding_gash, s -> target, amount );
+    }
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> talents.birds_of_prey.ok() && p() -> buffs.coordinated_assault -> check() )
+      return 1 + as<int>( p() -> talents.birds_of_prey -> effectN( 1 ).base_value() );
+
+    return hunter_ranged_attack_t::n_targets();
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
+      ( candidate_target -> health_percentage() <= health_threshold_pct
+        || p() -> buffs.deathblow -> check()
+        || p() -> buffs.hunters_prey -> check()
+        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1 + p() -> buffs.razor_fragments -> check_value();
+
+    return am;
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = hunter_spell_t::recharge_rate_multiplier( cd );
+
+    if ( p() -> buffs.coordinated_assault -> check() )
+      m *= 1 + p() -> talents.coordinated_kill -> effectN( 3 ).percent();
+
+    return m;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    hunter_ranged_attack_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
+    debug_cast<state_t*>( s ) -> coordinated_assault_empower_up = p() -> buffs.coordinated_assault_empower -> check();
+  }
+};
+
 
 // Arctic Bola ===================================================================
 
