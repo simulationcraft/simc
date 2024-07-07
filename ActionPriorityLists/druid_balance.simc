@@ -13,26 +13,35 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/moonkin_form
+actions.precombat+=/wrath
+actions.precombat+=/wrath
+actions.precombat+=/starfire,if=!talent.stellar_flare
+actions.precombat+=/stellar_flare
 
+# Executed every time the actor is available.
 # Executed every time the actor is available.
 actions=use_items
 actions+=/auto_attack
-actions+=/incarnation
-actions+=/celestial_alignment
-actions+=/starfire,if=!talent.lunar_calling&!buff.eclipse_solar.up
 actions+=/moonfire,target_if=refreshable
 actions+=/sunfire,target_if=refreshable
 actions+=/stellar_flare,target_if=refreshable
-actions+=/starfall,if=buff.starweavers_warp.up
-actions+=/starsurge
-actions+=/convoke_the_spirits
 actions+=/force_of_nature
 actions+=/fury_of_elune
+actions+=/incarnation
+actions+=/celestial_alignment
+actions+=/warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling
+actions+=/starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)
+actions+=/wrath,if=(talent.lunar_calling|spell_targets.starfire>1)&(buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)|eclipse.in_none)
+actions+=/starfall,if=buff.starweavers_warp.up
+actions+=/starsurge,if=spell_targets.starfall<2
+actions+=/starfall,if=spell_targets.starfall>1
+actions+=/convoke_the_spirits
 actions+=/new_moon
 actions+=/half_moon
 actions+=/full_moon
 actions+=/warrior_of_elune
 actions+=/wild_mushroom
-actions+=/starfire,if=talent.lunar_calling
+actions+=/starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1
 actions+=/wrath
