@@ -2638,7 +2638,7 @@ struct bladestorm_tick_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.slayer.overwhelming_blades->ok() )
+    if ( p()->talents.slayer.overwhelming_blades->ok() && data().id() == 50622 ) // 50622 is MH bladestorm attack.  We only proc overwhelmed debuff from MH hits
     {
       td( state->target )->debuffs_overwhelmed->trigger();
     }
@@ -2671,6 +2671,7 @@ struct bladestorm_t : public warrior_attack_t
     tick_zero = true;
     interrupt_auto_attack = false;
     travel_speed                      = 0;
+    internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
 
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
     add_child( bladestorm_mh );
