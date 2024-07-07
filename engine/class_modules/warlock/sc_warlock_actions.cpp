@@ -604,8 +604,22 @@ using namespace helpers;
     { return periodic->get_dot( t ); }
   };
 
+  struct shadow_bolt_volley_t : public warlock_spell_t
+  {
+    shadow_bolt_volley_t( warlock_t* p )
+      : warlock_spell_t( "Shadow Bolt Volley", p, p->talents.shadow_bolt_volley )
+    {
+      background = dual = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.improved_shadow_bolt->effectN( 2 ).percent();
+    }
+  };
+
   struct shadow_bolt_t : public warlock_spell_t
   {
+    shadow_bolt_volley_t* volley;
+
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
@@ -620,6 +634,12 @@ using namespace helpers;
         energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1.0;
+      }
+
+      if ( p->talents.cunning_cruelty.ok() )
+      {
+        volley = new shadow_bolt_volley_t( p );
+        add_child( volley );
       }
     }
 
@@ -662,6 +682,12 @@ using namespace helpers;
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
           }
+        }
+
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        {
+          p()->procs.shadow_bolt_volley->occur();
+          volley->execute_on_target( s->target );
         }
       }
     }
@@ -1187,6 +1213,8 @@ using namespace helpers;
       }
     };
 
+    shadow_bolt_volley_t* volley;
+
     drain_soul_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
     {
@@ -1194,6 +1222,12 @@ using namespace helpers;
 
       base_td_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 3 ).percent();
       base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
+
+      if ( p->talents.cunning_cruelty.ok() )
+      {
+        volley = new shadow_bolt_volley_t( p );
+        add_child( volley );
+      }
     }
 
     action_state_t* new_state() override
@@ -1248,6 +1282,12 @@ using namespace helpers;
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
           }
+        }
+
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        {
+          p()->procs.shadow_bolt_volley->occur();
+          volley->execute_on_target( d->target );
         }
       }
     }

@@ -205,7 +205,8 @@ public:
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
     player_talent_t summon_darkglare;
     const spell_data_t* eye_beam; // Darkglare pet ability
-    player_talent_t cunning_cruelty; // TODO: New
+    player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
+    const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
     player_talent_t infirmity; // TODO: Move from tier sets
 
     player_talent_t improved_haunt; // TODO: New
@@ -560,6 +561,7 @@ public:
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
+    proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
 
     // Demonology

@@ -124,8 +124,11 @@ namespace warlock
 
     talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
 
-    talents.summon_darkglare = find_talent_spell(talent_tree::SPECIALIZATION, "Summon Darkglare"); // Should be ID 205180
+    talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare"); // Should be ID 205180
     talents.eye_beam = find_spell( 205231 );
+
+    talents.cunning_cruelty = find_talent_spell( talent_tree::SPECIALIZATION, "Cunning Cruelty" ); // Should be ID
+    talents.shadow_bolt_volley = find_spell( 453176 );
 
     talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 
@@ -600,6 +603,7 @@ namespace warlock
   void warlock_t::init_procs_affliction()
   {
     procs.nightfall = get_proc( "nightfall" );
+    procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
