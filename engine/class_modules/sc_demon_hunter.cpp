@@ -2779,23 +2779,25 @@ struct fel_barrage_t : public demon_hunter_spell_t
 
 // Fel Devastation ==========================================================
 
-struct fel_devastation_tick_base_t : public demon_hunter_spell_t
-{
-  fel_devastation_tick_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-    : demon_hunter_spell_t( name, p, s )
-  {
-    background = dual = true;
-    aoe               = -1;
-  }
-};
-
 struct fel_devastation_base_t : public demon_hunter_spell_t
 {
+  struct fel_devastation_tick_t : public demon_hunter_spell_t
+  {
+    fel_devastation_tick_t( util::string_view name, demon_hunter_t* p, std::string reporting_name,
+                            const spell_data_t* s )
+      : demon_hunter_spell_t( name, p, s )
+    {
+      background = dual  = true;
+      aoe                = -1;
+      name_str_reporting = reporting_name;
+    }
+  };
+
   heals::fel_devastation_heal_t* heal;
   bool benefits_from_dgb_cdr;
 
   fel_devastation_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : demon_hunter_spell_t( name, p, s, o ), heal( nullptr ), benefits_from_dgb_cdr( false )
+    : demon_hunter_spell_t( name, p, s, o ), heal( nullptr ), benefits_from_dgb_cdr( true )
   {
     may_miss            = false;
     channeled           = true;
@@ -2805,6 +2807,10 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
     {
       heal = p->get_background_action<heals::fel_devastation_heal_t>( name_str + "_heal" );
     }
+
+    tick_action =
+        p->get_background_action<fel_devastation_tick_t>( name_str + "_tick", name_str, data().effectN( 1 ).trigger() );
+    tick_action->stats = stats;
   }
 
   void execute() override
@@ -2852,8 +2858,8 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
 
       if ( benefits_from_dgb_cdr )
       {
-        p()->sim->print_debug( "{} rolled {}s of CDR on Fel Devastation from Darkglare Boon", *p(),
-                               cdr_reduction.total_seconds() );
+        p()->sim->print_debug( "{} rolled {}s of CDR on {} from Darkglare Boon", *p(), cdr_reduction.total_seconds(),
+                               name_str );
         p()->cooldown.fel_devastation->adjust( -cdr_reduction );
       }
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
@@ -2876,29 +2882,11 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
   }
 };
 
-struct fel_devastation_tick_t : public fel_devastation_tick_base_t
-{
-  fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
-    : fel_devastation_tick_base_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
-  {
-  }
-};
-
-struct fel_desolation_tick_t : public fel_devastation_tick_base_t
-{
-  fel_desolation_tick_t( util::string_view name, demon_hunter_t* p )
-    : fel_devastation_tick_base_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
-  {
-  }
-};
-
 struct fel_devastation_t : public fel_devastation_base_t
 {
   fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
     : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str )
   {
-    tick_action           = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
-    benefits_from_dgb_cdr = true;
   }
 
   bool ready() override
@@ -2916,8 +2904,13 @@ struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DE
   fel_desolation_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
   {
-    tick_action           = p->get_background_action<fel_desolation_tick_t>( "fel_desolation_tick" );
-    benefits_from_dgb_cdr = !p->bugs;
+    // 2024-07-07 -- Fel Desolation doesn't benefit from DGB CDR
+    // 2024-07-07 -- Fel Desolation doesn't share a cooldown with Fel Devastation
+    if (p->bugs) {
+      benefits_from_dgb_cdr = false;
+    } else {
+      cooldown = p->cooldown.fel_devastation;
+    }
   }
 
   bool ready() override
