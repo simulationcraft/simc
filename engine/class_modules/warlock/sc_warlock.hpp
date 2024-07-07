@@ -170,9 +170,9 @@ public:
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Affliction
-    player_talent_t unstable_affliction; // TODO: Check if higher ranks are still separate spell data
-    const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (learned automatically)
-    const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (learned automatically)
+    player_talent_t unstable_affliction;
+    const spell_data_t* unstable_affliction_2; // Soul Shard on demise (learned automatically)
+    const spell_data_t* unstable_affliction_3; // +5 seconds to duration (learned automatically)
 
     player_talent_t writhe_in_agony;
     player_talent_t seed_of_corruption;
@@ -207,7 +207,7 @@ public:
     const spell_data_t* eye_beam; // Darkglare pet ability
     player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
     const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
-    player_talent_t infirmity; // TODO: Move from tier sets
+    player_talent_t infirmity;
     const spell_data_t* infirmity_debuff;
 
     player_talent_t improved_haunt;

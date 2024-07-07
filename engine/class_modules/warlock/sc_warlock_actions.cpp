@@ -341,7 +341,7 @@ using namespace helpers;
         p()->havoc_spells.push_back( this );
       }
 
-      if ( p()->talents.creeping_death.ok() && affected_by.creeping_death )
+      if ( affliction() && affected_by.creeping_death )
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
     }
 
