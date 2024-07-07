@@ -5594,7 +5594,7 @@ struct avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.blademasters_torment.ok() )
     {
-      p()->buff.sweeping_strikes->trigger();
+      p()->buff.sweeping_strikes->trigger( p()->talents.warrior.blademasters_torment->effectN( 1 ).time_value() );
     }
     if ( p()->talents.warrior.titans_torment->ok() )
     {
@@ -7342,7 +7342,7 @@ void warrior_t::create_buffs()
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
     ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
     ->set_cooldown(timespan_t::zero())
-    ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+    ->set_refresh_behavior(buff_refresh_behavior::EXTEND);
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
