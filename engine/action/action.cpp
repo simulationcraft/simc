@@ -4162,11 +4162,8 @@ double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
 {
   if ( hasted_dot_duration )
   {
-    // technically it's possible to have hasted dot duration without hasted ticks
-    if ( !hasted_ticks )
-      return ( base_tick_time * s->haste ) / base_tick_time;
-    else
-      return tick_time( s ) / base_tick_time;
+    auto tt = timespan_t::from_millis( std::round( static_cast<double>( base_tick_time.total_millis() ) * s->haste ) );
+    return tt / base_tick_time;
   }
 
   return 1.0;
