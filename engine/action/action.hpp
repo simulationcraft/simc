@@ -117,7 +117,7 @@ struct parsed_value_t
   { return value().total_seconds(); }
 
   template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  double total_millis() const
+  time_t total_millis() const
   { return value().total_millis(); }
 };
 
