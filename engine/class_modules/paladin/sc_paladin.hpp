@@ -145,6 +145,7 @@ public:
 
     action_t* sacrosanct_crusade_heal;
     action_t* highlords_judgment;
+    action_t* sun_sear;
   } active;
 
   // Buffs
@@ -248,6 +249,14 @@ public:
       buff_t* undisputed_ruling;
       buff_t* lights_deliverance;
     } templar;
+
+    struct
+    {
+      buff_t* blessing_of_anshe;
+      buff_t* morning_star;
+      buff_t* gleaming_rays;
+      buff_t* solar_grace;
+    } herald_of_the_sun;
 
   } buffs;
 

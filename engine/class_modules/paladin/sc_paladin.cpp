@@ -2597,6 +2597,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       }
     }
 
+    if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() && p()->specialization() == PALADIN_RETRIBUTION )
+    {
+      p()->active.sun_sear->target = s->target;
+      p()->active.sun_sear->execute();
+    }
+
     if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
     {
       td( s->target )->debuff.judgment->trigger();
@@ -2745,9 +2751,19 @@ struct forges_reckoning_t : public paladin_spell_t
     may_miss                     = false;
   }
 };
+
 struct sacred_word_t : public paladin_heal_t
 {
   sacred_word_t( paladin_t* p ) : paladin_heal_t( "sacred_word", p, p->spells.lightsmith.sacred_word )
+  {
+    background = true;
+  }
+};
+
+// TODO: friendly dawnlights
+struct dawnlight_t : public paladin_spell_t
+{
+  dawnlight_t( paladin_t* p ) : paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) )
   {
     background = true;
   }
@@ -3469,6 +3485,14 @@ void paladin_t::create_buffs()
 
   buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
 
+  buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) );
+  buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", find_spell( 431481 ) );
+  auto blessing_of_anshe_id = specialization() == PALADIN_RETRIBUTION ? 445206 : 445204;
+  buffs.herald_of_the_sun.blessing_of_anshe = make_buff( this, "blessing_of_anshe", find_spell( blessing_of_anshe_id ) );
+  buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
+    -> add_invalidate( CACHE_HASTE )
+    -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
   buffs.heightened_wrath = make_buff( this, "heightened_wrath", find_spell( 456759 ) );
@@ -3650,6 +3674,24 @@ void paladin_t::init_special_effects()
     cb->initialize();
   }
 
+  if ( talents.herald_of_the_sun.blessing_of_anshe->ok() )
+  {
+    struct blessing_of_anshe_cb_t : public dbc_proc_callback_t
+    {
+      paladin_t* p;
+
+      blessing_of_anshe_cb_t( paladin_t* player, const special_effect_t& effect )
+        : dbc_proc_callback_t( player, effect ), p( player )
+      {
+      }
+
+      void execute( action_t*, action_state_t* ) override
+      {
+        p->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
+      }
+    };
+  }
+
   if ( talents.lightsmith.divine_inspiration->ok() )
   {
     struct divine_inspiration_cb_t : public dbc_proc_callback_t
@@ -3805,6 +3847,22 @@ void paladin_t::init_spells()
   talents.templar.undisputed_ruling       = find_talent_spell( talent_tree::HERO, "Undisputed Ruling" );
 
   talents.templar.lights_deliverance      = find_talent_spell( talent_tree::HERO, "Light's Deliverance" );
+
+  talents.herald_of_the_sun.dawnlight     = find_talent_spell( talent_tree::HERO, "Dawnlight" );
+
+  talents.herald_of_the_sun.morning_star       = find_talent_spell( talent_tree::HERO, "Morning Star");
+  talents.herald_of_the_sun.gleaming_rays      = find_talent_spell( talent_tree::HERO, "Gleaming Rays" );
+  talents.herald_of_the_sun.luminosity         = find_talent_spell( talent_tree::HERO, "Luminosity" );
+
+  talents.herald_of_the_sun.blessing_of_anshe  = find_talent_spell( talent_tree::HERO, "Blessing of An'she" );
+  talents.herald_of_the_sun.lingering_radiance = find_talent_spell( talent_tree::HERO, "Lingering Radiance" );
+  talents.herald_of_the_sun.sun_sear           = find_talent_spell( talent_tree::HERO, "Sun Sear" );
+
+  talents.herald_of_the_sun.aurora             = find_talent_spell( talent_tree::HERO, "Aurora" );
+  talents.herald_of_the_sun.solar_grace        = find_talent_spell( talent_tree::HERO, "Solar Grace" );
+  talents.herald_of_the_sun.second_sunrise     = find_talent_spell( talent_tree::HERO, "Second Sunrise" );
+
+  talents.herald_of_the_sun.suns_avatar        = find_talent_spell( talent_tree::HERO, "Sun's Avatar" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -4113,6 +4171,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade->up() )
     h /= 1.0 + buffs.crusade->get_haste_bonus();
 
+  if ( buffs.herald_of_the_sun.solar_grace->up() )
+    h /= 1.0 + buffs.herald_of_the_sun.solar_grace->stack_value();
+
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
 
@@ -4346,14 +4407,15 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
         buffs.blessing_of_dawn->trigger();
       }
     }
-    if ( !( source->name_str == "arcane_torrent" ) )
+  }
+
+  if ( resource_type == RESOURCE_HOLY_POWER && !( source->name_str == "arcane_torrent" ) )
+  {
+    if ( talents.judge_jury_and_executioner->ok() )
     {
-      if ( talents.judge_jury_and_executioner->ok() )
+      if ( rppm.judge_jury_and_executioner->trigger() )
       {
-        if ( rppm.judge_jury_and_executioner->trigger() )
-        {
-          buffs.judge_jury_and_executioner->trigger();
-        }
+        buffs.judge_jury_and_executioner->trigger();
       }
     }
   }
@@ -4844,6 +4906,9 @@ void paladin_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.holy_paladin );
   action.apply_affecting_aura( spec.protection_paladin );
   action.apply_affecting_aura( passives.paladin );
+
+  if ( talents.herald_of_the_sun.luminosity )
+    action.apply_affecting_aura( talents.herald_of_the_sun.luminosity );
 }
 
 /* Report Extension Class

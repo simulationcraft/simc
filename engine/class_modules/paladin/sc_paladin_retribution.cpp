@@ -541,6 +541,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         target_data->debuff.sanctify->trigger();
       if ( target_data->debuff.vanguard_of_justice->up() )
         target_data->debuff.vanguard_of_justice->expire();
+
+      if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() )
+      {
+        p()->active.sun_sear->target = s->target;
+        p()->active.sun_sear->execute();
+      }
     }
   }
 
@@ -963,7 +969,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
   }
 };
 
-
 // Wake of Ashes (Retribution) ================================================
 
 struct truths_wake_t : public paladin_spell_t
@@ -1099,6 +1104,11 @@ struct wake_of_ashes_t : public paladin_spell_t
       {
         p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
       }
+    }
+
+    if ( p()->talents.herald_of_the_sun.aurora->ok() )
+    {
+      p()->buffs.divine_purpose->trigger();
     }
   }
 
@@ -1356,6 +1366,15 @@ struct highlords_judgment_t : public paladin_spell_t
   }
 };
 
+struct sun_sear_t : public paladin_spell_t
+{
+  sun_sear_t( paladin_t* p ) :
+    paladin_spell_t( "sun_sear", p, p->find_spell( 431414 ) )
+  {
+    hasted_ticks = tick_may_crit = true;
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1420,12 +1439,17 @@ void paladin_t::create_ret_actions()
     active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
     active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
     active.highlords_judgment = new highlords_judgment_t( this );
+    if ( talents.herald_of_the_sun.sun_sear->ok() )
+    {
+      active.sun_sear = new sun_sear_t( this );
+    }
   }
 
   if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
   {
     active.wrathful_sanction = new wrathful_sanction_t( this );
   }
+
 }
 
 action_t* paladin_t::create_action_retribution( util::string_view name, util::string_view options_str )
