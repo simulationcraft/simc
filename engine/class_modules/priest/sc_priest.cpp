@@ -2818,9 +2818,9 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
   {
     if ( util::str_compare_ci( splits[ 0 ], "action" ) )
     {
-      if ( util::str_compare_ci( splits[ 1 ], "shadow_crash" ) || util::str_compare_ci( splits[ 1 ], "void_crash" ) )
+      if ( util::str_compare_ci( splits[ 1 ], "shadow_crash" ) )
       {
-        auto crash_name   = talents.shadow.void_crash.enabled() ? "void_crash" : "shadow_crash";
+        auto crash_name   = "shadow_crash";
         auto crash_action = find_action( crash_name );
 
         if ( !crash_action )
@@ -3174,8 +3174,7 @@ void priest_t::init_resources( bool force )
     auto halo_insanity         = talents.halo->effectN( 2 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
 
-    // Assuming Shadow Crash and Void Crash have the same spell data
-    if ( talents.shadow.shadow_crash.enabled() || talents.shadow.void_crash.enabled() )
+    if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
     {
       // Two Shadow Crash + Two Divine Star == 24 Insanity
       if ( talents.divine_star.enabled() )

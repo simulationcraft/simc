@@ -1885,9 +1885,9 @@ struct shadow_crash_t final : public shadow_crash_base_t
   propagate_const<shadow_crash_damage_t*> shadow_crash_damage;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
-    : shadow_crash_base_t(
-          p, options_str, p.talents.shadow.void_crash.ok() ? "void_crash" : "shadow_crash",
-          p.talents.shadow.void_crash.ok() ? p.talents.shadow.void_crash : p.talents.shadow.shadow_crash ),
+    : shadow_crash_base_t( p, options_str, "shadow_crash",
+                           p.talents.shadow.shadow_crash_target.enabled() ? p.talents.shadow.shadow_crash_target
+                                                                          : p.talents.shadow.shadow_crash ),
       shadow_crash_damage( nullptr )
   {
     shadow_crash_damage = new shadow_crash_damage_t( name_str + "_damage", p, data().effectN( 1 ).trigger() );
@@ -2403,8 +2403,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_flay_insanity        = ST( "Mind Flay: Insanity" );
   talents.shadow.mind_flay_insanity_spell  = find_spell( 391403 );  // Not linked to talent, actual dmg spell
   // Row 5
-  talents.shadow.shadow_crash         = ST( "Shadow Crash" );
-  talents.shadow.void_crash           = ST( "Void Crash" );
+  talents.shadow.shadow_crash         = find_talent_spell( 125983 );  // targeted at a location
+  talents.shadow.shadow_crash_target  = find_talent_spell( 103813 );  // targeted at a specific target
   talents.shadow.unfurling_darkness   = ST( "Unfurling Darkness" );
   talents.shadow.void_eruption        = ST( "Void Eruption" );
   talents.shadow.void_eruption_damage = find_spell( 228360 );
@@ -2473,7 +2473,7 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new void_eruption_t( *this, options_str );
   }
-  if ( name == "shadow_crash" || name == "void_crash" )
+  if ( name == "shadow_crash" )
   {
     return new shadow_crash_t( *this, options_str );
   }
