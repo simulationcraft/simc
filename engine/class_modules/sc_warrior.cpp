@@ -138,6 +138,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
   buff_t* debuffs_callous_reprisal;
+  buff_t* debuffs_marked_for_execution;
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -219,6 +220,7 @@ public:
     action_t* torment_odyns_fury;
     action_t* torment_recklessness;
     action_t* tough_as_nails;
+    action_t* slayers_strike;
   } active;
 
   // Buffs
@@ -292,6 +294,7 @@ public:
     real_ppm_t* fatal_mark;
     real_ppm_t* revenge;
     real_ppm_t* sudden_death;
+    real_ppm_t* slayers_dominance;
   } rppm;
 
   // Cooldowns
@@ -423,6 +426,14 @@ public:
     const spell_data_t* shield_wall;
     const spell_data_t* sudden_death_arms;
     const spell_data_t* sudden_death_fury;
+
+    // Colossus
+
+    // Slayer
+    const spell_data_t* marked_for_execution_debuff;
+    const spell_data_t* slayers_strike;
+
+    // Mountain Thane
   } spell;
 
   // Mastery
@@ -769,7 +780,7 @@ public:
 
     struct slayer_talents_t
     {
-      player_talent_t slayers_dominance; // NYI
+      player_talent_t slayers_dominance;
       player_talent_t imminent_demise; // NYI
       player_talent_t overwhelming_blades; // NYI
       player_talent_t relentless_pursuit; // NYI
@@ -779,7 +790,7 @@ public:
       player_talent_t brutal_finish; // NYI
       player_talent_t fierce_followthrough; // NYI
       player_talent_t opportunist; // NYI
-      player_talent_t show_no_mercy; // NYI
+      player_talent_t show_no_mercy;
       player_talent_t reap_the_storm; // NYI
       player_talent_t slayers_malice; // NYI
       player_talent_t unrelenting_onslaught; // NYI
@@ -1096,6 +1107,23 @@ public:
     parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ),
                           p()->talents.protection.demoralizing_shout,
                           p()->talents.protection.booming_voice );
+
+    // Colossus
+
+    // Slayer
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
+                          p()->spell.marked_for_execution_debuff,
+                          effect_mask_t( false ).enable( 1 ) );
+
+    if ( p()->talents.slayer.show_no_mercy->ok() )
+    {
+      parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
+                          p()->spell.marked_for_execution_debuff,
+                          effect_mask_t( false ).enable( 2, 3 ) );
+    }
+
+
+    // Mountain Thane
   }
 
   template <typename... Ts>
@@ -1432,6 +1460,20 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   {
     special = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_action_t::impact( s );
+
+    if ( !special )  // Procs below only trigger on special attacks, not autos
+      return;
+
+    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && p()->rppm.slayers_dominance->trigger() )
+    {
+      p()->active.slayers_strike->execute_on_target(s->target);
+    }
+  }
+
 
   void execute() override
   {
@@ -3245,6 +3287,9 @@ struct execute_damage_t : public warrior_attack_t
     {
       td( state->target )->debuffs_executioners_precision->trigger();
     }
+
+    if ( td( state->target )->debuffs_marked_for_execution->up() )
+      td( state->target )->debuffs_marked_for_execution->expire();
   }
 };
 
@@ -3437,6 +3482,14 @@ struct execute_off_hand_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    // We only remove the debuff in the off hand, if the target dies from the MH attack, we don't need to worry about expiring it.
+    if ( td( state->target )->debuffs_marked_for_execution->up() )
+      td( state->target )->debuffs_marked_for_execution->expire();
   }
 };
 
@@ -5084,6 +5137,27 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
+// Slayer's Strike ==========================================================
+struct slayers_strike_t : public warrior_attack_t
+{
+  slayers_strike_t( warrior_t* p )
+    : warrior_attack_t( "slayers_strike", p, p->spell.slayers_strike )
+  {
+    special = true;
+    background = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      td( state -> target ) -> debuffs_marked_for_execution->trigger();
+    }
+  }
+};
+
 // Storm Bolt ===============================================================
 
 struct storm_bolt_t : public warrior_attack_t
@@ -6435,6 +6509,14 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
 
+  // Colossus Spells
+
+  // Slayer Spells
+  spell.marked_for_execution_debuff = find_spell( 445584 );
+  spell.slayers_strike              = find_spell( 445579 );
+
+  // Mountain Thane Spells
+
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
   talents.warrior.berserker_stance                 = find_talent_spell( talent_tree::CLASS, "Berserker Stance" );
@@ -6749,6 +6831,7 @@ void warrior_t::init_spells()
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
   active.fatality         = nullptr;
+  active.slayers_strike   = nullptr;
 
   // AA Mods Not Handled by affecting_aura
   if ( specialization() == WARRIOR_FURY )
@@ -7172,6 +7255,13 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
     ->set_default_value( p.talents.protection.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
+
+  // Colossus
+
+  // Slayer
+  debuffs_marked_for_execution = make_buff( *this, "marked_for_execution", p.spell.marked_for_execution_debuff );
+
+  // Mountain Thane
 }
 
 void warrior_td_t::target_demise()
@@ -7452,6 +7542,7 @@ void warrior_t::init_rng()
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
                                                     talents.protection.sudden_death );
+  rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
 }
 
 // warrior_t::validate_fight_style ==========================================
@@ -7855,6 +7946,10 @@ void warrior_t::create_actions()
       action->background  = true;
       action->trigger_gcd = timespan_t::zero();
     }
+  }
+  if( talents.slayer.slayers_dominance->ok() )
+  {
+    active.slayers_strike = new slayers_strike_t( this );
   }
 
   player_t::create_actions();
