@@ -21,6 +21,7 @@ using namespace helpers;
       bool creeping_death = false;
       bool summoners_embrace_dd = false;
       bool summoners_embrace_td = false;
+      bool malediction = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -60,6 +61,7 @@ using namespace helpers;
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
       affected_by.summoners_embrace_dd = data().affected_by( p->talents.summoners_embrace->effectN( 1 ) );
       affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
+      affected_by.malediction = data().affected_by( p->talents.malediction->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
@@ -182,6 +184,16 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
         p()->procs.shadow_invocation->occur();
       }
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = spell_t::composite_crit_chance();
+
+      if ( affliction() && affected_by.malediction )
+        c += p()->talents.malediction->effectN( 1 ).percent();
+
+      return c;
     }
 
     double composite_target_multiplier( player_t* t ) const override

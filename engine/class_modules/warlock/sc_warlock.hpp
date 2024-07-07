@@ -210,8 +210,8 @@ public:
     player_talent_t infirmity; // TODO: Move from tier sets
     const spell_data_t* infirmity_debuff;
 
-    player_talent_t improved_haunt; // TODO: New
-    player_talent_t malediction; // TODO: New
+    player_talent_t improved_haunt;
+    player_talent_t malediction;
     player_talent_t malevolent_visionary; // TODO: AoE behavior may have changed
     player_talent_t contagion; // TODO: New
     player_talent_t cull_the_weak; // TODO: New
