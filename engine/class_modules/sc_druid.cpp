@@ -675,7 +675,6 @@ public:
     buff_t* lycaras_teachings_crit;   // cat form
     buff_t* lycaras_teachings_vers;   // bear form
     buff_t* lycaras_teachings_mast;   // moonkin form
-    buff_t* lycaras_teachings;        // placeholder buff
     buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
@@ -10073,34 +10072,6 @@ void druid_t::create_buffs()
       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
       ->set_name_reporting( "Mastery" );
 
-  buff.lycaras_teachings =
-    make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings", talent.lycaras_teachings )
-      ->set_quiet( true )
-      ->set_tick_zero( true )
-      ->set_period( 5.25_s )
-      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        buff_t* new_buff;
-
-        switch( get_form() )
-        {
-          case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-          case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
-          case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
-          case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
-          default: return;
-        }
-
-        if ( !new_buff->check() )
-        {
-          buff.lycaras_teachings_haste->expire();
-          buff.lycaras_teachings_crit->expire();
-          buff.lycaras_teachings_vers->expire();
-          buff.lycaras_teachings_mast->expire();
-
-          new_buff->trigger();
-        }
-      } );
-
   buff.matted_fur = make_fallback<matted_fur_buff_t>( talent.matted_fur.ok(), this, "matted_fur" );
 
   buff.moonkin_form = make_fallback<moonkin_form_buff_t>( spec.moonkin_form->ok(), this, "moonkin_form" );
@@ -12010,13 +11981,35 @@ void druid_t::precombat_init()
 
   start_buff( buff.blood_frenzy );
   start_buff( buff.elunes_favored );
-  start_buff( buff.lycaras_teachings );
   start_buff( buff.natures_balance );
   start_buff( buff.predator );
   start_buff( buff.shooting_stars_moonfire );
   start_buff( buff.shooting_stars_sunfire );
   start_buff( buff.treants_of_the_moon );
   start_buff( buff.yseras_gift );
+
+  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    buff_t* new_buff;
+
+    switch( get_form() )
+    {
+      case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+      case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
+      case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
+      case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
+      default: return;
+    }
+
+    if ( !new_buff->check() )
+    {
+      buff.lycaras_teachings_haste->expire();
+      buff.lycaras_teachings_crit->expire();
+      buff.lycaras_teachings_vers->expire();
+      buff.lycaras_teachings_mast->expire();
+
+      new_buff->trigger();
+    }
+  } );
 }
 
 // druid_t::combat_begin (called after precombat apl before default apl)=======
