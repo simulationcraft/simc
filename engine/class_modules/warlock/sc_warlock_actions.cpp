@@ -1175,9 +1175,8 @@ using namespace helpers;
     {
       auto mul = warlock_spell_t::dot_duration_pct_multiplier( s );
 
-      // 2024-07-06 Due to issues in core, doing this would double count the duration reduction. Most likely needs updating once that is changed
-      //if ( p()->buffs.nightfall->check() )
-        //mul *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
+      if ( p()->buffs.nightfall->check() )
+        mul *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
 
       return mul;
     }
