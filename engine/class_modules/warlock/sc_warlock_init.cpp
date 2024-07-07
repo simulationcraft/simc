@@ -105,11 +105,11 @@ namespace warlock
 
     talents.improved_shadow_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shadow Bolt" ); // Should be ID 453080
 
-    talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
-    talents.shadow_embrace_debuff = find_spell( 32390 );
-
     talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
     talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
+
+    talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
+    talents.shadow_embrace_debuff = find_spell( 32390 );
 
     talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
     talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
