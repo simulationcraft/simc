@@ -2169,7 +2169,9 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodthirst_unhinged", p );
+      std::string s = "reap_the_storm_";
+      s += name;
+      reap_the_storm = get_action<reap_the_storm_t>( s, p );
       add_child( reap_the_storm );
     }
   }
@@ -2361,7 +2363,9 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodbath_unhinged", p );
+      std::string s = "reap_the_storm_";
+      s += name;
+      reap_the_storm = get_action<reap_the_storm_t>( s, p );
       add_child( reap_the_storm );
     }
   }
