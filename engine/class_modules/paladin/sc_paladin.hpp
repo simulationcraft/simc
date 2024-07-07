@@ -1019,7 +1019,7 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
 {
   paladin_t* caster;
   holy_bulwark_absorb_t( paladin_td_t* td )
-    : absorb_buff_t( td->target, "holy_bulwark_absorb_"+td->target->name_str,
+    : absorb_buff_t( td->target, "holy_bulwark_absorb_" + td->source->name_str + "_" + td->target->name_str,
                      debug_cast<paladin_t*>( td->source )->spells.lightsmith.holy_bulwark_absorb )
   {
     caster                   = debug_cast<paladin_t*>( td->source );
