@@ -36,8 +36,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.drain_soul.ok() ? p.talents.shadow_embrace_debuff_ds : p.talents.shadow_embrace_debuff_sb )
                                ->set_default_value_from_effect( 1 );
 
-  debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
-                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
+  debuffs_infirmity = make_buff( *this, "infirmity", p.talents.infirmity_debuff )
+                          ->set_default_value( p.talents.infirmity_debuff->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Demonology
@@ -215,7 +215,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( talents.shadow_embrace.ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
 
-    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    if ( talents.infirmity.ok() )
       m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
@@ -299,11 +299,8 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.shadow_embrace.ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
 
-    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) && !guardian )
-    {
-      // TOCHECK: Guardian effect is missing from spell data as of 2023-04-04
-      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
-    }
+    if ( talents.infirmity.ok() && !guardian )
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value(); // Guardian effect is missing from spell data. Last checked 2024-07-07
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )

@@ -1328,14 +1328,6 @@ using namespace helpers;
         execute_action->dual = true;
         execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
       }
-
-      void last_tick( dot_t* d ) override
-      {
-        warlock_spell_t::last_tick( d );
-
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-          td( d->target )->debuffs_infirmity->expire();
-      }
     };
     
     vile_taint_t( warlock_t* p, util::string_view options_str )
@@ -1350,9 +1342,6 @@ using namespace helpers;
       bool fresh_agony = !td( s->target )->dots_agony->is_ticking();
 
       warlock_spell_t::impact( s );
-
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-        td( s->target )->debuffs_infirmity->trigger();
 
       if ( p()->talents.infirmity.ok() && fresh_agony )
         td( s->target )->dots_agony->increment( p()->talents.infirmity->effectN( 1 ).base_value() );
@@ -1393,7 +1382,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( p()->talents.infirmity.ok() )
         td( s->target )->debuffs_infirmity->trigger();
     }
 
@@ -1401,8 +1390,7 @@ using namespace helpers;
     {
       warlock_spell_t::last_tick( d );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-        td( d->target )->debuffs_infirmity->expire();
+      td( d->target )->debuffs_infirmity->expire();
     }
   };
 

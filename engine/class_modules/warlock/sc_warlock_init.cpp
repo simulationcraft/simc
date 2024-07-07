@@ -152,9 +152,6 @@ namespace warlock
     talents.dark_harvest_buff = find_spell( 387018 );
 
     // Additional Tier Set spell data
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.infirmity = find_spell( 409765 );
   }
 
   void warlock_t::init_spells_demonology()

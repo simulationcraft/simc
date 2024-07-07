@@ -49,7 +49,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
+  propagate_const<buff_t*> debuffs_infirmity;
 
   // Demo
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
@@ -469,7 +469,6 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
 
     // Demonology
 
