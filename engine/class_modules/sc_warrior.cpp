@@ -139,6 +139,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_punish;
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_marked_for_execution;
+  buff_t* debuffs_overwhelmed;
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -439,6 +440,7 @@ public:
     // Slayer
     const spell_data_t* marked_for_execution_debuff;
     const spell_data_t* slayers_strike;
+    const spell_data_t* overwhelmed_debuff;
 
     // Mountain Thane
   } spell;
@@ -788,8 +790,8 @@ public:
     struct slayer_talents_t
     {
       player_talent_t slayers_dominance;
-      player_talent_t imminent_demise; // NYI
-      player_talent_t overwhelming_blades; // NYI
+      player_talent_t imminent_demise;
+      player_talent_t overwhelming_blades;
       player_talent_t relentless_pursuit; // NYI
       player_talent_t vicious_agility; // NYI
       player_talent_t death_drive; // NYI
@@ -1129,6 +1131,8 @@ public:
                           effect_mask_t( false ).enable( 2, 3 ) );
     }
 
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
+                          p()->spell.overwhelmed_debuff );
 
     // Mountain Thane
   }
@@ -2509,6 +2513,16 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.slayer.overwhelming_blades->ok() )
+    {
+      td( state->target )->debuffs_overwhelmed->trigger();
+    }
   }
 
   void execute() override
@@ -6577,6 +6591,7 @@ void warrior_t::init_spells()
   // Slayer Spells
   spell.marked_for_execution_debuff = find_spell( 445584 );
   spell.slayers_strike              = find_spell( 445579 );
+  spell.overwhelmed_debuff          = find_spell( 445836 );
 
   // Mountain Thane Spells
 
@@ -7323,6 +7338,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   // Slayer
   debuffs_marked_for_execution = make_buff( *this, "marked_for_execution", p.spell.marked_for_execution_debuff );
+  debuffs_overwhelmed          = make_buff( *this, "overwhelmed", p.spell.overwhelmed_debuff );
 
   // Mountain Thane
 }
@@ -8786,6 +8802,9 @@ void warrior_t::parse_player_effects()
   {
     parse_effects( spec.protection_warrior );
   }
+
+  parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
+                         spell.overwhelmed_debuff );
 }
 
 void warrior_t::apply_affecting_auras( action_t& action )
