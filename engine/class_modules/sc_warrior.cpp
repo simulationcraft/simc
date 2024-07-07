@@ -352,6 +352,7 @@ public:
     cooldown_t* champions_spear;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
+    cooldown_t* reap_the_storm_icd;
   } cooldown;
 
   // Gains
@@ -444,6 +445,7 @@ public:
     const spell_data_t* marked_for_execution_debuff;
     const spell_data_t* slayers_strike;
     const spell_data_t* overwhelmed_debuff;
+    const spell_data_t* reap_the_storm;
 
     // Mountain Thane
   } spell;
@@ -1538,6 +1540,19 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   }
 };
 
+// Reap the Storm ===========================================================
+
+struct reap_the_storm_t : public warrior_attack_t
+{
+  reap_the_storm_t( util::string_view name, warrior_t* p ) : warrior_attack_t( name, p, p->spell.reap_the_storm )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = p->talents.slayer.reap_the_storm->effectN( 1 ).base_value();
+    weapon = &( p->main_hand_weapon );
+  }
+};
+
 // Devastate ================================================================
 
 struct devastate_t : public warrior_attack_t
@@ -2076,13 +2091,15 @@ struct bloodthirst_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  action_t* reap_the_storm;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      reap_the_storm( nullptr )
   {
     parse_options( options_str );
 
@@ -2107,6 +2124,12 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodthirst", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -2142,6 +2165,12 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodthirst_unhinged", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -2242,13 +2271,15 @@ struct bloodbath_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  action_t* reap_the_storm;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      reap_the_storm( nullptr )
   {
     parse_options( options_str );
 
@@ -2280,6 +2311,12 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodbath", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -2320,6 +2357,12 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodbath_unhinged", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -2391,6 +2434,15 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   bool ready() override
@@ -2411,12 +2463,14 @@ struct mortal_strike_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   warrior_attack_t* rend_dot;
+  action_t* reap_the_storm;
   mortal_strike_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-      rend_dot( nullptr )
+      rend_dot( nullptr ),
+      reap_the_storm( nullptr )
   {
     parse_options( options_str );
 
@@ -2424,6 +2478,11 @@ struct mortal_strike_t : public warrior_attack_t
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     impact_action    = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_mortal_strike", p );
+      add_child( reap_the_storm );
+    }
   }
 
   // This version is used for unhinged and other background actions
@@ -2438,6 +2497,13 @@ struct mortal_strike_t : public warrior_attack_t
     impact_action = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
     internal_cooldown->duration = 0_s;
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      std::string s = "reap_the_storm_";
+      s += name;
+      reap_the_storm = get_action<reap_the_storm_t>( s, p );
+      add_child( reap_the_storm );
+    }
   }
 
   double action_multiplier() const override
@@ -2492,6 +2558,15 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.brutal_finish->expire();
 
     p()->buff.fierce_followthrough->expire();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2937,11 +3012,13 @@ struct cleave_t : public warrior_attack_t
   double cost_rage;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
+  action_t* reap_the_storm;
   cleave_t( warrior_t* p, util::string_view options_str ) 
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
     fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
+    rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
+    reap_the_storm( nullptr )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -2953,6 +3030,11 @@ struct cleave_t : public warrior_attack_t
       fervor_slam                               = new slam_t( "slam_cleave_fervor_of_battle", p );
       fervor_slam->from_Fervor                  = true;
       add_child( fervor_slam );
+    }
+    if ( p->talents.slayer.reap_the_storm->ok() )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_cleave", p );
+      add_child( reap_the_storm );
     }
   }
 
@@ -3002,6 +3084,15 @@ struct cleave_t : public warrior_attack_t
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 };
 
@@ -6649,6 +6740,7 @@ void warrior_t::init_spells()
   spell.marked_for_execution_debuff = find_spell( 445584 );
   spell.slayers_strike              = find_spell( 445579 );
   spell.overwhelmed_debuff          = find_spell( 445836 );
+  spell.reap_the_storm              = find_spell( 446005 );
 
   // Mountain Thane Spells
 
@@ -7044,6 +7136,8 @@ void warrior_t::init_spells()
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
+  cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
+  cooldown.reap_the_storm_icd -> duration   = talents.slayer.reap_the_storm->internal_cooldown();
 }
 
 // warrior_t::init_items ===============================================
