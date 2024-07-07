@@ -404,6 +404,7 @@ public:
     buff_t* call_of_the_wild;
     buff_t* dire_pack;
     buff_t* beast_cleave; 
+    buff_t* explosive_venom;
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -652,7 +653,7 @@ public:
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
     spell_data_ptr_t hunters_prey;
-    spell_data_ptr_t venoms_bite; // NYI - Kill Shot applies Serpent Sting for 18 seconds.
+    spell_data_ptr_t venoms_bite;
 
     spell_data_ptr_t stomp;
     spell_data_ptr_t kindred_spirits;
@@ -670,7 +671,7 @@ public:
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t explosive_venom; // NYI - Every 5 cast of Explosive Shot or Multi-Shot will apply Serpent Sting to targets hit
+    spell_data_ptr_t explosive_venom;
     spell_data_ptr_t basilisk_collar; // NYI - Each damage over time effect on a target increases teh damage they receive from your pet's attacks by 5%
 
     spell_data_ptr_t call_of_the_wild;
@@ -3399,50 +3400,6 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 };
 
-// Explosive Shot  ====================================================================
-
-struct explosive_shot_t : public hunter_ranged_attack_t
-{
-  struct damage_t final : hunter_ranged_attack_t
-  {
-    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
-    {
-      aoe = -1;
-      background = dual = true;
-    }
-  };
-
-  explosive_shot_t( hunter_t* p, util::string_view options_str )
-    : hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212431 ) )
-  {
-    parse_options( options_str );
-
-    if ( !p -> talents.explosive_shot -> ok() )
-      background = true;
-
-    may_miss = may_crit = false;
-
-    tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
-    tick_action -> reduced_aoe_targets = data().effectN( 2 ).base_value();
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot -> time_to_next_tick() + triggered_duration;
-  }
-};
-
-struct explosive_shot_background_t : public explosive_shot_t
-{
-  size_t targets = 0;
-
-  explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
-  {
-    dual = true;
-    base_costs[ RESOURCE_FOCUS ] = 0;
-  }
-};
-
 // Serpent Sting =====================================================================
 
 struct serpent_sting_base_t: public hunter_ranged_attack_t
@@ -3525,6 +3482,116 @@ struct serpent_sting_t final : public serpent_sting_base_t
   {
   }
 };
+
+// Explosive Venom (Talent)
+struct serpent_sting_explosive_venom_t final : public serpent_sting_base_t
+{
+  serpent_sting_explosive_venom_t( util::string_view /*name*/, hunter_t* p ):
+    serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+  {
+    dual = true;
+    base_costs[ RESOURCE_FOCUS ] = 0;
+  }
+};
+
+// Explosive Shot  ====================================================================
+
+struct explosive_shot_t : public hunter_ranged_attack_t
+{
+  struct damage_t final : hunter_ranged_attack_t
+  {
+    struct state_data_t
+    {
+      bool explosive_venom_ready = false;
+
+      friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+        fmt::format_to( out, "explosive_venom_ready={:d}", data.explosive_venom_ready );
+      }
+    };
+    using state_t = hunter_action_state_t<state_data_t>;
+
+    serpent_sting_explosive_venom_t* serpent_sting;
+
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
+    {
+      aoe = -1;
+      background = dual = true;
+
+      serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      if ( p() -> talents.explosive_venom.ok() && debug_cast<state_t*>( s ) -> explosive_venom_ready ) 
+      {
+        serpent_sting -> execute_on_target( s -> target );
+      }
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    void snapshot_state( action_state_t* s, result_amount_type type ) override
+    {
+      hunter_ranged_attack_t::snapshot_state( s, type );
+      debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
+    }
+  };
+
+  explosive_shot_t( hunter_t* p, util::string_view options_str )
+    : hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212431 ) )
+  {
+    parse_options( options_str );
+
+    if ( !p -> talents.explosive_shot -> ok() )
+      background = true;
+
+    may_miss = may_crit = false;
+
+    tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
+    tick_action -> reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+    
+    if ( p() -> talents.explosive_venom.ok() ) 
+    {
+      p() -> buffs.explosive_venom -> up(); //Benefit tracking
+      if( p() -> buffs.explosive_venom -> at_max_stacks() )
+      {
+        p() -> buffs.explosive_venom -> expire();
+        p() -> buffs.explosive_venom -> increment();
+      }
+      else 
+      {
+        p() -> buffs.explosive_venom -> increment();
+      }
+    }
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot -> time_to_next_tick() + triggered_duration;
+  }
+};
+
+struct explosive_shot_background_t : public explosive_shot_t
+{
+  size_t targets = 0;
+
+  explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
+  {
+    dual = true;
+    base_costs[ RESOURCE_FOCUS ] = 0;
+  }
+};
+
 
 // Kill Shot =========================================================================
 
@@ -4079,6 +4146,18 @@ struct shadow_surge_t final : hunter_ranged_attack_t
 
 struct multishot_bm_t: public hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    bool explosive_venom_ready = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "explosive_venom_ready={:d}", data.explosive_venom_ready );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
+  serpent_sting_explosive_venom_t* serpent_sting;
+
   multishot_bm_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_bm )
   {
@@ -4086,6 +4165,8 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 1 ).base_value();
+
+    serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
   }
 
   void execute() override
@@ -4109,6 +4190,21 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     {
       p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
     }
+
+
+    if ( p() -> talents.explosive_venom.ok() ) 
+    {
+      p() -> buffs.explosive_venom -> up(); //Benefit tracking
+      if( p() -> buffs.explosive_venom -> at_max_stacks() ) 
+      {
+        p() -> buffs.explosive_venom -> expire();
+        p() -> buffs.explosive_venom -> increment();
+      }
+      else 
+      {
+        p() -> buffs.explosive_venom -> increment();
+      }
+    }
   }
 
   void impact(action_state_t* s) override
@@ -4120,6 +4216,22 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       p()->actions.shadow_surge->execute_on_target( s->target );
       p()->cooldowns.shadow_surge->start();
     }
+
+    if ( p() -> talents.explosive_venom.ok() && debug_cast<state_t*>( s ) -> explosive_venom_ready ) 
+    {
+      serpent_sting -> execute_on_target( s -> target );
+    }
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    hunter_ranged_attack_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
   }
 };
 
@@ -7632,8 +7744,8 @@ void hunter_t::create_buffs()
   buffs.windrunners_guidance = 
     make_buff( this, "windrunners_guidance", find_spell( 424571 ) )
       -> set_default_value( talents.windrunners_guidance -> effectN( 3 ).base_value() );
-  // Beast Mastery Tree
 
+  // Beast Mastery Tree
   const spell_data_t* barbed_shot = find_spell( 246152 );
   for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
   {
@@ -7734,6 +7846,10 @@ void hunter_t::create_buffs()
   buffs.beast_cleave = 
     make_buff( this, "beast_cleave", find_spell( 268877 ) )
     -> apply_affecting_effect( talents.beast_cleave -> effectN( 2 ) );
+
+  buffs.explosive_venom = 
+    make_buff( this, "explosive_venom", find_spell( 459689 ) )
+    -> set_default_value_from_effect( 1 );
 
   // Survival
 
