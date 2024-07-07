@@ -2738,7 +2738,7 @@ struct bladestorm_t : public warrior_attack_t
       bladestorm_oh->execute();
     }
     // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
-    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 1 == 0 ) )
+    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 2 == 1 ) )
     {
       auto t = p() -> target;
       if ( ! p() -> target || p() -> target->is_sleeping() )
