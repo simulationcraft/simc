@@ -108,6 +108,8 @@ namespace warlock
     talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
     talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
 
+    talents.summoners_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Summoner's Embrace" ); // Should be ID 453105
+
     talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
     talents.shadow_embrace_debuff = find_spell( 32390 );
 

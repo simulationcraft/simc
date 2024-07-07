@@ -276,6 +276,10 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + warlock_base.affliction_warlock->effectN( guardian ? 7 : 3 ).percent();
+
+    // 2024-07-06 Summoner's Embrace only affects main pet
+    if ( !guardian && talents.summoners_embrace.ok() )
+      m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   }
 
   return m;

@@ -19,6 +19,8 @@ using namespace helpers;
       bool potent_afflictions_td = false;
       bool potent_afflictions_dd = false;
       bool creeping_death = false;
+      bool summoners_embrace_dd = false;
+      bool summoners_embrace_td = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -56,6 +58,8 @@ using namespace helpers;
       affected_by.potent_afflictions_td = data().affected_by( p->warlock_base.potent_afflictions->effectN( 1 ) );
       affected_by.potent_afflictions_dd = data().affected_by( p->warlock_base.potent_afflictions->effectN( 2 ) );
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
+      affected_by.summoners_embrace_dd = data().affected_by( p->talents.summoners_embrace->effectN( 1 ) );
+      affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
@@ -221,6 +225,9 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_dd )
         m *= 1.0 + p()->cache.mastery_value();
 
+      if ( affliction() && affected_by.summoners_embrace_dd )
+        m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -230,6 +237,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.potent_afflictions_td )
         m *= 1.0 + p()->cache.mastery_value();
+
+      if ( affliction() && affected_by.summoners_embrace_td )
+        m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
       return m;
     }

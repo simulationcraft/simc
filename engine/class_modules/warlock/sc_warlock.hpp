@@ -191,7 +191,7 @@ public:
     player_talent_t improved_shadow_bolt;
     player_talent_t drain_soul; // This represents the talent node but not much else
     const spell_data_t* drain_soul_dot; // Contains all channel data
-    player_talent_t summoners_embrace; // TODO: New
+    player_talent_t summoners_embrace;
     // Grimoire of Sacrifice (shared with Destruction)
     player_talent_t phantom_singularity;
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
