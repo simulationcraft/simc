@@ -517,7 +517,7 @@ public:
       player_talent_t aldrachi_tactics;
       player_talent_t army_unto_oneself;     // No Implementation
       player_talent_t incorruptible_spirit;  // NYI
-      player_talent_t wounded_quarry;        // NYI
+      player_talent_t wounded_quarry;
 
       player_talent_t incisive_blade;
       player_talent_t keen_engagement;
