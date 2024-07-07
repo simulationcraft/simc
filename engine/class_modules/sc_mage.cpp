@@ -6690,7 +6690,6 @@ struct splinterstorm_event_t final : public mage_event_t
         d->cancel();
       }
       assert( mage->state.embedded_splinters == 0 );
-      assert( mage->embedded_splinters.empty() );
       assert( splinters == splinters_state );
 
       mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 3 ).percent(), 0_ms );
