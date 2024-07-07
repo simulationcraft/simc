@@ -178,9 +178,9 @@ public:
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
-    player_talent_t dark_virtuosity;
+    player_talent_t dark_virtuosity; // Note: Spell data contains multiplier on Drain Soul direct damage as well, which doesn't exist
     player_talent_t absolute_corruption;
-    player_talent_t siphon_life; // TODO: Now a passive, not an ability
+    player_talent_t siphon_life;
     player_talent_t kindled_malice;
 
     player_talent_t nightfall;
@@ -409,7 +409,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -421,7 +421,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;

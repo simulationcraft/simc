@@ -518,8 +518,12 @@ using namespace helpers;
           dot_duration = sim->expected_iteration_time > 0_ms
             ? 2 * sim->expected_iteration_time
             : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "Infinite" duration
-          base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
+
+          base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2024-07-06: Only tick damage is affected
         }
+
+        base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
 
         triggers.shadow_invocation_tick = true;
       }
@@ -581,6 +585,9 @@ using namespace helpers;
         spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
         base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
       }
+
+      base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -595,6 +602,7 @@ using namespace helpers;
       triggers.shadow_invocation_direct = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
 
       if ( demonology() )
       {
@@ -812,6 +820,8 @@ using namespace helpers;
       {
         background = dual = true;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -998,6 +1008,8 @@ using namespace helpers;
         corr->background = true;
         corr->dual = true;
         corr->base_costs[ RESOURCE_MANA ] = 0;
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent(); // TOCHECK: 2024-07-05 This is still in effect on Beta
       }
 
       void impact( action_state_t* s ) override
@@ -1130,6 +1142,7 @@ using namespace helpers;
       channeled = true;
 
       base_td_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 3 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
     }
 
     action_state_t* new_state() override
