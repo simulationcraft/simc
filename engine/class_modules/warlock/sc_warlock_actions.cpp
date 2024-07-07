@@ -518,7 +518,8 @@ using namespace helpers;
           dot_duration = sim->expected_iteration_time > 0_ms
             ? 2 * sim->expected_iteration_time
             : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "Infinite" duration
-          base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
+
+          base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2024-07-06: Only tick damage is affected
         }
 
         triggers.shadow_invocation_tick = true;
