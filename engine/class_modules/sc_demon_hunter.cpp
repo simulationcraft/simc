@@ -3416,32 +3416,11 @@ struct infernal_strike_t : public demon_hunter_spell_t
 {
   struct infernal_strike_impact_t : public demon_hunter_spell_t
   {
-    sigil_of_flame_damage_t* sigil;
-
     infernal_strike_impact_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact ), sigil( nullptr )
+      : demon_hunter_spell_t( name, p, p->spec.infernal_strike_impact )
     {
       background = dual = true;
       aoe               = -1;
-
-      /* NYI
-      if ( p->talent.abyssal_strike->ok() )
-      {
-        timespan_t sigil_delay = p->talent.demon_hunter.sigil_of_flame->duration() -
-          p->talent.demon_hunter.quickened_sigils->effectN( 1 ).time_value();
-        sigil = p->get_background_action<sigil_of_flame_damage_t>( "abyssal_strike", sigil_delay );
-      }
-      */
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-
-      if ( sigil )
-      {
-        sigil->place_sigil( execute_state->target );
-      }
     }
   };
 
