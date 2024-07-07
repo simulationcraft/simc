@@ -255,6 +255,9 @@ public:
   // Ground AoE tracking
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
+  // Winter's Chill tracking
+  std::vector<action_t*> winters_chill_consumers;
+
   // Data collection
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
 
@@ -2570,7 +2573,11 @@ struct frost_mage_spell_t : public mage_spell_t
   void init_finished() override
   {
     if ( consumes_winters_chill )
+    {
       proc_winters_chill_consumed = p()->get_proc( fmt::format( "Winter's Chill stacks consumed by {}", data().name_cstr() ) );
+      assert( !range::contains( p()->winters_chill_consumers, this ) );
+      p()->winters_chill_consumers.push_back( this );
+    }
 
     if ( track_shatter && sim->report_details != 0 )
       shatter_source = p()->get_shatter_source( name_str );
@@ -6264,6 +6271,25 @@ struct splinter_t final : public mage_spell_t
     return am;
   }
 
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( splinterstorm && p()->specialization() == MAGE_FROST )
+    {
+      timespan_t delay = timespan_t::from_seconds( travel_delay );
+      delay += 100_ms; // Add some leeway to account for different travel speeds
+      make_event( *sim, delay, [ this, t = target ]
+      {
+        int wc = 2;
+        // TODO: Only consider spells that impact after the splinter does
+        for ( auto a : p()->winters_chill_consumers )
+          wc -= as<int>( a->has_travel_events_for( t ) );
+        p()->expression_support.remaining_winters_chill = std::max( 0, wc );
+      } );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -8540,7 +8566,7 @@ void mage_t::trigger_splinter( player_t* target, int count )
     int per_conjure = ( buffs.icy_veins->check() || buffs.arcane_surge->check() ) && rng().roll( chance ) ? 2 : 1;
     for ( int j = 0; j < per_conjure; j++ )
     {
-      make_event( sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
+      make_event( *sim, [ this, t = t_ ] { action.splinter->execute_on_target( t ); } );
       buffs.unerring_proficiency->trigger();
     }
   }
