@@ -752,6 +752,10 @@ public:
   int holy_power_generators_used;
   int melee_swing_count;
 
+  // Helper variables to not always RNG the correct target
+  player_t* random_weapon_target;
+  player_t* random_bulwark_target;
+
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
   virtual void init_assessors() override;

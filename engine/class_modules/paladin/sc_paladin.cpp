@@ -32,6 +32,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER ),
     next_armament( HOLY_BULWARK ),
     lights_deliverance_triggered_during_ready( false ),
+    random_weapon_target( nullptr ),
+    random_bulwark_target( nullptr ),
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 )
 {
@@ -2411,37 +2413,77 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
 
   if (random)
   {
-    nextArmament = active.armament[ rng().range( 2 ) ];
+    usedArmament = (armament)rng().range( 2 );
+    nextArmament = active.armament[ usedArmament ];
   }
 
-  if ( target == this )
-  {
-    nextArmament->target = target;
-    nextArmament->execute();
-  }
-  else
-    nextArmament->execute_on_target( target );
+  nextArmament->execute_on_target( target );
   sim->print_debug( "Player {} cast Holy Armaments on {}", name(), target->name() );
 
   if ( talents.lightsmith.solidarity->ok() )
   {
     if ( target != this )
     {
-      nextArmament->execute();
+      nextArmament->execute_on_target( this );
       sim->print_debug( "Player {} cast Holy Armaments on self via Solidarity", name() );
     }
-    else
+    else if ( sim->player_no_pet_list.size() > 1 )
     {
-      // ToDo (Fluttershy): Solidarity seems to have a priority list on who it targets, for now we just take the first non-sleeping
-      // actor. It could also target pets
-      for ( auto& _p : sim->player_no_pet_list )
+
+      // We do not know who to cast Weapon/Bulwark randomly on. Determine it
+      if ( random_weapon_target == nullptr )
       {
-        if ( _p->is_sleeping() || _p == this )
-          continue;
-        nextArmament->execute_on_target( _p );
-        sim->print_debug( "Player {} cast Holy Armaments on {} via Solidarity", name(), _p->name() );
-        break;
+        player_t* first_dps = nullptr;
+        player_t* first_healer = nullptr;
+        player_t* first_tank   = nullptr;
+        for ( auto& _p : sim->player_no_pet_list )
+        {
+          if ( _p->is_sleeping() || _p == this )
+            continue;
+
+          switch (_p->role)
+          {
+            case ROLE_ATTACK:
+              if ( first_dps == nullptr )
+                first_dps = _p;
+              break;
+            case ROLE_HEAL:
+              if ( first_healer == nullptr )
+                first_healer = _p;
+              break;
+            case ROLE_TANK:
+              if ( first_tank == nullptr )
+                first_tank = _p;
+              break;
+          }
+        }
+        if ( first_dps != nullptr )
+          random_weapon_target = first_dps;
+        else if ( first_healer != nullptr )
+          random_weapon_target = first_healer;
+        else
+          random_weapon_target = first_tank;
+
+        if ( first_tank != nullptr )
+          random_bulwark_target = first_tank;
+        else if ( first_healer != nullptr )
+          random_bulwark_target = first_healer;
+        else
+          random_bulwark_target = first_dps;
       }
+      if ( usedArmament == SACRED_WEAPON )
+      {
+        nextArmament->execute_on_target( random_weapon_target );
+        sim->print_debug( "Player {} cast Holy Armaments (Sacred Weapon) on {} via Solidarity", name(),
+                          random_weapon_target->name() );
+      }
+      else
+      {
+        nextArmament->execute_on_target( random_bulwark_target );
+        sim->print_debug( "Player {} cast Holy Armaments (Holy Bulwark) on {} via Solidarity", name(),
+                          random_bulwark_target->name() );
+      }
+        
     }
   }
   if ( changeArmament )
@@ -2455,7 +2497,7 @@ dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source
   sacred_weapon_proc->init();
 
   auto sacred_weapon_effect      = new special_effect_t( target );
-  sacred_weapon_effect->name_str = "sacred_weapon_cb_" + target->name_str;
+  sacred_weapon_effect->name_str       = "sacred_weapon_cb_" + source->name_str + "_" + target->name_str;
   sacred_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
   sacred_weapon_effect->spell_id = 432502;
   sacred_weapon_effect->execute_action = sacred_weapon_proc;
@@ -3059,7 +3101,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );
-  buffs.sacred_weapon = make_buff( *this, "sacred_weapon_ally", paladin->find_spell( 432502 ) );
+  buffs.sacred_weapon = make_buff( *this, "sacred_weapon_" + paladin->name_str + "_" + target->name_str, paladin->find_spell( 432502 ) );
 
   if ( !target->is_enemy() && target != paladin )
   {
@@ -3331,6 +3373,8 @@ void paladin_t::reset()
   holy_power_generators_used = 0;
   melee_swing_count = 0;
   lights_deliverance_triggered_during_ready = false;
+  random_weapon_target = nullptr;
+  random_bulwark_target = nullptr;
 }
 
 // paladin_t::init_gains ====================================================
