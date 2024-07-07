@@ -523,6 +523,7 @@ using namespace helpers;
         }
 
         base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
 
         triggers.shadow_invocation_tick = true;
       }
@@ -586,6 +587,7 @@ using namespace helpers;
       }
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -818,6 +820,8 @@ using namespace helpers;
       {
         background = dual = true;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -1004,6 +1008,8 @@ using namespace helpers;
         corr->background = true;
         corr->dual = true;
         corr->base_costs[ RESOURCE_MANA ] = 0;
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent(); // TOCHECK: 2024-07-05 This is still in effect on Beta
       }
 
       void impact( action_state_t* s ) override

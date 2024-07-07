@@ -421,7 +421,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
