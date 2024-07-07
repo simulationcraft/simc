@@ -576,7 +576,7 @@ public:
     spell_data_ptr_t kill_command;
 
     // MM + BM
-    spell_data_ptr_t barrage; //TODO Verify functionality remains same for BM/MM
+    spell_data_ptr_t barrage;
 
     // MM + SV
 
@@ -594,7 +594,7 @@ public:
 
     spell_data_ptr_t penetrating_shots; // NYI - Gain critical strike damage equal to 20% of your critical strike chance.
     spell_data_ptr_t trick_shots;
-    spell_data_ptr_t master_marksman; // Verify functionality remains same
+    spell_data_ptr_t master_marksman;
 
     spell_data_ptr_t fan_the_hammer; // NYI - Rapid Fire shoots 3 additional shots 
     spell_data_ptr_t careful_aim;
@@ -643,7 +643,7 @@ public:
     spell_data_ptr_t war_orders;
     spell_data_ptr_t thrill_of_the_hunt;
 
-    spell_data_ptr_t go_for_the_throat; // NYI - Kill Command deals increased critical strike damage equal to 100% of your critical strike chance
+    spell_data_ptr_t go_for_the_throat;
     spell_data_ptr_t multishot_bm;
     spell_data_ptr_t laceration; // NYI - When your pets critically strike, they cause their target to bleed for 15% of the damage dealt over 6 sec.
 
@@ -1042,7 +1042,7 @@ public:
         affected_by.serrated_shots = true;
     }
 
-    affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ));
+    affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
     affected_by.sniper_training       = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
     affected_by.t29_mm_4pc            = check_affected_by( this, p -> tier_set.t29_mm_4pc -> effectN( 1 ).trigger() -> effectN( 1 ) );
@@ -2238,6 +2238,21 @@ public:
       killer_instinct.multiplier = 1 + ab::o() -> talents.killer_instinct -> effectN( 1 ).percent();
       killer_instinct.benefit = ab::o() -> get_benefit( "killer_instinct" );
     }
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( ab::o() -> talents.go_for_the_throat.ok() )
+    {
+      //TODO Why does Animal Companion have 2% less crit than main pet?
+      //TODO Is there a better way of getting the crit chance, since Thrill of the Hunt doesn't affect this?
+      double cc = ab::composite_crit_chance() - ab::o() -> buffs.thrill_of_the_hunt -> check_stack_value();
+      cm *= 1 + ab::o() -> talents.go_for_the_throat -> effectN( 2 ).percent() * cc;
+    }
+
+    return cm;
   }
 
   double composite_target_multiplier( player_t* t ) const override
