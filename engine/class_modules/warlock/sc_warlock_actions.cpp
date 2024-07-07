@@ -522,6 +522,8 @@ using namespace helpers;
           base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2024-07-06: Only tick damage is affected
         }
 
+        base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+
         triggers.shadow_invocation_tick = true;
       }
 
@@ -582,6 +584,8 @@ using namespace helpers;
         spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
         base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
       }
+
+      base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override

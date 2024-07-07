@@ -180,7 +180,7 @@ public:
 
     player_talent_t dark_virtuosity; // Note: Spell data contains multiplier on Drain Soul direct damage as well, which doesn't exist
     player_talent_t absolute_corruption;
-    player_talent_t siphon_life; // TODO: Now a passive, not an ability
+    player_talent_t siphon_life;
     player_talent_t kindled_malice;
 
     player_talent_t nightfall;
@@ -421,7 +421,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
