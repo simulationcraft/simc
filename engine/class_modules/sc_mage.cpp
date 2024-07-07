@@ -2963,7 +2963,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       consume_nether_precision();
       if ( p()->talents.dematerialize.ok() )
         p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( p()->target );
+      p()->trigger_splinter( target );
     }
 
     if ( p()->buffs.leydrinker->check() )
@@ -3094,7 +3094,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       make_event( *sim, 15_ms, [ this ] { consume_nether_precision(); } );
       if ( p()->talents.dematerialize.ok() )
         p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( p()->target );
+      p()->trigger_splinter( target );
     }
 
     if ( p()->buffs.leydrinker->check() )
