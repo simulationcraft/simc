@@ -2889,6 +2889,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       background = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
+      triggers.clearcasting = TO_ALWAYS;
     }
   }
 
