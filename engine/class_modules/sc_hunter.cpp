@@ -572,8 +572,8 @@ public:
     
     // Shared
     // BM + SV
-    spell_data_ptr_t alpha_predator; // TODO Verify functionality remains same for BM/SV
-    spell_data_ptr_t kill_command; //TODO Verify functionality remains same for BM/SV
+    spell_data_ptr_t alpha_predator; 
+    spell_data_ptr_t kill_command;
 
     // MM + BM
     spell_data_ptr_t barrage; //TODO Verify functionality remains same for BM/MM
@@ -2295,13 +2295,13 @@ struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
   }
 };
 
-struct kill_command_bm_mm_t: public kill_command_base_t<hunter_main_pet_base_t>
+struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
 {
   struct {
     double chance = 0;
   } dire_command;
 
-  kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
+  kill_command_bm_t( hunter_main_pet_base_t* p ) :
     kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
   }
@@ -2732,8 +2732,8 @@ void hunter_main_pet_base_t::init_spells()
 {
   stable_pet_t::init_spells();
 
-  if ( o() -> specialization() == HUNTER_BEAST_MASTERY || o() -> specialization() == HUNTER_MARKSMANSHIP )
-    active.kill_command = new actions::kill_command_bm_mm_t( this );
+  if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
+    active.kill_command = new actions::kill_command_bm_t( this );
   else if ( o() -> specialization() == HUNTER_SURVIVAL )
     active.kill_command = new actions::kill_command_sv_t( this );
 
