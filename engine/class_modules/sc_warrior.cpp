@@ -294,6 +294,7 @@ public:
     // Slayer
     buff_t* imminent_demise;
     buff_t* brutal_finish;
+    buff_t* fierce_followthrough;
 
     // Mountain Thane
   } buff;
@@ -769,6 +770,24 @@ public:
       player_talent_t dominance_of_the_colossus; // NYI
     } colossus;
 
+    struct slayer_talents_t
+    {
+      player_talent_t slayers_dominance;
+      player_talent_t imminent_demise;
+      player_talent_t overwhelming_blades;
+      player_talent_t relentless_pursuit; // NYI
+      player_talent_t vicious_agility; // NYI
+      player_talent_t death_drive; // NYI
+      player_talent_t culling_cyclone;
+      player_talent_t brutal_finish;
+      player_talent_t fierce_followthrough;
+      player_talent_t opportunist; // NYI
+      player_talent_t show_no_mercy;
+      player_talent_t reap_the_storm; // NYI
+      player_talent_t slayers_malice; // NYI
+      player_talent_t unrelenting_onslaught; // NYI
+    } slayer;
+
     struct mountain_thane_talents_t
     {
       player_talent_t lightning_strikes; // NYI
@@ -787,24 +806,6 @@ public:
       player_talent_t burst_of_power; // NYI
       player_talent_t avatar_of_the_storm; // NYI
     } mountain_thane;
-
-    struct slayer_talents_t
-    {
-      player_talent_t slayers_dominance;
-      player_talent_t imminent_demise;
-      player_talent_t overwhelming_blades;
-      player_talent_t relentless_pursuit; // NYI
-      player_talent_t vicious_agility; // NYI
-      player_talent_t death_drive; // NYI
-      player_talent_t culling_cyclone;
-      player_talent_t brutal_finish; // NYI
-      player_talent_t fierce_followthrough; // NYI
-      player_talent_t opportunist; // NYI
-      player_talent_t show_no_mercy;
-      player_talent_t reap_the_storm; // NYI
-      player_talent_t slayers_malice; // NYI
-      player_talent_t unrelenting_onslaught; // NYI
-    } slayer;
 
     struct shared_talents_t
     {
@@ -1080,6 +1081,7 @@ public:
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
+    parse_effects( p()->buff.fierce_followthrough );
 
     // Mountain Thane
   }
@@ -2179,6 +2181,10 @@ struct bloodthirst_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
       p() -> cooldown.cold_steel_hot_blood_icd->start();
     }
+
+    // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+      make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
   }
 
   void execute() override
@@ -2209,6 +2215,8 @@ struct bloodthirst_t : public warrior_attack_t
     {
       p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
     }
+
+    p()->buff.fierce_followthrough->expire();
   }
 
   bool ready() override
@@ -2352,6 +2360,10 @@ struct bloodbath_t : public warrior_attack_t
     {
       p()->cooldown.cold_steel_hot_blood_icd->start();
     }
+
+    // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+      make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
   }
 
   void execute() override
@@ -2373,6 +2385,8 @@ struct bloodbath_t : public warrior_attack_t
         p()->enrage();
       }
     }
+
+    p()->buff.fierce_followthrough->expire();
   }
 
   bool ready() override
@@ -2472,6 +2486,8 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.martial_prowess->expire();
 
     p()->buff.brutal_finish->expire();
+
+    p()->buff.fierce_followthrough->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2493,6 +2509,10 @@ struct mortal_strike_t : public warrior_attack_t
       rend_dot->set_target( s->target );
       rend_dot->execute();
     }
+
+    // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+      make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
   }
 
   bool ready() override
@@ -6877,6 +6897,22 @@ void warrior_t::init_spells()
   talents.colossus.mountain_of_muscle_and_scars = find_talent_spell( talent_tree::HERO, "Mountain of Muscle and Scars" );
   talents.colossus.dominance_of_the_colossus    = find_talent_spell( talent_tree::HERO, "Dominance of the Colossus" );
 
+  // Slayer Hero Talents
+  talents.slayer.slayers_dominance     = find_talent_spell( talent_tree::HERO, "Slayer's Dominance" );
+  talents.slayer.imminent_demise       = find_talent_spell( talent_tree::HERO, "Imminent Demise" );
+  talents.slayer.overwhelming_blades   = find_talent_spell( talent_tree::HERO, "Overwhelming Blades" );
+  talents.slayer.relentless_pursuit    = find_talent_spell( talent_tree::HERO, "Relentless Pursuit" );
+  talents.slayer.vicious_agility       = find_talent_spell( talent_tree::HERO, "Vicious Agility" );
+  talents.slayer.death_drive           = find_talent_spell( talent_tree::HERO, "Death Drive" );
+  talents.slayer.culling_cyclone       = find_talent_spell( talent_tree::HERO, "Culling Cyclone" );
+  talents.slayer.brutal_finish         = find_talent_spell( talent_tree::HERO, "Brutal Finish" );
+  talents.slayer.fierce_followthrough  = find_talent_spell( talent_tree::HERO, "Fierce Followthrough" );
+  talents.slayer.opportunist           = find_talent_spell( talent_tree::HERO, "Opportunist" );
+  talents.slayer.show_no_mercy         = find_talent_spell( talent_tree::HERO, "Show No Mercy" );
+  talents.slayer.reap_the_storm        = find_talent_spell( talent_tree::HERO, "Reap the Storm" );
+  talents.slayer.slayers_malice        = find_talent_spell( talent_tree::HERO, "Slayer's Malice" );
+  talents.slayer.unrelenting_onslaught = find_talent_spell( talent_tree::HERO, "Unrelenting Onslaught" );
+
   // Mountain Thane Hero Talents
   talents.mountain_thane.lightning_strikes            = find_talent_spell( talent_tree::HERO, "Lightning Strikes" );
   talents.mountain_thane.crashing_thunder             = find_talent_spell( talent_tree::HERO, "Crashing Thunder" );
@@ -6893,22 +6929,6 @@ void warrior_t::init_spells()
   talents.mountain_thane.thorims_might                = find_talent_spell( talent_tree::HERO, "Thorim's Might" );
   talents.mountain_thane.burst_of_power               = find_talent_spell( talent_tree::HERO, "Burts of Power" );
   talents.mountain_thane.avatar_of_the_storm          = find_talent_spell( talent_tree::HERO, "Avatar of the Storm" );
-
-  // Slayer Hero Talents
-  talents.slayer.slayers_dominance     = find_talent_spell( talent_tree::HERO, "Slayer's Dominance" );
-  talents.slayer.imminent_demise       = find_talent_spell( talent_tree::HERO, "Imminent Demise" );
-  talents.slayer.overwhelming_blades   = find_talent_spell( talent_tree::HERO, "Overwhelming Blades" );
-  talents.slayer.relentless_pursuit    = find_talent_spell( talent_tree::HERO, "Relentless Pursuit" );
-  talents.slayer.vicious_agility       = find_talent_spell( talent_tree::HERO, "Vicious Agility" );
-  talents.slayer.death_drive           = find_talent_spell( talent_tree::HERO, "Death Drive" );
-  talents.slayer.culling_cyclone       = find_talent_spell( talent_tree::HERO, "Culling Cyclone" );
-  talents.slayer.brutal_finish         = find_talent_spell( talent_tree::HERO, "Brutal Finish" );
-  talents.slayer.fierce_followthrough  = find_talent_spell( talent_tree::HERO, "Fierce Followthrough" );
-  talents.slayer.opportunist           = find_talent_spell( talent_tree::HERO, "Opportunist" );
-  talents.slayer.show_no_mercy         = find_talent_spell( talent_tree::HERO, "Show No Mercy" );
-  talents.slayer.reap_the_storm        = find_talent_spell( talent_tree::HERO, "Reap the Storm" );
-  talents.slayer.slayers_malice        = find_talent_spell( talent_tree::HERO, "Slayer's Malice" );
-  talents.slayer.unrelenting_onslaught = find_talent_spell( talent_tree::HERO, "Unrelenting Onslaught" );
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
 
@@ -7633,8 +7653,9 @@ void warrior_t::create_buffs()
   // Colossus
 
   // Slayer
-  buff.imminent_demise = make_buff( this, "imminent_demise", find_spell( 445606 ) );
-  buff.brutal_finish   = make_buff( this, "brutal_finish", find_spell( 446918 ) );
+  buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
+  buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
+  buff.fierce_followthrough = make_buff( this, "fierce_followthrough", find_spell( 458689 ) );
 
   // Mountain Thane
 }
