@@ -775,7 +775,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
   }
 
   // TODO: Remove apply_affectings and move to affected_by in actions
-  action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
   action.apply_affecting_aura( talents.xavius_gambit );
 }

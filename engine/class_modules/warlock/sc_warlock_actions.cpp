@@ -595,6 +595,7 @@ using namespace helpers;
       triggers.shadow_invocation_direct = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
 
       if ( demonology() )
       {
@@ -1130,6 +1131,7 @@ using namespace helpers;
       channeled = true;
 
       base_td_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 3 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
     }
 
     action_state_t* new_state() override
