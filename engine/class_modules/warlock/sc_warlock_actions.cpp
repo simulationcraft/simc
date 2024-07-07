@@ -925,7 +925,7 @@ using namespace helpers;
       may_crit = false;
 
       dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
-      dot_max_stack += as<int>( p->talents.writhe_in_agony->effectN( 1 ).base_value() ); // TOCHECK: Moved this from init(), is this ok?
+      dot_max_stack += as<int>( p->talents.writhe_in_agony->effectN( 1 ).base_value() );
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
@@ -1045,8 +1045,7 @@ using namespace helpers;
 
       // Targeting behavior appears to be as follows:
       // 1. If any targets have no current seed (in flight or ticking), they are valid
-      // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
-      // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
+      // 2. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
       bool valid_target = false;
       for ( auto t : tl )
       {

@@ -54,9 +54,6 @@ namespace warlock
     warlock_t::init_spells_destruction();
 
     // Talents
-    talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
-    talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
-
     talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
     talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
     talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
@@ -86,11 +83,14 @@ namespace warlock
     talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
     talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
     talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
-  
+    
+    talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
+
+    talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
+    talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
+    
     talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
     talents.nightfall_buff = find_spell( 264571 );
-
-    talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
 
     talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
     talents.shadow_embrace_debuff = find_spell( 32390 );
