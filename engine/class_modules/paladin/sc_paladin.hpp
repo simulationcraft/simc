@@ -256,6 +256,7 @@ public:
       buff_t* morning_star;
       buff_t* gleaming_rays;
       buff_t* solar_grace;
+      buff_t* morning_star_driver;
     } herald_of_the_sun;
 
   } buffs;
@@ -338,6 +339,9 @@ public:
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
     cooldown_t* radiant_glory_icd;
+
+    cooldown_t* aurora_icd;
+    cooldown_t* second_sunrise_icd;
 
     cooldown_t* eye_of_tyr;          // Light's Deliverance
     cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
@@ -436,6 +440,11 @@ public:
       const spell_data_t* empyrean_hammer;
       const spell_data_t* empyrean_hammer_wd; // Wrathful Descent triggered damage
     } templar;
+
+    struct
+    {
+      const spell_data_t* gleaming_rays;
+    } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;
   } spells;
@@ -1121,6 +1130,7 @@ public:
       divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
+    bool gleaming_rays; // Herald of the Sun
   } affected_by;
 
   // haste scaling bools
@@ -1219,6 +1229,15 @@ public:
     else
     {
       this->affected_by.divine_arbiter = false;
+    }
+
+    if ( p->talents.herald_of_the_sun.gleaming_rays->ok() )
+    {
+      this->affected_by.gleaming_rays = this->data().affected_by( p->spells.herald_of_the_sun.gleaming_rays->effectN( 1 ) );
+    }
+    else
+    {
+      this->affected_by.gleaming_rays = false;
     }
   }
 
@@ -1327,6 +1346,11 @@ public:
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
+
+    if ( affected_by.gleaming_rays && p()->buffs.herald_of_the_sun.gleaming_rays->up() )
+    {
+      am *= 1.0 + p()->spells.herald_of_the_sun.gleaming_rays->effectN( 1 ).percent();
+    }
 
     if ( p()->specialization() == PALADIN_RETRIBUTION )
     {

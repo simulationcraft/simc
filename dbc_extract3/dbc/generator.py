@@ -1606,6 +1606,7 @@ class SpellDataGenerator(DataGenerator):
             ( 431382 , 0),          # Dawnlight aoe healing
             ( 431399 , 0),          # Dawnlight aoe damage
             ( 449198 , 0),          # Highlord's Judgment hidden spell
+            ( 431568 , 0),          # Morning Star driver
         ),
 
         # Hunter:

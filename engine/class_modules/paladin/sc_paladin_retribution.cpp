@@ -421,13 +421,13 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
 struct divine_storm_echo_t : public paladin_melee_attack_t
 {
   divine_storm_echo_tempest_t* tempest;
-  divine_storm_echo_t( paladin_t* p )
+  divine_storm_echo_t( paladin_t* p, double multiplier )
     : paladin_melee_attack_t( "divine_storm_echo", p, p->talents.divine_storm ), tempest( nullptr )
   {
     background = true;
 
     aoe = -1;
-    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    base_multiplier *= multiplier;
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
 
@@ -450,10 +450,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_tempest_t* tempest;
   divine_storm_echo_t* echo;
+  divine_storm_echo_t* sunrise_echo;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr ), echo( nullptr )
+    tempest( nullptr ), echo( nullptr ), sunrise_echo( nullptr )
   {
     parse_options( options_str );
 
@@ -470,10 +471,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
     }
+
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
     {
-      echo = new divine_storm_echo_t( p );
+      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() );
       add_child( echo );
+    }
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      add_child( sunrise_echo );
     }
   }
 
@@ -493,10 +501,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
     }
+
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
     {
-      echo = new divine_storm_echo_t( p );
+      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() );
       add_child( echo );
+    }
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      add_child( sunrise_echo );
     }
   }
 
@@ -524,6 +539,16 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p()->buffs.echoes_of_wrath->expire();
       echo->start_action_execute_event( 700_ms ); // Maybe this 700ms is Echoes of Wrath effect 2? It's more like 600-700ms
+    }
+
+    if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
+    {
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
+      {
+        p()->cooldowns.second_sunrise_icd->start();
+        // TODO(mserrano): validate the correct delay here
+        sunrise_echo->start_action_execute_event( 200_ms );
+      }
     }
 
     if ( p()->buffs.inquisitors_ire->up() )
@@ -1106,8 +1131,9 @@ struct wake_of_ashes_t : public paladin_spell_t
       }
     }
 
-    if ( p()->talents.herald_of_the_sun.aurora->ok() )
+    if ( p()->talents.herald_of_the_sun.aurora->ok() && p()->cooldowns.aurora_icd->up() )
     {
+      p()->cooldowns.aurora_icd->start();
       p()->buffs.divine_purpose->trigger();
     }
   }

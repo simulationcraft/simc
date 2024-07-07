@@ -31,9 +31,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     beacon_target( nullptr ),
     next_season( SUMMER ),
     next_armament( HOLY_BULWARK ),
+    lights_deliverance_triggered_during_ready( false ),
     holy_power_generators_used( 0 ),
-    melee_swing_count( 0 ),
-    lights_deliverance_triggered_during_ready( false )
+    melee_swing_count( 0 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -55,7 +55,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
 
-  
   cooldowns.avengers_shield                   = get_cooldown( "avengers_shield" );
   cooldowns.consecration                      = get_cooldown( "consecration" );
   cooldowns.inner_light_icd                   = get_cooldown( "inner_light_icd" );
@@ -67,7 +66,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.guardian_of_ancient_kings         = get_cooldown( "guardian_of_ancient_kings" );
   cooldowns.ardent_defender                   = get_cooldown( "ardent_defender" );
   cooldowns.eye_of_tyr                        = get_cooldown( "eye_of_tyr" );
-  
 
   cooldowns.blade_of_justice = get_cooldown( "blade_of_justice" );
   cooldowns.final_reckoning  = get_cooldown( "final_reckoning" );
@@ -94,6 +92,12 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.hammerfall_icd           = get_cooldown( "hammerfall_icd" );
   cooldowns.hammerfall_icd->duration = find_spell( 432463 )->internal_cooldown();
+
+  cooldowns.aurora_icd = get_cooldown( "aurora_icd" );
+  cooldowns.aurora_icd->duration = find_spell( 439760 )->internal_cooldown();
+
+  cooldowns.second_sunrise_icd = get_cooldown( "second_sunrise_icd" );
+  cooldowns.second_sunrise_icd->duration = find_spell( 431474 )->internal_cooldown();
 
   cooldowns.art_of_war = get_cooldown( "art_of_war" );
   cooldowns.art_of_war->duration = find_spell( 406064 )->internal_cooldown();
@@ -562,7 +566,7 @@ struct consecration_t : public paladin_spell_t
       }
       p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
       p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
-      
+
       // Healing events come before Consecration cast
       for (auto friendly : healingAllies)
       {
@@ -2002,7 +2006,7 @@ struct rite_of_adjuration_t : public weapon_enchant_t
 };
 
 struct hammer_and_anvil_t : public paladin_spell_t
-{ 
+{
   // ToDo (Fluttershy): Find out how Hammer and Anvil behaves above 5 targets
   hammer_and_anvil_t( paladin_t* p )
     : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
@@ -2011,7 +2015,7 @@ struct hammer_and_anvil_t : public paladin_spell_t
     may_miss                     = false;
     aoe                          = -1;
    }
-   
+
 };
 
 struct divine_guidance_damage_t : public paladin_spell_t
@@ -2290,7 +2294,7 @@ void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
 {
   if ( !talents.templar.lights_deliverance->ok() || !buffs.templar.lights_deliverance->at_max_stacks() )
     return;
-  
+
   // Light's Deliverance does not trigger while EoT/Wake cooldown is ready to be used
   if ( ( specialization() == PALADIN_PROTECTION && cooldowns.eye_of_tyr->up() ) ||
        ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
@@ -2458,7 +2462,7 @@ dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source
 
   target->special_effects.push_back( sacred_weapon_effect );
 
-  return new dbc_proc_callback_t( target, *sacred_weapon_effect ); 
+  return new dbc_proc_callback_t( target, *sacred_weapon_effect );
 }
 
 void paladin_t::trigger_laying_down_arms()
@@ -2468,9 +2472,9 @@ void paladin_t::trigger_laying_down_arms()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    buffs.shining_light_free->trigger(); 
+    buffs.shining_light_free->trigger();
   }
-  else if (specialization() == PALADIN_HOLY) 
+  else if (specialization() == PALADIN_HOLY)
   {
     buffs.infusion_of_light->trigger();
   }
@@ -2481,8 +2485,19 @@ void paladin_t::trigger_laying_down_arms()
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
+private:
+  hammer_of_wrath_t* echo;
+
+  hammer_of_wrath_t( paladin_t* p )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
+      echo( nullptr )
+  {
+    background = true;
+  }
+public:
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
+      echo( nullptr )
   {
     parse_options( options_str );
 
@@ -2519,6 +2534,12 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
     }
     triggers_higher_calling = true;
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      echo = new hammer_of_wrath_t( p );
+      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2540,11 +2561,31 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       p()->buffs.final_verdict->expire();
     }
     p()->buffs.templar.endless_wrath->expire();
+
+    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+    {
+      p()->buffs.herald_of_the_sun.blessing_of_anshe->expire();
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    if ( p()->buffs.herald_of_the_sun.blessing_of_anshe->up() )
+    {
+      am *= 1.0 + p()->buffs.herald_of_the_sun.blessing_of_anshe->data().effectN( 1 ).percent();
+    }
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
 
     if ( p()->talents.zealots_paragon->ok() )
     {
@@ -2601,6 +2642,19 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       p()->active.sun_sear->target = s->target;
       p()->active.sun_sear->execute();
+    }
+
+    if ( echo != nullptr &&
+        s->chain_target == 0 &&
+        p()->cooldowns.second_sunrise_icd->up() )
+    {
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
+      {
+        p()->cooldowns.second_sunrise_icd->start();
+        // TODO(mserrano): verify this delay
+        echo->target = s->target;
+        echo->start_action_execute_event( 200_ms );
+      }
     }
 
     if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
@@ -2761,11 +2815,56 @@ struct sacred_word_t : public paladin_heal_t
 };
 
 // TODO: friendly dawnlights
+// TODO(mserrano): dawnlight cleave
 struct dawnlight_t : public paladin_spell_t
 {
   dawnlight_t( paladin_t* p ) : paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) )
   {
     background = true;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( p()->talents.herald_of_the_sun.solar_grace->ok() )
+      p()->buffs.herald_of_the_sun.solar_grace->trigger();
+
+    if ( p()->buffs.herald_of_the_sun.morning_star->up() )
+      p()->buffs.herald_of_the_sun.morning_star->expire();
+
+    if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
+      p()->buffs.herald_of_the_sun.gleaming_rays->trigger();
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double cpm = paladin_spell_t::composite_persistent_multiplier( s );
+
+    if ( p()->buffs.herald_of_the_sun.morning_star->up() )
+      cpm *= 1.0 + p()->buffs.herald_of_the_sun.morning_star->stack_value();
+
+    return cpm;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    paladin_spell_t::last_tick( d );
+
+    if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
+    {
+      unsigned num_dawnlights = p()->get_active_dots( d );
+      if ( num_dawnlights == 0 )
+      {
+        p()->buffs.herald_of_the_sun.gleaming_rays->expire();
+      }
+    }
+
+    if ( p()->talents.herald_of_the_sun.lingering_radiance->ok() )
+    {
+      paladin_td_t* target_data = td( d->target );
+      target_data->debuff.judgment->trigger();
+    }
   }
 };
 
@@ -3064,7 +3163,7 @@ void paladin_t::create_actions()
   active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
   active.seasons[ WINTER ] = new blessing_of_winter_t( this );
   active.seasons[ SPRING ] = new blessing_of_spring_t( this );
-  
+
   active.armament[ HOLY_BULWARK ]  = new holy_bulwark_t( this );
   active.armament[ SACRED_WEAPON ] = new sacred_weapon_t( this );
 
@@ -3475,7 +3574,7 @@ void paladin_t::create_buffs()
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_default_value_from_effect( 1 );
 
-  buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) ) 
+  buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) )
                                  ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
                                    if ( b->at_max_stacks() )
                                    {
@@ -3485,8 +3584,15 @@ void paladin_t::create_buffs()
 
   buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
 
-  buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) );
-  buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", find_spell( 431481 ) );
+  buffs.herald_of_the_sun.morning_star_driver = make_buff( this, "morning_star_driver", find_spell( 431568 ) )
+    ->set_period( timespan_t::from_seconds( 5.0 ) ) // TODO(mserrano) grab from spell data
+    ->set_quiet( true )
+    ->set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.herald_of_the_sun.morning_star->trigger(); })
+    ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+  buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) )
+    ->set_default_value_from_effect( 1 );
+  buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", spells.herald_of_the_sun.gleaming_rays )
+    ->set_duration( timespan_t::zero() ); // infinite duration
   auto blessing_of_anshe_id = specialization() == PALADIN_RETRIBUTION ? 445206 : 445204;
   buffs.herald_of_the_sun.blessing_of_anshe = make_buff( this, "blessing_of_anshe", find_spell( blessing_of_anshe_id ) );
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
@@ -3830,7 +3936,7 @@ void paladin_t::init_spells()
   talents.lightsmith.blessing_of_the_forge  = find_talent_spell( talent_tree::HERO, "Blessing of the Forge" );
 
   talents.templar.lights_guidance         = find_talent_spell( talent_tree::HERO, "Light's Guidance" );
-  
+
   talents.templar.zealous_vindication     = find_talent_spell( talent_tree::HERO, "Zealous Vindication" );
   talents.templar.for_whom_the_bell_tolls = find_talent_spell( talent_tree::HERO, "For Whom the Bell Tolls" );
   talents.templar.shake_the_heavens       = find_talent_spell( talent_tree::HERO, "Shake the Heavens" );
@@ -3882,6 +3988,8 @@ void paladin_t::init_spells()
   spells.templar.hammer_of_light        = find_spell( 429826 );
   spells.templar.empyrean_hammer        = find_spell( 431398 );
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
+
+  spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
@@ -4585,6 +4693,11 @@ void paladin_t::combat_begin()
   {
     buffs.inquisitors_ire_driver->trigger();
   }
+
+  if ( talents.herald_of_the_sun.morning_star->ok() )
+  {
+    buffs.herald_of_the_sun.morning_star_driver->trigger();
+  }
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -4614,8 +4727,8 @@ bool paladin_t::get_how_availability( player_t* t ) const
   // Regardless what buff is up, both Hammer of Wrath Talent and Avenging Wrath Talent have to be talented for Hammer of Wrath to be usable on the target. (You can talent into Crusade/Sentinel without Avenging Wrath)
   // Maybe ToDo: Do the same for Avenging Wrath: Might
   // Moved Hammer of Wrath Check to return value
-  bool buffs_ok = talents.avenging_wrath->ok() && (buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
-  buffs_ok = buffs_ok || buffs.final_verdict->up() || buffs.templar.endless_wrath->up();
+  bool buffs_ok = talents.avenging_wrath->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
+  buffs_ok = buffs_ok || buffs.final_verdict->up() || buffs.templar.endless_wrath->up() || buffs.herald_of_the_sun.blessing_of_anshe->up();
   // Health threshold has to be hardcoded :peepocri:
   return ( buffs_ok || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
 }
