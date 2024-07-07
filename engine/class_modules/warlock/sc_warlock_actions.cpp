@@ -1347,10 +1347,15 @@ using namespace helpers;
 
     void impact( action_state_t* s ) override
     {
+      bool fresh_agony = !td( s->target )->dots_agony->is_ticking();
+
       warlock_spell_t::impact( s );
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
         td( s->target )->debuffs_infirmity->trigger();
+
+      if ( p()->talents.infirmity.ok() && fresh_agony )
+        td( s->target )->dots_agony->increment( p()->talents.infirmity->effectN( 1 ).base_value() );
     }
   };
 

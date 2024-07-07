@@ -208,6 +208,7 @@ public:
     player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
     const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
     player_talent_t infirmity; // TODO: Move from tier sets
+    const spell_data_t* infirmity_debuff;
 
     player_talent_t improved_haunt; // TODO: New
     player_talent_t malediction; // TODO: New
