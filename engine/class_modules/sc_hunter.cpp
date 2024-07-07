@@ -559,6 +559,7 @@ public:
     spell_data_ptr_t bursting_shot; //Verify functionality remains same after move from Marksmanship tree
     spell_data_ptr_t scatter_shot; // NYI - 
     spell_data_ptr_t trigger_finger; //NYI - You have your pet have 2.5% increase attack speed. This effect is increased by 100% if you do not have a pet active.
+    spell_data_ptr_t blackrock_munitions; 
     spell_data_ptr_t keen_eyesight;
 
     spell_data_ptr_t quick_load; //NYI - When you fall below 40% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every 25 sec.
@@ -1068,6 +1069,7 @@ public:
     ab::apply_affecting_aura( p -> talents.born_to_be_wild );
     ab::apply_affecting_aura( p -> talents.arctic_bola );
     ab::apply_affecting_aura( p -> talents.hydras_bite );
+    ab::apply_affecting_aura( p -> talents.blackrock_munitions );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
@@ -7169,6 +7171,7 @@ void hunter_t::init_spells()
   talents.arctic_bola                       = find_talent_spell( talent_tree::CLASS, "Arctic Bola" );
   talents.serrated_shots                    = find_talent_spell( talent_tree::CLASS, "Serrated Shots" );
   talents.death_chakram                     = find_talent_spell( talent_tree::CLASS, "Death Chakram" );
+  talents.steel_trap                        = find_talent_spell( talent_tree::CLASS, "Steel Trap" );
   // END TODO
 
   // Hunter Tree
@@ -7190,7 +7193,7 @@ void hunter_t::init_spells()
   talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
   talents.scatter_shot                      = find_talent_spell( talent_tree::CLASS, "Scatter Shot" );  
   talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
-  talents.steel_trap                        = find_talent_spell( talent_tree::CLASS, "Steel Trap" );
+  talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.keen_eyesight                     = find_talent_spell( talent_tree::CLASS, "Keen Eyesight" );
 
   talents.quick_load                        = find_talent_spell( talent_tree::CLASS, "Quick Load" );
