@@ -188,7 +188,7 @@ public:
     player_talent_t volatile_agony;
     const spell_data_t* volatile_agony_aoe;
 
-    player_talent_t improved_shadow_bolt; // TODO: New
+    player_talent_t improved_shadow_bolt;
     player_talent_t drain_soul; // This represents the talent node but not much else
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
     player_talent_t summoners_embrace; // TODO: New
