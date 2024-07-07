@@ -2596,53 +2596,62 @@ struct disrupt_t : public demon_hunter_spell_t
 
 // Eye Beam =================================================================
 
-struct eye_beam_tick_base_t : public demon_hunter_spell_t
-{
-  eye_beam_tick_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, int reduced_targets )
-    : demon_hunter_spell_t( name, p, s )
-  {
-    background = dual   = true;
-    aoe                 = -1;
-    reduced_aoe_targets = reduced_targets;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = demon_hunter_spell_t::action_multiplier();
-
-    // 2024-07-07 -- Isolated Prey's effect on Eye Beam does not work on live nor beta
-    if ( p()->talent.havoc.isolated_prey->ok() && !p()->bugs )
-    {
-      if ( targets_in_range_list( target_list() ).size() == 1 )
-      {
-        m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
-      }
-    }
-
-    return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
-    // Not a perfect implementation, but closer than the instant execution in current sims
-    return rng().gauss( p()->sim->default_aura_delay );
-  }
-};
-
 struct eye_beam_base_t : public demon_hunter_spell_t
 {
+  struct eye_beam_tick_t : public demon_hunter_spell_t
+  {
+    eye_beam_tick_t( util::string_view name, demon_hunter_t* p, std::string reporting_name, const spell_data_t* s,
+                     int reduced_targets )
+      : demon_hunter_spell_t( name, p, s )
+    {
+      background = dual   = true;
+      aoe                 = -1;
+      name_str_reporting  = reporting_name;
+      reduced_aoe_targets = reduced_targets;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = demon_hunter_spell_t::action_multiplier();
+
+      // 2024-07-07 -- Isolated Prey's effect on Eye Beam does not work on live nor beta
+      if ( p()->talent.havoc.isolated_prey->ok() && !p()->bugs )
+      {
+        if ( targets_in_range_list( target_list() ).size() == 1 )
+        {
+          m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
+        }
+      }
+
+      return m;
+    }
+
+    timespan_t execute_time() const override
+    {
+      // Eye Beam is applied via a player aura and experiences aura delay in applying damage tick events
+      // Not a perfect implementation, but closer than the instant execution in current sims
+      return rng().gauss( p()->sim->default_aura_delay );
+    }
+  };
+
   eye_beam_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : demon_hunter_spell_t( name, p, s, o )
   {
     may_miss            = false;
     channeled           = true;
     tick_on_application = false;
+    cooldown            = p->cooldown.eye_beam;
 
     // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
     //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
     //            nochannel macro
     ability_lag = p->world_lag;
+
+    tick_action = p->get_background_action<eye_beam_tick_t>( name_str + "_tick", name_str, p->spec.eye_beam_damage,
+                                                             as<int>( data().effectN( 5 ).base_value() ) );
+    tick_action->stats = stats;
+
+    // Add damage modifiers in eye_beam_tick_t, not here.
   }
 
   void last_tick( dot_t* d ) override
@@ -2696,30 +2705,11 @@ struct eye_beam_base_t : public demon_hunter_spell_t
   }
 };
 
-struct eye_beam_tick_t : public eye_beam_tick_base_t
-{
-  eye_beam_tick_t( util::string_view name, demon_hunter_t* p )
-    : eye_beam_tick_base_t( name, p, p->spec.eye_beam_damage,
-                            as<int>( p->talent.havoc.eye_beam->effectN( 5 ).base_value() ) )
-  {
-  }
-};
-
-struct abyssal_gaze_tick_t : public eye_beam_tick_base_t
-{
-  abyssal_gaze_tick_t( util::string_view name, demon_hunter_t* p )
-    : eye_beam_tick_base_t( name, p, p->spec.eye_beam_damage,
-                            as<int>( p->hero_spec.abyssal_gaze->effectN( 5 ).base_value() ) )
-  {
-  }
-};
-
 struct eye_beam_t : public eye_beam_base_t
 {
   eye_beam_t( demon_hunter_t* p, util::string_view options_str )
     : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str )
   {
-    tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
   }
 
   bool ready() override
@@ -2735,9 +2725,8 @@ struct eye_beam_t : public eye_beam_base_t
 struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
 {
   abyssal_gaze_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "abyssal_gaze", p, p->talent.havoc.eye_beam, options_str )
+    : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, options_str )
   {
-    tick_action = p->get_background_action<abyssal_gaze_tick_t>( "abyssal_gaze_tick" );
   }
 
   bool ready() override
@@ -2889,23 +2878,26 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
 
 struct fel_devastation_tick_t : public fel_devastation_tick_base_t
 {
-  fel_devastation_tick_t( util::string_view name, demon_hunter_t* p ) : fel_devastation_tick_base_t(name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger())
+  fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
+    : fel_devastation_tick_base_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
   {
   }
 };
 
 struct fel_desolation_tick_t : public fel_devastation_tick_base_t
 {
-  fel_desolation_tick_t( util::string_view name, demon_hunter_t* p ) : fel_devastation_tick_base_t(name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger())
+  fel_desolation_tick_t( util::string_view name, demon_hunter_t* p )
+    : fel_devastation_tick_base_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
   {
   }
 };
 
 struct fel_devastation_t : public fel_devastation_base_t
 {
-  fel_devastation_t( demon_hunter_t* p, util::string_view options_str ) : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str )
+  fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
+    : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str )
   {
-    tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
+    tick_action           = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
     benefits_from_dgb_cdr = true;
   }
 
@@ -2921,9 +2913,10 @@ struct fel_devastation_t : public fel_devastation_base_t
 
 struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DESOLATION, fel_devastation_base_t>
 {
-  fel_desolation_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
+  fel_desolation_t( demon_hunter_t* p, util::string_view options_str )
+    : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
   {
-    tick_action = p->get_background_action<fel_desolation_tick_t>( "fel_desolation_tick" );
+    tick_action           = p->get_background_action<fel_desolation_tick_t>( "fel_desolation_tick" );
     benefits_from_dgb_cdr = !p->bugs;
   }
 
@@ -8136,7 +8129,8 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom_damage =
       talent.felscarred.demonic_intensity->ok() ? find_spell( 462030 ) : spell_data_t::not_found();
   hero_spec.abyssal_gaze = talent.felscarred.demonic_intensity->ok() ? find_spell( 452497 ) : spell_data_t::not_found();
-  hero_spec.fel_desolation = talent.felscarred.demonic_intensity->ok() ? find_spell( 452486 ) : spell_data_t::not_found();
+  hero_spec.fel_desolation =
+      talent.felscarred.demonic_intensity->ok() ? find_spell( 452486 ) : spell_data_t::not_found();
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
