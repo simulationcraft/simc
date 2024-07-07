@@ -612,12 +612,14 @@ using namespace helpers;
       }
     }
 
-    timespan_t execute_time() const override
+    double execute_time_pct_multiplier() const override
     {
-      if ( p()->buffs.nightfall->check() )
-        return 0_ms;
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
-      return warlock_spell_t::execute_time();
+      if ( p()->buffs.nightfall->check() )
+        m *= 1.0 + p()->talents.nightfall_buff->effectN( 1 ).percent();
+
+      return m;
     }
 
     void execute() override
@@ -1111,21 +1113,25 @@ using namespace helpers;
     struct drain_soul_state_t : public action_state_t
     {
       double tick_time_multiplier;
+      double td_multiplier;
 
       drain_soul_state_t( action_t* action, player_t* target )
         : action_state_t( action, target ),
-        tick_time_multiplier( 1.0 )
+        tick_time_multiplier( 1.0 ),
+        td_multiplier( 1.0 )
       { }
 
       void initialize() override
       {
         action_state_t::initialize();
         tick_time_multiplier = 1.0;
+        td_multiplier = 1.0;
       }
 
       std::ostringstream& debug_str( std::ostringstream& s ) override
       {
         action_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
+        action_state_t::debug_str( s ) << " td_multiplier=" << td_multiplier;
         return s;
       }
 
@@ -1133,6 +1139,7 @@ using namespace helpers;
       {
         action_state_t::copy_state( s );
         tick_time_multiplier = debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+        td_multiplier = debug_cast<const drain_soul_state_t*>( s )->td_multiplier;
       }
     };
 
@@ -1151,6 +1158,7 @@ using namespace helpers;
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
       debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0 );
+      debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 2 ).percent() : 0 );
       warlock_spell_t::snapshot_state( s, rt );
     }
 
@@ -1209,6 +1217,15 @@ using namespace helpers;
 
       if ( p()->talents.withering_bolt.ok() )
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
+
+      return m;
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      m *= debug_cast<const drain_soul_state_t*>( s )->td_multiplier;
 
       return m;
     }
