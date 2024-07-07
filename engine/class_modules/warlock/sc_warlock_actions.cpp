@@ -880,8 +880,11 @@ using namespace helpers;
   {
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
+      int target_count;
+
       malefic_rapture_damage_t( warlock_t* p )
-        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg )
+        : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg ),
+        target_count( 0 )
       {
         background = dual = true;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
@@ -897,6 +900,9 @@ using namespace helpers;
 
         if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
+        if ( p()->talents.cull_the_weak.ok() )
+          m *= 1.0 + ( std::min( target_count, as<int>( p()->talents.cull_the_weak->effectN( 2 ).base_value() ) ) * p()->talents.cull_the_weak->effectN( 1 ).percent() );
 
         return m;
       }
@@ -956,6 +962,13 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.tormented_crescendo->decrement();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      debug_cast<malefic_rapture_damage_t*>( impact_action )->target_count = as<int>( s->n_targets );
     }
 
     size_t available_targets( std::vector<player_t*>& tl )

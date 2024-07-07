@@ -215,7 +215,7 @@ public:
     player_talent_t malevolent_visionary;
     const spell_data_t* malevolent_visionary_blast; // Damage proc sourced from player when summoning Darkglare
     player_talent_t contagion;
-    player_talent_t cull_the_weak; // TODO: New
+    player_talent_t cull_the_weak;
 
     player_talent_t creeping_death; 
     player_talent_t soul_rot;
