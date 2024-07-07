@@ -295,6 +295,7 @@ public:
     buff_t* imminent_demise;
     buff_t* brutal_finish;
     buff_t* fierce_followthrough;
+    buff_t* opportunist;
 
     // Mountain Thane
   } buff;
@@ -781,7 +782,7 @@ public:
       player_talent_t culling_cyclone;
       player_talent_t brutal_finish;
       player_talent_t fierce_followthrough;
-      player_talent_t opportunist; // NYI
+      player_talent_t opportunist;
       player_talent_t show_no_mercy;
       player_talent_t reap_the_storm; // NYI
       player_talent_t slayers_malice; // NYI
@@ -1082,6 +1083,7 @@ public:
     // Slayer
     parse_effects( p()->buff.brutal_finish );
     parse_effects( p()->buff.fierce_followthrough );
+    parse_effects( p()->buff.opportunist );
 
     // Mountain Thane
   }
@@ -1388,6 +1390,8 @@ public:
     {
       p()->cooldown.overpower->reset( true );
       p()->proc.tactician->occur();
+      if ( p()->talents.slayer.opportunist->ok() )
+        p()->buff.opportunist->trigger();
     }
   }
 
@@ -4090,6 +4094,8 @@ struct raging_blow_t : public warrior_attack_t
       if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
         {
           cooldown->reset( true );
+          if ( p()->talents.slayer.opportunist->ok() )
+            p()->buff.opportunist->trigger();
         }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() )
@@ -4097,6 +4103,8 @@ struct raging_blow_t : public warrior_attack_t
       if ( rng().roll( cd_reset_chance ) )
         {
           cooldown->reset( true );
+          if ( p()->talents.slayer.opportunist->ok() )
+            p()->buff.opportunist->trigger();
         }
     }
     p()->buff.meat_cleaver->decrement();
@@ -4220,13 +4228,16 @@ struct crushing_blow_t : public warrior_attack_t
       if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
       {
         cooldown->reset( true );
+        if ( p()->talents.slayer.opportunist->ok() )
+          p()->buff.opportunist->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() && rng().roll( cd_reset_chance ) )
     {
       cooldown->reset( true );
+      if ( p()->talents.slayer.opportunist->ok() )
+        p()->buff.opportunist->trigger();
     }
-
 
     p()->buff.crushing_blow->decrement();
     p()->buff.meat_cleaver->decrement();
@@ -7656,6 +7667,7 @@ void warrior_t::create_buffs()
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
   buff.brutal_finish        = make_buff( this, "brutal_finish", find_spell( 446918 ) );
   buff.fierce_followthrough = make_buff( this, "fierce_followthrough", find_spell( 458689 ) );
+  buff.opportunist          = make_buff( this, "opportunist", find_spell( 456120 ) );
 
   // Mountain Thane
 }
