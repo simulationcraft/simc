@@ -1637,10 +1637,9 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 
-    if ( p()->o()->talents.malevolent_visionary.ok() )
-      dot_multiplier += p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
-
     m *= 1.0 + ( dots * dot_multiplier );
+
+    m *= 1.0 + p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
 
     return m;
   }

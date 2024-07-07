@@ -137,6 +137,9 @@ namespace warlock
 
     talents.malediction = find_talent_spell( talent_tree::SPECIALIZATION, "Malediction" ); // Should be ID 453087
 
+    talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
+    talents.malevolent_visionary_blast = find_spell( 453233 );
+
     talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 
     talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
@@ -149,8 +152,6 @@ namespace warlock
 
     talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
     talents.tormented_crescendo_buff = find_spell( 387079 );
-
-    talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
 
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
