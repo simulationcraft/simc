@@ -1398,14 +1398,29 @@ using namespace helpers;
   {
     haunt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
-    { }
+    { base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent(); }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      if ( p()->talents.improved_haunt.ok() )
+        m *= 1.0 + p()->talents.improved_haunt->effectN( 2 ).percent();
+
+      return m;
+    }
 
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
+      {
         td( s->target )->debuffs_haunt->trigger();
+
+        if ( p()->talents.improved_haunt.ok() )
+          td( s->target )->debuffs_shadow_embrace->trigger();
+      }
     }
   };
 
