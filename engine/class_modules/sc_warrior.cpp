@@ -785,7 +785,7 @@ public:
       player_talent_t opportunist;
       player_talent_t show_no_mercy;
       player_talent_t reap_the_storm; // NYI
-      player_talent_t slayers_malice; // NYI
+      player_talent_t slayers_malice;
       player_talent_t unrelenting_onslaught; // NYI
     } slayer;
 
@@ -8931,6 +8931,13 @@ void warrior_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( talents.warrior.one_handed_weapon_specialization );
   }
+
+  // Colossus
+
+  // Slayer
+  action.apply_affecting_aura( talents.slayer.slayers_malice );
+
+  // Mountain Thane
 }
 
 /* Report Extension Class
