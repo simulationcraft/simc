@@ -1626,7 +1626,7 @@ darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
-  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->find_spell( 205231 ) )
+  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->o()->talents.eye_beam )
   { }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -1644,9 +1644,6 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     return m;
   }
-
-  void impact( action_state_t* s ) override
-  { warlock_pet_spell_t::impact( s ); }
 };
 
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )

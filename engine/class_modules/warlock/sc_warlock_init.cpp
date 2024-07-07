@@ -116,20 +116,28 @@ namespace warlock
     talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
     talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
 
+    talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
+
     talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
-    talents.shadow_embrace_debuff = find_spell( 32390 );
+    talents.shadow_embrace_debuff_ds = find_spell( 32390 );
+    talents.shadow_embrace_debuff_sb = find_spell( 453206 );
+
+    talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
+
+    talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare"); // Should be ID 205180
+    talents.eye_beam = find_spell( 205231 );
+
+    talents.cunning_cruelty = find_talent_spell( talent_tree::SPECIALIZATION, "Cunning Cruelty" ); // Should be ID
+    talents.shadow_bolt_volley = find_spell( 453176 );
+
+    talents.infirmity = find_talent_spell( talent_tree::SPECIALIZATION, "Infirmity" ); // Should be ID 458036
+    talents.infirmity_debuff = find_spell( 458219 );
 
     talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 
     talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
-    talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
-
     talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
-
-    talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
-
-    talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
     talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
 
@@ -144,9 +152,6 @@ namespace warlock
     talents.dark_harvest_buff = find_spell( 387018 );
 
     // Additional Tier Set spell data
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.infirmity = find_spell( 409765 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -598,6 +603,7 @@ namespace warlock
   void warlock_t::init_procs_affliction()
   {
     procs.nightfall = get_proc( "nightfall" );
+    procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )

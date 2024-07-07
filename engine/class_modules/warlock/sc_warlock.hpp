@@ -49,7 +49,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
+  propagate_const<buff_t*> debuffs_infirmity;
 
   // Demo
   propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
@@ -198,13 +198,17 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t haunt; // TODO: Shadow Embrace is applied by other talent
-    player_talent_t shadow_embrace; // TODO: Stack count is 2
-    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
+    player_talent_t haunt;
+    player_talent_t shadow_embrace;
+    const spell_data_t* shadow_embrace_debuff_ds; // Drain Soul applies a debuff with 4 stacks, and a 2% base value
+    const spell_data_t* shadow_embrace_debuff_sb; // Shadow Bolt applies a debuff with 2 stacks, and a 4% base value
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
     player_talent_t summon_darkglare;
-    player_talent_t cunning_cruelty; // TODO: New
+    const spell_data_t* eye_beam; // Darkglare pet ability
+    player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
+    const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
     player_talent_t infirmity; // TODO: Move from tier sets
+    const spell_data_t* infirmity_debuff;
 
     player_talent_t improved_haunt; // TODO: New
     player_talent_t malediction; // TODO: New
@@ -422,7 +426,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -465,7 +469,6 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* infirmity; // T30 TODO: Remove after migration to talent
 
     // Demonology
 
@@ -558,6 +561,7 @@ public:
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
+    proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
 
     // Demonology

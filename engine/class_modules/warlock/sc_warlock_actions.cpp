@@ -604,8 +604,22 @@ using namespace helpers;
     { return periodic->get_dot( t ); }
   };
 
+  struct shadow_bolt_volley_t : public warlock_spell_t
+  {
+    shadow_bolt_volley_t( warlock_t* p )
+      : warlock_spell_t( "Shadow Bolt Volley", p, p->talents.shadow_bolt_volley )
+    {
+      background = dual = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.improved_shadow_bolt->effectN( 2 ).percent();
+    }
+  };
+
   struct shadow_bolt_t : public warlock_spell_t
   {
+    shadow_bolt_volley_t* volley;
+
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
@@ -620,6 +634,12 @@ using namespace helpers;
         energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1.0;
+      }
+
+      if ( p->talents.cunning_cruelty.ok() )
+      {
+        volley = new shadow_bolt_volley_t( p );
+        add_child( volley );
       }
     }
 
@@ -662,6 +682,12 @@ using namespace helpers;
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
           }
+        }
+
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        {
+          p()->procs.shadow_bolt_volley->occur();
+          volley->execute_on_target( s->target );
         }
       }
     }
@@ -1187,6 +1213,8 @@ using namespace helpers;
       }
     };
 
+    shadow_bolt_volley_t* volley;
+
     drain_soul_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
     {
@@ -1194,6 +1222,12 @@ using namespace helpers;
 
       base_td_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 3 ).percent();
       base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
+
+      if ( p->talents.cunning_cruelty.ok() )
+      {
+        volley = new shadow_bolt_volley_t( p );
+        add_child( volley );
+      }
     }
 
     action_state_t* new_state() override
@@ -1249,6 +1283,12 @@ using namespace helpers;
             p()->buffs.tormented_crescendo->trigger();
           }
         }
+
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        {
+          p()->procs.shadow_bolt_volley->occur();
+          volley->execute_on_target( d->target );
+        }
       }
     }
 
@@ -1288,14 +1328,6 @@ using namespace helpers;
         execute_action->dual = true;
         execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
       }
-
-      void last_tick( dot_t* d ) override
-      {
-        warlock_spell_t::last_tick( d );
-
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-          td( d->target )->debuffs_infirmity->expire();
-      }
     };
     
     vile_taint_t( warlock_t* p, util::string_view options_str )
@@ -1307,10 +1339,12 @@ using namespace helpers;
 
     void impact( action_state_t* s ) override
     {
+      bool fresh_agony = !td( s->target )->dots_agony->is_ticking();
+
       warlock_spell_t::impact( s );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-        td( s->target )->debuffs_infirmity->trigger();
+      if ( p()->talents.infirmity.ok() && fresh_agony )
+        td( s->target )->dots_agony->increment( p()->talents.infirmity->effectN( 1 ).base_value() );
     }
   };
 
@@ -1348,7 +1382,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      if ( p()->talents.infirmity.ok() )
         td( s->target )->debuffs_infirmity->trigger();
     }
 
@@ -1356,8 +1390,7 @@ using namespace helpers;
     {
       warlock_spell_t::last_tick( d );
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-        td( d->target )->debuffs_infirmity->expire();
+      td( d->target )->debuffs_infirmity->expire();
     }
   };
 
