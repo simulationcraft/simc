@@ -2246,10 +2246,7 @@ public:
 
     if ( ab::o() -> talents.go_for_the_throat.ok() )
     {
-      //TODO Why does Animal Companion have 2% less crit than main pet?
-      //TODO Is there a better way of getting the crit chance, since Thrill of the Hunt doesn't affect this?
-      double cc = ab::composite_crit_chance() - ab::o() -> buffs.thrill_of_the_hunt -> check_stack_value();
-      cm *= 1 + ab::o() -> talents.go_for_the_throat -> effectN( 2 ).percent() * cc;
+      cm *= 1 + ab::o() -> talents.go_for_the_throat -> effectN( 2 ).percent() * ab::o() -> cache.attack_crit_chance();
     }
 
     return cm;
