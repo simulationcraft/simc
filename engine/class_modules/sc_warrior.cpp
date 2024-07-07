@@ -795,7 +795,7 @@ public:
       player_talent_t relentless_pursuit; // NYI
       player_talent_t vicious_agility; // NYI
       player_talent_t death_drive; // NYI
-      player_talent_t culling_cyclone; // NYI
+      player_talent_t culling_cyclone;
       player_talent_t brutal_finish; // NYI
       player_talent_t fierce_followthrough; // NYI
       player_talent_t opportunist; // NYI
@@ -2513,6 +2513,16 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.slayer.culling_cyclone->ok() )
+      m *= 1.0 + ( p()->talents.slayer.culling_cyclone->effectN( 1 ).percent() / p()->sim->target_non_sleeping_list.size() );
+
+    return m;
   }
 
   void impact( action_state_t* state ) override
