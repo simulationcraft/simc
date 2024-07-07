@@ -710,6 +710,7 @@ public:
     const spell_data_t* sigil_of_doom;
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
+    const spell_data_t* fel_desolation;
   } hero_spec;
 
   // Set Bonus effects
@@ -2789,37 +2790,31 @@ struct fel_barrage_t : public demon_hunter_spell_t
 
 // Fel Devastation ==========================================================
 
-struct fel_devastation_t : public demon_hunter_spell_t
+struct fel_devastation_tick_base_t : public demon_hunter_spell_t
 {
-  struct fel_devastation_tick_t : public demon_hunter_spell_t
+  fel_devastation_tick_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+    : demon_hunter_spell_t( name, p, s )
   {
-    fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger() )
-    {
-      background = dual = true;
-      aoe               = -1;
-    }
-  };
+    background = dual = true;
+    aoe               = -1;
+  }
+};
 
+struct fel_devastation_base_t : public demon_hunter_spell_t
+{
   heals::fel_devastation_heal_t* heal;
+  bool benefits_from_dgb_cdr;
 
-  fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str ), heal( nullptr )
+  fel_devastation_base_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : demon_hunter_spell_t( name, p, s, o ), heal( nullptr ), benefits_from_dgb_cdr( false )
   {
     may_miss            = false;
     channeled           = true;
     tick_on_application = false;
 
-    tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
-
-    if ( p->active.collective_anguish )
-    {
-      add_child( p->active.collective_anguish );
-    }
-
     if ( p->spec.fel_devastation_2->ok() )
     {
-      heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
+      heal = p->get_background_action<heals::fel_devastation_heal_t>( name_str + "_heal" );
     }
   }
 
@@ -2847,8 +2842,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
       heal->set_target( player );
       heal->execute();
     }
-
-    p()->trigger_demonsurge( demonsurge_ability::FEL_DESOLATION );
   }
 
   void last_tick( dot_t* d ) override
@@ -2868,9 +2861,12 @@ struct fel_devastation_t : public demon_hunter_spell_t
       double maximum_fury_refund = p()->talent.vengeance.darkglare_boon->effectN( 4 ).base_value();
       double fury_refund         = rng().range( minimum_fury_refund, maximum_fury_refund );
 
-      p()->sim->print_debug( "{} rolled {}s of CDR on Fel Devastation from Darkglare Boon", *p(),
-                             cdr_reduction.total_seconds() );
-      p()->cooldown.fel_devastation->adjust( -cdr_reduction );
+      if ( benefits_from_dgb_cdr )
+      {
+        p()->sim->print_debug( "{} rolled {}s of CDR on Fel Devastation from Darkglare Boon", *p(),
+                               cdr_reduction.total_seconds() );
+        p()->cooldown.fel_devastation->adjust( -cdr_reduction );
+      }
       p()->resource_gain( RESOURCE_FURY, fury_refund, p()->gain.darkglare_boon );
     }
 
@@ -2886,12 +2882,58 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       heal->execute();  // Heal happens before damage
     }
-    else
-    {
-      hit_fodder( true );
-    }
 
     demon_hunter_spell_t::tick( d );
+  }
+};
+
+struct fel_devastation_tick_t : public fel_devastation_tick_base_t
+{
+  fel_devastation_tick_t( util::string_view name, demon_hunter_t* p ) : fel_devastation_tick_base_t(name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger())
+  {
+  }
+};
+
+struct fel_desolation_tick_t : public fel_devastation_tick_base_t
+{
+  fel_desolation_tick_t( util::string_view name, demon_hunter_t* p ) : fel_devastation_tick_base_t(name, p, p->talent.vengeance.fel_devastation->effectN( 1 ).trigger())
+  {
+  }
+};
+
+struct fel_devastation_t : public fel_devastation_base_t
+{
+  fel_devastation_t( demon_hunter_t* p, util::string_view options_str ) : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str )
+  {
+    tick_action = p->get_background_action<fel_devastation_tick_t>( "fel_devastation_tick" );
+    benefits_from_dgb_cdr = true;
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      return false;
+    }
+    return fel_devastation_base_t::ready();
+  }
+};
+
+struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DESOLATION, fel_devastation_base_t>
+{
+  fel_desolation_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
+  {
+    tick_action = p->get_background_action<fel_desolation_tick_t>( "fel_desolation_tick" );
+    benefits_from_dgb_cdr = !p->bugs;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.demonsurge_hardcast->check() )
+    {
+      return false;
+    }
+    return base_t::ready();
   }
 };
 
@@ -6996,6 +7038,8 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
+  if ( name == "fel_desolation" )
+    return new fel_desolation_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( "fiery_brand", this, options_str );
   if ( name == "glaive_tempest" )
@@ -8092,6 +8136,7 @@ void demon_hunter_t::init_spells()
   hero_spec.sigil_of_doom_damage =
       talent.felscarred.demonic_intensity->ok() ? find_spell( 462030 ) : spell_data_t::not_found();
   hero_spec.abyssal_gaze = talent.felscarred.demonic_intensity->ok() ? find_spell( 452497 ) : spell_data_t::not_found();
+  hero_spec.fel_desolation = talent.felscarred.demonic_intensity->ok() ? find_spell( 452486 ) : spell_data_t::not_found();
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
