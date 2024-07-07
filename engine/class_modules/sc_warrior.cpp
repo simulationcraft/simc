@@ -287,6 +287,13 @@ public:
     buff_t* conquerors_banner;
     buff_t* conquerors_frenzy;
     buff_t* conquerors_mastery;
+
+    // Colossus
+
+    // Slayer
+    buff_t* imminent_demise;
+
+    // Mountain Thane
   } buff;
 
   struct rppm_t
@@ -2568,6 +2575,17 @@ struct bladestorm_t : public warrior_attack_t
     p()->buff.bladestorm->trigger();
   }
 
+  timespan_t tick_time ( const action_state_t* s ) const override
+  {
+    auto base_tick_time = warrior_attack_t::tick_time( s );
+
+    // Normally we get 6 ticks of bladestorm, but with imminent demise, we get 1-3 extra ticks, in the same amount of time
+    if ( p() -> talents.slayer.imminent_demise->ok() )
+      base_tick_time *= ( 6.0 / ( 6.0 + p() -> buff.imminent_demise -> stack() ) );
+
+    return base_tick_time;
+  }
+
   void tick( dot_t* d ) override
   {
     // dont tick if BS buff not up
@@ -2620,6 +2638,11 @@ struct bladestorm_t : public warrior_attack_t
     if ( p() -> talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_bladestorm->up() )
     {
       p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
+    }
+
+    if ( p()->talents.slayer.imminent_demise->ok() )
+    {
+      p()->buff.imminent_demise->expire();
     }
   }
 };
@@ -3372,6 +3395,10 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->buff.sudden_death->up() )
     {
       p()->buff.sudden_death->expire();
+      if ( p()->talents.slayer.imminent_demise->ok() )
+      {
+        p()->buff.imminent_demise->trigger();
+      }
     }
     if ( p()->talents.arms.juggernaut.ok() )
     {
@@ -3559,7 +3586,14 @@ struct fury_execute_parent_t : public warrior_attack_t
       oh_attack->execute();
 
     p()->buff.meat_cleaver->decrement();
-    p()->buff.sudden_death->expire();
+    if ( p() -> buff.sudden_death -> up() )
+    {
+      p()->buff.sudden_death->expire();
+      if ( p()->talents.slayer.imminent_demise->ok() )
+      {
+        p()->buff.imminent_demise->trigger();
+      }
+    }
 
     if ( p()->talents.fury.improved_execute->ok() )
     {
@@ -5140,11 +5174,18 @@ struct shockwave_t : public warrior_attack_t
 // Slayer's Strike ==========================================================
 struct slayers_strike_t : public warrior_attack_t
 {
+  int imminent_demise_tracker;
+  int imminent_demise_trigger_threshold;
   slayers_strike_t( warrior_t* p )
-    : warrior_attack_t( "slayers_strike", p, p->spell.slayers_strike )
+    : warrior_attack_t( "slayers_strike", p, p->spell.slayers_strike ),
+    imminent_demise_tracker( 0 ),
+    imminent_demise_trigger_threshold( 0 )
   {
     special = true;
     background = true;
+
+    if( p->talents.slayer.imminent_demise -> ok() )
+      imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* state ) override
@@ -5155,6 +5196,28 @@ struct slayers_strike_t : public warrior_attack_t
     {
       td( state -> target ) -> debuffs_marked_for_execution->trigger();
     }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    {
+      imminent_demise_tracker++;
+      if ( imminent_demise_tracker == imminent_demise_trigger_threshold )
+      {
+        imminent_demise_tracker = 0;
+        p() -> buff.sudden_death -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->cooldown.execute->reset( true );
+      }
+    }
+  }
+
+  void reset() override
+  {
+    warrior_attack_t::reset();
+    imminent_demise_tracker = 0;
   }
 };
 
@@ -7524,6 +7587,13 @@ void warrior_t::create_buffs()
   // Arma: 2022 Nov 4.  Unnerving focus seems to get the value from the parent, not the value set in the buff
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
+
+  // Colossus
+
+  // Slayer
+  buff.imminent_demise = make_buff( this, "imminent_demise", find_spell( 445606 ) );
+
+  // Mountain Thane
 }
 
 // warrior_t::init_finished =============================================
