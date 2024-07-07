@@ -104,7 +104,7 @@ struct cooldown_t
   void add_execute_type( execute_type e )
   { execute_types_mask |= ( 1 << static_cast<unsigned>( e ) ); }
 
-  static timespan_t ready_init()
+  static constexpr timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
 
   static timespan_t cooldown_duration( const cooldown_t* cd );

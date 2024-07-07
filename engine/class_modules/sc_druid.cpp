@@ -2205,7 +2205,8 @@ public:
 
   void update_ready( timespan_t cd ) override
   {
-    if ( max_diff > 0_ms && cd == timespan_t::min() && BASE::cooldown_duration() > 0_ms )
+    if ( max_diff > 0_ms && cd == timespan_t::min() && BASE::cooldown_duration() > 0_ms &&
+         BASE::cooldown->ready != cooldown_t::ready_init() )
     {
       auto diff = std::min( max_diff, BASE::sim->current_time() - BASE::cooldown->ready );
       cd = BASE::cooldown_duration() - diff;
