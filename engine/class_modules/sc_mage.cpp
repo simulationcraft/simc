@@ -6208,7 +6208,7 @@ struct embedded_splinter_t final : public mage_spell_t
     sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
     assert( p()->state.embedded_splinters >= 0 );
 
-    if ( p()->action.volatile_magic )
+    if ( p()->action.volatile_magic && !sim->event_mgr.canceled )
     {
       for ( int i = 0; i < stack; i++ )
         p()->action.volatile_magic->execute_on_target( d->target );
