@@ -293,6 +293,7 @@ public:
 
     // Slayer
     buff_t* imminent_demise;
+    buff_t* brutal_finish;
 
     // Mountain Thane
   } buff;
@@ -1074,6 +1075,13 @@ public:
 
     // Protection
     parse_effects( p()->buff.juggernaut_prot );
+
+    // Colossus
+
+    // Slayer
+    parse_effects( p()->buff.brutal_finish );
+
+    // Mountain Thane
   }
 
   void apply_debuff_effects()
@@ -2462,6 +2470,8 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     p()->buff.martial_prowess->expire();
+
+    p()->buff.brutal_finish->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2667,6 +2677,11 @@ struct bladestorm_t : public warrior_attack_t
     if ( p()->talents.slayer.imminent_demise->ok() )
     {
       p()->buff.imminent_demise->expire();
+    }
+
+    if ( p()->talents.slayer.brutal_finish->ok() )
+    {
+      p()->buff.brutal_finish->trigger();
     }
   }
 };
@@ -4606,6 +4621,7 @@ struct rampage_attack_t : public warrior_attack_t
     {
       p()->buff.meat_cleaver->decrement();
       p()->buff.slaughtering_strikes->expire();
+      p()->buff.brutal_finish->expire();
     }
   }
 
@@ -7618,6 +7634,7 @@ void warrior_t::create_buffs()
 
   // Slayer
   buff.imminent_demise = make_buff( this, "imminent_demise", find_spell( 445606 ) );
+  buff.brutal_finish   = make_buff( this, "brutal_finish", find_spell( 446918 ) );
 
   // Mountain Thane
 }
