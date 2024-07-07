@@ -3613,9 +3613,9 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     p()->buffs.arcane_surge->expire();
     p()->buffs.arcane_surge->trigger();
 
-    arcane_mage_spell_t::execute();
-
     p()->trigger_clearcasting( 1.0, 0_ms );
+
+    arcane_mage_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
