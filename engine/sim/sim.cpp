@@ -1193,72 +1193,72 @@ std::string get_api_key()
 
 /// Setup a periodic check for Bloodlust
 struct bloodlust_check_t : public event_t
- {
-   bloodlust_check_t( sim_t& sim, timespan_t time_until_next_check = timespan_t::from_seconds( 1.0 ) ) :
-     event_t( sim, time_until_next_check )
-   {
-   }
+{
+  bloodlust_check_t( sim_t& sim, timespan_t time_until_next_check = timespan_t::from_seconds( 1.0 ) )
+    : event_t( sim, time_until_next_check )
+  {}
 
-   const char* name() const override
-   { return "Bloodlust Check"; }
+  const char* name() const override
+  {
+    return "Bloodlust Check";
+  }
 
-   void execute() override
-   {
-     sim_t& sim = this -> sim();
-     player_t* t = sim.target;
-     if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
-          ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
-          ( sim.bloodlust_time     >= timespan_t::zero() && sim.current_time() >=  sim.bloodlust_time ) )
-     {
-       if ( ! sim.single_actor_batch )
-       {
-         for ( auto* p : sim.player_non_sleeping_list )
-         {
-            if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
-             continue;
+  void execute() override
+  {
+    sim_t& sim = this->sim();
+    player_t* t = sim.target;
+    if ( ( sim.bloodlust_percent > 0 && t->health_percentage() < sim.bloodlust_percent ) ||
+         ( sim.bloodlust_time < timespan_t::zero() && t->time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
+         ( sim.bloodlust_time >= timespan_t::zero() && sim.current_time() >= sim.bloodlust_time ) )
+    {
+      if ( !sim.single_actor_batch )
+      {
+        for ( auto* p : sim.player_non_sleeping_list )
+        {
+          if ( p->is_pet() || p->buffs.exhaustion->check() )
+            continue;
 
-           p -> buffs.bloodlust -> trigger();
-           p -> buffs.exhaustion -> trigger();
-         }
-       }
-       else
-       {
-         auto p = sim.player_no_pet_list[ sim.current_index ];
-         if ( p )
-         {
-           p -> buffs.bloodlust -> trigger();
-           p -> buffs.exhaustion -> trigger();
-         }
-       }
-     }
-     else
-     {
+          p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
+        }
+      }
+      else
+      {
+        auto p = sim.player_no_pet_list[ sim.current_index ];
+        if ( p )
+        {
+          p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
+        }
+      }
+    }
+    else
+    {
       make_event<bloodlust_check_t>( sim, sim );
-     }
-   }
- };
+    }
+  }
+};
 
 struct heartbeat_event_t : public event_t
- {
-   heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
-   {
-   }
+{
+  heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t ) {}
 
-   const char* name() const override
-   {
-     return "heartbeat_event";
-   }
+  const char* name() const override
+  {
+    return "heartbeat_event";
+  }
 
-   void execute() override
-   {
-     if ( !sim().heartbeat_event_callback_function.empty() )
-     {
+  void execute() override
+  {
+    if ( !sim().heartbeat_event_callback_function.empty() )
+    {
       sim().heartbeat_event_callback();
-     }
+    }
 
-     make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 100 ) ) );
-   }
- };
+    // TODO: possible that there is actually no variance in the period other than log timestamp artifacts
+    make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 25 ) ) );
+  }
+};
 
 // compare_dps ==============================================================
 
@@ -1985,7 +1985,7 @@ void sim_t::combat_begin()
 
   // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
   if ( !heartbeat_event_callback_function.empty() )
-    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
+    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 1, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
 }
