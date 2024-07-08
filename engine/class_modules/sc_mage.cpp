@@ -2893,7 +2893,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       background = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
-      triggers.clearcasting = TO_ALWAYS;
     }
   }
 
@@ -3185,10 +3184,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
-
-    // AE Echo seems to also trigger CC, despite being a background action.
-    if ( type == ae_type::ECHO )
-      triggers.clearcasting = TO_ALWAYS;
 
     if ( type == ae_type::NORMAL )
     {
