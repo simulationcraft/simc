@@ -981,8 +981,17 @@ using namespace helpers;
     }
   };
 
+  struct perpetual_unstability_t : public warlock_spell_t
+  {
+    perpetual_unstability_t( warlock_t* p )
+      : warlock_spell_t( "Perpetual Unstability", p, p->talents.perpetual_unstability_proc )
+    { background = dual = true; }
+  };
+
   struct unstable_affliction_t : public warlock_spell_t
   {
+    perpetual_unstability_t* perpetual_unstability;
+
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
     {
@@ -990,6 +999,21 @@ using namespace helpers;
       base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+
+      if ( p->talents.perpetual_unstability.ok() )
+      {
+        perpetual_unstability = new perpetual_unstability_t( p );
+        add_child( perpetual_unstability );
+      }
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.perpetual_unstability->effectN( 2 ).percent();
+
+      return m;
     }
 
     void execute() override
@@ -1000,6 +1024,17 @@ using namespace helpers;
       p()->ua_target = target;
 
       warlock_spell_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool ticking = td( s->target )->dots_unstable_affliction->is_ticking();
+      timespan_t remains = td( s->target )->dots_unstable_affliction->remains();
+
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.perpetual_unstability.ok() && ticking && remains < timespan_t::from_seconds( p()->talents.perpetual_unstability->effectN( 1 ).base_value() ) )
+        perpetual_unstability->execute_on_target( s->target );
     }
 
     void last_tick( dot_t* d ) override

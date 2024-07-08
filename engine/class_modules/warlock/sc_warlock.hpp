@@ -224,7 +224,8 @@ public:
 
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
-    player_talent_t perpetual_unstability; // TODO: New
+    player_talent_t perpetual_unstability;
+    const spell_data_t* perpetual_unstability_proc;
     player_talent_t malign_omen; // TODO: New
     player_talent_t relinquished; // TODO: New
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
