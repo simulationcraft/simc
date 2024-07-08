@@ -268,9 +268,7 @@ struct eclipse_handler_t
   unsigned starfire_counter_base;
   uint8_t state = 0;
 
-  uptime_t* uptime_lunar = nullptr;
-  uptime_t* uptime_solar = nullptr;
-  uptime_t* uptime_none = nullptr;
+  std::array<uptime_t*, 4> uptimes;
 
   gain_t* ac_gain = nullptr;
   double ac_ap = 0.0;
@@ -291,7 +289,6 @@ struct eclipse_handler_t
   template <eclipse_e E> buff_t* get_boat() const;
   template <eclipse_e E> buff_t* get_harmony() const;
   template <eclipse_e E> buff_t* get_eclipse() const;
-  template <eclipse_e E> uptime_t* get_uptime() const;
   template <eclipse_e E> void advance_eclipse( bool active );
   template <eclipse_e E> void update_eclipse();
 
@@ -12034,18 +12031,7 @@ void druid_t::combat_begin()
   {
     eclipse_handler.reset_stacks();
 
-    if ( eclipse_handler.in_none() )
-    {
-      eclipse_handler.uptime_none->update( true, sim->current_time() );
-    }
-    else
-    {
-      if ( eclipse_handler.in_lunar() )
-        eclipse_handler.uptime_lunar->update( true, sim->current_time() );
-
-      if ( eclipse_handler.in_solar() )
-        eclipse_handler.uptime_solar->update( true, sim->current_time() );
-    }
+    eclipse_handler.uptimes[ eclipse_handler.state ]->update( true, sim->current_time() );
 
     if ( !options.raid_combat )
       in_boss_encounter = 0;
@@ -13045,9 +13031,10 @@ void eclipse_handler_t::init()
   wrath_counter_base = wrath_counter = p->find_spell( 326055 )->max_stacks();
   starfire_counter_base = starfire_counter = p->find_spell( 326056 )->max_stacks();
 
-  uptime_lunar = p->get_uptime( "Lunar Eclipse Only" )->collect_uptime( *p->sim );
-  uptime_solar = p->get_uptime( "Solar Eclipse Only" )->collect_uptime( *p->sim );
-  uptime_none  = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
+  uptimes[ 0 ] = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
+  uptimes[ eclipse_e::LUNAR ] = p->get_uptime( "Lunar Eclipse" )->collect_uptime( *p->sim );
+  uptimes[ eclipse_e::SOLAR ] = p->get_uptime( "Solar Eclipse" )->collect_uptime( *p->sim );
+  uptimes[ 3 ] = p->get_uptime( "Both Eclipses" )->collect_uptime( *p->sim );
 
   wrath_counter_base = starfire_counter_base = as<unsigned>( p->talent.eclipse->effectN( 1 ).base_value() );
 
@@ -13200,17 +13187,6 @@ buff_t* eclipse_handler_t::get_eclipse() const
 }
 
 template <eclipse_e E>
-uptime_t* eclipse_handler_t::get_uptime() const
-{
-  if constexpr ( E == eclipse_e::LUNAR )
-    return uptime_lunar;
-  else if ( E == eclipse_e::SOLAR )
-    return uptime_solar;
-  else
-    return nullptr;
-}
-
-template <eclipse_e E>
 void eclipse_handler_t::advance_eclipse( bool active )
 {
   auto old_state = state;
@@ -13220,13 +13196,6 @@ void eclipse_handler_t::advance_eclipse( bool active )
   if ( active )
   {
     state |= E;
-
-    if ( old_state ^ state )
-    {
-      get_uptime<E>()->update( true, p->sim->current_time() );
-      if ( in_none( old_state ) )
-        uptime_none->update( false, p->sim->current_time() );
-    }
 
     get_boat<E>()->trigger();
     p->buff.parting_skies->trigger();
@@ -13241,18 +13210,19 @@ void eclipse_handler_t::advance_eclipse( bool active )
   {
     state &= ~E;
 
-    if ( old_state ^ state )
-    {
-      get_uptime<E>()->update( false, p->sim->current_time() );
-      if ( in_none( state ) )
-        uptime_none->update( true, p->sim->current_time() );
-    }
-
     get_harmony<E>()->expire();
 
     // only when completely leaving eclipse
     if ( !in_eclipse() )
       p->buff.dreamstate->trigger();
+  }
+
+  if ( old_state ^ state )
+  {
+    uptimes[ old_state ]->update( false, p->sim->current_time() );
+
+    if ( old_state ^ ( eclipse_e::LUNAR | eclipse_e::SOLAR ) )
+      uptimes[ state ]->update( true, p->sim->current_time() );
   }
 }
 
