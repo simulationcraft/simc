@@ -5790,6 +5790,7 @@ struct wrecking_throw_t : public warrior_attack_t
     : warrior_attack_t( "wrecking_throw", p, p->talents.warrior.wrecking_throw )
   {
     parse_options( options_str );
+    may_crit = may_parry = may_dodge = may_block = false;
     weapon = &( player->main_hand_weapon );
     attack_power_mod.direct = 1.0;
   }
