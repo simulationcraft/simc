@@ -3251,10 +3251,18 @@ struct demolish_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    printf("DEBUGME: Demolish Tick %d\n", d->current_tick, d-> );
-    // Attack 1 Ticks at 200 - Tick 1
-    // Attack 2 Ticks at 600 - Tick 3
-    // Attack 3 Ticks at 1600 - Tick 8
+    if ( d->current_tick == 1 )
+    {
+      demolish_first_attack->execute();
+    }
+    else if ( d->current_tick == 3 )
+    {
+      demolish_second_attack->execute();
+    }
+    else if ( d->current_tick == 8 )
+    {
+      demolish_third_attack->execute();
+    }
   }
 };
 
