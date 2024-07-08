@@ -2121,10 +2121,7 @@ struct fire_mage_spell_t : public mage_spell_t
           p()->expression_support.kindling_reduction += amount;
       }
 
-      if ( triggers.from_the_ashes
-        && s->result == RESULT_CRIT
-        && p()->talents.from_the_ashes.ok()
-        && p()->cooldowns.from_the_ashes->up() )
+      if ( triggers.from_the_ashes && p()->talents.from_the_ashes.ok() && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
         p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 1 ).time_value() );
