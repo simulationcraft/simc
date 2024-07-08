@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "attack.hpp"
+
 #include "action_state.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
@@ -23,10 +24,10 @@ attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : action_t( ACTION_ATTACK, n, p, s ), base_attack_expertise( 0 ), attack_table()
 {
   crit_bonus = 1.0;
-  special = true; // Make sure to set this to false with autoattacks. 
+  special = true;  // Make sure to set this to false with autoattacks.
 
   weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;
-  min_gcd          = p->min_gcd;
+  min_gcd = p->min_gcd;
 
   // dodge/parry/block are true by default for attacks unless corresponding flag is set
   if ( data().ok() && !data().flags( spell_attribute::SX_NO_D_P_B ) )
@@ -133,7 +134,7 @@ double attack_t::block_chance( action_state_t* s ) const
   double block = s->target->cache.block();
 
   // add or subtract 1.5% per level difference -- Level difference does not seem to matter anymore.
-  //block += ( s->target->level() - player->level() ) * 0.015;
+  // block += ( s->target->level() - player->level() ) * 0.015;
 
   return block;
 }
@@ -167,7 +168,7 @@ double attack_t::action_multiplier() const
 {
   double mul = action_t::action_multiplier();
 
-  if (!special)
+  if ( !special )
   {
     mul *= player->auto_attack_multiplier;
   }
@@ -175,11 +176,11 @@ double attack_t::action_multiplier() const
   return mul;
 }
 
-double attack_t::composite_target_multiplier(player_t* target) const
+double attack_t::composite_target_multiplier( player_t* target ) const
 {
-  double mul = action_t::composite_target_multiplier(target);
+  double mul = action_t::composite_target_multiplier( target );
 
-  mul *= composite_target_damage_vulnerability(target);
+  mul *= composite_target_damage_vulnerability( target );
 
   return mul;
 }
@@ -209,19 +210,16 @@ double attack_t::composite_expertise() const
   return base_attack_expertise + player->cache.attack_expertise();
 }
 
-double attack_t::composite_versatility(const action_state_t* state) const
+double attack_t::composite_versatility( const action_state_t* state ) const
 {
-  return action_t::composite_versatility(state) + player->cache.damage_versatility();
+  return action_t::composite_versatility( state ) + player->cache.damage_versatility();
 }
 
-void attack_t::attack_table_t::build_table( double miss_chance,
-                                            double dodge_chance,
-                                            double parry_chance,
-                                            double glance_chance,
-                                            double crit_chance, sim_t* sim )
+void attack_t::attack_table_t::build_table( double miss_chance, double dodge_chance, double parry_chance,
+                                            double glance_chance, double crit_chance, sim_t* sim )
 {
-  sim->print_debug("attack_t::build_table: miss={} dodge={} parry={} glance={} crit={}",
-        miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
+  sim->print_debug( "attack_t::build_table: miss={} dodge={} parry={} glance={} crit={}", miss_chance, dodge_chance,
+                    parry_chance, glance_chance, crit_chance );
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
@@ -241,7 +239,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += miss_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_MISS;
     num_results++;
@@ -250,7 +249,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += dodge_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_DODGE;
     num_results++;
@@ -259,7 +259,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += parry_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_PARRY;
     num_results++;
@@ -268,7 +269,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += glance_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_GLANCE;
     num_results++;
@@ -277,7 +279,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += crit_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_CRIT;
     num_results++;
@@ -300,21 +303,15 @@ result_e attack_t::calculate_result( action_state_t* s ) const
   int delta_level = s->target->level() - player->level();
 
   double miss = may_miss ? miss_chance( composite_hit(), s->target ) : 0;
-  double dodge =
-      may_dodge ? dodge_chance( composite_expertise(), s->target ) : 0;
-  double parry = may_parry && player->position() == POSITION_FRONT
-                     ? parry_chance( composite_expertise(), s->target )
-                     : 0;
-  double crit = may_crit ? std::max( s->composite_crit_chance() +
-                                         s->target->cache.crit_avoidance(),
-                                     0.0 )
-                         : 0;
+  double dodge = may_dodge ? dodge_chance( composite_expertise(), s->target ) : 0;
+  double parry =
+    may_parry && player->position() == POSITION_FRONT ? parry_chance( composite_expertise(), s->target ) : 0;
+  double crit = may_crit ? std::max( s->composite_crit_chance() + s->target->cache.crit_avoidance(), 0.0 ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks
 
-  attack_table.build_table( miss, dodge, parry,
-                            may_glance ? glance_chance( delta_level ) : 0.0,
+  attack_table.build_table( miss, dodge, parry, may_glance ? glance_chance( delta_level ) : 0.0,
                             !special ? std::min( 1.0, crit ) : 0.0, sim );
 
   if ( attack_table.num_results == 1 )
@@ -382,8 +379,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   if ( execute_event && execute_event->remains() > timespan_t::zero() )
   {
     timespan_t time_to_hit = execute_event->occurs() - sim->current_time();
-    timespan_t new_time_to_hit =
-        time_to_hit * player->cache.auto_attack_speed() / old_swing_haste;
+    timespan_t new_time_to_hit = time_to_hit * player->cache.auto_attack_speed() / old_swing_haste;
 
     if ( time_to_hit == new_time_to_hit )
     {
@@ -538,19 +534,14 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
       player->queueing = nullptr;
     }
 
-    player->executing      = this;
-    player->gcd_ready      = sim->current_time() + gcd();
+    player->executing = this;
+    player->gcd_ready = sim->current_time() + gcd();
     player->gcd_type = gcd_type;
     switch ( gcd_type )
     {
-    case gcd_haste_type::SPELL_HASTE:
-        player->gcd_current_haste_value = player->cache.spell_haste();
-        break;
-      case gcd_haste_type::ATTACK_HASTE:
-        player->gcd_current_haste_value = player->cache.attack_haste();
-        break;
-      default:
-        break;
+      case gcd_haste_type::SPELL_HASTE:  player->gcd_current_haste_value = player->cache.spell_haste(); break;
+      case gcd_haste_type::ATTACK_HASTE: player->gcd_current_haste_value = player->cache.attack_haste(); break;
+      default:                           break;
     }
 
     if ( player->action_queued && sim->strict_gcd_queue )

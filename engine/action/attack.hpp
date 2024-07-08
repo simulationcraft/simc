@@ -6,9 +6,11 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "action.hpp"
 
-constexpr double WEAPON_POWER_COEFFICIENT = 6; // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+// WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+constexpr double WEAPON_POWER_COEFFICIENT = 6;
 
 struct attack_t : public action_t
 {
@@ -49,25 +51,28 @@ struct attack_t : public action_t
 
 private:
   /// attack table generator with caching
-  struct attack_table_t{
+  struct attack_table_t
+  {
     std::array<double, RESULT_MAX> chances;
     std::array<result_e, RESULT_MAX> results;
     int num_results;
-    double attack_table_sum; // Used to check whether we can use cached values or not.
+    double attack_table_sum;  // Used to check whether we can use cached values or not.
 
     attack_table_t()
-    {reset(); }
+    {
+      reset();
+    }
 
     void reset()
-    { attack_table_sum = std::numeric_limits<double>::min(); }
+    {
+      attack_table_sum = std::numeric_limits<double>::min();
+    }
 
-    void build_table( double miss_chance, double dodge_chance,
-                      double parry_chance, double glance_chance,
+    void build_table( double miss_chance, double dodge_chance, double parry_chance, double glance_chance,
                       double crit_chance, sim_t* );
   };
+
   mutable attack_table_t attack_table;
-
-
 };
 
 // Melee Attack ===================================================================
