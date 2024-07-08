@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55399
-static const std::array<spelltext_data_t, 26185> __spelltext_data { {
+static const std::array<spelltext_data_t, 26188> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23128,6 +23128,7 @@ static const std::array<spelltext_data_t, 26185> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
+  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -26013,6 +26014,8 @@ static const std::array<spelltext_data_t, 26185> __spelltext_data { {
   { 460422, "After casting Barrier of Faith or Holy Prism, the healing of your next Holy Light or Flash of Light is increased by $210294m1%, its cast time is reduced by $210294s2%, and its mana cost is reduced by $210294s3%.\r\n", 0, 0 },
   { 460448, "Dark Transformation surrounds your ghoul with a vile swarm of insects for $115989d, stinging all nearby enemies and infecting them with Virulent Plague and an unholy disease that deals $115994o1 damage over $115994d, stacking up to $115994u times.", 0, 0 },
   { 460469, "$@spelldesc443337", 0, 0 },
+  { 460475, "Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].", 0, 0 },
+  { 460476, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
   { 460478, "$@spelldesc137639", "Immune to snare effects and movement speed increased by $w1%.", 0 },
   { 460482, "Place the bait, luring a supreme elusive creature out of hiding.\r\n\r\nOnly usable in the Rumbling Wastes, located in the Ringing Deeps.", 0, 0 },
   { 460485, "Your damaging spells and abilities have a chance to activate Chi Burst, allowing you to hurl a torrent of Chi energy up to $s1 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path. Healing reduced beyond $123986s1 targets.\r\n$?c1[\r\n\r\nCasting Chi Burst does not prevent avoiding attacks.][]", 0, 0 },
@@ -26196,7 +26199,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __spelltext_hotfix
   {  285466,  0, "$@spelldesc51505", "Hurls molten lava at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.\r\n\r\nGenerates $343725s4 Maelstrom.|r" },
   {  381725,  0, "$@spelldesc8042", "Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1} Nature damage." },
   {  383222,  0, "Healing Rain instantly restores $383223s1 health to $s3 allies within its area, and its radius is increased by $s1 $Lyard:yards;.", "$?a455630[Surging Totem][Healing Rain] instantly restores $383223s1 health to $s3 allies within its area, and its radius is increased by $s1 $Lyard:yards;." },
-  {  462854,  1, "Mastery increased by $w1% and auto attacks have a $h chance to instantly strike again.", "Mastery increased by $w1% and auto attacks have a $h% chance to instantly strike again." },
+  {  462854,  0, "$@spelldesc462840", "Harness the fury of the Windlord to grant a target ally $s1% Mastery and empower their auto attacks to have a $h% chance to instantly strike again for $d.\r\n\r\nIf the target is in your party or raid, all party and raid members will be affected." },
 } };
 
 // Spell description variables, wow build 11.0.2.55399

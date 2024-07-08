@@ -245,7 +245,6 @@ public:
   {
     event_t* enlightened;
     event_t* flame_accelerant;
-    event_t* from_the_ashes;
     event_t* icicle;
     event_t* merged_buff_execute;
     event_t* splinterstorm;
@@ -350,7 +349,7 @@ public:
     buff_t* firefall;
     buff_t* firefall_ready;
     buff_t* flame_accelerant;
-    buff_t* flame_accelerant_icd;
+    buff_t* frenetic_speed;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* hyperthermia;
@@ -424,7 +423,6 @@ public:
     cooldown_t* comet_storm;
     cooldown_t* cone_of_cold;
     cooldown_t* dragons_breath;
-    cooldown_t* fervent_flickering;
     cooldown_t* fire_blast;
     cooldown_t* flurry;
     cooldown_t* from_the_ashes;
@@ -432,8 +430,8 @@ public:
     cooldown_t* frozen_orb;
     cooldown_t* meteor;
     cooldown_t* phoenix_flames;
-    cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
+    cooldown_t* pyromaniac;
   } cooldowns;
 
   // Gains
@@ -467,7 +465,6 @@ public:
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
     proc_t* hot_streak;                   // Total HS generated
-    proc_t* hot_streak_pyromaniac;        // Total HS from Pyromaniac
     proc_t* hot_streak_spell;             // HU/HS spell impacts
     proc_t* hot_streak_spell_crit;        // HU/HS spell crits
     proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
@@ -538,7 +535,6 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
-    double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     double spent_mana;
     timespan_t gained_full_icicles;
@@ -547,6 +543,7 @@ public:
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
     int embedded_splinters;
+    int spellfrost_teachings_attempts = 1;
   } state;
 
   struct expression_support_t
@@ -942,7 +939,7 @@ public:
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
-  double composite_mastery() const override;
+  double stacking_movement_modifier() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
@@ -1004,7 +1001,6 @@ public:
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
-  void update_from_the_ashes();
 };
 
 namespace pets {
@@ -1484,6 +1480,7 @@ struct mage_spell_t : public spell_t
 
     // Misc
     bool combustion = true;
+    bool flame_accelerant = false;
     bool force_of_will = true;
     bool ice_floes = false;
     bool overflowing_energy = true;
@@ -1788,10 +1785,15 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    // TODO: Clearcasting proc chance is all over the place on beta. Use tooltip values until we can get actual data.
     bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || triggers.clearcasting == TO_DEFAULT && harmful && !background;
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
-      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() );
+    {
+      // Best guess at how this is gonna work, assuming the bugs are fixed.
+      // TODO: Currently it looks like CC is 10% proc chance normally and 8% with IT.
+      double chance = p()->spec.clearcasting->effectN( 2 ).percent();
+      chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      p()->trigger_clearcasting( chance );
+    }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
@@ -1890,9 +1892,12 @@ public:
 
   void trigger_calefaction( player_t* target )
   {
-    auto td = p()->find_target_data( target );
-    if ( !td || !td->debuffs.charring_embers->check() )
-      return;
+    if ( !p()->talents.phoenix_reborn.ok() )
+    {
+      auto td = p()->find_target_data( target );
+      if ( !td || !td->debuffs.charring_embers->check() )
+        return;
+    }
 
     p()->buffs.calefaction->trigger();
     if ( p()->buffs.calefaction->at_max_stacks() )
@@ -2088,6 +2093,15 @@ struct fire_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   { }
 
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    // TODO: Flame Accelerant is currently bugged and expires after the queued spell has started casting.
+    if ( affected_by.flame_accelerant && time_to_execute > 0_ms )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.flame_accelerant->expire(); } );
+  }
+
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -2113,13 +2127,10 @@ struct fire_mage_spell_t : public mage_spell_t
           p()->expression_support.kindling_reduction += amount;
       }
 
-      if ( triggers.from_the_ashes
-        && s->result == RESULT_CRIT
-        && p()->talents.from_the_ashes.ok()
-        && p()->cooldowns.from_the_ashes->up() )
+      if ( triggers.from_the_ashes && p()->talents.from_the_ashes.ok() && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
+        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 1 ).time_value() );
       }
     }
   }
@@ -2211,6 +2222,16 @@ struct fire_mage_spell_t : public mage_spell_t
         }
       }
     }
+  }
+
+  double execute_time_pct_multiplier() const override
+  {
+    double mul = mage_spell_t::execute_time_pct_multiplier();
+
+    if ( affected_by.flame_accelerant )
+      mul *= 1.0 + p()->buffs.flame_accelerant->check_value();
+
+    return mul;
   }
 
   virtual double composite_ignite_multiplier( const action_state_t* ) const
@@ -2348,7 +2369,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 2 ).base_value();
+    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value();
   }
 
   void trigger_firefall()
@@ -2396,13 +2417,16 @@ struct hot_streak_state_t final : public mage_spell_state_t
 
 struct hot_streak_spell_t : public fire_mage_spell_t
 {
+  action_t* pyromaniac_action;
   // Last available Hot Streak state.
   bool last_hot_streak;
 
   hot_streak_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     fire_mage_spell_t( n, p, s ),
+    pyromaniac_action(),
     last_hot_streak()
   {
+    affected_by.flame_accelerant = true;
     base_execute_time += p->talents.surging_blaze->effectN( 1 ).time_value();
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
   }
@@ -2498,11 +2522,14 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
 
-      if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
+      // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
+      if ( p()->cooldowns.pyromaniac->up() && rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
-        p()->procs.hot_streak->occur();
-        p()->procs.hot_streak_pyromaniac->occur();
-        p()->buffs.hot_streak->trigger();
+        p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
+        trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
+        assert( pyromaniac_action );
+        // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
+        make_event( *sim, 500_ms, [ this, t = target ] { pyromaniac_action->execute_on_target( t ); } );
       }
     }
   }
@@ -2753,18 +2780,6 @@ struct presence_of_mind_t final : public arcane_mage_spell_t
   }
 };
 
-// TODO: 2022-10-02 Phoenix Reborn is not flagged to scale with spec auras, etc.
-// If this is fixed, change spell_t to mage_spell_t or fire_mage_spell_t.
-struct phoenix_reborn_t final : public spell_t
-{
-  phoenix_reborn_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 383479 ) )
-  {
-    background = true;
-    callbacks = false;
-  }
-};
-
 struct intensifying_flame_t final : public spell_t
 {
   intensifying_flame_t( std::string_view n, mage_t* p ) :
@@ -2786,16 +2801,12 @@ struct intensifying_flame_t final : public spell_t
 
 struct ignite_t final : public residual_action::residual_periodic_action_t<spell_t>
 {
-  action_t* phoenix_reborn = nullptr;
   action_t* intensifying_flame = nullptr;
 
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
-
-    if ( p->talents.phoenix_reborn.ok() )
-      phoenix_reborn = get_action<phoenix_reborn_t>( "phoenix_reborn", p );
 
     if ( p->talents.intensifying_flame.ok() )
       intensifying_flame = get_action<intensifying_flame_t>( "intensifying_flame", p );
@@ -2806,19 +2817,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
-
-    if ( p->cooldowns.fervent_flickering->up() && rng().roll( p->talents.fervent_flickering->proc_chance() ) )
-    {
-      p->cooldowns.fervent_flickering->start( p->talents.fervent_flickering->internal_cooldown() );
-      p->cooldowns.fire_blast->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
-    }
-
-    if ( p->cooldowns.phoenix_reborn->up() && rng().roll( p->talents.phoenix_reborn->proc_chance() ) )
-    {
-      p->cooldowns.phoenix_reborn->start( p->talents.phoenix_reborn->internal_cooldown() );
-      p->cooldowns.phoenix_flames->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
-      phoenix_reborn->execute_on_target( d->target );
-    }
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -4030,12 +4028,17 @@ struct fireball_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
     triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
-    affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+    affected_by.unleashed_inferno = affected_by.flame_accelerant = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
     if ( frostfire )
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+
+    // TODO: Frostfire Bolt ticks currently cannot crit, probably a bug
+    if ( p->bugs )
+      tick_may_crit = false;
   }
 
   timespan_t travel_time() const override
@@ -4050,32 +4053,12 @@ struct fireball_t final : public fire_mage_spell_t
     if ( p()->buffs.frostfire_empowerment->check() )
       return 0.0;
 
-    double mul = fire_mage_spell_t::execute_time_pct_multiplier();
-
-    if ( !p()->buffs.flame_accelerant_icd->check() )
-      mul *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
-
-    return mul;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    if ( !p()->buffs.flame_accelerant_icd->check() )
-      am *= 1.0 + p()->talents.flame_accelerant->effectN( 1 ).percent();
-
-    return am;
+    return fire_mage_spell_t::execute_time_pct_multiplier();
   }
 
   void execute() override
   {
     fire_mage_spell_t::execute();
-
-    if ( !p()->bugs || p()->buffs.flame_accelerant->check() || p()->buffs.flame_accelerant_icd->check() )
-      p()->buffs.flame_accelerant_icd->trigger();
-
-    p()->buffs.flame_accelerant->expire();
 
     if ( p()->buffs.frostfire_empowerment->check() )
     {
@@ -4165,10 +4148,35 @@ struct flame_patch_t final : public fire_mage_spell_t
   }
 };
 
+struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
+{
+  flamestrike_pyromaniac_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 460476 ) )
+  {
+    background = true;
+    triggers.ignite = true;
+    may_crit = false;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value(); // TODO: Check this
+    base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
+
+    return m;
+  }
+};
+
 struct flamestrike_t final : public hot_streak_spell_t
 {
   action_t* flame_patch = nullptr;
   timespan_t flame_patch_duration;
+  size_t num_targets_crit;
 
   flamestrike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     hot_streak_spell_t( n, p, p->find_specialization_spell( "Flamestrike" ) )
@@ -4178,6 +4186,9 @@ struct flamestrike_t final : public hot_streak_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
+    if ( p->talents.pyromaniac.ok() )
+      pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
+
     if ( p->talents.flame_patch.ok() )
     {
       flame_patch = get_action<flame_patch_t>( "flame_patch", p );
@@ -4186,9 +4197,33 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
+
+    return m;
+  }
+
   void execute() override
   {
+    num_targets_crit = 0;
+
     hot_streak_spell_t::execute();
+
+    if ( p()->buffs.combustion->check() )
+    {
+      double max_targets = p()->talents.unleashed_inferno->effectN( 3 ).base_value();
+      p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 ) );
+    }
+
+    double max_targets = p()->talents.kindling->effectN( 2 ).base_value();
+    timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 );
+    p()->cooldowns.combustion->adjust( -amount );
+    if ( !p()->buffs.combustion->check() )
+      p()->expression_support.kindling_reduction += amount;
 
     if ( hit_any_target )
       handle_hot_streak( execute_state->crit_chance, p()->spec.fuel_the_fire->ok() ? HS_CUSTOM : HS_HIT );
@@ -4210,6 +4245,12 @@ struct flamestrike_t final : public hot_streak_spell_t
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_CAST_SPEED ) );
     }
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    hot_streak_spell_t::schedule_travel( s );
+    if ( s->result == RESULT_CRIT ) num_targets_crit++;
   }
 };
 
@@ -5183,7 +5224,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
-    cooldown->duration -= 1000 * p->talents.flame_on->effectN( 3 ).time_value();
+    cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
 
     if ( p->talents.fire_blast.ok() )
@@ -5507,8 +5548,8 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p->talents.call_of_the_sun_king->effectN( 2 ).percent();
-    base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p->talents.from_the_ashes->effectN( 2 ).percent();
+    base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
   }
 
@@ -5586,6 +5627,26 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   }
 };
 
+struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
+{
+  pyroblast_pyromaniac_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 460475 ) )
+  {
+    background = true;
+    triggers.ignite = true;
+    base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.hyperthermia->check_value();
+
+    return c;
+  }
+};
+
 struct pyroblast_t final : public hot_streak_spell_t
 {
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5594,6 +5655,9 @@ struct pyroblast_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+
+    if ( p->talents.pyromaniac.ok() )
+      pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5767,8 +5831,13 @@ struct scorch_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && improved_scorch_active( s->target ) )
-      get_td( s->target )->debuffs.improved_scorch->trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      if ( scorch_execute_active( s->target ) )
+        p()->buffs.frenetic_speed->trigger();
+      if ( improved_scorch_active( s->target ) )
+        get_td( s->target )->debuffs.improved_scorch->trigger();
+    }
   }
 
   bool usable_moving() const override
@@ -6311,15 +6380,19 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.spellfrost_teachings.ok() )
     {
-      // TODO: The chance isn't in spell data and from early tests it looks like it
-      // isn't of the "obvious" procs (static %, rppm, etc). Adjust when more data is available.
-      bool success = rng().roll( 0.015 );
+      // This proc chance is not present in spell data and should be periodically checked.
+      bool success = rng().roll( 0.0004 * p()->state.spellfrost_teachings_attempts );
       if ( success )
       {
         p()->cooldowns.frozen_orb->reset( true );
         if ( p()->action.spellfrost_arcane_orb && p()->target )
           p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
         p()->buffs.spellfrost_teachings->trigger();
+        p()->state.spellfrost_teachings_attempts = 1;
+      }
+      else
+      {
+        p()->state.spellfrost_teachings_attempts++;
       }
     }
 
@@ -6496,10 +6569,8 @@ struct icicle_event_t final : public mage_event_t
 
 struct flame_accelerant_event_t final : public mage_event_t
 {
-  int index;
-
-  flame_accelerant_event_t( mage_t& m, timespan_t delta_time, int index = 2 ) :
-    mage_event_t( m, delta_time ), index( index )
+  flame_accelerant_event_t( mage_t& m, timespan_t delta_time ) :
+    mage_event_t( m, delta_time )
   { }
 
   const char* name() const override
@@ -6508,33 +6579,9 @@ struct flame_accelerant_event_t final : public mage_event_t
   void execute() override
   {
     mage->events.flame_accelerant = nullptr;
+    mage->buffs.flame_accelerant->trigger();
 
-    if ( !mage->buffs.flame_accelerant->check() && !mage->buffs.flame_accelerant_icd->check() )
-      mage->buffs.flame_accelerant->trigger();
-
-    // According to spell data, this should happen every second, but in
-    // reality each tick seems to be delayed by one server frame (at 150 FPS).
-    // Because one frame is not an integer number of milliseconds, events are
-    // delayed by 7_ms, except for every third event, which is delayed by 6_ms.
-    timespan_t next_event = index % 3 ? 1007_ms : 1006_ms;
-    mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, next_event, index + 1 );
-  }
-};
-
-struct from_the_ashes_event_t final : public mage_event_t
-{
-  from_the_ashes_event_t( mage_t& m, timespan_t delta_time ) :
-    mage_event_t( m, delta_time )
-  { }
-
-  const char* name() const override
-  { return "from_the_ashes_event"; }
-
-  void execute() override
-  {
-    mage->events.from_the_ashes = nullptr;
-    mage->update_from_the_ashes();
-    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, 2.0_s );
+    mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, mage->talents.flame_accelerant->effectN( 1 ).period() );
   }
 };
 
@@ -6725,7 +6772,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.magis_spark_abar     = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
   debuffs.magis_spark_am       = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
   debuffs.improved_scorch      = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
-                                   ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
+                                   ->set_default_value_from_effect( 1 );
   debuffs.nether_munitions     = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
                                    ->set_default_value_from_effect( 1 )
                                    ->set_chance( mage->talents.nether_munitions.ok() );
@@ -6767,7 +6814,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.comet_storm        = get_cooldown( "comet_storm"        );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
   cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
-  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
   cooldowns.flurry             = get_cooldown( "flurry"             );
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
@@ -6775,8 +6821,8 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
   cooldowns.meteor             = get_cooldown( "meteor"             );
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
-  cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"     );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
+  cooldowns.pyromaniac         = get_cooldown( "pyromaniac"         );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -7544,15 +7590,13 @@ void mage_t::create_buffs()
   buffs.firefall                 = make_buff( this, "firefall", find_spell( 384035 ) )
                                      ->set_chance( talents.firefall.ok() );
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
-  buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
-                                     ->set_can_cancel( false )
-                                     ->set_chance( talents.flame_accelerant.ok() )
+  buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 453283 ) )
+                                     ->set_default_value_from_effect( 2 )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.flame_accelerant_icd     = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
-                                     ->set_can_cancel( false )
-                                     ->set_chance( talents.flame_accelerant.ok() )
-                                     ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                       { if ( !bugs && cur == 0 ) buffs.flame_accelerant->trigger(); } );
+  buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->add_invalidate( CACHE_RUN_SPEED )
+                                     ->set_chance( talents.scorch.ok() );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
@@ -7680,7 +7724,7 @@ void mage_t::create_buffs()
                              ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
   buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
-                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+                         ->set_chance( talents.phoenix_reborn.ok() || sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
   buffs.flames_fury  = make_buff( this, "flames_fury", find_spell( 409964 ) )
                          ->set_default_value_from_effect( 1 );
   buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
@@ -7739,7 +7783,6 @@ void mage_t::init_procs()
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
       procs.heating_up_ib_converted      = get_proc( "Heating Up converted with Fire Blast" );
       procs.hot_streak                   = get_proc( "Hot Streak procs" );
-      procs.hot_streak_pyromaniac        = get_proc( "Hot Streak procs from Pyromaniac" );
       procs.hot_streak_spell             = get_proc( "Hot Streak spells used" );
       procs.hot_streak_spell_crit        = get_proc( "Hot Streak spell crits" );
       procs.hot_streak_spell_crit_wasted = get_proc( "Hot Streak spell crits wasted" );
@@ -7942,13 +7985,13 @@ void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
   }
 }
 
-double mage_t::composite_mastery() const
+double mage_t::stacking_movement_modifier() const
 {
-  double m = player_t::composite_mastery();
+  double ms = player_t::stacking_movement_modifier();
 
-  m += state.from_the_ashes_mastery;
+  ms += buffs.frenetic_speed->check_value();
 
-  return m;
+  return ms;
 }
 
 double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
@@ -8120,18 +8163,10 @@ void mage_t::arise()
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
-  if ( bugs && talents.flame_accelerant.ok() )
+  if ( talents.flame_accelerant.ok() )
   {
-    timespan_t first_tick = rng().real() * 1.0_s;
+    timespan_t first_tick = rng().real() * talents.flame_accelerant->effectN( 1 ).period();
     events.flame_accelerant = make_event<events::flame_accelerant_event_t>( *sim, *this, first_tick );
-  }
-
-  if ( talents.from_the_ashes.ok() )
-  {
-    update_from_the_ashes();
-
-    timespan_t first_tick = rng().real() * 2.0_s;
-    events.from_the_ashes = make_event<events::from_the_ashes_event_t>( *sim, *this, first_tick );
   }
 
   if ( talents.time_anomaly.ok() )
@@ -8213,7 +8248,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value(), true );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "improved_scorch" ) )
-    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 2 ).base_value(), true );
+    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 1 ).base_value(), true );
 
   return player_t::create_action_expression( action, name );
 }
@@ -8461,18 +8496,6 @@ void mage_t::update_enlightened( bool double_regen )
   }
 
   state.last_enlightened_update = sim->current_time();
-}
-
-void mage_t::update_from_the_ashes()
-{
-  if ( !talents.from_the_ashes.ok() )
-    return;
-
-  int from_the_ashes_count = cooldowns.phoenix_flames->charges - static_cast<int>( cooldowns.phoenix_flames->charges_fractional() );
-  state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * from_the_ashes_count;
-  invalidate_cache( CACHE_MASTERY );
-
-  sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, state.from_the_ashes_mastery );
 }
 
 action_t* mage_t::get_icicle()
