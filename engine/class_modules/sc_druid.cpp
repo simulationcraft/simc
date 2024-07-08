@@ -279,10 +279,10 @@ struct eclipse_handler_t
   void init();
   bool enabled() const { return p != nullptr; }
 
-  void cast_wrath( druid_action_data_t* );
-  void cast_starfire( druid_action_data_t* );
-  void cast_starsurge( druid_action_data_t* );
-  void cast_moon( druid_action_data_t*, moon_stage_e );
+  void cast_wrath();
+  void cast_starfire();
+  void cast_starsurge();
+  void cast_moon( moon_stage_e );
   void tick_starfall();
   void tick_fury_of_elune();
 
@@ -7075,7 +7075,7 @@ struct moon_base_t : public druid_spell_t
     if ( !is_free() && data().ok() )
       p()->active.moons->stats->add_execute( time_to_execute, target );
 
-    p()->eclipse_handler.cast_moon( this, stage );
+    p()->eclipse_handler.cast_moon( stage );
 
     // TODO: any delay/stagger?
     if ( minor && num_minor )
@@ -7954,7 +7954,7 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
       base_t::schedule_travel( s );
 
       make_event( *sim, 100_ms, [ this ]() {
-        p()->eclipse_handler.cast_starfire( this );
+        p()->eclipse_handler.cast_starfire();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
                             energize_gain( execute_state ) );
       } );
@@ -7963,7 +7963,7 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     }
 
     // eclipse is handled after cast but before impact
-    p()->eclipse_handler.cast_starfire( this );
+    p()->eclipse_handler.cast_starfire();
 
     base_t::schedule_travel( s );
   }
@@ -8079,7 +8079,7 @@ struct starsurge_t final : public ap_spender_t
 
     p()->buff.starweaver_starfall->trigger( this );
 
-    p()->eclipse_handler.cast_starsurge( this );
+    p()->eclipse_handler.cast_starsurge();
   }
 
   void impact( action_state_t* s ) override
@@ -8424,7 +8424,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
       base_t::schedule_travel( s );
 
       make_event( *sim, 100_ms, [ this ]() {
-        p()->eclipse_handler.cast_wrath( this );
+        p()->eclipse_handler.cast_wrath();
         p()->resource_gain( RESOURCE_ASTRAL_POWER, composite_energize_amount( execute_state ),
                             energize_gain( execute_state ) );
       } );
@@ -8433,7 +8433,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     }
 
     // eclipse is handled after cast but before travel
-    p()->eclipse_handler.cast_wrath( this );
+    p()->eclipse_handler.cast_wrath();
 
     base_t::schedule_travel( s );
   }
@@ -13085,9 +13085,9 @@ void eclipse_handler_t::init()
   ga_mod = m_data->effectN( 2 ).percent();
 }
 
-void eclipse_handler_t::cast_wrath( druid_action_data_t* a )
+void eclipse_handler_t::cast_wrath()
 {
-  if ( !enabled() || !a->has_flag( flag_e::FOREGROUND ) ) return;
+  if ( !enabled() ) return;
 
   if ( iter.wrath && p->in_combat )
     ( *iter.wrath )[ state ]++;
@@ -13100,9 +13100,9 @@ void eclipse_handler_t::cast_wrath( druid_action_data_t* a )
   }
 }
 
-void eclipse_handler_t::cast_starfire( druid_action_data_t* a )
+void eclipse_handler_t::cast_starfire()
 {
-  if ( !enabled() || !a->has_flag( flag_e::FOREGROUND ) ) return;
+  if ( !enabled() ) return;
 
   if ( iter.starfire && p->in_combat )
     ( *iter.starfire )[ state ]++;
@@ -13115,17 +13115,17 @@ void eclipse_handler_t::cast_starfire( druid_action_data_t* a )
   }
 }
 
-void eclipse_handler_t::cast_starsurge( druid_action_data_t* a )
+void eclipse_handler_t::cast_starsurge()
 {
-  if ( !enabled() || !a->has_flag( flag_e::FOREGROUND ) ) return;
+  if ( !enabled() ) return;
 
   if ( iter.starsurge && p->in_combat )
     ( *iter.starsurge )[ state ]++;
 }
 
-void eclipse_handler_t::cast_moon( druid_action_data_t* a, moon_stage_e moon )
+void eclipse_handler_t::cast_moon( moon_stage_e moon )
 {
-  if ( !enabled() || !a->has_flag( flag_e::FOREGROUND ) ) return;
+  if ( !enabled() ) return;
 
   if ( moon == moon_stage_e::NEW_MOON && iter.new_moon )
     ( *iter.new_moon )[ state ]++;
