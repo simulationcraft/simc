@@ -425,7 +425,6 @@ public:
     cooldown_t* comet_storm;
     cooldown_t* cone_of_cold;
     cooldown_t* dragons_breath;
-    cooldown_t* fervent_flickering;
     cooldown_t* fire_blast;
     cooldown_t* flurry;
     cooldown_t* from_the_ashes;
@@ -2809,12 +2808,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
 
     auto p = debug_cast<mage_t*>( player );
 
-    if ( p->cooldowns.fervent_flickering->up() && rng().roll( p->talents.fervent_flickering->proc_chance() ) )
-    {
-      p->cooldowns.fervent_flickering->start( p->talents.fervent_flickering->internal_cooldown() );
-      p->cooldowns.fire_blast->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
-    }
-
     if ( p->cooldowns.phoenix_reborn->up() && rng().roll( p->talents.phoenix_reborn->proc_chance() ) )
     {
       p->cooldowns.phoenix_reborn->start( p->talents.phoenix_reborn->internal_cooldown() );
@@ -5186,6 +5179,7 @@ struct fire_blast_t final : public fire_mage_spell_t
 
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
     cooldown->duration -= 1000 * p->talents.flame_on->effectN( 3 ).time_value();
+    cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
 
     if ( p->talents.fire_blast.ok() )
@@ -6774,7 +6768,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.comet_storm        = get_cooldown( "comet_storm"        );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
   cooldowns.dragons_breath     = get_cooldown( "dragons_breath"     );
-  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
   cooldowns.flurry             = get_cooldown( "flurry"             );
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
