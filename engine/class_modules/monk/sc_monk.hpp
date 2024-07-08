@@ -320,6 +320,65 @@ struct gift_of_the_ox_t : actions::monk_buff_t
   void reset();
 };
 
+struct aspect_of_harmony_t
+{
+private:
+  struct accumulator_t;
+  struct spender_t;
+  propagate_const<accumulator_t *> accumulator;
+  propagate_const<spender_t *> spender;
+
+  bool fallback;
+
+  struct accumulator_t : actions::monk_buff_t
+  {
+    propagate_const<buff_t *> spender;
+
+    accumulator_t( monk_t *player );
+    void trigger_with_state( action_state_t *state );
+  };
+
+  struct spender_t : actions::monk_buff_t
+  {
+    template <class base_action_t>
+    struct purified_spirit_t : base_action_t
+    {
+      propagate_const<spender_t *> spender;
+
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender );
+      void init() override;
+      void execute() override;
+    };
+
+    template <class base_action_t>
+    struct tick_t : residual_action::residual_periodic_action_t<base_action_t>
+    {
+      tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
+    };
+
+    propagate_const<action_t *> damage;
+    propagate_const<action_t *> heal;
+    propagate_const<action_t *> purified_spirit;
+    propagate_const<buff_t *> accumulator;
+
+    double pool;
+
+    spender_t( monk_t *player );
+    void reset() override;
+    bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
+                  timespan_t duration = timespan_t::min() ) override;
+    void trigger_with_state( action_state_t *state );
+  };
+
+public:
+  propagate_const<buff_t *> path_of_resurgence;
+  propagate_const<dot_t *> heal;
+
+  aspect_of_harmony_t( monk_t *player );
+  void trigger( action_state_t *state );
+  void trigger_flat( double amount );
+  void trigger_spend();
+};
 }  // namespace buffs
 
 inline int sef_spell_index( int x )
@@ -410,8 +469,6 @@ static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack =
     return nullptr;
   }
 }
-
-struct aspect_of_harmony_t;
 
 struct monk_t : public stagger_t<parse_player_effects_t, monk_t>
 {
@@ -649,7 +706,7 @@ public:
     // Conduit of the Celestials
 
     // Master of Harmony
-    aspect_of_harmony_t *aspect_of_harmony;
+    buffs::aspect_of_harmony_t *aspect_of_harmony;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -1165,6 +1222,7 @@ public:
     {
       // Row 1
       player_talent_t aspect_of_harmony;
+      const spell_data_t *aspect_of_harmony_driver;
       const spell_data_t *aspect_of_harmony_accumulator;
       const spell_data_t *aspect_of_harmony_spender;
       const spell_data_t *aspect_of_harmony_damage;
@@ -1493,234 +1551,4 @@ struct sef_despawn_cb_t
   void operator()( player_t * );
 };
 
-struct aspect_of_harmony_t
-{
-private:
-  struct accumulator_t;
-  struct spender_t;
-  propagate_const<accumulator_t *> accumulator;
-  propagate_const<spender_t *> spender;
-
-  bool fallback;
-
-  struct accumulator_t : actions::monk_buff_t
-  {
-    propagate_const<buff_t *> spender;
-
-    accumulator_t( monk_t *player )
-      : actions::monk_buff_t( player, "aspect_of_harmony_accumulator",
-                              player->talent.master_of_harmony.aspect_of_harmony_accumulator ),
-        spender( nullptr )
-    {
-      set_default_value( 0.0 );
-    }
-
-    void trigger_with_state( action_state_t *state )
-    {
-      if ( spender->check() )
-        return;
-
-      size_t result_type_offset = 0;
-      switch ( state->result_type )
-      {
-        case result_amount_type::DMG_DIRECT:
-        case result_amount_type::DMG_OVER_TIME:
-          result_type_offset = 1;
-          break;
-        case result_amount_type::HEAL_DIRECT:
-        case result_amount_type::HEAL_OVER_TIME:
-          result_type_offset = 3;
-          break;
-        default:
-          assert( false && "result_type_offset is zero" );
-          return;
-      }
-
-      size_t index_offset = p().specialization() == MONK_BREWMASTER ? 0 : 1;
-      double multiplier =
-          p().talent.master_of_harmony.aspect_of_harmony->effectN( result_type_offset + index_offset ).percent();
-
-      if ( p().buff.aspect_of_harmony->path_of_resurgence->up() )
-        multiplier *= 1.0 + p().buff.aspect_of_harmony->path_of_resurgence->data()
-                                .effectN( result_type_offset + index_offset )
-                                .percent();
-
-      const auto whitelist = { p().baseline.brewmaster.blackout_kick->id(),
-                               p().talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
-                               p().baseline.monk.tiger_palm->id() };
-
-      if ( const auto &effect = p().talent.master_of_harmony.way_of_a_thousand_strikes->effectN( 1 );
-           effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
-        multiplier *= 1.0 + effect.percent();
-
-      actions::monk_buff_t::trigger( -1, check_value() + state->result_amount * multiplier );
-    }
-  };
-
-  struct spender_t : actions::monk_buff_t
-  {
-    template <class base_action_t>
-    struct purified_spirit_t : base_action_t
-    {
-      propagate_const<spender_t *> spender;
-
-      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender )
-        : base_action_t( player, "purified_spirit", spell_data ), spender( spender )
-      {
-        base_action_t::aoe              = -1;
-        base_action_t::split_aoe_damage = true;
-      }
-
-      void init() override
-      {
-        base_action_t::init();
-        base_action_t::update_flags = base_action_t::snapshot_flags &= STATE_NO_MULTIPLIER;
-      }
-
-      void execute() override
-      {
-        base_action_t::base_td = spender->pool;
-        base_action_t::execute();
-      }
-    };
-
-    template <class base_action_t>
-    struct tick_t : residual_action::residual_periodic_action_t<base_action_t>
-    {
-      tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-        : residual_action::residual_periodic_action_t<base_action_t>( player, name, spell_data )
-      {
-      }
-    };
-
-    propagate_const<action_t *> damage;
-    propagate_const<action_t *> heal;
-    propagate_const<action_t *> purified_spirit;
-    propagate_const<buff_t *> accumulator;
-
-    double pool;
-
-    spender_t( monk_t *player )
-      : actions::monk_buff_t( player, "aspect_of_harmony_spender",
-                              player->talent.master_of_harmony.aspect_of_harmony_spender ),
-        damage( new tick_t<actions::monk_spell_t>( player, "aspect_of_harmony_damage",
-                                                   player->talent.master_of_harmony.aspect_of_harmony_damage ) ),
-        heal( new tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
-                                                player->talent.master_of_harmony.aspect_of_harmony_heal ) ),
-        purified_spirit( nullptr ),
-        accumulator( nullptr ),
-        pool( 0.0 )
-    {
-      set_default_value( 0.0 );
-      if ( player->specialization() == MONK_BREWMASTER )
-        purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
-            player, player->talent.master_of_harmony.purified_spirit_damage, this );
-      if ( player->specialization() == MONK_MISTWEAVER )
-        purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
-            player, player->talent.master_of_harmony.purified_spirit_heal, this );
-
-      set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
-        if ( !new_ )
-          purified_spirit->execute();
-      } );
-    }
-
-    void reset() override
-    {
-      actions::monk_buff_t::reset();
-      pool = 0.0;
-    }
-
-    bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
-                  timespan_t duration = timespan_t::min() ) override
-    {
-      pool = accumulator->check_value();
-      accumulator->expire();
-      return actions::monk_buff_t::trigger( stacks, pool, chance, duration );
-    }
-
-    void trigger_with_state( action_state_t *state )
-    {
-      if ( !check() )
-        return;
-
-      double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
-      double amount     = std::min( state->result_amount * multiplier, pool );
-      if ( amount == pool )
-      {
-        expire();
-        return;
-      }
-      pool -= amount;
-
-      const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
-                               p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
-
-      auto in_hg_whitelist = [ whitelist, id = state->action->id, this ]() {
-        return p().talent.master_of_harmony.harmonic_gambit->ok() &&
-               std::find( whitelist.begin(), whitelist.end(), id ) != whitelist.end();
-      };
-
-      switch ( state->result_type )
-      {
-        case result_amount_type::DMG_DIRECT:
-        case result_amount_type::DMG_OVER_TIME:
-          if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
-            residual_action::trigger( damage, state->target, amount );
-          return;
-        case result_amount_type::HEAL_DIRECT:
-        case result_amount_type::HEAL_OVER_TIME:
-          if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
-            residual_action::trigger( heal, state->target, amount );
-          return;
-        default:
-          return;
-      }
-    }
-  };
-
-public:
-  propagate_const<buff_t *> path_of_resurgence;
-  propagate_const<dot_t *> heal;
-
-  aspect_of_harmony_t( monk_t *player )
-    : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr )
-  {
-    if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
-    {
-      fallback = true;
-      return;
-    }
-    accumulator          = new accumulator_t( player );
-    spender              = new spender_t( player );
-    accumulator->spender = spender;
-    spender->accumulator = accumulator;
-
-    if ( spender->heal )
-      heal = spender->heal->get_dot();
-  }
-
-  void trigger( action_state_t *state )
-  {
-    if ( fallback || state->result_amount == 0.0 )
-      return;
-    accumulator->trigger_with_state( state );
-    spender->trigger_with_state( state );
-  }
-
-  void trigger_flat( double amount )
-  {
-    if ( fallback || spender->check() )
-      return;
-
-    accumulator->current_value += amount;
-  }
-
-  void trigger_spend()
-  {
-    if ( fallback )
-      return;
-    spender->trigger();
-  }
-};
 }  // namespace monk
