@@ -350,7 +350,6 @@ public:
     buff_t* firefall;
     buff_t* firefall_ready;
     buff_t* flame_accelerant;
-    buff_t* flame_accelerant_icd;
     buff_t* frenetic_speed;
     buff_t* heating_up;
     buff_t* hot_streak;
@@ -1485,6 +1484,7 @@ struct mage_spell_t : public spell_t
 
     // Misc
     bool combustion = true;
+    bool flame_accelerant = false;
     bool force_of_will = true;
     bool ice_floes = false;
     bool overflowing_energy = true;
@@ -2089,6 +2089,15 @@ struct fire_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   { }
 
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    // TODO: Flame Accelerant is currently bugged and expires after the queued spell has started casting.
+    if ( affected_by.flame_accelerant && time_to_execute > 0_ms )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.flame_accelerant->expire(); } );
+  }
+
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -2212,6 +2221,16 @@ struct fire_mage_spell_t : public mage_spell_t
         }
       }
     }
+  }
+
+  double execute_time_pct_multiplier() const override
+  {
+    double mul = mage_spell_t::execute_time_pct_multiplier();
+
+    if ( affected_by.flame_accelerant )
+      mul *= 1.0 + p()->buffs.flame_accelerant->check_value();
+
+    return mul;
   }
 
   virtual double composite_ignite_multiplier( const action_state_t* ) const
@@ -2404,6 +2423,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, s ),
     last_hot_streak()
   {
+    affected_by.flame_accelerant = true;
     base_execute_time += p->talents.surging_blaze->effectN( 1 ).time_value();
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
   }
@@ -4025,7 +4045,8 @@ struct fireball_t final : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
     triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
-    affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+    triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+    affected_by.unleashed_inferno = affected_by.flame_accelerant = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
@@ -4045,32 +4066,12 @@ struct fireball_t final : public fire_mage_spell_t
     if ( p()->buffs.frostfire_empowerment->check() )
       return 0.0;
 
-    double mul = fire_mage_spell_t::execute_time_pct_multiplier();
-
-    if ( !p()->buffs.flame_accelerant_icd->check() )
-      mul *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
-
-    return mul;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    if ( !p()->buffs.flame_accelerant_icd->check() )
-      am *= 1.0 + p()->talents.flame_accelerant->effectN( 1 ).percent();
-
-    return am;
+    return fire_mage_spell_t::execute_time_pct_multiplier();
   }
 
   void execute() override
   {
     fire_mage_spell_t::execute();
-
-    if ( !p()->bugs || p()->buffs.flame_accelerant->check() || p()->buffs.flame_accelerant_icd->check() )
-      p()->buffs.flame_accelerant_icd->trigger();
-
-    p()->buffs.flame_accelerant->expire();
 
     if ( p()->buffs.frostfire_empowerment->check() )
     {
@@ -6537,10 +6538,8 @@ struct icicle_event_t final : public mage_event_t
 
 struct flame_accelerant_event_t final : public mage_event_t
 {
-  int index;
-
-  flame_accelerant_event_t( mage_t& m, timespan_t delta_time, int index = 2 ) :
-    mage_event_t( m, delta_time ), index( index )
+  flame_accelerant_event_t( mage_t& m, timespan_t delta_time ) :
+    mage_event_t( m, delta_time )
   { }
 
   const char* name() const override
@@ -6549,16 +6548,9 @@ struct flame_accelerant_event_t final : public mage_event_t
   void execute() override
   {
     mage->events.flame_accelerant = nullptr;
+    mage->buffs.flame_accelerant->trigger();
 
-    if ( !mage->buffs.flame_accelerant->check() && !mage->buffs.flame_accelerant_icd->check() )
-      mage->buffs.flame_accelerant->trigger();
-
-    // According to spell data, this should happen every second, but in
-    // reality each tick seems to be delayed by one server frame (at 150 FPS).
-    // Because one frame is not an integer number of milliseconds, events are
-    // delayed by 7_ms, except for every third event, which is delayed by 6_ms.
-    timespan_t next_event = index % 3 ? 1007_ms : 1006_ms;
-    mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, next_event, index + 1 );
+    mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, mage->talents.flame_accelerant->effectN( 1 ).period() );
   }
 };
 
@@ -7584,15 +7576,9 @@ void mage_t::create_buffs()
   buffs.firefall                 = make_buff( this, "firefall", find_spell( 384035 ) )
                                      ->set_chance( talents.firefall.ok() );
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
-  buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
-                                     ->set_can_cancel( false )
-                                     ->set_chance( talents.flame_accelerant.ok() )
+  buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 453283 ) )
+                                     ->set_default_value_from_effect( 2 )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.flame_accelerant_icd     = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
-                                     ->set_can_cancel( false )
-                                     ->set_chance( talents.flame_accelerant.ok() )
-                                     ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                       { if ( !bugs && cur == 0 ) buffs.flame_accelerant->trigger(); } );
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_RUN_SPEED )
@@ -8173,9 +8159,9 @@ void mage_t::arise()
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
-  if ( bugs && talents.flame_accelerant.ok() )
+  if ( talents.flame_accelerant.ok() )
   {
-    timespan_t first_tick = rng().real() * 1.0_s;
+    timespan_t first_tick = rng().real() * talents.flame_accelerant->effectN( 1 ).period();
     events.flame_accelerant = make_event<events::flame_accelerant_event_t>( *sim, *this, first_tick );
   }
 
