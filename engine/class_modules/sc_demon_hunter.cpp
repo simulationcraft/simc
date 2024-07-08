@@ -2149,7 +2149,7 @@ struct art_of_the_glaive_trigger_t : public BASE
 
     bool second_ability = false;
     if ( ABILITY == art_of_the_glaive_ability::GLAIVE_FLURRY &&
-         BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.glaive_flurry->up() )
+         BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && BASE::p()->buff.glaive_flurry->up() )
     {
       second_ability = !BASE::p()->buff.rending_strike->up();
 
@@ -2161,7 +2161,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       BASE::p()->buff.glaive_flurry->expire();
     }
     else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
-              BASE::p()->talent.aldrachi_reaver.art_of_the_glaive->ok() && BASE::p()->buff.rending_strike->up() )
+              BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && BASE::p()->buff.rending_strike->up() )
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
@@ -6292,8 +6292,7 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     // if glaive flurry is up and rending strike is not up
     // fury of the aldrachi causes art of the glaive to retrigger itself for 3 additional procs 300ms after initial
     // execution
-    if ( p()->talent.aldrachi_reaver.art_of_the_glaive->ok() &&
-         p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
+    if ( p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
          !p()->buff.rending_strike->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
@@ -8063,7 +8062,7 @@ void demon_hunter_t::init_spells()
   hero_spec.reavers_glaive =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442294 ) : spell_data_t::not_found();
   hero_spec.reavers_mark =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
+      talent.aldrachi_reaver.reavers_mark->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
   hero_spec.glaive_flurry =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
   hero_spec.rending_strike =
@@ -8071,7 +8070,7 @@ void demon_hunter_t::init_spells()
   hero_spec.art_of_the_glaive_buff =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
   hero_spec.art_of_the_glaive_damage =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
+      talent.aldrachi_reaver.fury_of_the_aldrachi->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
   hero_spec.warblades_hunger_buff =
       talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442503 ) : spell_data_t::not_found();
   hero_spec.warblades_hunger_damage =
@@ -8229,7 +8228,7 @@ void demon_hunter_t::init_spells()
     active.retaliation = get_background_action<retaliation_t>( "retaliation" );
   }
 
-  if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
+  if ( talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
   {
     active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
   }
