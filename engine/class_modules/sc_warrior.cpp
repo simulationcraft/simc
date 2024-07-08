@@ -2722,15 +2722,29 @@ struct bladestorm_t : public warrior_attack_t
     p()->buff.bladestorm->trigger();
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto new_dot_duration = warrior_attack_t::composite_dot_duration( s );
+
+    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    {
+      new_dot_duration = tick_time( s ) * ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() );
+    }
+
+    return new_dot_duration;
+  }
+
   timespan_t tick_time ( const action_state_t* s ) const override
   {
-    auto base_tick_time = warrior_attack_t::tick_time( s );
+    auto new_base_tick_time = warrior_attack_t::tick_time( s );
 
     // Normally we get 6 ticks of bladestorm, but with imminent demise, we get 1-3 extra ticks, in the same amount of time
     if ( p() -> talents.slayer.imminent_demise->ok() )
-      base_tick_time *= ( 6.0 / ( 6.0 + p() -> buff.imminent_demise -> stack() ) );
+    {
+      new_base_tick_time *= ( dot_duration.total_seconds() / ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() ) );
+    }
 
-    return base_tick_time;
+    return new_base_tick_time;
   }
 
   void tick( dot_t* d ) override
