@@ -374,7 +374,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     is_precombat(),
     initialized(),
     may_hit( true ),
-    may_miss(),
+    may_miss( true ),
     may_dodge(),
     may_parry(),
     may_glance(),
@@ -630,7 +630,6 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
-  may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   allow_class_ability_procs   = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
   not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 

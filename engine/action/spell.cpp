@@ -163,20 +163,11 @@ proc_types spell_base_t::proc_type() const
 // Harmful Spell
 // ==========================================================================
 
-spell_t::spell_t(util::string_view token,
-  player_t* p) :
-  spell_t(token, p, spell_data_t::nil())
-{
-}
+spell_t::spell_t( util::string_view token, player_t* p ) : spell_t( token, p, spell_data_t::nil() ) {}
 
-spell_t::spell_t( util::string_view   token,
-                  player_t*           p,
-                  const spell_data_t* s ) :
-  spell_base_t( ACTION_SPELL, token, p, s )
-{
-  may_miss = true;
-  may_block = false;
-}
+spell_t::spell_t( util::string_view token, player_t* p, const spell_data_t* s )
+  : spell_base_t( ACTION_SPELL, token, p, s )
+{}
 
 double spell_t::miss_chance( double hit, player_t* t ) const
 {  

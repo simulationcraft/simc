@@ -17,22 +17,24 @@
 // Attack
 // ==========================================================================
 
-attack_t::attack_t( util::string_view n, player_t* p )
-  : attack_t(n, p, spell_data_t::nil())
-{
-
-}
+attack_t::attack_t( util::string_view n, player_t* p ) : attack_t( n, p, spell_data_t::nil() ) {}
 
 attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
-  : action_t( ACTION_ATTACK, n, p, s ),
-    base_attack_expertise( 0 ),
-    attack_table()
+  : action_t( ACTION_ATTACK, n, p, s ), base_attack_expertise( 0 ), attack_table()
 {
   crit_bonus = 1.0;
   special = true; // Make sure to set this to false with autoattacks. 
 
   weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;
   min_gcd          = p->min_gcd;
+
+  // dodge/parry/block are true by default for attacks unless corresponding flag is set
+  if ( data().ok() && !data().flags( spell_attribute::SX_NO_D_P_B ) )
+  {
+    may_dodge = !data().flags( spell_attribute::SX_NO_DODGE );
+    may_parry = !data().flags( spell_attribute::SX_NO_PARRY );
+    may_block = !data().flags( spell_attribute::SX_NO_BLOCK );
+  }
 }
 
 void attack_t::execute()
@@ -415,18 +417,10 @@ void attack_t::reset()
 // Melee Attack
 // ==========================================================================
 
-melee_attack_t::melee_attack_t( util::string_view n, player_t* p )
-  : melee_attack_t(n, p, spell_data_t::nil())
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p ) : melee_attack_t( n, p, spell_data_t::nil() ) {}
+
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s ) : attack_t( n, p, s )
 {
-
-}
-
-melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s )
-  : attack_t( n, p, s )
-{
-  // Dodge/parry/block handled in action_t::parse_spell_data()
-  may_miss = may_glance = true;
-
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 )
     range = 5;
@@ -436,8 +430,8 @@ void melee_attack_t::init()
 {
   attack_t::init();
 
-  if ( special )
-    may_glance = false;
+  if ( !special )
+    may_glance = true;
 }
 
 double melee_attack_t::parry_chance( double expertise, player_t* t ) const
@@ -502,15 +496,14 @@ proc_types melee_attack_t::proc_type() const
 // ==========================================================================
 
 ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p )
-  : ranged_attack_t(token, p, spell_data_t::nil())
-{
-}
+  : ranged_attack_t( token, p, spell_data_t::nil() )
+{}
 
 ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p, const spell_data_t* s )
   : attack_t( token, p, s )
 {
-  may_miss  = true;
-  may_dodge = true;
+  // ranged attacks cannot be blocked or parried
+  may_block = may_parry = false;
 }
 
 // Ranged attacks are identical to melee attacks, but cannot be parried or dodged.
