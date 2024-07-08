@@ -341,7 +341,7 @@ using namespace helpers;
         p()->havoc_spells.push_back( this );
       }
 
-      if ( p()->talents.creeping_death.ok() && affected_by.creeping_death )
+      if ( affliction() && affected_by.creeping_death )
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
     }
 
@@ -930,7 +930,7 @@ using namespace helpers;
 
     double cost_pct_multiplier() const override
     {
-      double c= warlock_spell_t::cost_pct_multiplier();
+      double c = warlock_spell_t::cost_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
         c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
@@ -940,12 +940,12 @@ using namespace helpers;
 
     double execute_time_pct_multiplier() const override
     {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
       if ( p()->buffs.tormented_crescendo->check() )
-        mul *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
 
-      return mul;
+      return m;
     }
 
     bool ready() override
