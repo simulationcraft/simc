@@ -161,6 +161,8 @@ namespace warlock
     talents.malign_omen = find_talent_spell( talent_tree::SPECIALIZATION, "Malign Omen" ); // Should be ID 458041
     talents.malign_omen_buff = find_spell( 458043 );
 
+    talents.relinquished = find_talent_spell( talent_tree::SPECIALIZATION, "Relinquished" ); // Should be ID 453083
+
     talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
