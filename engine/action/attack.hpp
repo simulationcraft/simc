@@ -23,7 +23,6 @@ struct attack_t : public action_t
   double execute_time_pct_multiplier() const override;
   void execute() override;
   result_e calculate_result( action_state_t* ) const override;
-  void init() override;
 
   result_amount_type amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
   result_amount_type report_amount_type( const action_state_t* /* state */ ) const override;
