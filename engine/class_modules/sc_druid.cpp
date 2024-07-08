@@ -4405,7 +4405,8 @@ struct lunar_inspiration_t final : public cp_generator_t
                  p->talent.lunar_inspiration.ok() ? p->find_spell( 155625 ) : spell_data_t::not_found() )
   {
     may_dodge = may_parry = may_block = false;
-    gcd_type      = gcd_haste_type::ATTACK_HASTE;
+    // LI is a spell, but we parent to cp_generator_t to get all the proper cat attack methods.
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
     s_data_reporting = p->talent.lunar_inspiration;
     dot_name = "lunar_inspiration";
@@ -4419,6 +4420,34 @@ struct lunar_inspiration_t final : public cp_generator_t
       return;
 
     cp_generator_t::trigger_dot( s );
+  }
+
+  double composite_haste() const override
+  {
+    // directly call action_t::composite_haste(), as there are no intervening overrides
+    return action_t::composite_haste() * p()->cache.spell_cast_speed();
+  }
+
+  double composite_crit_chance() const override
+  {
+    // duplicate parse_action_effects_t::composite_crit_chance() using spell_t as base
+    auto cc = action_t::composite_crit_chance() + p()->cache.spell_crit_chance();
+
+    for ( const auto& i : crit_chance_effects )
+      cc += get_effect_value( i );
+
+    return cc;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    // duplicate parse_action_effects_t::composite_crit_chance_multiplier() using spell_t as base
+    auto ccm = action_t::composite_crit_chance_multiplier() * p()->composite_spell_crit_chance_multiplier();
+
+    for ( const auto& i : crit_chance_multiplier_effects )
+      ccm *= 1.0 + get_effect_value( i );
+
+    return ccm;
   }
 };
 
