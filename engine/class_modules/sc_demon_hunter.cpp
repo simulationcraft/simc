@@ -2906,9 +2906,12 @@ struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DE
   {
     // 2024-07-07 -- Fel Desolation doesn't benefit from DGB CDR
     // 2024-07-07 -- Fel Desolation doesn't share a cooldown with Fel Devastation
-    if (p->bugs) {
+    if ( p->bugs )
+    {
       benefits_from_dgb_cdr = false;
-    } else {
+    }
+    else
+    {
       cooldown = p->cooldown.fel_devastation;
     }
   }
@@ -5165,8 +5168,8 @@ struct chaos_strike_base_t
   double tww1_reset_proc_chance;
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
-                       util::string_view options_str = {}, bool from_onslaught = false )
-    : base_t( n, p, s, options_str ), from_onslaught( from_onslaught ), tww1_reset_proc_chance( 0.0 )
+                       util::string_view options_str = {} )
+    : base_t( n, p, s, options_str ), from_onslaught( false ), tww1_reset_proc_chance( 0.0 )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
@@ -5254,9 +5257,8 @@ struct chaos_strike_base_t
 
 struct chaos_strike_t : public chaos_strike_base_t
 {
-  chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {},
-                  bool from_onslaught = false )
-    : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str, from_onslaught )
+  chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
+    : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
     if ( attacks.empty() )
     {
@@ -5265,10 +5267,15 @@ struct chaos_strike_t : public chaos_strike_base_t
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ),
                                                                           data().effectN( 3 ), this ) );
     }
+  }
 
-    if ( !from_onslaught && p->active.relentless_onslaught )
+  void init() override
+  {
+    chaos_strike_base_t::init();
+
+    if ( !from_onslaught && p()->active.relentless_onslaught )
     {
-      add_child( p->active.relentless_onslaught );
+      add_child( p()->active.relentless_onslaught );
     }
   }
 
@@ -5285,11 +5292,10 @@ struct chaos_strike_t : public chaos_strike_base_t
 
 // Annihilation =============================================================
 
-struct annihilation_t : public chaos_strike_base_t
+struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILATION, chaos_strike_base_t>
 {
-  annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {},
-                  bool from_onslaught = false )
-    : chaos_strike_base_t( name, p, p->spec.annihilation, options_str, from_onslaught )
+  annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
+    : base_t( name, p, p->spec.annihilation, options_str )
   {
     if ( attacks.empty() )
     {
@@ -5298,10 +5304,15 @@ struct annihilation_t : public chaos_strike_base_t
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_2", name ),
                                                                           data().effectN( 3 ), this ) );
     }
+  }
 
-    if ( !from_onslaught && p->active.relentless_onslaught_annihilation )
+  void init() override
+  {
+    chaos_strike_base_t::init();
+
+    if ( !from_onslaught && p()->active.relentless_onslaught_annihilation )
     {
-      add_child( p->active.relentless_onslaught_annihilation );
+      add_child( p()->active.relentless_onslaught_annihilation );
     }
   }
 
@@ -5312,14 +5323,7 @@ struct annihilation_t : public chaos_strike_base_t
       return false;
     }
 
-    return chaos_strike_base_t::ready();
-  }
-
-  void execute() override
-  {
-    chaos_strike_base_t::execute();
-
-    p()->trigger_demonsurge( demonsurge_ability::ANNIHILATION );
+    return base_t::ready();
   }
 };
 
@@ -8199,9 +8203,13 @@ void demon_hunter_t::init_spells()
   }
   if ( talent.havoc.relentless_onslaught->ok() )
   {
-    active.relentless_onslaught = get_background_action<chaos_strike_t>( "chaos_strike_onslaught", "", true );
-    active.relentless_onslaught_annihilation =
-        get_background_action<annihilation_t>( "annihilation_onslaught", "", true );
+    auto relentless_onslaught_chaos_strike = get_background_action<chaos_strike_t>( "chaos_strike_onslaught" );
+    relentless_onslaught_chaos_strike->from_onslaught = true;
+    active.relentless_onslaught = relentless_onslaught_chaos_strike;
+
+    auto relentless_onslaught_annihilation = get_background_action<annihilation_t>( "annihilation_onslaught" );
+    relentless_onslaught_annihilation->from_onslaught = true;
+    active.relentless_onslaught_annihilation = relentless_onslaught_annihilation;
   }
   if ( talent.havoc.inner_demon->ok() )
   {
