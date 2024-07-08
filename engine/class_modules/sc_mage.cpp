@@ -351,6 +351,7 @@ public:
     buff_t* firefall_ready;
     buff_t* flame_accelerant;
     buff_t* flame_accelerant_icd;
+    buff_t* frenetic_speed;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* hyperthermia;
@@ -942,6 +943,7 @@ public:
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
+  double stacking_movement_modifier() const override;
   double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
@@ -5767,8 +5769,13 @@ struct scorch_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && improved_scorch_active( s->target ) )
-      get_td( s->target )->debuffs.improved_scorch->trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      if ( scorch_execute_active( s->target ) )
+        p()->buffs.frenetic_speed->trigger();
+      if ( improved_scorch_active( s->target ) )
+        get_td( s->target )->debuffs.improved_scorch->trigger();
+    }
   }
 
   bool usable_moving() const override
@@ -7553,6 +7560,10 @@ void mage_t::create_buffs()
                                      ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                        { if ( !bugs && cur == 0 ) buffs.flame_accelerant->trigger(); } );
+  buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->add_invalidate( CACHE_RUN_SPEED )
+                                     ->set_chance( talents.scorch.ok() );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
@@ -7940,6 +7951,15 @@ void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
     resources.current[ rt ] = resources.max[ rt ] * pct;
     sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100.0 * pct );
   }
+}
+
+double mage_t::stacking_movement_modifier() const
+{
+  double ms = player_t::stacking_movement_modifier();
+
+  ms += buffs.frenetic_speed->check_value();
+
+  return ms;
 }
 
 double mage_t::composite_mastery() const
