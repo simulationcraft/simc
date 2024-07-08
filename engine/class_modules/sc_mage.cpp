@@ -5225,7 +5225,6 @@ struct fire_blast_t final : public fire_mage_spell_t
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
 
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
-    cooldown->duration -= 1000 * p->talents.flame_on->effectN( 3 ).time_value();
     cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
 
