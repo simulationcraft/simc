@@ -543,6 +543,7 @@ public:
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
     int embedded_splinters;
+    int spellfrost_teachings_attempts = 1;
   } state;
 
   struct expression_support_t
@@ -6374,15 +6375,19 @@ struct splinter_t final : public mage_spell_t
 
     if ( p()->talents.spellfrost_teachings.ok() )
     {
-      // TODO: The chance isn't in spell data and from early tests it looks like it
-      // isn't of the "obvious" procs (static %, rppm, etc). Adjust when more data is available.
-      bool success = rng().roll( 0.015 );
+      // This proc chance is not present in spell data and should be periodically checked.
+      bool success = rng().roll( 0.0004 * p()->state.spellfrost_teachings_attempts );
       if ( success )
       {
         p()->cooldowns.frozen_orb->reset( true );
         if ( p()->action.spellfrost_arcane_orb && p()->target )
           p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
         p()->buffs.spellfrost_teachings->trigger();
+        p()->state.spellfrost_teachings_attempts = 1;
+      }
+      else
+      {
+        p()->state.spellfrost_teachings_attempts++;
       }
     }
 
