@@ -340,7 +340,7 @@ public:
     propagate_const<dot_t *> touch_of_karma;
 
     // Master of Harmony
-    propagate_const<dot_t *> coalescence;
+    propagate_const<dot_t *> aspect_of_harmony;
   } dot;
 
   struct debuff_t
@@ -1184,6 +1184,7 @@ public:
       player_talent_t mantra_of_tenacity;
       // Row 4
       player_talent_t overwhelming_force;
+      const spell_data_t *overwhelming_force_damage;
       player_talent_t path_of_resurgence;
       player_talent_t way_of_a_thousand_strikes;
       player_talent_t clarity_of_purpose;
@@ -1561,17 +1562,24 @@ private:
     template <class base_action_t>
     struct purified_spirit_t : base_action_t
     {
-      propagate_const<buff_t *> spender;
+      propagate_const<spender_t *> spender;
 
-      purified_spirit_t( monk_t *player, const spell_data_t *spell_data )
-        : base_action_t( player, "purified_spirit", spell_data ),
-          spender( buff_t::find( player, "aspect_of_harmony_spender" ) )
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender )
+        : base_action_t( player, "purified_spirit", spell_data ), spender( spender )
       {
+        base_action_t::aoe              = -1;
+        base_action_t::split_aoe_damage = true;
+      }
+
+      void init() override
+      {
+        base_action_t::init();
+        base_action_t::update_flags = base_action_t::snapshot_flags &= STATE_NO_MULTIPLIER;
       }
 
       void execute() override
       {
-        base_action_t::base_td = spender->check_value();
+        base_action_t::base_td = spender->pool;
         base_action_t::execute();
       }
     };
@@ -1590,6 +1598,8 @@ private:
     propagate_const<action_t *> purified_spirit;
     propagate_const<buff_t *> accumulator;
 
+    double pool;
+
     spender_t( monk_t *player )
       : actions::monk_buff_t( player, "aspect_of_harmony_spender",
                               player->talent.master_of_harmony.aspect_of_harmony_spender ),
@@ -1598,15 +1608,16 @@ private:
         heal( new tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
                                                 player->talent.master_of_harmony.aspect_of_harmony_heal ) ),
         purified_spirit( nullptr ),
-        accumulator( nullptr )
+        accumulator( nullptr ),
+        pool( 0.0 )
     {
       set_default_value( 0.0 );
       if ( player->specialization() == MONK_BREWMASTER )
         purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
-            player, player->talent.master_of_harmony.purified_spirit_damage );
+            player, player->talent.master_of_harmony.purified_spirit_damage, this );
       if ( player->specialization() == MONK_MISTWEAVER )
         purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
-            player, player->talent.master_of_harmony.purified_spirit_heal );
+            player, player->talent.master_of_harmony.purified_spirit_heal, this );
 
       set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
         if ( !new_ )
@@ -1614,12 +1625,18 @@ private:
       } );
     }
 
+    void reset() override
+    {
+      actions::monk_buff_t::reset();
+      pool = 0.0;
+    }
+
     bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
                   timespan_t duration = timespan_t::min() ) override
     {
-      double value = accumulator->check_value();
+      pool = accumulator->check_value();
       accumulator->expire();
-      return actions::monk_buff_t::trigger( stacks, value, chance, duration );
+      return actions::monk_buff_t::trigger( stacks, pool, chance, duration );
     }
 
     void trigger_with_state( action_state_t *state )
@@ -1628,13 +1645,13 @@ private:
         return;
 
       double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
-      double amount     = std::min( state->result_amount * multiplier, check_value() );
-      if ( amount == check_value() )
+      double amount     = std::min( state->result_amount * multiplier, pool );
+      if ( amount == pool )
       {
         expire();
         return;
       }
-      current_value -= amount;
+      pool -= amount;
 
       const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
                                p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
@@ -1664,8 +1681,10 @@ private:
 
 public:
   propagate_const<buff_t *> path_of_resurgence;
+  propagate_const<dot_t *> heal;
 
-  aspect_of_harmony_t( monk_t *player ) : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr )
+  aspect_of_harmony_t( monk_t *player )
+    : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr )
   {
     if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
     {
@@ -1676,6 +1695,9 @@ public:
     spender              = new spender_t( player );
     accumulator->spender = spender;
     spender->accumulator = accumulator;
+
+    if ( spender->heal )
+      heal = spender->heal->get_dot();
   }
 
   void trigger( action_state_t *state )
