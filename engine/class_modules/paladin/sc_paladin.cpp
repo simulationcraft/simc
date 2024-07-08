@@ -2323,9 +2323,9 @@ void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
 
 // Holy Armaments
 // Sacred Weapon Driver
-struct sacred_weapon_proc_t : public paladin_spell_t
+struct sacred_weapon_proc_damage_t : public paladin_spell_t
 {
-  sacred_weapon_proc_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon_proc", p, p->find_spell( 432616 ) )
+  sacred_weapon_proc_damage_t( paladin_t* p ) : paladin_spell_t( "sacred_weapon_proc_damage", p, p->find_spell( 432616 ) )
   {
     background          = true;
     callbacks           = false;
@@ -2340,6 +2340,55 @@ struct sacred_weapon_proc_t : public paladin_spell_t
     if ( state->n_targets == 1 )
       m *= 1.5;
     return m;
+  }
+};
+
+struct sacred_weapon_proc_heal_t : public paladin_heal_t
+{
+  sacred_weapon_proc_heal_t( paladin_t* p ) : paladin_heal_t( "sacred_weapon_proc_heal", p, p->find_spell( 441590 ) )
+  {
+    background          = true;
+    callbacks           = false;
+    aoe                 = 5;
+    harmful             = false;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double m = paladin_heal_t::composite_aoe_multiplier( state );
+    // If Sacred Weapon heal hits only 1 target, it's healing is increased by 100%
+    if ( state->n_targets == 1 )
+      m *= 2.0;
+    return m;
+  }
+};
+
+struct sacred_weapon_cb_t : public dbc_proc_callback_t
+{
+  sacred_weapon_proc_damage_t* dmg;
+  sacred_weapon_proc_heal_t* heal;
+
+  sacred_weapon_cb_t( player_t* player, paladin_t* paladin, const special_effect_t& effect )
+    : dbc_proc_callback_t( player, effect )
+  {
+    dmg  = new sacred_weapon_proc_damage_t( paladin );
+    heal = new sacred_weapon_proc_heal_t( paladin );
+    dmg->init();
+    heal->init();
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s->target->is_enemy() )
+    {
+      dmg->set_target( s->target );
+      dmg->schedule_execute();
+    }
+    else
+    {
+      heal->set_target( s->target );
+      heal->schedule_execute();
+    }
   }
 };
 
@@ -2492,19 +2541,14 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
 
 dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source, player_t* target )
 {
-  action_t* sacred_weapon_proc;
-  sacred_weapon_proc = new sacred_weapon_proc_t( source );
-  sacred_weapon_proc->init();
-
   auto sacred_weapon_effect      = new special_effect_t( target );
-  sacred_weapon_effect->name_str       = "sacred_weapon_cb_" + source->name_str + "_" + target->name_str;
-  sacred_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
+  sacred_weapon_effect->name_str = "sacred_weapon_cb_" + source->name_str + "_" + target->name_str;
   sacred_weapon_effect->spell_id = 432502;
-  sacred_weapon_effect->execute_action = sacred_weapon_proc;
+  sacred_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
 
   target->special_effects.push_back( sacred_weapon_effect );
 
-  return new dbc_proc_callback_t( target, *sacred_weapon_effect );
+  return new sacred_weapon_cb_t( target, source, *sacred_weapon_effect );
 }
 
 void paladin_t::trigger_laying_down_arms()
