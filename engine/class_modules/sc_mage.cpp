@@ -4164,6 +4164,7 @@ struct flamestrike_t final : public hot_streak_spell_t
 {
   action_t* flame_patch = nullptr;
   timespan_t flame_patch_duration;
+  size_t num_targets_crit;
 
   flamestrike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     hot_streak_spell_t( n, p, p->find_specialization_spell( "Flamestrike" ) )
@@ -4181,8 +4182,20 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
+
+    return m;
+  }
+
   void execute() override
   {
+    num_targets_crit = 0;
+
     hot_streak_spell_t::execute();
 
     if ( hit_any_target )
@@ -4204,6 +4217,33 @@ struct flamestrike_t final : public hot_streak_spell_t
         .duration( ground_aoe_duration )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_CAST_SPEED ) );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( s->result == RESULT_CRIT )
+    {
+      double max_targets;
+      if ( p()->buffs.combustion->check() )
+      {
+        max_targets = p()->talents.unleashed_inferno->effectN( 3 ).base_value();
+        if ( num_targets_crit < max_targets )
+          p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() / max_targets );
+      }
+
+      max_targets = p()->talents.kindling->effectN( 2 ).base_value();
+      if ( num_targets_crit < max_targets )
+      {
+        timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() / max_targets;
+        p()->cooldowns.combustion->adjust( -amount );
+        if ( !p()->buffs.combustion->check() )
+          p()->expression_support.kindling_reduction += amount;
+      }
+
+      num_targets_crit++;
     }
   }
 };
