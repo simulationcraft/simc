@@ -144,10 +144,6 @@ namespace warlock
 
     talents.cull_the_weak = find_talent_spell( talent_tree::SPECIALIZATION, "Cull the Weak" ); // Should be ID 453056
 
-    talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
-
-    talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
-
     talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
 
     talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
@@ -156,6 +152,20 @@ namespace warlock
     talents.tormented_crescendo_buff = find_spell( 387079 );
 
     talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
+
+    talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
+
+    talents.perpetual_unstability = find_talent_spell( talent_tree::SPECIALIZATION, "Perpetual Unstability" ); // Should be ID 459376
+    talents.perpetual_unstability_proc = find_spell( 459461 );
+
+    talents.malign_omen = find_talent_spell( talent_tree::SPECIALIZATION, "Malign Omen" ); // Should be ID 458041
+    talents.malign_omen_buff = find_spell( 458043 );
+
+    talents.relinquished = find_talent_spell( talent_tree::SPECIALIZATION, "Relinquished" ); // Should be ID 453083
+
+    talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
+
+    talents.improved_malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Malefic Rapture" ); // Should be ID 454378
 
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
@@ -409,8 +419,11 @@ namespace warlock
     // Affliction buffs
     create_buffs_affliction();
 
-    buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
+    buffs.soul_rot = make_buff( this, "soul_rot", talents.soul_rot)
                          ->set_cooldown( 0_ms );
+
+    buffs.malign_omen = make_buff( this, "malign_omen", talents.malign_omen_buff )
+                            ->set_default_value( talents.malign_omen_buff->effectN( 1 ).percent() );
 
     buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )

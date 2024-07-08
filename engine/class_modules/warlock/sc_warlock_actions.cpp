@@ -904,6 +904,11 @@ using namespace helpers;
         if ( p()->talents.cull_the_weak.ok() )
           m *= 1.0 + ( std::min( target_count, as<int>( p()->talents.cull_the_weak->effectN( 2 ).base_value() ) ) * p()->talents.cull_the_weak->effectN( 1 ).percent() );
 
+        if ( p()->talents.malign_omen.ok() )
+          m *= 1.0 + p()->buffs.malign_omen->check_value();
+
+        m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
         return m;
       }
 
@@ -916,6 +921,25 @@ using namespace helpers;
           p()->procs.malefic_rapture[ d ]->occur();
 
         warlock_spell_t::execute();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->buffs.malign_omen->check() )
+        {
+          warlock_td_t* tdata = td( s->target );
+          timespan_t extension = timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() );
+
+          tdata->dots_agony->adjust_duration( extension );
+          tdata->dots_corruption->adjust_duration( extension );
+          tdata->dots_phantom_singularity->adjust_duration( extension );
+          tdata->dots_vile_taint->adjust_duration( extension );
+          tdata->dots_unstable_affliction->adjust_duration( extension );
+          tdata->dots_soul_rot->adjust_duration( extension );
+          tdata->debuffs_haunt->extend_duration( p(), extension );
+        }
       }
     };
 
@@ -945,6 +969,8 @@ using namespace helpers;
       if ( p()->buffs.tormented_crescendo->check() )
         m *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
 
+      m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 2 ).percent();
+
       return m;
     }
 
@@ -961,7 +987,11 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
+      if ( p()->talents.malign_omen.ok() )
+        p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
+
       p()->buffs.tormented_crescendo->decrement();
+      p()->buffs.malign_omen->decrement();
     }
 
     void impact( action_state_t* s ) override
@@ -981,11 +1011,40 @@ using namespace helpers;
     }
   };
 
+  struct perpetual_unstability_t : public warlock_spell_t
+  {
+    perpetual_unstability_t( warlock_t* p )
+      : warlock_spell_t( "Perpetual Unstability", p, p->talents.perpetual_unstability_proc )
+    { background = dual = true; }
+  };
+
   struct unstable_affliction_t : public warlock_spell_t
   {
+    perpetual_unstability_t* perpetual_unstability;
+
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
-    { dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value(); }
+    {
+      base_dd_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
+
+      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+
+      if ( p->talents.perpetual_unstability.ok() )
+      {
+        perpetual_unstability = new perpetual_unstability_t( p );
+        add_child( perpetual_unstability );
+      }
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.perpetual_unstability->effectN( 2 ).percent();
+
+      return m;
+    }
 
     void execute() override
     {
@@ -995,6 +1054,17 @@ using namespace helpers;
       p()->ua_target = target;
 
       warlock_spell_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bool ticking = td( s->target )->dots_unstable_affliction->is_ticking();
+      timespan_t remains = td( s->target )->dots_unstable_affliction->remains();
+
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.perpetual_unstability.ok() && ticking && remains < timespan_t::from_seconds( p()->talents.perpetual_unstability->effectN( 1 ).base_value() ) )
+        perpetual_unstability->execute_on_target( s->target );
     }
 
     void last_tick( dot_t* d ) override
@@ -1086,6 +1156,9 @@ using namespace helpers;
       // 2023-09-01: Recent test noted that Creeping Death is once again renormalizing shard generation to be neutral with/without the talent.
       if ( p()->talents.creeping_death.ok() )
         increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+
+      if ( p()->talents.relinquished.ok() )
+        increment_max *= 1.0 + p()->talents.relinquished->effectN( 1 ).percent();
 
       p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -1381,7 +1454,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->talents.infirmity.ok() && fresh_agony )
-        td( s->target )->dots_agony->increment( p()->talents.infirmity->effectN( 1 ).base_value() );
+        td( s->target )->dots_agony->increment( as<int>( p()->talents.infirmity->effectN( 1 ).base_value() ) );
     }
   };
 
@@ -1532,6 +1605,9 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.soul_rot->trigger();
+
+      if ( p()->talents.malign_omen.ok() )
+        p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );
     }
 
     void impact( action_state_t* s ) override

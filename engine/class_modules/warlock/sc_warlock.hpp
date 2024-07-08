@@ -224,11 +224,13 @@ public:
 
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
-    player_talent_t perpetual_unstability; // TODO: New
-    player_talent_t malign_omen; // TODO: New
-    player_talent_t relinquished; // TODO: New
+    player_talent_t perpetual_unstability;
+    const spell_data_t* perpetual_unstability_proc;
+    player_talent_t malign_omen;
+    const spell_data_t* malign_omen_buff;
+    player_talent_t relinquished;
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
-    player_talent_t improved_malefic_rapture; // TODO: New
+    player_talent_t improved_malefic_rapture;
 
     player_talent_t oblivion; // TODO: New
     player_talent_t deaths_embrace; // TODO: New
@@ -497,6 +499,7 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> tormented_crescendo;
+    propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
 

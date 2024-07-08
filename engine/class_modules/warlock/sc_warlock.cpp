@@ -766,17 +766,16 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.demonology_warlock );
   }
+
   if ( warlock_base.destruction_warlock )
   {
     action.apply_affecting_aura( warlock_base.destruction_warlock );
   }
+
   if ( warlock_base.affliction_warlock )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
-
-  // TODO: Remove apply_affectings and move to affected_by in actions
-  action.apply_affecting_aura( talents.xavius_gambit );
 }
 
 struct warlock_module_t : public module_t
