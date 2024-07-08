@@ -985,7 +985,12 @@ using namespace helpers;
   {
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
-    { dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value(); }
+    {
+      base_dd_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
+
+      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+    }
 
     void execute() override
     {
