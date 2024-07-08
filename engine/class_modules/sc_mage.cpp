@@ -2368,7 +2368,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 2 ).base_value();
+    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value();
   }
 
   void trigger_firefall()
@@ -2528,7 +2528,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         assert( pyromaniac_action );
         // Pyronamic Pyroblast actually casts on the Mage's target, but that is probably a bug.
-        make_event( *sim, 500_ms, [ this ] { pyromaniac_action->execute_on_target( target ); } );
+        make_event( *sim, 500_ms, [ this, t = target ] { pyromaniac_action->execute_on_target( t ); } );
       }
     }
   }
@@ -6803,7 +6803,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.magis_spark_abar     = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
   debuffs.magis_spark_am       = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
   debuffs.improved_scorch      = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
-                                   ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
+                                   ->set_default_value_from_effect( 1 );
   debuffs.nether_munitions     = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
                                    ->set_default_value_from_effect( 1 )
                                    ->set_chance( mage->talents.nether_munitions.ok() );
@@ -8297,7 +8297,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value(), true );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "improved_scorch" ) )
-    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 2 ).base_value(), true );
+    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 1 ).base_value(), true );
 
   return player_t::create_action_expression( action, name );
 }
