@@ -245,7 +245,6 @@ public:
   {
     event_t* enlightened;
     event_t* flame_accelerant;
-    event_t* from_the_ashes;
     event_t* icicle;
     event_t* merged_buff_execute;
     event_t* splinterstorm;
@@ -536,7 +535,6 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
-    double from_the_ashes_mastery;
     timespan_t last_enlightened_update;
     double spent_mana;
     timespan_t gained_full_icicles;
@@ -941,7 +939,6 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double stacking_movement_modifier() const override;
-  double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
@@ -1003,7 +1000,6 @@ public:
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
-  void update_from_the_ashes();
 };
 
 namespace pets {
@@ -2131,7 +2127,7 @@ struct fire_mage_spell_t : public mage_spell_t
         && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
+        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 1 ).time_value() );
       }
     }
   }
@@ -5549,6 +5545,7 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.from_the_ashes->effectN( 2 ).percent();
     base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
   }
@@ -6578,23 +6575,6 @@ struct flame_accelerant_event_t final : public mage_event_t
     mage->buffs.flame_accelerant->trigger();
 
     mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, mage->talents.flame_accelerant->effectN( 1 ).period() );
-  }
-};
-
-struct from_the_ashes_event_t final : public mage_event_t
-{
-  from_the_ashes_event_t( mage_t& m, timespan_t delta_time ) :
-    mage_event_t( m, delta_time )
-  { }
-
-  const char* name() const override
-  { return "from_the_ashes_event"; }
-
-  void execute() override
-  {
-    mage->events.from_the_ashes = nullptr;
-    mage->update_from_the_ashes();
-    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, 2.0_s );
   }
 };
 
@@ -8007,15 +7987,6 @@ double mage_t::stacking_movement_modifier() const
   return ms;
 }
 
-double mage_t::composite_mastery() const
-{
-  double m = player_t::composite_mastery();
-
-  m += state.from_the_ashes_mastery;
-
-  return m;
-}
-
 double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
@@ -8189,14 +8160,6 @@ void mage_t::arise()
   {
     timespan_t first_tick = rng().real() * talents.flame_accelerant->effectN( 1 ).period();
     events.flame_accelerant = make_event<events::flame_accelerant_event_t>( *sim, *this, first_tick );
-  }
-
-  if ( talents.from_the_ashes.ok() )
-  {
-    update_from_the_ashes();
-
-    timespan_t first_tick = rng().real() * 2.0_s;
-    events.from_the_ashes = make_event<events::from_the_ashes_event_t>( *sim, *this, first_tick );
   }
 
   if ( talents.time_anomaly.ok() )
@@ -8526,18 +8489,6 @@ void mage_t::update_enlightened( bool double_regen )
   }
 
   state.last_enlightened_update = sim->current_time();
-}
-
-void mage_t::update_from_the_ashes()
-{
-  if ( !talents.from_the_ashes.ok() )
-    return;
-
-  int from_the_ashes_count = cooldowns.phoenix_flames->charges - static_cast<int>( cooldowns.phoenix_flames->charges_fractional() );
-  state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * from_the_ashes_count;
-  invalidate_cache( CACHE_MASTERY );
-
-  sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, state.from_the_ashes_mastery );
 }
 
 action_t* mage_t::get_icicle()
