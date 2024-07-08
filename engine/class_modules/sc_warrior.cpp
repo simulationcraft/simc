@@ -3213,6 +3213,51 @@ struct deep_wounds_PROT_t : public warrior_attack_t
   }
 };
 
+// Demolish =================================================================
+
+struct demolish_damage_t : public warrior_attack_t
+{
+  demolish_damage_t( util::string_view name, warrior_t* p,  const spell_data_t* demolish )
+    : warrior_attack_t( name, p, demolish )
+  {
+    background = true;
+    dual = true;
+    aoe = -1;
+    reduced_aoe_targets = 8.0;
+  }
+};
+
+struct demolish_t : public warrior_attack_t
+{
+  demolish_damage_t* demolish_first_attack;
+  demolish_damage_t* demolish_second_attack;
+  demolish_damage_t* demolish_third_attack;
+  demolish_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "demolish", p, p->talents.colossus.demolish ),
+      demolish_first_attack( nullptr ),
+      demolish_second_attack( nullptr ),
+      demolish_third_attack( nullptr )
+    {
+      parse_options( options_str );
+      weapon = &( player->main_hand_weapon );
+      demolish_first_attack = new demolish_damage_t( "demolish_first_attack", p, p->find_spell( 440884 ) );
+      demolish_second_attack = new demolish_damage_t( "demolish_second_attack", p, p->find_spell( 440886 ) );
+      demolish_third_attack = new demolish_damage_t( "demolish_third_attack", p, p->find_spell( 440888 ) );
+      add_child( demolish_first_attack );
+      add_child( demolish_second_attack );
+      add_child( demolish_third_attack );
+    }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    printf("DEBUGME: Demolish Tick %d\n", d->current_tick, d-> );
+    // Attack 1 Ticks at 200 - Tick 1
+    // Attack 2 Ticks at 600 - Tick 3
+    // Attack 3 Ticks at 1600 - Tick 8
+  }
+};
+
 // Demoralizing Shout =======================================================
 
 struct demoralizing_shout_t : public warrior_attack_t
@@ -6689,6 +6734,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   }
   if ( name == "wrecking_throw" )
     return new wrecking_throw_t( this, options_str );
+  if ( name == "demolish" )
+    return new demolish_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
