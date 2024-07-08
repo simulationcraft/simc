@@ -1309,8 +1309,7 @@ struct icy_veins_t final : public buff_t
     p->buffs.deaths_chill->expire();
     p->buffs.slick_ice->expire();
 
-    // Icy Veins from TA doesn't need the IV talent and the pet might be nullptr
-    if ( p->pets.water_elemental && !p->pets.water_elemental->is_sleeping() )
+    if ( !p->pets.water_elemental->is_sleeping() )
       p->pets.water_elemental->dismiss();
   }
 };
@@ -5196,19 +5195,12 @@ struct icy_veins_t final : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
-    p()->buffs.frigid_empowerment->expire();
-    // TODO: refreshing IV currently breaks Death's chill and no further stacks can be gained
-    p()->buffs.deaths_chill->expire();
-    p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
     if ( p()->talents.flash_freezeburn.ok() )
       p()->buffs.frostfire_empowerment->execute();
-
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon();
-    else if ( p()->bugs )
-      p()->pets.water_elemental->dismiss();
   }
 };
 
@@ -6685,6 +6677,8 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
             if ( mage->talents.flash_freezeburn.ok() )
               mage->buffs.frostfire_empowerment->execute();
+            if ( mage->pets.water_elemental->is_sleeping() )
+              mage->pets.water_elemental->summon();
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
@@ -7119,7 +7113,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) )
+  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) || specialization() == MAGE_FROST && talents.time_anomaly.ok() )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
