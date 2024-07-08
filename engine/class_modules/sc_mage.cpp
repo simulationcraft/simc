@@ -4230,6 +4230,18 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     hot_streak_spell_t::execute();
 
+    if ( p()->buffs.combustion->check() )
+    {
+      double max_targets = p()->talents.unleashed_inferno->effectN( 3 ).base_value();
+      p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 ) );
+    }
+
+    double max_targets = p()->talents.kindling->effectN( 2 ).base_value();
+    timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 );
+    p()->cooldowns.combustion->adjust( -amount );
+    if ( !p()->buffs.combustion->check() )
+      p()->expression_support.kindling_reduction += amount;
+
     if ( hit_any_target )
       handle_hot_streak( execute_state->crit_chance, p()->spec.fuel_the_fire->ok() ? HS_CUSTOM : HS_HIT );
 
@@ -4252,31 +4264,10 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
-  void impact( action_state_t* s ) override
+  void schedule_travel( action_state_t* s ) override
   {
-    fire_mage_spell_t::impact( s );
-
-    if ( s->result == RESULT_CRIT )
-    {
-      double max_targets;
-      if ( p()->buffs.combustion->check() )
-      {
-        max_targets = p()->talents.unleashed_inferno->effectN( 3 ).base_value();
-        if ( num_targets_crit < max_targets )
-          p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() / max_targets );
-      }
-
-      max_targets = p()->talents.kindling->effectN( 2 ).base_value();
-      if ( num_targets_crit < max_targets )
-      {
-        timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() / max_targets;
-        p()->cooldowns.combustion->adjust( -amount );
-        if ( !p()->buffs.combustion->check() )
-          p()->expression_support.kindling_reduction += amount;
-      }
-
-      num_targets_crit++;
-    }
+    mage_spell_t::schedule_travel( s );
+    if ( s->result == RESULT_CRIT ) num_targets_crit++;
   }
 };
 
