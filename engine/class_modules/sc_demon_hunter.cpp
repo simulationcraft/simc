@@ -255,7 +255,6 @@ public:
   double frailty_accumulator;  // Frailty healing accumulator
   event_t* frailty_driver;
 
-  bool fodder_initiative;
   double shattered_destiny_accumulator;
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
@@ -268,7 +267,6 @@ public:
     buff_t* empowered_demon_soul;
     buff_t* immolation_aura;
     buff_t* metamorphosis;
-    buff_t* fodder_to_the_flame;
 
     // Havoc
     buff_t* blind_fury;
@@ -379,7 +377,6 @@ public:
       player_talent_t flames_of_fury;
 
       player_talent_t collective_anguish;
-      player_talent_t fodder_to_the_flame;
       player_talent_t the_hunt;
       player_talent_t sigil_of_spite;
 
@@ -584,8 +581,6 @@ public:
     // Cross-Expansion Override Spells
     const spell_data_t* sigil_of_spite;
     const spell_data_t* sigil_of_spite_damage;
-    const spell_data_t* fodder_to_the_flame;
-    const spell_data_t* fodder_to_the_flame_damage;
     const spell_data_t* the_hunt;
 
   } spell;
@@ -884,7 +879,6 @@ public:
     spell_t* burning_wound                      = nullptr;
     attack_t* demon_blades                      = nullptr;
     spell_t* fel_barrage                        = nullptr;
-    spell_t* fodder_to_the_flame_damage         = nullptr;
     spell_t* inner_demon                        = nullptr;
     spell_t* ragefire                           = nullptr;
     attack_t* relentless_onslaught              = nullptr;
@@ -920,8 +914,6 @@ public:
     double target_reach = -1.0;
     // Relative directionality for movement events, 1.0 being directly away and 2.0 being perpendicular
     double movement_direction_factor = 1.8;
-    // Chance every second to get hit by the fodder demon
-    double fodder_to_the_flame_initiative_chance = 0.20;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
   } options;
@@ -1592,7 +1584,6 @@ public:
     ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
     ab::apply_affecting_aura( p->talent.demon_hunter.flames_of_fury );
     ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
-    ab::apply_affecting_aura( p->talent.demon_hunter.fodder_to_the_flame );
 
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
@@ -1961,21 +1952,6 @@ public:
     {
       s->target->debuffs.chaos_brand->trigger();
     }
-  }
-
-  void hit_fodder( bool kill = false )
-  {
-    if ( !p()->buff.fodder_to_the_flame->check() )
-      return;
-
-    if ( p()->fodder_initiative )
-    {
-      p()->buff.initiative->trigger();
-      p()->fodder_initiative = false;
-    }
-
-    if ( kill )
-      p()->buff.fodder_to_the_flame->expire();
   }
 
   void trigger_initiative( action_state_t* s )
@@ -3554,7 +3530,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
-        if ( targets_in_range_list( target_list() ).size() == 1 && !p()->buff.fodder_to_the_flame->check() )
+        if ( targets_in_range_list( target_list() ).size() == 1 )
         {
           return 1.0;
         }
@@ -3613,12 +3589,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
         accumulate_ragefire( cast_state( s ) );
       }
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-      hit_fodder( false );
     }
 
     result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -4293,52 +4263,6 @@ struct the_hunt_t : public demon_hunter_spell_t
   }
 };
 
-// Spectral Sight ===========================================================
-
-struct spectral_sight_t : public demon_hunter_spell_t
-{
-  struct fodder_to_the_flame_damage_t : public demon_hunter_spell_t
-  {
-    fodder_to_the_flame_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.fodder_to_the_flame_damage )
-    {
-      background          = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->spell.fodder_to_the_flame->effectN( 1 ).base_value();
-    }
-
-    void execute() override
-    {
-      demon_hunter_spell_t::execute();
-      p()->buff.empowered_demon_soul->trigger();
-    }
-  };
-
-  demon_hunter_t* dh;
-
-  spectral_sight_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "spectral_sight", p, p->spell.spectral_sight, options_str ), dh( p )
-  {
-    if ( p->talent.demon_hunter.fodder_to_the_flame->ok() )
-      add_child( p->active.fodder_to_the_flame_damage );
-  }
-
-  bool usable_precombat() const override
-  {
-    return true;  // just applies a buff and then summons a demon
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-
-    if ( p()->talent.demon_hunter.fodder_to_the_flame->ok() )
-    {
-      p()->buff.fodder_to_the_flame->trigger();
-    }
-  }
-};
-
 struct sigil_of_misery_t : public demon_hunter_spell_t
 {
   struct sigil_of_misery_sigil_t : public demon_hunter_sigil_t
@@ -4823,8 +4747,6 @@ struct blade_dance_base_t
     void execute() override
     {
       demon_hunter_attack_t::execute();
-
-      hit_fodder( false );
 
       if ( last_attack && p()->buff.restless_hunter->check() )
       {
@@ -5573,8 +5495,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
-    hit_fodder( false );
-
     if ( p()->buff.unbound_chaos->up() && p()->talent.havoc.inertia->ok() )
     {
       p()->buff.inertia->trigger();
@@ -6016,9 +5936,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
-
-    // Hit the fodder 250ms after the action is used to fake the travel time.
-    make_event( sim, 250_ms, ( [ this ] { hit_fodder( true ); } ) );
 
     if ( p()->talent.havoc.furious_throws->ok() )
     {
@@ -6913,7 +6830,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     soul_fragments(),
     frailty_accumulator( 0.0 ),
     frailty_driver( nullptr ),
-    fodder_initiative( false ),
     shattered_destiny_accumulator( 0.0 ),
     exit_melee_event( nullptr ),
     buff(),
@@ -7032,8 +6948,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_spite_t( this, options_str );
   if ( name == "the_hunt" )
     return new the_hunt_t( this, options_str );
-  if ( name == "spectral_sight" )
-    return new spectral_sight_t( this, options_str );
   if ( name == "sigil_of_misery" )
     return new sigil_of_misery_t( this, options_str );
   if ( name == "sigil_of_silence" )
@@ -7093,27 +7007,6 @@ void demon_hunter_t::create_buffs()
 
   buff.demon_soul           = make_buff( this, "demon_soul", spell.demon_soul );
   buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
-  buff.fodder_to_the_flame = make_buff( this, "fodder_to_the_flame", spell.fodder_to_the_flame->effectN( 1 ).trigger() )
-                                 ->set_cooldown( 0_s )
-                                 ->set_chance( 1.0 )
-                                 ->set_stack_change_callback( [ this ]( buff_t*, int o, int n ) {
-                                   if ( n < o )
-                                   {
-                                     active.fodder_to_the_flame_damage->execute();
-                                   }
-                                   else
-                                   {
-                                     fodder_initiative = true;
-                                   }
-                                 } )
-                                 ->set_period( 0.5_s )
-                                 ->set_tick_callback( [ this ]( buff_t*, int t, timespan_t ) {
-                                   if ( t < 3 )
-                                     return;
-
-                                   if ( rng().roll( options.fodder_to_the_flame_initiative_chance * ( t - 3 ) ) )
-                                     fodder_initiative = false;
-                                 } );
   buff.immolation_aura = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis   = make_buff<buffs::metamorphosis_buff_t>( this );
 
@@ -7484,8 +7377,6 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option(
-      opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
-  add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
 }
 
@@ -7825,7 +7716,6 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
   talent.demon_hunter.collective_anguish  = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
-  talent.demon_hunter.fodder_to_the_flame = find_talent_spell( talent_tree::CLASS, "Fodder to the Flame" );
   talent.demon_hunter.the_hunt            = find_talent_spell( talent_tree::CLASS, "The Hunt" );
   talent.demon_hunter.sigil_of_spite      = find_talent_spell( talent_tree::CLASS, "Sigil of Spite" );
 
@@ -8127,10 +8017,6 @@ void demon_hunter_t::init_spells()
   spec.sigil_of_silence = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
   spec.sigil_of_chains  = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
 
-  spell.fodder_to_the_flame = talent.demon_hunter.fodder_to_the_flame;
-  spell.fodder_to_the_flame_damage =
-      talent.demon_hunter.fodder_to_the_flame->ok() ? find_spell( 350631 ) : spell_data_t::not_found();
-
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
     spell.collective_anguish = specialization() == DEMON_HUNTER_HAVOC ? find_spell( 393831 ) : find_spell( 391057 );
@@ -8169,12 +8055,6 @@ void demon_hunter_t::init_spells()
       new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
 
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
-
-  if ( talent.demon_hunter.fodder_to_the_flame->ok() )
-  {
-    active.fodder_to_the_flame_damage =
-        new spectral_sight_t::fodder_to_the_flame_damage_t( "fodder_to_the_flame", this );
-  }
 
   if ( talent.havoc.chaotic_disposition->ok() )
   {
