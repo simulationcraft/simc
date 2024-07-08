@@ -230,7 +230,7 @@ public:
     const spell_data_t* malign_omen_buff;
     player_talent_t relinquished;
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
-    player_talent_t improved_malefic_rapture; // TODO: New
+    player_talent_t improved_malefic_rapture;
 
     player_talent_t oblivion; // TODO: New
     player_talent_t deaths_embrace; // TODO: New

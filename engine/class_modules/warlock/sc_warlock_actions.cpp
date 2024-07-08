@@ -907,6 +907,8 @@ using namespace helpers;
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
 
+        m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
         return m;
       }
 
@@ -966,6 +968,8 @@ using namespace helpers;
 
       if ( p()->buffs.tormented_crescendo->check() )
         m *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 2 ).percent();
+
+      m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 2 ).percent();
 
       return m;
     }
