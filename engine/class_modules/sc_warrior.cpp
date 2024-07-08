@@ -4359,6 +4359,11 @@ struct crushing_blow_t : public warrior_attack_t
     {
       p()->buff.slaughtering_strikes->trigger();
     }
+
+    if ( p()->talents.fury.bloodcraze->ok() )
+    {
+      p()->buff.bloodcraze->trigger();
+    }
   }
 
   bool ready() override
