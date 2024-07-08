@@ -431,7 +431,6 @@ public:
     cooldown_t* frozen_orb;
     cooldown_t* meteor;
     cooldown_t* phoenix_flames;
-    cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
     cooldown_t* pyromaniac;
   } cooldowns;
@@ -1891,9 +1890,12 @@ public:
 
   void trigger_calefaction( player_t* target )
   {
-    auto td = p()->find_target_data( target );
-    if ( !td || !td->debuffs.charring_embers->check() )
-      return;
+    if ( !p()->talents.phoenix_reborn.ok() )
+    {
+      auto td = p()->find_target_data( target );
+      if ( !td || !td->debuffs.charring_embers->check() )
+        return;
+    }
 
     p()->buffs.calefaction->trigger();
     if ( p()->buffs.calefaction->at_max_stacks() )
@@ -2779,18 +2781,6 @@ struct presence_of_mind_t final : public arcane_mage_spell_t
   }
 };
 
-// TODO: 2022-10-02 Phoenix Reborn is not flagged to scale with spec auras, etc.
-// If this is fixed, change spell_t to mage_spell_t or fire_mage_spell_t.
-struct phoenix_reborn_t final : public spell_t
-{
-  phoenix_reborn_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 383479 ) )
-  {
-    background = true;
-    callbacks = false;
-  }
-};
-
 struct intensifying_flame_t final : public spell_t
 {
   intensifying_flame_t( std::string_view n, mage_t* p ) :
@@ -2812,16 +2802,12 @@ struct intensifying_flame_t final : public spell_t
 
 struct ignite_t final : public residual_action::residual_periodic_action_t<spell_t>
 {
-  action_t* phoenix_reborn = nullptr;
   action_t* intensifying_flame = nullptr;
 
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
-
-    if ( p->talents.phoenix_reborn.ok() )
-      phoenix_reborn = get_action<phoenix_reborn_t>( "phoenix_reborn", p );
 
     if ( p->talents.intensifying_flame.ok() )
       intensifying_flame = get_action<intensifying_flame_t>( "intensifying_flame", p );
@@ -2832,13 +2818,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
-
-    if ( p->cooldowns.phoenix_reborn->up() && rng().roll( p->talents.phoenix_reborn->proc_chance() ) )
-    {
-      p->cooldowns.phoenix_reborn->start( p->talents.phoenix_reborn->internal_cooldown() );
-      p->cooldowns.phoenix_flames->adjust( -1000 * p->talents.fervent_flickering->effectN( 1 ).time_value(), true, false );
-      phoenix_reborn->execute_on_target( d->target );
-    }
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -6857,7 +6836,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
   cooldowns.meteor             = get_cooldown( "meteor"             );
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
-  cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"     );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
   cooldowns.pyromaniac         = get_cooldown( "pyromaniac"         );
 
@@ -7761,7 +7739,7 @@ void mage_t::create_buffs()
                              ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
   buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
-                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+                         ->set_chance( talents.phoenix_reborn.ok() || sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
   buffs.flames_fury  = make_buff( this, "flames_fury", find_spell( 409964 ) )
                          ->set_default_value_from_effect( 1 );
   buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
