@@ -4271,7 +4271,7 @@ struct flamestrike_t final : public hot_streak_spell_t
 
   void schedule_travel( action_state_t* s ) override
   {
-    mage_spell_t::schedule_travel( s );
+    hot_streak_spell_t::schedule_travel( s );
     if ( s->result == RESULT_CRIT ) num_targets_crit++;
   }
 };
