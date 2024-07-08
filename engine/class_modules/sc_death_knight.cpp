@@ -10519,6 +10519,14 @@ struct tombstone_t final : public death_knight_spell_t
       p()->active_spells.shattering_bone->execute_on_target( target );
     }
   }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.bone_shield->check() )
+      return false;
+
+    return death_knight_spell_t::ready();
+  }
 };
 
 // Unholy Assault ============================================================
