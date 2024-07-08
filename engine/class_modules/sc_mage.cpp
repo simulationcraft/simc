@@ -433,6 +433,7 @@ public:
     cooldown_t* phoenix_flames;
     cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
+    cooldown_t* pyromaniac;
   } cooldowns;
 
   // Gains
@@ -466,7 +467,6 @@ public:
     proc_t* heating_up_removed;           // Non-crits with HU >200ms after application
     proc_t* heating_up_ib_converted;      // IBs used on HU
     proc_t* hot_streak;                   // Total HS generated
-    proc_t* hot_streak_pyromaniac;        // Total HS from Pyromaniac
     proc_t* hot_streak_spell;             // HU/HS spell impacts
     proc_t* hot_streak_spell_crit;        // HU/HS spell crits
     proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
@@ -2416,11 +2416,13 @@ struct hot_streak_state_t final : public mage_spell_state_t
 
 struct hot_streak_spell_t : public fire_mage_spell_t
 {
+  action_t* pyromaniac_action;
   // Last available Hot Streak state.
   bool last_hot_streak;
 
   hot_streak_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     fire_mage_spell_t( n, p, s ),
+    pyromaniac_action(),
     last_hot_streak()
   {
     affected_by.flame_accelerant = true;
@@ -2519,11 +2521,14 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
 
-      if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
+      // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
+      if ( p()->cooldowns.pyromaniac->up() && rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
-        p()->procs.hot_streak->occur();
-        p()->procs.hot_streak_pyromaniac->occur();
-        p()->buffs.hot_streak->trigger();
+        p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
+        trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
+        assert( pyromaniac_action );
+        // Pyronamic Pyroblast actually casts on the Mage's target, but that is probably a bug.
+        make_event( *sim, 500_ms, [ this ] { pyromaniac_action->execute_on_target( target ); } );
       }
     }
   }
@@ -4161,6 +4166,29 @@ struct flame_patch_t final : public fire_mage_spell_t
   }
 };
 
+struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
+{
+  flamestrike_pyromaniac_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 460476 ) )
+  {
+    background = true;
+    triggers.ignite = true;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value(); // TODO: Check this
+    base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
+
+    return m;
+  }
+};
+
 struct flamestrike_t final : public hot_streak_spell_t
 {
   action_t* flame_patch = nullptr;
@@ -4174,6 +4202,9 @@ struct flamestrike_t final : public hot_streak_spell_t
     triggers.ignite = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    if ( p->talents.pyromaniac.ok() )
+      pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
 
     if ( p->talents.flame_patch.ok() )
     {
@@ -5623,6 +5654,26 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   }
 };
 
+struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
+{
+  pyroblast_pyromaniac_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 460475 ) )
+  {
+    background = true;
+    triggers.ignite = true;
+    base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.hyperthermia->check_value();
+
+    return c;
+  }
+};
+
 struct pyroblast_t final : public hot_streak_spell_t
 {
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5631,6 +5682,9 @@ struct pyroblast_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
+
+    if ( p->talents.pyromaniac.ok() )
+      pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -6809,6 +6863,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
   cooldowns.phoenix_reborn     = get_cooldown( "phoenix_reborn"     );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
+  cooldowns.pyromaniac         = get_cooldown( "pyromaniac"         );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -7769,7 +7824,6 @@ void mage_t::init_procs()
       procs.heating_up_removed           = get_proc( "Heating Up removed" );
       procs.heating_up_ib_converted      = get_proc( "Heating Up converted with Fire Blast" );
       procs.hot_streak                   = get_proc( "Hot Streak procs" );
-      procs.hot_streak_pyromaniac        = get_proc( "Hot Streak procs from Pyromaniac" );
       procs.hot_streak_spell             = get_proc( "Hot Streak spells used" );
       procs.hot_streak_spell_crit        = get_proc( "Hot Streak spell crits" );
       procs.hot_streak_spell_crit_wasted = get_proc( "Hot Streak spell crits wasted" );
