@@ -2252,6 +2252,15 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   bool ready() override
