@@ -346,14 +346,6 @@ result_e attack_t::calculate_result( action_state_t* s ) const
   return result;
 }
 
-void attack_t::init()
-{
-  action_t::init();
-
-  if ( special )
-    may_glance = false;
-}
-
 double attack_t::recharge_multiplier( const cooldown_t& cd ) const
 {
   double m = action_t::recharge_multiplier( cd );
