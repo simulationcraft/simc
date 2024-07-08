@@ -122,10 +122,12 @@ actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&
 actions.stealth+=/ambush,if=talent.hidden_opportunity
 
 # Stealth Cooldowns
-# Builds with Crackshot use Vanish at finish condition. If also using Underhanded Upper Hand + Without a Trace, use Vanish only when Adrenaline Rush is active
-actions.stealth_cds=vanish,if=talent.crackshot&variable.finish_condition&(buff.adrenaline_rush.up|!talent.underhanded_upper_hand&!talent.without_a_trace)
-# Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks
-actions.stealth_cds+=/vanish,if=!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition
-# Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise
-actions.stealth_cds+=/vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)
+# Builds with Underhanded Upper Hand and Subterfuge (and Without a Trace for Crackshot) must use Vanish while Adrenaline Rush is active
+actions.stealth_cds=vanish,if=talent.underhanded_upper_hand&talent.subterfuge&(buff.adrenaline_rush.up|!talent.without_a_trace&talent.crackshot)&(variable.finish_condition|!talent.crackshot&(variable.ambush_condition|!talent.hidden_opportunity))
+# Builds without Underhanded Upper Hand but with Crackshot must still use Vanish into Between the Eyes on cooldown
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&talent.crackshot&variable.finish_condition
+# Builds without Underhanded Upper Hand and Crackshot but still Hidden Opportunity use Vanish into Ambush when Audacity is not active and under max Opportunity stacks
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition
+# Builds without Underhanded Upper Hand, Crackshot, and Hidden Opportunity use Vanish into a builder to activate Double Jeopardy without breaking the current coin streak, or to activate Take 'em by Surprise
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)
 actions.stealth_cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready
