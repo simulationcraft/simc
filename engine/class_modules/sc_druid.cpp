@@ -13032,11 +13032,9 @@ void eclipse_handler_t::init()
   starfire_counter_base = starfire_counter = p->find_spell( 326056 )->max_stacks();
 
   uptimes[ 0 ] = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
-  uptimes[ eclipse_e::LUNAR ] = p->get_uptime( "Lunar Eclipse" )->collect_uptime( *p->sim );
-  uptimes[ eclipse_e::SOLAR ] = p->get_uptime( "Solar Eclipse" )->collect_uptime( *p->sim );
+  uptimes[ eclipse_e::LUNAR ] = p->get_uptime( "Eclipse Lunar" )->collect_uptime( *p->sim );
+  uptimes[ eclipse_e::SOLAR ] = p->get_uptime( "Eclipse Solar" )->collect_uptime( *p->sim );
   uptimes[ 3 ] = p->get_uptime( "Both Eclipses" )->collect_uptime( *p->sim );
-
-  wrath_counter_base = starfire_counter_base = as<unsigned>( p->talent.eclipse->effectN( 1 ).base_value() );
 
   size_t res = 3;
   bool sf = p->talent.starfall.ok();
