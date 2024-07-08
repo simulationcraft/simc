@@ -762,7 +762,7 @@ public:
       player_talent_t martial_expert;
       player_talent_t colossal_might;
       player_talent_t boneshaker; // NYI
-      player_talent_t earthquaker; // NYI
+      player_talent_t earthquaker;
       player_talent_t one_against_many; // NYI
       player_talent_t arterial_bleed;
       player_talent_t tide_of_battle;
@@ -9169,6 +9169,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   }
 
   // Colossus
+  action.apply_affecting_aura( talents.colossus.earthquaker );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
