@@ -1447,7 +1447,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->talents.infirmity.ok() && fresh_agony )
-        td( s->target )->dots_agony->increment( p()->talents.infirmity->effectN( 1 ).base_value() );
+        td( s->target )->dots_agony->increment( as<int>( p()->talents.infirmity->effectN( 1 ).base_value() ) );
     }
   };
 
@@ -1600,7 +1600,7 @@ using namespace helpers;
       p()->buffs.soul_rot->trigger();
 
       if ( p()->talents.malign_omen.ok() )
-        p()->buffs.malign_omen->trigger( p()->talents.malign_omen->effectN( 2 ).base_value() );
+        p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );
     }
 
     void impact( action_state_t* s ) override
