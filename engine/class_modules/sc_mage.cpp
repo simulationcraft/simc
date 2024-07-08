@@ -2527,7 +2527,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         assert( pyromaniac_action );
-        // Pyronamic Pyroblast actually casts on the Mage's target, but that is probably a bug.
+        // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
         make_event( *sim, 500_ms, [ this, t = target ] { pyromaniac_action->execute_on_target( t ); } );
       }
     }
@@ -4057,6 +4057,10 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( frostfire )
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+
+    // TODO: Frostfire Bolt ticks currently cannot crit, probably a bug
+    if ( p->bugs )
+      tick_may_crit = false;
   }
 
   timespan_t travel_time() const override
@@ -4173,6 +4177,7 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
   {
     background = true;
     triggers.ignite = true;
+    may_crit = false;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value(); // TODO: Check this
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
