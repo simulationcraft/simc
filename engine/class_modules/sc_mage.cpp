@@ -4448,7 +4448,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = ( 1.0 + ft->effectN( 2 ).percent() ) * p->talents.brain_freeze->effectN( 1 ).percent();
 
-    // TODO: this is currently a flat mod, almost surely a bug
     fractured_frost_mul = p->find_spell( 378445 )->effectN( 3 ).percent();
 
     if ( p->spec.icicles->ok() )
