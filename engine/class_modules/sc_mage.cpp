@@ -1785,10 +1785,15 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    // TODO: Clearcasting proc chance is all over the place on beta. Use tooltip values until we can get actual data.
     bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || triggers.clearcasting == TO_DEFAULT && harmful && !background;
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
-      p()->trigger_clearcasting( p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() );
+    {
+      // Best guess at how this is gonna work, assuming the bugs are fixed.
+      // TODO: Currently it looks like CC is 10% proc chance normally and 8% with IT.
+      double chance = p()->spec.clearcasting->effectN( 2 ).percent();
+      chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      p()->trigger_clearcasting( chance );
+    }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
