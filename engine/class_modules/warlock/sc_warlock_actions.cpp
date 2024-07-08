@@ -904,6 +904,9 @@ using namespace helpers;
         if ( p()->talents.cull_the_weak.ok() )
           m *= 1.0 + ( std::min( target_count, as<int>( p()->talents.cull_the_weak->effectN( 2 ).base_value() ) ) * p()->talents.cull_the_weak->effectN( 1 ).percent() );
 
+        if ( p()->talents.malign_omen.ok() )
+          m *= 1.0 + p()->buffs.malign_omen->check_value();
+
         return m;
       }
 
@@ -916,6 +919,25 @@ using namespace helpers;
           p()->procs.malefic_rapture[ d ]->occur();
 
         warlock_spell_t::execute();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->buffs.malign_omen->check() )
+        {
+          warlock_td_t* tdata = td( s->target );
+          timespan_t extension = timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() );
+
+          tdata->dots_agony->adjust_duration( extension );
+          tdata->dots_corruption->adjust_duration( extension );
+          tdata->dots_phantom_singularity->adjust_duration( extension );
+          tdata->dots_vile_taint->adjust_duration( extension );
+          tdata->dots_unstable_affliction->adjust_duration( extension );
+          tdata->dots_soul_rot->adjust_duration( extension );
+          tdata->debuffs_haunt->extend_duration( p(), extension );
+        }
       }
     };
 
@@ -961,7 +983,11 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
+      if ( p()->talents.malign_omen.ok() )
+        p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
+
       p()->buffs.tormented_crescendo->decrement();
+      p()->buffs.malign_omen->decrement();
     }
 
     void impact( action_state_t* s ) override
@@ -1572,6 +1598,9 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.soul_rot->trigger();
+
+      if ( p()->talents.malign_omen.ok() )
+        p()->buffs.malign_omen->trigger( p()->talents.malign_omen->effectN( 2 ).base_value() );
     }
 
     void impact( action_state_t* s ) override
