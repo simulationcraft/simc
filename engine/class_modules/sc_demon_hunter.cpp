@@ -4166,12 +4166,10 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   };
 
   sigil_of_spite_sigil_t* sigil;
-  sigil_of_spite_sigil_t* repeat_decree_sigil;
 
   sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "sigil_of_spite", p, p->spell.sigil_of_spite, options_str ),
-      sigil( nullptr ),
-      repeat_decree_sigil( nullptr )
+      sigil( nullptr )
   {
     if ( p->spell.sigil_of_spite->ok() )
     {
@@ -4185,8 +4183,6 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     sigil->place_sigil( target );
-    if ( repeat_decree_sigil )
-      repeat_decree_sigil->place_sigil( target );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
