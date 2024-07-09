@@ -2329,19 +2329,17 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
   if ( data.action )
   {
     os.format( "<td>{}</td>"
-               "<td>{}</td>"
-               "<td>{}{}</td>"
+               "<td><b>{}</b>{}<br/>[{}]</td>"
                "<td>{}</td>",
-               data.action->action_list ? util::encode_html( data.action->action_list->name_str ): "unknown",
                data.action->marker != 0 ? data.action->marker : ' ',
                util::encode_html( data.action->name() ), data.queue_failed ? " (queue failed)" : "",
+               data.action->action_list ? util::encode_html( data.action->action_list->name_str ): "unknown",
                util::encode_html( data.target_name ) );
   }
   else
   {
-    os.format( "<td>Waiting</td>"
-               "<td>&#160;</td>"
-               "<td>&#160;</td>"
+    os.format( "<td>&#160;</td>"
+               "<td>Waiting</td>"
                "<td>{:.3f}s</td>",
                data.wait_time.total_seconds() );
   }
@@ -2355,11 +2353,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     if ( first )
       first = false;
 
-    os.format( " {:.1f}/{:.0f} <b>{:.0f}%</b>&#160;{}",
+    os.format( " {:.1f}/{:.0f}&#160;<b>{:.0f}%</b>&#160;{}",
                data.resource_snapshot[ pr ],
                data.resource_max_snapshot[ pr ],
                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] * 100.0,
-               util::resource_type_string( pr ) );
+               util::resource_type_abbrev( pr ) );
   }
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
@@ -2371,11 +2369,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
       else
         os << "<br/>";
 
-      os.format( " {:.1f}/{:.0f} <b>{:.0f}%</b>&#160;{}",
+      os.format( " {:.1f}/{:.0f}&#160;<b>{:.0f}%</b>&#160;{}",
                  data.resource_snapshot[ r ],
                  data.resource_max_snapshot[ r ],
                  data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] * 100.0,
-                 util::resource_type_string( r ) );
+                 util::resource_type_abbrev( r ) );
     }
   }
   os << "</td>\n";
@@ -2561,9 +2559,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
        << "<thead>\n"
        << "<tr>\n"
        << "<th>Time</th>\n"
-       << "<th>List</th>\n"
        << "<th>#</th>\n"
-       << "<th>Name</th>\n"
+       << "<th>Name [List]</th>\n"
        << "<th>Target</th>\n"
        << "<th>Resources</th>\n"
        << "<th>Buffs</th>\n"

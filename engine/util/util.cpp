@@ -992,6 +992,32 @@ const char* util::resource_type_string( resource_e resource_type )
   }
 }
 
+const char* util::resource_type_abbrev( resource_e resource_type )
+{
+  switch ( resource_type )
+  {
+    case RESOURCE_NONE:          return "none";
+    case RESOURCE_HEALTH:        return "HP";
+    case RESOURCE_MANA:          return "mana";
+    case RESOURCE_RAGE:          return "rage";
+    case RESOURCE_ASTRAL_POWER:  return "AP";
+    case RESOURCE_ENERGY:        return "energy";
+    case RESOURCE_FOCUS:         return "focus";
+    case RESOURCE_RUNIC_POWER:   return "RP";
+    case RESOURCE_RUNE:          return "rune";
+    case RESOURCE_SOUL_SHARD:    return "shard";
+    case RESOURCE_HOLY_POWER:    return "HoPo";
+    case RESOURCE_CHI:           return "chi";
+    case RESOURCE_COMBO_POINT:   return "CP";
+    case RESOURCE_MAELSTROM:     return "MS";
+    case RESOURCE_FURY:          return "fury";
+    case RESOURCE_PAIN:          return "pain";
+    case RESOURCE_INSANITY:      return "insanity";
+    case RESOURCE_ESSENCE:       return "ess";
+    default:                     return "unk";
+  }
+}
+
 // parse_resource_type ======================================================
 
 resource_e util::parse_resource_type( util::string_view name )
