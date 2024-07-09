@@ -2055,7 +2055,7 @@ struct use_fluid_form_t : public BASE
   use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
-    if ( p->talent.fluid_form.ok() )
+    if ( p->talent.fluid_form.ok() && !BASE::has_flag( flag_e::CONVOKE ) )
     {
       if constexpr ( S == DRUID_BALANCE )
       {
