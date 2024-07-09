@@ -140,6 +140,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_marked_for_execution;
   buff_t* debuffs_overwhelmed;
+  buff_t* debuffs_wrecked;  // Dominance of the Colossus
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -354,6 +355,7 @@ public:
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* reap_the_storm_icd;
+    cooldown_t* demolish;
   } cooldown;
 
   // Gains
@@ -441,6 +443,7 @@ public:
     const spell_data_t* sudden_death_fury;
 
     // Colossus
+    const spell_data_t* wrecked_debuff;
 
     // Slayer
     const spell_data_t* marked_for_execution_debuff;
@@ -1091,7 +1094,8 @@ public:
     {
       parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
     }
-    parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars );
+    // Effect 3 is the auto attack mod
+    parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -2619,6 +2623,10 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() )
     {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
       // Gain 2 stacks on a crit with precise might, 1 otherwise.
       if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
         p()->buff.colossal_might->trigger( 2 );
@@ -3156,6 +3164,10 @@ struct cleave_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
       p()->buff.colossal_might->trigger();
     }
   }
@@ -3282,8 +3294,22 @@ struct demolish_damage_t : public warrior_attack_t
   {
     background = true;
     dual = true;
-    aoe = -1;
-    reduced_aoe_targets = 8.0;
+    // Third attack is aoe
+    if ( data().id() == 440888 )
+    {
+      aoe = -1;
+      reduced_aoe_targets = 8.0;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->up() )
+    {
+      td( state->target )->debuffs_wrecked->trigger( p()->buff.colossal_might->stack() );
+    }
   }
 };
 
@@ -3299,6 +3325,8 @@ struct demolish_t : public warrior_attack_t
       demolish_third_attack( nullptr )
     {
       parse_options( options_str );
+      channeled = true;
+      hasted_ticks = true;
       weapon = &( player->main_hand_weapon );
       demolish_first_attack = new demolish_damage_t( "demolish_first_attack", p, p->find_spell( 440884 ) );
       demolish_second_attack = new demolish_damage_t( "demolish_second_attack", p, p->find_spell( 440886 ) );
@@ -3323,6 +3351,12 @@ struct demolish_t : public warrior_attack_t
     {
       demolish_third_attack->execute();
     }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.colossal_might->expire();
   }
 };
 
@@ -3704,7 +3738,11 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() )
     {
-        p()->buff.colossal_might->trigger();
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      p()->buff.colossal_might->trigger();
     }
   }
 
@@ -5158,6 +5196,10 @@ struct revenge_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
       p()->buff.colossal_might->trigger();
     }
   }
@@ -5462,6 +5504,10 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() )
     {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
       // Gain 2 stacks on a crit with precise might, 1 otherwise.
       if ( p()->talents.colossus.precise_might->ok() && state->result == RESULT_CRIT )
         p()->buff.colossal_might->trigger( 2 );
@@ -6939,6 +6985,7 @@ void warrior_t::init_spells()
   spell.shield_wall             = find_spell( 871 );
 
   // Colossus Spells
+  spell.wrecked_debuff              = find_spell( 447513 );
 
   // Slayer Spells
   spell.marked_for_execution_debuff = find_spell( 445584 );
@@ -7342,6 +7389,7 @@ void warrior_t::init_spells()
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
   cooldown.reap_the_storm_icd -> duration   = talents.slayer.reap_the_storm->internal_cooldown();
+  cooldown.demolish                         = get_cooldown( "demolish" );
 }
 
 // warrior_t::init_items ===============================================
@@ -7690,6 +7738,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
   // Colossus
+  debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
+                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Slayer
   debuffs_marked_for_execution = make_buff( *this, "marked_for_execution", p.spell.marked_for_execution_debuff );
@@ -7961,7 +8011,8 @@ void warrior_t::create_buffs()
 
   // Colossus
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
-                                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+                                ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
@@ -9163,10 +9214,14 @@ void warrior_t::parse_player_effects()
     parse_effects( spec.protection_warrior );
   }
 
+  // Colossus
+  // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
+  parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
+                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 10 );
+
+  // Slayer
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
                          spell.overwhelmed_debuff );
-
-  parse_effects( talents.colossus.mountain_of_muscle_and_scars );
 }
 
 void warrior_t::apply_affecting_auras( action_t& action )
