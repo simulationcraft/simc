@@ -2355,7 +2355,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     if ( first )
       first = false;
 
-    os.format( " {:.1f}/{:.0f}:&#160;<b>{:.0f}%</b>&#160;{}",
+    os.format( " {:.1f}/{:.0f} <b>{:.0f}%</b>&#160;{}",
                data.resource_snapshot[ pr ],
                data.resource_max_snapshot[ pr ],
                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] * 100.0,
@@ -2371,7 +2371,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
       else
         os << "<br/>";
 
-      os.format( " {:.1f}/{:.0f}:&#160;<b>{:.0f}%</b>&#160;{}",
+      os.format( " {:.1f}/{:.0f} <b>{:.0f}%</b>&#160;{}",
                  data.resource_snapshot[ r ],
                  data.resource_max_snapshot[ r ],
                  data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] * 100.0,
