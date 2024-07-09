@@ -2590,11 +2590,6 @@ struct mortal_strike_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
-
-    if ( p()->talents.colossus.colossal_might->ok() )
-    {
-      p()->buff.colossal_might->trigger();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -2620,6 +2615,15 @@ struct mortal_strike_t : public warrior_attack_t
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      // Gain 2 stacks on a crit with precise might, 1 otherwise.
+      if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
+        p()->buff.colossal_might->trigger( 2 );
+      else
+        p()->buff.colossal_might->trigger();
+    }
   }
 
   bool ready() override
@@ -3685,11 +3689,6 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
-
-    if ( p()->talents.colossus.colossal_might->ok() )
-    {
-      p()->buff.colossal_might->trigger();
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -3700,6 +3699,11 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->active.fatality->set_target( state->target );
       p()->active.fatality->execute();
+    }
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+        p()->buff.colossal_might->trigger();
     }
   }
 
@@ -5442,11 +5446,6 @@ struct shield_slam_t : public warrior_attack_t
     p() -> buff.meat_cleaver->decrement();
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
-
-    if ( p()->talents.colossus.colossal_might->ok() )
-    {
-      p()->buff.colossal_might->trigger();
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -5458,6 +5457,15 @@ struct shield_slam_t : public warrior_attack_t
     if ( p()->talents.protection.punish.ok() )
     {
       td -> debuffs_punish -> trigger();
+    }
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      // Gain 2 stacks on a crit with precise might, 1 otherwise.
+      if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
+        p()->buff.colossal_might->trigger( 2 );
+      else
+        p()->buff.colossal_might->trigger();
     }
   }
 
@@ -7951,7 +7959,8 @@ void warrior_t::create_buffs()
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
 
   // Colossus
-  buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) );
+  buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
+                                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
