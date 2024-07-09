@@ -766,7 +766,7 @@ public:
       player_talent_t one_against_many;
       player_talent_t arterial_bleed;
       player_talent_t tide_of_battle;
-      player_talent_t no_stranger_to_pain; // NYI
+      player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
       player_talent_t practiced_strikes; // NYI
       player_talent_t precise_might; // NYI
@@ -6588,6 +6588,11 @@ struct ignore_pain_t : public warrior_spell_t
     // p() -> effectN( 23 ).percent();
 
     double new_ip = s -> result_amount;
+
+    if ( p()->talents.colossus.no_stranger_to_pain->ok() )
+    {
+      new_ip *= 1.0 + p()->talents.colossus.no_stranger_to_pain->effectN( 1 ).percent();
+    }
 
     double previous_ip = p() -> buff.ignore_pain -> current_value;
 
