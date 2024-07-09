@@ -6566,7 +6566,6 @@ struct flame_accelerant_event_t final : public mage_event_t
   {
     mage->events.flame_accelerant = nullptr;
     mage->buffs.flame_accelerant->trigger();
-
     mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, mage->talents.flame_accelerant->effectN( 1 ).period() );
   }
 };
@@ -7580,6 +7579,7 @@ void mage_t::create_buffs()
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
   buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 453283 ) )
                                      ->set_default_value_from_effect( 2 )
+                                     ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )
