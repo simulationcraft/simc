@@ -2623,15 +2623,23 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() )
     {
-      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
-      {
-        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
-      }
       // Gain 2 stacks on a crit with precise might, 1 otherwise.
       if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() * 2 ) );
+        }
         p()->buff.colossal_might->trigger( 2 );
+      }
       else
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+        }
         p()->buff.colossal_might->trigger();
+      }
     }
   }
 
@@ -5504,15 +5512,23 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->talents.colossus.colossal_might->ok() )
     {
-      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
-      {
-        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
-      }
       // Gain 2 stacks on a crit with precise might, 1 otherwise.
       if ( p()->talents.colossus.precise_might->ok() && state->result == RESULT_CRIT )
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() * 2 ) );
+        }
         p()->buff.colossal_might->trigger( 2 );
+      }
       else
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+        }
         p()->buff.colossal_might->trigger();
+      }
     }
   }
 
