@@ -15,7 +15,7 @@ if [ -d $PROFDIR ]; then
 else
   echo 'Skipped PreRaids, directory not found.'
 fi
-for season in DF4
+for season in TWW1
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"
@@ -25,18 +25,6 @@ do
   fi
   cd $PROFDIR/
   ${SIMC_CLI_PATH} '../generators/'$season'/'$season'_Generate.simc'
-  cd ../
-done
-for tier in 29 30 31
-do
-  PROFDIR="Tier$tier"
-  echo "---$PROFDIR---"
-  if [ ! -d $PROFDIR ]; then
-    echo "Skipped $PROFDIR, directory not found."
-    continue
-  fi
-  cd $PROFDIR/
-  ${SIMC_CLI_PATH} '../generators/Tier'$tier'/T'$tier'_Generate.simc'
   cd ../
 done
 echo 'done'

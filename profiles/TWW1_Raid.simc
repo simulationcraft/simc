@@ -1,0 +1,51 @@
+optimal_raid=1
+default_actions=1
+
+# TWW1_Death_Knight_Blood.simc
+# TWW1_Death_Knight_Frost.simc
+# TWW1_Death_Knight_Frost_2h.simc
+# TWW1_Death_Knight_Unholy.simc
+
+# TWW1_Demon_Hunter_Havoc.simc
+# TWW1_Demon_Hunter_Havoc_SD.simc
+# TWW1_Demon_Hunter_Vengeance.simc
+
+# TWW1_Druid_Balance.simc
+# TWW1_Druid_Feral.simc
+# TWW1_Druid_Guardian.simc
+
+# TWW1_Evoker_Devastation.simc
+
+# TWW1_Hunter_Beast_Mastery.simc
+# TWW1_Hunter_Marksmanship.simc
+# TWW1_Hunter_Survival.simc
+
+# TWW1_Mage_Fire.simc
+# TWW1_Mage_Frost.simc
+# TWW1_Mage_Arcane.simc
+
+# TWW1_Monk_Brewmaster.simc
+# TWW1_Monk_Brewmaster_Niuzao.simc
+# TWW1_Monk_Windwalker.simc
+
+# TWW1_Paladin_Protection.simc
+# TWW1_Paladin_Retribution.simc
+# TWW1_Paladin_Retribution_CS.simc
+
+TWW1_Priest_Shadow.simc
+
+# TWW1_Rogue_Assassination.simc
+# TWW1_Rogue_Outlaw.simc
+# TWW1_Rogue_Subtlety.simc
+
+# TWW1_Shaman_Elemental.simc
+# TWW1_Shaman_Enhancement.simc
+# TWW1_Shaman_Enhancement_Storm.simc
+
+# TWW1_Warlock_Affliction.simc
+# TWW1_Warlock_Demonology.simc
+# TWW1_Warlock_Destruction.simc
+
+# TWW1_Warrior_Arms.simc
+# TWW1_Warrior_Fury.simc
+# TWW1_Warrior_Protection.simc

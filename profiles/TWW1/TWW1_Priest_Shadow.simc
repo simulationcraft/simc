@@ -1,11 +1,11 @@
-priest="PR_Priest_Shadow"
+priest="TWW1_Priest_Shadow"
 source=default
 spec=shadow
 level=80
-race=orc
+race=none
 role=spell
-position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAYwwYAAAAAAAAAAAAAmZmtxYmZWGMzMGzgBzCzMjxsxAjxwsY2mamBLwMzMAoAMbz2SwsxG
+position=back
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAgBzMDAAAAAAAAAAAAwwswYmZ2YMzMzsNwgZjZmxY2YgxYYWMbTNzgFMDgZ2sM1sYAIjxCA
 
 # Default consumables
 potion=tempered_potion_3
@@ -168,28 +168,30 @@ actions.trinkets+=/use_item,name=aberrant_spellforge
 actions.trinkets+=/use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
 
-head=intertwiners_shadowcowl,id=221187,ilevel=593
-neck=strapped_rescuekeg,id=221060,ilevel=593
-shoulders=moneymaking_businessmantle,id=221072,ilevel=593
-back=anvilhide_cape,id=221088,ilevel=593
-chest=arachnofrost_vest,id=221176,ilevel=593,enchant=crystalline_radiance_2
-wrists=vitriolic_veinwoven_wraps,id=221182,ilevel=593
-hands=punctured_apiary_gloves,id=221067,ilevel=593
-waist=honorbound_retainers_sash,id=221121,ilevel=593
-legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=daybreak_spellthread_2
-feet=tainted_earthshard_walkers,id=221082,ilevel=593
-finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=cursed_mastery_2
-finger2=85_years_tenure_ring,id=221198,ilevel=593,enchant=cursed_mastery_2
-trinket1=arakara_sacbrood,id=219314,ilevel=593
-trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
-main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_radiant_power_2
+head=living_lusters_semblance,id=212083,ilevel=636,gem_id=213494
+neck=sureki_zealots_insignia,id=225577,ilevel=636,gem_id=213743/213494/213494
+shoulders=living_lusters_dominion,id=212081,ilevel=636
+back=wings_of_shattered_sorrow,id=225574,ilevel=636
+chest=living_lusters_raiment,id=212086,ilevel=636,enchant=councils_intellect_3
+wrists=skeinspinners_duplicitous_cuffs,id=225584,ilevel=636,gem_id=213494
+hands=punctured_apiary_gloves,id=221067,ilevel=636
+waist=acrid_ascendants_sash,id=225585,ilevel=636,gem_id=213494
+legs=living_lusters_trousers,id=212082,ilevel=636,enchant=sunset_spellthread_3
+feet=assimilated_eggshell_slippers,id=225582,ilevel=636
+finger1=writhing_ringworm,id=225576,ilevel=636,gem_id=213494,enchant=cursed_mastery_3
+finger2=seal_of_the_poisoned_pact,id=225578,ilevel=636,gem_id=213494,enchant=cursed_mastery_3
+trinket1=unbound_changeling,id=178708,ilevel=636
+trinket2=signet_of_the_priory,id=219308,ilevel=636
+main_hand=takazjs_entropic_edict,id=212397,ilevel=636,enchant=authority_of_radiant_power_3
 
 # Gear Summary
-# gear_ilvl=593.00
-# gear_stamina=123474
-# gear_intellect=31373
-# gear_crit_rating=3498
-# gear_haste_rating=11635
-# gear_mastery_rating=14566
-# gear_versatility_rating=1938
-# gear_armor=12400
+# gear_ilvl=636.00
+# gear_stamina=228086
+# gear_intellect=50342
+# gear_crit_rating=6253
+# gear_haste_rating=14003
+# gear_mastery_rating=20882
+# gear_versatility_rating=499
+# gear_armor=15816
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1

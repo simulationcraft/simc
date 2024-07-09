@@ -1,7 +1,7 @@
 # PreRaids
-# Dragonflight Pre-Raids
-# * Mythic dungeon gear should be the default choice, item level cap is 372. ["bonus_id=?"]
-#   * Gear can come from: [Algeth'ar Academy, Brackenhide Hollow, Halls of Infusion, Neltharus, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Uldaman: Legacy of Tyr]
+# TWW Pre-Raids
+# * Heroic dungeon gear should be the default choice, item level cap is 593. ["bonus_id=?"]
+#   * Gear can come from: [Ara-Kara, City of Echoes, Cinderbrew Meadery, City of Threads, Darkflame Cleft, Priory of the Sacred Flame, The Dawnbreaker, The Rookery, and The Stonevault]
 # * Honor PvP gear is not permitted since its item level is too low compared to M0 gear due to renown cap.
 # * Crafted gear: TBD.
 # * No items from World Bosses / World Quests / World Drop.
@@ -10,43 +10,41 @@
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game).
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible. Only use Rank 2 enchants.
 
-
-
 # Death Knight
-PR_Generate_Death_Knight.simc
+# PR_Generate_Death_Knight.simc
 
 # Demon Hunter
-PR_Generate_Demon_Hunter.simc
+# PR_Generate_Demon_Hunter.simc
 
 # Druid
-PR_Generate_Druid.simc
+# PR_Generate_Druid.simc
 
 # Evoker
-PR_Generate_Evoker.simc
+# PR_Generate_Evoker.simc
 
 # Hunter
-PR_Generate_Hunter.simc
+# PR_Generate_Hunter.simc
 
 # Mage
-PR_Generate_Mage.simc
+# PR_Generate_Mage.simc
 
 # Monk
-PR_Generate_Monk.simc
+# PR_Generate_Monk.simc
 
 # Paladin
-PR_Generate_Paladin.simc
+# PR_Generate_Paladin.simc
 
 # Priest
 PR_Generate_Priest.simc
 
 # Rogue
-PR_Generate_Rogue.simc
+# PR_Generate_Rogue.simc
 
 # Shaman
-PR_Generate_Shaman.simc
+# PR_Generate_Shaman.simc
 
 # Warlock
-PR_Generate_Warlock.simc
+# PR_Generate_Warlock.simc
 
 # Warrior
-PR_Generate_Warrior.simc
+# PR_Generate_Warrior.simc

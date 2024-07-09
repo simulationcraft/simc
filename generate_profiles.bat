@@ -11,20 +11,8 @@ cd "PreRaids"
 echo Running PR_Generate.simc in %cd%
 "%~dp0simc.exe" PR_Generate.simc
 cd ..\
-:: DungeonSlice doesn't match the typical pattern
-:: cd "DungeonSlice"
-:: echo Running DS_Generate.simc in %cd%
-:: "%~dp0simc.exe" DS_Generate.simc
-:: cd ..\
-:: TierXX profiles generation
-:: TODO: remove after Dragonflight ends
-for %%g in (29 30 31) do (
-  cd Tier%%g
-  echo Running T%%g_Generate.simc in %cd%
-  "%~dp0simc.exe" T%%g_Generate.simc
-  cd ..\
-)
-for %%g in (DF4) do (
+:: TWWX profiles generation
+for %%g in (TWW1) do (
   cd %%g
   echo Running %%g_Generate.simc in %cd%
   "%~dp0simc.exe" %%g_Generate.simc

@@ -865,16 +865,9 @@ option_db_t::option_db_t()
     auto_path.push_back( path + "generators/DungeonSlice" );
     auto_path.push_back( path + "DungeonSlice" );
 
-    // Add profiles for each tier
-    // TODO: remove after Dragonflight ends
-    for ( unsigned i = 0; i < N_TIER; ++i )
-    {
-      auto_path.push_back( fmt::format( "{}generators/Tier{}", path, MIN_TIER + i ) );
-      auto_path.push_back( fmt::format( "{}Tier{}", path, MIN_TIER + i ) );
-    }
     // Add profiles for each season
-    // DF1, DF2, DF3, DF4
-    std::string expansion = "DF";
+    // TWW1, TWW2, TWW3, ...
+    std::string expansion = "TWW";
     for ( unsigned i = 0; i < N_SEASON; ++i )
     {
       auto_path.push_back( fmt::format( "{}generators/{}{}", path, expansion, MIN_SEASON + i ) );
@@ -898,16 +891,6 @@ option_db_t::option_db_t()
       auto_path.push_back( path );
 
       path += "/";
-
-
-      // Add bossevents for each tier
-      for ( unsigned i = 0; i < N_TIER; ++i )
-      {
-        std::string base_tier_path = fmt::format( "{}T{}", path, MIN_TIER + i );
-        auto_path.push_back( base_tier_path);
-        auto_path.push_back( base_tier_path + "/Heroic" );
-        auto_path.push_back( base_tier_path + "/Mythic" );
-      }
     }
 
   // Make sure we only have unique entries
