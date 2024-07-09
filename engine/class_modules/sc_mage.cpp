@@ -807,23 +807,23 @@ public:
     player_talent_t glacial_assault;
     player_talent_t freezing_rain;
     player_talent_t thermal_void;
-    player_talent_t chain_reaction;
     player_talent_t splitting_ice;
+    player_talent_t chain_reaction;
 
     // Row 9
-    player_talent_t freezing_winds;
     player_talent_t fractured_frost;
+    player_talent_t freezing_winds;
     player_talent_t slick_ice;
-    player_talent_t ray_of_frost;
     player_talent_t hailstones;
+    player_talent_t ray_of_frost;
 
     // Row 10
-    player_talent_t coldest_snap;
-    player_talent_t cold_front;
     player_talent_t deaths_chill;
+    player_talent_t cold_front;
+    player_talent_t coldest_snap;
+    player_talent_t glacial_spike;
     player_talent_t cryopathy;
     player_talent_t splintering_ray;
-    player_talent_t glacial_spike;
 
 
     // Frostfire
@@ -7342,21 +7342,21 @@ void mage_t::init_spells()
   talents.glacial_assault   = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Assault"   );
   talents.freezing_rain     = find_talent_spell( talent_tree::SPECIALIZATION, "Freezing Rain"     );
   talents.thermal_void      = find_talent_spell( talent_tree::SPECIALIZATION, "Thermal Void"      );
-  talents.chain_reaction    = find_talent_spell( talent_tree::SPECIALIZATION, "Chain Reaction"    );
   talents.splitting_ice     = find_talent_spell( talent_tree::SPECIALIZATION, "Splitting Ice"     );
+  talents.chain_reaction    = find_talent_spell( talent_tree::SPECIALIZATION, "Chain Reaction"    );
   // Row 9
-  talents.freezing_winds    = find_talent_spell( talent_tree::SPECIALIZATION, "Freezing Winds"    );
   talents.fractured_frost   = find_talent_spell( talent_tree::SPECIALIZATION, "Fractured Frost"   );
+  talents.freezing_winds    = find_talent_spell( talent_tree::SPECIALIZATION, "Freezing Winds"    );
   talents.slick_ice         = find_talent_spell( talent_tree::SPECIALIZATION, "Slick Ice"         );
-  talents.ray_of_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Ray of Frost"      );
   talents.hailstones        = find_talent_spell( talent_tree::SPECIALIZATION, "Hailstones"        );
+  talents.ray_of_frost      = find_talent_spell( talent_tree::SPECIALIZATION, "Ray of Frost"      );
   // Row 10
-  talents.coldest_snap      = find_talent_spell( talent_tree::SPECIALIZATION, "Coldest Snap"      );
-  talents.cold_front        = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Front"        );
   talents.deaths_chill      = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Chill"     );
+  talents.cold_front        = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Front"        );
+  talents.coldest_snap      = find_talent_spell( talent_tree::SPECIALIZATION, "Coldest Snap"      );
+  talents.glacial_spike     = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Spike"     );
   talents.cryopathy         = find_talent_spell( talent_tree::SPECIALIZATION, "Cryopathy"         );
   talents.splintering_ray   = find_talent_spell( talent_tree::SPECIALIZATION, "Splintering Ray"   );
-  talents.glacial_spike     = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Spike"     );
 
   // Frostfire
   // Row 1
