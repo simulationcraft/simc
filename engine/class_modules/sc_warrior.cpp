@@ -140,6 +140,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_marked_for_execution;
   buff_t* debuffs_overwhelmed;
+  buff_t* debuffs_wrecked;  // Dominance of the Colossus
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
@@ -290,6 +291,7 @@ public:
     buff_t* conquerors_mastery;
 
     // Colossus
+    buff_t* colossal_might;
 
     // Slayer
     buff_t* imminent_demise;
@@ -353,6 +355,7 @@ public:
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
     cooldown_t* reap_the_storm_icd;
+    cooldown_t* demolish;
   } cooldown;
 
   // Gains
@@ -440,6 +443,7 @@ public:
     const spell_data_t* sudden_death_fury;
 
     // Colossus
+    const spell_data_t* wrecked_debuff;
 
     // Slayer
     const spell_data_t* marked_for_execution_debuff;
@@ -757,20 +761,20 @@ public:
 
     struct colossus_talents_t
     {
-      player_talent_t demolish; // NYI
-      player_talent_t martial_expert; // NYI
-      player_talent_t colossal_might; // NYI
+      player_talent_t demolish;
+      player_talent_t martial_expert;
+      player_talent_t colossal_might;
       player_talent_t boneshaker; // NYI
-      player_talent_t earthquaker; // NYI
-      player_talent_t one_against_many; // NYI
-      player_talent_t arterial_bleed; // NYI
-      player_talent_t tide_of_battle; // NYI
-      player_talent_t no_stranger_to_pain; // NYI
+      player_talent_t earthquaker;
+      player_talent_t one_against_many;
+      player_talent_t arterial_bleed;
+      player_talent_t tide_of_battle;
+      player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
-      player_talent_t practiced_strikes; // NYI
-      player_talent_t precise_might; // NYI
-      player_talent_t mountain_of_muscle_and_scars; // NYI
-      player_talent_t dominance_of_the_colossus; // NYI
+      player_talent_t practiced_strikes;
+      player_talent_t precise_might;
+      player_talent_t mountain_of_muscle_and_scars;
+      player_talent_t dominance_of_the_colossus;
     } colossus;
 
     struct slayer_talents_t
@@ -1081,6 +1085,17 @@ public:
     parse_effects( p()->buff.juggernaut_prot );
 
     // Colossus
+    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ) );
+    if ( p()->talents.colossus.arterial_bleed->ok() )
+    {
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ) );
+    }
+    if ( p()->talents.colossus.tide_of_battle->ok() )
+    {
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
+    }
+    // Effect 3 is the auto attack mod
+    parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -2605,6 +2620,19 @@ struct mortal_strike_t : public warrior_attack_t
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      // Gain 2 stacks on a crit with precise might, 1 otherwise.
+      if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
+        p()->buff.colossal_might->trigger( 2 );
+      else
+        p()->buff.colossal_might->trigger();
+    }
   }
 
   bool ready() override
@@ -3080,6 +3108,18 @@ struct cleave_t : public warrior_attack_t
     return am;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -3120,6 +3160,15 @@ struct cleave_t : public warrior_attack_t
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
       }
+    }
+
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      p()->buff.colossal_might->trigger();
     }
   }
 };
@@ -3233,6 +3282,81 @@ struct deep_wounds_PROT_t : public warrior_attack_t
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
+  }
+};
+
+// Demolish =================================================================
+
+struct demolish_damage_t : public warrior_attack_t
+{
+  demolish_damage_t( util::string_view name, warrior_t* p,  const spell_data_t* demolish )
+    : warrior_attack_t( name, p, demolish )
+  {
+    background = true;
+    dual = true;
+    // Third attack is aoe
+    if ( data().id() == 440888 )
+    {
+      aoe = -1;
+      reduced_aoe_targets = 8.0;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->up() )
+    {
+      td( state->target )->debuffs_wrecked->trigger( p()->buff.colossal_might->stack() );
+    }
+  }
+};
+
+struct demolish_t : public warrior_attack_t
+{
+  demolish_damage_t* demolish_first_attack;
+  demolish_damage_t* demolish_second_attack;
+  demolish_damage_t* demolish_third_attack;
+  demolish_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "demolish", p, p->talents.colossus.demolish ),
+      demolish_first_attack( nullptr ),
+      demolish_second_attack( nullptr ),
+      demolish_third_attack( nullptr )
+    {
+      parse_options( options_str );
+      channeled = true;
+      hasted_ticks = true;
+      weapon = &( player->main_hand_weapon );
+      demolish_first_attack = new demolish_damage_t( "demolish_first_attack", p, p->find_spell( 440884 ) );
+      demolish_second_attack = new demolish_damage_t( "demolish_second_attack", p, p->find_spell( 440886 ) );
+      demolish_third_attack = new demolish_damage_t( "demolish_third_attack", p, p->find_spell( 440888 ) );
+      add_child( demolish_first_attack );
+      add_child( demolish_second_attack );
+      add_child( demolish_third_attack );
+    }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( d->current_tick == 1 )
+    {
+      demolish_first_attack->execute();
+    }
+    else if ( d->current_tick == 3 )
+    {
+      demolish_second_attack->execute();
+    }
+    else if ( d->current_tick == 8 )
+    {
+      demolish_third_attack->execute();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warrior_attack_t::last_tick( d );
+    p()->buff.colossal_might->expire();
   }
 };
 
@@ -3610,6 +3734,15 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->active.fatality->set_target( state->target );
       p()->active.fatality->execute();
+    }
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      p()->buff.colossal_might->trigger();
     }
   }
 
@@ -5060,6 +5193,15 @@ struct revenge_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
+
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      p()->buff.colossal_might->trigger();
+    }
   }
 
   bool ready() override
@@ -5084,6 +5226,18 @@ struct revenge_t : public warrior_attack_t
     am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5347,6 +5501,19 @@ struct shield_slam_t : public warrior_attack_t
     {
       td -> debuffs_punish -> trigger();
     }
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+      {
+        p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+      }
+      // Gain 2 stacks on a crit with precise might, 1 otherwise.
+      if ( p()->talents.colossus.precise_might->ok() && state->result == RESULT_CRIT )
+        p()->buff.colossal_might->trigger( 2 );
+      else
+        p()->buff.colossal_might->trigger();
+    }
   }
 
   bool ready() override
@@ -5380,6 +5547,18 @@ struct shockwave_t : public warrior_attack_t
       p()->cooldown.shockwave->adjust(
           timespan_t::from_seconds( p()->talents.warrior.rumbling_earth->effectN( 2 ).base_value() ) );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5689,7 +5868,20 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
     }
+
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 
   double tactician_cost() const override
@@ -6452,6 +6644,11 @@ struct ignore_pain_t : public warrior_spell_t
 
     double new_ip = s -> result_amount;
 
+    if ( p()->talents.colossus.no_stranger_to_pain->ok() )
+    {
+      new_ip *= 1.0 + p()->talents.colossus.no_stranger_to_pain->effectN( 1 ).percent();
+    }
+
     double previous_ip = p() -> buff.ignore_pain -> current_value;
 
     // IP is capped to 30% of max health
@@ -6718,15 +6915,17 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   }
   if ( name == "wrecking_throw" )
     return new wrecking_throw_t( this, options_str );
+  if ( name == "demolish" )
+    return new demolish_t( this, options_str );
 
-  return player_t::create_action( name, options_str );
+  return parse_player_effects_t::create_action( name, options_str );
 }
 
 // warrior_t::init_spells ===================================================
 
 void warrior_t::init_spells()
 {
-  player_t::init_spells();
+  parse_player_effects_t::init_spells();
 
   // Core Class Spells
   spell.battle_shout            = find_class_spell( "Battle Shout" );
@@ -6786,6 +6985,7 @@ void warrior_t::init_spells()
   spell.shield_wall             = find_spell( 871 );
 
   // Colossus Spells
+  spell.wrecked_debuff              = find_spell( 447513 );
 
   // Slayer Spells
   spell.marked_for_execution_debuff = find_spell( 445584 );
@@ -7189,13 +7389,14 @@ void warrior_t::init_spells()
   cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
   cooldown.reap_the_storm_icd -> duration   = talents.slayer.reap_the_storm->internal_cooldown();
+  cooldown.demolish                         = get_cooldown( "demolish" );
 }
 
 // warrior_t::init_items ===============================================
 
 void warrior_t::init_items()
 {
-  player_t::init_items();
+  parse_player_effects_t::init_items();
 
   set_bonus_type_e tier_to_enable;
   switch ( specialization() )
@@ -7228,7 +7429,7 @@ void warrior_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  player_t::init_base_stats();
+  parse_player_effects_t::init_base_stats();
 
   resources.base[ RESOURCE_RAGE ] = 100;
   if ( talents.warrior.overwhelming_rage->ok() )
@@ -7241,8 +7442,8 @@ void warrior_t::init_base_stats()
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
+  // Avoidance diminishing Returns constants/conversions now handled in parse_player_effects_t::init_base_stats().
+  // Base miss, dodge, parry, and block are set in parse_player_effects_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -7260,7 +7461,7 @@ void warrior_t::init_base_stats()
 
 void warrior_t::merge( player_t& other )
 {
-  player_t::merge( other );
+  parse_player_effects_t::merge( other );
 
   const warrior_t& s = static_cast<warrior_t&>( other );
 
@@ -7283,7 +7484,7 @@ void warrior_t::datacollection_begin()
     }
   }
 
-  player_t::datacollection_begin();
+  parse_player_effects_t::datacollection_begin();
 }
 
 // warrior_t::datacollection_end =============================================
@@ -7298,7 +7499,7 @@ void warrior_t::datacollection_end()
     }
   }
 
-  player_t::datacollection_end();
+  parse_player_effects_t::datacollection_end();
 }
 
 // NO Spec Combat Action Priority List
@@ -7537,6 +7738,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
   // Colossus
+  debuffs_wrecked              = make_buff( *this, "wrecked", p.spell.wrecked_debuff )
+                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Slayer
   debuffs_marked_for_execution = make_buff( *this, "marked_for_execution", p.spell.marked_for_execution_debuff );
@@ -7572,7 +7775,7 @@ void warrior_td_t::target_demise()
 
 void warrior_t::create_buffs()
 {
-  player_t::create_buffs();
+  parse_player_effects_t::create_buffs();
 
   using namespace buffs;
 
@@ -7807,6 +8010,9 @@ void warrior_t::create_buffs()
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
 
   // Colossus
+  buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
+                                ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
@@ -7821,13 +8027,13 @@ void warrior_t::create_buffs()
 void warrior_t::init_finished()
 {
   parse_player_effects();
-  player_t::init_finished();
+  parse_player_effects_t::init_finished();
 }
 
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
 {
-  player_t::init_rng();
+  parse_player_effects_t::init_rng();
   rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
@@ -7857,7 +8063,7 @@ bool warrior_t::validate_fight_style( fight_style_e style ) const
 
 void warrior_t::init_scaling()
 {
-  player_t::init_scaling();
+  parse_player_effects_t::init_scaling();
 
   if ( specialization() == WARRIOR_FURY )
   {
@@ -7876,7 +8082,7 @@ void warrior_t::init_scaling()
 
 void warrior_t::init_gains()
 {
-  player_t::init_gains();
+  parse_player_effects_t::init_gains();
 
   gain.archavons_heavy_hand             = get_gain( "archavons_heavy_hand" );
   gain.avatar                           = get_gain( "avatar" );
@@ -7920,14 +8126,14 @@ void warrior_t::init_gains()
 
 void warrior_t::init_position()
 {
-  player_t::init_position();
+  parse_player_effects_t::init_position();
 }
 
 // warrior_t::init_procs ======================================================
 
 void warrior_t::init_procs()
 {
-  player_t::init_procs();
+  parse_player_effects_t::init_procs();
   proc.battlelord          = get_proc( "Battlelord Mortal Strike reset");
   proc.battlelord_wasted   = get_proc( "Battlelord Mortal Strike reset wasted" );
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
@@ -7938,7 +8144,7 @@ void warrior_t::init_procs()
 
 void warrior_t::init_resources( bool force )
 {
-  player_t::init_resources( force );
+  parse_player_effects_t::init_resources( force );
 
   resources.current[ RESOURCE_RAGE ] = 0;  // By default, simc sets all resources to full. However, Warriors cannot
                                            // reliably start combat with more than 0 rage. This will also ensure that
@@ -8074,7 +8280,7 @@ void warrior_t::init_action_list()
 {
   if ( !action_list_str.empty() )
   {
-    player_t::init_action_list();
+    parse_player_effects_t::init_action_list();
     return;
   }
 
@@ -8109,14 +8315,14 @@ void warrior_t::init_action_list()
 
   // Default
   use_default_action_list = true;
-  player_t::init_action_list();
+  parse_player_effects_t::init_action_list();
 }
 
 // warrior_t::arise() ======================================================
 
 void warrior_t::arise()
 {
-  player_t::arise();
+  parse_player_effects_t::arise();
 }
 
 // warrior_t::combat_begin ==================================================
@@ -8147,7 +8353,7 @@ void warrior_t::combat_begin()
       }
     }
   }
-  player_t::combat_begin();
+  parse_player_effects_t::combat_begin();
   buff.into_the_fray -> trigger( into_the_fray_friends < 0 ? buff.into_the_fray -> max_stack() : into_the_fray_friends + 1 );
 }
 
@@ -8243,12 +8449,12 @@ void warrior_t::create_actions()
     active.slayers_strike = new slayers_strike_t( this );
   }
 
-  player_t::create_actions();
+  parse_player_effects_t::create_actions();
 }
 
 void warrior_t::activate()
 {
-  player_t::activate();
+  parse_player_effects_t::activate();
 
   // If the value is equal to -1, don't use the callback and just assume max stacks all the time
   if ( talents.protection.into_the_fray->ok() && into_the_fray_friends >= 0 )
@@ -8261,7 +8467,7 @@ void warrior_t::activate()
 
 void warrior_t::reset()
 {
-  player_t::reset();
+  parse_player_effects_t::reset();
   first_rampage_attack_missed = false;
 }
 
@@ -8279,7 +8485,7 @@ void warrior_t::interrupt()
   buff.intercept_movement->expire();
   buff.shield_charge_movement->expire();
 
-  player_t::interrupt();
+  parse_player_effects_t::interrupt();
 }
 
 void warrior_t::teleport( double, timespan_t )
@@ -8296,7 +8502,7 @@ void warrior_t::trigger_movement( double distance, movement_direction_type direc
 
   else
   {
-    player_t::trigger_movement( distance, direction );
+    parse_player_effects_t::trigger_movement( distance, direction );
   }
 }
 
@@ -8304,7 +8510,7 @@ void warrior_t::trigger_movement( double distance, movement_direction_type direc
 
 double warrior_t::composite_player_multiplier( school_e school ) const
 {
-  double m = player_t::composite_player_multiplier( school );
+  double m = parse_player_effects_t::composite_player_multiplier( school );
 
   if ( buff.defensive_stance->check() )
   {
@@ -8317,7 +8523,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 // warrior_t::composite_player_target_multiplier ==============================
 double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( target, school );
+  double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
 
   if ( talents.warrior.concussive_blows.ok() )
   {
@@ -8336,7 +8542,7 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
 double warrior_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_auto_attack_speed();
+  double s = parse_player_effects_t::composite_melee_auto_attack_speed();
 
   if ( talents.warrior.furious_blows->ok() )
   {
@@ -8356,7 +8562,7 @@ double warrior_t::composite_melee_auto_attack_speed() const
 
 double warrior_t::composite_melee_haste() const
 {
-  double a = player_t::composite_melee_haste();
+  double a = parse_player_effects_t::composite_melee_haste();
 
   if ( talents.fury.frenzied_enrage->ok() )
   {
@@ -8381,7 +8587,7 @@ double warrior_t::composite_melee_haste() const
 
 double warrior_t::composite_mastery() const
 {
-  double y = player_t::composite_mastery();
+  double y = parse_player_effects_t::composite_mastery();
 
   if ( specialization() == WARRIOR_ARMS )
   {
@@ -8399,7 +8605,7 @@ double warrior_t::composite_mastery() const
 
 double warrior_t::composite_damage_versatility() const
 {
-  double cdv = player_t::composite_damage_versatility();
+  double cdv = parse_player_effects_t::composite_damage_versatility();
 
   cdv += talents.arms.valor_in_victory->effectN( 1 ).percent();
 
@@ -8410,7 +8616,7 @@ double warrior_t::composite_damage_versatility() const
 
 double warrior_t::composite_heal_versatility() const
 {
-  double chv = player_t::composite_heal_versatility();
+  double chv = parse_player_effects_t::composite_heal_versatility();
 
   chv += talents.arms.valor_in_victory->effectN( 1 ).percent();
 
@@ -8421,7 +8627,7 @@ double warrior_t::composite_heal_versatility() const
 
 double warrior_t::composite_mitigation_versatility() const
 {
-  double cmv = player_t::composite_mitigation_versatility();
+  double cmv = parse_player_effects_t::composite_mitigation_versatility();
 
   cmv += talents.arms.valor_in_victory->effectN( 1 ).percent();
 
@@ -8432,7 +8638,7 @@ double warrior_t::composite_mitigation_versatility() const
 
 double warrior_t::composite_attribute( attribute_e attr ) const
 {
-  double p = player_t::composite_attribute( attr );
+  double p = parse_player_effects_t::composite_attribute( attr );
 
   if ( attr == ATTR_STRENGTH )
   {
@@ -8451,7 +8657,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
 
 double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 {
-  double m = player_t::composite_attribute_multiplier( attr );
+  double m = parse_player_effects_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STRENGTH )
   {
@@ -8473,7 +8679,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
-  return player_t::composite_rating_multiplier( rating );
+  return parse_player_effects_t::composite_rating_multiplier( rating );
 }
 
 // warrior_t::matching_gear_multiplier ======================================
@@ -8497,7 +8703,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 
 double warrior_t::composite_armor_multiplier() const
 {
-  double ar = player_t::composite_armor_multiplier();
+  double ar = parse_player_effects_t::composite_armor_multiplier();
 
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
   if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
@@ -8520,7 +8726,7 @@ double warrior_t::composite_armor_multiplier() const
 
 double warrior_t::composite_bonus_armor() const
 {
-  double ba = player_t::composite_bonus_armor();
+  double ba = parse_player_effects_t::composite_bonus_armor();
 
   // Arma 2022 Nov 10.
   // We have to use base strength here, and then multiply by all the various STR buffs, while avoiding multiplying by Armored to the teeth.
@@ -8531,7 +8737,7 @@ double warrior_t::composite_bonus_armor() const
   {
     // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from 
     // attt is calculated during composite_armor_multiplier
-    auto current_str = util::floor( player_t::composite_attribute( ATTR_STRENGTH ) * player_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
+    auto current_str = util::floor( parse_player_effects_t::composite_attribute( ATTR_STRENGTH ) * parse_player_effects_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
     // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
     // it needs to be added here as well
     ba += spec.vanguard -> effectN( 1 ).percent() * current_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
@@ -8548,7 +8754,7 @@ double warrior_t::composite_bonus_armor() const
 double warrior_t::composite_base_armor_multiplier() const
 {
   // Generally Modify Base Resistance (142)
-  double a = player_t::composite_base_armor_multiplier();
+  double a = parse_player_effects_t::composite_base_armor_multiplier();
 
   return a;
 }
@@ -8559,7 +8765,7 @@ double warrior_t::composite_block() const
 {
   // this handles base block and and all block subject to diminishing returns
   double block_subject_to_dr = cache.mastery() * mastery.critical_block->effectN( 2 ).mastery_value();
-  double b                   = player_t::composite_block_dr( block_subject_to_dr );
+  double b                   = parse_player_effects_t::composite_block_dr( block_subject_to_dr );
 
   // shield block adds 100% block chance
   if ( buff.shield_block -> up() )
@@ -8578,7 +8784,7 @@ double warrior_t::composite_block() const
 
 double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
-  double br = player_t::composite_block_reduction( s );
+  double br = parse_player_effects_t::composite_block_reduction( s );
 
   if ( buff.brace_for_impact -> check() )
   {
@@ -8597,7 +8803,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
 double warrior_t::composite_parry_rating() const
 {
-  double p = player_t::composite_parry_rating();
+  double p = parse_player_effects_t::composite_parry_rating();
 
   // TODO: remove the spec check once riposte is pulled from spelldata
   if ( spec.riposte -> ok() || specialization() == WARRIOR_PROTECTION )
@@ -8611,7 +8817,7 @@ double warrior_t::composite_parry_rating() const
 
 double warrior_t::composite_parry() const
 {
-  double parry = player_t::composite_parry();
+  double parry = parse_player_effects_t::composite_parry();
 
   if ( buff.die_by_the_sword->check() )
   {
@@ -8624,7 +8830,7 @@ double warrior_t::composite_parry() const
 
 double warrior_t::composite_attack_power_multiplier() const
 {
-  double ap = player_t::composite_attack_power_multiplier();
+  double ap = parse_player_effects_t::composite_attack_power_multiplier();
 
   if ( mastery.critical_block -> ok() )
   {
@@ -8638,7 +8844,7 @@ double warrior_t::composite_attack_power_multiplier() const
 double warrior_t::composite_crit_block() const
 {
 
-  double b = player_t::composite_crit_block();
+  double b = parse_player_effects_t::composite_crit_block();
 
   if ( mastery.critical_block->ok() )
   {
@@ -8652,7 +8858,7 @@ double warrior_t::composite_crit_block() const
 /*
 double warrior_t::composite_melee_auto_attack_speed() const
 {
-  double s = player_t::composite_melee_auto_attack_speed();
+  double s = parse_player_effects_t::composite_melee_auto_attack_speed();
 
   return s;
 }
@@ -8662,7 +8868,7 @@ double warrior_t::composite_melee_auto_attack_speed() const
 
 double warrior_t::composite_melee_crit_chance() const
 {
-  double c = player_t::composite_melee_crit_chance();
+  double c = parse_player_effects_t::composite_melee_crit_chance();
 
   c += buff.conquerors_frenzy->check_value();
   c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
@@ -8686,7 +8892,7 @@ double warrior_t::composite_melee_crit_chance() const
 
 double warrior_t::composite_melee_crit_rating() const
 {
-  double c = player_t::composite_melee_crit_rating();
+  double c = parse_player_effects_t::composite_melee_crit_rating();
 
   return c;
 }
@@ -8694,7 +8900,7 @@ double warrior_t::composite_melee_crit_rating() const
 // warrior_t::composite_player_critical_damage_multiplier ==================
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
-  double cdm = player_t::composite_player_critical_damage_multiplier( s );
+  double cdm = parse_player_effects_t::composite_player_critical_damage_multiplier( s );
 
   return cdm;
 }
@@ -8702,7 +8908,7 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 // warrior_t::composite_spell_crit_chance =========================================
 double warrior_t::composite_spell_crit_chance() const
 {
-  double c = player_t::composite_spell_crit_chance();
+  double c = parse_player_effects_t::composite_spell_crit_chance();
 
   c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
   c += buff.battle_stance->check_value();
@@ -8725,7 +8931,7 @@ double warrior_t::composite_spell_crit_chance() const
 
 double warrior_t::composite_leech() const
 {
-  double m = player_t::composite_leech();
+  double m = parse_player_effects_t::composite_leech();
 
   m += talents.warrior.leeching_strikes->effectN( 1 ).percent();
 
@@ -8757,14 +8963,14 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     a *= 1.0 + buff.unnerving_focus->stack_value();//Spell data lists all the abilities it provides rage gain to separately - currently it is all of our abilities.
   }
-  return player_t::resource_gain( r, a, g, action );
+  return parse_player_effects_t::resource_gain( r, a, g, action );
 }
 
 // warrior_t::non_stacking_movement_modifier ================================
 
 double warrior_t::non_stacking_movement_modifier() const
 {
-  double ms = player_t::non_stacking_movement_modifier();
+  double ms = parse_player_effects_t::non_stacking_movement_modifier();
 
   // These are ordered in the highest speed movement increase to the lowest, there's no reason to check the rest as they
   // will just be overridden. Also gives correct benefit numbers.
@@ -8805,30 +9011,30 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     if ( c == CACHE_MASTERY )
     {
-      player_t::invalidate_cache( CACHE_BLOCK );
-      player_t::invalidate_cache( CACHE_CRIT_BLOCK );
-      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      parse_player_effects_t::invalidate_cache( CACHE_BLOCK );
+      parse_player_effects_t::invalidate_cache( CACHE_CRIT_BLOCK );
+      parse_player_effects_t::invalidate_cache( CACHE_ATTACK_POWER );
     }
     if ( c == CACHE_CRIT_CHANCE )
     {
-      player_t::invalidate_cache( CACHE_PARRY );
+      parse_player_effects_t::invalidate_cache( CACHE_PARRY );
     }
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury->ok() )
   {
-    player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    parse_player_effects_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
   if ( c == CACHE_STRENGTH && spec.vanguard -> ok() )
   {
-    player_t::invalidate_cache( CACHE_BONUS_ARMOR );
+    parse_player_effects_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
   if ( c == CACHE_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
   {
-    player_t::invalidate_cache( CACHE_STRENGTH );
+    parse_player_effects_t::invalidate_cache( CACHE_STRENGTH );
   }
   if ( c == CACHE_BONUS_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
   {
-    player_t::invalidate_cache( CACHE_STRENGTH );
+    parse_player_effects_t::invalidate_cache( CACHE_STRENGTH );
   }
 }
 
@@ -8836,10 +9042,10 @@ void warrior_t::invalidate_cache( cache_e c )
 
 role_e warrior_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_TANK )
+  if ( parse_player_effects_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;
 
-  if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_ATTACK )
+  if ( parse_player_effects_t::primary_role() == ROLE_DPS || parse_player_effects_t::primary_role() == ROLE_ATTACK )
     return ROLE_ATTACK;
 
   if ( specialization() == WARRIOR_PROTECTION )
@@ -8874,7 +9080,7 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
 
 void warrior_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
-  player_t::assess_damage( school, type, s );
+  parse_player_effects_t::assess_damage( school, type, s );
 
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY )
   {
@@ -8906,7 +9112,7 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
 
 void warrior_t::target_mitigation( school_e school, result_amount_type dtype, action_state_t* s )
 {
-  player_t::target_mitigation( school, dtype, s );
+  parse_player_effects_t::target_mitigation( school, dtype, s );
 
   if ( s->result == RESULT_HIT || s->result == RESULT_CRIT || s->result == RESULT_GLANCE )
   {
@@ -8957,7 +9163,7 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
 
 void warrior_t::create_options()
 {
-  player_t::create_options();
+  parse_player_effects_t::create_options();
 
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
@@ -8974,14 +9180,14 @@ std::string warrior_t::create_profile( save_e type )
     position_str = "front";
   }
 
-  return player_t::create_profile( type );
+  return parse_player_effects_t::create_profile( type );
 }
 
 // warrior_t::copy_from =====================================================
 
 void warrior_t::copy_from( player_t* source )
 {
-  player_t::copy_from( source );
+  parse_player_effects_t::copy_from( source );
 
   warrior_t* p = debug_cast<warrior_t*>( source );
 
@@ -9008,13 +9214,19 @@ void warrior_t::parse_player_effects()
     parse_effects( spec.protection_warrior );
   }
 
+  // Colossus
+  // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
+  parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
+                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000 );
+
+  // Slayer
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
                          spell.overwhelmed_debuff );
 }
 
 void warrior_t::apply_affecting_auras( action_t& action )
 {
-  player_t::apply_affecting_auras( action );
+  parse_player_effects_t::apply_affecting_auras( action );
 
   // Spec Auras
   action.apply_affecting_aura( spec.warrior );
@@ -9078,6 +9290,10 @@ void warrior_t::apply_affecting_auras( action_t& action )
   }
 
   // Colossus
+  action.apply_affecting_aura( talents.colossus.martial_expert );
+  action.apply_affecting_aura( talents.colossus.earthquaker );
+  action.apply_affecting_aura( talents.colossus.practiced_strikes );
+  action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );

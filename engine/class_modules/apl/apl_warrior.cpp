@@ -171,6 +171,7 @@ void arms( player_t* p )
   default_->add_action( "blood_fury,if=debuff.colossus_smash.up" );
   default_->add_action( "fireblood,if=debuff.colossus_smash.up" );
   default_->add_action( "ancestral_call,if=debuff.colossus_smash.up" );
+  default_->add_action( "demolish" );
   default_->add_action( "run_action_list,name=aoe,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2|talent.fervor_of_battle.enabled&(talent.massacre.enabled&target.health.pct>35|target.health.pct>20)&!raid_event.adds.up&active_enemies>1" );
   default_->add_action( "run_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
   default_->add_action( "run_action_list,name=single_target" );
@@ -304,6 +305,7 @@ void protection( player_t* p )
   default_->add_action( "shockwave,if=talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
+  default_->add_action( "demolish" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_->add_action( "call_action_list,name=generic" );
 
