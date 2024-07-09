@@ -769,8 +769,8 @@ public:
       player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
       player_talent_t practiced_strikes;
-      player_talent_t precise_might; // NYI
-      player_talent_t mountain_of_muscle_and_scars; // NYI
+      player_talent_t precise_might;
+      player_talent_t mountain_of_muscle_and_scars;
       player_talent_t dominance_of_the_colossus; // NYI
     } colossus;
 
@@ -1091,6 +1091,7 @@ public:
     {
       parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
     }
+    parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -5462,7 +5463,7 @@ struct shield_slam_t : public warrior_attack_t
     if ( p()->talents.colossus.colossal_might->ok() )
     {
       // Gain 2 stacks on a crit with precise might, 1 otherwise.
-      if ( p()->talents.colossus.precise_might->ok() && s->result == RESULT_CRIT )
+      if ( p()->talents.colossus.precise_might->ok() && state->result == RESULT_CRIT )
         p()->buff.colossal_might->trigger( 2 );
       else
         p()->buff.colossal_might->trigger();
@@ -9164,6 +9165,8 @@ void warrior_t::parse_player_effects()
 
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
                          spell.overwhelmed_debuff );
+
+  parse_effects( talents.colossus.mountain_of_muscle_and_scars );
 }
 
 void warrior_t::apply_affecting_auras( action_t& action )
@@ -9235,6 +9238,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
   action.apply_affecting_aura( talents.colossus.practiced_strikes );
+  action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
