@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55522 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -834,7 +834,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1161687)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Increases your dodge chance by ${$s1/2}% for $d.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]
 Tooltip          : Dodge chance increased by ${$w1/2}%.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]$?a457034[ Magical damage taken reduced by $w3%.][]
@@ -1554,7 +1554,7 @@ Effects          :
 #2 (id=20792)    : Trigger Spell (64): Cloak of Shadows
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 35729 | Target: Self (1)
 #3 (id=1161692)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, causing you to resist harmful spells for $d.
 Tooltip          : Resisting all harmful spells.$?a457034[ Physical damage taken reduced by $w3%.][]
@@ -3117,7 +3117,7 @@ Spell Level      : 25
 GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4, #5), Thrombotic Tincture (458476 effects: #1, #2)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Momentum of Despair (457115 effect#1), Sanguine Stratagem (457512 effects: #1, #4, #5), Thrombotic Tincture (458476 effects: #1, #2)
 Family Flags     : 54, 81
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7654,6 +7654,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Serrated Bone Spike (385424), Mutilated Flesh (394021), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331)
                    Family Flags: 8, 20, 59, 81, 95, 115, 126
+#4 (id=1173267)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3936 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
 Description      : $@spelldesc245388
 Tooltip          : $w1% increased Nature $?a400783[and Bleed ][]damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
@@ -12106,6 +12109,12 @@ Effects          :
 #5 (id=1083911)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
+#6 (id=1173487)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3936 (Label) | Target: Self (1)
+                   Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
+#7 (id=1173488)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 3936 (Label) | Target: Self (1)
+                   Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
 Description      : Your attacks that deal Nature or Bleed damage now deal Shadow instead.
 
 Shadow damage increased by $s2%.
@@ -12296,7 +12305,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013898)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vanish grants you a shield for $386165d, absorbing damage equal to $s1% of your maximum health.
 
 Name             : Deeper Daggers (id=382517) [Spell Family (8), Passive] 
@@ -13606,7 +13615,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1033248)  : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393970
 Tooltip          : Healing $w1% of max health every $t.
 
@@ -15810,7 +15819,7 @@ Effects          :
 #1 (id=1101632)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc51690
-Tooltip          : Taking damage every ${$t}.1.
+Tooltip          : Taking damage every ${$t}.1 sec.
 Variables        : $dmg=${$57841s2+$57842s1}
 
 Name             : Warning Signs (id=426555) [Spell Family (8), Passive] 
@@ -16471,6 +16480,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Rupture (1943), Dispatch (2098), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 20, 32, 44, 55, 92, 111, 112
+#6 (id=1173190)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc441146
 Tooltip          : Taking $w1% more damage from $@auracaster.
 
@@ -17441,7 +17452,7 @@ Name             : Rogue Assassination 11.0 Class Set 2pc (id=453713) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Proc Chance      : 8%
+Proc Chance      : 15%
 Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -17456,8 +17467,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1155719)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Self (1)
-Description      : When your bleeds deal damage, they have a chance to grant you Vile Tincture for $458475d, increasing your poison damage by $458475s1% per stack (up to $458475u stacks).
-Tooltip          : When your bleeds deal damage, they have a chance to grant you Vile Tincture for $458475d, increasing your poison damage by $458475s1% per stack (up to $458475u stacks).
+Description      : When your bleeds deal damage, they have a chance to grant you Vile Tincture for $458475d, increasing your poison damage by ${$458475s1}.1% per stack (up to $458475u stacks).
+Tooltip          : When your bleeds deal damage, they have a chance to grant you Vile Tincture for $458475d, increasing your poison damage by ${$458475s1}.1% per stack (up to $458475u stacks).
 
 Name             : Rogue Assassination 11.0 Class Set 4pc (id=453714) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -17626,7 +17637,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1156934)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?a137037[Mutilate, Ambush, and Fan of Knives][Sinister Strike]$?a383281[ and Ambush][] generate$?a137037[]?383281[][s] $454421s1 additional combo point $?a137037[when they trigger Seal Fate]?383281[when they strike an additional time][when it strikes an additional time]. 
+Description      : $?a137037[Mutilate, Ambush, Fan of Knives][Sinister Strike]$?a383281[ and Ambush][] generate$?a137037[]$?a383281[] $454421s1 additional combo point $?a137037[when they trigger Seal Fate]?383281[when they strike an additional time][when they strike an additional time].
 
 Name             : Deal Fate (id=454421) [Spell Family (8)] 
 Class            : Rogue
@@ -18367,7 +18378,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1161731)  : Apply Aura (6) | Proc Trigger Spell (42): Momentum of Despair
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 457115 | Target: Self (1)
-Description      : If you have critically struck with Fan of Knives or Shuriken Storm, increase the critical strike chance of Fan of Knives, Shuriken Storm, and Black Powder by $457115s1% for $457115d.
+Description      : If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% for $457115d.
 
 Name             : Follow the Blood (id=457068) [Spell Family (8), Passive] 
 Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=4, col=2, max_rank=1, req_points=1, select_idx=200]
@@ -18385,10 +18396,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161732)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1161758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fan of Knives, Shuriken Storm, Crimson Tempest, and Black Powder deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.
+Description      : $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.
 
 Name             : Momentum of Despair (id=457115) [Spell Family (8)] 
 Class            : Rogue
@@ -18408,10 +18419,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1161811)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Fan of Knives (51723), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190)
-                   Family Flags: 44, 50, 127
+                   Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190)
+                   Family Flags: 44, 50, 81, 127
 Description      : $@spelldesc457067
-Tooltip          : Critical strike chance of Fan of Knives, Shuriken Storm, and Black Powder is increased by $w1%
+Tooltip          : Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1%.
 
 Name             : Deathstalker's Mark (id=457129) [Spell Family (8)] 
 Class            : Rogue
@@ -18442,6 +18453,7 @@ School           : Shadowstorm
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : Aura (infinite)
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18466,6 +18478,7 @@ Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
 Range            : 5 yards
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18558,6 +18571,7 @@ Name             : Clear the Witnesses (id=457179) [Spell Family (8)]
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18576,6 +18590,7 @@ Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
 Range            : 5 yards
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Proc Chance      : 101%
 Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
@@ -18597,6 +18612,7 @@ Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
 Range            : 10 yards
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -18886,7 +18902,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166346)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Enemy (6)
 Description      : $@spelldesc441367
 
 Name             : Fazed (id=460927) [Spell Family (8)] 
@@ -19009,6 +19025,7 @@ Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Magic
 Range            : 50000 yards
+Labels           : 3936: Dark Brew (382504 effect#6), Dark Brew (382504 effect#7)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 

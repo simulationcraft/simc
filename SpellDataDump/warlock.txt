@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55522 thewarwithin-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1625,7 +1625,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Requires weapon  : 
-Labels           : 3685: Empowered Legion Strike (455647 effect#1)
 Family Flags     : 36
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -2351,8 +2350,11 @@ Effects          :
                    Family Flags: 1, 8, 10, 36, 40, 47, 84, 85, 112
 #2 (id=92150)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Corruption (172), Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Unstable Affliction (30108), Seed of Corruption (43991), Siphon Life (63106), Corruption (146739), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Wither (445468), Wither (445474)
+                   Affected Spells: Corruption (172), Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Unstable Affliction (30108), Seed of Corruption (43991), Siphon Life (63106), Corruption (146739), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 1, 8, 10, 36, 40, 47, 73, 84, 85, 112
+#3 (id=1173872)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
+                   Affected Spells (Label): Soul Anathema (450538)
 Description      : Increases damage done by Malefic Rapture, Agony, Corruption,$?s63106[ Siphon Life,][]$?s205179[ Phantom Singularity,][]$?s278350[ Vile Taint,][]$?s386997[ Soul Rot,][] Unstable Affliction, and Seed of Corruption by ${$77215s1}.1%.
 
 Name             : Mastery: Master Demonologist (id=77219) [Spell Family (5), Passive] 
@@ -2378,6 +2380,9 @@ Effects          :
                    Family Flags: 46, 89
 #3 (id=1033047)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1173871)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
+                   Affected Spells (Label): Soul Anathema (450538)
 Description      : Increases the damage done by your demons by ${$s1}.1%.
 
 Name             : Mastery: Chaotic Energies (id=77220) [Spell Family (5), Passive] 
@@ -2462,7 +2467,7 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Succulent Soul (449793 effect#2), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... .x...... ........ ......x. 
@@ -2905,7 +2910,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Travel Time      : 0.7 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Blazing Meteor (394776 effect#2), Demonic Art: Overlord (428524 effect#2), Demonic Art: Mother of Chaos (432794 effect#2), Demonic Art: Pit Lord (432795 effect#2), Ruination (433885 effect#1), Succulent Soul (449793 effect#3)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Blazing Meteor (394776 effect#2), Demonic Art: Overlord (428524 effect#2), Demonic Art: Mother of Chaos (432794 effect#2), Demonic Art: Pit Lord (432795 effect#2), Ruination (433885 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -5065,7 +5070,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Succulent Soul (449793 effect#2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -6120,8 +6125,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=321151)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1173561)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every Soul Shard you spend has a $s1% chance to be refunded.
+#3 (id=1173562)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Every Soul Shard you spend has a $?s137043[$s1%]?s137046[$s3%][$s2%] chance to be refunded.
 
 Name             : Soul Conduit (id=215942) [Spell Family (5)] 
 Class            : Warlock
@@ -6348,7 +6357,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 120 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Demonic Art: Overlord (428524 effect#1), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#1), Demonic Art: Pit Lord (432795 effect#1), Succulent Soul (449793 effect#2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7222,6 +7231,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.31680 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#3 (id=1173941)  : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 460553 | Target: Enemy (6)
 Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
@@ -9445,7 +9456,7 @@ Resource         : 1 Soul Shard (7) (id=192685)
 Range            : 100 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Norgannon's Foresight (236431 effect#1), Calamitous Crescendo (364322 effects: #1, #2, #3, #4), Tormented Crescendo (387079 effects: #1, #2, #3), Succulent Soul (449793 effect#1), Improved Malefic Rapture (454378 effect#2)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Calamitous Crescendo (364322 effects: #1, #2, #3, #4), Tormented Crescendo (387079 effects: #1, #2, #3), Improved Malefic Rapture (454378 effect#2)
 Family Flags     : 127
 Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .xx..... ......x. 
@@ -9459,7 +9470,7 @@ Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... .....
 Effects          :
 #1 (id=814173)   : Dummy (3) | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31625 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
-Description      : Your damaging periodic effects from your spells erupt on all targets, causing $324540s1 Shadow damage per effect.
+Description      : Your damaging periodic effects from your spells erupt on all targets, causing $324540s1 Shadowflame damage per effect.
 Variables        : $affMastery=$?s77215[${1+0.01*$77215m1}][${1}]
 $damage=${$bc1*($SP)*$<affMastery>*(1+$@versadmg)}
 
@@ -11607,7 +11618,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904429)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
 #2 (id=904823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12280,7 +12291,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126)
 Effects          :
 #1 (id=1020827)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1174067)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x1a0 | Target: Self (1)
+#3 (id=1174068)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x4364 | Target: Self (1)
+#4 (id=1174069)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x1a1 | Target: Self (1)
+#5 (id=1174070)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x744 | Target: Self (1)
+#6 (id=1174071)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x747 | Target: Self (1)
 Description      : Increases you and your pets' maximum health by $s1%.
 
 Name             : Desperate Pact (id=386619) [Spell Family (5), Passive, Hidden] 
@@ -12879,7 +12900,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Agony, $?a445465[Wither][Corruption], and Unstable Affliction are active, your Shadow Bolt has a $s1% chance and your Drain Soul has a $s2% chance to make your next Malefic Rapture cost no Soul Shards and cast instantly.
 
-Name             : Tormented Crescendo (id=387077) [Hidden] 
+Name             : Tormented Crescendo (id=387077) [Spell Family (5), Hidden] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -15121,7 +15142,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1033743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
 Description      : $@spelldesc393699
 Tooltip          : Your next Malefic Rapture or Seed of Corruption deals $s1% increased damage.
@@ -15260,7 +15281,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053535)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Seed of Corruption (27285), Seed of Corruption (43991), Malefic Rapture (324540)
+                   Affected Spells: Seed of Corruption (27285), Seed of Corruption (43991), Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 47, 73
 #2 (id=1154565)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16114,8 +16135,8 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -16629,13 +16650,13 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Spell Haste Affects Periodic (173), Aura Points On Client (268)
 Effects          :
 #1 (id=1109298)  : Apply Aura (6) | Periodic Trigger Spell (23): Infernal Presence every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 428455 | Target: Self (1)
@@ -16958,7 +16979,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
 #4 (id=1124642)  : Apply Aura Pet (174) | Modify Damage Done% (79)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
-Description      : Fire damage increased $s1% and damage dealt by your demons is increased $s3%.
+Description      : Fire damage increased by $s1% and damage dealt by your demons is increased by $s3%.
 
 Name             : Touch of Rancora (id=429893) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
@@ -17044,8 +17065,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1114527)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Soul Shard spending abilities decrease the duration of Diabolic Ritual by 1 additional sec while your $?s137044[Demonic Tyrant][Infernal] is active.
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Spending Soul Shards on damaging spells while your $?s137044[Demonic Tyrant][Infernal] is active decreases the duration of Diabolic Ritual by ${$s1/1000} additional sec.
 
 Name             : Malevolence (id=430014) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=5, col=1, max_rank=1, req_points=1, override="Malevolence" (id=442726)]
@@ -17064,14 +17085,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1114686)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1137633)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1143551)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Dark magic erupts from you and corrupts your soul for $442726d, causing enemies suffering from your Wither to take $446285s1 Shadowflame damage and increase its stack count by $s1.
 
-While corrupted your active Withers are acute, your haste is increased by $442726s1% and $?s116858[Chaos Bolt grants $s2 additional stack of Wither.][Malefic Rapture grants $s3 additional stack of Wither to targets affected by your Unstable Affliction.]
+While corrupted your Haste is increased by $442726s1% and spending Soul Shards on damaging spells grants $s2 additional stack of Wither.
 
 Name             : Diabolic Ritual: Overlord (id=431944) [Spell Family (5)] 
 Class            : Warlock
@@ -17563,7 +17582,7 @@ Spell Type       : None
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 Travel Time      : 1 seconds
-Affecting spells : Backdraft (117828 effects: #1, #2, #3), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effect#2), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Blazing Meteor (394776 effect#2), Umbrafire Embers (409652 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Succulent Soul (449793 effect#3), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2)
+Affecting spells : Backdraft (117828 effects: #1, #2, #3), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effect#2), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Blazing Meteor (394776 effect#2), Umbrafire Embers (409652 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effects: #1, #2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effects: #1, #2), Demonic Art: Pit Lord (432795 effects: #1, #2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2)
 Family Flags     : 21, 45
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17646,17 +17665,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133699)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Eye Beam (205231), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Eye Beam (205231), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 9, 10, 19, 23, 40, 43, 45, 47, 64, 72, 73, 84, 85, 88, 90, 101, 112, 116
 #2 (id=1137484)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
 #3 (id=1166858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
 #4 (id=1166859)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
 #5 (id=1166860)  : Apply Aura Pet (174) | Modify Damage Done% (79)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Radius: 60 yards | Target: Self (1)
@@ -17688,9 +17707,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Spending Soul Shards on damaging spells will further corrupt enemies affected by your Wither, increasing its stack count by $s1.
 
-Each time Wither increases it has a chance to become acute, dealing $445736s1 Shadowflame damage to its host every $445731t1 sec until 1 stack remains.
-
-Wither will always become acute after reaching $s2 stacks or when its host reaches $s3% health.
+Each time Wither gains a stack it has a chance to deal $445736s1 Shadowflame damage to its host every $445731t1 sec until 1 stack remains.
 
 Name             : Xalan's Ferocity (id=440044) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
@@ -17710,17 +17727,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1133703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #2 (id=1136088)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #3 (id=1139023)  : Apply Aura Pet (174) | Modify Damage Done% (79)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Radius: 60 yards | Target: Self (1)
 #4 (id=1139024)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Overfiend (457578), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #5 (id=1166683)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
@@ -17854,15 +17871,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Suppress Caster Procs (112)
 Effects          :
 #1 (id=1133717)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1142894)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1143971)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
 #4 (id=1168372)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Blackened Soul damage increased by $s3%. When Blackened Soul deals damage, you have a chance to gain $?s137046[$s4 stacks of Flashpoint][Tormented Crescendo].
+Description      : After Wither reaches $s1 stacks or when its host reaches $s2% health, Wither deals $445736s1 Shadowflame damage to its host every $445731t1 sec until 1 stack remains.
+
+When Blackened Soul deals damage, you have a chance to gain $?s137046[$s4 stacks of Flashpoint][Tormented Crescendo].
 
 Name             : Curse of the Satyr (id=440057) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
@@ -18018,9 +18037,6 @@ Resource         : 1% Base Mana (0) (id=306573)
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x...x... x.x..... ........   .....x.. ........ ........ ........   
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -18032,7 +18048,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), No Target Aura Icon (188), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138134)  : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1143167)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1143168)  : Apply Aura (6) | Dummy (4)
@@ -18099,7 +18115,7 @@ Effects          :
 Description      : $@spelldesc430014
 
 Name             : Wither (id=445465) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
+Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=1, col=1, max_rank=1, req_points=1, override="Wither" (id=445468)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18114,16 +18130,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1142346)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 445468 | Scaled Value: 445468 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 445468 | Scaled Value: 445468 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Corruption (172), Immolate (348), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
                    Family Flags: 1, 2
 #2 (id=1142829)  : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolate (348), Wither (445468)
                    Family Flags: 2
-Description      : Replaces $?s137046[Immolate][Corruption].
-
-$@spelldesc445468
+Description      : $@spelldesc445468
 
 Name             : Wither (id=445468) [Spell Family (5)] 
 Class            : Warlock
@@ -18153,7 +18167,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 445474 | Target: Enemy (6)
 Description      : Bestows a vile malediction upon the target, burning the sinew and muscle of its host, dealing $s1 Shadowflame damage immediately and an additional $445474o1 Shadowflame damage over $445474d.$?s137046[
 
-|cFFFFFFFFPeriodic damage generates 1 Soul Shard Fragment and has a $s2% chance to generate an additional 1 on critical strikes.|r][]
+|cFFFFFFFFPeriodic damage generates 1 Soul Shard Fragment and has a $s2% chance to generate an additional 1 on critical strikes.
+
+Replaces Immolate.|r][
+
+|cFFFFFFFFReplaces Corruption.|r]
 
 Name             : Wither (id=445474) [Spell Family (5)] 
 Class            : Warlock
@@ -18226,7 +18244,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1142745)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45350 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58955 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc440043
 
 Name             : Malevolence (id=446285) [Spell Family (5)] 
@@ -18299,7 +18317,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
 Description      : A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. 
 
-A Succulent Soul empowers your next $?s137043[Malefic Rapture, reducing its Soul Shard cost by ${$449793s1/-10},  increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, reducing its Soul Shard cost by ${$449793s3/-10}, summoning $449793s4 additional Wild Imp, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]
+A Succulent Soul empowers your next $?s137043[Malefic Rapture, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]
 
 Name             : Necrolyte Teachings (id=449620) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
@@ -18471,13 +18489,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1148975)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1170694)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 30 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your demonic soul lures lost spirits to you, granting you a Succulent Soul every $t2 sec while in combat.
-
-In addition, your demonic soul empowers your $?s137043[Soul Rot][Summon Demonic Tyrant] causing it to grant $s1 Succulent Souls when cast.
+#1 (id=1148975)  : Apply Aura (6) | Proc Trigger Spell (42): Shadow of Death
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 449858 | Target: Self (1)
+Description      : Your $?s137043[Soul Rot][Summon Demonic Tyrant] spell is empowered by the demonic entity within you, causing it to grant ${$449858s1/10} Soul Shards that each contain a Succulent Soul.
 
 Name             : Gorebound Fortitude (id=449701) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=3, col=1, max_rank=1, req_points=1, select_idx=100]
@@ -18604,22 +18618,18 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
-#1 (id=1149315)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324536)
-                   Family Flags: 127
+#1 (id=1149315)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1149324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
-                   Family Flags: 73
-#3 (id=1149325)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Ruination (434635)
-                   Family Flags: 21
+                   Affected Spells: Hand of Gul'dan (86040), Hand of Gul'dan (196282), Totem Mastery (226772), Malefic Rapture (324540), Malefic Touch (458131)
+                   Family Flags: 73, 86
+#3 (id=1149325)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1149326)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : $@spelldesc449614
-Tooltip          : $?s137043[The Soul Shard cost of Malefic Rapture is reduced by ${$s1/-10} and deals $s2% increased damage.][The Soul Shard cost of Hand of Gul'dan is reduced by ${$s3/-10} and summons $s4  additional Wild Imp.]
+Tooltip          : $?s137043[Malefic Rapture deals $s2% increased damage.][Hand of Gul'dan deals $s2% increased damage.]
 
 Unleashes your demonic entity upon consumption, dealing an additional $449801s~1 Shadow damage to enemies.
 
@@ -18628,7 +18638,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 3535: Wicked Reaping (449631 effect#1), Shadow of Death (449858 effect#1)
+Labels           : 3535: Wicked Reaping (449631 effect#1)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18666,7 +18676,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 3535: Wicked Reaping (449631 effect#1), Shadow of Death (449858 effect#1)
+Labels           : 3535: Wicked Reaping (449631 effect#1)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18686,7 +18696,7 @@ Name             : Shadow of Death (id=449858) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Duration         : 15 seconds
+Triggered by     : Shadow of Death (449638)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18696,11 +18706,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1149444)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 3535 (Label) | Target: Self (1)
-                   Affected Spells (Label): Demonic Soul (449801), Wicked Reaping (449826)
+#1 (id=1149444)  : Energize Power (30)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc449638
-Tooltip          : $?s137043[Malefic Rapture][Hand of Gul'dan] will invoke your demonic soul. Your demonic soul deals $s1% increased damage.
 
 Name             : Shadow of Death (id=449961) [Spell Family (5)] 
 Class            : Warlock
@@ -18745,7 +18753,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 3545: Quietus (449634 effect#1), Quietus (449634 effect#2), Quietus (449634 effect#3)
+Labels           : 3545: Mastery: Potent Afflictions (77215 effect#3), Mastery: Master Demonologist (77219 effect#4), Quietus (449634 effect#1), Quietus (449634 effect#2), Quietus (449634 effect#3)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Triggered by     : Soul Anathema (449624)
 Family Flags     : 49
@@ -19461,11 +19469,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1155642)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
 #2 (id=1159353)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
 Description      : Malefic Rapture damage increased by $s1% and its critical strike chance is increased by $s2%.
 
@@ -19699,7 +19707,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1156874)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Malefic Rapture (324540)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
 #2 (id=1156875)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -19918,6 +19926,16 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1158978)  : Apply Aura (6) | Unknown(382)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0x21288 | Target: Self (1)
+#2 (id=1173917)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x21288 | Target: Self (1)
+#3 (id=1173918)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x373dc | Target: Self (1)
+#4 (id=1173919)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0x373dc | Target: Self (1)
+#5 (id=1173920)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x373dd | Target: Self (1)
+#6 (id=1173921)  : Apply Aura (6) | Unknown(382)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0x373dd | Target: Self (1)
 Description      : Increases Vilefiend damage by $s1% and your Vilefiend's Bile Spit now applies Wicked Maw.
 
 Name             : Fiendish Oblation (id=455569) [Spell Family (5), Passive] 
@@ -20138,9 +20156,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Not On Player (167), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
-#1 (id=1159271)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.50000 | Misc Value 2: 3685 (Label) | Target: Active Pet (5)
-                   Affected Spells (Label): Legion Strike (30213)
+#1 (id=1159271)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.50000 | Target: Active Pet (5)
 Description      : $@spelldesc453645
 Tooltip          : Your next Legion Strike deals $s1% increased damage.
 
@@ -20647,8 +20664,8 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
-Family Flags     : 49
+Affecting spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1), Deliberate Malice (364437 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Cruel Epiphany (394253 effect#1), Kindled Malice (405330 effect#1), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Succulent Soul (449793 effect#2), Summoner's Embrace (453105 effects: #1, #3), Warlock Affliction 11.0 Class Set 2pc (453643 effects: #1, #2), Demonic Brutality (453908 effect#1), Improved Malefic Rapture (454378 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Family Flags     : 49, 73
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20763,9 +20780,6 @@ Talent Entry     : Demonology [tree=spec, row=8, col=1, max_rank=1, req_points=2
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
 Affecting spells : Norgannon's Foresight (236431 effect#1), Doom Eternal (455585 effect#1)
 Family Flags     : 33
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -20793,6 +20807,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Triggered by     : Demonbolt (264178)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 

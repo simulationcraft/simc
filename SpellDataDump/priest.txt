@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55399 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55522 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3864,11 +3864,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Cauterizing Shadows (459992)
                    Family Flags: 126
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Cauterizing Shadows (459992)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -3971,6 +3971,10 @@ Effects          :
 #31 (id=1169928)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
+#32 (id=1174075)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -30.5 | Scaled Value: -30.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
+                   Family Flags: 44
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4692,7 +4696,7 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.09500 | PvP Coefficient: 1.10000 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.50400 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #4 (id=298595)   : Dummy (3)
@@ -11270,7 +11274,7 @@ Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... .....
                  : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=997934)   : Direct Heal% (136)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc372991
 
 Name             : Revel in Purity (id=373003) [Spell Family (6), Passive, Hidden] 
@@ -17419,7 +17423,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Affecting spells : Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
+Affecting spells : Discipline Priest (137032 effect#32), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17440,7 +17444,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #24, #25, #32), Shadow Priest (137033 effects: #1, #2, #30, #31), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effect#1)
 Family Flags     : 44, 72
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
@@ -17640,11 +17644,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
 #2 (id=1149491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Atonement (81751), Atonement (94472)
                    Family Flags: 74
 Description      : $@spelldesc449880
-Tooltip          : $?c3[Shadow damage increased by $s1%.][Atonement healing increased by $s2%.]
+Tooltip          : $?e0[Shadow damage increased by $s1%.][Atonement healing increased by $s2%.]
 
 Name             : Darkening Horizon (id=449912) [Spell Family (6), Passive] 
 Talent Entry     : Voidweaver (Discipline, Shadow) [tree=hero, row=3, col=1, max_rank=1, req_points=0]
@@ -17731,7 +17735,7 @@ Labels           : 3556: Dark Energy (451018 effect#2)
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. x....... ........   ........ ........ ........ ........   
                  : Magic Heal, Magic Hostile Spell
-Affecting spells : Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
+Affecting spells : Discipline Priest (137032 effect#32), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17771,7 +17775,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150048)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1150204)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -19083,7 +19087,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 3556: Dark Energy (451018 effect#2)
-Affecting spells : Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
+Affecting spells : Discipline Priest (137032 effect#32), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
