@@ -758,12 +758,12 @@ public:
 
     struct colossus_talents_t
     {
-      player_talent_t demolish; // NYI
+      player_talent_t demolish;
       player_talent_t martial_expert;
       player_talent_t colossal_might;
       player_talent_t boneshaker; // NYI
       player_talent_t earthquaker;
-      player_talent_t one_against_many; // NYI
+      player_talent_t one_against_many;
       player_talent_t arterial_bleed;
       player_talent_t tide_of_battle;
       player_talent_t no_stranger_to_pain; // NYI
@@ -3095,6 +3095,18 @@ struct cleave_t : public warrior_attack_t
     return am;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -3137,7 +3149,7 @@ struct cleave_t : public warrior_attack_t
       }
     }
 
-    if ( execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
       p()->buff.colossal_might->trigger();
     }
@@ -5139,7 +5151,7 @@ struct revenge_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
 
-    if ( execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
       p()->buff.colossal_might->trigger();
     }
@@ -5167,6 +5179,18 @@ struct revenge_t : public warrior_attack_t
     am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5468,6 +5492,18 @@ struct shockwave_t : public warrior_attack_t
       p()->cooldown.shockwave->adjust(
           timespan_t::from_seconds( p()->talents.warrior.rumbling_earth->effectN( 2 ).base_value() ) );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5777,7 +5813,20 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
     }
+
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 
   double tactician_cost() const override
