@@ -757,8 +757,8 @@ public:
 
     struct colossus_talents_t
     {
-      player_talent_t demolish; // NYI
-      player_talent_t martial_expert; // NYI
+      player_talent_t demolish;
+      player_talent_t martial_expert;
       player_talent_t colossal_might; // NYI
       player_talent_t boneshaker; // NYI
       player_talent_t earthquaker; // NYI
@@ -9104,6 +9104,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   }
 
   // Colossus
+  action.apply_affecting_aura( talents.colossus.martial_expert );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
