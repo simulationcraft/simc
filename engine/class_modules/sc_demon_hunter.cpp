@@ -3329,8 +3329,11 @@ struct sigil_of_doom_t : public demonsurge_trigger_t<demonsurge_ability::SIGIL_O
   sigil_of_doom_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "sigil_of_doom", p, p->hero_spec.sigil_of_doom, options_str )
   {
-    sigil        = p->get_background_action<sigil_of_doom_damage_t>( "sigil_of_doom_damage", ground_aoe_duration );
-    sigil->stats = stats;
+    if ( p->hero_spec.sigil_of_doom_damage->ok() )
+    {
+      sigil        = p->get_background_action<sigil_of_doom_damage_t>( "sigil_of_doom_damage", ground_aoe_duration );
+      sigil->stats = stats;
+    }
 
     // Add damage modifiers in sigil_of_doom_damage_t, not here.
   }
@@ -7007,8 +7010,8 @@ void demon_hunter_t::create_buffs()
 
   buff.demon_soul           = make_buff( this, "demon_soul", spell.demon_soul );
   buff.empowered_demon_soul = make_buff( this, "empowered_demon_soul", spell.demon_soul_empowered );
-  buff.immolation_aura = make_buff<buffs::immolation_aura_buff_t>( this );
-  buff.metamorphosis   = make_buff<buffs::metamorphosis_buff_t>( this );
+  buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
+  buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
 
   // Havoc ==================================================================
 
@@ -7715,9 +7718,9 @@ void demon_hunter_t::init_spells()
   talent.demon_hunter.demon_muzzle     = find_talent_spell( talent_tree::CLASS, "Demon Muzzle" );
   talent.demon_hunter.flames_of_fury   = find_talent_spell( talent_tree::CLASS, "Flames of Fury" );
 
-  talent.demon_hunter.collective_anguish  = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
-  talent.demon_hunter.the_hunt            = find_talent_spell( talent_tree::CLASS, "The Hunt" );
-  talent.demon_hunter.sigil_of_spite      = find_talent_spell( talent_tree::CLASS, "Sigil of Spite" );
+  talent.demon_hunter.collective_anguish = find_talent_spell( talent_tree::CLASS, "Collective Anguish" );
+  talent.demon_hunter.the_hunt           = find_talent_spell( talent_tree::CLASS, "The Hunt" );
+  talent.demon_hunter.sigil_of_spite     = find_talent_spell( talent_tree::CLASS, "Sigil of Spite" );
 
   // Havoc Talents
 
@@ -7951,8 +7954,7 @@ void demon_hunter_t::init_spells()
   // Hero spec background spells
   hero_spec.reavers_glaive =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442294 ) : spell_data_t::not_found();
-  hero_spec.reavers_mark =
-      talent.aldrachi_reaver.reavers_mark->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
+  hero_spec.reavers_mark = talent.aldrachi_reaver.reavers_mark->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
   hero_spec.glaive_flurry =
       talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
   hero_spec.rending_strike =
@@ -8084,11 +8086,11 @@ void demon_hunter_t::init_spells()
   {
     auto relentless_onslaught_chaos_strike = get_background_action<chaos_strike_t>( "chaos_strike_onslaught" );
     relentless_onslaught_chaos_strike->from_onslaught = true;
-    active.relentless_onslaught = relentless_onslaught_chaos_strike;
+    active.relentless_onslaught                       = relentless_onslaught_chaos_strike;
 
     auto relentless_onslaught_annihilation = get_background_action<annihilation_t>( "annihilation_onslaught" );
     relentless_onslaught_annihilation->from_onslaught = true;
-    active.relentless_onslaught_annihilation = relentless_onslaught_annihilation;
+    active.relentless_onslaught_annihilation          = relentless_onslaught_annihilation;
   }
   if ( talent.havoc.inner_demon->ok() )
   {
