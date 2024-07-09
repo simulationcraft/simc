@@ -774,7 +774,7 @@ public:
       player_talent_t practiced_strikes;
       player_talent_t precise_might;
       player_talent_t mountain_of_muscle_and_scars;
-      player_talent_t dominance_of_the_colossus; // NYI
+      player_talent_t dominance_of_the_colossus;
     } colossus;
 
     struct slayer_talents_t
