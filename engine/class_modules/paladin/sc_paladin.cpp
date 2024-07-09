@@ -2078,7 +2078,7 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
     holy_power_consumer_t::execute();
     p()->trigger_empyrean_hammer(
         target, p()->talents.templar.lights_guidance->effectN( 2 ).base_value(),
-        travel_time() + timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
+        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
         true );
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
@@ -2113,7 +2113,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light_driver   = true;
     is_hammer_of_light          = true;
     direct_hammer               = new hammer_of_light_damage_t( p, options_str );
-    direct_hammer->travel_delay = p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() / 1000.0;
     add_child( direct_hammer );
     background = !p->talents.templar.lights_guidance->ok();
   }
@@ -2142,7 +2141,9 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    void execute() override
    {
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
-     direct_hammer->execute_on_target( execute_state->target );
+     direct_hammer->target = execute_state->target;
+     direct_hammer->start_action_execute_event(
+         timespan_t::from_millis( p()->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() ) );
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
@@ -2162,7 +2163,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
-      int targets = direct_hammer->execute_state->n_targets;
       int heal_percent_effect = p()->specialization() == PALADIN_RETRIBUTION ? 5 : 2;
       int additional_heal_per_target_effect = p()->specialization() == PALADIN_RETRIBUTION ? 6 : 3;
 
@@ -2170,7 +2170,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       double additional_heal_per_target =
           p()->talents.templar.sacrosanct_crusade->effectN( additional_heal_per_target_effect ).percent();
 
-      double modifier = heal_percent + targets * additional_heal_per_target;
+      double modifier = heal_percent + std::min(as<int>(p()->sim->target_non_sleeping_list.size()), 5) * additional_heal_per_target;
       double health   = p()->resources.max[ RESOURCE_HEALTH ] * modifier;
       p()->active.sacrosanct_crusade_heal->base_dd_min = p()->active.sacrosanct_crusade_heal->base_dd_max = health;
       p()->active.sacrosanct_crusade_heal->execute();

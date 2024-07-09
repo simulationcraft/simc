@@ -194,6 +194,7 @@ public:
 
 struct monk_spell_t : public monk_action_t<spell_t>
 {
+  using base_t = monk_action_t<spell_t>;
   monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
@@ -202,17 +203,20 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
 struct monk_heal_t : public monk_action_t<heal_t>
 {
+  using base_t = monk_action_t<heal_t>;
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double action_multiplier() const override;
 };
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
+  using base_t = monk_action_t<absorb_t>;
   monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
 };
 
 struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
+  using base_t = monk_action_t<melee_attack_t>;
   monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double action_multiplier() const override;
@@ -316,6 +320,65 @@ struct gift_of_the_ox_t : actions::monk_buff_t
   void reset();
 };
 
+struct aspect_of_harmony_t
+{
+private:
+  struct accumulator_t;
+  struct spender_t;
+  propagate_const<accumulator_t *> accumulator;
+  propagate_const<spender_t *> spender;
+
+  bool fallback;
+
+  struct accumulator_t : actions::monk_buff_t
+  {
+    propagate_const<buff_t *> spender;
+
+    accumulator_t( monk_t *player );
+    void trigger_with_state( action_state_t *state );
+  };
+
+  struct spender_t : actions::monk_buff_t
+  {
+    template <class base_action_t>
+    struct purified_spirit_t : base_action_t
+    {
+      propagate_const<spender_t *> spender;
+
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender );
+      void init() override;
+      void execute() override;
+    };
+
+    template <class base_action_t>
+    struct tick_t : residual_action::residual_periodic_action_t<base_action_t>
+    {
+      tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
+    };
+
+    propagate_const<action_t *> damage;
+    propagate_const<action_t *> heal;
+    propagate_const<action_t *> purified_spirit;
+    propagate_const<buff_t *> accumulator;
+
+    double pool;
+
+    spender_t( monk_t *player );
+    void reset() override;
+    bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
+                  timespan_t duration = timespan_t::min() ) override;
+    void trigger_with_state( action_state_t *state );
+  };
+
+public:
+  propagate_const<buff_t *> path_of_resurgence;
+  propagate_const<dot_t *> heal;
+
+  aspect_of_harmony_t( monk_t *player );
+  void trigger( action_state_t *state );
+  void trigger_flat( double amount );
+  void trigger_spend();
+};
 }  // namespace buffs
 
 inline int sef_spell_index( int x )
@@ -336,7 +399,7 @@ public:
     propagate_const<dot_t *> touch_of_karma;
 
     // Master of Harmony
-    propagate_const<dot_t *> coalescence;
+    propagate_const<dot_t *> aspect_of_harmony;
   } dot;
 
   struct debuff_t
@@ -639,6 +702,11 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
+
+    // Conduit of the Celestials
+
+    // Master of Harmony
+    buffs::aspect_of_harmony_t *aspect_of_harmony;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -1154,6 +1222,7 @@ public:
     {
       // Row 1
       player_talent_t aspect_of_harmony;
+      const spell_data_t *aspect_of_harmony_driver;
       const spell_data_t *aspect_of_harmony_accumulator;
       const spell_data_t *aspect_of_harmony_spender;
       const spell_data_t *aspect_of_harmony_damage;
@@ -1161,6 +1230,8 @@ public:
       // Row 2
       player_talent_t manifestation;
       player_talent_t purified_spirit;
+      const spell_data_t *purified_spirit_damage;
+      const spell_data_t *purified_spirit_heal;
       player_talent_t harmonic_gambit;
       player_talent_t balanced_strategem;
       // Row 3
@@ -1171,6 +1242,7 @@ public:
       player_talent_t mantra_of_tenacity;
       // Row 4
       player_talent_t overwhelming_force;
+      const spell_data_t *overwhelming_force_damage;
       player_talent_t path_of_resurgence;
       player_talent_t way_of_a_thousand_strikes;
       player_talent_t clarity_of_purpose;
@@ -1478,4 +1550,5 @@ struct sef_despawn_cb_t
 
   void operator()( player_t * );
 };
+
 }  // namespace monk

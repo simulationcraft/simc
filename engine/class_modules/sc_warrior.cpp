@@ -290,6 +290,7 @@ public:
     buff_t* conquerors_mastery;
 
     // Colossus
+    buff_t* colossal_might;
 
     // Slayer
     buff_t* imminent_demise;
@@ -759,12 +760,12 @@ public:
     {
       player_talent_t demolish;
       player_talent_t martial_expert;
-      player_talent_t colossal_might; // NYI
+      player_talent_t colossal_might;
       player_talent_t boneshaker; // NYI
-      player_talent_t earthquaker; // NYI
-      player_talent_t one_against_many; // NYI
-      player_talent_t arterial_bleed; // NYI
-      player_talent_t tide_of_battle; // NYI
+      player_talent_t earthquaker;
+      player_talent_t one_against_many;
+      player_talent_t arterial_bleed;
+      player_talent_t tide_of_battle;
       player_talent_t no_stranger_to_pain; // NYI
       player_talent_t veteran_vitality; // NYI
       player_talent_t practiced_strikes; // NYI
@@ -1081,6 +1082,15 @@ public:
     parse_effects( p()->buff.juggernaut_prot );
 
     // Colossus
+    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ) );
+    if ( p()->talents.colossus.arterial_bleed->ok() )
+    {
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ) );
+    }
+    if ( p()->talents.colossus.tide_of_battle->ok() )
+    {
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
+    }
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -2252,6 +2262,15 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   bool ready() override
@@ -2571,6 +2590,11 @@ struct mortal_strike_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      p()->buff.colossal_might->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2713,15 +2737,29 @@ struct bladestorm_t : public warrior_attack_t
     p()->buff.bladestorm->trigger();
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto new_dot_duration = warrior_attack_t::composite_dot_duration( s );
+
+    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    {
+      new_dot_duration = tick_time( s ) * ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() );
+    }
+
+    return new_dot_duration;
+  }
+
   timespan_t tick_time ( const action_state_t* s ) const override
   {
-    auto base_tick_time = warrior_attack_t::tick_time( s );
+    auto new_base_tick_time = warrior_attack_t::tick_time( s );
 
     // Normally we get 6 ticks of bladestorm, but with imminent demise, we get 1-3 extra ticks, in the same amount of time
     if ( p() -> talents.slayer.imminent_demise->ok() )
-      base_tick_time *= ( 6.0 / ( 6.0 + p() -> buff.imminent_demise -> stack() ) );
+    {
+      new_base_tick_time *= ( dot_duration.total_seconds() / ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() ) );
+    }
 
-    return base_tick_time;
+    return new_base_tick_time;
   }
 
   void tick( dot_t* d ) override
@@ -3057,6 +3095,18 @@ struct cleave_t : public warrior_attack_t
     return am;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -3097,6 +3147,11 @@ struct cleave_t : public warrior_attack_t
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
       }
+    }
+
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    {
+      p()->buff.colossal_might->trigger();
     }
   }
 };
@@ -3630,6 +3685,11 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      p()->buff.colossal_might->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4412,6 +4472,11 @@ struct crushing_blow_t : public warrior_attack_t
     {
       p()->buff.slaughtering_strikes->trigger();
     }
+
+    if ( p()->talents.fury.bloodcraze->ok() )
+    {
+      p()->buff.bloodcraze->trigger();
+    }
   }
 
   bool ready() override
@@ -5085,6 +5150,11 @@ struct revenge_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
+
+    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    {
+      p()->buff.colossal_might->trigger();
+    }
   }
 
   bool ready() override
@@ -5109,6 +5179,18 @@ struct revenge_t : public warrior_attack_t
     am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5360,6 +5442,11 @@ struct shield_slam_t : public warrior_attack_t
     p() -> buff.meat_cleaver->decrement();
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
+
+    if ( p()->talents.colossus.colossal_might->ok() )
+    {
+      p()->buff.colossal_might->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5405,6 +5492,18 @@ struct shockwave_t : public warrior_attack_t
       p()->cooldown.shockwave->adjust(
           timespan_t::from_seconds( p()->talents.warrior.rumbling_earth->effectN( 2 ).base_value() ) );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 };
 
@@ -5714,7 +5813,20 @@ struct whirlwind_arms_damage_t : public warrior_attack_t
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
     }
+
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
   }
 
   double tactician_cost() const override
@@ -5843,6 +5955,7 @@ struct wrecking_throw_t : public warrior_attack_t
     : warrior_attack_t( "wrecking_throw", p, p->talents.warrior.wrecking_throw )
   {
     parse_options( options_str );
+    may_crit = may_parry = may_dodge = may_block = false;
     weapon = &( player->main_hand_weapon );
     attack_power_mod.direct = 1.0;
   }
@@ -7833,6 +7946,7 @@ void warrior_t::create_buffs()
                            ->set_default_value( talents.protection.unnerving_focus -> effectN( 1 ).percent() );
 
   // Colossus
+  buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
@@ -9105,6 +9219,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   // Colossus
   action.apply_affecting_aura( talents.colossus.martial_expert );
+  action.apply_affecting_aura( talents.colossus.earthquaker );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );

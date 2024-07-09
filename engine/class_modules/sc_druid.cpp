@@ -13029,7 +13029,7 @@ void eclipse_handler_t::init()
   }
 
   wrath_counter_base = wrath_counter = p->find_spell( 326055 )->max_stacks();
-  starfire_counter_base = starfire_counter = p->find_spell( 326056 )->max_stacks();
+  starfire_counter_base = starfire_counter = p->find_spell( 326053 )->max_stacks();
 
   uptimes[ 0 ] = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
   uptimes[ eclipse_e::LUNAR ] = p->get_uptime( "Eclipse Lunar" )->collect_uptime( *p->sim );

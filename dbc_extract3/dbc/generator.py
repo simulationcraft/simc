@@ -2038,6 +2038,7 @@ class SpellDataGenerator(DataGenerator):
           ( 424120, 0 ),                            # Glacial Blast
           ( 461508, 0 ),                            # Energy Reconstitution AE
           ( 438671, 0 ), ( 438672, 0 ), ( 438674, 0 ), # Excess Fire LB
+          ( 460475, 0 ), ( 460476, 0 ),             # Pyromaniac Pyroblast and Flamestrike
         ),
 
         # Warlock:
