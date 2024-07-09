@@ -1309,8 +1309,7 @@ struct icy_veins_t final : public buff_t
     p->buffs.deaths_chill->expire();
     p->buffs.slick_ice->expire();
 
-    // Icy Veins from TA doesn't need the IV talent and the pet might be nullptr
-    if ( p->pets.water_elemental && !p->pets.water_elemental->is_sleeping() )
+    if ( !p->pets.water_elemental->is_sleeping() )
       p->pets.water_elemental->dismiss();
   }
 };
@@ -2894,7 +2893,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       background = true;
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0;
-      triggers.clearcasting = TO_ALWAYS;
     }
   }
 
@@ -3186,10 +3184,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
-
-    // AE Echo seems to also trigger CC, despite being a background action.
-    if ( type == ae_type::ECHO )
-      triggers.clearcasting = TO_ALWAYS;
 
     if ( type == ae_type::NORMAL )
     {
@@ -4454,7 +4448,6 @@ struct frostbolt_t final : public frost_mage_spell_t
     fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = ( 1.0 + ft->effectN( 2 ).percent() ) * p->talents.brain_freeze->effectN( 1 ).percent();
 
-    // TODO: this is currently a flat mod, almost surely a bug
     fractured_frost_mul = p->find_spell( 378445 )->effectN( 3 ).percent();
 
     if ( p->spec.icicles->ok() )
@@ -5196,19 +5189,12 @@ struct icy_veins_t final : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
-    p()->buffs.frigid_empowerment->expire();
-    // TODO: refreshing IV currently breaks Death's chill and no further stacks can be gained
-    p()->buffs.deaths_chill->expire();
-    p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
     if ( p()->talents.flash_freezeburn.ok() )
       p()->buffs.frostfire_empowerment->execute();
-
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon();
-    else if ( p()->bugs )
-      p()->pets.water_elemental->dismiss();
   }
 };
 
@@ -6580,7 +6566,6 @@ struct flame_accelerant_event_t final : public mage_event_t
   {
     mage->events.flame_accelerant = nullptr;
     mage->buffs.flame_accelerant->trigger();
-
     mage->events.flame_accelerant = make_event<flame_accelerant_event_t>( sim(), *mage, mage->talents.flame_accelerant->effectN( 1 ).period() );
   }
 };
@@ -6685,6 +6670,8 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
             if ( mage->talents.flash_freezeburn.ok() )
               mage->buffs.frostfire_empowerment->execute();
+            if ( mage->pets.water_elemental->is_sleeping() )
+              mage->pets.water_elemental->summon();
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
@@ -7119,7 +7106,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) )
+  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) || specialization() == MAGE_FROST && talents.time_anomaly.ok() )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )
@@ -7592,6 +7579,7 @@ void mage_t::create_buffs()
   buffs.firefall_ready           = make_buff( this, "firefall_ready", find_spell( 384038 ) );
   buffs.flame_accelerant         = make_buff( this, "flame_accelerant", find_spell( 453283 ) )
                                      ->set_default_value_from_effect( 2 )
+                                     ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )

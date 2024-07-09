@@ -1597,6 +1597,7 @@ class SpellDataGenerator(DataGenerator):
             ( 434255 , 0),          # Blessing of the Forge related buff
             ( 447258 , 0),          # Blessing of the Forge Forge's Reckoning - SotR trigger
             ( 447246 , 0),          # Blessing of the Forge's Sacred Word - WoG trigger
+            ( 432472 , 0),          # Sacred Weapon Driver
             ( 441590 , 0),          # Sacred Weapon healing
             ( 432607 , 0),          # Holy Bulwark shield
             ( 431910 , 0),          # Sun's Avatar buff, healing buff

@@ -2428,7 +2428,6 @@ public:
 
   druid_attack_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : ab( n, p, s, f )
   {
-    ab::may_glance = false;
     ab::special = true;
 
     for ( const auto& e : ab::data().effects() )
@@ -3351,7 +3350,6 @@ struct druid_interrupt_t : public druid_spell_t
 {
   druid_interrupt_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = harmful = false;
     ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
@@ -3903,7 +3901,6 @@ struct adaptive_swarm_t final : public cat_attack_t
     adaptive_swarm_heal_t( druid_t* p ) : healing_swarm_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
     {
       quiet = heal = true;
-      harmful = may_miss = false;
 
       parse_effect_period( data().effectN( 1 ) );
     }
@@ -4407,8 +4404,9 @@ struct lunar_inspiration_t final : public cp_generator_t
   DRUID_ABILITY( lunar_inspiration_t, cp_generator_t, "lunar_inspiration",
                  p->talent.lunar_inspiration.ok() ? p->find_spell( 155625 ) : spell_data_t::not_found() )
   {
-    may_dodge = may_parry = may_block = may_glance = false;
-    gcd_type      = gcd_haste_type::ATTACK_HASTE;
+    may_dodge = may_parry = may_block = false;
+    // LI is a spell, but we parent to cp_generator_t to get all the proper cat attack methods.
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
     s_data_reporting = p->talent.lunar_inspiration;
     dot_name = "lunar_inspiration";
@@ -4422,6 +4420,34 @@ struct lunar_inspiration_t final : public cp_generator_t
       return;
 
     cp_generator_t::trigger_dot( s );
+  }
+
+  double composite_haste() const override
+  {
+    // directly call action_t::composite_haste(), as there are no intervening overrides
+    return action_t::composite_haste() * p()->cache.spell_cast_speed();
+  }
+
+  double composite_crit_chance() const override
+  {
+    // duplicate parse_action_effects_t::composite_crit_chance() using spell_t as base
+    auto cc = action_t::composite_crit_chance() + p()->cache.spell_crit_chance();
+
+    for ( const auto& i : crit_chance_effects )
+      cc += get_effect_value( i );
+
+    return cc;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    // duplicate parse_action_effects_t::composite_crit_chance_multiplier() using spell_t as base
+    auto ccm = action_t::composite_crit_chance_multiplier() * p()->composite_spell_crit_chance_multiplier();
+
+    for ( const auto& i : crit_chance_multiplier_effects )
+      ccm *= 1.0 + get_effect_value( i );
+
+    return ccm;
   }
 };
 
@@ -4994,7 +5020,6 @@ struct growl_t final : public bear_attack_t
   DRUID_ABILITY( growl_t, bear_attack_t, "growl", p->find_class_spell( "Growl" ) )
   {
     ignore_false_positive = use_off_gcd = true;
-    may_miss = may_parry = may_dodge = may_block = false;
   }
 
   void impact( action_state_t* s ) override
@@ -5064,7 +5089,7 @@ struct ironfur_t final : public rage_spender_t<>
     lm_chance( p->talent.layered_mane->effectN( 1 ).percent() )
   {
     use_off_gcd = true;
-    harmful = may_miss = may_parry = may_dodge = false;
+    harmful = may_miss = may_dodge = may_parry = may_block = false;
 
     if ( p->talent.thorns_of_iron.ok() )
       thorns = p->get_secondary_action<thorns_of_iron_t>( "thorns_of_iron", f );
@@ -5328,7 +5353,7 @@ struct rage_of_the_sleeper_t final : public bear_attack_t
 
   DRUID_ABILITY( rage_of_the_sleeper_t, bear_attack_t, "rage_of_the_sleeper", p->talent.rage_of_the_sleeper )
   {
-    harmful = may_miss = may_parry = may_dodge = false;
+    harmful = may_miss = may_dodge = may_parry = may_block = false;
 
     if ( data().ok() )
     {
@@ -8974,7 +8999,7 @@ struct druid_melee_t : public Base
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
-    ab::may_crit = ab::may_glance = ab::background = ab::repeating = true;
+    ab::may_crit = ab::background = ab::repeating = true;
     ab::allow_class_ability_procs = ab::not_a_proc = true;
     ab::school = SCHOOL_PHYSICAL;
     ab::trigger_gcd = 0_ms;

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "attack.hpp"
+
 #include "action_state.hpp"
 #include "dbc/spell_data.hpp"
 #include "player/player.hpp"
@@ -17,22 +18,24 @@
 // Attack
 // ==========================================================================
 
-attack_t::attack_t( util::string_view n, player_t* p )
-  : attack_t(n, p, spell_data_t::nil())
-{
-
-}
+attack_t::attack_t( util::string_view n, player_t* p ) : attack_t( n, p, spell_data_t::nil() ) {}
 
 attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
-  : action_t( ACTION_ATTACK, n, p, s ),
-    base_attack_expertise( 0 ),
-    attack_table()
+  : action_t( ACTION_ATTACK, n, p, s ), base_attack_expertise( 0 ), attack_table()
 {
   crit_bonus = 1.0;
-  special = true; // Make sure to set this to false with autoattacks. 
+  special = true;  // Make sure to set this to false with autoattacks.
 
   weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;
-  min_gcd          = p->min_gcd;
+  min_gcd = p->min_gcd;
+
+  // dodge/parry/block are true by default for attacks unless corresponding flag is set
+  if ( data().ok() && !data().flags( spell_attribute::SX_NO_D_P_B ) )
+  {
+    may_dodge = !data().flags( spell_attribute::SX_NO_DODGE );
+    may_parry = !data().flags( spell_attribute::SX_NO_PARRY );
+    may_block = !data().flags( spell_attribute::SX_NO_BLOCK );
+  }
 }
 
 void attack_t::execute()
@@ -131,7 +134,7 @@ double attack_t::block_chance( action_state_t* s ) const
   double block = s->target->cache.block();
 
   // add or subtract 1.5% per level difference -- Level difference does not seem to matter anymore.
-  //block += ( s->target->level() - player->level() ) * 0.015;
+  // block += ( s->target->level() - player->level() ) * 0.015;
 
   return block;
 }
@@ -165,7 +168,7 @@ double attack_t::action_multiplier() const
 {
   double mul = action_t::action_multiplier();
 
-  if (!special)
+  if ( !special )
   {
     mul *= player->auto_attack_multiplier;
   }
@@ -173,11 +176,11 @@ double attack_t::action_multiplier() const
   return mul;
 }
 
-double attack_t::composite_target_multiplier(player_t* target) const
+double attack_t::composite_target_multiplier( player_t* target ) const
 {
-  double mul = action_t::composite_target_multiplier(target);
+  double mul = action_t::composite_target_multiplier( target );
 
-  mul *= composite_target_damage_vulnerability(target);
+  mul *= composite_target_damage_vulnerability( target );
 
   return mul;
 }
@@ -207,19 +210,16 @@ double attack_t::composite_expertise() const
   return base_attack_expertise + player->cache.attack_expertise();
 }
 
-double attack_t::composite_versatility(const action_state_t* state) const
+double attack_t::composite_versatility( const action_state_t* state ) const
 {
-  return action_t::composite_versatility(state) + player->cache.damage_versatility();
+  return action_t::composite_versatility( state ) + player->cache.damage_versatility();
 }
 
-void attack_t::attack_table_t::build_table( double miss_chance,
-                                            double dodge_chance,
-                                            double parry_chance,
-                                            double glance_chance,
-                                            double crit_chance, sim_t* sim )
+void attack_t::attack_table_t::build_table( double miss_chance, double dodge_chance, double parry_chance,
+                                            double glance_chance, double crit_chance, sim_t* sim )
 {
-  sim->print_debug("attack_t::build_table: miss={} dodge={} parry={} glance={} crit={}",
-        miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
+  sim->print_debug( "attack_t::build_table: miss={} dodge={} parry={} glance={} crit={}", miss_chance, dodge_chance,
+                    parry_chance, glance_chance, crit_chance );
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
@@ -239,7 +239,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += miss_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_MISS;
     num_results++;
@@ -248,7 +249,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += dodge_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_DODGE;
     num_results++;
@@ -257,7 +259,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += parry_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_PARRY;
     num_results++;
@@ -266,7 +269,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += glance_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_GLANCE;
     num_results++;
@@ -275,7 +279,8 @@ void attack_t::attack_table_t::build_table( double miss_chance,
   {
     total += crit_chance;
     if ( total > limit )
-      total                = limit;
+      total = limit;
+
     chances[ num_results ] = total;
     results[ num_results ] = RESULT_CRIT;
     num_results++;
@@ -298,21 +303,15 @@ result_e attack_t::calculate_result( action_state_t* s ) const
   int delta_level = s->target->level() - player->level();
 
   double miss = may_miss ? miss_chance( composite_hit(), s->target ) : 0;
-  double dodge =
-      may_dodge ? dodge_chance( composite_expertise(), s->target ) : 0;
-  double parry = may_parry && player->position() == POSITION_FRONT
-                     ? parry_chance( composite_expertise(), s->target )
-                     : 0;
-  double crit = may_crit ? std::max( s->composite_crit_chance() +
-                                         s->target->cache.crit_avoidance(),
-                                     0.0 )
-                         : 0;
+  double dodge = may_dodge ? dodge_chance( composite_expertise(), s->target ) : 0;
+  double parry =
+    may_parry && player->position() == POSITION_FRONT ? parry_chance( composite_expertise(), s->target ) : 0;
+  double crit = may_crit ? std::max( s->composite_crit_chance() + s->target->cache.crit_avoidance(), 0.0 ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks
 
-  attack_table.build_table( miss, dodge, parry,
-                            may_glance ? glance_chance( delta_level ) : 0.0,
+  attack_table.build_table( miss, dodge, parry, may_glance ? glance_chance( delta_level ) : 0.0,
                             !special ? std::min( 1.0, crit ) : 0.0, sim );
 
   if ( attack_table.num_results == 1 )
@@ -347,14 +346,6 @@ result_e attack_t::calculate_result( action_state_t* s ) const
   return result;
 }
 
-void attack_t::init()
-{
-  action_t::init();
-
-  if ( special )
-    may_glance = false;
-}
-
 double attack_t::recharge_multiplier( const cooldown_t& cd ) const
 {
   double m = action_t::recharge_multiplier( cd );
@@ -380,8 +371,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   if ( execute_event && execute_event->remains() > timespan_t::zero() )
   {
     timespan_t time_to_hit = execute_event->occurs() - sim->current_time();
-    timespan_t new_time_to_hit =
-        time_to_hit * player->cache.auto_attack_speed() / old_swing_haste;
+    timespan_t new_time_to_hit = time_to_hit * player->cache.auto_attack_speed() / old_swing_haste;
 
     if ( time_to_hit == new_time_to_hit )
     {
@@ -415,18 +405,10 @@ void attack_t::reset()
 // Melee Attack
 // ==========================================================================
 
-melee_attack_t::melee_attack_t( util::string_view n, player_t* p )
-  : melee_attack_t(n, p, spell_data_t::nil())
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p ) : melee_attack_t( n, p, spell_data_t::nil() ) {}
+
+melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s ) : attack_t( n, p, s )
 {
-
-}
-
-melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s )
-  : attack_t( n, p, s )
-{
-  // Dodge/parry/block handled in action_t::parse_spell_data()
-  may_miss = may_glance = true;
-
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 )
     range = 5;
@@ -436,8 +418,8 @@ void melee_attack_t::init()
 {
   attack_t::init();
 
-  if ( special )
-    may_glance = false;
+  if ( !special )
+    may_glance = true;
 }
 
 double melee_attack_t::parry_chance( double expertise, player_t* t ) const
@@ -502,15 +484,14 @@ proc_types melee_attack_t::proc_type() const
 // ==========================================================================
 
 ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p )
-  : ranged_attack_t(token, p, spell_data_t::nil())
-{
-}
+  : ranged_attack_t( token, p, spell_data_t::nil() )
+{}
 
 ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p, const spell_data_t* s )
   : attack_t( token, p, s )
 {
-  may_miss  = true;
-  may_dodge = true;
+  // ranged attacks cannot be blocked or parried
+  may_block = may_parry = false;
 }
 
 // Ranged attacks are identical to melee attacks, but cannot be parried or dodged.
@@ -545,19 +526,14 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
       player->queueing = nullptr;
     }
 
-    player->executing      = this;
-    player->gcd_ready      = sim->current_time() + gcd();
+    player->executing = this;
+    player->gcd_ready = sim->current_time() + gcd();
     player->gcd_type = gcd_type;
     switch ( gcd_type )
     {
-    case gcd_haste_type::SPELL_HASTE:
-        player->gcd_current_haste_value = player->cache.spell_haste();
-        break;
-      case gcd_haste_type::ATTACK_HASTE:
-        player->gcd_current_haste_value = player->cache.attack_haste();
-        break;
-      default:
-        break;
+      case gcd_haste_type::SPELL_HASTE:  player->gcd_current_haste_value = player->cache.spell_haste(); break;
+      case gcd_haste_type::ATTACK_HASTE: player->gcd_current_haste_value = player->cache.attack_haste(); break;
+      default:                           break;
     }
 
     if ( player->action_queued && sim->strict_gcd_queue )
