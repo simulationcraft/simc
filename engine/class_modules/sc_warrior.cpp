@@ -5110,7 +5110,7 @@ struct ravager_t : public warrior_attack_t
     ravager->execute();
 
     // As of TWW Unhinged procs on the even ticks
-    if ( mortal_strike && ( d->current_tick % 2 == 0 ) )
+    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 2 == 0 ) )
     {
       // Select main target for unhinged, if no target, or target is dead, select a random target
       auto t = p() -> target;
