@@ -4794,7 +4794,7 @@ void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_
         "<th colspan=\"3\">Seconds per Iteration</th>\n"
         "</tr>\n"
         "<tr>\n"
-        "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+        "<th class=\"toggle-sort left\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
         "<th class=\"toggle-sort\">Average</th>\n"
         "<th class=\"toggle-sort\">Minimum</th>\n"
         "<th class=\"toggle-sort\">Maximum</th>\n"

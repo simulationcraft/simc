@@ -327,7 +327,7 @@ struct convoke_counter_t
   void print_table( report::sc_html_stream& os )
   {
     os << R"(<h3 class="toggle open">Convoke Counter</h3><div class="toggle-content"><table class="sc sort even">)"
-       << R"(<thead><tr><th class="toggle-sort" data-sorttype="alpha">Ability</th>)"
+       << R"(<thead><tr><th class="toggle-sort left" data-sorttype="alpha">Ability</th>)"
        << R"(<th class="toggle-sort">Avg</th>)"
        << R"(<th class="toggle-sort">Min</th>)"
        << R"(<th class="toggle-sort">Max</th>)"
@@ -349,8 +349,9 @@ struct convoke_counter_t
       auto& sample = data.at( a );
       auto token = highchart::build_id( p, "_" + a->name_str + "_conv_counter" );
 
-      os.format( R"(<tbody><tr><td class="left"><span id="{}_toggle" class="toggle-details">{}</span></td>)",
-                 token, report_decorators::decorated_action( *a ) );
+      os.format(
+        R"(<tbody><tr class="right"><td class="left"><span id="{}_toggle" class="toggle-details">{}</span></td>)",
+        token, report_decorators::decorated_action( *a ) );
 
       os.format( "<td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td><td>{:.2f}</td>\n",
                  sample.mean(), sample.min(), sample.max(), sample.std_dev, sample.variance );
@@ -13361,11 +13362,8 @@ void eclipse_handler_t::print_table( report::sc_html_stream& os )
   if ( !enabled() ) return;
 
   os << R"(<h3 class="toggle open">Eclipse Utilization</h3><div class="toggle-content"><table class="sc even">)"
-     << "<thead><tr><th>Ability</th>"
-     << "<th colspan=\"2\">None</th>"
-     << "<th colspan=\"2\">Solar</th>"
-     << "<th colspan=\"2\">Lunar</th>"
-     << "<th colspan=\"2\">Both</th>"
+     << R"(<thead><tr><th class="left">Ability</th>)"
+     << R"(<th colspan="2">None</th><th colspan="2">Solar</th><th colspan="2">Lunar</th><th colspan="2">Both</th>)"
      << "</tr></thead>";
 
   print_line( os, p->spec.wrath, *data.wrath );
@@ -13393,17 +13391,12 @@ void eclipse_handler_t::print_line( report::sc_html_stream& os, const spell_data
   if ( !total )
     return;
 
-  os.format(
-    "<tr><td class=\"left\">{}</td>"
-    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td>"
-    "<td class=\"right\">{:.2f}</td><td class=\"right\">{:.1f}%</td></tr>",
-    report_decorators::decorated_spell_data( *p->sim, spell ),
-    none / iter, none / total * 100,
-    solar / iter, solar / total * 100,
-    lunar / iter, lunar / total * 100,
-    both / iter, both / total * 100 );
+  os.format( R"(<tr class="right"><td class="left">{}</td>)"
+             R"(<td>{:.2f}</td><td>{:.1f}%</td><td>{:.2f}</td><td>{:.1f}%</td>)"
+             R"(<td>{:.2f}</td><td>{:.1f}%</td><td>{:.2f}</td><td>{:.1f}%</td></tr>)",
+             report_decorators::decorated_spell_data( *p->sim, spell ),
+             none / iter, none / total * 100, solar / iter, solar / total * 100,
+             lunar / iter, lunar / total * 100, both / iter, both / total * 100 );
 }
 
 void druid_t::copy_from( player_t* source )
@@ -13828,7 +13821,7 @@ public:
 
   void html_customsection( report::sc_html_stream& os ) override
   {
-    os << "<div class=\"player-section custom_section\">\n";
+    os << R"(<div class="player-section custom_section">)";
 
     if ( p.specialization() == DRUID_FERAL )
       feral_snapshot_table( os );
@@ -13870,28 +13863,21 @@ public:
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-    os << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
-       << "<div class=\"toggle-content\">\n"
-       << "<table class=\"sc sort even\">\n"
-       << "<thead><tr><th></th>\n"
-       << "<th colspan=\"2\">Tiger's Fury</th>\n";
+    os << R"(<h3 class="toggle open">Snapshot Table</h3><div class="toggle-content"><table class="sc sort even">)"
+       << R"(<thead><tr><th></th><th colspan="2">Tiger's Fury</th>)";
 
     if ( p.talent.bloodtalons.ok() )
-    {
-      os << "<th colspan=\"2\">Bloodtalons</th>\n";
-    }
+      os << R"(<th colspan="2">Bloodtalons</th>)";
+
     os << "</tr>\n";
 
     os << "<tr>\n"
-       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability Name</th>\n"
-       << "<th class=\"toggle-sort\">Execute %</th>\n"
-       << "<th class=\"toggle-sort\">Benefit %</th>\n";
+       << R"(<th class="toggle-sort left" data-sortdir="asc" data-sorttype="alpha">Ability</th>)"
+       << R"(<th class="toggle-sort">Execute %</th><th class="toggle-sort">Benefit %</th>)";
 
     if ( p.talent.bloodtalons.ok() )
-    {
-      os << "<th class=\"toggle-sort\">Execute %</th>\n"
-         << "<th class=\"toggle-sort\">Benefit %</th>\n";
-    }
+      os << R"(<th class="toggle-sort">Execute %</th><th class="toggle-sort">Benefit %</th>)";
+
     os << "</tr></thead>\n";
 
     std::vector<feral_counter_data_t> data_list;
@@ -13949,11 +13935,11 @@ public:
 
     for ( const auto& data : data_list )
     {
-      os.format( R"(<tr><td class="left">{}</td><td class="right">{:.2f}%</td><td class="right">{:.2f}%</td>)",
+      os.format( R"(<tr class="right"><td class="left">{}</td><td>{:.2f}%</td><td>{:.2f}%</td>)",
                  report_decorators::decorated_action( *data.action ), data.tf_exe * 100, data.tf_tick * 100 );
 
       if ( p.talent.bloodtalons.ok() )
-        os.format( R"(<td class="right">{:.2f}%</td><td class="right">{:.2f}</td>)", data.bt_exe * 100, data.bt_tick * 100 );
+        os.format( "<td>{:.2f}%</td><td>{:.2f}</td>", data.bt_exe * 100, data.bt_tick * 100 );
 
       os << "</tr>\n";
     }
