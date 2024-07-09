@@ -768,7 +768,7 @@ public:
       player_talent_t tide_of_battle;
       player_talent_t no_stranger_to_pain;
       player_talent_t veteran_vitality; // NYI
-      player_talent_t practiced_strikes; // NYI
+      player_talent_t practiced_strikes;
       player_talent_t precise_might; // NYI
       player_talent_t mountain_of_muscle_and_scars; // NYI
       player_talent_t dominance_of_the_colossus; // NYI
@@ -9225,6 +9225,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Colossus
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
+  action.apply_affecting_aura( talents.colossus.practiced_strikes );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
