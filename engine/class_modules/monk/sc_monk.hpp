@@ -498,6 +498,8 @@ public:
     propagate_const<action_t *> courage_of_the_white_tiger;
     propagate_const<action_t *> flight_of_the_red_crane_damage;
     propagate_const<action_t *> flight_of_the_red_crane_heal;
+    propagate_const<action_t *> flight_of_the_red_crane_celestial_damage;
+    propagate_const<action_t *> flight_of_the_red_crane_celestial_heal;
     propagate_const<action_t *> strength_of_the_black_ox_dmg;
     propagate_const<action_t *> strength_of_the_black_ox_absorb;
 
@@ -726,6 +728,7 @@ public:
     propagate_const<buff_t *> inner_compass_tiger_stance;
     propagate_const<buff_t *> jade_sanctuary;
     propagate_const<buff_t *> strength_of_the_black_ox;
+    propagate_const<buff_t *> unity_within;
 
     // Master of Harmony
     buffs::aspect_of_harmony_t *aspect_of_harmony;
@@ -1131,6 +1134,7 @@ public:
       player_talent_t yulons_whisper;
       player_talent_t mist_wrap;
       player_talent_t refreshing_jade_wind;
+      const spell_data_t *refreshing_jade_wind_tick;
       player_talent_t celestial_harmony;
       player_talent_t dancing_mists;
       player_talent_t chi_harmony;
@@ -1332,6 +1336,7 @@ public:
       player_talent_t august_dynasty;
       // Row 5
       player_talent_t unity_within;
+      const spell_data_t *unity_within_dmg_mult;
     } conduit_of_the_celestials;
   } talent;
 
