@@ -3382,20 +3382,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
     }
-
-    double composite_crit_chance() const override
-    {
-      double cc = drw_action_t::composite_crit_chance();
-
-      // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
-      if ( dk()->bugs && dk()->talent.sanlayn.sanguine_scent.ok() &&
-          dk()->target->health_percentage() <= dk()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
-      {
-        cc = 1.0;
-      }
-
-      return cc;
-    }
   };
 
   struct marrowrend_t : public drw_action_t<melee_attack_t>
@@ -9019,20 +9005,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
     }
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = heart_strike_base_t::composite_crit_chance();
-
-    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
-    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
-         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
-    {
-      cc = 1.0;
-    }
-
-    return cc;
-  }
-
   void execute() override
   {
     heart_strike_base_t::execute();
@@ -10085,20 +10057,6 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     {
       p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = wound_spender_base_t::composite_crit_chance();
-
-    // Sanguine Scent currently makes Vampiric Strike always crit when in execute range... for some reason
-    if ( p()->bugs && p()->talent.sanlayn.sanguine_scent.ok() &&
-         p()->target->health_percentage() <= p()->talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
-    {
-      cc = 1.0;
-    }
-
-    return cc;
   }
 
   void impact( action_state_t* s ) override
