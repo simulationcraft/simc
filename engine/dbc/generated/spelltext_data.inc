@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55522
-static const std::array<spelltext_data_t, 26208> __spelltext_data { {
+static const std::array<spelltext_data_t, 26209> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26162,6 +26162,7 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
+  { 462661, "Blessed by the void, increases critical chance by $s1% for $d.", "Critical-hit chance increased by $s1%.", 0 },
   { 462695, "Your next Chain Lightning or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest, ][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
