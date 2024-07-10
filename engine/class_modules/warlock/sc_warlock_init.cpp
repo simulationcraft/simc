@@ -169,6 +169,8 @@ namespace warlock
 
     talents.oblivion = find_talent_spell( talent_tree::SPECIALIZATION, "Oblivion" ); // Should be ID 417537
 
+    talents.deaths_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Embrace" ); // Should be ID 453189
+
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
 

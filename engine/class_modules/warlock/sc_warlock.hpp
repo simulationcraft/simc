@@ -233,7 +233,7 @@ public:
     player_talent_t improved_malefic_rapture;
 
     player_talent_t oblivion;
-    player_talent_t deaths_embrace; // TODO: New
+    player_talent_t deaths_embrace; // TOCHECK: Volatile Agony/Perpetual Unstability affected?
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;
     player_talent_t ravenous_afflictions; // TODO: New
@@ -429,7 +429,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
