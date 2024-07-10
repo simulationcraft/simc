@@ -704,6 +704,9 @@ public:
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
+    propagate_const<buff_t *> celestial_conduit;
+    propagate_const<buff_t *> heart_of_the_jade_serpent;
+    propagate_const<buff_t *> strength_of_the_ox;
 
     // Master of Harmony
     buffs::aspect_of_harmony_t *aspect_of_harmony;
@@ -1282,6 +1285,8 @@ public:
     {
       // Row 1
       player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_dmg;
+      const spell_data_t *celestial_conduit_heal;
       // Row 2
       player_talent_t temple_training;
       player_talent_t xuens_guidance;
@@ -1291,7 +1296,10 @@ public:
       // Row 3
       player_talent_t heart_of_the_jade_serpent;
       player_talent_t strength_of_the_black_ox;
+      const spell_data_t *strength_of_the_black_ox_absorb;
+      const spell_data_t *strength_of_the_black_ox_damage;
       player_talent_t flight_of_the_red_crane;
+      const spell_data_t *flight_of_the_red_crane_celestial;
       // Row 4
       player_talent_t niuzaos_protection;
       player_talent_t jade_sanctuary;

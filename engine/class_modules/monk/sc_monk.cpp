@@ -135,6 +135,8 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
 
   // Conduit of the Celestials
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
   apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
@@ -468,6 +470,9 @@ void monk_action_t<Base>::consume_resource()
 
     if ( base_t::cost() > 0 )
     {
+      // This triggers prior to cost reduction
+      p()->buff.heart_of_the_jade_serpent->trigger( base_t::cost() );
+
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
         p()->spiritual_focus_count += base_t::cost();
@@ -1976,7 +1981,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
       p()->buff.transfer_the_power->trigger();
 
-      p()->buff.teachings_of_the_monastery->expire();
+      if ( p()->buff.teachings_of_the_monastery->up() )
+      {
+        p()->buff.teachings_of_the_monastery->expire();
+
+        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+          p()->buff.teachings_of_the_monastery->trigger();
+      }
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
@@ -3964,6 +3975,142 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 };
 
 // ==========================================================================
+// Celestial Conduit
+// ==========================================================================
+// TODO:
+// Add Normal Flight of the Red Crane Celestial
+
+struct strength_of_the_black_ox_t : public monk_spell_t
+{
+  strength_of_the_black_ox_t( monk_t *p )
+    : monk_spell_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
+  {
+    background = true;
+  }
+};
+
+// TODO: Add HP%
+struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
+{
+  strength_of_the_black_ox_absorb_t( monk_t *p )
+    : monk_absorb_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb )
+  {
+    background = true;
+    aoe        = data().effectN( 3 ).base_value();
+  }
+};
+
+struct celestial_conduit_t : public monk_spell_t
+{
+  struct celestial_conduit_dmg_t : public monk_spell_t
+  {
+    celestial_conduit_dmg_t( monk_t *p )
+      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+    {
+      background = true;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_spell_t::composite_aoe_multiplier( state );
+
+      const std::vector<player_t *> &targets = state->action->target_list();
+
+      if ( !targets.empty() )
+        cam *=
+            1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( (double)targets.size(),
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  struct celestial_conduit_heal_t : public monk_heal_t
+  {
+    celestial_conduit_heal_t( monk_t *p )
+      : monk_heal_t( p, "celestial_conduit_heal", p->talent.conduit_of_the_celestials.celestial_conduit_heal )
+    {
+      background = true;
+      target     = p;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_heal_t::composite_aoe_multiplier( state );
+
+      const std::vector<player_t *> &targets = state->action->target_list();
+
+      if ( !targets.empty() )
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( (double)targets.size(),
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  // This is a separate spell from the normal Flight of the Red Crane damage spell
+  struct flight_of_the_red_crane_celestial_t : public monk_spell_t
+  {
+    flight_of_the_red_crane_celestial_t( monk_t *p )
+      : monk_spell_t( p, "flight_of_the_red_crane_celestial", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial )
+    {
+      background = true;
+      aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
+    }
+  };
+
+  celestial_conduit_dmg_t *damage;
+  celestial_conduit_heal_t *heal;
+  strength_of_the_black_ox_t *ox;
+  flight_of_the_red_crane_celestial_t *crane;
+
+  celestial_conduit_t( monk_t *p, util::string_view options_str )
+    : 
+      monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit ),
+      damage( new celestial_conduit_dmg_t( p ) ),
+      heal( new celestial_conduit_heal_t( p ) ),
+      ox( new strength_of_the_black_ox_t( p ) ),
+      crane( new flight_of_the_red_crane_celestial_t( p ) )
+  {
+    parse_options( options_str );
+
+    may_combo_strike = true;
+
+    tick_action = damage;
+    add_child( ox );
+    add_child( crane );
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+  }
+
+  void tick( dot_t *d ) override
+  {
+    monk_spell_t::tick( d );
+
+    heal->execute();
+  }
+
+  void last_tick( dot_t *dot ) override
+  {
+    monk_spell_t::last_tick( dot );
+
+    p()->buff.heart_of_the_jade_serpent->trigger();
+    ox->execute();
+    crane->execute();
+  }
+};
+
+// ==========================================================================
 // Mana Tea
 // ==========================================================================
 // Manatee
@@ -4104,6 +4251,9 @@ struct xuen_spell_t : public monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
+
+    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
+      p()->buff.rushing_jade_wind->trigger();
   }
 };
 
@@ -5626,6 +5776,9 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+
+    modify_duration(
+        timespan_t::from_millis( p->talent.conduit_of_the_celestials.yulons_knowledge->effectN( 1 ).base_value() ) );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -7181,7 +7334,9 @@ void monk_t::init_spells()
   // monk_t::talent::conduit_of_the_celestials
   {
     // Row 1
-    talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit      = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit_dmg  = find_spell( 443038 );
+    talent.conduit_of_the_celestials.celestial_conduit_heal = find_spell( 443039 );
     // Row 2
     talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
     talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
@@ -7190,7 +7345,10 @@ void monk_t::init_spells()
     // Row 3
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb = find_spell( 443113 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage = find_spell( 443127 );
     talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial = find_spell( 443611 );
     // Row 4
     talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
     talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
@@ -7929,6 +8087,14 @@ void monk_t::create_buffs()
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Conduit of the Celestials
+  buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
+                                               "celestial_conduit", find_spell( 443028 ) );
+
+  buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
+                                                       this, "heart_of_the_jade_serpent", find_spell( 443616 ) );
+
+  buff.strength_of_the_ox = make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
+                                                "strength_of_the_ox", find_spell( 443112 ) );
 
   // Master of Harmony
   buff.aspect_of_harmony = new buffs::aspect_of_harmony_t( this );
