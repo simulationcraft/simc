@@ -1862,7 +1862,7 @@ public:
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
       ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ||
-        ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 4 ) ) );
+        ab::data().affected_by_label( p->spec.improved_shiv_debuff->effectN( 4 ) ) );
 
     if ( p->talent.assassination.systemic_failure->ok() )
     {
