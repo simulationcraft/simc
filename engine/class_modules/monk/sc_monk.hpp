@@ -705,7 +705,12 @@ public:
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
+    propagate_const<buff_t *> courage_of_the_white_tiger;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_ww;
     propagate_const<buff_t *> heart_of_the_jade_serpent;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
     propagate_const<buff_t *> strength_of_the_ox;
 
     // Master of Harmony
@@ -1291,6 +1296,8 @@ public:
       player_talent_t temple_training;
       player_talent_t xuens_guidance;
       player_talent_t courage_of_the_white_tiger;
+      const spell_data_t *courage_of_the_white_tiger_damage;
+      const spell_data_t *courage_of_the_white_tiger_heal;
       player_talent_t restore_balance;
       player_talent_t yulons_knowledge;
       // Row 3
