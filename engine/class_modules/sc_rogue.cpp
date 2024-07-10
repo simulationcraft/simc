@@ -1861,7 +1861,8 @@ public:
 
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
-      ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) );
+      ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ||
+        ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 4 ) ) );
 
     if ( p->talent.assassination.systemic_failure->ok() )
     {
@@ -3570,6 +3571,8 @@ struct melee_t : public rogue_attack_t
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= td( target )->debuffs.fazed->value_auto_attack();
 
     return m;
   }
@@ -7528,7 +7531,6 @@ struct nimble_flurry_t : public rogue_attack_t
   nimble_flurry_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.nimble_flurry_damage )
   {
-    // ALPHA TOCHECK -- Talent has a value of 7, but AoE targets on damage spell is 5
     aoe = as<int>( p->talent.trickster.nimble_flurry->effectN( 2 ).base_value() );
   }
 
