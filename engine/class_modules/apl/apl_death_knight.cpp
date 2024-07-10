@@ -28,10 +28,21 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string flask_name = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  std::string frost_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
 
-  // All specs use a strength flask as default
-  return flask_name;
+  std::string unholy_flask = ( p->true_level >= 71 ) ? "flask_of_tempered_mastery_3" : "iced_phial_of_corrupting_rage_3";
+
+  std::string blood_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+
+  switch ( p->specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      return blood_flask;
+    case DEATH_KNIGHT_FROST:
+      return frost_flask;
+    default:
+      return unholy_flask;
+  }
 }
 
 std::string food( const player_t* p )

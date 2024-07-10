@@ -4,7 +4,8 @@ default_actions=1
 # TWW1_Death_Knight_Blood.simc
 # TWW1_Death_Knight_Frost.simc
 # TWW1_Death_Knight_Frost_2h.simc
-# TWW1_Death_Knight_Unholy.simc
+TWW1_Death_Knight_Unholy_Rider.simc
+TWW1_Death_Knight_Unholy_San'layn.simc
 
 # TWW1_Demon_Hunter_Havoc.simc
 # TWW1_Demon_Hunter_Havoc_SD.simc

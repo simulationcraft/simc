@@ -11,7 +11,7 @@
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
 # * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
-# * Use sockets on the slots head, neck (x3), wrist, waist, finger1 (x2), finger2 (x2).
+# * Use sockets on the slots head, neck (x2), wrist, waist, finger1 (x2), finger2 (x2).
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
 #    * 192985: Primary Stat & Haste
 #    * 192964: Mastery > Vers
@@ -21,7 +21,7 @@
 # * Use ,enchant=incandescent_essence on head.
 
 # Death Knight
-# TWW1_Generate_Death_Knight.simc
+TWW1_Generate_Death_Knight.simc
 
 # Demon Hunter
 # TWW1_Generate_Demon_Hunter.simc

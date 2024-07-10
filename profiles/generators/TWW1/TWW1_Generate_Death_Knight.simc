@@ -1,5 +1,5 @@
 # deathknight="TWW1_Death_Knight_Blood"
-# level=70
+# level=80
 # race=goblin
 # spec=blood
 # role=tank
@@ -25,55 +25,84 @@
 # save=TWW1_Death_Knight_Blood.simc
 
 
-deathknight="TWW1_Death_Knight_Frost"
-level=70
-race=blood_elf
-spec=frost
-role=attack
-position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIhkIJJJJJplAAAAAAAAAAAAA
+# deathknight="TWW1_Death_Knight_Frost"
+# level=80
+# race=blood_elf
+# spec=frost
+# role=attack
+# position=back
+# talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIhkIJJJJJplAAAAAAAAAAAAA
 
-head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
-neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
-shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
-chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant=waking_stats_2
-wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
-hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
-waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
-feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant=watchers_loam_2
-finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
-finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
-trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
-trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
-main_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_hysteria
-off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
+# head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
+# neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
+# shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
+# back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
+# chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant=waking_stats_2
+# wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
+# hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
+# waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
+# legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
+# feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant=watchers_loam_2
+# finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
+# finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
+# trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
+# trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
+# main_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_hysteria
+# off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
 
-save="TWW1_Death_Knight_Frost.simc"
+# save="TWW1_Death_Knight_Frost.simc"
 
-deathknight="TWW1_Death_Knight_Unholy"
+deathknight="TWW1_Death_Knight_Unholy_Rider"
 spec=unholy
-level=70
+level=80
 race=troll
 role=attack
 position=back
-talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAgZGzMjZYYmZMzMNMMzYGDAAAAAAAAgZmZGGjxMAgZzMMLGzMzMmZAWYWMMkBmNN0YhBwMA
 
-head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
-neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
-shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-back=fireproof_drape,id=193763,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
-chest=breastplate_of_soaring_terror,id=193753,bonus_id=6808/4786/1594,enchant=waking_stats_2
-wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
-hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
-waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
-feet=scaleguards_stalwart_greatboots,id=193728,bonus_id=6808/4786/1594
-finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_mastery_2
-finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_haste_2
-trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1594
-trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
-main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
+flask=flask_of_alchemical_chaos_3
 
-save=TWW1_Death_Knight_Unholy.simc
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=636,gem_id=213482
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1537/10255/10394/10879,gem_id=213743/213482
+shoulder=exhumed_centurions_spikes,id=212000,bonus_id=1537
+back=anvilhide_cape,id=221088,bonus_id=1654,ilevel=636
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1537,enchant=crystalline_radiance_3
+wrist=everforged_vambraces,id=222435,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/36
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1537
+waist=everforged_greatbelt,id=222431,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/40
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1537,enchant=fierce_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1537,enchant=defenders_march_3
+finger1=key_to_the_unseeming,id=212447,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
+finger2=writhing_ringworm,id=225576,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
+trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
+trinket2=sigil_of_algari_concordance,id=219295,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
+main_hand=wild_hammer,id=56131,ilevel=636,enchant=rune_of_the_fallen_crusader
+
+save=TWW1_Death_Knight_Unholy_Rider.simc
+
+deathknight="TWW1_Death_Knight_Unholy_San'layn"
+spec=unholy
+level=80
+race=troll
+role=attack
+position=back
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMzMjZYYGjZmphxMzYGDAAAAAAAAgZmZGGjxMAgZzMMLGzMzMmZYADMjRjlNQ2mYjBwMA
+
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=636,gem_id=213482
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1537/10255/10394/10879,gem_id=213743/213482
+shoulder=exhumed_centurions_spikes,id=212000,bonus_id=1537
+back=anvilhide_cape,id=221088,bonus_id=1654,ilevel=636
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1537,enchant=crystalline_radiance_3
+wrist=everforged_vambraces,id=222435,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/36
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1537
+waist=everforged_greatbelt,id=222431,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/40
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1537,enchant=fierce_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1537,enchant=defenders_march_3
+finger1=key_to_the_unseeming,id=212447,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
+finger2=writhing_ringworm,id=225576,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
+trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
+trinket2=sigil_of_algari_concordance,id=219295,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
+main_hand=wild_hammer,id=56131,ilevel=636,enchant=rune_of_the_fallen_crusader
+
+save=TWW1_Death_Knight_Unholy_San'layn.simc
+
