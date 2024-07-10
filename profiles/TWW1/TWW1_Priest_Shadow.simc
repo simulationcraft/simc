@@ -63,6 +63,8 @@ actions.cds+=/fireblood,if=buff.power_infusion.up|fight_remains<=8
 actions.cds+=/berserking,if=buff.power_infusion.up|fight_remains<=12
 actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
 actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
+# Use Nymue's before we go into our cooldowns
+actions.cds+=/use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)
 # Sync Power Infusion with Voidform or Dark Ascension
 actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
@@ -130,7 +132,7 @@ actions.main+=/mind_blast,if=buff.voidform.up&full_recharge_time<=gcd.max&(!tale
 # Use Voidbolt on the enemy with the largest time to die. We do no care about dots because Voidbolt is only accessible inside voidform which guarantees maximum effect
 actions.main+=/void_bolt,target_if=max:target.time_to_die,if=insanity.deficit>16&cooldown.void_bolt.remains<=0.1
 # Do not overcap on insanity
-actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio|!talent.phantasmal_pathogen),if=active_dot.devouring_plague<=1&dot.devouring_plague.remains<=gcd.max&(!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*3)|insanity.deficit<=16
+actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.devouring_plague<=1&dot.devouring_plague.remains<=gcd.max&(!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*3)|insanity.deficit<=16
 # Cast Void Torrent at very high priority if Voidweaver
 actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=(dot.devouring_plague.ticking|talent.void_eruption&cooldown.void_eruption.up)&talent.entropic_rift&!variable.holding_crash
 # Snipe SWDs with Depth of Shadows to spawn pets. Prefer targets with Devouring Plague on them.
@@ -148,7 +150,7 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 # Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s
 actions.main+=/devouring_plague,if=fight_remains<=duration+4
 # Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 35 With Distorted Reality can maintain more than one at a time in multi-target.
-actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio|!talent.phantasmal_pathogen),if=insanity.deficit<=35&talent.distorted_reality|buff.dark_ascension.up|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)|buff.entropic_rift.up
+actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=insanity.deficit<=35&talent.distorted_reality|buff.dark_ascension.up|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)|buff.entropic_rift.up
 # Use Void Torrent if it will get near full Mastery Value and you have Cthun and Void Eruption. Prune this action for Entropic Rift Builds.
 actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift,target_if=dot.devouring_plague.remains>=2.5
 # Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range
@@ -164,34 +166,44 @@ actions.main+=/call_action_list,name=filler
 actions.trinkets=use_item,name=darkmoon_deck_box_inferno,if=equipped.darkmoon_deck_box_inferno
 actions.trinkets+=/use_item,name=darkmoon_deck_box_rime,if=equipped.darkmoon_deck_box_rime
 actions.trinkets+=/use_item,name=darkmoon_deck_box_dance,if=equipped.darkmoon_deck_box_dance
+actions.trinkets+=/use_item,name=dreambinder_loom_of_the_great_cycle,use_off_gcd=1,if=gcd.remains>0|fight_remains<20
+actions.trinkets+=/use_item,name=conjured_chillglobe
+actions.trinkets+=/use_item,name=iceblood_deathsnare,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.iceblood_deathsnare>=5)|fight_remains<20
+# Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds
+actions.trinkets+=/use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment
+# Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets
+actions.trinkets+=/use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller
+# Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets
+actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond
 actions.trinkets+=/use_item,name=aberrant_spellforge
 actions.trinkets+=/use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
+actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
 
-head=living_lusters_semblance,id=212083,ilevel=636,gem_id=213494
-neck=sureki_zealots_insignia,id=225577,ilevel=636,gem_id=213743/213494/213494
-shoulders=living_lusters_dominion,id=212081,ilevel=636
-back=wings_of_shattered_sorrow,id=225574,ilevel=636
-chest=living_lusters_raiment,id=212086,ilevel=636,enchant=councils_intellect_3
-wrists=skeinspinners_duplicitous_cuffs,id=225584,ilevel=636,gem_id=213494
-hands=punctured_apiary_gloves,id=221067,ilevel=636
-waist=acrid_ascendants_sash,id=225585,ilevel=636,gem_id=213494
-legs=living_lusters_trousers,id=212082,ilevel=636,enchant=sunset_spellthread_3
-feet=assimilated_eggshell_slippers,id=225582,ilevel=636
-finger1=writhing_ringworm,id=225576,ilevel=636,gem_id=213494,enchant=cursed_mastery_3
-finger2=seal_of_the_poisoned_pact,id=225578,ilevel=636,gem_id=213494,enchant=cursed_mastery_3
-trinket1=unbound_changeling,id=178708,ilevel=636
-trinket2=signet_of_the_priory,id=219308,ilevel=636
-main_hand=takazjs_entropic_edict,id=212397,ilevel=636,enchant=authority_of_radiant_power_3
+head=living_lusters_semblance,id=212083,ilevel=639,gem_id=213494
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213743/213494
+shoulders=living_lusters_dominion,id=212081,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639
+chest=living_lusters_raiment,id=212086,ilevel=639,enchant=councils_intellect_3
+wrists=skeinspinners_duplicitous_cuffs,id=225584,ilevel=639,gem_id=213494
+hands=punctured_apiary_gloves,id=221067,ilevel=639
+waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213494
+legs=living_lusters_trousers,id=212082,ilevel=639,enchant=sunset_spellthread_3
+feet=assimilated_eggshell_slippers,id=225582,ilevel=639
+finger1=writhing_ringworm,id=225576,ilevel=639,gem_id=213494/213494,enchant=cursed_mastery_3
+finger2=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213494/213494,enchant=cursed_mastery_3
+trinket1=unbound_changeling,id=178708,ilevel=639
+trinket2=signet_of_the_priory,id=219308,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant=authority_of_radiant_power_3
 
 # Gear Summary
-# gear_ilvl=636.00
-# gear_stamina=228086
-# gear_intellect=50861
-# gear_crit_rating=7848
-# gear_haste_rating=13340
-# gear_mastery_rating=14773
-# gear_versatility_rating=499
-# gear_armor=15816
+# gear_ilvl=639.00
+# gear_stamina=237578
+# gear_intellect=52268
+# gear_crit_rating=7997
+# gear_haste_rating=13613
+# gear_mastery_rating=15146
+# gear_versatility_rating=505
+# gear_armor=16110
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
