@@ -4046,7 +4046,6 @@ struct whitemane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       parse_options( options_str );
-      cooldown->duration = 14_s;  // Overriding the data cooldown to more closely represent actual in game behavior
     }
   };
 
@@ -4256,7 +4255,6 @@ struct abomination_pet_t : public death_knight_pet_t
     tww1_4pc_proc                     = true;
     owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
-    auto_attack_multiplier = 1.0 / owner_coeff.ap_from_ap;  // Auto Attacks appear to use base player attack power
 
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
@@ -6266,8 +6264,9 @@ struct trollbanes_icy_fury_t final : public death_knight_spell_t
   trollbanes_icy_fury_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->pet_spell.trollbanes_icy_fury_ability )
   {
-    background = true;
-    aoe        = -1;
+    background          = true;
+    aoe                 = -1;
+    reduced_aoe_targets = as<int>( p->talent.rider.trollbanes_icy_fury->effectN( 1 ).base_value() );
   }
 };
 
