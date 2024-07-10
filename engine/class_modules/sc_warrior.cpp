@@ -7985,8 +7985,7 @@ void warrior_t::create_buffs()
       ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
 
   buff.dance_of_death_bladestorm = make_buff( this, "dance_of_death_bladestorm", spell.dance_of_death_bs_buff )
-      ->set_duration( 20_s ) // Slightly longer than max extension
-      ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
+      ->set_duration( 20_s ); // Slightly longer than max extension;
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
 
