@@ -111,6 +111,7 @@ void shadow( player_t* p )
   cds->add_action( "berserking,if=buff.power_infusion.up|fight_remains<=12" );
   cds->add_action( "blood_fury,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=buff.power_infusion.up|fight_remains<=15" );
+  cds->add_action( "use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)", "Use Nymue's before we go into our cooldowns" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)", "Sync Power Infusion with Voidform or Dark Ascension" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
@@ -150,9 +151,16 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=darkmoon_deck_box_inferno,if=equipped.darkmoon_deck_box_inferno" );
   trinkets->add_action( "use_item,name=darkmoon_deck_box_rime,if=equipped.darkmoon_deck_box_rime" );
   trinkets->add_action( "use_item,name=darkmoon_deck_box_dance,if=equipped.darkmoon_deck_box_dance" );
+  trinkets->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,use_off_gcd=1,if=gcd.remains>0|fight_remains<20" );
+  trinkets->add_action( "use_item,name=conjured_chillglobe" );
+  trinkets->add_action( "use_item,name=iceblood_deathsnare,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.iceblood_deathsnare>=5)|fight_remains<20" );
+  trinkets->add_action( "use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment", "Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds" );
+  trinkets->add_action( "use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller", "Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
+  trinkets->add_action( "use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
   trinkets->add_action( "use_item,name=aberrant_spellforge" );
   trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
+  trinkets->add_action( "use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex" );
 }
 //shadow_apl_end
 //shadow_ptr_apl_start
@@ -230,6 +238,7 @@ void shadow_ptr( player_t* p )
   cds->add_action( "berserking,if=buff.power_infusion.up|fight_remains<=12" );
   cds->add_action( "blood_fury,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=buff.power_infusion.up|fight_remains<=15" );
+  cds->add_action( "use_item,name=nymues_unraveling_spindle,if=variable.dots_up&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<3+gcd.max|fight_remains<15)", "Use Nymue's before we go into our cooldowns" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)", "Sync Power Infusion with Voidform or Dark Ascension" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
@@ -269,9 +278,16 @@ void shadow_ptr( player_t* p )
   trinkets->add_action( "use_item,name=darkmoon_deck_box_inferno,if=equipped.darkmoon_deck_box_inferno" );
   trinkets->add_action( "use_item,name=darkmoon_deck_box_rime,if=equipped.darkmoon_deck_box_rime" );
   trinkets->add_action( "use_item,name=darkmoon_deck_box_dance,if=equipped.darkmoon_deck_box_dance" );
+  trinkets->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,use_off_gcd=1,if=gcd.remains>0|fight_remains<20" );
+  trinkets->add_action( "use_item,name=conjured_chillglobe" );
+  trinkets->add_action( "use_item,name=iceblood_deathsnare,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.iceblood_deathsnare>=5)|fight_remains<20" );
+  trinkets->add_action( "use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment", "Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds" );
+  trinkets->add_action( "use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller", "Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
+  trinkets->add_action( "use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
   trinkets->add_action( "use_item,name=aberrant_spellforge" );
   trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
+  trinkets->add_action( "use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex" );
 }
 //shadow_ptr_apl_end
 //discipline_apl_start
