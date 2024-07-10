@@ -1193,72 +1193,72 @@ std::string get_api_key()
 
 /// Setup a periodic check for Bloodlust
 struct bloodlust_check_t : public event_t
- {
-   bloodlust_check_t( sim_t& sim, timespan_t time_until_next_check = timespan_t::from_seconds( 1.0 ) ) :
-     event_t( sim, time_until_next_check )
-   {
-   }
+{
+  bloodlust_check_t( sim_t& sim, timespan_t time_until_next_check = timespan_t::from_seconds( 1.0 ) )
+    : event_t( sim, time_until_next_check )
+  {}
 
-   const char* name() const override
-   { return "Bloodlust Check"; }
+  const char* name() const override
+  {
+    return "Bloodlust Check";
+  }
 
-   void execute() override
-   {
-     sim_t& sim = this -> sim();
-     player_t* t = sim.target;
-     if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
-          ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
-          ( sim.bloodlust_time     >= timespan_t::zero() && sim.current_time() >=  sim.bloodlust_time ) )
-     {
-       if ( ! sim.single_actor_batch )
-       {
-         for ( auto* p : sim.player_non_sleeping_list )
-         {
-            if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
-             continue;
+  void execute() override
+  {
+    sim_t& sim = this->sim();
+    player_t* t = sim.target;
+    if ( ( sim.bloodlust_percent > 0 && t->health_percentage() < sim.bloodlust_percent ) ||
+         ( sim.bloodlust_time < timespan_t::zero() && t->time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
+         ( sim.bloodlust_time >= timespan_t::zero() && sim.current_time() >= sim.bloodlust_time ) )
+    {
+      if ( !sim.single_actor_batch )
+      {
+        for ( auto* p : sim.player_non_sleeping_list )
+        {
+          if ( p->is_pet() || p->buffs.exhaustion->check() )
+            continue;
 
-           p -> buffs.bloodlust -> trigger();
-           p -> buffs.exhaustion -> trigger();
-         }
-       }
-       else
-       {
-         auto p = sim.player_no_pet_list[ sim.current_index ];
-         if ( p )
-         {
-           p -> buffs.bloodlust -> trigger();
-           p -> buffs.exhaustion -> trigger();
-         }
-       }
-     }
-     else
-     {
+          p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
+        }
+      }
+      else
+      {
+        auto p = sim.player_no_pet_list[ sim.current_index ];
+        if ( p )
+        {
+          p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
+        }
+      }
+    }
+    else
+    {
       make_event<bloodlust_check_t>( sim, sim );
-     }
-   }
- };
+    }
+  }
+};
 
 struct heartbeat_event_t : public event_t
- {
-   heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
-   {
-   }
+{
+  heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t ) {}
 
-   const char* name() const override
-   {
-     return "heartbeat_event";
-   }
+  const char* name() const override
+  {
+    return "heartbeat_event";
+  }
 
-   void execute() override
-   {
-     if ( !sim().heartbeat_event_callback_function.empty() )
-     {
+  void execute() override
+  {
+    if ( !sim().heartbeat_event_callback_function.empty() )
+    {
       sim().heartbeat_event_callback();
-     }
+    }
 
-     make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 100 ) ) );
-   }
- };
+    // TODO: possible that there is actually no variance in the period other than log timestamp artifacts
+    make_event<heartbeat_event_t>( sim(), sim(), timespan_t::from_millis( rng().gauss( 5250, 25 ) ) );
+  }
+};
 
 // compare_dps ==============================================================
 
@@ -1425,6 +1425,7 @@ sim_t::sim_t()
     fixed_time( true ),
     save_profiles( false ),
     save_profile_with_actions( true ),
+    save_full_profile( true ),
     default_actions( false ),
     max_time( 0_ms ),
     expected_iteration_time( 0_ms ),
@@ -1913,10 +1914,20 @@ void sim_t::combat_begin()
   for ( auto& target : target_list )
     target -> combat_begin();
 
-  if ( overrides.arcane_intellect ) auras.arcane_intellect->override_buff();
-  if ( overrides.battle_shout ) auras.battle_shout->override_buff();
-  if ( overrides.mark_of_the_wild ) auras.mark_of_the_wild->override_buff();
-  if ( overrides.power_word_fortitude ) auras.power_word_fortitude -> override_buff();
+  if ( overrides.arcane_intellect )
+    auras.arcane_intellect->override_buff();
+
+  if ( overrides.battle_shout )
+    auras.battle_shout->override_buff();
+
+  if ( overrides.mark_of_the_wild )
+    auras.mark_of_the_wild->override_buff();
+
+  if ( overrides.power_word_fortitude )
+    auras.power_word_fortitude->override_buff();
+
+  if ( overrides.skyfury )
+    auras.skyfury->override_buff();
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
@@ -1974,7 +1985,7 @@ void sim_t::combat_begin()
 
   // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
   if ( !heartbeat_event_callback_function.empty() )
-    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 0, 5249 ) ) );
+    make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 1, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
 }
@@ -2773,20 +2784,24 @@ void sim_t::init()
   auras.fallback = make_buff<fallback_buff_t>( this );
 
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
-                               ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )
+                               ->set_default_value_from_effect( 1 )
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                           ->set_default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
+                           ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
   auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
-                               ->set_default_value( dbc::find_spell( this, 1126 )->effectN( 1 ).percent() )
+                               ->set_default_value_from_effect( 1 )
                                ->add_invalidate( CACHE_VERSATILITY );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
-                                   ->set_default_value( dbc::find_spell( this, 21562 )->effectN( 1 ).percent() )
+                                   ->set_default_value_from_effect( 1 )
                                    ->add_invalidate( CACHE_STAMINA );
+
+  auras.skyfury = make_buff( this, "skyfury", dbc::find_spell( this, 462854 ) )
+                      ->set_default_value_from_effect( 1 )
+                      ->add_invalidate( CACHE_MASTERY );
 
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
@@ -3416,7 +3431,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.battle_shout            = optimal_raid;
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
-  overrides.windfury_totem          = optimal_raid;
+  overrides.skyfury                 = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3488,6 +3503,26 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );
+
+  if ( util::str_compare_ci( name_str, "active_allied_augmentations" ) )
+  {
+    if ( player_list.size() == 1U )
+    {
+      return expr_t::create_constant( name_str, 0 );
+    }
+    else
+    {
+      return make_fn_expr( name_str, [ this ] {
+        int augs = 0;
+        for ( auto& player : player_non_sleeping_list )
+        {
+          if ( player->specialization() == EVOKER_AUGMENTATION )
+            augs++;
+        }
+        return augs;
+      } );
+    }
+  }
 
   // Get the number of actors in the simulation that do not have execute abilities
   if ( name_str == "nonexecute_actors_pct" )
@@ -3683,7 +3718,7 @@ void sim_t::create_options()
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
-  add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
+  add_option( opt_int( "override.skyfury", overrides.skyfury ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.hunters_mark", overrides.hunters_mark ) );
@@ -3712,6 +3747,7 @@ void sim_t::create_options()
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
   add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
+  add_option( opt_bool( "save_full_profile", save_full_profile ) );
   add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
 

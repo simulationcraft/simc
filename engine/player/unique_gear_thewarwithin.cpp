@@ -133,15 +133,21 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
   }
 }
 
-unsigned unique_gem_count( const special_effect_t& effect )
+// from item_naming.inc
+enum gem_color_e : unsigned
 {
-  // from item_naming.inc
-  static constexpr std::array<unsigned, 5> algari_gem_desc = { 14110,    // ruby
-                                                               14111,    // amber
-                                                               14113,    // emerald
-                                                               14114,    // sapphire
-                                                               14115 };  // onyx
-  std::set<unsigned> gems;
+  GEM_RUBY     = 14110,
+  GEM_AMBER    = 14111,
+  GEM_EMERALD  = 14113,
+  GEM_SAPPHIRE = 14114,
+  GEM_ONYX     = 14115
+};
+
+static constexpr std::array<gem_color_e, 5> gem_colors = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
+
+std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
+{
+  std::vector<gem_color_e> gems;
 
   for ( const auto& item : effect.player->items )
   {
@@ -151,16 +157,30 @@ unsigned unique_gem_count( const special_effect_t& effect )
       {
         const auto& _gem = effect.player->dbc->item( gem_id );
         const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
-        if ( auto _desc = _prop.desc_id; range::contains( algari_gem_desc, _desc ) )
-          gems.insert( _desc );
+        for ( auto g : gem_colors )
+        {
+          if ( _prop.desc_id == static_cast<unsigned>( g ) )
+          {
+            gems.push_back( g );
+            break;
+          }
+        }
       }
     }
   }
 
-  auto count = as<unsigned>( gems.size() );
-  effect.player->sim->print_debug( "unique gem count for effect '{}': {}", effect.name(), count );
+  return gems;
+}
 
-  return count;
+std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+{
+  auto _list = algari_gem_list( effect );
+  range::sort( _list );
+
+  auto it = range::unique( _list );
+  _list.erase( it, _list.end() );
+
+  return _list;
 }
 
 namespace consumables
@@ -267,7 +287,7 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
 // TODO: can you randomize into the same stat? same bonus stat? same penalty stats?
 void flask_of_alchemical_chaos( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "flask_of_alchemical_chaos_vers", "flask_of_alchemical_chaos_mastery",
+  if ( unique_gear::create_fallback_buffs( effect, { "flask_of_alchemical_chaos_vers", "flask_of_alchemical_chaos_mastery",
                                         "flask_of_alchemical_chaos_haste", "flask_of_alchemical_chaos_crit" } ) )
   {
     return;
@@ -447,7 +467,7 @@ void secondary_weapon_enchant( special_effect_t& effect )
 // 435500 driver
 void culminating_blasphemite( special_effect_t& effect )
 {
-  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_count( effect );;
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect ).size();
   // check for prismatic null stone
   if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
     pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
@@ -503,7 +523,8 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
 
   // TODO: confirm damage doesn't increase per extra target
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
-  grenade->base_dd_min = grenade->base_dd_max = amount;
+  grenade->base_dd_min += amount;
+  grenade->base_dd_max += amount;
   grenade->travel_speed = missile->missile_speed();
 
   effect.execute_action = grenade;
@@ -511,56 +532,60 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 436035 equip
-//  e1: coeff? trigger driver
-// 436039 driver
-//  e1: coeff? this is 10x equip coeff and seems to be the one being used in-game
-// 436043 damage
-// 436044 heal
-// TODO: determine if it can proc with no gems
-// TODO: determine which coeff is actually used
-// TODO: confirm damage amount increase per gem type calculation
-// TODO: confirm rppm decrease per gem type calculation
-// TODO: determine if heal uses same coeff as damage
-// TODO: confirm damage/heal depends on target type, and not triggering action type
+// 461177 equip
+//  e1: coeff, trigger driver
+// 461180 driver
+// 461185 holy damage from amber
+// 461190 nature damage from emerald
+// 461191 shadow damage from onyx
+// 461192 fire damage from ruby
+// 461193 frost damage from sapphire
+// TODO: determine if damage selection is per gem, or per unique gem type
 void elemental_focusing_lens( special_effect_t& effect )
 {
-  auto gem_count = unique_gem_count( effect );
+  // TODO: determine if damage selection is per gem, or per unique gem type
+  auto gems = algari_gem_list( effect );
 
-  // TODO: determine if it can proc with no gems
-  if ( !gem_count )
+  if ( !gems.size() )
     return;
 
-  // TODO: determine which coeff is actually used. in-game seems to be incorrectly using the driver coeff, which is 10x
-  // the equip coeff.
   auto amount = effect.driver()->effectN( 1 ).average( effect.item );
-
-  // TODO: confirm damage amount increase per gem type calculation
-  amount *= 6 - gem_count;
-
-  // TODO: confirm rppm decrease per gem type calculation
-  effect.rppm_modifier_ = 1.0 / ( 6 - gem_count );
 
   effect.spell_id = effect.trigger()->id();
 
-  auto damage = create_proc_action<generic_proc_t>( "elemental_focusing_len", effect, 436043 );
-  damage->base_dd_min = damage->base_dd_max = amount;
+  // guard against duplicate proxy/callback from multiple embellishments
+  auto proxy = effect.player->find_action( "elemental_focusing_lens" );
+  if ( !proxy )
+  {
+    proxy = new action_t( action_e::ACTION_OTHER, "elemental_focusing_lens", effect.player, effect.driver() );
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 
-  // TODO: determine if heal uses same coeff as damage
-  auto heal = create_proc_action<generic_heal_t>( "elemental_focusing_len_heal", effect, 436044 );
-  heal->base_dd_min = heal->base_dd_max = amount;
-  heal->name_str_reporting = "Heal";
+  std::unordered_map<gem_color_e, action_t*> damages;
+
+  static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> damage_ids = { {
+    { GEM_RUBY,     461192, "ruby"     },
+    { GEM_AMBER,    461185, "amber"    },
+    { GEM_EMERALD,  461190, "emerald"  },
+    { GEM_SAPPHIRE, 461193, "sapphire" },
+    { GEM_ONYX,     461191, "onyx"     }
+  } };
+
+  for ( auto [ g, id, name ] : damage_ids )
+  {
+    auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
+    dam->base_dd_min += amount;
+    dam->base_dd_max += amount;
+    dam->name_str_reporting = util::inverse_tokenize( name );
+    damages[ g ] = dam;
+    proxy->add_child( dam );
+  }
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ damage, heal ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-      // TODO: confirm damage/heal depends on target type, and not triggering action type
-      if ( s->target->is_enemy() )
-        damage->execute_on_target( s->target );
-      else
-        heal->execute_on_target( s->target );
+    effect.spell_id, [ gems, damages ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      damages.at( gems.at( cb->rng().range( gems.size() ) ) )->execute_on_target( s->target );
     } );
 
-  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace embellishments
 
@@ -576,6 +601,12 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
   {
     return stat_buff_t::buff_stat_stack_amount( stat, s ) * stat_mul;
   }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    stat_buff_t::expire_override( s, d );
+    stat_mul = 1.0;
+  }
 };
 
 // Trinkets
@@ -588,7 +619,7 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
 // TODO: confirm you cannot use without stacking buff present
 void spymasters_web( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
     return;
 
   unsigned equip_id = 444958;
@@ -742,7 +773,7 @@ void void_reapers_chime( special_effect_t& effect )
 // TODO: determine when silence applies
 void aberrant_spellforge( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "aberrant_empowerment", "aberrant_spellforge" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "aberrant_empowerment", "aberrant_spellforge" } ) )
     return;
 
   // sanity check equip effect exists
@@ -1314,34 +1345,122 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   effect.custom_buff = halt;
 }
 
-// 446209 driver
-// 449946 counter
+// 449946 on use
+// 446209 stat buff value container
 // 449947 jump task
-// 449948 unknown, counter related?
-// 449952 unknown, task?
-// 449954 buff
-// 449966 unknown, counter related?
-// 450025 unknown, task?
-// TODO: retest/redo everything
-// TODO: add options to control task completion, placeholder 4-8s delay
-void malfunctioning_ethereum_module( special_effect_t& effect )
+// 449948 collect orb
+// 449952 stand here task
+// 450025 stand here task AoE DR/stacking trigger
+// 449954 primary buff
+struct do_treacherous_transmitter_task_t : public action_t
 {
-  if ( create_fallback_buffs( effect, { "cryptic_instructions" } ) )
+  buff_t* task = nullptr;
+
+  do_treacherous_transmitter_task_t( player_t* p, std::string_view opt )
+    : action_t( ACTION_OTHER, "do_treacherous_transmitter_task", p, spell_data_t::nil() )
+  {
+    parse_options( opt );
+
+    s_data_reporting   = p->find_spell( 446209 );
+    name_str_reporting = "Complete Task";
+
+    callbacks = harmful = false;
+    trigger_gcd         = 0_ms;
+  }
+
+  bool ready() override
+  {
+    if ( task != nullptr )
+      return task->check();
+    else
+      return false;
+  }
+
+  void execute() override
+  {
+    task->expire();
+  }
+};
+
+void treacherous_transmitter( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "cryptic_instructions", "errant_manaforge_emission", "realigning_nexus_convergence_divergence",
+                     "ethereal_powerlink" } ) )
     return;
 
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 449954 ) )
-    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect.item ) );
+  struct cryptic_instructions_t : public generic_proc_t
+  {
+    std::vector<buff_t*> tasks;
+    buff_t* stat_buff;
+    std::vector<action_t*> apl_actions;
 
-  auto counter = create_buff<buff_t>( effect.player, effect.trigger() )
-    ->set_expire_at_max_stack( true )
-    // TODO: add options to control task completion, placeholder 4-8s delay
-    ->set_expire_callback( [ buff ]( buff_t*, int, timespan_t ) {
-      make_event( *buff->sim, buff->rng().range( 4_s, 8_s ), [ buff ] { buff->trigger(); } );
-    } );
+    cryptic_instructions_t( const special_effect_t& e ) : generic_proc_t( e, "cryptic_instructions", e.driver() )
+    {
+      harmful            = false;
+      cooldown->duration = 0_ms;  // Handled by the item
 
-  effect.custom_buff = counter;
+      stat_buff =
+          create_buff<stat_buff_t>( e.player, e.player->find_spell( 449954 ) )
+              ->set_stat_from_effect_type( A_MOD_STAT, e.player->find_spell( 446209 )->effectN( 1 ).average( e.item ) );
 
-  new dbc_proc_callback_t( effect.player, effect );
+      for ( auto& a : e.player->action_list )
+      {
+        if ( a->name_str == "do_treacherous_transmitter_task" )
+        {
+          apl_actions.push_back( a );
+        }
+      }
+
+      if ( apl_actions.size() > 0 )
+      {
+        buff_t* jump_task   = create_buff<buff_t>( e.player, e.player->find_spell( 449947 ) );
+        buff_t* collect_orb = create_buff<buff_t>( e.player, e.player->find_spell( 449948 ) );
+        buff_t* stand_here  = create_buff<buff_t>( e.player, e.player->find_spell( 449952 ) );
+
+        tasks.push_back( jump_task );
+        tasks.push_back( collect_orb );
+        tasks.push_back( stand_here );
+
+        for ( auto& t : tasks )
+        {
+          t->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
+            if ( d > 0_ms )
+            {
+              stat_buff->trigger();
+            }
+          } );
+        }
+
+        // Set a default task for the actions ready() function, will be overwritten later
+        for ( auto& a : apl_actions )
+        {
+          debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
+        }
+      }
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( apl_actions.size() > 0 )
+      {
+        rng().shuffle( tasks.begin(), tasks.end() );
+        for ( auto& a : apl_actions )
+        {
+          debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
+        }
+        tasks[ 0 ]->trigger();
+      }
+      else
+      {
+        make_event( *sim, rng().range( 0_s, player->find_spell( 449947 )->duration() ),
+                    [ this ] { stat_buff->trigger(); } );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
 }
 
 // 443124 on-use
@@ -1389,6 +1508,8 @@ void mad_queens_mandate( special_effect_t& effect )
       // TODO: confirm heal coeff is for entire hot
       heal->base_td = data->effectN( 2 ).average( e.item ) * ( heal->base_tick_time / heal->dot_duration );
     }
+
+    bool usable_moving() const override { return true; }
 
     void execute() override
     {
@@ -1617,8 +1738,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "silvervein", e, e.player->find_spell( 452310 ) ), action( a ), effect( e )
+    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "silvervein", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1635,8 +1756,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     action_t* action;
     const special_effect_t& effect;
-    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr )
-      : sigil_of_algari_concordance_pet_t( "boulderbane", e, e.player->find_spell( 452496 ) ), action( a ), effect( e )
+    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+      : sigil_of_algari_concordance_pet_t( "boulderbane", e, summon_spell ), action( a ), effect( e )
     {
     }
 
@@ -1650,7 +1771,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct sigil_of_algari_concordance_t : public generic_proc_t
   {
-    const special_effect_t& effect;
+    const spell_data_t* summon_spell;
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
     bool silvervein;
@@ -1658,7 +1779,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
     sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
-        effect( e ),
+        summon_spell( nullptr ),
         silvervein_spawner( "silvervein", e.player ),
         boulderbane_spawner( "boulderbane", e.player ),
         silvervein( false ),
@@ -1717,13 +1838,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
       if ( silvervein )
       {
-        silvervein_spawner.set_creation_callback( [ this ]( player_t* ) { return new silvervein_pet_t( effect, this ); } );
-        silvervein_spawner.set_default_duration( e.player->find_spell( 452310 )->duration() );
+        summon_spell = e.player->find_spell( 452310 );
+        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this, summon_spell ); } );
+        silvervein_spawner.set_default_duration( summon_spell->duration() );
       }
       if ( boulderbane )
       {
-        boulderbane_spawner.set_creation_callback( [ this ]( player_t* ) { return new boulderbane_pet_t( effect, this ); } );
-        boulderbane_spawner.set_default_duration( e.player->find_spell( 452496 )->duration() );
+        summon_spell = e.player->find_spell( 452496 );
+        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
+        boulderbane_spawner.set_default_duration( summon_spell->duration() );
         add_child( earthen_ire_damage );
       }
 
@@ -1813,6 +1936,7 @@ void ravenous_honey_buzzer( special_effect_t& e )
 // 443411 Use Driver
 // 446764 Equip Driver
 // 446811 Use Damage
+// 449842 Ground Effect Trigger
 // 449828 Equip Damage
 // 450453 Equip Buff
 void overclocked_geararang_launcher( special_effect_t& e )
@@ -1822,13 +1946,9 @@ void overclocked_geararang_launcher( special_effect_t& e )
     buff_t* buff;
     action_t* overclock_strike;
 
-    overclocked_strike_cb_t( const special_effect_t& e, const spell_data_t* equip_driver, buff_t* buff )
-      : dbc_proc_callback_t( e.player, e ),
-      buff( buff ), overclock_strike( nullptr )
+    overclocked_strike_cb_t( const special_effect_t& e, buff_t* buff, action_t* strike )
+      : dbc_proc_callback_t( e.player, e ), buff( buff ), overclock_strike( strike )
     {
-      overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
-      overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
-      overclock_strike->base_multiplier *= role_mult( e );
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -1859,6 +1979,31 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   };
 
+  struct geararang_launcher_t : public generic_proc_t
+  {
+    ground_aoe_params_t params;
+    geararang_launcher_t( const special_effect_t& e, action_t* equip_damage )
+      : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
+    {
+      auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
+      damage->radius     = e.driver()->effectN( 1 ).radius();
+      auto ground_effect = e.player->find_spell( 449842 );
+      params.action( damage ).duration( ground_effect->duration() );
+      cooldown->duration = 0_ms;  // Handled by the item
+      add_child( damage );
+      add_child( equip_damage );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      make_event<ground_aoe_event_t>( *sim, player,
+                                      params.target( s->target ).x( s->target->x_position ).y( s->target->y_position ),
+                                      true /* Immediate pulse */ );
+    }
+  };
+
   unsigned equip_id = 446764;
   auto equip        = find_special_effect( e.player, equip_id );
   assert( equip && "Overclocked Gear-a-Rang missing equip effect" );
@@ -1868,13 +2013,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
   auto damage_buff_spell = e.player->find_spell( 450453 );
   auto overclock_buff    = create_buff<buff_t>( e.player, damage_buff_spell );
 
-  auto damage            = new special_effect_t( e.player );
-  damage->name_str       = "overclocked_strike_proc";
-  damage->item           = e.item;
-  damage->spell_id       = damage_buff_spell->id();
+  auto overclock_strike = create_proc_action<generic_proc_t>( "overclocked_strike", e, e.player->find_spell( 449828 ) );
+  overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e.item );
+  overclock_strike->base_multiplier *= role_mult( e );
+
+  auto damage      = new special_effect_t( e.player );
+  damage->name_str = "overclocked_strike_proc";
+  damage->item     = e.item;
+  damage->spell_id = damage_buff_spell->id();
   e.player->special_effects.push_back( damage );
 
-  auto damage_cb = new overclocked_strike_cb_t( *damage, equip_driver, overclock_buff );
+  auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );
   damage_cb->initialize();
   damage_cb->deactivate();
 
@@ -1889,19 +2038,17 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   } );
 
-  auto overclock         = new special_effect_t( e.player );
-  overclock->name_str    = "overclock";
-  overclock->item        = e.item;
-  overclock->spell_id    = equip_driver->id();
+  auto overclock      = new special_effect_t( e.player );
+  overclock->name_str = "overclock";
+  overclock->item     = e.item;
+  overclock->spell_id = equip_driver->id();
   e.player->special_effects.push_back( overclock );
 
   auto overclock_cb = new overclock_cb_t( *overclock, e, overclock_buff );
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  // Might be worth converting to a poper ground effect event later. For now, this is close enough.
-  auto use_damage  = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
-  e.execute_action = use_damage;
+  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, overclock_strike );
 }
 
 // Remnant of Darkness
@@ -2164,16 +2311,17 @@ void skyterrors_corrosive_organ( special_effect_t& e )
 // TODO: confirm ticks once a second, not hasted
 // TODO: confirm buff return has 500ms delay
 // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
+// TODO: confirm buff procs even if no targets are hit
 void high_speakers_accretion( special_effect_t& effect )
 {
   struct high_speakers_accretion_t : public generic_proc_t
   {
     struct high_speakers_accretion_damage_t : public generic_aoe_proc_t
     {
-      std::vector<player_t*>& targets;
+      std::vector<player_t*>& targets_hit;
 
       high_speakers_accretion_damage_t( const special_effect_t& e, std::vector<player_t*>& tl )
-        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets( tl )
+        : generic_aoe_proc_t( e, "high_speakers_accretion_damage", 450921, true ), targets_hit( tl )
       {
         base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
         base_multiplier *= role_mult( e );
@@ -2183,38 +2331,39 @@ void high_speakers_accretion( special_effect_t& effect )
       {
         generic_aoe_proc_t::impact( s );
 
-        if ( as<unsigned>( targets.size() ) < 5u && !range::contains( targets, s->target ) )
-          targets.emplace_back( s->target );
+        if ( as<unsigned>( targets_hit.size() ) < 5u && !range::contains( targets_hit, s->target ) )
+          targets_hit.emplace_back( s->target );
       }
     };
 
     ground_aoe_params_t params;
-    std::vector<player_t*> targets;
+    std::vector<player_t*> targets_hit;
 
     high_speakers_accretion_t( const special_effect_t& e ) : generic_proc_t( e, "high_speakers_accretion", e.driver() )
     {
       // TODO: confirm damage increases by standard 15% per extra target
       auto damage =
-        create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets );
+        create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets_hit );
       damage->stats = stats;
 
-      // TODO: confirm buff increases by 15% per extra taget hit, up to 5.
+      // TODO: confirm buff increases by 15% per extra target hit, up to 5.
       auto buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 451248 ) );
       buff->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 3 ).average( e.item ) );
 
       // TODO: confirm ticks once a second, not hasted
       // TODO: confirm buff return has 500ms delay
       params.pulse_time( 1_s )
-        .duration( e.trigger()->duration() )
-        .action( damage )
-        .expiration_callback(
-          [ this,
-            buff,
-            delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ]
-          ( const action_state_t* ) {
-            buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets.size() ) - 1u );
-            make_event( *sim, delay, [ buff ] { buff->trigger(); } );
-          } );
+          .duration( e.trigger()->duration() )
+          .action( damage )
+          .expiration_callback(
+              [ this, buff, delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ](
+                  const action_state_t* ) {
+                // TODO: confirm buff procs even if no targets  are hit
+                if ( !targets_hit.empty() )
+                  buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets_hit.size() ) - 1u );
+
+                make_event( *sim, delay, [ buff ] { buff->trigger(); } );
+              } );
 
       // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
       travel_delay = e.driver()->effectN( 1 ).misc_value1() * 0.001;
@@ -2224,7 +2373,7 @@ void high_speakers_accretion( special_effect_t& effect )
     {
       generic_proc_t::impact( s );
 
-      targets.clear();
+      targets_hit.clear();
       params.start_time( timespan_t::min() ).target( target );  // reset start time
       make_event<ground_aoe_event_t>( *sim, player, params );
     }
@@ -2261,8 +2410,6 @@ struct pickup_entropic_skardyn_core_t : public action_t
 
   void execute() override
   {
-    action_t::execute();
-
     buff->trigger();
     tracker->decrement();
   }
@@ -2275,7 +2422,7 @@ struct pickup_entropic_skardyn_core_t : public action_t
 // TODO: determine reasonable default values for core pickup delay
 void entropic_skardyn_core( special_effect_t& effect )
 {
-  if ( create_fallback_buffs( effect, { "entropic_skardyn_core", "entropic_reclamation" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "entropic_skardyn_core", "entropic_reclamation" } ) )
     return;
 
   struct entropic_skardyn_core_cb_t : public dbc_proc_callback_t
@@ -2298,11 +2445,13 @@ void entropic_skardyn_core( special_effect_t& effect )
         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
         ->set_max_stack( 6 );  // TODO: 'safe' value for 2 rppm. increase if necessary.
 
-      if ( auto action =
-             dynamic_cast<pickup_entropic_skardyn_core_t*>( e.player->find_action( "pickup_entropic_skardyn_core" ) ) )
+      for ( auto a : e.player->action_list )
       {
-        action->buff = buff;
-        action->tracker = tracker;
+        if ( auto pickup = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
+        {
+          pickup->buff = buff;
+          pickup->tracker = tracker;
+        }
       }
     }
 
@@ -3082,7 +3231,7 @@ void register_special_effects()
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
   register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
-  register_special_effect( 436035, embellishments::elemental_focusing_lens );
+  register_special_effect( 461177, embellishments::elemental_focusing_lens );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -3097,7 +3246,8 @@ void register_special_effects()
   register_special_effect( 444264, items::foul_behemoths_chelicera );
   register_special_effect( 445560, items::ovinaxs_mercurial_egg );
   register_special_effect( 445066, DISABLED_EFFECT );  // ovinax's mercurial egg
-  register_special_effect( 446209, items::malfunctioning_ethereum_module, true );
+  register_special_effect( 449946, items::treacherous_transmitter, true );
+  register_special_effect( 446209, DISABLED_EFFECT );  // treacherous transmitter
   register_special_effect( 443124, items::mad_queens_mandate );
   register_special_effect( 443128, DISABLED_EFFECT );  // mad queen's mandate
   register_special_effect( 443378, items::sigil_of_algari_concordance );
@@ -3154,6 +3304,7 @@ void register_hotfixes()
 action_t* create_action( player_t* p, util::string_view n, util::string_view options )
 {
   if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
+  if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
 
   return nullptr;
 }

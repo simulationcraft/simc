@@ -89,14 +89,14 @@ struct holy_light_t : public paladin_heal_t
     p()->buffs.infusion_of_light->expire();
   }
 
-  timespan_t execute_time() const override
+  timespan_t execute_time_flat_modifier() const override
   {
-    timespan_t t = paladin_heal_t::execute_time();
+    auto add = paladin_heal_t::execute_time_flat_modifier();
 
     if ( p()->buffs.infusion_of_light->check() )
-      t += p()->buffs.infusion_of_light->data().effectN( 1 ).time_value();
+      add += p()->buffs.infusion_of_light->data().effectN( 1 ).time_value();
 
-    return t;
+    return add;
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override

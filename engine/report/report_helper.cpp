@@ -370,35 +370,12 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
     tier_name          = "PR";
-    max_ilevel_allowed = 372;
+    max_ilevel_allowed = 593;
   }
-  else if ( p.report_information.save_str.find( "DS" ) != std::string::npos )
+  else if ( p.report_information.save_str.find( "TWW1" ) != std::string::npos )
   {
-    tier_name          = "DS";
-    max_ilevel_allowed = 431;
-  }
-  else if ( p.report_information.save_str.find( "T29" ) != std::string::npos )
-  {
-    tier_name          = "T29";
-    max_ilevel_allowed = 431;
-  }
-  else if ( p.report_information.save_str.find( "T30" ) != std::string::npos )
-  {
-    tier_name          = "T30";
-    max_ilevel_allowed = 457;
-    legendary_ilevel   = 457;
-  }
-  else if ( p.report_information.save_str.find( "T31" ) != std::string::npos )
-  {
-    tier_name          = "T31";
-    max_ilevel_allowed = 496;
-    legendary_ilevel   = 496;
-  }
-  else if ( p.report_information.save_str.find( "DF4" ) != std::string::npos )
-  {
-    tier_name          = "DF4";
-    max_ilevel_allowed = 535;
-    legendary_ilevel   = 535;
+    tier_name          = "TWW1";
+    max_ilevel_allowed = 636;
   }
   else
   {
@@ -533,10 +510,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
       }
     }
 
-    // Check if the item is using ilevel=
-    if ( !item.option_ilevel_str.empty() )
-      sim.errorf( "Player %s has %s with ilevel=, use bonus_id= instead.\n", p.name(), util::slot_type_string( slot ) );
-
     // Check if the item is using stats=
     if ( !item.option_stats_str.empty() )
       sim.errorf( "Player %s has %s with stats=, it is not allowed.\n", p.name(), util::slot_type_string( slot ) );
@@ -545,9 +518,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     // Warns about invalid slots and kindly notices if an item is missing an enchant
     if ( slot == SLOT_CHEST || slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_MAIN_HAND || slot == SLOT_LEGS ||
          // Make sure offhand enchants are only on regular weapons, not shields or off-hand stat sticks
-         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE ) || 
-         // Make sure head items from T31 are not missing an enchant
-         ( slot == SLOT_HEAD && item.item_level() > 457 )
+         ( slot == SLOT_OFF_HAND && item.weapon()->type != weapon_e::WEAPON_NONE )
         )
     {
       if ( item.option_enchant_str.empty() && item.option_enchant_id_str.empty() )
@@ -755,4 +726,38 @@ void report_helper::print_html_sample_data( report::sc_html_stream& os, const pl
   os << "</td>\n"
      << "</tr>\n"
      << "</tbody>\n";
+}
+
+void report_helper::print_distribution_chart( report::sc_html_stream& os,    // output stream to html report
+                                              const player_t& p,             // player
+                                              extended_sample_data_t* data,  // pointer to specific data object
+                                              std::string_view name,         // name of the bucket (util::encode_html() first!).
+                                              std::string_view token,        // tokenized name used for chart & toggle ID
+                                              std::string_view suffix,       // tokenized data name, i.e. "_count"
+                                              bool time_element )            // true for time based elements like interval
+{
+  bool percent = data->mean() < 1.0 && data->min() < 1.0 && data->max() < 1.0;
+
+  highchart::histogram_chart_t chart( fmt::format( "{}{}", token, suffix ), *p.sim );
+
+  if ( chart::generate_distribution( chart, nullptr, data->distribution, fmt::format( "{} {}", name, data->name_str ),
+                                     data->mean(), data->min(), data->max(), percent ) )
+  {
+    chart.set_toggle_id( fmt::format( "{}_toggle", token ) );
+
+    if ( time_element )
+    {
+      chart.set( "xAxis.labels.format", "{value}s" );
+      chart.set( "yAxis.title.text", "# Occurances" );
+      chart.set( "series.0.name", "Occurances" );
+    }
+    else if ( percent )
+    {
+      chart.set( "xAxis.labels.format", "{value}%" );
+    }
+
+    os << chart.to_target_div();
+
+    p.sim->add_chart_data( chart );
+  }
 }

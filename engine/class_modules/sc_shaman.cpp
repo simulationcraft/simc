@@ -495,8 +495,6 @@ public:
     buff_t* witch_doctors_ancestry;
     buff_t* legacy_of_the_frost_witch;
 
-    buff_t* windfury_totem_proxy; // Fake Windfury Totem buff
-
     // Shared talent stuff
     buff_t* tempest;
     buff_t* unlimited_power;
@@ -741,7 +739,6 @@ public:
     player_talent_t doom_winds;
     player_talent_t sundering;
     player_talent_t overflowing_maelstrom;
-    player_talent_t windfury_totem;
     player_talent_t fire_nova;
     player_talent_t hailstorm;
     player_talent_t elemental_weapons;
@@ -1693,21 +1690,21 @@ public:
     );
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    auto et = ab::execute_time();
+    auto mul = ab::execute_time_pct_multiplier();
 
     if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
-      et *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
+      mul *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
     }
 
     if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
     {
-      et *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
+      mul *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
     }
 
-    return et;
+    return mul;
   }
 
   double cost_flat_modifier() const override
@@ -2061,14 +2058,13 @@ public:
     return mw_stacks;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    auto t = ab::execute_time();
+    auto mul = ab::execute_time_pct_multiplier();
 
-    t *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() *
-      maelstrom_weapon_stacks();
+    mul *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() * maelstrom_weapon_stacks();
 
-    return std::max( t, 0_s );
+    return mul;
   }
 
   double action_multiplier() const override
@@ -2240,17 +2236,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = base_t::execute_time();
+    auto mul = base_t::execute_time_pct_multiplier();
 
     if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       // stormkeeper has a -100% value as effect 1
-      t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
+      mul *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
     }
 
-    return t;
+    return mul;
   }
 
   void execute() override
@@ -4982,13 +4978,13 @@ struct chain_lightning_t : public chained_base_t
     return shaman_spell_t::consume_maelstrom_weapon();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = chained_base_t::execute_time();
+    auto mul = chained_base_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+    mul *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    return t;
+    return mul;
   }
 
   int n_targets() const override
@@ -6087,13 +6083,13 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t t = shaman_spell_t::execute_time();
+    auto mul = shaman_spell_t::execute_time_pct_multiplier();
 
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+    mul *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    return t;
+    return mul;
   }
 
   timespan_t gcd() const override
@@ -7371,27 +7367,27 @@ public:
     return m;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
   {
-    auto d = shaman_spell_t::composite_dot_duration( s );
+    auto mul = shaman_spell_t::dot_duration_pct_multiplier( s );
 
     if ( p()->buff.fire_elemental->check() && p()->spell.fire_elemental->ok() )
     {
-      d *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
+      mul *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
     }
 
-    return d;
+    return mul;
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    auto tt = shaman_spell_t::tick_time( state );
+    auto mul = shaman_spell_t::tick_time_pct_multiplier( state );
 
-    tt *= 1.0 + p()->buff.fire_elemental->stack_value();
+    mul *= 1.0 + p()->buff.fire_elemental->stack_value();
 
-    tt *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
+    mul *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
 
-    return tt;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -7943,16 +7939,16 @@ struct healing_wave_t : public shaman_heal_t
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t c = shaman_heal_t::execute_time();
+    auto mul = shaman_heal_t::execute_time_pct_multiplier();
 
     if ( p()->buff.tidal_waves->up() )
     {
-      c *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
+      mul *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
     }
 
-    return c;
+    return mul;
   }
 };
 
@@ -7967,16 +7963,16 @@ struct greater_healing_wave_t : public shaman_heal_t
         p()->spell.resurgence->effectN( 1 ).average( player ) * p()->spec.resurgence->effectN( 1 ).percent();
   }
 
-  timespan_t execute_time() const override
+  double execute_time_pct_multiplier() const override
   {
-    timespan_t c = shaman_heal_t::execute_time();
+    auto mul = shaman_heal_t::execute_time_pct_multiplier();
 
     if ( p()->buff.tidal_waves->up() )
     {
-      c *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
+      mul *= 1.0 - p()->spec.tidal_waves->effectN( 1 ).percent();
     }
 
-    return c;
+    return mul;
   }
 };
 
@@ -8036,63 +8032,6 @@ struct healing_rain_t : public shaman_heal_t
     dot_duration   = data().duration();
     hasted_ticks   = false;
     tick_action    = new healing_rain_aoe_tick_t( player );
-  }
-};
-
-// Windfury Totem Spell =====================================================
-
-struct windfury_totem_t : public shaman_spell_t
-{
-  windfury_totem_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "windfury_totem", player, player->talent.windfury_totem )
-  {
-    parse_options( options_str );
-    harmful = may_crit = may_miss = false;
-
-    // If the Shaman has the Doom Winds legendary equipped or the simulator environment
-    // does not enable the "global" windfury totem, we need to ensure the global
-    // Windfury Totem buff for the shaman is proper duration (to force the shaman to
-    // re-cast it periodically).
-    auto wft_buff = buff_t::find( player, "windfury_totem" );
-    if ( !sim->overrides.windfury_totem )
-    {
-      wft_buff->set_duration( data().duration() );
-
-      const auto has_effect = range::any_of( player->special_effects,
-                                            []( const special_effect_t* e ) {
-                                              return e->driver()->id() == 327942;
-                                            } );
-
-      if ( !has_effect )
-      {
-        // Need to also create the effect since the core sim won't do it when
-        // sim->overrides.windfury_totem is not set
-        special_effect_t effect( player );
-
-        unique_gear::initialize_special_effect( effect, 327942 );
-        if ( !effect.custom_init_object.empty() )
-        {
-          player->special_effects.push_back( new special_effect_t( effect ) );
-        }
-      }
-    }
-
-    // Allow Windfury Totem to proc if the actor has the talent or the sim-wide override is used
-    wft_buff->set_chance( player->talent.windfury_totem.ok() || sim->overrides.windfury_totem );
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    if ( !sim->overrides.windfury_totem )
-    {
-      p()->buffs.windfury_totem->trigger();
-    }
-    else
-    {
-      p()->buff.windfury_totem_proxy->trigger();
-    }
   }
 };
 
@@ -8628,10 +8567,6 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
     return shaman_spell_t::ready();
   }
 
-  timespan_t tick_time( const action_state_t* /* s */ ) const override
-  {
-    return base_tick_time;
-  }
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
@@ -9014,8 +8949,6 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
     return new wind_shear_t( this, options_str );
-  if ( name == "windfury_totem" )
-    return new windfury_totem_t( this, options_str );
   if ( name == "healing_stream_totem" )
     return new healing_stream_totem_spell_t( this, options_str );
   if ( name == "earth_shield" )
@@ -9406,14 +9339,6 @@ if ( util::str_compare_ci( name, "fb_extension_possible" ) )
     }
 
     return expr_t::create_constant( name, rotation_type == options.rotation );
-  }
-
-  // Override windfury_totem expressions to use the proxy buff as the object when the Sim-wide
-  // windfury totem override is in use.  This will allow the shaman to still expend GCDs to cast
-  // Windfury Totem, even when the sim-wide override is in use.
-  if ( util::str_in_str_ci( name, "buff.windfury_totem" ) && sim->overrides.windfury_totem )
-  {
-    return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff.windfury_totem_proxy );
   }
 
   return player_t::create_expression( name );
@@ -9838,7 +9763,6 @@ void shaman_t::init_spells()
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
   talent.overflowing_maelstrom = _ST( "Overflowing Maelstrom" );
-  talent.windfury_totem = _ST( "Windfury Totem" );
   talent.fire_nova = _ST( "Fire Nova" );
   talent.hailstorm = _ST( "Hailstorm" );
   talent.elemental_weapons = _ST( "Elemental Weapons" );
@@ -11120,10 +11044,6 @@ void shaman_t::create_buffs()
   buff.doom_winds = make_buff( this, "doom_winds", talent.doom_winds );
   buff.ice_strike = make_buff( this, "ice_strike", talent.ice_strike->effectN( 3 ).trigger() )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
-
-  buff.windfury_totem_proxy = make_buff( this, "windfury_totem_proxy", find_spell( 327942 ) )
-    ->set_chance( 1.0 )
-    ->set_quiet( true );
 
   //
   // Restoration

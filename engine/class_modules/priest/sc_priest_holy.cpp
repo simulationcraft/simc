@@ -12,7 +12,6 @@ namespace priestspace
 {
 namespace actions::spells
 {
-
 struct holy_word_sanctify_t final : public priest_heal_t
 {
   holy_word_sanctify_t( priest_t& p, util::string_view options_str )
@@ -186,14 +185,12 @@ struct burning_vehemence_t final : public priest_spell_t
 
 struct holy_fire_t final : public priest_spell_t
 {
-  timespan_t manipulation_cdr;
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
   action_t* child_searing_light;
   bool casted;
 
   holy_fire_t( priest_t& p, util::string_view options_str, bool _casted = true )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       child_burning_vehemence( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
   {
@@ -243,11 +240,6 @@ struct holy_fire_t final : public priest_spell_t
     {
       priest().cooldowns.holy_fire->reset( false );
       priest().buffs.empyreal_blaze->trigger();
-    }
-
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
 

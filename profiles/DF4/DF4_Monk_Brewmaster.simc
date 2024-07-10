@@ -1,17 +1,19 @@
 max_time=400
 vary_combat_length=0.0
 override.target_health=0.05
-enable_all_talents=1
-
 
 monk="TWW Brewmaster Test"
 spec=brewmaster
+role=tank
 level=80
 race=tauren
 load_default_gear=1
+enable_all_talents=1
+enable_all_sets=1
 
 # spec_talents=press_the_advantage:0
 # spec_talents=special_delivery:0
+# spec_talents=gift_of_the_ox:0/spirit_of_the_ox:0
 
 actions.ogcd+=/fortifying_brew
 actions.ogcd+=/fortifying_brew
@@ -26,7 +28,7 @@ actions.ogcd+=/spear_hand_strike
 
 actions.igcd+=/invoke_niuzao_the_black_ox
 actions.igcd+=/weapons_of_order
-actions.igcd+=/touch_of_death
+# actions.igcd+=/touch_of_death
 actions.igcd+=/exploding_keg
 actions.igcd+=/celestial_brew
 
@@ -61,19 +63,28 @@ actions.precombat=snapshot_stats
 
 actions=auto_attack
 actions+=/potion
+# actions+=/blackout_kick
+# actions+=/rising_sun_kick
+# actions+=/rushing_jade_wind
+# actions+=/exploding_keg
+# actions+=/blackout_kick
+# actions+=/keg_smash
+# actions+=/breath_of_fire,if=buff.blackout_combo.up
+# actions+=/tiger_palm
+# actions+=/purifying_brew
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=igcd,if=time<240
 actions+=/call_action_list,name=rota,if=time<240
 actions+=/call_action_list,name=dumb,if=time>240
 
-# tank_dummy="Fluffy_Pollow"
-# level=83
-# race=humanoid
-# role=tank
-# position=front
+tank_dummy="Fluffy_Pollow"
+level=83
+race=humanoid
+role=tank
+position=front
 
-# actions.precombat=snapshot_stats
-# actions=auto_attack,damage=1500000,range=30000,attack_speed=2,aoe_tanks=1
-# actions+=/melee_nuke,damage=300000000,range=60000,attack_speed=2,cooldown=30,aoe_tanks=1
-# actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60,bleed=1
+actions.precombat=snapshot_stats
+actions=auto_attack,damage=7500000,range=30000,attack_speed=0.5,aoe_tanks=1
+actions+=/melee_nuke,damage=12000000,range=60000,attack_speed=2,cooldown=30,aoe_tanks=1
+actions+=/spell_dot,damage=60000,range=1200,tick_time=2,cooldown=30,aoe_tanks=1,dot_duration=600,bleed=1
 # actions+=/pause_action,duration=30,cooldown=30,if=time>=30

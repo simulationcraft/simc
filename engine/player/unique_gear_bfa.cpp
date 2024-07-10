@@ -2591,12 +2591,6 @@ void items::grongs_primal_rage( special_effect_t& effect )
                                                     effect.player->find_spell( 288269 ), true );
     }
 
-    // Even though ticks are hasted, the duration is a fixed 4s
-    timespan_t composite_dot_duration( const action_state_t* ) const override
-    {
-      return dot_duration;
-    }
-
     // Copied from draught of souls
     void execute() override
     {
@@ -3656,7 +3650,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
           if ( a->action_ready() )
           {
             timespan_t delta =
-                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+                std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
             sim->print_debug( "PRECOMBAT: Azshara's Font of Power prechannel timing pushed by {} for {}", delta,
                               a->name() );
             time += delta;
@@ -3707,11 +3701,6 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       }
     }
 
-    timespan_t tick_time( const action_state_t* ) const override
-    {
-      return base_tick_time;
-    }
-
     void trigger_dot( action_state_t* s ) override
     {
       if ( player->in_combat )  // only trigger channel 'dot' in combat
@@ -3743,7 +3732,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       generic_proc_t::tick( d );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                     ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time ) + buff->buff_duration() );
+                     ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time.base ) + buff->buff_duration() );
     }
 
     void last_tick( dot_t* d ) override

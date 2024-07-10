@@ -729,15 +729,18 @@ struct evoker_t : public player_t
     double scarlet_overheal = 0.5;
     double heal_eb_chance   = 0.9;
     // How much time should prepulling with Deep Breath delay opener
-    timespan_t prepull_deep_breath_delay        = timespan_t::from_seconds( 0.3 );
-    timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
-    bool naszuro_accurate_behaviour             = true;
-    bool naszuro_bounce_destroy_solo            = true;
-    double naszuro_bounce_chance                = 0.85;
-    std::string force_clutchmates               = "";
-    bool make_simplified_if_alone               = true;
-    bool remove_precombat_ancient_flame         = true;
-    int simplified_actor_ilevel                 = -1;
+    timespan_t prepull_deep_breath_delay                       = timespan_t::from_seconds( 0.3 );
+    timespan_t prepull_deep_breath_delay_stddev                = timespan_t::from_seconds( 0.05 );
+    bool naszuro_accurate_behaviour                            = true;
+    bool naszuro_bounce_destroy_solo                           = true;
+    double naszuro_bounce_chance                               = 0.85;
+    std::string force_clutchmates                              = "";
+    bool make_simplified_if_alone                              = true;
+    bool remove_precombat_ancient_flame                        = true;
+    int simplified_actor_ilevel                                = -1;
+    bool simulate_bombardments                                 = true;
+    timespan_t simulate_bombardments_time_between_procs_mean   = 2.1_s;
+    timespan_t simulate_bombardments_time_between_procs_stddev = 0.2_s;
   } option;
 
   // Action pointers
@@ -1289,6 +1292,7 @@ struct time_skip_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
+    set_reverse( true );
 
     apply_affecting_aura( p->talent.tomorrow_today );
 
@@ -1859,7 +1863,7 @@ public:
 
     if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
     {
-      parse_effects( p()->buff.volcanic_upsurge );
+      parse_effects( p()->buff.volcanic_upsurge, IGNORE_STACKS );
     }
   }
 
@@ -2481,25 +2485,12 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
   timespan_t tick_time( const action_state_t* s ) const override
   {
-    // we need to have the tick time match duration.
-    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
     return composite_dot_duration( s );
-  }
-
-  timespan_t base_composite_dot_duration( const action_state_t* s ) const
-  {
-    auto dur = ab::dot_duration;
-
-    for ( const auto& i : ab::dot_duration_effects )
-      dur *= 1.0 + ab::get_effect_value( i );
-
-    return dur * s->haste;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
-    auto dur = base_composite_dot_duration( s );
+    auto dur = ab::composite_dot_duration( s );
 
     // hack so we always have a non-zero duration in order to trigger last_tick()
     if ( dur == 0_ms )
@@ -2508,10 +2499,24 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     return dur + lag;
   }
 
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
+  {
+    // action_t::dot_duration_pct_multiplier calls tick_time(), but since tick_time() is overriden to call
+    // composite_dot_duration() we need to entirely bypass action_t::dot_duration_pct_multiplier().
+    //
+    // *** Any non-parsed duration multipliers should be implemented here. ***
+    auto mul = ab::hasted_dot_duration ? s->haste : 1.0;
+
+    for ( const auto& i : ab::dot_duration_effects )
+      mul *= 1.0 + ab::get_effect_value( i );
+
+    return mul;
+  }
+
   timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
   {
     auto base = base_time_to_empower( emp );
-    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+    auto mult = composite_dot_duration( s ) / base_empower_duration;
 
     return base * mult;
   }
@@ -3006,20 +3011,12 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
   }
 };
 
-struct sands_of_time_state_t
-{
-  bool sands_crit;
-};
-
 struct ebon_might_t : public evoker_augment_t
 {
-protected:
-  using state_t = evoker_action_state_t<sands_of_time_state_t>;
-
 public:
   timespan_t ebon_time          = timespan_t::min();
   mutable std::vector<player_t*> secondary_list, tertiary_list;
-  timespan_t double_time_extension;
+  double double_time_mult;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
     : ebon_might_t( p, "ebon_might", options_str, timespan_t::min() )
@@ -3035,11 +3032,13 @@ public:
       ebon_time( ebon ),
       secondary_list(),
       tertiary_list(),
-      double_time_extension( timespan_t::from_seconds( p->talent.chronowarden.double_time->effectN( 2 ).base_value() ) )
+      double_time_mult( p->talent.chronowarden.double_time->effectN( 2 ).percent() )
   {
     // Add a target so you always hit yourself.
     aoe += 1;
     dot_duration = base_tick_time = 0_ms;
+
+    may_crit = true;
 
     cooldown->base_duration = 0_s;
 
@@ -3051,34 +3050,18 @@ public:
     }
   }
 
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
   double ebon_value() const
   {
-    return p()->spec.ebon_might->effectN( 1 ).percent() + p()->buff.tww1_4pc_aug->check_stack_value();
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    evoker_augment_t::snapshot_state( s, rt );
-    cast_state( s )->sands_crit = rng().roll( p()->cache.spell_crit_chance() );
+    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.ebon_might_self_buff->check_value() ) +
+           p()->buff.tww1_4pc_aug->check_stack_value();
   }
 
   double ebon_int()
   {
+    sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
+                      player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
+                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
+
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
 
@@ -3184,11 +3167,11 @@ public:
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();
-      if ( p()->talent.chronowarden.double_time.enabled() && crit )
-      {
-        time += double_time_extension;
-      }
       buff->trigger( time );
+      if ( p()->talent.chronowarden.double_time.enabled() && crit && t == p() )
+      {
+        buff->current_value = double_time_mult;
+      }
       if ( t != p() && new_cast )
         update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
     }
@@ -3294,11 +3277,11 @@ public:
     {
       for ( auto t : p()->allies_with_my_ebon )
       {
-        ebon_on_target( t, cast_state( s )->sands_crit );
+        ebon_on_target( t, s->result == RESULT_CRIT );
       }
     }
 
-    ebon_on_target( s->target, cast_state( s )->sands_crit );
+    ebon_on_target( s->target, s->result == RESULT_CRIT );
   }
 
   int n_targets() const override
@@ -3440,8 +3423,10 @@ struct living_flame_base_t : public Base
   living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, bool st = false )
     : Base( n, p, s ), prepull_timespent( timespan_t::zero() ), st_only( st )
   {
-    base_t::dual         = true;
-    base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
+    base_t::dual = true;
+
+    if ( !p->talent.ruby_embers.ok() )
+      base_t::dot_duration = 0_ms;
   }
 
   int n_targets() const override
@@ -3593,16 +3578,16 @@ struct fire_breath_traveling_flame_t : public empowered_release_spell_t
     }
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
+  double tick_time_pct_multiplier( const action_state_t* state ) const override
   {
-    timespan_t t = base_t::tick_time( state );
+    auto mul = base_t::tick_time_pct_multiplier( state );
 
     if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
     {
-      t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+      mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
     }
 
-    return t;
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -3689,16 +3674,16 @@ struct fire_breath_t : public empowered_charge_spell_t
       }
     }
 
-    timespan_t tick_time( const action_state_t* state ) const override
+    double tick_time_pct_multiplier( const action_state_t* state ) const override
     {
-      timespan_t t = base_t::tick_time( state );
+      auto mul = base_t::tick_time_pct_multiplier( state );
 
       if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
       {
-        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+        mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
 
-      return t;
+      return mul;
     }
 
     void trigger_dot( action_state_t* state ) override
@@ -5149,6 +5134,7 @@ struct upheaval_t : public empowered_charge_spell_t
         sands = nullptr;
         threads_of_fate = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
+        extend_ebon = 0_s;
       }
       else if ( p->talent.rumbling_earth.enabled() )
       {
@@ -5391,23 +5377,45 @@ public:
 
 struct prescience_t : public evoker_augment_t
 {
+protected:
   double anachronism_chance;
   double golden_opportunity_chance;
+  double double_time_mult;
 
+public:
   prescience_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "prescience", p, p->talent.prescience, options_str ),
       anachronism_chance(),
-      golden_opportunity_chance()
+      golden_opportunity_chance(),
+      double_time_mult()
   {
-    anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
+    anachronism_chance        = p->talent.anachronism->effectN( 1 ).percent();
     golden_opportunity_chance = p->talent.chronowarden.golden_opportunity->effectN( 1 ).percent();
+    double_time_mult          = p->talent.chronowarden.double_time->effectN( 2 ).percent();
+
+    may_crit = true;
+  }
+
+  void init() override
+
+  {
+      evoker_augment_t::init();
+
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
 
-    p()->get_target_data( s->target )->buffs.prescience->trigger();
+    double prescience_value = p()->get_target_data( s->target )->buffs.prescience->default_value;
+    
+    if ( s->result == RESULT_CRIT )
+    {
+      prescience_value *= 1 + double_time_mult;
+    }
+
+    p()->get_target_data( s->target )->buffs.prescience->trigger( 1, prescience_value );
+
 
     p()->buff.golden_opportunity->expire();
 
@@ -5943,28 +5951,24 @@ struct engulf_t : public evoker_spell_t
   }
 };
 
-struct bombardments_damage_t : public evoker_external_scaling_action_t<spell_t>
+struct bombardments_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
-  using base = evoker_external_scaling_action_t<spell_t>;
+  using base = evoker_external_action_t<spell_t>;
   double diverted_power_chance;
   target_specific_t<cooldown_t> cooldown_objects;
 
 public:
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
-      diverted_power_chance( 0.25 ),  // Guess TODO: Test ingame.
+      diverted_power_chance( 0.15 ),  // Guess TODO: Test ingame.
       cooldown_objects{ false }
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
     aoe                               = -1;
     split_aoe_damage                  = true;
-
-    base_dd_multiplier = 1.85; // Bug?
   }
-
-  // TODO: MELT ARMOR
 
   void init() override
   {
@@ -5989,7 +5993,11 @@ public:
     return cd;
   }
 
-  
+  bool use_full_mastery() const
+  {
+    return evoker && evoker->talent.tyranny.ok() && evoker->buff.dragonrage->check();
+  }
+   
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = base::composite_target_multiplier( t );
@@ -5997,15 +6005,30 @@ public:
     if ( evoker )
     {
       auto td = evoker->get_target_data( t );
+
       if ( td && td->debuffs.melt_armor->check() )
       {
         tm *= 1 + td->debuffs.melt_armor->check_value();
+      }
+
+      if ( td && td->dots.fire_breath->is_ticking() )
+      {
+        tm *= 1 + evoker->talent.molten_embers->effectN( 1 ).percent();
       }
 
       if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
       {
         tm *= 1 + evoker->talent.scalecommander.might_of_the_black_dragonflight->effectN( 1 ).percent();
       }
+
+      // No mastery yet
+      /* if ( evoker->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( use_full_mastery() )
+          tm *= 1.0 + evoker->cache.mastery_value();
+        else
+          tm *= 1.0 + evoker->cache.mastery_value() * std::max( 0.3, t->health_percentage() / 100 );
+      }*/
     }
     
     return tm;
@@ -6355,27 +6378,19 @@ struct prescience_buff_t : public evoker_buff_t<buff_t>
 {
 protected:
   using bb = evoker_buff_t<buff_t>;
-  timespan_t double_time_length;
 
 public:
   prescience_buff_t( evoker_td_t& td )
-    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff ), double_time_length()
+    : bb( td, "prescience", static_cast<evoker_t*>( td.source )->talent.prescience_buff )
   {
     set_default_value( p()->talent.prescience_buff->effectN( 1 ).percent() );
     set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     set_chance( 1.0 );
-
-    double_time_length = timespan_t::from_seconds( p()->talent.chronowarden.double_time->effectN( 2 ).base_value() );
   };
 
   timespan_t buff_duration() const override
   {
     timespan_t bd = bb::buff_duration();
-
-    if ( p()->talent.chronowarden.double_time.enabled() && p()->rng().roll( p()->composite_spell_crit_chance() ) )
-    {
-      bd += double_time_length;
-    }
 
     if ( p()->buff.t31_2pc_proc->check() )
     {
@@ -6533,8 +6548,6 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 
 struct bombardments_buff_t : public evoker_buff_t<buff_t>
 {
-  dbc_proc_callback_t* cb;
-
   struct bombardments_cb_t : public dbc_proc_callback_t
   {
     evoker_t* source;
@@ -6580,32 +6593,60 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       }
     }
   };
-
+  using e_buff_t = evoker_buff_t<buff_t>;
+  
+  bombardments_cb_t* cb;
+  bool use_bombardments_cb = false;
+  rng::truncated_gauss_t gauss;
   bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
-    : evoker_buff_t<buff_t>( td, name, s )
+    : e_buff_t( td, name, s ),
+      gauss( p()->option.simulate_bombardments_time_between_procs_mean,
+             p()->option.simulate_bombardments_time_between_procs_stddev, data().internal_cooldown() + 1_ms )
   {
     buff_period = 0_s;
 
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
 
     set_cooldown( 0_s );
     set_chance( 1 );
 
-    auto bombardments_effect       = new special_effect_t( td.target );
-    bombardments_effect->name_str  = "bombardments_" + td.source->name_str;
-    bombardments_effect->type      = SPECIAL_EFFECT_EQUIP;
-    bombardments_effect->spell_id  = data().id();
+    auto bombardments_effect                      = new special_effect_t( td.target );
+    bombardments_effect->name_str                 = "bombardments_" + td.source->name_str;
+    bombardments_effect->target_specific_cooldown = true;
+    bombardments_effect->type                     = SPECIAL_EFFECT_EQUIP;
+    bombardments_effect->spell_id                 = data().id();
     td.target->special_effects.push_back( bombardments_effect );
 
     cb = new bombardments_cb_t( td.target, *bombardments_effect, p() );
+
+    use_bombardments_cb = !p()->option.simulate_bombardments;
+    if ( p()->option.simulate_bombardments )
+    {
+      cb->deactivate();
+
+      set_tick_time_callback( [ this ]( const buff_t*, unsigned ) { return rng().gauss( gauss ); } );
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { fake_execute(); } );
+    }
+  }
+
+  void fake_execute()
+  {
+    if ( cb->cooldown->up() )
+    {
+      auto damage_action    = cb->get_bombardments_action( p() );
+      damage_action->evoker = p();
+      damage_action->execute_on_target( player );
+      cb->cooldown->start();
+    }
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( !evoker_buff_t::trigger( stacks, value, chance, duration ) )
+    if ( !e_buff_t::trigger( stacks, value, chance, duration ) )
       return false;
 
-    if ( cb )
+    if ( cb && use_bombardments_cb )
       cb->activate();
 
     return true;
@@ -6613,14 +6654,14 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
 
   void reset() override
   {
-    evoker_buff_t<buff_t>::reset();
+    e_buff_t::reset();
 
     cb->deactivate();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    e_buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( cb )
       cb->deactivate();
@@ -7276,13 +7317,13 @@ void evoker_t::init_finished()
     if ( auto lf = dynamic_cast<spells::living_flame_t*>( *pre ) )
     {
       int actions           = 0;
-      timespan_t time_spent = timespan_t::zero();
+      timespan_t time_spent = 0_ms;
 
       std::for_each( pre + 1, precombat_action_list.end(), [ &actions, &time_spent ]( action_t* a ) {
-        if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+        if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
-          time_spent += std::max( a->base_execute_time, a->trigger_gcd );
+          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
         }
       } );
 
@@ -7748,7 +7789,7 @@ void evoker_t::init_assessors()
       auto& tracker = td->chrono_tracker;
 
       time_t accessed_second = sim->current_time().total_millis() / 1000;
-      size_t current_bucket  = as<size_t>( accessed_second % 5 );
+      size_t current_bucket  = as<size_t>( accessed_second ) % 5;
 
       if ( accessed_second > tracker.last_accessed_second )
       {
@@ -7974,7 +8015,9 @@ void evoker_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
           ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
             static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
-          } );
+          } )
+          ->set_default_value( 0 )
+          ->set_freeze_stacks( true );
 
   buff.t31_2pc_proc = MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B2 ), this, "t31_2pc_proc",
                            sets->set( EVOKER_AUGMENTATION, T31, B2 ) )
@@ -8055,13 +8098,6 @@ void evoker_t::create_buffs()
   buff.unrelenting_siege    = MBF( talent.scalecommander.unrelenting_siege.ok(), this, "unrelenting_siege",
                                    talent.scalecommander.unrelenting_siege_buff )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  
-  if ( talent.scalecommander.unrelenting_siege.ok() )
-  {
-    buff.unrelenting_siege->set_max_stack(
-        as<int>( talent.scalecommander.unrelenting_siege->effectN( 2 ).base_value() /
-                 talent.scalecommander.unrelenting_siege->effectN( 1 ).base_value() ) );
-  }
 }
 
 void evoker_t::create_options()
@@ -8082,6 +8118,11 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
   add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
   add_option( opt_int( "evoker.simplified_actor_ilevel", option.simplified_actor_ilevel, 0, 4096 ) );
+  add_option( opt_bool( "evoker.simulate_bombardments", option.simulate_bombardments ) ) ;
+  add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_mean",
+                            option.simulate_bombardments_time_between_procs_mean, 0_s, 9999_s ) );
+  add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_stddev",
+                            option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s) );
 }
 
 void evoker_t::analyze( sim_t& sim )

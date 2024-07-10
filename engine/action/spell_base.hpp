@@ -6,19 +6,20 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "action.hpp"
 
 struct spell_base_t : public action_t
 {
-  spell_base_t( action_e at, util::string_view token, player_t* p);
+  spell_base_t( action_e at, util::string_view token, player_t* p );
   spell_base_t( action_e at, util::string_view token, player_t* p, const spell_data_t* s );
 
   // Spell Base Overrides
   double cost() const override;
-  timespan_t execute_time() const override;
-  result_e   calculate_result( action_state_t* ) const override;
-  void   execute() override;
-  void   schedule_execute( action_state_t* execute_state = nullptr ) override;
+  double execute_time_pct_multiplier() const override;
+  result_e calculate_result( action_state_t* ) const override;
+  void execute() override;
+  void schedule_execute( action_state_t* execute_state = nullptr ) override;
 
   double composite_crit_chance() const override;
 

@@ -423,8 +423,8 @@ enum dot_behavior_e
 
 enum dot_copy_e
 {
-  DOT_COPY_START,
-  DOT_COPY_CLONE
+  DOT_COPY_START,          // Start a new DoT with the same remaining duration
+  DOT_COPY_CLONE          // Clone everything from source DoT (tick time, stacks, remaining duration, etc)
 };
 
 enum attribute_e
@@ -802,10 +802,6 @@ enum slot_e  // these enum values match armory settings
   SLOT_MIN       = 0
 };
 
-// T29, T30, T31, ... + PVP
-// TODO: remove after Dragonflight ends
-const unsigned N_TIER   = 6;
-const unsigned MIN_TIER = 29;
 // 1, 2, 3, 4
 const unsigned N_SEASON = 5;
 const unsigned MIN_SEASON = 1;

@@ -30,11 +30,11 @@ struct proc_event_t : public event_t
 #endif
 
   proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s )
-    : event_t( *a->sim ),
+    : event_t( *c->listener->sim ),
       cb( c ),
       source_action( a ),
       // Note, state has to be cloned as it's about to get recycled back into the action state cache
-      source_state( s->action->get_state( s ) )
+      source_state( s ? s->action->get_state( s ) : nullptr )
   {
     schedule( timespan_t::zero() );
 #ifndef NDEBUG
@@ -50,13 +50,15 @@ struct proc_event_t : public event_t
       debug_str = cb->effect.generated_name_str;
     }
 
-    debug_str += '-' + source_action->name_str;
+    if ( source_action )
+      debug_str += '-' + source_action->name_str;
 #endif
   }
 
   ~proc_event_t() override
   {
-    action_state_t::release( source_state );
+    if ( source_state )
+      action_state_t::release( source_state );
   }
 
   const char* name() const override
@@ -136,6 +138,32 @@ void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
+  // special handling for heartbeat trigger with no action nor state
+  if ( !a && !state )
+  {
+    auto cd = get_cooldown( listener );
+    if ( cd && cd->down() )
+      return;
+
+    assert( rppm || proc_chance > 0 );
+    bool triggered = roll( a );
+
+    if ( listener->sim->debug )
+    {
+      listener->sim->print_debug( "{} attempts to proc {} on heartbeat: {:d}", listener->name(), effect, triggered );
+    }
+
+    if ( triggered )
+    {
+      make_event<proc_event_t>( *listener->sim, this, nullptr, nullptr );
+
+      if ( cd )
+        cd->start();
+    }
+
+    return;
+  }
+
   // both action_t::enabled_proc_from_suppressed AND dbc_proc_callback_t::can_proc_from_suppressed are necessary if
   // action_t::suppress_caster_procs is true
   if ( a->suppress_caster_procs && ( !a->enable_proc_from_suppressed || !can_proc_from_suppressed ) )
@@ -206,8 +234,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
   if ( listener->sim->debug )
   {
-    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(),
-        effect, a->name(), triggered );
+    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(), effect, a->name(), triggered );
   }
 
   if ( triggered )
@@ -414,7 +441,7 @@ bool dbc_proc_callback_t::roll( action_t* action )
 {
   if ( rppm )
     return rppm->trigger();
-  else if ( ppm > 0 )
+  else if ( ppm > 0 && action )
     return rng().roll( action->ppm_proc_chance( ppm ) );
   else if ( proc_chance > 0 )
     return rng().roll( proc_chance );
@@ -441,7 +468,7 @@ bool dbc_proc_callback_t::roll( action_t* action )
 
 void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
 {
-  if ( state->target->is_sleeping() )
+  if ( state && state->target->is_sleeping() )
   {
     return;
   }
@@ -456,7 +483,7 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
     if ( proc_buff )
       triggered = proc_buff->trigger();
 
-    if ( triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
+    if ( state && triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
     {
       // Snapshot a new state for schedule_execute() as AoE-triggered procs may require different targets
       proc_action->set_target( target( state ) );

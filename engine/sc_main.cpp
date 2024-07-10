@@ -147,14 +147,17 @@ sim_t* sim_signal_handler_t::global_sim = nullptr;
 
 bool need_to_save_profiles( sim_t* sim )
 {
-  if ( sim -> save_profiles ) { return true;
-}
-
-  for ( auto& player : sim -> player_list )
+  if ( sim->save_profiles )
   {
-    if ( ! player -> report_information.save_str.empty() ) {
+    return true;
+  }
+
+  for ( auto& player : sim->player_list )
+  {
+    if ( !player->report_information.save_str.empty() )
+    {
       return true;
-}
+    }
   }
 
   return false;

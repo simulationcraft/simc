@@ -30,6 +30,6 @@ FILE=SpellDataDump/build_info.txt
 ./engine/simc display_build="2" > $FILE.unix
 convert_line_ending $FILE
 
-FILE=SpellDataDump/bonus_ids_ptr.txt
+FILE=SpellDataDump/bonus_ids.txt
 ./engine/simc display_build="0" show_bonus_ids="1" > $FILE.unix
 convert_line_ending $FILE

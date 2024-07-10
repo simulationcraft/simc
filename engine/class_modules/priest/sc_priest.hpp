@@ -77,6 +77,7 @@ namespace actions::heals
 struct essence_devourer_t;
 struct atonement_t;
 struct divine_aegis_t;
+struct cauterizing_shadows_t;
 }  // namespace actions::heals
 
 /**
@@ -124,7 +125,6 @@ public:
   void target_demise();
 };
 
-
 // utility to create target_effect_t compatible functions from priest_td_t member references
 template <typename T>
 static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
@@ -132,9 +132,8 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   if constexpr ( std::is_invocable_v<T, priest_td_t::buffs_t> )
   {
     if ( stack )
-      return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check();
-      };
+      return
+          [ d ]( actor_target_data_t* t ) { return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check(); };
     else
       return [ d ]( actor_target_data_t* t ) {
         return std::invoke( d, static_cast<priest_td_t*>( t )->buffs )->check() > 0;
@@ -332,9 +331,8 @@ public:
     const spell_data_t* divine_star_heal_shadow;
     const spell_data_t* divine_star_dmg_shadow;
     player_talent_t translucent_image;
-    player_talent_t mindgames;
-    const spell_data_t* mindgames_healing_reversal;
-    const spell_data_t* mindgames_damage_reversal;
+    player_talent_t cauterizing_shadows;
+    const spell_data_t* cauterizing_shadows_spell;
     // Row 9
     player_talent_t surge_of_light;
     player_talent_t lights_inspiration;
@@ -349,7 +347,7 @@ public:
     const spell_data_t* essence_devourer_shadowfiend;
     const spell_data_t* essence_devourer_mindbender;
     player_talent_t void_shift;
-    player_talent_t shattered_perceptions;
+    player_talent_t phantom_reach;
 
     struct
     {
@@ -374,7 +372,7 @@ public:
       const spell_data_t* mind_spike_insanity_spell;
       // Row 5
       player_talent_t shadow_crash;
-      player_talent_t void_crash;
+      player_talent_t shadow_crash_target;
       player_talent_t unfurling_darkness;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
@@ -592,6 +590,13 @@ public:
       const spell_data_t* collapsing_void_damage;
     } voidweaver;
 
+    struct
+    {
+      const spell_data_t* mindgames;
+      const spell_data_t* mindgames_healing_reversal;
+      const spell_data_t* mindgames_damage_reversal;
+    } pvp;
+
     // Shared
     const spell_data_t* shining_force;
 
@@ -654,7 +659,6 @@ public:
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> mindgames;
     propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> shadowfiend;
     propagate_const<cooldown_t*> voidwraith;
@@ -699,6 +703,7 @@ public:
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_t30_2pc;
+    propagate_const<gain_t*> cauterizing_shadows_health;
   } gains;
 
   // Benefits
@@ -737,6 +742,8 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
+    propagate_const<proc_t*> mind_spike_insanity_munched;
+    propagate_const<proc_t*> shadowy_apparition_crit;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -767,6 +774,7 @@ public:
     propagate_const<actions::spells::entropic_rift_t*> entropic_rift;
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
+    propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
   } background_actions;
 
   // Items
@@ -778,7 +786,6 @@ public:
   vector_with_callback<player_t*> allies_with_atonement;
   struct state_t
   {
-    ground_aoe_event_t* active_entropic_rift;
     player_t* last_entropic_rift_target;
   } state;
 
@@ -823,6 +830,12 @@ public:
     double twist_of_fate_heal_rppm                = 0.0;
     timespan_t twist_of_fate_heal_duration_mean   = 2_s;
     timespan_t twist_of_fate_heal_duration_stddev = 0.25_s;
+
+    // The amount of allies to assume for Cauterizing Shadows healing
+    int cauterizing_shadows_allies = 3;
+
+    // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
+    bool force_devour_matter = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -858,6 +871,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double composite_leech() const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
   void pre_analyze_hook() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
@@ -931,6 +945,7 @@ public:
   void trigger_entropic_rift();
   void extend_entropic_rift();
   void expand_entropic_rift();
+  void trigger_cauterizing_shadows();
 
   unsigned int specialization_aura_id()
   {
@@ -1126,32 +1141,39 @@ public:
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().buffs.devoured_pride );                 // Spell Direct and Periodic amount
-      parse_effects( p().buffs.voidform, 0x4U, IGNORE_STACKS, p().talents.archon.perfected_form );  // Skip E3 for AM
+      parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
+      parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
+                     p().talents.archon.perfected_form );
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
       parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-      parse_effects( p().buffs.dark_ascension, 0b1000U, IGNORE_STACKS,
-                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
+                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells
       parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
+      parse_effects( p().buffs.unfurling_darkness );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
         // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
         if ( p().talents.shadow.dark_ascension.enabled() )
         {
-          parse_effects( p().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
+          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
         }
         else
         {
-          parse_effects( p().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
+          parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
         }
       }
 
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
       {
         parse_effects( p().buffs.deaths_torment );
+      }
+
+      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
+      {
+        parse_effects( p().buffs.devouring_chorus );
       }
     }
 
@@ -1174,15 +1196,10 @@ public:
     {
       parse_effects( p().buffs.divine_favor_chastise );
     }
-
-    if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
-    {
-      parse_effects( p().buffs.devouring_chorus );
-    }
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
-  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer mutiplier
+  //   (int F(TD*))            func: Function taking the target_data as argument and returning an integer multiplier
   //   (const spell_data_t*) debuff: Spell data of the debuff
   //
   // The following optional arguments can be used in any order:
@@ -1193,8 +1210,7 @@ public:
     // DISCIPLINE DEBUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ),
-                            p().talents.discipline.schism_debuff );
+      parse_target_effects( d_fn( &priest_td_t::buffs_t::schism, false ), p().talents.discipline.schism_debuff );
     }
 
     // Archon

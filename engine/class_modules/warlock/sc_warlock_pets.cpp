@@ -15,7 +15,6 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
 {
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
-
   owner_coeff.health = 0.5;
 
   register_on_arise_callback( this, [ owner ]() { owner->active_pets++; } );
@@ -23,21 +22,10 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
 }
 
 warlock_t* warlock_pet_t::o()
-{
-  return static_cast<warlock_t*>( owner );
-}
+{ return static_cast<warlock_t*>( owner ); }
 
 const warlock_t* warlock_pet_t::o() const
-{
-  return static_cast<warlock_t*>( owner );
-}
-
-void warlock_pet_t::apply_affecting_auras( action_t& action )
-{
-  pet_t::apply_affecting_auras( action );
-
-  action.apply_affecting_aura( o()->talents.socrethars_guile );
-}
+{ return static_cast<warlock_t*>( owner ); }
 
 void warlock_pet_t::create_buffs()
 {
@@ -49,31 +37,21 @@ void warlock_pet_t::create_buffs()
                                ->set_cooldown( 0_ms );
 
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
-                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() );
+                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() ); // TODO: Add Grimoire of Service data to talent struct
 
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
-  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) );
+  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) ); // TODO: Add pet's Dread Calling buff to talent struct 
 
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", find_spell( 387458 ) )
-                            ->set_default_value_from_effect( 2 );
+                            ->set_default_value_from_effect( 2 ); // TODO: Add Imp Gang Boss buff to talent struct
 
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
-                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
+                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
 
   buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
-                              ->set_default_value_from_effect( 1 );
-
-  buffs.infernal_command = make_buff( this, "infernal_command", find_spell( 387552 ) )
-                               ->set_default_value( o()->talents.infernal_command->effectN( 1 ).percent() );
-
-  buffs.soul_glutton = make_buff( this, "soul_glutton", o()->talents.soul_glutton )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_default_value( o()->talents.soul_glutton->effectN( 2 ).percent() );
-
-  buffs.nerzhuls_volition = make_buff( this, "nerzhuls_volition", o()->talents.nerzhuls_volition_buff )
-                                ->set_default_value( o()->talents.nerzhuls_volition->effectN( 1 ).percent() );
+                              ->set_default_value_from_effect( 1 ); // TODO: Add Expendables buff to talent struct
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 
@@ -82,26 +60,7 @@ void warlock_pet_t::create_buffs()
                                ->set_max_stack( 99 );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
-                             ->set_default_value_from_effect( 1 );
-
-  if ( !o()->min_version_check( VERSION_10_2_0 ) )
-  {
-    buffs.festering_hatred = make_buff( this, "festering_hatred" )
-                                 ->set_max_stack( std::max( 1, as<int>( o()->talents.immutable_hatred->effectN( 2 ).base_value() ) ) )
-                                 ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
-                                      {
-                                        if ( cur == b->max_stack() )
-                                        {
-                                          make_event( sim, 0_ms, [ this, b ] { 
-                                            auto fg = debug_cast<pets::demonology::felguard_pet_t*>( this );
-                                            fg->immutable_hatred.proc->execute_on_target( fg->immutable_hatred.target );
-                                            b->expire();
-                                          } );
-                                        }
-                                      } );
-
-    buffs.festering_hatred->quiet = true;
-  }
+                             ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
@@ -112,14 +71,9 @@ void warlock_pet_t::create_buffs()
                      ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                        o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
-                     } );
+                     } ); // TODO: Add Embers buff to talent struct
 
   // All Specs
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
-                              ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-  buffs.fury_of_ruvaraad = make_buff( this, "fury_of_ruvaraad", find_spell( 409708 ) )
-                               ->set_default_value_from_effect( 1 );
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -128,13 +82,9 @@ void warlock_pet_t::create_buffs()
   player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
                             {
                               if ( cur > prev )
-                              {
                                 o()->buffs.pet_movement->trigger();
-                              }
                               else if ( cur < prev )
-                              {
                                 o()->buffs.pet_movement->decrement();
-                              }
                             } );
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
@@ -142,10 +92,7 @@ void warlock_pet_t::create_buffs()
   buffs.grimoire_of_service->quiet = true;
   buffs.annihilan_training->quiet = true;
   buffs.antoran_armaments->quiet = true;
-  buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
-  buffs.fury_of_ruvaraad->quiet = true;
-  buffs.nerzhuls_volition->quiet = true;
   buffs.demonic_power->quiet = true;
   buffs.the_expendables->quiet = true;
 }
@@ -154,7 +101,7 @@ void warlock_pet_t::init_base_stats()
 {
   pet_t::init_base_stats();
 
-  resources.base[ RESOURCE_ENERGY ]                  = 200;
+  resources.base[ RESOURCE_ENERGY ] = 200;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
   base.spell_power_per_intellect = 1.0;
@@ -162,7 +109,7 @@ void warlock_pet_t::init_base_stats()
   intellect_per_owner = 0;
   stamina_per_owner   = 0;
 
-  main_hand_weapon.type       = WEAPON_BEAST;
+  main_hand_weapon.type = WEAPON_BEAST;
   main_hand_weapon.swing_time = 2_s;
 }
 
@@ -181,24 +128,6 @@ void warlock_pet_t::init_action_list()
   if ( summon_stats )
     for ( size_t i = 0; i < action_list.size(); ++i )
       summon_stats->add_child( action_list[ i ]->stats );
-}
-
-void warlock_pet_t::init_special_effects()
-{
-  pet_t::init_special_effects();
-
-  if ( o()->talents.grimoire_of_synergy->ok() && is_main_pet )
-  {
-    auto const syn_effect = new special_effect_t( this );
-    syn_effect->name_str = "demonic_synergy_pet_effect";
-    syn_effect->spell_id = o()->talents.grimoire_of_synergy->id();
-    syn_effect->custom_buff = o()->buffs.demonic_synergy;
-    special_effects.push_back( syn_effect );
-
-    auto cb = new dbc_proc_callback_t( this, *syn_effect );
-
-    cb->initialize();
-  }
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
@@ -229,22 +158,12 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 
-  if ( buffs.demonic_synergy->check() )
-    m *= 1.0 + buffs.demonic_synergy->check_value();
-
-  if ( buffs.the_expendables->check() )
+  if ( o()->talents.the_expendables.ok() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
 
-  if ( buffs.infernal_command->check() )
-    m *= 1.0 + buffs.infernal_command->check_value();
+  m *= 1.0 + buffs.demonic_power->check_value();
 
-  if ( buffs.nerzhuls_volition->check() )
-    m *= 1.0 + buffs.nerzhuls_volition->check_value();
-
-  if ( buffs.demonic_power->check() )
-    m *= 1.0 + buffs.demonic_power->check_value();
-
-  if ( is_main_pet && o()->talents.wrathful_minion->ok() )
+  if ( is_main_pet && o()->talents.wrathful_minion.ok() )
     m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
 
   return m;
@@ -254,7 +173,7 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -264,7 +183,7 @@ double warlock_pet_t::composite_spell_cast_speed() const
 {
   double m = pet_t::composite_spell_cast_speed();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -274,7 +193,7 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
   double m = pet_t::composite_melee_auto_attack_speed();
 
-  if ( is_main_pet && o()->talents.demonic_inspiration->ok() )
+  if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   return m;
@@ -329,9 +248,7 @@ void warlock_pet_t::demise()
 warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
   actor_target_data_t( target, &p ), pet( p )
 {
-  debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 387476 ) )
-                              ->set_default_value( pet.o()->talents.infernal_brand->effectN( 1 ).percent() );
-
+  // TODO: Add Whiplash to base warlock data
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
                         ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
@@ -341,22 +258,17 @@ namespace pets
 {
 warlock_simple_pet_t::warlock_simple_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt )
   : warlock_pet_t( owner, pet_name, pt, true ), special_ability( nullptr )
-{
-  resource_regeneration = regen_type::DISABLED;
-}
+{ resource_regeneration = regen_type::DISABLED; }
 
 timespan_t warlock_simple_pet_t::available() const
 {
   if ( !special_ability || !special_ability->cooldown )
-  {
     return warlock_pet_t::available();
-  }
 
   timespan_t cd_remains = special_ability->cooldown->ready - sim->current_time();
+  
   if ( cd_remains <= 1_ms )
-  {
     return warlock_pet_t::available();
-  }
 
   return cd_remains;
 }
@@ -377,7 +289,7 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
 struct spell_lock_t : public warlock_pet_spell_t
 {
   spell_lock_t( warlock_pet_t* p, util::string_view options_str )
-    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) )
+    : warlock_pet_spell_t( "Spell Lock", p, p->find_spell( 19647 ) ) // TODO: Add Spell Lock to base warlock data
   {
     parse_options( options_str );
 
@@ -403,6 +315,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
     return new warlock_pet_melee_attack_t( this, "Shadow Bite" );
   if ( name == "spell_lock" )
     return new spell_lock_t( this, options_str );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -411,7 +324,7 @@ action_t* felhunter_pet_t::create_action( util::string_view name, util::string_v
 /// Imp Begin
 
 imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_IMP, false ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
+  : warlock_pet_t( owner, name, PET_IMP, false ), firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) ) // TODO: Add imp firebolt to base warlock data
 {
   action_list_str = "firebolt";
 
@@ -426,6 +339,7 @@ action_t* imp_pet_t::create_action( util::string_view name, util::string_view op
 {
   if ( name == "firebolt" )
     return new warlock_pet_spell_t( "Firebolt", this, this->find_spell( 3110 ) );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -434,17 +348,13 @@ timespan_t imp_pet_t::available() const
   double deficit = resources.current[ RESOURCE_ENERGY ] - firebolt_cost;
 
   if ( deficit >= 0 )
-  {
     return warlock_pet_t::available();
-  }
 
   double time_to_threshold = std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY );
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
 
   return timespan_t::from_seconds( time_to_threshold );
 }
@@ -457,7 +367,7 @@ sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_SAYAAD, false )
 {
   main_hand_weapon.swing_time = 3_s;
-  action_list_str             = "whiplash/lash_of_pain";
+  action_list_str = "whiplash/lash_of_pain";
 
   is_main_pet = true;
 }
@@ -469,14 +379,13 @@ void sayaad_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
 
-  melee_attack                = new warlock_pet_melee_t( this );
+  melee_attack = new warlock_pet_melee_t( this );
 }
 
 struct whiplash_t : public warlock_pet_spell_t
 {
   whiplash_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Whiplash" )
-  {
-  }
+  { }
 
   void impact( action_state_t* s ) override
   {
@@ -490,7 +399,7 @@ double sayaad_pet_t::composite_player_target_multiplier( player_t* target, schoo
 {
   double m = warlock_pet_t::composite_player_target_multiplier( target, school );
 
-  m *= 1 + get_target_data( target )->debuff_whiplash->check_stack_value();
+  m *= 1.0 + get_target_data( target )->debuff_whiplash->check_stack_value();
 
   return m;
 }
@@ -542,6 +451,7 @@ action_t* voidwalker_pet_t::create_action( util::string_view name, util::string_
 {
   if ( name == "consuming_shadows" )
     return new consuming_shadows_t( this );
+
   return warlock_pet_t::create_action( name, options_str );
 }
 
@@ -565,7 +475,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
 
-  if ( owner->min_version_check( VERSION_10_2_0 ) && owner->talents.soul_strike->ok() )
+  if ( owner->talents.soul_strike.ok() )
     action_list_str += "/soul_strike";
 
   action_list_str += "/felstorm_demonic_strength";
@@ -623,22 +533,6 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
     if ( p()->buffs.fiendish_wrath->check() )
       fiendish_wrath->execute_on_target( s->target, amount );
-
-    if ( p()->o()->talents.immutable_hatred->ok() && !p()->o()->min_version_check( VERSION_10_2_0 ) )
-    {
-      auto fg = debug_cast<felguard_pet_t*>( p() );
-      if ( !( fg->immutable_hatred.target ) )
-      {
-        fg->immutable_hatred.target = s->target;
-      }
-      else if ( fg->immutable_hatred.target != s->target )
-      {
-        fg->immutable_hatred.target = s->target;
-        fg->buffs.festering_hatred->expire();
-      }
-
-      fg->buffs.festering_hatred->trigger();
-    }
   }
 };
 
@@ -662,36 +556,14 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     : warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     parse_options( options_str );
-    aoe    = -1;
+    aoe = -1;
     weapon = &( p->main_hand_weapon );
     main_pet = true;
   }
 
   legion_strike_t( warlock_pet_t* p, util::string_view options_str, bool is_main_pet )
     : legion_strike_t( p, options_str )
-  {
-    main_pet = is_main_pet;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_melee_attack_t::action_multiplier();
-
-    if ( main_pet && p()->o()->talents.fel_and_steel->ok() )
-      m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 1 ).percent();
-
-    return m;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
-
-    if ( main_pet && !p()->o()->min_version_check( VERSION_10_2_0 ) && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
-      m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
-
-    return m;
-  }
+  { main_pet = is_main_pet; }
 };
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t
@@ -703,14 +575,6 @@ struct immutable_hatred_t : public warlock_pet_melee_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
     ignore_false_positive = true;
   }
-
-  void execute() override
-  {
-    warlock_pet_melee_attack_t::execute();
-
-    if ( !p()->o()->min_version_check( VERSION_10_2_0 ) )
-      debug_cast<felguard_pet_t*>( p() )->immutable_hatred.target = nullptr;
-  }
 };
 
 struct felstorm_t : public warlock_pet_melee_attack_t
@@ -718,7 +582,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   struct felstorm_tick_t : public warlock_pet_melee_attack_t
   {
     bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
-    bool fel_and_steel_bonus; // 10.1.5: Fel and Steel now only applies to primary pet
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
       : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
@@ -728,25 +591,13 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       background = true;
       weapon = &( p->main_hand_weapon );
       applies_fel_sunder = false;
-      fel_and_steel_bonus = false;
     }
 
     double action_multiplier() const override
     {
       double m = warlock_pet_melee_attack_t::action_multiplier();
-
-      if ( p()->buffs.demonic_strength->check() )
-      {
-        m *= 1.0 + p()->buffs.demonic_strength->check_value();
-      }
-
-      if ( fel_and_steel_bonus )
-      {
-        m *= 1.0 + p()->o()->talents.fel_and_steel->effectN( 2 ).percent();
-      }
-
-      if ( p()->o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
-        m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+      
+      m *= 1.0 + p()->buffs.demonic_strength->check_value();
 
       return m;
     }
@@ -780,21 +631,15 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     if ( main_pet && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
-    if ( main_pet && p->o()->talents.fel_and_steel->ok() )
-      debug_cast<felstorm_tick_t*>( tick_action )->fel_and_steel_bonus = true;
-
     if ( !main_pet )
       cooldown->duration = 45_s; // 2022-11-11: GFG does not appear to cast a second Felstorm even if the cooldown would come up, so we will pad this value to be longer than the possible duration.
 
     if ( main_pet )
       internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
-
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 5.0;
-  }
+  { return s->action->tick_time( s ) * 5.0; }
 
   void execute() override
   {
@@ -802,9 +647,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
     if ( internal_cooldown )
-    {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
-    }
 
     p()->melee_attack->cancel();
   }
@@ -835,14 +678,13 @@ struct demonic_strength_t : public felstorm_t
 
   // 2022-10-03 - Triggering Demonic Strength seems to ignore energy cost for Felstorm
   double cost() const override
-  {
-    return 0.0;
-  }
+  { return 0.0; }
 
   bool ready() override
   {
     if ( debug_cast< felguard_pet_t* >( p() )->demonic_strength_executes <= 0 )
       return false;
+
     return warlock_pet_melee_attack_t::ready();
   }
 };
@@ -879,8 +721,6 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   {
     parse_options( options_str );
 
-    background = !p->o()->min_version_check( VERSION_10_2_0 );
-
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
 
@@ -892,10 +732,8 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
-    if ( p()->o()->talents.fel_invocation->ok() )
-    {
+    if ( p()->o()->talents.fel_invocation.ok() )
       p()->o()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->o()->gains.soul_strike );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -906,7 +744,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     warlock_pet_melee_attack_t::impact( s );
     
-    if ( p()->o()->talents.antoran_armaments->ok() )
+    if ( p()->o()->talents.antoran_armaments.ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
 };
@@ -958,21 +796,17 @@ timespan_t felguard_pet_t::available() const
   double time_to_next_event = 0;
 
   if ( time_to_felstorm <= 0 )
-  {
     energy_threshold = min_energy_threshold;
-  }
 
   double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
 
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
-  {
     time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
-  }
 
   // Demonic Strength Felstorms do not have an energy requirement, so Felguard must be ready at any time it is up
   // If Demonic Strength will be available before regular Felstorm but before energy threshold, we will check at that time
-  if ( o()->talents.demonic_strength->ok() )
+  if ( o()->talents.demonic_strength.ok() )
   {
     double time_to_dstr = ( dstr_cd->ready - sim->current_time() ).total_seconds();
     if ( time_to_dstr <= 0 )
@@ -990,21 +824,15 @@ timespan_t felguard_pet_t::available() const
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
 
   // Next event is either going to be the time to felstorm, or the time to gain enough energy for a
   // threshold value
 
   if ( time_to_felstorm <= 0 )
-  {
     time_to_next_event = time_to_threshold;
-  }
   else
-  {
     time_to_next_event = std::min( time_to_felstorm, time_to_threshold );
-  }
 
   if ( sim->debug )
   {
@@ -1013,13 +841,9 @@ timespan_t felguard_pet_t::available() const
   }
 
   if ( time_to_next_event < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
   else
-  {
     return timespan_t::from_seconds( time_to_next_event );
-  }
 }
 
 void felguard_pet_t::init_base_stats()
@@ -1034,31 +858,13 @@ void felguard_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.741;
   melee_attack->base_dd_multiplier *= 1.42;
 
-  if ( !o()->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.57;
-
   special_action = new axe_toss_t( this, "" );
 
-  if ( !o()->min_version_check( VERSION_10_2_0 ) && o()->talents.soul_strike->ok() )
-  {
-    soul_strike = new soul_strike_t( this, "" );
-  }
-
-  if ( o()->talents.guillotine->ok() )
-  {
+  if ( o()->talents.guillotine.ok() )
     felguard_guillotine = new felguard_guillotine_t( this );
-  }
 
-  if ( o()->talents.immutable_hatred->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
-  {
-    immutable_hatred.proc = new immutable_hatred_t( this );
-    immutable_hatred.target = nullptr;
-  }
-
-  if ( o()->min_version_check( VERSION_10_2_0 ) && o()->talents.immutable_hatred->ok() )
-  {
+  if ( o()->talents.immutable_hatred.ok() )
     hatred_proc = new immutable_hatred_t( this );
-  }
 }
 
 action_t* felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -1082,19 +888,17 @@ void felguard_pet_t::queue_ds_felstorm()
   demonic_strength_executes++;
 
   if ( !readying && !channeling && !executing )
-  {
     schedule_ready();
-  }
 }
 
 void felguard_pet_t::arise()
 {
   warlock_pet_t::arise();
 
-  if ( o()->talents.annihilan_training->ok() )
+  if ( o()->talents.annihilan_training.ok() )
     buffs.annihilan_training->trigger();
 
-  if ( o()->talents.antoran_armaments->ok() )
+  if ( o()->talents.antoran_armaments.ok() )
     buffs.antoran_armaments->trigger();
 }
 
@@ -1102,10 +906,10 @@ double felguard_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.annihilan_training->ok() )
+  if ( o()->talents.annihilan_training.ok() )
     m *= 1.0 + buffs.annihilan_training->check_value();
 
-  if ( o()->talents.antoran_armaments->ok() )
+  if ( o()->talents.antoran_armaments.ok() )
     m *= 1.0 + buffs.antoran_armaments->check_value();
 
   return m;
@@ -1124,7 +928,7 @@ double felguard_pet_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  if ( o()->talents.heavy_handed->ok() )
+  if ( o()->talents.heavy_handed.ok() )
     m += o()->talents.heavy_handed->effectN( 1 ).percent();
 
   return m;
@@ -1134,7 +938,7 @@ double felguard_pet_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  if ( o()->talents.heavy_handed->ok() )
+  if ( o()->talents.heavy_handed.ok() )
     m += o()->talents.heavy_handed->effectN( 1 ).percent();
 
   return m;
@@ -1144,7 +948,7 @@ double felguard_pet_t::composite_player_critical_damage_multiplier( const action
 {
   double m = warlock_pet_t::composite_player_critical_damage_multiplier( s );
 
-  if ( o()->talents.cavitation->ok() )
+  if ( o()->talents.cavitation.ok() )
     m *= 1.0 + o()->talents.cavitation->effectN( 1 ).percent();
 
   return m;
@@ -1173,12 +977,6 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    warlock_pet_t::arise();
 
    buffs.grimoire_of_service->trigger();
-
-   if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
-   {
-     buffs.fury_of_ruvaraad->trigger();
-     o()->buffs.rite_of_ruvaraad->trigger();
-   }
  }
 
  // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
@@ -1186,36 +984,28 @@ timespan_t grimoire_felguard_pet_t::available() const
 {
   double energy_threshold = max_energy_threshold;
   double time_to_felstorm = ( felstorm_cd->ready - sim->current_time() ).total_seconds();
+  
   if ( time_to_felstorm <= 0 )
-  {
     energy_threshold = min_energy_threshold;
-  }
 
   double deficit = resources.current[ RESOURCE_ENERGY ] - energy_threshold;
   double time_to_threshold = 0;
+
   // Not enough energy, figure out how many milliseconds it'll take to get
   if ( deficit < 0 )
-  {
     time_to_threshold = util::ceil( std::fabs( deficit ) / resource_regen_per_second( RESOURCE_ENERGY ), 3 );
-  }
 
   // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
   if ( time_to_threshold < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
 
   // Next event is either going to be the time to felstorm, or the time to gain enough energy for a
   // threshold value
   double time_to_next_event = 0;
   if ( time_to_felstorm <= 0 )
-  {
     time_to_next_event = time_to_threshold;
-  }
   else
-  {
     time_to_next_event = std::min( time_to_felstorm, time_to_threshold );
-  }
 
   if ( sim->debug )
   {
@@ -1224,13 +1014,9 @@ timespan_t grimoire_felguard_pet_t::available() const
   }
 
   if ( time_to_next_event < 0.001 )
-  {
     return warlock_pet_t::available();
-  }
   else
-  {
     return timespan_t::from_seconds( time_to_next_event );
-  }
 }
 
 void grimoire_felguard_pet_t::init_base_stats()
@@ -1245,9 +1031,6 @@ void grimoire_felguard_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.741;
 
   melee_attack->base_dd_multiplier *= 1.42;
-
-  if ( !o()->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.57;
 }
 
 action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -1260,16 +1043,6 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
   return warlock_pet_t::create_action( name, options_str );
 }
 
-double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school );
-
-  if ( buffs.fury_of_ruvaraad->check() )
-    m *= 1.0 + buffs.fury_of_ruvaraad->check_value();
-
-  return m;
-}
-
 /// Grimoire: Felguard End
 
 /// Wild Imp Begin
@@ -1278,7 +1051,7 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP, true ), firebolt( nullptr ), power_siphon( false ), imploded( false )
 {
   resource_regeneration = regen_type::DISABLED;
-  owner_coeff.health    = 0.15;
+  owner_coeff.health = 0.15;
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
@@ -1286,6 +1059,8 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
   {
     repeating = true;
+
+    base_dd_multiplier *= 1.0 + p->o()->talents.socrethars_guile->effectN( 2 ).percent();
   }
 
   void schedule_execute( action_state_t* execute_state ) override
@@ -1306,9 +1081,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     // Imp dies if it cannot cast
     if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-    {
       make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-    }
   }
 
   double cost_pct_multiplier() const override
@@ -1318,13 +1091,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
-    // TODO: 10.2 moves this from owner to pet, remove owner code when 10.2 goes live
-    if ( p()->o()->buffs.demonic_power->check() || p()->buffs.demonic_power->check() )
-    {
-      // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
-      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
-    }
-
     return c;
   }
 
@@ -1332,18 +1098,10 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_crit_chance();
 
-    if ( p()->o()->talents.imperator->ok() )
+    if ( p()->o()->talents.imperator.ok() )
       m += p()->o()->talents.imperator->effectN( 1 ).percent();
 
     return m;
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    if ( p()->o()->talents.stolen_power.ok() )
-      p()->o()->buffs.stolen_power_building->trigger();
   }
 };
 
@@ -1358,7 +1116,7 @@ void wild_imp_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  resources.base[ RESOURCE_ENERGY ]                  = 100;
+  resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
 }
 
@@ -1384,9 +1142,7 @@ void wild_imp_pet_t::reschedule_firebolt()
 }
 
 void wild_imp_pet_t::schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
-{
-  reschedule_firebolt();
-}
+{ reschedule_firebolt(); }
 
 void wild_imp_pet_t::finish_moving()
 {
@@ -1409,12 +1165,6 @@ void wild_imp_pet_t::arise()
     o()->procs.imp_gang_boss->occur();
   }
 
-  // TODO: Should we handle cases where the Felguard is summoned while pets are already active?
-  if ( o()->talents.infernal_command.ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
-  {
-    buffs.infernal_command->trigger();
-  }
-
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -1428,26 +1178,16 @@ void wild_imp_pet_t::demise()
 
     if ( !power_siphon )
     {
-      double core_chance = o()->min_version_check( VERSION_10_2_0 ) ? o()->talents.demonic_core_spell->effectN( 1 ).percent() : o()->warlock_base.demonic_core->effectN( 1 ).percent();
+      double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
 
-      if ( o()->talents.bloodbound_imps.ok() )
-        core_chance += o()->talents.bloodbound_imps->effectN( imploded ? 2 : 1 ).percent();
-
-      if ( !o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
+      if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
 
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
-
-      if ( imploded && buffs.imp_gang_boss->check() && !o()->min_version_check( VERSION_10_2_0 ) )
-      {
-        make_event( sim, 0_ms, [ this ] { this->o()->warlock_pet_list.wild_imps.spawn(); } );
-      }
     }
 
     if ( expiration )
-    {
       event_t::cancel( expiration );
-    }
 
     if ( o()->talents.the_expendables.ok() )
       o()->expendables_trigger_helper( this );
@@ -1460,8 +1200,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( buffs.imp_gang_boss->check() )
-    m *= 1.0 + buffs.imp_gang_boss->check_value();
+  m *= 1.0 + buffs.imp_gang_boss->check_value();
 
   return m;
 }
@@ -1478,9 +1217,6 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   // 2023-09-20: Coefficient updated
   owner_coeff.ap_from_sp = 0.686;
 
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.55;
-
   owner_coeff.health = 0.4;
 
   melee_on_summon = false; // Dreadstalkers leap from the player location to target, which has a non-negligible travel time
@@ -1493,9 +1229,9 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     weapon = &( p->main_hand_weapon );
 
-    if ( p->o()->talents.dreadlash->ok() )
+    if ( p->o()->talents.dreadlash.ok() )
     {
-      aoe    = -1;
+      aoe = -1;
       reduced_aoe_targets = 5;
       radius = 8.0;
     }
@@ -1513,10 +1249,8 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( p()->o()->talents.dreadlash->ok() )
-    {
+    if ( p()->o()->talents.dreadlash.ok() )
       m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
-    }
 
     return m;
   }
@@ -1532,7 +1266,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::impact( s );
 
-    if ( p()->o()->talents.the_houndmasters_stratagem->ok() )
+    if ( p()->o()->talents.the_houndmasters_stratagem.ok() )
       owner_td( s->target )->debuffs_the_houndmasters_stratagem->trigger();
   }
 };
@@ -1542,13 +1276,13 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
 {
   dreadstalker_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
     warlock_pet_melee_t ( p, wm, name )
-  {  }
+  { }
 
   void execute() override
   {
     warlock_pet_melee_t::execute();
 
-    if ( p()->o()->talents.carnivorous_stalkers->ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
+    if ( p()->o()->talents.carnivorous_stalkers.ok() && rng().roll( p()->o()->talents.carnivorous_stalkers->effectN( 1 ).percent() ) )
     {
       debug_cast<dreadstalker_t*>( p() )->dreadbite_executes++;
       p()->o()->procs.carnivorous_stalkers->occur();
@@ -1601,17 +1335,10 @@ void dreadstalker_t::arise()
 
   o()->buffs.dreadstalkers->trigger();
 
-  if ( o()->talents.infernal_command->ok() && o()->warlock_pet_list.active && o()->warlock_pet_list.active->pet_type == PET_FELGUARD )
-  {
-    buffs.infernal_command->trigger();
-  }
-
   dreadbite_executes = 1;
 
   if ( position() == POSITION_NONE || position() == POSITION_FRONT )
-  {
     melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
-  }
 }
 
 void dreadstalker_t::demise()
@@ -1620,17 +1347,8 @@ void dreadstalker_t::demise()
   {
     o()->buffs.dreadstalkers->decrement();
 
-    if ( o()->talents.demoniac->ok() && o()->min_version_check( VERSION_10_2_0 ) )
-    {
+    if ( o()->talents.demoniac.ok() )
       o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
-    }
-    else
-    {
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->warlock_base.demonic_core->effectN( 2 ).percent() );
-    }
-
-    if ( o()->talents.shadows_bite->ok() )
-      o()->buffs.shadows_bite->trigger();
   }
 
   warlock_pet_t::demise();
@@ -1666,13 +1384,10 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
   owner_coeff.sp_from_sp = 1.7;
 
-  if ( owner->min_version_check( VERSION_10_2_0 ) )
-  {
-    owner_coeff.ap_from_sp *= 1.15;
-    owner_coeff.sp_from_sp *= 1.15;
-  }
+  owner_coeff.ap_from_sp *= 1.15; // TODO: Combine into one new coefficient after confirming current values
+  owner_coeff.sp_from_sp *= 1.15;
 
-  owner_coeff.health     = 0.75;
+  owner_coeff.health = 0.75;
 
   bile_spit_executes = 1; // Only one Bile Spit per summon
 }
@@ -1704,9 +1419,7 @@ struct bile_spit_t : public warlock_pet_spell_t
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
   headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->find_spell( 267999 ) )
-  {
-    cooldown->duration = 5_s;
-  }
+  { cooldown->duration = 5_s; }
 };
 
 struct caustic_presence_t : public warlock_pet_spell_t
@@ -1751,7 +1464,7 @@ void vilefiend_t::arise()
 
   bile_spit_executes = 1;
 
-  if ( o()->talents.fel_invocation->ok() )
+  if ( o()->talents.fel_invocation.ok() )
     caustic_presence->trigger();
 }
 
@@ -1780,9 +1493,7 @@ struct demonfire_t : public warlock_pet_spell_t
 {
   demonfire_t( warlock_pet_t* p, util::string_view options_str )
     : warlock_pet_spell_t( "Demonfire", p, p->find_spell( 270481 ) )
-  {
-    parse_options( options_str );
-  }
+  { parse_options( options_str ); }
 };
 
 action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_view options_str )
@@ -1793,26 +1504,13 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
   return warlock_pet_t::create_action( name, options_str );
 }
 
-void demonic_tyrant_t::arise()
-{
-  warlock_pet_t::arise();
-
-  if ( o()->talents.reign_of_tyranny->ok() && !o()->min_version_check( VERSION_10_2_0 ) )
-  {
-    buffs.demonic_servitude->trigger( 1, ( 1 + o()->buffs.demonic_servitude->check() ) * o()->buffs.demonic_servitude->check_value() );
-  }
-}
-
 double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.reign_of_tyranny->ok() )
+  if ( o()->talents.reign_of_tyranny.ok() )
   {
     m *= 1.0 + buffs.demonic_servitude->check_value();
-
-    if ( !o()->min_version_check( VERSION_10_2_0 ) )
-      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
 
     m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
   }
@@ -1821,674 +1519,6 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 }
 
 /// Demonic Tyrant End
-
-/// Pit Lord Begin
-
-pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_PIT_LORD, true )
-{
-  owner_coeff.ap_from_sp = 1.215;
-  owner_coeff.sp_from_sp = 1.215;
-
-  if ( owner->min_version_check( VERSION_10_2_0 ) )
-  {
-    owner_coeff.ap_from_sp = 1.25;
-    owner_coeff.sp_from_sp = 1.25;
-  }
-
-  soul_glutton_damage_bonus = owner->talents.soul_glutton->effectN( 1 ).percent();
-
-  if ( owner->min_version_check( VERSION_10_2_0 ) )
-    action_list_str = "felseeker";
-}
-
-struct felseeker_t : warlock_pet_spell_t
-{
-  felseeker_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Felseeker", p, p->find_spell( 427688 ) )
-  {
-    hasted_ticks = true;
-
-    channeled = true;
-  }
-
-  // Pit Lord does a single channel for a fixed duration. The tick interval is hasted so that it still scales with haste.
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration ;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warlock_pet_spell_t::last_tick( d );
-
-    // Ensure the Pit Lord does not try to cast a second time
-    make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-  }
-};
-
-action_t* pit_lord_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "felseeker" )
-    return new felseeker_t( this );
-
-  return warlock_pet_t::create_action( name, options_str );
-}
-
-
-void pit_lord_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-
-  if ( !o()->min_version_check( VERSION_10_2_0 ) )
-    melee_attack = new warlock_pet_melee_t( this, 4.35 );
-}
-
-void pit_lord_t::arise()
-{
-  warlock_pet_t::arise();
-
-  if ( o()->buffs.nether_portal_total->check() && !o()->min_version_check( VERSION_10_2_0 ) )
-  {
-    buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
-    o()->buffs.nether_portal_total->expire();
-  }
-
-  if ( o()->talents.nerzhuls_volition->ok() && o()->min_version_check( VERSION_10_2_0 ) && false )
-  {
-    buffs.nerzhuls_volition->trigger();
-  }
-
-  if ( !o()->min_version_check( VERSION_10_2_0 ) )
-  {
-    melee_attack->set_target( target );
-    melee_attack->schedule_execute();
-  }
-}
-
-double pit_lord_t::composite_player_multiplier( school_e school ) const
-{
-  double m = warlock_pet_t::composite_player_multiplier( school );
-
-  if ( buffs.soul_glutton->check() )
-  {
-    m *= 1.0 + soul_glutton_damage_bonus * buffs.soul_glutton->current_stack;
-  }
-
-  return m;
-}
-
-double pit_lord_t::composite_melee_auto_attack_speed() const
-{
-  double m = warlock_pet_t::composite_melee_auto_attack_speed();
-
-  m /= 1.0 + buffs.soul_glutton->check_stack_value();
-
-  return m;
-}
-
-/// Pit Lord End
-
-/// Doomfiend Begin
-
-doomfiend_t::doomfiend_t( warlock_t* owner, util::string_view name ) : warlock_pet_t( owner, name, PET_DOOMFIEND, true )
-{
-  action_list_str = "doom_bolt_volley";
-
-  resource_regeneration = regen_type::DISABLED;
-}
-
-struct doom_bolt_volley_t : public warlock_pet_spell_t
-{
-  doom_bolt_volley_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Doom Bolt Volley", p, p->o()->tier.doom_bolt_volley )
-  {  }
-
-  void consume_resource() override
-  {
-    warlock_pet_spell_t::consume_resource();
-
-    if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-    {
-      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-    }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = warlock_pet_spell_t::composite_da_multiplier( s );
-
-    if ( s->n_targets == 1 )
-      m *= 1.0 + p()->o()->sets->set( WARLOCK_DEMONOLOGY, T31, B4 )->effectN( 2 ).percent();
-
-    return m;
-  }
-};
-
-action_t* doomfiend_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "doom_bolt_volley" )
-    return new doom_bolt_volley_t( this );
-
-  return warlock_pet_t::create_action( name, options_str );
-}
-
-void doomfiend_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-
-  resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-}
-
-/// Doomfiend End
-namespace random_demons
-{
-/// Shivarra Begin
-
-shivarra_t::shivarra_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "shivarra", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/multi_slash";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct multi_slash_t : public warlock_pet_melee_attack_t
-{
-  struct multi_slash_damage_t : public warlock_pet_melee_attack_t
-  {
-    multi_slash_damage_t( warlock_pet_t* p, unsigned slash_num )
-      : warlock_pet_melee_attack_t( "multi-slash-" + std::to_string( slash_num ), p, p->find_spell( 272172 ) )
-    {
-      background              = true;
-      attack_power_mod.direct = data().effectN( slash_num ).ap_coeff();
-    }
-  };
-
-  std::array<multi_slash_damage_t*, 4> slashes;
-
-  multi_slash_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "multi-slash", p, p->find_spell( 272172 ) )
-  {
-    for ( unsigned i = 0; i < slashes.size(); ++i )
-    {
-      // Slash number is the spelldata effects number, so increase by 1.
-      slashes[ i ] = new multi_slash_damage_t( p, i + 1 );
-      add_child( slashes[ i ] );
-    }
-  }
-
-  void execute() override
-  {
-    for ( auto& slash : slashes )
-    {
-      slash->execute();
-    }
-    cooldown->start( timespan_t::from_millis( rng().range( 7000, 9000 ) ) );
-  }
-};
-
-void shivarra_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  off_hand_weapon = main_hand_weapon;
-  melee_attack    = new warlock_pet_melee_t( this, 2.0 );
-  special_ability = new multi_slash_t( this );
-}
-
-void shivarra_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 5100 ) ) );
-}
-
-action_t* shivarra_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "multi_slash" )
-    return new multi_slash_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Shivarra End
-
-/// Darkhound Begin
-
-darkhound_t::darkhound_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "darkhound", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/fel_bite";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct fel_bite_t : public warlock_pet_melee_attack_t
-{
-  fel_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "fel_bite", p, p->find_spell( 272435 ) )
-  {
-  }
-
-  void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
-  {
-    warlock_pet_melee_attack_t::update_ready( timespan_t::from_millis( rng().range( 4500, 6500 ) ) );
-  }
-};
-
-void darkhound_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  special_ability = new fel_bite_t( this );
-}
-
-void darkhound_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3000, 5000 ) ) );
-}
-
-action_t* darkhound_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "fel_bite" )
-    return new fel_bite_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Darkhound End
-
-/// Bilescourge Begin
-
-bilescourge_t::bilescourge_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "bilescourge", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "toxic_bile";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-action_t* bilescourge_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "toxic_bile" )
-    return new warlock_pet_spell_t( "toxic_bile", this, this->find_spell( 272167 ) );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Bilescourge End
-
-/// Urzul Begin
-
-urzul_t::urzul_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "urzul", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/many_faced_bite";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct many_faced_bite_t : public warlock_pet_melee_attack_t
-{
-  many_faced_bite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "many_faced_bite", p, p->find_spell( 272439 ) )
-  {
-  }
-
-  void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
-  {
-    warlock_pet_melee_attack_t::update_ready( timespan_t::from_millis( rng().range( 4500, 6000 ) ) );
-  }
-};
-
-void urzul_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  special_ability = new many_faced_bite_t( this );
-}
-
-void urzul_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 4500 ) ) );
-}
-
-action_t* urzul_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "many_faced_bite" )
-    return new many_faced_bite_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Urzul End
-
-/// Void Terror Begin
-
-void_terror_t::void_terror_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "void_terror", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/double_breath";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct double_breath_t : public warlock_pet_spell_t
-{
-  struct double_breath_damage_t : public warlock_pet_spell_t
-  {
-    double_breath_damage_t( warlock_pet_t* p, unsigned breath_num )
-      : warlock_pet_spell_t( "double_breath-" + std::to_string( breath_num ), p, p->find_spell( 272156 ) )
-    {
-      attack_power_mod.direct = data().effectN( breath_num ).ap_coeff();
-    }
-  };
-
-  double_breath_damage_t* breath_1;
-  double_breath_damage_t* breath_2;
-
-  double_breath_t( warlock_pet_t* p ) : warlock_pet_spell_t( "double_breath", p, p->find_spell( 272156 ) )
-  {
-    breath_1 = new double_breath_damage_t( p, 1U );
-    breath_2 = new double_breath_damage_t( p, 2U );
-    add_child( breath_1 );
-    add_child( breath_2 );
-  }
-
-  void execute() override
-  {
-    breath_1->execute();
-    breath_2->execute();
-    cooldown->start( timespan_t::from_millis( rng().range( 6000, 9000 ) ) );
-  }
-};
-
-void void_terror_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
-  special_ability = new double_breath_t( this );
-}
-
-void void_terror_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 1800, 5000 ) ) );
-}
-
-action_t* void_terror_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "double_breath" )
-    return new double_breath_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Void Terror End
-
-/// Wrathguard Begin
-
-wrathguard_t::wrathguard_t( warlock_t* owner ) : warlock_simple_pet_t( owner, "wrathguard", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/overhead_assault";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct overhead_assault_t : public warlock_pet_melee_attack_t
-{
-  overhead_assault_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "overhead_assault", p, p->find_spell( 272432 ) )
-  {
-  }
-
-  void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
-  {
-    warlock_pet_melee_attack_t::update_ready( timespan_t::from_millis( rng().range( 4500, 6500 ) ) );
-  }
-};
-
-void wrathguard_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  off_hand_weapon = main_hand_weapon;
-  melee_attack    = new warlock_pet_melee_t( this, 2.0 );
-  special_ability = new overhead_assault_t( this );
-}
-
-void wrathguard_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3000, 5000 ) ) );
-}
-
-action_t* wrathguard_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "overhead_assault" )
-    return new overhead_assault_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Wrathguard End
-
-/// Vicious Hellhound Begin
-
-vicious_hellhound_t::vicious_hellhound_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vicious_hellhound", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/demon_fangs";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct demon_fangs_t : public warlock_pet_melee_attack_t
-{
-  demon_fangs_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "demon_fangs", p, p->find_spell( 272013 ) )
-  {
-  }
-
-  void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
-  {
-    warlock_pet_melee_attack_t::update_ready( timespan_t::from_millis( rng().range( 4500, 6000 ) ) );
-  }
-};
-
-void vicious_hellhound_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-
-  main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-  melee_attack                = new warlock_pet_melee_t( this, 1.0 );
-  special_ability = new demon_fangs_t( this );
-}
-
-void vicious_hellhound_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3200, 5100 ) ) );
-}
-
-action_t* vicious_hellhound_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "demon_fangs" )
-    return new demon_fangs_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Vicious Hellhound End
-
-/// Illidari Satyr Begin
-
-illidari_satyr_t::illidari_satyr_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "illidari_satyr", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "travel/shadow_slash";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct shadow_slash_t : public warlock_pet_melee_attack_t
-{
-  shadow_slash_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "shadow_slash", p, p->find_spell( 272012 ) )
-  {
-  }
-
-  void update_ready( timespan_t /* cd = timespan_t::min() */ ) override
-  {
-    warlock_pet_melee_attack_t::update_ready( timespan_t::from_millis( rng().range( 4500, 6100 ) ) );
-  }
-};
-
-void illidari_satyr_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  off_hand_weapon = main_hand_weapon;
-  melee_attack    = new warlock_pet_melee_t( this, 1.0 );
-  special_ability = new shadow_slash_t( this );
-}
-
-void illidari_satyr_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 5000 ) ) );
-}
-
-action_t* illidari_satyr_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "shadow_slash" )
-    return new shadow_slash_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Illidari Satyr End
-
-/// Eyes of Guldan Begin
-
-eyes_of_guldan_t::eyes_of_guldan_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "eye_of_guldan", PET_WARLOCK_RANDOM )
-{
-  action_list_str        = "eye_of_guldan";
-  owner_coeff.ap_from_sp = 0.15;
-
-  if ( !owner->min_version_check( VERSION_10_2_0 ) )
-    owner_coeff.ap_from_sp = 0.115;
-
-  owner_coeff.health     = 0.75;
-}
-
-struct eye_of_guldan_t : public warlock_pet_spell_t
-{
-  eye_of_guldan_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_of_guldan", p, p->find_spell( 272131 ) )
-  {
-    hasted_ticks = p->o()->min_version_check( VERSION_10_2_0 );
-    channeled = true;
-    cooldown->duration = dot_duration;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return dot_duration - 10_ms; // 2023-10-17: Since Eye of Gul'dan now benefits from haste like Pit Lord, fudge this duration slightly so that we can ensure it finishes the last tick before expiring
-  }
-};
-
-void eyes_of_guldan_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  o()->buffs.eyes_of_guldan->trigger();
-}
-
-void eyes_of_guldan_t::demise()
-{
-  if ( !current.sleeping )
-    o()->buffs.eyes_of_guldan->decrement();
-
-  warlock_simple_pet_t::demise();
-}
-
-void eyes_of_guldan_t::init_base_stats()
-{
-  special_ability = new eye_of_guldan_t( this );
-}
-
-action_t* eyes_of_guldan_t::create_action( util::string_view name, util::string_view options_str )
-{
-  if ( name == "eye_of_guldan" )
-    return new eye_of_guldan_t( this );
-
-  return warlock_simple_pet_t::create_action( name, options_str );
-}
-
-/// Eyes of Guldan End
-
-/// Prince Malchezaar Begin
-
-prince_malchezaar_t::prince_malchezaar_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "prince_malchezaar", PET_WARLOCK_RANDOM )
-{
-  owner_coeff.ap_from_sp = 1.15;
-  owner_coeff.health     = 0.75;
-  action_list_str        = "travel";
-}
-
-void prince_malchezaar_t::init_base_stats()
-{
-  warlock_simple_pet_t::init_base_stats();
-  off_hand_weapon = main_hand_weapon;
-  melee_attack    = new warlock_pet_melee_t( this );
-}
-
-void prince_malchezaar_t::arise()
-{
-  warlock_simple_pet_t::arise();
-  o()->buffs.prince_malchezaar->trigger();
-}
-
-void prince_malchezaar_t::demise()
-{
-  if ( !current.sleeping )
-    o()->buffs.prince_malchezaar->decrement();
-
-  warlock_simple_pet_t::demise();
-}
-
-timespan_t prince_malchezaar_t::available() const
-{
-  if ( !expiration )
-  {
-    return warlock_simple_pet_t::available();
-  }
-
-  return expiration->remains() + 1_ms;
-}
-
-///Prince Malchezaar End
-
-}  // namespace random_demons
 }  // namespace demonology
 
 namespace destruction
@@ -2498,9 +1528,7 @@ namespace destruction
 
 infernal_t::infernal_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_INFERNAL, true ), immolation( nullptr )
-{
-  resource_regeneration = regen_type::DISABLED;
-}
+{ resource_regeneration = regen_type::DISABLED; }
 
 struct immolation_tick_t : public warlock_pet_spell_t
 {
@@ -2510,33 +1538,13 @@ struct immolation_tick_t : public warlock_pet_spell_t
     aoe = -1;
     background = may_crit = true;
   }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_da_multiplier( t );
-
-    if ( p()->o()->talents.infernal_brand->ok() )
-      m *= 1.0 + pet_td( t )->debuff_infernal_brand->check_stack_value();
-
-    return m;
-  }
 };
 
 struct infernal_melee_t : warlock_pet_melee_t
 {
   infernal_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" ) :
     warlock_pet_melee_t ( p, wm, name )
-  {  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_pet_melee_t::impact( s );
-
-    if ( p()->o()->talents.infernal_brand->ok() )
-    {
-      pet_td( s->target )->debuff_infernal_brand->trigger();
-    }
-  }
+  { }
 };
 
 void infernal_t::init_base_stats()
@@ -2585,7 +1593,7 @@ void infernal_t::arise()
 /// Blasphemy Begin
 blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
   : infernal_t( owner, name )
-{  }
+{ }
 
 struct blasphemous_existence_t : public warlock_pet_spell_t
 {
@@ -2614,27 +1622,12 @@ namespace affliction
 
 darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DARKGLARE, true )
-{
-  action_list_str += "eye_beam";
-}
+{ action_list_str += "eye_beam"; }
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
-  struct grim_reach_t : public warlock_pet_spell_t
-  {
-    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Grim Reach", p, p->find_spell( 390097 ) )
-    {
-      background = dual = true;
-
-      base_dd_min = base_dd_max = 0.0;
-    }
-  };
-  
-  grim_reach_t* grim_reach;
-  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->find_spell( 205231 ) )
-  {
-    grim_reach = new grim_reach_t( p );
-  }
+  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Eye Beam", p, p->o()->talents.eye_beam )
+  { }
 
   double composite_target_multiplier( player_t* target ) const override
   {
@@ -2644,31 +1637,11 @@ struct eye_beam_t : public warlock_pet_spell_t
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 
-    if ( p()->o()->talents.malevolent_visionary->ok() )
-      dot_multiplier += p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
-
     m *= 1.0 + ( dots * dot_multiplier );
 
+    m *= 1.0 + p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
+
     return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_pet_spell_t::impact( s );
-
-    auto raw_damage = s->result_total;
-
-    if ( p()->o()->talents.grim_reach->ok() )
-    {
-      grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
-      for ( player_t* target : sim->target_non_sleeping_list )
-      {
-        if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
-        {
-          grim_reach->execute_on_target( target );
-        }
-      }
-    }
   }
 };
 

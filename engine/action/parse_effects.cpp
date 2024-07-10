@@ -10,14 +10,16 @@
 #include "report/decorators.hpp"
 #include "sim/sim.hpp"
 
-std::string player_effect_t::value_type_name( parse_flag_e t ) const
+std::string player_effect_t::value_type_name( uint8_t t ) const
 {
-  switch ( t )
-  {
-    case USE_DEFAULT: return "Default Value";
-    case USE_CURRENT: return "Current Value";
-    default:          return "Spell Data";
-  }
+  if ( t & VALUE_OVERRIDE )
+    return "Value Override";
+  else if ( t & USE_CURRENT )
+    return "Current Value";
+  else if ( t & USE_DEFAULT )
+    return "Default Value";
+  else
+    return "Spell Data";
 }
 
 void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
@@ -40,6 +42,9 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   if ( idx )
     notes.emplace_back( "Consume" );
+
+  if ( type & AFFECTED_OVERRIDE )
+    notes.emplace_back( "Scripted" );
 
   if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
@@ -66,6 +71,14 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     util::string_join( notes ) );
 }
 
+std::string target_effect_t::value_type_name( uint8_t t ) const
+{
+  if ( t & VALUE_OVERRIDE )
+    return "Value Override";
+  else
+    return "";
+}
+
 void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
                                          std::function<std::string( uint32_t )> note_fn,
                                          std::function<std::string( double )> val_str_fn ) const
@@ -74,6 +87,9 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   if ( mastery )
     notes.emplace_back( "Mastery" );
+
+  if ( type & AFFECTED_OVERRIDE )
+    notes.emplace_back( "Scripted" );
 
   if ( note_fn )
     notes.emplace_back( note_fn( opt_enum ) );
@@ -95,7 +111,7 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     eff->spell()->id(),
     eff->index() + 1,
     val_str,
-    "",
+    value_type_name( type ),
     util::string_join( notes ) );
 }
 
@@ -124,7 +140,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
            ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
              ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
              ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
-         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+         ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() ) )
     {
       double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
 
@@ -472,7 +488,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
-    if ( tmp.data.buff && tmp.data.type == USE_DEFAULT )
+    if ( tmp.data.buff && tmp.data.type & USE_DEFAULT )
       val = tmp.data.buff->default_value * 100;
 
     if ( !is_valid_aura( eff ) )
@@ -500,19 +516,14 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   std::string type_str;
   bool flat = false;
-  std::vector<U>* vec;
-
-  if constexpr ( is_detected_v<detect_buff, U> )
-    vec = get_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
-  else
-    vec = get_target_effect_vector( eff, tmp.data, val_mul, type_str, flat, force );
+  std::vector<U>* vec = get_effect_vector( eff, tmp, val_mul, type_str, flat, force );
 
   if ( !vec )
     return;
 
   if constexpr ( is_detected_v<detect_type, U> )
   {
-    if ( !val && tmp.data.type == parse_flag_e::USE_DATA )
+    if ( !val && tmp.data.type == USE_DATA )
       return;
   }
   else
@@ -540,18 +551,14 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
   {
     if ( tmp.data.buff )
     {
-      if ( tmp.data.type == parse_flag_e::USE_CURRENT )
+      if ( tmp.data.type & USE_CURRENT )
         val_str = flat ? "current value" : "current value percent";
-      else if ( tmp.data.type == parse_flag_e::USE_DEFAULT )
+      else if ( tmp.data.type & USE_DEFAULT )
         val_str = val_str + " (default value)";
     }
+  }
 
-    debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
-  }
-  else
-  {
-    target_debug_message( type_str, val_str, s_data, i );
-  }
+  debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
 
   tmp.data.value = val;
   tmp.data.mastery = mastery;
@@ -581,7 +588,7 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
     if ( !stack )
       return 0.0;
 
-    if ( i.type == USE_CURRENT )
+    if ( i.type & USE_CURRENT )
       eff_val = i.buff->check_value();
 
     if ( i.use_stacks )
@@ -596,7 +603,7 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
   return eff_val;
 }
 
-double parse_effects_t::get_target_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
+double parse_effects_t::get_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
 {
   if ( auto check = i.func( td ) )
   {
@@ -632,6 +639,18 @@ double parse_player_effects_t::composite_attribute_multiplier( attribute_e attr 
       am *= 1.0 + get_effect_value( i );
 
   return am;
+}
+
+double parse_player_effects_t::composite_rating_multiplier( rating_e rating ) const
+{
+  auto rm = player_t::composite_rating_multiplier( rating );
+  auto mod = util::rating_to_rating_mod( rating );
+
+  for ( const auto& i : rating_multiplier_effects )
+    if ( i.opt_enum & mod )
+      rm *= 1.0 + get_effect_value( i );
+
+  return rm;
 }
 
 double parse_player_effects_t::composite_damage_versatility() const
@@ -846,7 +865,7 @@ double parse_player_effects_t::composite_player_target_multiplier( player_t* tar
 
   for ( const auto& i : target_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
-      tm *= 1.0 + get_target_effect_value( i, td );
+      tm *= 1.0 + get_effect_value( i, td );
 
   return tm;
 }
@@ -858,7 +877,7 @@ double parse_player_effects_t::composite_player_target_pet_damage_multiplier( pl
 
   for ( const auto& i : target_pet_multiplier_effects )
     if ( static_cast<bool>( i.opt_enum ) == guardian )
-      tm *= 1.0 + get_target_effect_value( i, td );
+      tm *= 1.0 + get_effect_value( i, td );
 
   return tm;
 }
@@ -895,10 +914,12 @@ bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) cons
 }
 
 std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                         player_effect_t& data, double& val_mul,
-                                                                         std::string& str, bool& /* flat */,
-                                                                         bool /* force */ )
+                                                                         pack_t<player_effect_t>& pack,
+                                                                         double& val_mul, std::string& str,
+                                                                         bool& /* flat */, bool /* force */ )
 {
+  auto& data = pack.data;
+
   auto invalidate = [ &data ]( cache_e c ) {
     if ( data.buff )
       data.buff->add_invalidate( c );
@@ -938,6 +959,20 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       }
 
       return &attribute_multiplier_effects;
+
+    case A_MOD_RATING_MULTIPLIER:
+      data.opt_enum = eff.misc_value1();
+      {
+        std::vector<std::string> str_list;
+        for ( auto stat : util::translate_all_rating_mod( data.opt_enum ) )
+        {
+          str_list.emplace_back( util::stat_type_string( stat ) );
+          invalidate( cache_from_stat( stat ) );
+        }
+        str = util::string_join( str_list );
+      }
+
+      return &rating_multiplier_effects;
 
     case A_MOD_VERSATILITY_PCT:
       str = "versatility";
@@ -1078,11 +1113,13 @@ bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff
   return false;
 }
 
-std::vector<target_effect_t>* parse_player_effects_t::get_target_effect_vector( const spelleffect_data_t& eff,
-                                                                                target_effect_t& data,
-                                                                                double& /* val_mul */, std::string& str,
-                                                                                bool& /* flat */, bool /* force */ )
+std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                         pack_t<target_effect_t>& pack,
+                                                                         double& /* val_mul */, std::string& str,
+                                                                         bool& /* flat */, bool /* force */ )
 {
+  auto& data = pack.data;
+
   switch ( eff.subtype() )
   {
     case A_MOD_DAMAGE_FROM_CASTER:
@@ -1107,8 +1144,8 @@ std::vector<target_effect_t>* parse_player_effects_t::get_target_effect_vector( 
   return nullptr;
 }
 
-void parse_player_effects_t::target_debug_message( std::string_view type_str, std::string_view val_str,
-                                                   const spell_data_t* s_data, size_t i )
+void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
+                                            bool, const spell_data_t* s_data, size_t i )
 {
   sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
                     s_data->name_cstr(), s_data->id(), i );
@@ -1132,12 +1169,22 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
        << "<th>Notes</th>"
        << "</tr></thead>\n";
 
+    // TODO: consolidate these with debug message functors in get_effect_vector()
     auto attr_note = []( uint32_t opt ) {
       std::vector<std::string> str_list;
 
       for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
         if ( opt & ( 1 << ( stat - 1 ) ) )
           str_list.emplace_back( util::stat_type_string( stat ) );
+
+      return util::string_join( str_list );
+    };
+
+    auto rating_note = []( uint32_t opt ) {
+      std::vector<std::string> str_list;
+
+      for ( auto stat : util::translate_all_rating_mod( opt ) )
+        str_list.emplace_back( util::stat_type_string( stat ) );
 
       return util::string_join( str_list );
     };
@@ -1157,6 +1204,7 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
     print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
+    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", rating_note );
     print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
     print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
@@ -1186,6 +1234,7 @@ size_t parse_player_effects_t::total_effects_count()
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
          matching_armor_attribute_multiplier_effects.size() +
+         rating_multiplier_effects.size() +
          versatility_effects.size() +
          player_multiplier_effects.size() +
          pet_multiplier_effects.size() +
@@ -1228,9 +1277,29 @@ bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
 
 // non-templated implementation of parse_action_effects_t::get_effect_vector()
 std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                      player_effect_t& data, double& val_mul,
-                                                                      std::string& str, bool& flat, bool force )
+                                                                      pack_t<player_effect_t>& pack,
+                                                                      double& val_mul, std::string& str,
+                                                                      bool& flat, bool force )
 {
+  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
+  {
+    str = "auto attack";
+    return &da_multiplier_effects;
+  }
+
+  if ( !force )
+  {
+    if ( !check_affected_list( pack.affect_lists, eff, force ) )
+      return nullptr;
+    else if ( force )
+      pack.data.type |= AFFECTED_OVERRIDE;
+  }
+
+  if ( !force && !_action->data().affected_by_all( eff ) )
+    return nullptr;
+
+  auto& data = pack.data;
+
   auto adjust_recharge_multiplier_warning = [ this, &data ] {
     if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
     {
@@ -1239,16 +1308,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     }
   };
 
-  if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
-  {
-    str = "auto attack";
-    return &da_multiplier_effects;
-  }
-  else if ( !_action->data().affected_by_all( eff ) && !force )
-  {
-    return nullptr;
-  }
-  else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
     switch ( eff.misc_value1() )
     {
@@ -1272,6 +1332,10 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 
     switch ( eff.misc_value1() )
     {
+      case P_CAST_TIME:     val_mul = 1.0;
+                            str = "cast time";   return &flat_execute_time_effects;
+      case P_TICK_TIME:     val_mul = 1.0;
+                            str = "tick time";   return &flat_tick_time_effects; 
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
       case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
@@ -1338,38 +1402,43 @@ bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) 
   return false;
 }
 
-std::vector<target_effect_t>* parse_action_base_t::get_target_effect_vector( const spelleffect_data_t& eff,
-                                                                             target_effect_t& /* data */,
-                                                                             double& /* val_mul */, std::string& str,
-                                                                             bool& flat, bool force )
+std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
+                                                                      pack_t<target_effect_t>& pack,
+                                                                      double& /* val_mul */, std::string& str,
+                                                                      bool& flat, bool force )
 {
   if ( !_action->special && eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
   {
     str = "auto attack";
     return &target_multiplier_effects;
   }
-  else if ( !_action->data().affected_by_all( eff ) && !force )
+
+  if ( !force )
   {
-    return nullptr;
+    if ( !check_affected_list( pack.affect_lists, eff, force ) )
+      return nullptr;
+    else if ( force )
+      pack.data.type |= AFFECTED_OVERRIDE;
   }
-  else
+
+  if ( !force && !_action->data().affected_by_all( eff ) )
+    return nullptr;
+
+  switch ( eff.subtype() )
   {
-    switch ( eff.subtype() )
-    {
-      case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
-      case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
-      case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
-                                                     str = "crit chance"; return &target_crit_chance_effects;
-      case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
-      default:                                       return nullptr;
-    }
+    case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+    case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
+    case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
+                                                   str = "crit chance"; return &target_crit_chance_effects;
+    case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+    default:                                       return nullptr;
   }
 
   return nullptr;
 }
 
-void parse_action_base_t::target_debug_message( std::string_view type_str, std::string_view val_str,
-                                                const spell_data_t* s_data, size_t i )
+void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
+                                         bool, const spell_data_t* s_data, size_t i )
 {
   _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
                              _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
@@ -1381,6 +1450,66 @@ bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const
   {
     assert( false && "Effect already affects action, no need to force" );
     return false;
+  }
+
+  return true;
+}
+
+bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>& lists, const spelleffect_data_t& eff,
+                                               bool& force )
+{
+  for ( const auto& list : lists )
+  {
+    if ( list.idx.size() && !range::contains( list.idx, eff.index() + 1 ) )
+      continue;
+
+    for ( auto f : list.family )
+    {
+      if ( _action->data().class_flag( std::abs( f ) ) )
+      {
+        if ( f > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( f < 0 )
+        {
+          return false;
+        }
+      }
+    }
+
+    for ( auto l : list.label )
+    {
+      if ( _action->data().affected_by_label( std::abs( l ) ) )
+      {
+        if ( l > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( l < 0 )
+        {
+          return false;
+        }
+      }
+    }
+
+    for ( auto s : list.spell )
+    {
+      if ( _action->data().id() == as<unsigned>( std::abs( s ) ) )
+      {
+        if ( s > 0 )
+        {
+          force = true;
+          return true;
+        }
+        else if ( s < 0 )
+        {
+          return false;
+        }
+      }
+    }
   }
 
   return true;
@@ -1404,15 +1533,20 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
        << "<th class=\"small\">Notes</th>"
        << "</tr>\n";
 
+    auto timespan_fn = []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); };
+
     using VEC = parse_action_base_t;
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
     print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
-    print_parsed_type( os, &VEC::execute_time_effects, "Execute Time" );
+    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", timespan_fn );
+    print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
-    print_parsed_type( os, &VEC::dot_duration_effects, "Dot Duration" );
-    print_parsed_type( os, &VEC::tick_time_effects, "Tick Time" );
+    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration", timespan_fn );
+    print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
+    print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", timespan_fn );
+    print_parsed_type( os, &VEC::tick_time_effects, "Percent Tick Time" );
     print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
@@ -1431,9 +1565,12 @@ size_t parse_action_base_t::total_effects_count()
   return ta_multiplier_effects.size() +
          da_multiplier_effects.size() +
          execute_time_effects.size() +
+         flat_execute_time_effects.size() +
          gcd_effects.size() +
          dot_duration_effects.size() +
+         flat_dot_duration_effects.size() +
          tick_time_effects.size() +
+         flat_tick_time_effects.size() +
          recharge_multiplier_effects.size() +
          cost_effects.size() +
          flat_cost_effects.size() +
@@ -1480,9 +1617,12 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( ta_multiplier_effects );
   initialize_buff_list_on_vector( da_multiplier_effects );
   initialize_buff_list_on_vector( execute_time_effects );
+  initialize_buff_list_on_vector( flat_execute_time_effects );
   initialize_buff_list_on_vector( gcd_effects );
   initialize_buff_list_on_vector( dot_duration_effects );
+  initialize_buff_list_on_vector( flat_dot_duration_effects );
   initialize_buff_list_on_vector( tick_time_effects );
+  initialize_buff_list_on_vector( flat_tick_time_effects );
   initialize_buff_list_on_vector( recharge_multiplier_effects );
   initialize_buff_list_on_vector( cost_effects );
   initialize_buff_list_on_vector( flat_cost_effects );
@@ -1497,7 +1637,7 @@ void parse_action_base_t::consume_buff_list()
   while ( buff_idx_to_consume )
   {
     if ( buff_idx_to_consume & 1U )
-      ( *buff_it )->expire();
+      ( *buff_it )->expire( _action );
 
     buff_idx_to_consume >>= 1;
     buff_it++;

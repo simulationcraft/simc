@@ -145,6 +145,57 @@ jobs:
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
+  tww-spelldata-dump:
+    name: Spell Data Dump
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build ]
+    if: github.event_name == 'push'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - uses: actions/checkout@v4
+
+      - name: Dump Spell Data
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
+
+      - name: Check for Non-Trivial Changes
+        run: |
+          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
+            git checkout -- SpellDataDump/build_info.txt
+          fi
+
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Commit Spell Data
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
+          default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
+          add: '*.txt'
+
   tww-test:
     name: tww-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ${{ matrix.os }}
@@ -159,7 +210,7 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             druid_balance, druid_feral, druid_guardian,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
-            demonhunter_vengeance, demonhunter_havoc
+            demonhunter_vengeance, demonhunter_havoc, priest_shadow
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
@@ -187,6 +238,7 @@ jobs:
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Setup
+        id: setup
         env: 
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
@@ -289,11 +341,69 @@ jobs:
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
+      - name: Dump APL
+        id: dump_apl
+        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            save_actions=${{ matrix.spec }}.simc
+
+      - name: Upload APL
+        if: steps.dump_apl.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: apl-${{ github.sha }}-${{ matrix.spec }}
+          path: ${{ matrix.spec }}.simc
+          retention-days: 1
+
+  tww-apl-dump:
+    name: Action Priority List Dump
+    runs-on: ${{ matrix.os }}
+    needs: [ tww-test, tww-spelldata-dump ]
+    if: github.event_name == 'push' && ( success() || failure() )
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download APLs
+        uses: actions/download-artifact@v4
+        with:
+          path: ActionPriorityLists
+          pattern: apl-${{ github.sha }}-*
+          merge-multiple: true
+
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Commit APLs
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update APL Dump ${{ env.SHORT_SHA }}'
+          default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
+          add: '*.simc'
+
+      - name: Cleanup
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: apl-${{ github.sha }}-*
+
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
-    if: github.ref == 'refs/heads/dragonflight'
+    if: github.ref_name == 'dragonflight'
 
     strategy:
       fail-fast: false
@@ -340,65 +450,11 @@ jobs:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
-  simc-tests:
-    name: test-${{ matrix.tier }}-${{ matrix.spec }}
-    runs-on: ${{ matrix.os }}
-    needs: [ ubuntu-clang-build ]
-    if: github.ref == 'refs/heads/dragonflight'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cppVersion: [17]
-        tier: [ Tier30, Tier31 ]
-        compiler: [clang++-15]
-        spec: [
-            Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
-            Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
-            Druid_Balance, Druid_Feral, Druid_Guardian,
-            Evoker_Devastation, Evoker_Preservation,
-            Hunter_Beast_Mastery, Hunter_Marksmanship, Hunter_Survival,
-            Mage_Arcane, Mage_Fire, Mage_Frost,
-            Monk_Brewmaster, Monk_Windwalker,
-            Paladin_Holy, Paladin_Protection, Paladin_Retribution,
-            Priest_Discipline, Priest_Shadow,
-            Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety,
-            Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,
-            Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
-            Warrior_Arms, Warrior_Fury, Warrior_Protection,
-          ]
-        include:
-          - compiler: clang++-15
-            os: ubuntu-22.04
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-      - name: Install Python dependencies
-        run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
-
-      - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_THREADS: 2
-          SIMC_ITERATIONS: 2
-        run: ${{ github.workspace }}/tests/run.py ${{ matrix.spec }} -tests trinket baseline --max-profiles-to-use 1 --enable-all-talents --enable-all-sets
-  
   simc-profiles:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/dragonflight'
+    if: github.event_name == 'push' && github.ref_name == 'dragonflight'
 
     strategy:
       fail-fast: false
@@ -426,18 +482,14 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-          SIMC_PROFILE_DIR: ${{ github.workspace }}/profiles/${{ matrix.tier }}
-          SIMC_THREADS: 2
-          SIMC_ITERATIONS: 2
-        run: | 
-          ${{ github.workspace }}/generate_profiles_ci.sh
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'
           default_author: github_actions
-          fetch: false
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.simc'
 
   build-osx:
@@ -450,7 +502,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: github.ref == 'refs/heads/dragonflight'
+        if: github.ref_name == 'dragonflight'
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -487,5 +539,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: matrix.runSmokeTest && github.ref == 'refs/heads/dragonflight'
+        if: matrix.runSmokeTest && github.ref_name == 'dragonflight'
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

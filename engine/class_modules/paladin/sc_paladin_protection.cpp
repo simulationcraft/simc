@@ -110,32 +110,28 @@ struct avengers_shield_base_t : public paladin_spell_t
 {
   heartfire_t* heartfire;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ), heartfire(nullptr)
+    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
+      heartfire( nullptr )
   {
     parse_options( options_str );
     {
       if ( p->tier_sets.heartfire_sentinels_authority_2pc->ok() )
       {
-      heartfire = new heartfire_t( p );
+        heartfire = new heartfire_t( p );
       }
     }
-    if ( ! p->has_shield_equipped() )
+    if ( !p->has_shield_equipped() )
     {
       sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
       background = true;
     }
     may_crit = true;
 
-    if ( !p->talents.focused_enmity->ok() )
+    // Soaring Shield hits +2 targets
+    if ( p->talents.soaring_shield->ok() )
     {
-      aoe = data().effectN( 1 ).chain_target();
-
-      //Soaring Shield hits +2 targets
-      if ( p->talents.soaring_shield->ok() )
-      {
-        aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
-       }
-     }
+      aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -156,8 +152,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p()->talents.bulwark_of_order->ok() )
     {
-      //Bulwark of Order is capped at 30% of max hp. Effect 2 back to NYI.
-      double max_absorb = /* p()->talents.bulwark_of_order->effectN( 2 ).percent() */ .3 * p()->resources.max[ RESOURCE_HEALTH ];
+      double max_absorb = p()->talents.bulwark_of_order->effectN( 2 ).percent() * p()->resources.max[ RESOURCE_HEALTH ];
       double new_absorb = s->result_amount * p()->talents.bulwark_of_order->effectN( 1 ).percent();
       p()->buffs.bulwark_of_order_absorb->trigger(
           1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
@@ -222,6 +217,7 @@ double recharge_multiplier( const cooldown_t& cd ) const override
     if ( p()->talents.strength_in_adversity->ok() )
     {
       // Buff overwrites previous buff, even if it was stronger
+      p()->buffs.strength_in_adversity->expire();
       p()->buffs.strength_in_adversity->trigger( execute_state->n_targets );
     }
   }
@@ -286,13 +282,14 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target  = p;
   }
 
   void execute() override
   {
     paladin_spell_t::execute();
 
-    p()->buffs.bastion_of_light->trigger( 3 );
+    p()->buffs.bastion_of_light->trigger(p()->buffs.bastion_of_light->max_stack());
   }
 };
 
@@ -330,34 +327,52 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   }
 };
 
-// Blessed Hammer (Protection) ================================================
-struct blessed_hammer_tick_t : public paladin_spell_t
-{
-  blessed_hammer_tick_t( paladin_t* p )
-      : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
-  {
-    aoe = -1;
-    background = dual = direct_tick = true;
-    callbacks = false;
-    radius = 9.0; // Guess, must be > 8 (cons) but < 10 (HoJ)
-    may_crit = true;
-  }
 
-  void impact( action_state_t* s ) override
-  {
-    paladin_spell_t::impact( s );
-    // apply BH debuff to target_data structure
-    // Does not interact with vers.
-    // To Do: Investigate refresh behaviour
-    td( s->target )->debuff.blessed_hammer->trigger(
-      1,
-      s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent()
-    );
-  }
+struct blessed_hammer_data_t
+{
+  double blessed_assurance_mult;
 };
 
 struct blessed_hammer_t : public paladin_spell_t
 {
+  using state_t = paladin_action_state_t<blessed_hammer_data_t>;
+  // Blessed Hammer (Protection) ================================================
+  struct blessed_hammer_tick_t : public paladin_spell_t
+  {
+    blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
+    {
+      aoe        = -1;
+      background = dual = direct_tick = true;
+      callbacks                       = false;
+      radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
+      may_crit                        = true;
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_spell_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+
+      da *= 1.0 + s_->blessed_assurance_mult;
+      return da;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      paladin_spell_t::impact( s );
+      // apply BH debuff to target_data structure
+      // Does not interact with vers.
+      // To Do: Investigate refresh behaviour
+      td( s->target )
+          ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+    }
+  };
+
   blessed_hammer_tick_t* hammer;
   double num_strikes;
 
@@ -384,34 +399,60 @@ struct blessed_hammer_t : public paladin_spell_t
     tick_may_crit = true;
 
     add_child( hammer );
+
+    triggers_higher_calling = true;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state(action_state_t* s, result_amount_type rt) override
+  {
+    paladin_spell_t::snapshot_state( s, rt );
+
+    auto s_ = static_cast<state_t*>( s );
+
+    s_->blessed_assurance_mult = p()->buffs.lightsmith.blessed_assurance->stack_value();
   }
 
   void execute() override
   {
     paladin_spell_t::execute();
-    timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
-    // Let strikes be a decimal rather than int, and roll a random number to decide
-    // hits each time.
-    int roll_strikes = static_cast<int>(floor(num_strikes));
-    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
-      roll_strikes += 1;
-    if (roll_strikes > 0)
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-          .target( execute_state->target )
-          // spawn at feet of player
-          .x( execute_state->action->player->x_position )
-          .y( execute_state->action->player->y_position )
-          .pulse_time( data().duration()/roll_strikes )
-          .n_pulses( roll_strikes )
-          .start_time( sim->current_time() + initial_delay )
-          .action( hammer ), true );
-
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
     }
+  }
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+    auto state = hammer->get_state();
+    state->copy_state( s );
+    timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
+    // Let strikes be a decimal rather than int, and roll a random number to decide
+    // hits each time.
+    int roll_strikes = static_cast<int>( floor( num_strikes ) );
+    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ) )
+      roll_strikes += 1;
+    if ( roll_strikes > 0 )
+    {
+      make_event<ground_aoe_event_t>( *sim, p(),
+                                      ground_aoe_params_t()
+                                          .target( execute_state->target )
+                                          // spawn at feet of player
+                                          .x( execute_state->action->player->x_position )
+                                          .y( execute_state->action->player->y_position )
+                                          .pulse_time( data().duration() / roll_strikes )
+                                          .n_pulses( roll_strikes )
+                                          .start_time( sim->current_time() + initial_delay )
+                                          .action( hammer ),
+                                      state, true );
+    }
+    p()->buffs.lightsmith.blessed_assurance->expire();
   }
 };
 
@@ -478,37 +519,57 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
 // Hammer of the Righteous ==================================================
 
-struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
+struct hammer_of_the_righteous_data_t
 {
-  hammer_of_the_righteous_aoe_t( paladin_t* p ) :
-      paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
-  {
-    // AoE effect always hits if single-target attack succeeds
-    // Doesn't proc Grand Crusader
-    may_dodge = may_parry = may_miss = false;
-    background = true;
-    aoe        = -1;
-    trigger_gcd = 0_ms; // doesn't incur GCD (HotR does that already)
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    paladin_melee_attack_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
-  }
+  double blessed_assurance_mult;
 };
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
+  using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;  
+  struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
+  {
+    hammer_of_the_righteous_aoe_t( paladin_t* p )
+      : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
+    {
+      // AoE effect always hits if single-target attack succeeds
+      // Doesn't proc Grand Crusader
+      may_dodge = may_parry = may_miss = false;
+      background                       = true;
+      aoe                              = -1;
+      trigger_gcd                      = 0_ms;  // doesn't incur GCD (HotR does that already)
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+
+      da *= 1.0 + s_->blessed_assurance_mult;
+      return da;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      paladin_melee_attack_t::available_targets( tl );
+
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        if ( tl[ i ] == target )  // Cannot hit the original target.
+        {
+          tl.erase( tl.begin() + i );
+          break;
+        }
+      }
+      return tl.size();
+    }
+  };
+
   hammer_of_the_righteous_aoe_t* hotr_aoe;
   hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
       : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
@@ -523,7 +584,15 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     add_child( hotr_aoe );
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
-    cooldown->hasted  = true;
+    cooldown->hasted        = true;
+    triggers_higher_calling = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+    da *= 1.0 + p()->buffs.lightsmith.blessed_assurance->stack_value();
+    return da;
   }
 
   void execute() override
@@ -539,16 +608,39 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
 
-      if ( p()->standing_in_consecration() )
-      {
-        hotr_aoe->target = execute_state->target;
-        hotr_aoe->execute();
-      }
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
       {
         p()->t29_4p_prot();
       }
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+    if ( p()->standing_in_consecration() )
+    {
+      auto state = hotr_aoe->get_state();
+      state->copy_state( s );
+      hotr_aoe->snapshot_state( state, hotr_aoe->amount_type( state ) );
+      hotr_aoe->target = s->target;
+      hotr_aoe->schedule_execute( state );
+    }
+    p()->buffs.lightsmith.blessed_assurance->expire();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    paladin_melee_attack_t::snapshot_state( s, rt );
+
+    auto s_ = static_cast<state_t*>( s );
+
+    s_->blessed_assurance_mult = p()->buffs.lightsmith.blessed_assurance->stack_value();
   }
 };
 
@@ -564,8 +656,9 @@ struct eye_of_tyr_t : public paladin_spell_t
     may_crit = true;
 
     if ( p->talents.inmost_light->ok() )
-      cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
-
+    {
+      cooldown->duration *= ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
+    }
   }
   void impact(action_state_t* s) override
   {
@@ -577,7 +670,14 @@ struct eye_of_tyr_t : public paladin_spell_t
     }
   }
 
-
+   bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    {
+      return false;
+    }
+    return paladin_spell_t::target_ready( candidate_target );
+  }
 
   double action_multiplier() const override
   {
@@ -587,6 +687,26 @@ struct eye_of_tyr_t : public paladin_spell_t
       m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
     }
     return m;
+  }
+  
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      p()->buffs.templar.sacrosanct_crusade->trigger();
+    }
+
+    if ( p()->talents.templar.undisputed_ruling->ok() )
+    {
+      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
+                          p()->gains.eye_of_tyr );
+    }
   }
 
 };
@@ -609,15 +729,26 @@ struct judgment_prot_t : public judgment_t
       heartfire = new heartfire_t( p );
     }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
+    triggers_higher_calling = true;
   }
 
-  // background constructor for proc judgments
-  judgment_prot_t( paladin_t* p, util::string_view name ) :
-    judgment_t( p, name ),
-    judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-    sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
+  void execute() override
   {
-    background = true;
+    judgment_t::execute();
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      int hopo = 0;
+      if ( p()->spec.judgment_3->ok() )
+        hopo += judge_holy_power;
+      if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+        hopo += sw_holy_power;
+      if ( p()->buffs.bastion_of_light->up() )
+        hopo += p()->buffs.bastion_of_light->default_value;
+      if ( hopo > 0 )
+        p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
+    }
+    p()->buffs.bastion_of_light->decrement();
   }
 
   // Special things that happen when Judgment damages target
@@ -627,13 +758,6 @@ struct judgment_prot_t : public judgment_t
 
     if ( result_is_hit( s->result ) )
     {
-      int hopo = 0;
-      if ( p()->spec.judgment_3->ok() )
-        hopo += judge_holy_power;
-      if ( p()->talents.sanctified_wrath->ok() && (p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ))
-        hopo += sw_holy_power;
-      if( hopo > 0 )
-        p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
       {
         residual_action::trigger(
@@ -719,6 +843,10 @@ struct sentinel_t : public paladin_spell_t
     // First expire is after buff length minus 15 seconds, but at least 1 second (E.g., Retribution Aura-procced Sentinel decays instantly)
     timespan_t firstExpireDuration = std::max(p()->buffs.sentinel->buff_duration() - timespan_t::from_seconds(15), timespan_t::from_seconds(1));
     p()->buffs.sentinel_decay->trigger( firstExpireDuration );
+
+    if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
+      p()->buffs.lightsmith.blessing_of_the_forge->execute();
+    p()->tww1_4p_prot();
   }
 };
 
@@ -732,6 +860,7 @@ void buffs::sentinel_buff_t::expire_override( int expiration_stacks, timespan_t 
     p->buffs.sentinel_decay->expire();
   }
   p->adjust_health_percent();
+  p->buffs.heightened_wrath->expire();
 }
 
 
@@ -753,117 +882,6 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
     p->adjust_health_percent();
   }
 }
-
-// Shield of the Righteous ==================================================
-
-shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
-  buff_t( p, "shield_of_the_righteous", p->spells.sotr_buff )
-{
-  add_invalidate( CACHE_BONUS_ARMOR );
-  set_default_value( p->spells.sotr_buff->effectN( 1 ).percent() );
-  set_refresh_behavior( buff_refresh_behavior::EXTEND );
-  cooldown->duration = 0_ms; // handled by the ability
-
-
-}
-
-void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
-{
-  buff_t::expire_override( expiration_stacks, remaining_duration );
-
-  auto* p = debug_cast<paladin_t*>( player );
-
-  if ( p->talents.inner_light->ok() )
-  {
-    p->buffs.inner_light->trigger();
-  }
-
-}
-
-struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
-{
-  shield_of_the_righteous_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous )
-  {
-    parse_options( options_str );
-
-    if ( ! p->has_shield_equipped() )
-    {
-      sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
-      background = true;
-    }
-
-    aoe = -1;
-    use_off_gcd = is_sotr = true;
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-
-
-  }
-
-  shield_of_the_righteous_t( paladin_t* p ) :
-    holy_power_consumer_t( "shield_of_the_righteous_vanquishers_hammer", p, p->spec.shield_of_the_righteous )
-  {
-    // This is the "free" SotR from vanq hammer. Identifiable by being background.
-    background = true;
-    aoe = -1;
-    trigger_gcd = 0_ms;
-    weapon_multiplier = 0.0;
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-
-    // Buff granted regardless of combat roll result
-    // Duration and armor bonus recalculation handled in the buff
-    p()->buffs.shield_of_the_righteous->trigger();
-
-    if ( p()->talents.redoubt->ok() )
-    {
-      p()->buffs.redoubt->trigger();
-    }
-
-    if ( !background )
-    {
-      if ( p()->buffs.shining_light_free->up() || p()->buffs.shining_light_stacks->at_max_stacks() )
-      {
-        p()->buffs.shining_light_stacks->expire();
-        p()->buffs.shining_light_free->trigger();
-      }
-      else
-        p()->buffs.shining_light_stacks->trigger();
-    }
-
-    p()->buffs.bulwark_of_righteous_fury->expire();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    // Range increase on bulwark of righteous fury not implemented.
-    if ( p()->talents.bulwark_of_righteous_fury->ok() )
-    {
-      am *= 1.0 + p()->buffs.bulwark_of_righteous_fury->stack_value();
-    }
-    if ( p()->talents.strength_of_conviction->ok() && p()->standing_in_consecration() )
-    {
-        am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
-    }
-    return am;
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
-
-    if ( p()->buffs.bastion_of_light->check() )
-      c *= 1.0 + p()->buffs.bastion_of_light->data().effectN( 1 ).percent();
-
-    return c;
-  }
-};
 
 struct cleansing_flame_damage_t : public paladin_spell_t
 {
@@ -940,7 +958,14 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   if ( buffs.devotion_aura->up() )
-    s->result_amount *= 1.0 + buffs.devotion_aura->value();
+  { 
+    double devoRed = buffs.devotion_aura->value();
+    if ( talents.lightsmith.shared_resolve->ok() && ( buffs.lightsmith.sacred_weapon->up() || buffs.lightsmith.holy_bulwark->up() ) )
+    {
+      devoRed *= 1 + buffs.lightsmith.holy_bulwark->data().effectN( 1 ).percent(); // Not sure why this is in Holy Bulwark's spell data
+    }
+    s->result_amount *= 1.0 + devoRed;
+  }
 
   if ( buffs.sanctification->up() )
   {
@@ -951,16 +976,21 @@ void paladin_t::target_mitigation( school_e school,
     s->result_amount *= 1.0 + buffs.sanctification_empower->data().effectN( 4 ).percent();
   }
 
+  if (buffs.shield_of_the_righteous->up())
+  {
+    s->result_amount *= 1.0 + buffs.shield_of_the_righteous->default_value;
+  }
+
   paladin_td_t* td = get_target_data( s->action->player );
 
   if ( td->debuff.eye_of_tyr->up() )
   {
     s->result_amount *= 1.0 + td->debuff.eye_of_tyr->value();
   }
-
-  if (td->debuff.crusaders_resolve->up())
+  
+  if (td->debuff.empyrean_hammer->up())
   {
-    s->result_amount *= 1.0 + talents.crusaders_resolve->effectN( 1 ).percent() * td->debuff.crusaders_resolve->stack();
+    s->result_amount *= 1.0 + td->debuff.empyrean_hammer->data().effectN( 3 ).percent();
   }
 
   // Divine Bulwark and consecration reduction
@@ -1188,7 +1218,6 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
-  if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
@@ -1234,7 +1263,8 @@ void paladin_t::create_buffs_protection()
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.moment_of_glory         = make_buff( this, "moment_of_glory", talents.moment_of_glory );
         //-> set_default_value( talents.moment_of_glory->effectN( 2 ).percent() );
-  buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
+  buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light)
+    ->set_default_value_from_effect(1);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 386652 ) )
                                         ->set_default_value( find_spell( 386652 )->effectN( 1 ).percent() );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
@@ -1272,9 +1302,9 @@ void paladin_t::create_buffs_protection()
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
 
-  buffs.sanctification = make_buff( this, "sanctification", find_spell( 424616 ) );
+  buffs.sanctification = make_buff( this, "sanctification_tier", find_spell( 424616 ) );
 
-  buffs.sanctification_empower = make_buff( this, "sanctification_empower", find_spell( 424622 ) );
+  buffs.sanctification_empower = make_buff( this, "sanctification_tier_empower", find_spell( 424622 ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -1337,6 +1367,7 @@ void paladin_t::init_spells_protection()
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
+
 
   if ( specialization() == PALADIN_PROTECTION )
   {

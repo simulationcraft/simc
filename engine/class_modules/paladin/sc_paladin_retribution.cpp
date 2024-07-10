@@ -38,29 +38,6 @@ namespace buffs {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_MASTERY );
   }
-
-  struct shield_of_vengeance_buff_t : public absorb_buff_t
-  {
-    shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( p, "shield_of_vengeance", p->find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ) )
-    {
-      cooldown->duration = 0_ms;
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-      auto* p = static_cast<paladin_t*>( player );
-      // do thing
-      if ( p->options.fake_sov )
-      {
-        // TODO(mserrano): This is a horrible hack
-        p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min = current_value;
-        p->active.shield_of_vengeance_damage->execute();
-      }
-    }
-  };
 }
 
 // Crusade
@@ -72,6 +49,8 @@ struct crusade_t : public paladin_spell_t
     parse_options( options_str );
 
     if ( ! ( p->talents.crusade->ok() ) )
+      background = true;
+    if ( p->talents.radiant_glory->ok() )
       background = true;
   }
 
@@ -275,7 +254,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
 
     // ... this appears to be true for the base damage only,
     // and is not automatically obtained from spell data.
-    affected_by.hand_of_light = true;
+    affected_by.highlords_judgment = true;
 
     // unclear why this is needed...
     cooldown->duration = data().cooldown();
@@ -368,7 +347,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       reduced_aoe_targets = 5;
     }
 
-    affected_by.hand_of_light = true;
+    triggers_higher_calling   = true;
+    affected_by.highlords_judgment = true;
   }
 
   void execute() override
@@ -441,13 +421,13 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
 struct divine_storm_echo_t : public paladin_melee_attack_t
 {
   divine_storm_echo_tempest_t* tempest;
-  divine_storm_echo_t( paladin_t* p )
+  divine_storm_echo_t( paladin_t* p, double multiplier )
     : paladin_melee_attack_t( "divine_storm_echo", p, p->talents.divine_storm ), tempest( nullptr )
   {
     background = true;
 
     aoe = -1;
-    base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
+    base_multiplier *= multiplier;
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
 
@@ -470,10 +450,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 {
   divine_storm_tempest_t* tempest;
   divine_storm_echo_t* echo;
+  divine_storm_echo_t* sunrise_echo;
 
   divine_storm_t( paladin_t* p, util::string_view options_str ) :
     holy_power_consumer_t( "divine_storm", p, p->talents.divine_storm ),
-    tempest( nullptr ), echo( nullptr )
+    tempest( nullptr ), echo( nullptr ), sunrise_echo( nullptr )
   {
     parse_options( options_str );
 
@@ -490,10 +471,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
     }
+
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
     {
-      echo = new divine_storm_echo_t( p );
+      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() );
       add_child( echo );
+    }
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      add_child( sunrise_echo );
     }
   }
 
@@ -513,10 +501,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
     }
+
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
     {
-      echo = new divine_storm_echo_t( p );
+      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() );
       add_child( echo );
+    }
+
+    if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
+    {
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      add_child( sunrise_echo );
     }
   }
 
@@ -546,6 +541,16 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       echo->start_action_execute_event( 700_ms ); // Maybe this 700ms is Echoes of Wrath effect 2? It's more like 600-700ms
     }
 
+    if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
+    {
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
+      {
+        p()->cooldowns.second_sunrise_icd->start();
+        // TODO(mserrano): validate the correct delay here
+        sunrise_echo->start_action_execute_event( 200_ms );
+      }
+    }
+
     if ( p()->buffs.inquisitors_ire->up() )
       p()->buffs.inquisitors_ire->expire();
   }
@@ -556,9 +561,29 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( result_is_hit( s->result ) )
     {
+      paladin_td_t* target_data = td( s->target );
       if ( p()->talents.sanctify->ok() )
-        td( s->target )->debuff.sanctify->trigger();
+        target_data->debuff.sanctify->trigger();
+      if ( target_data->debuff.vanguard_of_justice->up() )
+        target_data->debuff.vanguard_of_justice->expire();
+
+      if ( s->result == RESULT_CRIT && p()->talents.herald_of_the_sun.sun_sear->ok() )
+      {
+        p()->active.sun_sear->target = s->target;
+        p()->active.sun_sear->execute();
+      }
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = holy_power_consumer_t::composite_target_multiplier( target );
+
+    paladin_td_t* target_data = td( target );
+    if ( target_data->debuff.vanguard_of_justice->up() )
+      ctm *= 1.0 + target_data->debuff.vanguard_of_justice->stack_value();
+
+    return ctm;
   }
 };
 
@@ -652,6 +677,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
     }
 
+    if ( p->talents.judge_jury_and_executioner->ok() )
+    {
+      base_aoe_multiplier *= p->talents.judge_jury_and_executioner->effectN( 3 ).percent();
+    }
+
     if ( ! is_fv ) {
       callbacks = false;
       may_block = false;
@@ -662,11 +692,22 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       // Okay, when did this get reset to 1?
       weapon_multiplier = 0;
     }
+
     if ( p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B4) )
     {
       echo = new templars_verdict_echo_t( p );
       add_child( echo );
     }
+  }
+
+  int n_targets() const override
+  {
+    int n = holy_power_consumer_t::n_targets();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      n += as<int>( p()->talents.judge_jury_and_executioner->effectN( 2 ).base_value() );
+
+    return n;
   }
 
   void record_data( action_state_t* state ) override {
@@ -692,6 +733,11 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p()->active.empyrean_legacy->schedule_execute();
       p()->buffs.empyrean_legacy->expire();
+    }
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+    {
+      p()->buffs.judge_jury_and_executioner->expire();
     }
 
     // TODO(mserrano): figure out the actionbar override thing instead of this hack.
@@ -788,9 +834,6 @@ struct judgment_ret_t : public judgment_t
   {
     parse_options( options_str );
 
-    if ( p->talents.highlords_judgment->ok() )
-      base_multiplier *= 1.0 + p->talents.highlords_judgment->effectN( 1 ).percent();
-
     if ( p->talents.boundless_judgment->ok() )
     {
       holy_power_generation += as<int>( p->talents.boundless_judgment->effectN( 1 ).base_value() );
@@ -800,11 +843,6 @@ struct judgment_ret_t : public judgment_t
     {
       aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
-    }
-
-    if ( p->talents.judge_jury_and_executioner->ok() )
-    {
-      base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
     }
 
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
@@ -822,9 +860,6 @@ struct judgment_ret_t : public judgment_t
     // This is for Divine Toll's background judgments
     background = true;
     cooldown = p->get_cooldown( "dummy_cd" );
-
-    if ( p->talents.highlords_judgment->ok() )
-      base_multiplier *= 1.0 + p->talents.highlords_judgment->effectN( 1 ).percent();
 
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
@@ -846,11 +881,6 @@ struct judgment_ret_t : public judgment_t
     }
 
     // we don't do the blessed champion stuff here; DT judgments do not seem to cleave
-
-    if ( p->talents.judge_jury_and_executioner->ok() )
-    {
-      base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
-    }
   }
 
   void execute() override
@@ -885,6 +915,16 @@ struct judgment_ret_t : public judgment_t
           p()->buffs.echoes_of_wrath->trigger();
       }
     }
+
+    double mastery_chance = p()->cache.mastery_value() * 2;
+    if ( p()->talents.boundless_judgment->ok() )
+      mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+
+    if ( rng().roll( mastery_chance ) )
+    {
+      p()->active.highlords_judgment->set_target( target );
+      p()->active.highlords_judgment->execute();
+    }
   }
 };
 
@@ -907,12 +947,29 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
     {
       base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
     }
+
+    if ( p->talents.judge_jury_and_executioner->ok() )
+    {
+      base_aoe_multiplier *= p->talents.judge_jury_and_executioner->effectN( 3 ).percent();
+    }
   }
 
+  int n_targets() const override
+  {
+    int n = holy_power_consumer_t::n_targets();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      n += as<int>( p()->talents.judge_jury_and_executioner->effectN( 2 ).base_value() );
+
+    return n;
+  }
 
   void execute() override
   {
     holy_power_consumer_t::execute();
+
+    if ( p()->buffs.judge_jury_and_executioner->up() )
+      p()->buffs.judge_jury_and_executioner->expire();
 
     if ( p()->talents.righteous_cause->ok() )
     {
@@ -937,64 +994,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
   }
 };
 
-// SoV
-
-struct shield_of_vengeance_proc_t : public paladin_spell_t
-{
-  shield_of_vengeance_proc_t( paladin_t* p ) :
-    paladin_spell_t( "shield_of_vengeance_proc", p, p->find_spell( 184689 ) )
-  {
-    may_miss = may_dodge = may_parry = may_glance = false;
-    background = true;
-    split_aoe_damage = true;
-  }
-
-  void init() override {
-    paladin_spell_t::init();
-    snapshot_flags = 0;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-};
-
-struct shield_of_vengeance_t : public paladin_absorb_t
-{
-  shield_of_vengeance_t( paladin_t* p, util::string_view options_str ) :
-    paladin_absorb_t( "shield_of_vengeance", p, p->talents.shield_of_vengeance )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-
-    // unbreakable spirit reduces cooldown
-    if ( p->talents.unbreakable_spirit->ok() )
-      cooldown->duration = data().cooldown() * ( 1 + p->talents.unbreakable_spirit->effectN( 1 ).percent() );
-  }
-
-  void init() override
-  {
-    paladin_absorb_t::init();
-    snapshot_flags |= (STATE_CRIT | STATE_VERSATILITY);
-  }
-
-  void execute() override
-  {
-    double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
-
-    if ( p()->talents.aegis_of_protection->ok() )
-      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
-
-    shield_amount *= 1.0 + p()->composite_heal_versatility();
-
-    paladin_absorb_t::execute();
-    p()->buffs.shield_of_vengeance->trigger( 1, shield_amount );
-  }
-};
-
-
 // Wake of Ashes (Retribution) ================================================
 
 struct truths_wake_t : public paladin_spell_t
@@ -1003,6 +1002,16 @@ struct truths_wake_t : public paladin_spell_t
     paladin_spell_t( "truths_wake", p, p->find_spell( 403695 ) )
   {
     hasted_ticks = tick_may_crit = true;
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    paladin_spell_t::tick( d );
+
+    if ( d->state->result == RESULT_CRIT && p()->talents.burn_to_ash->ok() )
+    {
+      d->adjust_duration( timespan_t::from_seconds( p()->talents.burn_to_ash->effectN( 1 ).base_value() ) );
+    }
   }
 };
 
@@ -1065,11 +1074,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     aoe = -1;
 
-    if ( p->talents.truths_wake->ok() )
-    {
-      truths_wake = new truths_wake_t( p );
-      add_child( truths_wake );
-    }
+    truths_wake = new truths_wake_t( p );
+    add_child( truths_wake );
 
     if ( p->talents.seething_flames->ok() )
     {
@@ -1086,11 +1092,8 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->talents.truths_wake->ok() )
-      {
-        truths_wake->set_target( s->target );
-        truths_wake->execute();
-      }
+      truths_wake->set_target( s->target );
+      truths_wake->execute();
     }
   }
 
@@ -1105,6 +1108,43 @@ struct wake_of_ashes_t : public paladin_spell_t
         make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
     }
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      p()->buffs.templar.sacrosanct_crusade->trigger();
+    }
+
+    if ( p()->talents.radiant_glory->ok() )
+    {
+      if ( p()->talents.crusade->ok() )
+      {
+        // TODO: get this from spell data
+        p()->buffs.crusade->trigger( timespan_t::from_seconds( 10 ) );
+      }
+      else if ( p()->talents.avenging_wrath->ok() )
+      {
+        p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
+      }
+    }
+
+    if ( p()->talents.herald_of_the_sun.aurora->ok() && p()->cooldowns.aurora_icd->up() )
+    {
+      p()->cooldowns.aurora_icd->start();
+      p()->buffs.divine_purpose->trigger();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    {
+      return false;
+    }
+    return paladin_spell_t::target_ready( candidate_target );
   }
 };
 
@@ -1228,6 +1268,7 @@ struct base_templar_strike_t : public paladin_melee_attack_t
       crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
+    triggers_higher_calling = true;
   }
 
   void impact( action_state_t *s ) override
@@ -1258,11 +1299,6 @@ struct templar_strike_t : public base_templar_strike_t
     if ( p->talents.swift_justice->ok() )
     {
       cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
-    }
-
-    if ( p->spec.improved_crusader_strike )
-    {
-      cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
     }
   }
 
@@ -1347,6 +1383,23 @@ struct wrathful_sanction_t : public paladin_spell_t
   }
 };
 
+struct highlords_judgment_t : public paladin_spell_t
+{
+  highlords_judgment_t( paladin_t* p ) : paladin_spell_t( "highlords_judgment", p, p->find_spell( 383921 ) )
+  {
+    background = true;
+    always_do_capstones = true;
+  }
+};
+
+struct sun_sear_t : public paladin_spell_t
+{
+  sun_sear_t( paladin_t* p ) :
+    paladin_spell_t( "sun_sear", p, p->find_spell( 431414 ) )
+  {
+    hasted_ticks = tick_may_crit = true;
+  }
+};
 
 void paladin_t::trigger_es_explosion( player_t* target )
 {
@@ -1368,7 +1421,6 @@ void paladin_t::trigger_es_explosion( player_t* target )
 
 void paladin_t::create_ret_actions()
 {
-  active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   if ( talents.empyrean_legacy->ok() )
   {
     double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
@@ -1412,12 +1464,18 @@ void paladin_t::create_ret_actions()
   {
     active.divine_toll = new judgment_ret_t( this, "divine_toll_judgment", true );
     active.divine_resonance = new judgment_ret_t( this, "divine_resonance_judgment", false );
+    active.highlords_judgment = new highlords_judgment_t( this );
+    if ( talents.herald_of_the_sun.sun_sear->ok() )
+    {
+      active.sun_sear = new sun_sear_t( this );
+    }
   }
 
   if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
   {
     active.wrathful_sanction = new wrathful_sanction_t( this );
   }
+
 }
 
 action_t* paladin_t::create_action_retribution( util::string_view name, util::string_view options_str )
@@ -1428,7 +1486,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
-  if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
   if ( name == "templar_strike"            ) return new templar_strike_t           ( this, options_str );
   if ( name == "templar_slash"             ) return new templar_slash_t            ( this, options_str );
@@ -1447,8 +1504,6 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
 
-  buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
-
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )
     ->set_default_value( talents.rush_of_light->effectN( 1 ).percent() );
@@ -1465,7 +1520,8 @@ void paladin_t::create_buffs_retribution()
   buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
                           ->set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
-                          ->set_trigger_spell(talents.empyrean_power);
+                          ->set_trigger_spell( talents.empyrean_power );
+  buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
@@ -1476,6 +1532,9 @@ void paladin_t::create_buffs_retribution()
 
 void paladin_t::init_rng_retribution()
 {
+  // TODO(mserrano): is this right? It looks right-ish from logs, but it's hard to say
+  rppm.radiant_glory = get_rppm( "radiant_glory", 1.0 );
+  rppm.judge_jury_and_executioner = get_rppm( "judge_jury_and_executioner", talents.judge_jury_and_executioner );
 }
 
 void paladin_t::init_spells_retribution()
@@ -1486,14 +1545,14 @@ void paladin_t::init_spells_retribution()
   talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
   talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" );
   talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" );
-  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
+  talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath");
   talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
   talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" );
   talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
   talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
-  talents.truths_wake                 = find_talent_spell( talent_tree::SPECIALIZATION, "Truth's Wake" );
+  talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
   talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
   talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
@@ -1524,7 +1583,6 @@ void paladin_t::init_spells_retribution()
   talents.divine_hammer               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Hammer" );
   talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
   talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
-  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
   talents.aegis_of_protection         = find_talent_spell( talent_tree::SPECIALIZATION, "Aegis of Protection" );
   talents.burning_crusade             = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Crusade" );
   talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
@@ -1534,11 +1592,12 @@ void paladin_t::init_spells_retribution()
   talents.searing_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Light" );
   talents.divine_auxiliary            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Auxiliary" );
   talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
+  talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
-  mastery.hand_of_light = find_mastery_spell( PALADIN_RETRIBUTION );
+  mastery.highlords_judgment = find_mastery_spell( PALADIN_RETRIBUTION );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -1553,6 +1612,7 @@ void paladin_t::init_spells_retribution()
 
   spells.crusade = find_spell( 231895 );
   spells.wrathful_sanction = find_spell( 424590 );
+  spells.highlords_judgment_hidden = find_spell( 449198 );
 }
 
 // Action Priority List Generation

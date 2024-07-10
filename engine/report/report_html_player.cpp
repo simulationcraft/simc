@@ -200,36 +200,6 @@ void sorttable_help_header( report::sc_html_stream& os, std::string_view header,
   sorttable_header( os, header, flag, helptext );
 }
 
-void print_distribution_chart( report::sc_html_stream& os,    // output stream to html report
-                               const player_t& p,             // player
-                               extended_sample_data_t* data,  // pointer to specific data object
-                               std::string_view name,       // name of the bucket (util::encode_html() first!).
-                               std::string_view token,      // tokenized name used for chart & toggle ID
-                               std::string_view suffix,     // tokenized data name, i.e. "_count"
-                               bool time_element = false )    // true for time based elements like interval
-{
-  bool percent = data->mean() < 1.0 && data->min() < 1.0 && data->max() < 1.0;
-
-  highchart::histogram_chart_t chart( fmt::format("{}{}", token, suffix ), *p.sim );
-  if ( chart::generate_distribution( chart, nullptr, data->distribution, fmt::format("{} {}", name, data->name_str ),
-                                     data->mean(), data->min(), data->max(), percent ) )
-  {
-    chart.set_toggle_id( fmt::format("{}_toggle", token ) );
-    if ( time_element )
-    {
-      chart.set( "xAxis.labels.format", "{value}s" );
-      chart.set( "yAxis.title.text", "# Occurances" );
-      chart.set( "series.0.name", "Occurances" );
-    }
-    else if ( percent )
-    {
-      chart.set( "xAxis.labels.format", "{value}%" );
-    }
-    os << chart.to_target_div();
-    p.sim->add_chart_data( chart );
-  }
-}
-
 std::string output_action_name( const stats_t& s, const player_t* actor, bool simple )
 {
   std::string class_attr;
@@ -475,11 +445,11 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   }
 
   // Result type and count
-  os.format( R"(<td class="right">{}</td><td class="right">{:.1Lf}{}</td>)",
+  os.format( R"(<td class="left">{}</td><td>{:.1Lf}{}</td>)",
     result_type == 1 ? "Periodic" : "Direct", count, count_str );
 
   // Result amount
-  os.format( R"(<td class="right">{:.0Lf}</td><td class="right">{:.0Lf}</td><td class="right">{:.0Lf}</td>)",
+  os.format( "<td>{:.0Lf}</td><td>{:.0Lf}</td><td>{:.0Lf}</td>",
     result_type == 1
       ? mean_value<result_t, result_e>( tr, { RESULT_HIT } )
       : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ),
@@ -491,26 +461,26 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
       : mean_damage( dr ) );
 
   // Crit%
-  os.format( R"(<td class="right">{:.1f}%{}</td>)",
+  os.format( "<td>{:.1f}%{}</td>",
     result_type == 1
       ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
       : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ),
     critpct_str );
 
   if ( player_has_avoidance( p, stats_mask ) )
-    os.format( R"(<td class="right">{:.1f}%</td>)",  // direct_results Avoid%
+    os.format( "<td>{:.1f}%</td>",  // direct_results Avoid%
       result_type == 1
         ? pct_value<result_t, result_e>( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
         : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
 
   if ( player_has_glance( p, stats_mask ) )
-    os.format( R"(<td class="right">{:.1f}%</td>)",  // direct_results Glance%
+    os.format( "<td>{:.1f}%</td>",  // direct_results Glance%
       result_type == 1
         ? pct_value<result_t, result_e>( tr, { RESULT_GLANCE } )
         : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
 
   if ( player_has_block( p, stats_mask ) )
-    os.format( R"(<td class="right">{:.1f}%</td>)",  // direct_results Block%
+    os.format( "<td>{:.1f}%</td>",  // direct_results Block%
       result_type == 1
         ? 0
         : pct_value<full_result_t, full_result_e>(dr,
@@ -518,9 +488,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
             FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( show_uppct )
-    os.format( R"(<td class="right">{}</td>)", uppct_str );
+    os.format( "<td>{}</td>", uppct_str );
   else
-    os.printf( R"(<td class="right"></td>)" );
+    os.printf( "<td></td>" );
 }
 
 void collect_aps( const stats_t* stats, double& caps, double& capspct )
@@ -550,7 +520,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   if ( hasparent )
     row_class += " childrow";
 
-  os << "<tr class=\"toprow" << row_class << "\">\n";
+  os.format( R"(<tr class="toprow{} right">)", row_class );
 
   int result_rows = s.has_direct_amount_results() + s.has_tick_amount_results();
 
@@ -558,7 +528,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     rowspan = " rowspan=\"" + util::to_string( result_rows ) + "\"";
 
   // Ability name
-  os << "<td style=\"white-space:nowrap\" class=\"left\"" << rowspan << ">";
+  os.format( R"(<td style="white-space:nowrap" class="left"{}>)", rowspan );
 
   if ( hasparent )
   {
@@ -593,20 +563,21 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( cAPSpct > s.portion_amount )
       compound_aps_pct = fmt::format( "&#160;({:.1f}%)", cAPSpct * 100 );
 
-    os.format ( R"(<td class="right"{}>{:.0Lf}{}</td><td class="right"{}>{:.1f}%{}</td>)",
-                rowspan, s.portion_aps.pretty_mean(), compound_aps,
-                rowspan, s.portion_amount * 100, compound_aps_pct );
+    os.format( R"(<td{}>{:.0Lf}{}</td><td{}>{:.1f}%{}</td>)",
+               rowspan, s.portion_aps.pretty_mean(), compound_aps,
+               rowspan, s.portion_amount * 100, compound_aps_pct );
   }
 
   // Number of executes and execute interval
-  os.format( R"(<td class="right"{}>{:.1Lf}</td><td class="right"{}>{:.2Lf}s</td>)",
-             rowspan, s.num_executes.pretty_mean(), rowspan, s.total_intervals.pretty_mean() );
+  os.format( R"(<td{}>{:.1Lf}</td><td{}>{:.2Lf}s</td>)",
+             rowspan, s.num_executes.pretty_mean(),
+             rowspan, s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
     // Amount per execute & execute time
-    os.format( R"(<td class="right"{}>{:.0Lf}</td><td class="right"{}>{:.0Lf}</td>)",
+    os.format( R"(<td{}>{:.0Lf}</td><td{}>{:.0Lf}</td>)",
                rowspan, s.ape,
                rowspan, s.apet );
 
@@ -621,13 +592,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
       print_html_action_summary( os, stats_mask, 1, s, p );
     }
     else
-      os.printf( "<td class=\"right\" colspan=\"%d\"></td>\n", n_columns );
+      os.format( R"(<td colspan="{}"></td>)", n_columns );
 
-    os.printf( "</tr>\n" );
+    os << "</tr>\n";
 
     if ( !periodic_only && s.has_tick_amount_results() )
     {
-      os << "<tr class=\"childrow" << row_class << "\">\n";
+      os.format( R"(<tr class="childrow{} right">)", row_class );
       print_html_action_summary( os, stats_mask, 1, s, p );
       os << "</tr>\n";
     }
@@ -658,39 +629,35 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     // Stat Details
     os << "<h4>Stats Details: " << util::encode_html( util::inverse_tokenize( s.name_str ) ) << "</h4>\n";
 
-    os << "<table class=\"details\">\n"
-       << "<tr>\n";
+    os << R"(<table class="details"><tr>)"
+       << "<th>Type</th>"
+       << "<th>Executes</th>"
+       << "<th>Direct Results</th>"
+       << "<th>Ticks</th>"
+       << "<th>Tick Results</th>"
+       << "<th>Refreshes</th>"
+       << "<th>Execute Time per Execution</th>"
+       << "<th>Tick Time per Tick</th>"
+       << "<th>Actual Amount</th>"
+       << "<th>Raw Amount</th>"
+       << "<th>Mitigated</th>"
+       << "<th>Amount per Total Time</th>"
+       << "<th>Amount per Total Execute Time</th>"
+       << "</tr>\n";
 
-    os << "<th class=\"small\">Type</th>\n"
-       << "<th class=\"small\">Executes</th>\n"
-       << "<th class=\"small\">Direct Results</th>\n"
-       << "<th class=\"small\">Ticks</th>\n"
-       << "<th class=\"small\">Tick Results</th>\n"
-       << "<th class=\"small\">Refreshes</th>\n"
-       << "<th class=\"small\">Execute Time per Execution</th>\n"
-       << "<th class=\"small\">Tick Time per  Tick</th>\n"
-       << "<th class=\"small\">Actual Amount</th>\n"
-       << "<th class=\"small\">Raw Amount</th>\n"
-       << "<th class=\"small\">Mitigated</th>\n"
-       << "<th class=\"small\">Amount per Total Time</th>\n"
-       << "<th class=\"small\">Amount per Total Execute Time</th>\n";
-
-    os << "</tr>\n"
-       << "<tr>\n";
-
-    os.format( "<td class=\"left small\">{}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.4Lf}</td>\n"
-               "<td class=\"right small\">{:.4Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2f}%</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n"
-               "<td class=\"right small\">{:.2Lf}</td>\n",
+    os.format( R"(<tr class="right"><td class="left">{}</td>)"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.4Lf}</td>"
+               "<td>{:.4Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td></tr></table>\n",
                util::stats_type_string( s.type ),
                s.num_executes.mean(),
                s.num_direct_results.mean(),
@@ -704,8 +671,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                s.overkill_pct,
                s.aps,
                s.apet );
-    os << "</tr>\n";
-    os << "</table>\n";
+
     if ( !s.portion_aps.simple || !s.portion_apse.simple || !s.actual_amount.simple )
     {
       os << "<table class=\"details\">\n";
@@ -776,55 +742,51 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     }
 
     // Detailed breakdown of damage or healing ability
-    os << "<table class=\"details\">\n";
+    os << R"(<table class="details">)";
     if ( s.num_direct_results.mean() > 0 )
     {
-      os << "<tr>\n"
-         << "<th class=\"small\" rowspan=\"2\">Direct Results</th>\n"
-         << "<th class=\"small\" colspan=\"4\">Count</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Amount</th>\n"
+      // Direct Damage
+      os << R"(<tr><th rowspan="2">Direct Results</th>)"
+         << R"(<th colspan="4">Count</th>)"
+         << R"(<th colspan="3">Simulation</th>)"
+         << R"(<th colspan="3">Iteration Average</th>)"
+         << R"(<th colspan="3">Amount</th></tr>)";
+
+      os << "<tr>"
+         << "<th>Percent</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Actual</th>"
+         << "<th>Raw</th>"
+         << "<th>Mitigated</th>"
          << "</tr>\n";
 
-      // Direct Damage
-      os << "<tr>\n"
-         << "<th class=\"small\">Percent</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Actual</th>\n"
-         << "<th class=\"small\">Raw</th>\n"
-         << "<th class=\"small\">Mitigated</th>\n"
-         << "</tr>\n";
       for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
       {
         if ( !s.direct_results[ i ].count.mean() )
           continue;
 
-        os << "<tr>\n";
-
-        os.format( "<td class=\"left small\">{}</td>\n"
-                   "<td class=\"right small\">{:.2f}%</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2f}%</td>\n"
-                   "</tr>\n",
+        os.format( R"(<tr class="right"><td class="left">{}</td>)"
+                   "<td>{:.2f}%</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2f}%</td></tr>\n",
                    util::full_result_type_string( i ),
                    s.direct_results[ i ].pct,
                    s.direct_results[ i ].count.mean(),
@@ -845,50 +807,47 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( s.num_tick_results.mean() > 0 )
     {
       // Tick Damage
-      os << "<tr>\n"
-         << "<th class=\"small\" rowspan=\"2\">Tick Results</th>\n"
-         << "<th class=\"small\" colspan=\"4\">Count</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Simulation</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Iteration Average</th>\n"
-         << "<th class=\"small\" colspan=\"3\">Amount</th>\n"
+      os << R"(<tr><th rowspan="2">Tick Results</th>)"
+         << R"(<th colspan="4">Count</th>)"
+         << R"(<th colspan="3">Simulation</th>)"
+         << R"(<th colspan="3">Iteration Average</th>)"
+         << R"(<th colspan="3">Amount</th></tr>)";
+
+      os << "<tr>"
+         << "<th>Percent</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Mean</th>"
+         << "<th>Min</th>"
+         << "<th>Max</th>"
+         << "<th>Actual</th>"
+         << "<th>Total</th>"
+         << "<th>Mitigated</th>"
          << "</tr>\n";
 
-      os << "<tr>\n"
-         << "<th class=\"small\">Percent</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Mean</th>\n"
-         << "<th class=\"small\">Min</th>\n"
-         << "<th class=\"small\">Max</th>\n"
-         << "<th class=\"small\">Actual</th>\n"
-         << "<th class=\"small\">Total</th>\n"
-         << "<th class=\"small\">Mitigated</th>\n"
-         << "</tr>\n";
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( !s.tick_results[ i ].count.mean() )
           continue;
 
-        os << "<tr>\n";
-        os.format( "<td class=\"left small\">{}</td>\n"
-                   "<td class=\"right small\">{:.2f}%</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.0Lf}</td>\n"
-                   "<td class=\"right small\">{:.2f}%</td>\n"
-                   "</tr>\n",
+        os.format( R"(<tr class="right"><td class="left">{}</td>)"
+                   "<td>{:.2f}%</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.0Lf}</td>"
+                   "<td>{:.2f}%</td></tr>\n",
                    util::result_type_string( i ),
                    s.tick_results[ i ].pct,
                    s.tick_results[ i ].count.mean(),
@@ -1002,27 +961,24 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       os << "<div class=\"flex\">\n";  // Wrap details, damage/weapon, spell_data
 
-      os.printf( "<div>\n"
-                 "<h4>Action Details: %s</h4>\n"
-                 "<ul>\n"
-                 "<li><span class=\"label\">id:</span>%i</li>\n"
-                 "<li><span class=\"label\">school:</span>%s</li>\n"
-                 "<li><span class=\"label\">range:</span>%.1f</li>\n"
-                 "<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
-                 "<li><span class=\"label\">radius:</span>%.1f</li>\n"
-                 "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
-                 "<li><span class=\"label\">gcd_type:</span>%s</li>\n"
-                 "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
-
-                 "<li><span class=\"label\">cooldown:</span>%.3f</li>\n"
-                 "<li><span class=\"label\">cooldown hasted:</span>%s</li>\n"
-                 "<li><span class=\"label\">charges:</span>%i</li>\n"
-                 "<li><span class=\"label\">base_recharge_multiplier:</span>%.3f</li>\n"
-                 "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
-                 "<li><span class=\"label\">target:</span>%s</li>\n"
-                 "<li><span class=\"label\">aoe:</span>%d</li>\n",
-                 util::encode_html( util::inverse_tokenize( a->name() ) ).c_str(),
+      os.format( R"(<div><h4>Action Details: {}</h4><ul class="label">)"
+                 "<li><span>id:</span>{}</li>"
+                 "<li><span>school:</span>{}</li>"
+                 "<li><span>range:</span>{:.1f}</li>"
+                 "<li><span>travel_speed:</span>{:.4f}</li>"
+                 "<li><span>radius:</span>{:.1f}</li>"
+                 "<li><span>trigger_gcd:</span>{:.4f}</li>"
+                 "<li><span>gcd_type:</span>{}</li>"
+                 "<li><span>min_gcd:</span>{:.4f}</li>"
+                 "<li><span>cooldown:</span>{:.3f}</li>"
+                 "<li><span>cooldown hasted:</span>{}</li>"
+                 "<li><span>charges:</span>{}</li>"
+                 "<li><span>base_recharge_multiplier:</span>{:.3f}</li>"
+                 "<li><span>base_execute_time:</span>{:.2f}</li>"
+                 "<li><span>base_crit:</span>{:.2f}</li>"
+                 "<li><span>target:</span>{}</li>"
+                 "<li><span>aoe:</span>{}</li>\n",
+                 util::encode_html( util::inverse_tokenize( a->name() ) ),
                  a->id,
                  util::school_type_string( a->get_school() ),
                  a->range,
@@ -1037,65 +993,50 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->base_recharge_multiplier,
                  a->base_execute_time.total_seconds(),
                  a->base_crit,
-                 a->target ? util::encode_html( a->target->name() ).c_str() : "",
+                 a->target ? util::encode_html( a->target->name() ) : "",
                  a->aoe );
 
       if ( a->aoe > 1 || a->aoe < 0 )
       {
-        fmt::print( os, "<li><span class=\"label\">split_aoe_damage:</span>{}</li>\n",
-                    a->split_aoe_damage ? "true" : "false" );
+        fmt::print( os, "<li><span>split_aoe_damage:</span>{}</li>\n", a->split_aoe_damage ? "true" : "false" );
+
         if ( a->reduced_aoe_targets > 0 )
-        {
-          fmt::print( os, "<li><span class=\"label\">reduced_aoe_targets:</span>{}</li>\n",
-                      a->reduced_aoe_targets );
-        }
+          fmt::print( os, "<li><span>reduced_aoe_targets:</span>{}</li>\n", a->reduced_aoe_targets );
+
         if ( a->full_amount_targets > 0 )
-        {
-          fmt::print( os, "<li><span class=\"label\">full_amount_targets:</span>{}</li>\n",
-                      a->full_amount_targets );
-        }
+          fmt::print( os, "<li><span>full_amount_targets:</span>{}</li>\n", a->full_amount_targets );
       }
 
-      fmt::print( os, "<li><span class=\"label\">harmful:</span>{}</li>\n",
-                  a->harmful ? "true" : "false" );
+      fmt::print( os, "<li><span>harmful:</span>{}</li>\n", a->harmful ? "true" : "false" );
 
       os << "</ul>\n</div>\n";  // Close details
 
       os << "<div>\n";  // Wrap damage/weapon
 
       // resource details
-      fmt::print( os,
-                  "<div>\n"
-                  "<h4>Resources</h4>\n"
-                  "<ul>\n" );
-      fmt::print( os, "<li><span class=\"label\">resource:</span>{}</li>\n",
-                  util::resource_type_string( a->current_resource() ) );
-      fmt::print( os, "<li><span class=\"label\">base_cost:</span>{}</li>\n",
-                  a->base_costs[ a->current_resource() ] );
-      fmt::print( os, "<li><span class=\"label\">secondary_cost:</span>{}</li>\n",
-                  a->secondary_costs[ a->current_resource() ] );
-      fmt::print( os, "<li><span class=\"label\">energize_type:</span>{}</li>\n", a->energize_type );
-      fmt::print( os, "<li><span class=\"label\">energize_resource:</span>{}</li>\n", a->energize_resource );
-      fmt::print( os, "<li><span class=\"label\">energize_amount:</span>{:.1f}</li>\n", a->energize_amount );
-      fmt::print( os,
-                  "</ul>\n"
-                  "</div>\n" );
+      os.format( R"(<div><h4>Resources</h4><ul class="label">)"
+                 "<li><span>resource:</span>{}</li>"
+                 "<li><span>base_cost:</span>{}</li>"
+                 "<li><span>secondary_cost:</span>{}</li>"
+                 "<li><span>energize_type:</span>{}</li>"
+                 "<li><span>energize_resource:</span>{}</li>"
+                 "<li><span>energize_amount:</span>{:.1f}</li></ul></div>\n",
+                 util::resource_type_string( a->current_resource() ),
+                 a->base_costs[ a->current_resource() ],
+                 a->secondary_costs[ a->current_resource() ],
+                 a->energize_type,
+                 a->energize_resource,
+                 a->energize_amount );
 
       if ( a->spell_power_mod.direct || a->base_dd_min || a->base_dd_max )
       {
-        os.printf( "<div>\n"
-                   "<h4>Direct Damage</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">may_crit:</span>%s</li>\n"
-                   "<li><span "
-                   "class=\"label\">attack_power_mod.direct:</span>%.6f</li>\n"
-                   "<li><span "
-                   "class=\"label\">spell_power_mod.direct:</span>%.6f</li>\n"
-                   "<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">base_dd_mult:</span>%.2f</li>\n"
-                   "</ul>\n"
-                   "</div>\n",
+        os.format( R"(<div><h4>Direct Damage</h4><ul class="label">)"
+                   "<li><span>may_crit:</span>{}</li>"
+                   "<li><span>attack_power_mod.direct:</span>{:.6f}</li>"
+                   "<li><span>spell_power_mod.direct:</span>{:.6f}</li>"
+                   "<li><span>base_dd_min:</span>{:.2f}</li>"
+                   "<li><span>base_dd_max:</span>{:.2f}</li>"
+                   "<li><span>base_dd_mult:</span>{:.2f}</li></ul></div>\n",
                    a->may_crit ? "true" : "false",
                    a->attack_power_mod.direct,
                    a->spell_power_mod.direct,
@@ -1106,23 +1047,19 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       if ( a->dot_duration > timespan_t::zero() )
       {
-        os.printf( "<div>\n"
-                   "<h4>Damage Over Time</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
-                   "<li><span class=\"label\">tick_zero:</span>%s</li>\n"
-                   "<li><span class=\"label\">tick_on_application:</span>%s</li>\n"
-                   "<li><span class=\"label\">rolling_periodic:</span>%s</li>\n"
-                   "<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
-                   "<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
-                   "<li><span class=\"label\">base_td:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">base_td_mult:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">dot_duration:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
-                   "<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-                   "</ul>\n"
-                   "</div>\n",
+        os.format( R"(<div><h4>Damage Over Time</h4><ul class="label">)"
+                   "<li><span>tick_may_crit:</span>{}</li>"
+                   "<li><span>tick_zero:</span>{}</li>"
+                   "<li><span>tick_on_application:</span>{}</li>"
+                   "<li><span>rolling_periodic:</span>{}</li>"
+                   "<li><span>attack_power_mod.tick:</span>{:.6f}</li>"
+                   "<li><span>spell_power_mod.tick:</span>{:.6f}</li>"
+                   "<li><span>base_td:</span>{:.2f}</li>"
+                   "<li><span>base_td_mult:</span>{:.2f}</li>"
+                   "<li><span>dot_duration:</span>{:.2f}</li>"
+                   "<li><span>base_tick_time:</span>{:.2f}</li>"
+                   "<li><span>hasted_ticks:</span>{}</li>"
+                   "<li><span>dot_behavior:</span>{}</li></ul></div>\n",
                    a->tick_may_crit ? "true" : "false",
                    a->tick_zero ? "true" : "false",
                    a->tick_on_application ? "true" : "false",
@@ -1136,43 +1073,36 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->hasted_ticks ? "true" : "false",
                    util::dot_behavior_type_string( a->dot_behavior ) );
       }
+
       if ( a->weapon )
       {
-        os.printf( "<div>\n"
-                   "<h4>Weapon</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">normalized:</span>%s</li>\n"
-                   "<li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
-                   "<li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-                   "</ul>\n"
-                   "</div>\n",
+        os.format( R"(<div><h4>Weapon</h4><ul class="label">)"
+                   "<li><span>normalized:</span>{}</li>"
+                   "<li><span>weapon_power_mod:</span>{:.6f}</li>"
+                   "<li><span>weapon_multiplier:</span>{:.2f}</li></ul></div>\n",
                    a->normalize_weapon_speed ? "true" : "false",
                    a->weapon_power_mod,
                    a->weapon_multiplier );
       }
+
       os << "</div>\n";  // Close damage/weapon
 
       if ( a->data().ok() )
       {
         const auto& spell_text = a->player->dbc->spell_text( a->data().id() );
-        os.printf( "<div class=\"shrink\">\n"
-                   "<h4>Spelldata</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">id:</span>%i</li>\n"
-                   "<li><span class=\"label\">name:</span>%s</li>\n"
-                   "<li><span class=\"label\">school:</span>%s</li>\n"
-                   "<li><span class=\"label\">tooltip:</span><span "
-                   "class=\"tooltip\">%s</span></li>\n"
-                   "<li><span class=\"label\">description:</span><span "
-                   "class=\"tooltip\">%s</span></li>\n"
-                   "</ul>\n"
-                   "</div>\n",
+        os.format( R"(<div class="shrink"><h4>Spelldata</h4><ul class="label">)"
+                   "<li><span>id:</span>{}</li>"
+                   "<li><span>name:</span>{}</li>"
+                   "<li><span>school:</span>{}</li>"
+                   R"(<li><span>tooltip:</span><span class="tooltip">{}</span></li>)"
+                   R"(<li><span>description:</span><span class="tooltip">{}</span></li></ul></div>)",
                    a->data().id(),
-                   util::encode_html( a->data().name_cstr() ).c_str(),
+                   util::encode_html( a->data().name_cstr() ),
                    util::school_type_string( a->data().get_school_type() ),
-                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.tooltip(), p ) ).c_str(),
-                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.desc(), p ) ).c_str() );
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.tooltip(), p ) ),
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.desc(), p ) ) );
       }
+
       os << "</div>\n";  // Close details, damage/weapon, spell_data
     }
 
@@ -1219,13 +1149,13 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
   {
     if ( s.resource_gain.actual[ i ] > 0 )
     {
-      os.format( "<tr><td class=\"left\">{}</td><td class=\"left\">{}</td>\n"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2f}%</td>"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2Lf}</td></tr>\n",
+      os.format( R"(<tr class="right"><td class=\"left\">{}</td><td class=\"left\">{}</td>)"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2Lf}</td></tr>\n",
                  decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
                  s.resource_gain.count[ i ],
                  s.resource_gain.actual[ i ],
@@ -1534,20 +1464,20 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os << "<tbody>\n";
     for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )  // ATTRIBUTE_NONE is skipped via ++i
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">%s</th>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f",
-          util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
-          ( ! p.is_enemy() && ! p.is_pet() ) ? util::floor( dbc::stat_data_to_attribute(p.dbc->attribute_base( p.type, p.level() ), i ) ) : 0,
-          util::floor( dbc::stat_data_to_attribute(p.dbc->race_base( p.race ), i ) ),
-          util::floor( buffed_stats.attribute[ i ] ),
-          util::floor( p.get_attribute( i ) ),
-          util::floor( p.total_gear.attribute[ i ] ) );
+      os.format( R"(<tr class="right"><th class="left">{}</th>)"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}",
+                 util::inverse_tokenize( util::attribute_type_string( i ) ),
+                 ( !p.is_enemy() && !p.is_pet() )
+                   ? util::floor( dbc::stat_data_to_attribute( p.dbc->attribute_base( p.type, p.level() ), i ) )
+                   : 0,
+                 util::floor( dbc::stat_data_to_attribute( p.dbc->race_base( p.race ), i ) ),
+                 util::floor( buffed_stats.attribute[ i ] ), util::floor( p.get_attribute( i ) ),
+                 util::floor( p.total_gear.attribute[ i ] ) );
+
       // append hybrid attributes as a parenthetical if appropriate
       if ( hybrid_attributes[ i ] > 0 )
         os.printf( " (%.0f)", hybrid_attributes[ i ] );
@@ -1557,382 +1487,317 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     for ( resource_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
     {
       if ( p.resources.max[ i ] > 0 )
-        os.printf(
-            "<tr>\n"
-            "<th class=\"left\">%s</th>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "</tr>\n",
-            util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
-            buffed_stats.resource[ i ], p.resources.max[ i ], 0.0 );
+        os.format( R"(<tr class="right"><th class="left">{}</th>)"
+                   "<td></td>"
+                   "<td></td>"
+                   "<td>{:.0f}</td>"
+                   "<td>{:.0f}</td>"
+                   "<td>{:.0f}</td></tr>\n",
+                   util::inverse_tokenize( util::resource_type_string( i ) ), buffed_stats.resource[ i ],
+                   p.resources.max[ i ], 0.0 );
     }
     if ( buffed_stats.spell_power > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Spell Power</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          buffed_stats.spell_power,
-          p.composite_total_spell_power( SCHOOL_MAX ),
-          p.initial.stats.spell_power );
+      os.format( R"(<tr class="right"><th class="left">Spell Power</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 buffed_stats.spell_power,
+                 p.composite_total_spell_power( SCHOOL_MAX ),
+                 p.initial.stats.spell_power );
     }
     if ( p.composite_melee_crit_chance() == p.composite_spell_crit_chance() )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Crit</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.attack_crit_chance,
-          100 * p.composite_melee_crit_chance(),
-          p.composite_melee_crit_rating() );
+      os.format( R"(<tr class="right"><th class="left">Crit</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.attack_crit_chance,
+                 100 * p.composite_melee_crit_chance(),
+                 p.composite_melee_crit_rating() );
     }
     else
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Melee Crit</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.attack_crit_chance,
-          100 * p.composite_melee_crit_chance(),
-          p.composite_melee_crit_rating() );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Spell Crit</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.spell_crit_chance,
-          100 * p.composite_spell_crit_chance(),
-          p.composite_spell_crit_rating() );
+      os.format( R"(<tr class="right"><th class="left">Melee Crit</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n"
+                 R"(<tr class="right"><th class="left">Spell Crit</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.attack_crit_chance,
+                 100 * p.composite_melee_crit_chance(),
+                 p.composite_melee_crit_rating(),
+                 100 * buffed_stats.spell_crit_chance,
+                 100 * p.composite_spell_crit_chance(),
+                 p.composite_spell_crit_rating() );
     }
     if ( p.composite_melee_haste() == p.composite_spell_haste() )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Haste</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * ( 1 / buffed_stats.attack_haste - 1 ),  // Melee/Spell haste have been merged into a single stat.
-          100 * ( 1 / p.composite_melee_haste() - 1 ),
-          p.composite_melee_haste_rating() );
+      os.format( R"(<tr class="right"><th class="left">Haste</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * ( 1 / buffed_stats.attack_haste - 1 ),  // Melee/Spell haste have been merged into a single stat.
+                 100 * ( 1 / p.composite_melee_haste() - 1 ),
+                 p.composite_melee_haste_rating() );
     }
     else
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Melee Haste</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * ( 1 / buffed_stats.attack_haste - 1 ),
-          100 * ( 1 / p.composite_melee_haste() - 1 ),
-          p.composite_melee_haste_rating() );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Spell Haste</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * ( 1 / buffed_stats.spell_haste - 1 ),
-          100 * ( 1 / p.composite_spell_haste() - 1 ),
-          p.composite_spell_haste_rating() );
+      os.format( R"(<tr class="right"><th class="left">Melee Haste</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n"
+                 R"(<tr class="right"><th class="left">Spell Haste</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * ( 1 / buffed_stats.attack_haste - 1 ),
+                 100 * ( 1 / p.composite_melee_haste() - 1 ),
+                 p.composite_melee_haste_rating(),
+                 100 * ( 1 / buffed_stats.spell_haste - 1 ),
+                 100 * ( 1 / p.composite_spell_haste() - 1 ),
+                 p.composite_spell_haste_rating() );
     }
     if ( p.composite_spell_cast_speed() != p.composite_spell_haste() )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Spell Cast Speed</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
-          100 * ( 1 / p.composite_spell_cast_speed() - 1 ),
-          p.composite_spell_haste_rating() );
+      os.format( R"(<tr class="right"><th class="left">Spell Cast Speed</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td>"
+                 "</tr>\n",
+                 100 * ( 1 / buffed_stats.spell_cast_speed - 1 ),
+                 100 * ( 1 / p.composite_spell_cast_speed() - 1 ),
+                 p.composite_spell_haste_rating() );
     }
     if ( p.composite_melee_auto_attack_speed() != p.composite_melee_haste() )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Swing Speed</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
-          100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ),
-          p.composite_melee_haste_rating() );
+      os.format( R"(<tr class="right"><th class="left">Swing Speed</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td>"
+                 "</tr>\n",
+                 100 * ( 1 / buffed_stats.auto_attack_speed - 1 ),
+                 100 * ( 1 / p.composite_melee_auto_attack_speed() - 1 ),
+                 p.composite_melee_haste_rating() );
     }
-    os.printf(
-        "<tr>\n"
-        "<th class=\"left\">Versatility</th>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "</tr>\n",
-        100 * buffed_stats.damage_versatility,
-        100 * p.composite_damage_versatility(),
-        p.composite_damage_versatility_rating() );
+    os.format( R"(<tr class="right"><th class="left">Versatility</th>)"
+               "<td></td>"
+               "<td></td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.0f}</td></tr>\n",
+               100 * buffed_stats.damage_versatility,
+               100 * p.composite_damage_versatility(),
+               p.composite_damage_versatility_rating() );
     if ( p.primary_role() == ROLE_TANK )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Mitigation Versatility</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.mitigation_versatility,
-          100 * p.composite_mitigation_versatility(),
-          p.composite_mitigation_versatility_rating() );
+      os.format( R"(<tr class="right"><th class="left">Mitigation Versatility</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.mitigation_versatility,
+                 100 * p.composite_mitigation_versatility(),
+                 p.composite_mitigation_versatility_rating() );
     }
     if ( buffed_stats.manareg_per_second > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Mana Regen</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">0</td>\n"
-          "</tr>\n",
-          buffed_stats.manareg_per_second,
-          p.resource_regen_per_second( RESOURCE_MANA ) );
+      os.format( R"(<tr class="right"><th class="left">Mana Regen</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>0</td></tr>\n",
+                 buffed_stats.manareg_per_second,
+                 p.resource_regen_per_second( RESOURCE_MANA ) );
     }
     if ( buffed_stats.attack_power > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Attack Power</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          buffed_stats.attack_power,
-          p.composite_melee_attack_power() * p.composite_attack_power_multiplier(),
-          p.initial.stats.attack_power );
+      os.format( R"(<tr class="right"><th class="left">Attack Power</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 buffed_stats.attack_power,
+                 p.composite_melee_attack_power() * p.composite_attack_power_multiplier(),
+                 p.initial.stats.attack_power );
     }
-    os.printf(
-        "<tr>\n"
-        "<th class=\"left\">Mastery</th>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.2f%%</td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "</tr>\n",
-        100.0 * buffed_stats.mastery_value, 100.0 * p.cache.mastery_value(),
-        p.composite_mastery_rating() );
+    os.format( R"(<tr class="right"><th class="left">Mastery</th>)"
+               "<td></td>"
+               "<td></td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.0f}</td></tr>\n",
+               100.0 * buffed_stats.mastery_value,
+               100.0 * p.cache.mastery_value(), p.composite_mastery_rating() );
     if ( buffed_stats.mh_attack_expertise > 7.5 )
     {
       if ( p.dual_wield() )
       {
-        os.printf(
-            "<tr>\n"
-            "<th class=\"left\">Expertise</th>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\">%.2f%% / %.2f%%</td>\n"
-            "<td class=\"right\">%.2f%% / %.2f%% </td>\n"
-            "<td class=\"right\">%.0f </td>\n"
-            "</tr>\n",
-            100 * buffed_stats.mh_attack_expertise,
-            100 * buffed_stats.oh_attack_expertise,
-            100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
-            100 * p.composite_melee_expertise( &( p.off_hand_weapon ) ),
-            p.composite_expertise_rating() );
+        os.format( R"(<tr class="right"><th class="left">Expertise</th>)"
+                   "<td></td>"
+                   "<td></td>"
+                   "<td>{:.2f}% / {:.2f}%</td>"
+                   "<td>{:.2f}% / {:.2f}%</td>"
+                   "<td>{:.0f}</td></tr>\n",
+                   100 * buffed_stats.mh_attack_expertise,
+                   100 * buffed_stats.oh_attack_expertise,
+                   100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
+                   100 * p.composite_melee_expertise( &( p.off_hand_weapon ) ),
+                   p.composite_expertise_rating() );
       }
       else
       {
-        os.printf(
-            "<tr>\n"
-            "<th class=\"left\">Expertise</th>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\">%.2f%%</td>\n"
-            "<td class=\"right\">%.2f%% </td>\n"
-            "<td class=\"right\">%.0f </td>\n"
-            "</tr>\n",
-            100 * buffed_stats.mh_attack_expertise,
-            100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
-            p.composite_expertise_rating() );
+        os.format( R"(<tr class="right"><th class="left">Expertise</th>)"
+                   "<td></td>"
+                   "<td></td>"
+                   "<td>{:.2f}%</td>"
+                   "<td>{:.2f}%</td>"
+                   "<td>{:.0f}</td></tr>\n",
+                   100 * buffed_stats.mh_attack_expertise,
+                   100 * p.composite_melee_expertise( &( p.main_hand_weapon ) ),
+                   p.composite_expertise_rating() );
       }
     }
-    os.printf(
-        "<tr>\n"
-        "<th class=\"left\">Armor</th>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\"></td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "<td class=\"right\">%.0f</td>\n"
-        "</tr>\n",
-        buffed_stats.armor, p.composite_armor(), p.initial.stats.armor );
+    os.format( R"(<tr class="right"><th class="left">Armor</th>)"
+               "<td></td>"
+               "<td></td>"
+               "<td>{:.0f}</td>"
+               "<td>{:.0f}</td>"
+               "<td>{:.0f}</td></tr>\n",
+               buffed_stats.armor,
+               p.composite_armor(), p.initial.stats.armor );
     if ( buffed_stats.bonus_armor > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Bonus Armor</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          buffed_stats.bonus_armor, p.composite_bonus_armor(), p.initial.stats.bonus_armor );
+      os.format( R"(<tr class="right"><th class="left">Bonus Armor</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 buffed_stats.bonus_armor,
+                 p.composite_bonus_armor(),
+                 p.initial.stats.bonus_armor );
     }
     if ( buffed_stats.run_speed > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Run Speed</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          buffed_stats.run_speed, p.composite_run_speed(), p.composite_speed_rating() );
+      os.format( R"(<tr class="right"><th class="left">Run Speed</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 buffed_stats.run_speed,
+                 p.composite_run_speed(),
+                 p.composite_speed_rating() );
     }
     if ( buffed_stats.leech > 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Leech</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.leech, 100 * p.composite_leech(), p.composite_leech_rating() );
+      os.format( R"(<tr class="right"><th class="left">Leech</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.leech,
+                 100 * p.composite_leech(),
+                 p.composite_leech_rating() );
     }
     if ( buffed_stats.corruption != 0 )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Total Corruption</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.0f (%.0f - %.0f)</td>\n"
-          "<td class=\"right\">%.0f (%.0f - %.0f)</td>\n"
-          "<td class=\"right\">%.0f, %.0f</td>\n"
-          "</tr>\n",
-          buffed_stats.corruption - buffed_stats.corruption_resistance,
-          buffed_stats.corruption,
-          buffed_stats.corruption_resistance,
-          p.composite_total_corruption(),
-          p.composite_corruption(),
-          p.composite_corruption_resistance(),
-          p.composite_corruption_rating(), p.composite_corruption_resistance_rating() );
+      os.format( R"(<tr class="right"><th class="left">Total Corruption</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.0f} ({:.0f} - {:.0f})</td>"
+                 "<td>{:.0f} ({:.0f} - {:.0f})</td>"
+                 "<td>{:.0f}, {:.0f}</td></tr>\n",
+                 buffed_stats.corruption - buffed_stats.corruption_resistance,
+                 buffed_stats.corruption, buffed_stats.corruption_resistance,
+                 p.composite_total_corruption(),
+                 p.composite_corruption(), p.composite_corruption_resistance(),
+                 p.composite_corruption_rating(), p.composite_corruption_resistance_rating() );
     }
     if ( p.primary_role() == ROLE_TANK )
     {
       if ( buffed_stats.avoidance > 0 )
       {
-        os.printf(
-            "<tr>\n"
-            "<th class=\"left\">Avoidance</th>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\"></td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "<td class=\"right\">%.0f</td>\n"
-            "</tr>\n",
-            buffed_stats.avoidance, p.composite_avoidance(), p.composite_avoidance_rating() );
+        os.format( R"(<tr class="right"><th class="left">Avoidance</th>)"
+                   "<td></td>"
+                   "<td></td>"
+                   "<td>{:.0f}</td>"
+                   "<td>{:.0f}</td>"
+                   "<td>{:.0f}</td></tr>\n",
+                   buffed_stats.avoidance,
+                   p.composite_avoidance(),
+                   p.composite_avoidance_rating() );
       }
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Tank-Miss</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.miss, 100 * ( p.cache.miss() ), 0.0 );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Tank-Dodge</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.dodge, 100 * ( p.composite_dodge() ), p.composite_dodge_rating() );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Tank-Parry</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.parry, 100 * ( p.composite_parry() ), p.composite_parry_rating() );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Tank-Block</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.block, 100 * p.composite_block(), p.composite_block_rating() );
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">Tank-Crit</th>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\"></td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.2f%%</td>\n"
-          "<td class=\"right\">%.0f</td>\n"
-          "</tr>\n",
-          100 * buffed_stats.crit, 100 * p.cache.crit_avoidance(), 0.0 );
+      os.format( R"(<tr class="right"><th class="left">Tank-Miss</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.miss,
+                 100 * ( p.cache.miss() ),
+                 0.0 );
+      os.format( R"(<tr class="right"><th class="left">Tank-Dodge</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.dodge,
+                 100 * ( p.composite_dodge() ),
+                 p.composite_dodge_rating() );
+      os.format( R"(<tr class="right"><th class="left">Tank-Parry</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.parry,
+                 100 * ( p.composite_parry() ),
+                 p.composite_parry_rating() );
+      os.format( R"(<tr class="right"><th class="left">Tank-Block</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.block,
+                 100 * p.composite_block(),
+                 p.composite_block_rating() );
+      os.format( R"(<tr class="right"><th class="left">Tank-Crit</th>)"
+                 "<td></td>"
+                 "<td></td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.0f}</td></tr>\n",
+                 100 * buffed_stats.crit,
+                 100 * p.cache.crit_avoidance(),
+                 0.0 );
     }
     os << "</tbody>\n"
        << "</table>\n"
@@ -1952,7 +1817,7 @@ std::string base64_to_url( std::string_view s )
 }
 
 // TODO: update once TWW trees are finalized
-int raidbots_talent_render_width( specialization_e spec, int height )
+int raidbots_talent_render_width( specialization_e /* spec */, int height )
 {
   return height * 49 / 25;
 
@@ -2447,15 +2312,15 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                                              const player_t& p,
                                              bool precombat = false )
 {
-  os << "<tr>\n";
+  os << R"(<tr class="left">)";
 
   if ( precombat )
   {
-    os << "<td class=\"right\">Pre</td>\n";
+    os << R"(<td class="right">Pre</td>)";
   }
   else
   {
-    os.printf( "<td class=\"right\">%d:%02d.%03d</td>\n",
+    os.format( R"(<td class="right">{:d}:{:02d}.{:03d}</td>)",
                static_cast<int>( data.time.total_minutes() ),
                static_cast<int>( data.time.total_seconds() ) % 60,
                static_cast<int>( data.time.total_millis() ) % 1000 );
@@ -2463,26 +2328,23 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
 
   if ( data.action )
   {
-    os.printf( "<td class=\"left\">%s</td>\n"
-               "<td class=\"left\">%c</td>\n"
-               "<td class=\"left\">%s%s</td>\n"
-               "<td class=\"left\">%s</td>\n",
-               data.action->action_list ? util::encode_html( data.action->action_list->name_str ).c_str() : "unknown",
+    os.format( "<td>{}</td>"
+               "<td><b>{}</b>{}<br/>[{}]</td>"
+               "<td>{}</td>",
                data.action->marker != 0 ? data.action->marker : ' ',
-               util::encode_html( data.action->name() ).c_str(), data.queue_failed ? " (queue failed)" : "",
-               util::encode_html( data.target_name ).c_str() );
+               util::encode_html( data.action->name() ), data.queue_failed ? " (queue failed)" : "",
+               data.action->action_list ? util::encode_html( data.action->action_list->name_str ): "unknown",
+               util::encode_html( data.target_name ) );
   }
   else
   {
-    os.printf( "<td class=\"left\">Waiting</td>\n"
-               "<td class=\"left\">&#160;</td>\n"
-               "<td class=\"left\">&#160;</td>\n"
-               "<td class=\"left\">%.3fs</td>\n",
+    os.format( "<td>&#160;</td>"
+               "<td>Waiting</td>"
+               "<td>{:.3f}s</td>",
                data.wait_time.total_seconds() );
   }
 
-  os.printf( "<td class=\"left\">" );
-
+  os << "<td>";
   bool first    = true;
   resource_e pr = p.primary_resource();
 
@@ -2491,11 +2353,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     if ( first )
       first = false;
 
-    os.printf( " %.1f/%.0f: <b>%.0f%%</b>&#160;%s",
+    os.format( " {:.1f}/{:.0f}&#160;<b>{:.0f}%</b>&#160;{}",
                data.resource_snapshot[ pr ],
                data.resource_max_snapshot[ pr ],
                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] * 100.0,
-               util::resource_type_string( pr ) );
+               util::resource_type_abbrev( pr ) );
   }
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
@@ -2505,18 +2367,18 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
       if ( first )
         first = false;
       else
-        os.printf( "<br/>" );
+        os << "<br/>";
 
-      os.printf( " %.1f/%.0f: <b>%.0f%%</b> %s",
+      os.format( " {:.1f}/{:.0f}&#160;<b>{:.0f}%</b>&#160;{}",
                  data.resource_snapshot[ r ],
                  data.resource_max_snapshot[ r ],
                  data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] * 100.0,
-                 util::resource_type_string( r ) );
+                 util::resource_type_abbrev( r ) );
     }
   }
+  os << "</td>\n";
 
-  os << "</td>\n"
-     << "<td class=\"left\">";
+  os << "<td>";
   first = true;
   for ( const auto& b_data : data.buff_list )
   {
@@ -2528,11 +2390,11 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
       if ( first )
         first = false;
       else
-        os.printf( ", " );
+        os << ", ";
 
-      os.printf( "%s", util::encode_html( buff->name() ).c_str() );
+      os.format( "{}", util::encode_html( buff->name() ) );
       if ( stacks > 1 )
-        os.printf( "(%d)", stacks );
+        os.format( "({:d})", stacks );
     }
   }
   os << "</td>\n"
@@ -2697,9 +2559,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
        << "<thead>\n"
        << "<tr>\n"
        << "<th>Time</th>\n"
-       << "<th>List</th>\n"
        << "<th>#</th>\n"
-       << "<th>Name</th>\n"
+       << "<th>Name [List]</th>\n"
        << "<th>Target</th>\n"
        << "<th>Resources</th>\n"
        << "<th>Buffs</th>\n"
@@ -2808,11 +2669,11 @@ void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_
   {
     if ( g.actual[ i ] != 0 || g.overflow[ i ] != 0 )
     {
-      os.format( "<tr><td class=\"left nowrap\">{}</td><td class=\"left nowrap\">{}</td>"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2Lf}</td>"
-                 "<td class=\"right\">{:.2f}%</td>"
-                 "<td class=\"right\">{:.2Lf}</td>",
+      os.format( R"(<tr class="right"><td class="left nowrap">{}</td><td class="left nowrap">{}</td>)"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2Lf}</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2Lf}</td>",
                  find_matching_decorator( p, g.name() ),
                  util::inverse_tokenize( util::resource_type_string( i ) ),
                  g.count[ i ],
@@ -2822,8 +2683,8 @@ void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_
 
       if ( report_overflow )
       {
-        os.format( "<td class=\"right\">{:.2Lf}</td>"
-                   "<td class=\"right\">{:.2f}%</td>",
+        os.format( "<td>{:.2Lf}</td>"
+                   "<td>{:.2f}%</td>",
                    g.overflow[ i ],
                    100.0 * g.overflow[ i ] / ( g.actual[ i ] + g.overflow[ i ] ) );
       }
@@ -3001,16 +2862,14 @@ void print_html_resource_changes_table( report::sc_html_stream& os, const player
     if ( p.collected_data.resource_lost[ rt ].mean() <= 0 )
       continue;
 
-    os.format( "<tr>\n"
-               "<td class=\"left\">{}</td>\n"
-               "<td class=\"right\">{:.1Lf}</td>\n"
-               "<td class=\"right\">{:.2Lf}</td>\n"
-               "<td class=\"right\">{:.2Lf}</td>\n"
-               "<td class=\"right\">{:.1Lf}</td>\n"
-               "<td class=\"right\">{:.1Lf}</td>\n"
-               "<td class=\"right\">{:.1Lf}</td>\n"
-               "<td class=\"right\">{:.1Lf}</td>\n"
-               "</tr>\n",
+    os.format( R"(<tr class="right"><td class="left">{}</td>)"
+               "<td>{:.1Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.2Lf}</td>"
+               "<td>{:.1Lf}</td>"
+               "<td>{:.1Lf}</td>"
+               "<td>{:.1Lf}</td>"
+               "<td>{:.1Lf}</td></tr>\n",
                util::inverse_tokenize( util::resource_type_string( rt ) ),
                p.collected_data.combat_start_resource[ rt ].mean(),
                p.collected_data.resource_gained[ rt ].mean() / p.collected_data.fight_length.mean(),
@@ -3395,26 +3254,25 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     buff_name += util::encode_html( b.name_str );
   }
 
-  os << "<tr>\n";
-
   std::string toggle_name = highchart::build_id( b, "_toggle" );
   std::string span_str    = buff_name;
 
   if ( report_details )
     span_str = "<span id=\"" + toggle_name + "\" class=\"toggle-details\">" + buff_name + "</span>";
 
-  os << "<td class=\"left\">" << span_str << "</td>\n";
+  os.format( R"(<tr class="right"><td class="left">{}</td>)", span_str );
 
   if ( !constant_buffs )
-    os.printf( "<td class=\"right\">%.1f</td>\n"
-               "<td class=\"right\">%.1f</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
-               "<td class=\"right\">%.1f</td>\n",
+  {
+    os.format( "<td>{:.1f}</td>"
+               "<td>{:.1f}</td>"
+               "<td>{:.1f}s</td>"
+               "<td>{:.1f}s</td>"
+               "<td>{:.1f}s</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.1f}&#160;({:.1f})</td>"
+               "<td>{:.1f}</td>\n",
                b.avg_start.pretty_mean(),
                b.avg_refresh.pretty_mean(),
                b.start_intervals.pretty_mean(),
@@ -3424,6 +3282,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                b.benefit_pct.mean(),
                b.avg_overflow_count.mean(), b.avg_overflow_total.mean(),
                b.avg_expire.pretty_mean() );
+  }
 
   os << "</tr>\n";
 
@@ -3449,26 +3308,25 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     os << "<div class=\"flex\">\n";  // Wrap everything
 
     os << "<div>\n";  // First column
-    os.printf( "<h4>Buff Details</h4>\n"
-               "<ul>\n"
-               "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
-               "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
-               "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-               "<li><span class=\"label\">base duration:</span>%.2f</li>\n"
-               "<li><span class=\"label\">duration modifier:</span>%.2f</li>\n"
-               "<li><span class=\"label\">base cooldown:</span>%.2f</li>\n"
-               "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-               "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
-               "<li><span class=\"label\">activated:</span>%s</li>\n"
-               "<li><span class=\"label\">reactable:</span>%s</li>\n"
-               "<li><span class=\"label\">reverse:</span>%s</li>\n"
-               "<li><span class=\"label\">refresh behavior:</span>%s</li>\n"
-               "<li><span class=\"label\">stack behavior:</span>%s</li>\n"
-               "<li><span class=\"label\">tick behavior:</span>%s</li>\n"
-               "<li><span class=\"label\">tick_time behavior:</span>%s</li>\n"
-               "<li><span class=\"label\">period:</span>%.2f</li>\n",
-               b.source ? util::encode_html( b.source->name() ).c_str() : "",
-               util::encode_html( b.cooldown->name_str ).c_str(),
+    os.format( R"(<h4>Buff Details</h4><ul class="label">)"
+               "<li><span>buff initial source:</span>{}</li>"
+               "<li><span>cooldown name:</span>{}</li>"
+               "<li><span>max_stacks:</span>{:d}</li>"
+               "<li><span>base duration:</span>{:.2f}</li>"
+               "<li><span>duration modifier:</span>{:.2f}</li>"
+               "<li><span>base cooldown:</span>{:.2f}</li>"
+               "<li><span>default_chance:</span>{:.2f}%</li>"
+               "<li><span>default_value:</span>{:.2f}</li>"
+               "<li><span>activated:</span>{}</li>"
+               "<li><span>reactable:</span>{}</li>"
+               "<li><span>reverse:</span>{}</li>"
+               "<li><span>refresh behavior:</span>{}</li>"
+               "<li><span>stack behavior:</span>{}</li>"
+               "<li><span>tick behavior:</span>{}</li>"
+               "<li><span>tick_time behavior:</span>{}</li>"
+               "<li><span>period:</span>{:.2f}</li>",
+               b.source ? util::encode_html( b.source->name() ) : "",
+               util::encode_html( b.cooldown->name_str ),
                b.max_stack(),
                b.base_buff_duration.total_seconds(),
                b.buff_duration_multiplier,
@@ -3484,38 +3342,36 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                util::buff_tick_time_behavior_string( b.tick_time_behavior ),
                b.buff_period == timespan_t::min() ? 0 : b.buff_period.total_seconds() );
     if ( b.item )
-    {
-      os.printf( "<li><span class=\"label\">associated item:</span>%s</li>\n",
-                 util::encode_html( b.item->full_name() ).c_str() );
-    }
+      os.format( "<li><span>associated item:</span>{}</li>", util::encode_html( b.item->full_name() ) );
+
     os << "</ul>\n";
 
     if ( break_first )  // if first + second rows will overflow past stack rows
     {
       os << "</div>\n"  // Close first column and open second column
-          << "<div>\n";
+         << "<div>\n";
     }
 
     if ( stat_buff )
     {
-      os << "<h4>Stat Details</h4>\n"
-          << "<ul>\n";
+      os << R"(<h4>Stat Details</h4><ul class="label">)";
       for ( const auto& stat : stat_buff->stats )
       {
-        os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
-                    "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                    util::stat_type_string( stat.stat ),
-                    stat.amount );
+        os.format( "<li><span>stat:</span>{}</li>"
+                   "<li><span>amount:</span>{:.2f}</li>",
+                   util::stat_type_string( stat.stat ),
+                   stat.amount );
       }
 
-      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ ) {
+      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ )
+      {
         stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>( stat_pct_buff_value );
         if ( range::contains( p.buffs.stat_pct_buffs[ static_cast<stat_pct_buff_type>( stat_pct_buff_value ) ], stat_buff ) )
         {
-          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
-                      "<li><span class=\"label\">default:</span>%.2f%%</li>\n",
-                      util::stat_pct_buff_type_string( stat_pct_buff ),
-                      stat_buff->default_value * 100.0 );
+          os.format( "<li><span>stat:</span>{}</li>"
+                     "<li><span>default:</span>{:.2f}%</li>",
+                     util::stat_pct_buff_type_string( stat_pct_buff ),
+                     stat_buff->default_value * 100.0 );
         }
       }
       os << "</ul>\n";
@@ -3525,36 +3381,29 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     {
       if ( damage_buff->is_stacking && damage_buff->max_stack() > 1 )
       {
-        os.printf( "<h4>Damage Modifiers</h4>\n"
-                  "<ul>\n"
-                  "<li><span class=\"label\">direct:</span>%.2f + %.2f/stack</li>\n"
-                  "<li><span class=\"label\">periodic:</span>%.2f + %.2f/stack</li>\n"
-                  "<li><span class=\"label\">auto_attack:</span>%.2f + %.2f/stack</li>\n"
-                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
-                  "<li><span class=\"label\">is_stacking:</span>true</li>\n"
-                  "</ul>\n",
-                  damage_buff->direct_mod.initial_multiplier,
-                  damage_buff->direct_mod.multiplier - 1.0,
-                  damage_buff->periodic_mod.initial_multiplier,
-                  damage_buff->periodic_mod.multiplier - 1.0,
-                  damage_buff->auto_attack_mod.initial_multiplier,
-                  damage_buff->auto_attack_mod.multiplier - 1.0,
-                  damage_buff->crit_chance_mod.multiplier );
+        os.format( R"(<h4>Damage Modifiers</h4><ul class="label">)"
+                   "<li><span>direct:</span>{:.2f} + {:.2f}/stack</li>"
+                   "<li><span>periodic:</span>{:.2f} + {:.2f}/stack</li>"
+                   "<li><span>auto_attack:</span>{:.2f} + {:.2f}/stack</li>"
+                   "<li><span>crit_chance:</span>{:.2f}</li>"
+                   "<li><span>is_stacking:</span>true</li></ul>\n",
+                   damage_buff->direct_mod.initial_multiplier, damage_buff->direct_mod.multiplier - 1.0,
+                   damage_buff->periodic_mod.initial_multiplier, damage_buff->periodic_mod.multiplier - 1.0,
+                   damage_buff->auto_attack_mod.initial_multiplier, damage_buff->auto_attack_mod.multiplier - 1.0,
+                   damage_buff->crit_chance_mod.multiplier );
       }
       else
       {
-        os.printf( "<h4>Damage Modifiers</h4>\n"
-                  "<ul>\n"
-                  "<li><span class=\"label\">direct:</span>%.2f</li>\n"
-                  "<li><span class=\"label\">periodic:</span>%.2f</li>\n"
-                  "<li><span class=\"label\">auto_attack:</span>%.2f</li>\n"
-                  "<li><span class=\"label\">crit_chance:</span>%.2f</li>\n"
-                  "<li><span class=\"label\">is_stacking:</span>false</li>\n"
-                  "</ul>\n",
-                  damage_buff->direct_mod.multiplier,
-                  damage_buff->periodic_mod.multiplier,
-                  damage_buff->auto_attack_mod.multiplier,
-                  damage_buff->crit_chance_mod.multiplier );
+        os.format( R"(<h4>Damage Modifiers</h4><ul class="label">)"
+                   "<li><span>direct:</span>{:.2f}</li>"
+                   "<li><span>periodic:</span>{:.2f}</li>"
+                   "<li><span>auto_attack:</span>{:.2f}</li>"
+                   "<li><span>crit_chance:</span>{:.2f}</li>"
+                   "<li><span>is_stacking:</span>false</li></ul>\n",
+                   damage_buff->direct_mod.multiplier,
+                   damage_buff->periodic_mod.multiplier,
+                   damage_buff->auto_attack_mod.multiplier,
+                   damage_buff->crit_chance_mod.multiplier );
       }
     }
 
@@ -3563,45 +3412,37 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
       if ( b.rppm )
       {
-        os.printf( "<h4>RPPM Details</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">scaling:</span>%s</li>\n"
-                   "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
-                   "<li><span class=\"label\">modifier:</span>%.2f</li>\n"
-                   "</ul>\n",
-                   util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
+        os.format( R"(<h4>RPPM Details</h4><ul class="label">)"
+                   "<li><span>scaling:</span>{}</li>"
+                   "<li><span>frequency:</span>{:.2f}</li>"
+                   "<li><span>modifier:</span>{:.2f}</li></ul>\n",
+                   util::rppm_scaling_string( b.rppm->get_scaling() ),
                    b.rppm->get_frequency(),
                    b.rppm->get_modifier() );
       }
 
       if ( absorb_buff )
       {
-        os << "<h4>Absorb Details</h4>\n"
-          << "<ul>\n";
-        os.printf("<li><span class=\"label\">school:</span>%s</li>\n", util::school_type_string( absorb_buff->absorb_school ) );
-        os.printf("<li><span class=\"label\">high priority:</span>%s</li>\n", absorb_buff -> high_priority ? "yes" : "no" );
-        os << "</ul>\n";
+        os.format( R"(<h4>Absorb Details</h4><ul class="label">)"
+                   "<li><span>school:</span>{}</li>"
+                   "<li><span>high priority:</span>{}</li></ul>\n",
+                   util::school_type_string( absorb_buff->absorb_school ),
+                   absorb_buff->high_priority ? "yes" : "no" );
       }
 
       if ( b.trigger_pct.mean() > 0 )
       {
-        os.printf( "<h4>Trigger Details</h4>\n"
-                   "<ul>\n"
-                   "<li><span class=\"label\">interval_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
-                   "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
-                   "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
-                   "<li><span class=\"label\">duration_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
-                   "<li><span class=\"label\">uptime_min/max:</span>%.2f%%&#160;/&#160;%.2f%%</li>\n"
-                   "</ul>\n",
-                   b.start_intervals.min(),
-                   b.start_intervals.max(),
-                   b.trigger_intervals.min(),
-                   b.trigger_intervals.max(),
+        os.format( R"(<h4>Trigger Details</h4><ul class="label">)"
+                   "<li><span>interval_min/max:</span>{:.1f}s&#160;/&#160;{:.1f}s</li>"
+                   "<li><span>trigger_min/max:</span>{:.1f}s&#160;/&#160;{:.1f}s</li>"
+                   "<li><span>trigger_pct:</span>{:.2f}%</li>"
+                   "<li><span>duration_min/max:</span>{:.1f}s&#160;/&#160;{:.1f}s</li>"
+                   "<li><span>uptime_min/max:</span>{:.2f}%&#160;/&#160;{:.2f}%</li></ul>\n",
+                   b.start_intervals.min(), b.start_intervals.max(),
+                   b.trigger_intervals.min(), b.trigger_intervals.max(),
                    b.trigger_pct.mean(),
-                   b.duration_lengths.min(),
-                   b.duration_lengths.max(),
-                   b.uptime_pct.min(),
-                   b.uptime_pct.max() );
+                   b.duration_lengths.min(), b.duration_lengths.max(),
+                   b.uptime_pct.min(), b.uptime_pct.max() );
       }
 
       if ( break_second )  // if stack rows will overflow past first column
@@ -4455,7 +4296,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
      << "<thead>\n"
      << "<tr>\n";
 
-  int columns = 7; // Set number of columns to make distribution charts fill the table width
+  static constexpr int columns = 7; // Set number of columns to make distribution charts fill the table width
   sorttable_header( os, "Proc", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Min" );
@@ -4482,16 +4323,14 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
       if ( p.sim->report_details && ( show_count || show_interval ) )
         span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
-      os.printf( "<tr>\n"
-                 "<td class=\"left\">%s</td>\n"
-                 "<td class=\"right\">%.1f</td>\n"
-                 "<td class=\"right\">%.1f</td>\n"
-                 "<td class=\"right\">%.1f</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "</tr>\n",
-                 span.c_str(),
+      os.format( R"(<tr class="right"><td class="left">{}</td>)"
+                 "<td>{:.1f}</td>"
+                 "<td>{:.1f}</td>"
+                 "<td>{:.1f}</td>"
+                 "<td>{:.1f}s</td>"
+                 "<td>{:.1f}s</td>"
+                 "<td>{:.1f}s</td></tr>\n",
+                 span,
                  proc->count.mean(),
                  proc->count.min(),
                  proc->count.max(),
@@ -4501,17 +4340,15 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 
       if ( p.sim->report_details && ( show_count || show_interval ) )
       {
-        os << "<tr class=\"details hide\">\n"
-           << "<td colspan=\"" << columns << "\">\n";
+        os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
 
         if ( show_count )
-          print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
+          report_helper::print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
 
         if ( show_interval )
-          print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
+          report_helper::print_distribution_chart( os, p, &proc->interval_sum, name, token, "_interval", true );
 
-        os << "</td>\n"
-           << "</tr>\n";
+        os << "</td></tr>\n";
       }
       os << "</tbody>\n";
     }
@@ -4525,7 +4362,7 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
       << "<thead>\n"
       << "<tr>\n";
 
-  int columns = 7;
+  static constexpr int columns = 7;
   sorttable_header( os, "Uptime", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
   sorttable_header( os, "Avg %" );
   sorttable_header( os, "Min" );
@@ -4554,16 +4391,14 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
     if ( p.sim->report_details && ( show_uptime || show_duration ) )
       span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
-    os.printf( "<tr>\n"
-               "<td class=\"left\">%s</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "<td class=\"right\">%.1fs</td>\n"
-               "</tr>\n",
-               span.c_str(),
+    os.format( R"(<tr class="right"><td class="left">{}</td>)"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.1f}s</td>"
+               "<td>{:.1f}s</td>"
+               "<td>{:.1f}s</td></tr>\n",
+               span,
                uptime->uptime_sum.pretty_mean() * 100.0,
                uptime->uptime_sum.min() * 100.0,
                uptime->uptime_sum.max() * 100.0,
@@ -4573,17 +4408,15 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
 
     if ( p.sim->report_details && ( show_uptime || show_duration ) )
     {
-      os << "<tr class=\"details hide\">\n"
-         << "<td colspan=\"" << columns << "\">\n";
+      os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
 
       if ( show_uptime )
-        print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
+        report_helper::print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
 
       if ( show_duration )
-        print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
+        report_helper::print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
 
-      os << "</td>\n"
-         << "</tr>\n";
+      os << "</td></tr>\n";
     }
     os << "</tbody>\n";
   }
@@ -4607,16 +4440,14 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
       if ( p.sim->report_details && ( show_uptime || show_duration ) )
         span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
-      os.printf( "<tr>\n"
-                 "<td class=\"left\">%s</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "<td class=\"right\">%.1fs</td>\n"
-                 "</tr>\n",
-                 span.c_str(),
+      os.format( R"(<tr class="right"><td class="left">{}</td>)"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.1f}s</td>"
+                 "<td>{:.1f}s</td>"
+                 "<td>{:.1f}s</td></tr>\n",
+                 span,
                  uptime->uptime_sum.pretty_mean() * 100.0,
                  uptime->uptime_sum.min() * 100.0,
                  uptime->uptime_sum.max() * 100.0,
@@ -4626,17 +4457,15 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
 
       if ( p.sim->report_details && ( show_uptime || show_duration ) )
       {
-        os << "<tr class=\"details hide\">\n"
-           << "<td colspan=\"" << columns << "\">\n";
+        os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
 
         if ( show_uptime )
-          print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
+          report_helper::print_distribution_chart( os, p, &uptime->uptime_sum, name, token, "_uptime" );
 
         if ( show_duration )
-          print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
+          report_helper::print_distribution_chart( os, p, &uptime->uptime_instance, name, token, "_duration", true );
 
-        os << "</td>\n"
-           << "</tr>\n";
+        os << "</td></tr>\n";
       }
       os << "</tbody>\n";
     }
@@ -4650,7 +4479,7 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
      << "<thead>\n"
      << "<tr>\n";
 
-  int columns = 4;
+  static constexpr int columns = 4;
   sorttable_header( os, "Benefit", SORT_FLAG_ALPHA | SORT_FLAG_ASC | SORT_FLAG_LEFT );
   sorttable_header( os, "Avg %" );
   sorttable_header( os, "Min" );
@@ -4674,26 +4503,22 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
     if ( p.sim->report_details && show_ratio )
       span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
-    os.printf( "<tr>\n"
-               "<td class=\"left\">%s</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "<td class=\"right\">%.2f%%</td>\n"
-               "</tr>\n",
-               span.c_str(),
+    os.format( R"(<tr class="right"><td class="left">{}</td>)"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td>"
+               "<td>{:.2f}%</td></tr>\n",
+               span,
                benefit->ratio.pretty_mean(),
                benefit->ratio.min(),
                benefit->ratio.max() );
 
     if ( p.sim->report_details && show_ratio )
     {
-      os << "<tr class=\"details hide\">\n"
-         << "<td colspan=\"" << columns << "\">\n";
+      os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
 
-      print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
+      report_helper::print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
 
-      os << "</td>\n"
-         << "</tr>\n";
+      os << "</td></tr>\n";
     }
     os << "</tbody>\n";
   }
@@ -4716,26 +4541,22 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
       if ( p.sim->report_details && show_ratio )
         span = "<span id=\"" + token + "_toggle\" class=\"toggle-details\">" + name + "</span>";
 
-      os.printf( "<tr>\n"
-                 "<td class=\"left\">%s</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "<td class=\"right\">%.2f%%</td>\n"
-                 "</tr>\n",
-                 span.c_str(),
+      os.format( R"(<tr class="right"><td class="left">{}</td>)"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}%</td></tr>\n",
+                 span,
                  benefit->ratio.pretty_mean(),
                  benefit->ratio.min(),
                  benefit->ratio.max() );
 
       if ( p.sim->report_details && show_ratio )
       {
-        os << "<tr class=\"details hide\">\n"
-           << "<td colspan=\"" << columns << "\">\n";
+        os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
 
-        print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
+        report_helper::print_distribution_chart( os, p, &benefit->ratio, name, token, "_ratio" );
 
-        os << "</td>\n"
-           << "</tr>\n";
+        os << "</td></tr>\n";
       }
       os << "</tbody>\n";
     }
@@ -4824,7 +4645,7 @@ void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_
         "<th colspan=\"3\">Seconds per Iteration</th>\n"
         "</tr>\n"
         "<tr>\n"
-        "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+        "<th class=\"toggle-sort left\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
         "<th class=\"toggle-sort\">Average</th>\n"
         "<th class=\"toggle-sort\">Minimum</th>\n"
         "<th class=\"toggle-sort\">Maximum</th>\n"
@@ -4875,15 +4696,20 @@ void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_
       }
     }
 
-    os << "<tr>";
-    fmt::print( os, "<td class=\"left\">{}</td>", name );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
-    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
-    os << "</tr>\n";
+    os.format( R"(<tr class="right"><td class="left">{}</td>)"
+               "<td>{:.3f}</td>"
+               "<td>{:.3f}</td>"
+               "<td>{:.3f}</td>"
+               "<td>{:.3f}</td>"
+               "<td>{:.3f}</td>"
+               "<td>{:.3f}</td></tr>\n",
+               name,
+               data->normal.mean(),
+               data->normal.min(),
+               data->normal.max(),
+               data->cumulative.mean(),
+               data->cumulative.min(),
+               data->cumulative.max() );
   }
 
   os << "</table>\n"
@@ -5018,16 +4844,12 @@ void build_action_markers( player_t& p )
            util::str_compare_ci( action->action_list->name_str, "precombat" ) ||
            util::str_in_str_ci( action->name_str, "_action_list" ) )
       {
-        action->marker =
-            (char)( ( j < 10 )
-                        ? ( '0' + j )
-                        : ( j < 36 )
-                              ? ( 'A' + j - 10 )
-                              : ( j < 66 )
-                                    ? ( 'a' + j - 36 )
-                                    : ( j < 79 ) ? ( '!' + j - 66 )
-                                                 : ( j < 86 ) ? ( ':' + j - 79 )
-                                                              : '.' );
+        action->marker = (char)( ( j < 10 ) ? ( '0' + j )
+                               : ( j < 36 ) ? ( 'A' + j - 10 )
+                               : ( j < 66 ) ? ( 'a' + j - 36 )
+                               : ( j < 79 ) ? ( '!' + j - 66 )
+                               : ( j < 86 ) ? ( ':' + j - 79 )
+                               : '.' );
         j++;
       }
     }

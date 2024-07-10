@@ -171,6 +171,7 @@ void arms( player_t* p )
   default_->add_action( "blood_fury,if=debuff.colossus_smash.up" );
   default_->add_action( "fireblood,if=debuff.colossus_smash.up" );
   default_->add_action( "ancestral_call,if=debuff.colossus_smash.up" );
+  default_->add_action( "demolish" );
   default_->add_action( "run_action_list,name=aoe,if=raid_event.adds.up&active_enemies>2|!raid_event.adds.up&active_enemies>2|talent.fervor_of_battle.enabled&(talent.massacre.enabled&target.health.pct>35|target.health.pct>20)&!raid_event.adds.up&active_enemies>1" );
   default_->add_action( "run_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
   default_->add_action( "run_action_list,name=single_target" );
@@ -186,7 +187,7 @@ void arms( player_t* p )
   execute->add_action( "execute,if=buff.sudden_death.react&dot.deep_wounds.remains" );
   execute->add_action( "thunderous_roar,if=(talent.test_of_might&rage<40)|(!talent.test_of_might&(buff.avatar.up|debuff.colossus_smash.up)&rage<70)" );
   execute->add_action( "cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<=gcd" );
-  execute->add_action( "bladestorm,if=raid_event.adds.in>45&talent.hurricane&rage<40" );
+  execute->add_action( "bladestorm,if=raid_event.adds.in>45&rage<40" );
   execute->add_action( "ravager,if=raid_event.adds.in>45" );
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&debuff.colossus_smash.remains<=gcd" );
   execute->add_action( "overpower,if=rage<40&buff.martial_prowess.stack<2" );
@@ -200,9 +201,9 @@ void arms( player_t* p )
 
   aoe->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
   aoe->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
-  aoe->add_action( "thunder_clap,if=talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
+  aoe->add_action( "thunder_clap,if=talent.thunder_clap&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
   aoe->add_action( "sweeping_strikes,if=cooldown.bladestorm.remains>15|talent.improved_sweeping_strikes&cooldown.bladestorm.remains>21|!talent.bladestorm|!talent.bladestorm&talent.blademasters_torment&cooldown.avatar.remains>15|!talent.bladestorm&talent.blademasters_torment&talent.improved_sweeping_strikes&cooldown.avatar.remains>21" );
-  aoe->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment|target.time_to_die<20|buff.hurricane.remains<3" );
+  aoe->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment|target.time_to_die<20" );
   aoe->add_action( "warbreaker,if=raid_event.adds.in>22|active_enemies>1" );
   aoe->add_action( "colossus_smash,cycle_targets=1,if=(target.health.pct<20|talent.massacre&target.health.pct<35)" );
   aoe->add_action( "colossus_smash" );
@@ -211,7 +212,7 @@ void arms( player_t* p )
   aoe->add_action( "mortal_strike,if=talent.sharpened_blades&buff.sweeping_strikes.up&buff.martial_prowess.stack=2&active_enemies<=8" );
   aoe->add_action( "thunderous_roar,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
   aoe->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up|dot.deep_wounds.remains" );
-  aoe->add_action( "bladestorm,if=buff.hurricane.remains<3|!talent.hurricane" );
+  aoe->add_action( "bladestorm" );
   aoe->add_action( "ravager" );
   aoe->add_action( "whirlwind,if=talent.storm_of_swords" );
   aoe->add_action( "cleave,if=!talent.fervor_of_battle|talent.fervor_of_battle&dot.deep_wounds.remains<=dot.deep_wounds.duration*0.3" );
@@ -231,15 +232,15 @@ void arms( player_t* p )
   single_target->add_action( "whirlwind,if=buff.collateral_damage.up&cooldown.sweeping_strikes.remains<3" );
   single_target->add_action( "sweeping_strikes,if=active_enemies>1" );
   single_target->add_action( "execute,if=(buff.juggernaut.up&buff.juggernaut.remains<gcd)|(buff.sudden_death.react&dot.deep_wounds.remains&set_bonus.tier31_2pc|buff.sudden_death.react&!dot.rend.remains&set_bonus.tier31_4pc)" );
-  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder&talent.blademasters_torment" );
+  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.rend&talent.blademasters_torment" );
   single_target->add_action( "thunderous_roar,if=raid_event.adds.in>15" );
   single_target->add_action( "avatar,if=raid_event.adds.in>15|target.time_to_die<20" );
   single_target->add_action( "colossus_smash" );
   single_target->add_action( "warbreaker,if=raid_event.adds.in>22" );
   single_target->add_action( "mortal_strike" );
-  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.blood_and_thunder" );
+  single_target->add_action( "thunder_clap,if=dot.rend.remains<=gcd&talent.rend" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords&debuff.colossus_smash.up" );
-  single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&buff.hurricane.remains<2|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
+  single_target->add_action( "bladestorm,if=talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
   single_target->add_action( "champions_spear,if=buff.test_of_might.up|debuff.colossus_smash.up" );
   single_target->add_action( "skullsplitter" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
@@ -304,6 +305,7 @@ void protection( player_t* p )
   default_->add_action( "shockwave,if=talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
+  default_->add_action( "demolish" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_->add_action( "call_action_list,name=generic" );
 

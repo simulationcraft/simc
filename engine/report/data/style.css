@@ -527,7 +527,9 @@ table.sc td.dark.right {
 table.sc th.left,
 table.sc td.left,
 table.sc tr.left th,
-table.sc tr.left td {
+table.sc tr.left td,
+table.sc tr.right th.left,
+table.sc tr.right td.left {
     text-align: left;
     vertical-align: top;
 }
@@ -537,7 +539,9 @@ table.sc tr.left td {
 table.sc th.right,
 table.sc td.right,
 table.sc tr.right th,
-table.sc tr.right td {
+table.sc tr.right td,
+table.sc tr.left th.right,
+table.sc tr.left td.rigth {
     text-align: right;
     padding-right: 4px;
     vertical-align: top;
@@ -596,7 +600,10 @@ table.sc tr.details td ul li {
     display: table-row;
     list-style-type: none;
 }
-table.sc tr.details .label {
+table.sc tr.details ul.label span:not(.tooltip),
+table.sc tr.details span.label,
+table.sc tr.details div.label,
+table.sc tr.details td.label {
     padding: 2px 1em 2px 0.5em;
     display: table-cell;
     background: #222;
@@ -640,6 +647,7 @@ tr.details td table.details tr td {
 tr.details td table.details tr.odd td {
     background-color: #292929;
 }
+tr.details td table.details tr.right td:not(.left),
 tr.details td table.details tr td.right {
     text-align: right;
 }

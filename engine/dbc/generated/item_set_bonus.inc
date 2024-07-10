@@ -1,4 +1,4 @@
-// Set bonus data, wow build 11.0.0.55120
+// Set bonus data, wow build 11.0.2.55522
 static const std::array<item_set_bonus_t, 878> __set_bonus_data { {
   // SetBonusName                               , OptName                    , Tier      , EnumID, SetID, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion"      , "T19_MOTL",      0,  1293,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
@@ -819,19 +819,19 @@ static const std::array<item_set_bonus_t, 878> __set_bonus_data { {
   { "Fury of the Storm Rook"                    , "fury_of_the_storm_rook"   ,  "TWW_FSR",     23,  1612,   2,  11,   -1,  443773, { 219512, 219513, 219511,  0 } },
   { "Fury of the Storm Rook"                    , "fury_of_the_storm_rook"   ,  "TWW_FSR",     23,  1612,   2,  12,   -1,  443773, { 219512, 219513, 219511,  0 } },
   { "Fury of the Storm Rook"                    , "fury_of_the_storm_rook"   ,  "TWW_FSR",     23,  1612,   2,  13,   -1,  443773, { 219512, 219513, 219511,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   1,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   2,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   3,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   4,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   5,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   6,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   7,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   8,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   9,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  10,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  11,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  12,   -1,  444166, { 219877, 212456,  0 } },
-  { "Kye'veza's Cruel Implements"               , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  13,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   1,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   2,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   3,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   4,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   5,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   6,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   7,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   8,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,   9,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  10,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  11,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  12,   -1,  444166, { 219877, 212456,  0 } },
+  { "Ky'veza's Cruel Implements"                , "kyevezzas_cruel_implements",  "TWW_KCI",     24,  1613,   2,  13,   -1,  444166, { 219877, 212456,  0 } },
   // SetBonusName                               , OptName                    , Tier      , EnumID, SetID, Bns, Cls, Spec, SpellID, ItemIDs
   { "Warsculptor's Masterwork"                  , "thewarwithin_season_1"    ,     "TWW1",     25,  1684,   2,   1,   71,  453636, { 211987, 211985, 211984, 211983, 211982,  0 } },
   { "Warsculptor's Masterwork"                  , "thewarwithin_season_1"    ,     "TWW1",     25,  1684,   2,   1,   72,  453639, { 211987, 211985, 211984, 211983, 211982,  0 } },

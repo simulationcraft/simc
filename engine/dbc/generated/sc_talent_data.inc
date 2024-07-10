@@ -1,5 +1,5 @@
-// 567 talents, wow build 11.0.0.55120
-static std::array<talent_data_t, 567> __talent_data { {
+// 564 talents, wow build 11.0.2.55522
+static std::array<talent_data_t, 564> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -99,7 +99,6 @@ static std::array<talent_data_t, 567> __talent_data { {
   { "Absolute Corruption"               , 21180, 0x00, 0x0100,  265,   1,   1,  196103,       0,  0 },
   { "Poison Bomb"                       , 21186, 0x00, 0x0008,  259,   0,   6,  255544,       0,  0 },
   { "Shuriken Tornado"                  , 21188, 0x00, 0x0008,  261,   2,   6,  277925,       0,  0 },
-  { "Serenity"                          , 21191, 0x00, 0x0200,  269,   2,   6,  152173,       0,  0 },
   { "Fury of Elune"                     , 21193, 0x00, 0x0400,  102,   1,   6,  202770,       0,  0 },
   { "Unlimited Power"                   , 21198, 0x00, 0x0040,  262,   0,   6,  260895,       0,  0 },
   { "Wellspring"                        , 21199, 0x00, 0x0040,  264,   1,   6,  197995,       0,  0 },
@@ -233,12 +232,10 @@ static std::array<talent_data_t, 567> __talent_data { {
   { "Feral Affinity"                    , 22156, 0x00, 0x0400,  104,   1,   2,  202155,       0,  0 },
   { "Guardian Affinity"                 , 22157, 0x00, 0x0400,  102,   1,   2,  197491,       0,  0 },
   { "Guardian Affinity"                 , 22158, 0x00, 0x0400,  103,   1,   2,  217615,       0,  0 },
-  { "Restoration Affinity"              , 22159, 0x00, 0x0400,    0,   2,   2,  197492,       0,  0 },
   { "Guardian Affinity"                 , 22160, 0x00, 0x0400,  105,   2,   2,  197491,       0,  0 },
   { "Balance Affinity"                  , 22163, 0x00, 0x0400,    0,   0,   2,  197488,       0,  0 },
   { "Stellar Flare"                     , 22165, 0x00, 0x0400,  102,   2,   5,  202347,       0,  0 },
   { "Mana Tea"                          , 22166, 0x00, 0x0200,  270,   2,   2,  197908,       0,  0 },
-  { "Spirit of the Crane"               , 22167, 0x00, 0x0200,  270,   1,   2,  210802,       0,  0 },
   { "Lifecycles"                        , 22168, 0x00, 0x0200,  270,   0,   2,  197915,       0,  0 },
   { "Upwelling"                         , 22169, 0x00, 0x0200,  270,   1,   6,  274963,       0,  0 },
   { "Rising Mist"                       , 22170, 0x00, 0x0200,  270,   2,   6,  274909,       0,  0 },

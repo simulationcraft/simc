@@ -1,5 +1,5 @@
-// Embellishment data, wow build 11.0.0.55120
-static const std::array<embellishment_data_t, 27> __embellishment_data { {
+// Embellishment data, wow build 11.0.2.55522
+static const std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
   { "Alchemical Flavor Pocket", 8174, 147811 },
@@ -17,15 +17,20 @@ static const std::array<embellishment_data_t, 27> __embellishment_data { {
   { "Verdant Conduit", 9521, 179513 },
   { "Dreamtender's Charm", 9532, 179870 },
   { "Verdant Tether", 9614, 180720 },
-  { "Elemental Focusing Lens", 10520, 182921 },
+  { "Elemental Focusing Lens", 10520, 189340 },
   { "Prismatic Null Stone", 10518, 182911 },
   { "Captured Starlight", 10521, 182939 },
   { "Blessed Weapon Grip", 11103, 183926 },
   { "Writhing Armor Banding", 11109, 183927 },
+  { "Darkmoon Sigil: Radiance", 11299, 184082 },
+  { "Darkmoon Sigil: Ascension", 11300, 187512 },
+  { "Darkmoon Sigil: Symbiosis", 11299, 184082 },
+  { "Darkmoon Sigil: Vivacity", 11301, 187510 },
   { "Pouch of Pocket Grenades", 11209, 186418 },
   { "Concealed Chaos Module", 11210, 186441 },
   { "Energy Redistribution Beacon", 11226, 186832 },
   { "Dawnthread Lining", 11303, 187453 },
   { "Duskthread Lining", 11304, 187454 },
+  { "Griftah's Heavy-Duty Embellishing Powder", 11941, 190239 },
 } };
 

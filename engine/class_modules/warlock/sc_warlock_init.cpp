@@ -4,42 +4,9 @@
 
 namespace warlock
 {
-  void warlock_t::init_items()
-  {
-    player_t::init_items();
-  
-    set_bonus_type_e tier_to_enable;
-    switch ( specialization() )
-    {
-      case WARLOCK_AFFLICTION:
-        tier_to_enable = T31;
-        break;
-      case WARLOCK_DEMONOLOGY:
-        tier_to_enable = T31;
-        break;
-      case WARLOCK_DESTRUCTION:
-        tier_to_enable = T29;
-        break;
-      default:
-        return;
-    }
-
-    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    {
-      sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-    }
-
-    if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    {
-      sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
-    }
-  }
-
   void warlock_t::init_spells()
   {
     player_t::init_spells();
-
-    version_10_2_0_data = find_spell( 422054 ); // For 10.2 version checking, new Shadow Invocation talent
 
     // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
     // find_class_spell - active_spells.inc
@@ -59,6 +26,8 @@ namespace warlock
     warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
     warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
     warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
+    warlock_base.malefic_rapture = find_specialization_spell( "Malefic Rapture", WARLOCK_AFFLICTION ); // Should be ID 324536
+    warlock_base.malefic_rapture_dmg = find_spell( 324540 );
     warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
     warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
@@ -67,16 +36,16 @@ namespace warlock
     warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
     warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
     warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
-    warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Should be ID 267102
-    warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
     warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
     // Destruction
-    warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
+    warlock_base.immolate = find_specialization_spell( "Immolate" ); // Should be ID 193541
+    warlock_base.immolate_old = find_spell( 348 ); // This contains the actual direct damage and cast data, but no longer appears in class_spell list
     warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
-    warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
+    warlock_base.incinerate = find_spell( 29722 ); // Should be ID 29722 TODO: 2024-07-05 this spell was missing from the non-PTR class spell list. Fix once this comes back
     warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
+    warlock_base.chaos_bolt = find_specialization_spell( "Chaos Bolt" ); // Should be ID 116858
     warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION ); // Should be ID 77220
     warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock", WARLOCK_DESTRUCTION ); // Should be ID 137046
 
@@ -85,14 +54,9 @@ namespace warlock
     warlock_t::init_spells_destruction();
 
     // Talents
-    talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
-    talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
-
     talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
     talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
     talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
-
-    talents.grand_warlocks_design = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Warlock's Design" ); // All 3 specs. Should be ID 387084
 
     talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
     talents.havoc_debuff = find_spell( 80240 );
@@ -101,24 +65,13 @@ namespace warlock
 
     talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
 
-    talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
-    talents.demonic_synergy = find_spell( 171982 );
+    talents.socrethars_guile = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936
 
-    talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
     talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
 
+    talents.demonic_tactics = find_talent_spell( talent_tree::CLASS, "Demonic Tactics" ); // Should be ID 452894
+
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
-
-    talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
-
-    talents.summon_soulkeeper = find_talent_spell( talent_tree::CLASS, "Summon Soulkeeper" ); // Should be ID 386244
-    talents.summon_soulkeeper_aoe = find_spell( 386256 );
-    talents.tormented_soul_buff = find_spell( 386251 );
-    talents.soul_combustion = find_spell( 386265 );
-
-    talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
-    talents.inquisitors_gaze_buff = find_spell( 388068 );
-    talents.fel_barrage = find_spell( 388070 );
 
     talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
     talents.soulburn_buff = find_spell( 387626 );
@@ -127,109 +80,97 @@ namespace warlock
   void warlock_t::init_spells_affliction()
   {
     // Talents
-    talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" ); // Should be ID 324536
-    talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
-
     talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
     talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
     talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
-  
-    talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
-    talents.nightfall_buff = find_spell( 264571 );
-
+    
     talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
-  
-    talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
-    talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
-    talents.shadow_embrace_debuff = find_spell( 32390 );
+    talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
+    talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
 
     talents.dark_virtuosity = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Virtuosity" ); // Should be ID 405327
 
-    talents.kindled_malice = find_talent_spell( talent_tree::SPECIALIZATION, "Kindled Malice" );  // Should be ID 405330
+    talents.absolute_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Corruption" ); // Should be ID 196103
 
-    talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
+    talents.siphon_life = find_talent_spell( talent_tree::SPECIALIZATION, "Siphon Life" ); // Should be ID 452999
+
+    talents.kindled_malice = find_talent_spell(talent_tree::SPECIALIZATION, "Kindled Malice");  // Should be ID 405330
+
+    talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
+    talents.nightfall_buff = find_spell( 264571 );
+
+    talents.volatile_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Volatile Agony" ); // Should be ID 453034
+    talents.volatile_agony_aoe = find_spell( 453035 );
+
+    talents.improved_shadow_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Shadow Bolt" ); // Should be ID 453080
 
     talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
     talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
 
-    talents.absolute_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Corruption" ); // Should be ID 196103
-
-    talents.siphon_life = find_talent_spell( talent_tree::SPECIALIZATION, "Siphon Life" ); // Should be ID 63106
-
-    talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
-    talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
+    talents.summoners_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Summoner's Embrace" ); // Should be ID 453105
 
     talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
     talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
 
-    talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
-    talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
-
-    talents.inevitable_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
-    talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
-
-    talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
-    talents.soul_swap_ua = find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
-    talents.soul_swap_buff = find_spell( 86211 ); // Buff data
-    talents.soul_swap_exhale = find_spell( 86213 ); // Replacement action while buff active
-
-    talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
-    talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
-
-    talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
-
-    talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
-
-    talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
-
-    talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
+    talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
+    talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
 
     talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
-    talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
+    talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
+    talents.shadow_embrace_debuff_ds = find_spell( 32390 );
+    talents.shadow_embrace_debuff_sb = find_spell( 453206 );
+
+    talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
+
+    talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare"); // Should be ID 205180
+    talents.eye_beam = find_spell( 205231 );
+
+    talents.cunning_cruelty = find_talent_spell( talent_tree::SPECIALIZATION, "Cunning Cruelty" ); // Should be ID
+    talents.shadow_bolt_volley = find_spell( 453176 );
+
+    talents.infirmity = find_talent_spell( talent_tree::SPECIALIZATION, "Infirmity" ); // Should be ID 458036
+    talents.infirmity_debuff = find_spell( 458219 );
+
+    talents.improved_haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Haunt" ); // Should be ID 458034
+
+    talents.malediction = find_talent_spell( talent_tree::SPECIALIZATION, "Malediction" ); // Should be ID 453087
+
+    talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
+    talents.malevolent_visionary_blast = find_spell( 453233 );
+
+    talents.contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Contagion" ); // Should be ID 453096
+
+    talents.cull_the_weak = find_talent_spell( talent_tree::SPECIALIZATION, "Cull the Weak" ); // Should be ID 453056
+
+    talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
 
     talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
-
-    talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
 
     talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
     talents.tormented_crescendo_buff = find_spell( 387079 );
 
-    talents.seized_vitality = find_talent_spell( talent_tree::SPECIALIZATION, "Seized Vitality" ); // Should be ID 387250
+    talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
 
-    talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
+    talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 
-    talents.wrath_of_consumption = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath of Consumption" ); // Should be ID 387065
-    talents.wrath_of_consumption_buff = find_spell( 387066 );
+    talents.perpetual_unstability = find_talent_spell( talent_tree::SPECIALIZATION, "Perpetual Unstability" ); // Should be ID 459376
+    talents.perpetual_unstability_proc = find_spell( 459461 );
 
-    talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
+    talents.malign_omen = find_talent_spell( talent_tree::SPECIALIZATION, "Malign Omen" ); // Should be ID 458041
+    talents.malign_omen_buff = find_spell( 458043 );
 
-    talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
-    talents.doom_blossom_proc = find_spell( 416699 ); // AoE damage data
+    talents.relinquished = find_talent_spell( talent_tree::SPECIALIZATION, "Relinquished" ); // Should be ID 453083
 
-    talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
-    talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
+    talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
-    talents.haunted_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Haunted Soul" ); // Should be ID 387301
-    talents.haunted_soul_buff = find_spell( 387310 );
-
-    talents.grim_reach = find_talent_spell( talent_tree::SPECIALIZATION, "Grim Reach" ); // Should be ID 389992
+    talents.improved_malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Malefic Rapture" ); // Should be ID 454378
 
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
 
     // Additional Tier Set spell data
-
-    // T29 (Vault of the Incarnates)
-    tier.cruel_inspiration = find_spell( 394215 );
-    tier.cruel_epiphany = find_spell( 394253 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.infirmity = find_spell( 409765 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.umbrafire_kindling = find_spell( 423765 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -237,8 +178,6 @@ namespace warlock
     // Talents
     talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
     talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
-
-    talents.demonbolt = find_talent_spell( talent_tree::SPECIALIZATION, "Demonbolt" ); // Should be ID 264178
 
     talents.demoniac = find_talent_spell( talent_tree::SPECIALIZATION, "Demoniac" ); // Should be ID 426115
     talents.demonbolt_spell = find_spell( 264178 );
@@ -249,8 +188,6 @@ namespace warlock
 
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
     talents.annihilan_training_buff = find_spell( 386176 );
-
-    talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
 
     talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
@@ -267,29 +204,20 @@ namespace warlock
     talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
     talents.implosion_aoe = find_spell( 196278 );
 
-    talents.shadows_bite = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow's Bite" ); // Should be ID 387322
-    talents.shadows_bite_buff = find_spell( 272945 );
-
     talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
 
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
     talents.shadow_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Invocation" ); // Should be ID 422054
 
-    talents.fel_and_steel = find_talent_spell( talent_tree::SPECIALIZATION, "Fel and Steel" ); // Should be ID 386200
-
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
     talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
     talents.power_siphon_buff = find_spell( 334581 );
 
-    talents.malefic_impact = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Impact" ); // Should be ID 416341
-
     talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
-
-    talents.bloodbound_imps = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodbound Imps" ); // Should be ID 387349
 
     talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
   
@@ -308,41 +236,21 @@ namespace warlock
 
     talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
-    talents.kazaaks_final_curse = find_talent_spell( talent_tree::SPECIALIZATION, "Kazaak's Final Curse" ); // Should be ID 387483
-
     talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
     talents.dread_calling_buff = find_spell( 387393 );
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
-
-    talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
-    talents.nether_portal_buff = find_spell( 267218 );
 
     talents.summon_demonic_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Demonic Tyrant" ); // Should be ID 265187
     talents.demonic_power_buff = find_spell( 265273 );
 
     talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
-    talents.nerzhuls_volition = find_talent_spell( talent_tree::SPECIALIZATION, "Ner'zhul's Volition" ); // Should be ID 387526
-    talents.nerzhuls_volition_buff = find_spell( 421970 );
-
-    talents.stolen_power = find_talent_spell( talent_tree::SPECIALIZATION, "Stolen Power" ); // Should be ID 387602
-    talents.stolen_power_stacking_buff = find_spell( 387603 );
-    talents.stolen_power_final_buff = find_spell( 387604 );
-
     talents.sacrificed_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrificed Souls" ); // Should be ID 267214
-
-    talents.soulbound_tyrant = find_talent_spell( talent_tree::SPECIALIZATION, "Soulbound Tyrant" ); // Should be ID 334585
 
     talents.pact_of_the_imp_mother = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Imp Mother" ); // Should be ID 387541
 
     talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
-
-    talents.infernal_command = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Command" ); // Should be ID 387549
-
-    talents.guldans_ambition = find_talent_spell( talent_tree::SPECIALIZATION, "Gul'dan's Ambition" ); // Should be ID 387578
-    talents.guldans_ambition_summon = find_spell( 387590 );
-    talents.soul_glutton = find_spell( 387595 );
 
     talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
     talents.demonic_servitude = find_spell( 390193 );
@@ -353,18 +261,6 @@ namespace warlock
 
     // Additional Tier Set spell data
 
-    // T29 (Vault of the Incarnates)
-    tier.blazing_meteor = find_spell( 394776 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.rite_of_ruvaraad = find_spell( 409725 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.doom_brand = find_spell( 423585 );
-    tier.doom_brand_debuff = find_spell( 423583 );
-    tier.doom_brand_aoe = find_spell( 423584 );
-    tier.doom_bolt_volley = find_spell( 423734 );
-
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
@@ -374,8 +270,6 @@ namespace warlock
   void warlock_t::init_spells_destruction()
   {
     // Talents
-    talents.chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Bolt" ); // Should be ID 116858
-
     talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
     talents.conflagrate_2 = find_spell( 245330 );
 
@@ -405,13 +299,6 @@ namespace warlock
     talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
-
-    talents.pandemonium = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemonium" ); // Should be ID 387509
-
-    talents.cry_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Cry Havoc" ); // Should be ID 387522
-    talents.cry_havoc_proc = find_spell( 387547 );
-
-    talents.improved_immolate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Immolate" ); // Should be ID 387093
 
     talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 270545
 
@@ -463,17 +350,8 @@ namespace warlock
     talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
     talents.crashing_chaos_buff = find_spell( 417282 );
 
-    talents.infernal_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Brand" ); // Should be ID 387475
-
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
-
-    talents.madness_of_the_azjaqir = find_talent_spell( talent_tree::SPECIALIZATION, "Madness of the Azj'Aqir" ); // Should be ID 387400
-    talents.madness_cb = find_spell( 387409 );
-    talents.madness_rof = find_spell( 387413 );
-    talents.madness_sb = find_spell( 387414 );
-
-    talents.chaosbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Chaosbringer" ); // Should be ID 422057
 
     talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
@@ -500,18 +378,6 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
-
-    // T29 (Vault of the Incarnates)
-    tier.chaos_maelstrom = find_spell( 394679 );
-
-    // T30 (Aberrus, the Shadowed Crucible)
-    tier.channel_demonfire = find_spell( 409890 );
-    tier.umbrafire_embers = find_spell( 409652 );
-
-    // T31 (Amirdrassil, the Dream's Hope)
-    tier.dimensional_cinder = find_spell( 427285 );
-    tier.flame_rift = find_spell( 423874 );
-    tier.searing_bolt = find_spell( 423886 );
   }
 
   void warlock_t::init_base_stats()
@@ -546,25 +412,6 @@ namespace warlock
     buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
                                       ->set_chance( 1.0 );
 
-    buffs.demonic_synergy = make_buff( this, "demonic_synergy", talents.demonic_synergy )
-                                ->set_default_value( talents.grimoire_of_synergy->effectN( 2 ).percent() );
-
-    buffs.tormented_soul = make_buff( this, "tormented_soul", talents.tormented_soul_buff );
-
-    buffs.tormented_soul_generator = make_buff( this, "tormented_soul_generator" )
-                                         ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
-                                         ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                             buffs.tormented_soul->trigger();
-                                           } );
-    buffs.tormented_soul_generator->quiet = true;
-
-    buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
-                                 ->set_period( 1_s )
-                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                   proc_actions.fel_barrage->execute_on_target( target );
-                                 } );
-
     buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
 
     buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
@@ -572,12 +419,11 @@ namespace warlock
     // Affliction buffs
     create_buffs_affliction();
 
-    buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
-                         ->set_cooldown( 0_ms )
-                         ->set_duration( talents.soul_rot->duration() + sets->set( WARLOCK_AFFLICTION, T31, B2 )->effectN( 2 ).time_value() );
+    buffs.soul_rot = make_buff( this, "soul_rot", talents.soul_rot)
+                         ->set_cooldown( 0_ms );
 
-    buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
-                                 ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
+    buffs.malign_omen = make_buff( this, "malign_omen", talents.malign_omen_buff )
+                            ->set_default_value( talents.malign_omen_buff->effectN( 1 ).percent() );
 
     buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -600,71 +446,18 @@ namespace warlock
 
   void warlock_t::create_buffs_affliction()
   {
-    buffs.drain_life = make_buff( this, "drain_life" );
-    buffs.drain_life->quiet = true;
-
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                           ->set_trigger_spell( talents.nightfall );
 
-    buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
-                                  ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
-
-    buffs.soul_swap = make_buff( this, "soul_swap", talents.soul_swap_buff )
-                          ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                            {
-                              if ( cur == 0 )
-                              {
-                                ss_source = nullptr;
-                                soul_swap_state.corruption.action_copied = false;
-                                soul_swap_state.agony.action_copied = false;
-                                soul_swap_state.unstable_affliction.action_copied = false;
-                                soul_swap_state.siphon_life.action_copied = false;
-                                soul_swap_state.haunt.action_copied = false;
-                                soul_swap_state.soul_rot.action_copied = false;
-                                soul_swap_state.phantom_singularity.action_copied = false;
-                                soul_swap_state.vile_taint.action_copied = false;
-                              }
-                            } );
-
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
-
-    buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
-                             ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
-
-    buffs.active_haunts = make_buff( this, "active_haunts" )
-                              ->set_max_stack( 20 )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
-                                {
-                                  if ( talents.haunted_soul->ok() )
-                                  {
-                                    if ( cur == 0 )
-                                      buffs.haunted_soul->expire();
-                                    else if ( cur > 0 && prev == 0 )
-                                      buffs.haunted_soul->trigger();
-                                  }
-                                } );
-    buffs.active_haunts->quiet = true;
-
-    buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
-                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                  ->set_default_value_from_effect( 1 );
-
-    buffs.cruel_epiphany = make_buff( this, "cruel_epiphany", tier.cruel_epiphany )
-                               ->set_default_value_from_effect( 1 );
-
-    buffs.umbrafire_kindling = make_buff( this, "umbrafire_kindling", tier.umbrafire_kindling )
-                                   ->set_reverse( true );
   }
 
   void warlock_t::create_buffs_demonology()
   {
-    buffs.demonic_core = make_buff( this, "demonic_core", min_version_check( VERSION_10_2_0 ) ? talents.demonic_core_buff : warlock_base.demonic_core_buff );
+    buffs.demonic_core = make_buff( this, "demonic_core", talents.demonic_core_buff );
 
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
                              ->set_default_value_from_effect( 1 );
-
-    buffs.demonic_power = make_buff( this, "demonic_power", talents.demonic_power_buff )
-                              ->set_default_value_from_effect( 2 );
 
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
@@ -674,53 +467,13 @@ namespace warlock
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                warlock_pet_list.wild_imps.spawn();
-                               if ( !min_version_check( VERSION_10_2_0 ) && rng().roll( talents.inner_demons->effectN( 1 ).percent() ) )
-                               {
-                                 proc_actions.summon_random_demon->execute();
-                               }
                              } );
-
-    buffs.nether_portal = make_buff( this, "nether_portal", talents.nether_portal_buff )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-                                if ( !sim->event_mgr.canceled && cur == 0 && talents.guldans_ambition.ok() )
-                                {
-                                  warlock_pet_list.pit_lords.spawn( talents.guldans_ambition_summon->duration(), 1u );
-                                };
-                              } );
 
     buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
                               ->set_default_value( talents.dread_calling->effectN( 1 ).percent() );
 
-    buffs.shadows_bite = make_buff( this, "shadows_bite", talents.shadows_bite_buff )
-                             ->set_default_value( talents.shadows_bite->effectN( 1 ).percent() );
-
-    buffs.stolen_power_building = make_buff( this, "stolen_power_building", talents.stolen_power_stacking_buff )
-                                      ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
-                                      {
-                                        if ( cur == b->max_stack() )
-                                        {
-                                          make_event( sim, 0_ms, [ this, b ] { 
-                                            buffs.stolen_power_final->trigger();
-                                            b->expire();
-                                          } );
-                                        };
-                                      } );
-
-    buffs.stolen_power_final = make_buff( this, "stolen_power_final", talents.stolen_power_final_buff );
-
-    // TODO: This can be removed once 10.2 goes live
-    buffs.nether_portal_total = make_buff( this, "nether_portal_total" )
-                                    ->set_max_stack( !min_version_check( VERSION_10_2_0 ) ? talents.soul_glutton->max_stacks() : 1 )
-                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
-
     buffs.demonic_servitude = make_buff( this, "demonic_servitude", talents.demonic_servitude )
                                   ->set_default_value( talents.reign_of_tyranny->effectN( 2 ).percent() );  // TODO: temp fix for 10.2 PTR data
-
-    buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
-                               ->set_default_value_from_effect( 1 );
-
-    buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
-                                 ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
 
     // Pet tracking buffs
     buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
@@ -736,10 +489,6 @@ namespace warlock
 
     buffs.grimoire_felguard = make_buff( this, "grimoire_felguard" )->set_max_stack( 1 )
                               ->set_duration( talents.grimoire_felguard->duration() );
-
-    buffs.prince_malchezaar = make_buff( this, "prince_malchezaar" )->set_max_stack( 1 );
-
-    buffs.eyes_of_guldan = make_buff( this, "eyes_of_guldan" )->set_max_stack( 4 );
   }
 
   void warlock_t::create_buffs_destruction()
@@ -789,27 +538,8 @@ namespace warlock
                                    ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-    buffs.madness_cb = make_buff( this, "madness_cb", talents.madness_cb )
-                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_rof = make_buff( this, "madness_rof", talents.madness_rof )
-                            ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_sb = make_buff( this, "madness_sb", talents.madness_sb )
-                           ->set_default_value( talents.madness_of_the_azjaqir->effectN( 1 ).percent() );
-
-    buffs.madness_rof_snapshot = make_buff( this, "madness_rof_snapshot" );
-
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
                               ->set_default_value( talents.burn_to_ashes->effectN( 1 ).percent() );
-
-    buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                ->set_default_value_from_effect( 1 );
-
-    buffs.umbrafire_embers = make_buff( this, "umbrafire_embers", tier.umbrafire_embers )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 
   void warlock_t::create_pets()
@@ -852,13 +582,10 @@ namespace warlock
     gains.agony = get_gain( "agony" );
     gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
     gains.drain_soul = get_gain( "drain_soul" );
-    gains.pandemic_invocation = get_gain( "pandemic_invocation" );
   }
 
   void warlock_t::init_gains_demonology()
   {
-    gains.soulbound_tyrant = get_gain( "soulbound_tyrant" );
-    gains.doom = get_gain( "doom" );
     gains.soul_strike = get_gain( "soul_strike" );
   }
 
@@ -870,7 +597,6 @@ namespace warlock
     gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
-    gains.inferno = get_gain( "inferno" );
   }
 
   void warlock_t::init_procs()
@@ -884,10 +610,6 @@ namespace warlock
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_procs_destruction();
 
-    procs.one_shard_hog = get_proc( "one_shard_hog" );
-    procs.two_shard_hog = get_proc( "two_shard_hog" );
-    procs.three_shard_hog = get_proc( "three_shard_hog" );
-    procs.portal_summon = get_proc( "portal_summon" );
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
@@ -898,16 +620,13 @@ namespace warlock
     procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
     procs.demonic_inspiration = get_proc( "demonic_inspiration" );
     procs.wrathful_minion = get_proc( "wrathful_minion" );
-    procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
   }
 
   void warlock_t::init_procs_affliction()
   {
     procs.nightfall = get_proc( "nightfall" );
-    procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
+    procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
-    procs.doom_blossom = get_proc( "doom_blossom" );
-    procs.cruel_inspiration = get_proc( "cruel_inspiration" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -917,25 +636,22 @@ namespace warlock
 
   void warlock_t::init_procs_demonology()
   {
-    procs.summon_random_demon = get_proc( "summon_random_demon" );
-    procs.demonic_knowledge = get_proc( "demonic_knowledge" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
-    procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
-    procs.blazing_meteor = get_proc( "blazing_meteor" );
-    procs.doomfiend = get_proc( "doomfiend" );
+
+    for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
+    {
+      procs.hand_of_guldan_shards[ i ] = get_proc( fmt::format( "Hand of Gul'dan {}", i + 1 ) );
+    }
   }
 
   void warlock_t::init_procs_destruction()
   {
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
-    procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
-    procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
-    procs.dimensional_refund = get_proc( "dimensional_refund" );
   }
 
   void warlock_t::init_rng()
@@ -951,12 +667,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_affliction()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_demonology()
-  {
-  }
+  { }
 
   void warlock_t::init_rng_destruction()
   {
@@ -1012,9 +726,6 @@ namespace warlock
   {
     player_t::combat_begin();
 
-    if ( talents.summon_soulkeeper->ok() )
-      buffs.tormented_soul_generator->trigger();
-
     if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
       buffs.inner_demons->trigger();
   }
@@ -1025,28 +736,20 @@ namespace warlock
 
     range::for_each( sim->target_list, [ this ]( const player_t* t ) {
       if ( auto td = target_data[ t ] )
-      {
         td->reset();
-      }
 
       range::for_each( t->pet_list, [ this ]( const player_t* add ) {
         if ( auto td = target_data[ add ] )
-        {
           td->reset();
-        }
       } );
     } );
 
-    warlock_pet_list.active            = nullptr;
-    havoc_target                       = nullptr;
-    ua_target                          = nullptr;
-    agony_accumulator                  = rng().range( 0.0, 0.99 );
-    corruption_accumulator             = rng().range( 0.0, 0.99 );
-    cdf_accumulator                    = rng().range( 0.0, 0.99 );
-    dimensional_accumulator            = rng().range( 0.0, 0.99 );
-    doom_brand_accumulator             = rng().range( 0.0, 0.99 );
-    incinerate_last_target_count       = 0;
-    shadow_invocation_proc_chance        = 0.2;
+    warlock_pet_list.active = nullptr;
+    havoc_target = nullptr;
+    ua_target = nullptr;
+    agony_accumulator = rng().range( 0.0, 0.99 );
+    corruption_accumulator = rng().range( 0.0, 0.99 );
+    shadow_invocation_proc_chance = 0.2;
     wild_imp_spawns.clear();
   }
 }

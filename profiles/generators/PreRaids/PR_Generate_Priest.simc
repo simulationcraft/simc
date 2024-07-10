@@ -1,29 +1,25 @@
 priest="PR_Priest_Shadow"
-level=70
+level=80
 race=orc
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSjgEESRahkAA
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAYwwYAAAAAAAAAAAAAmZmtxYmZWGMzMGzgBzCzMjxsxAjxwsY2mamBLwMzMAoAMbz2SwsxG
 
-flask=phial_of_static_empowerment_3
-
-# TODO: use prof items?
-# TODO: use bonus_ids instead
-head=organized_pontificators_mask,id=193703,ilevel=372
-neck=ukhel_ancestry_beads,id=193676,ilevel=372
-shoulders=molten_magma_mantle,id=193788,ilevel=372
-back=fireproof_drape,id=193763,ilevel=372
-chest=bronze_challengers_robe,id=193720,ilevel=372,enchant=waking_stats_2
-wrists=animated_shackles,id=193792,ilevel=372
-hands=azureblades_work_gloves,id=193648,ilevel=372
-waist=sky_saddle_cord,id=193691,ilevel=372
-legs=crazed_travelers_legwraps,id=193799,ilevel=372,enchant=frozen_spellthread_2
-feet=ancient_crosswrapped_sandals,id=193806,ilevel=372
-finger1=unstable_arcane_loop,id=193633,ilevel=372,enchant=devotion_of_haste_3
-finger2=circle_of_ascended_frost,id=193731,ilevel=372,enchant=devotion_of_haste_3
-trinket1=spoils_of_neltharus,id=193773,ilevel=372
-trinket2=furious_ragefeather,id=193677,ilevel=372
-main_hand=final_grade,id=193707,ilevel=372,enchant=sophic_devotion_2
+head=intertwiners_shadowcowl,id=221187,ilevel=593
+neck=strapped_rescuekeg,id=221060,ilevel=593
+shoulder=moneymaking_businessmantle,id=221072,ilevel=593
+back=anvilhide_cape,id=221088,ilevel=593
+chest=arachnofrost_vest,id=221176,ilevel=593,enchant=crystalline_radiance_2
+wrists=vitriolic_veinwoven_wraps,id=221182,ilevel=593
+hands=punctured_apiary_gloves,id=221067,ilevel=593
+waist=honorbound_retainers_sash,id=221121,ilevel=593
+legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=daybreak_spellthread_2
+feet=tainted_earthshard_walkers,id=221082,ilevel=593
+finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=cursed_mastery_2
+finger2=85_years_tenure_ring,id=221198,ilevel=593,enchant=cursed_mastery_2
+trinket1=arakara_sacbrood,id=219314,ilevel=593
+trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
+main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_radiant_power_2
 
 save=PR_Priest_Shadow.simc

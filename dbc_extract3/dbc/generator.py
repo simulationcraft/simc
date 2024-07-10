@@ -1492,7 +1492,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
-         458322, 458376, 458580, 459158, # new M+ affixes
+         206150, 461904, 461910, 462661, # new M+ affixes
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -1597,6 +1597,7 @@ class SpellDataGenerator(DataGenerator):
             ( 434255 , 0),          # Blessing of the Forge related buff
             ( 447258 , 0),          # Blessing of the Forge Forge's Reckoning - SotR trigger
             ( 447246 , 0),          # Blessing of the Forge's Sacred Word - WoG trigger
+            ( 432472 , 0),          # Sacred Weapon Driver
             ( 441590 , 0),          # Sacred Weapon healing
             ( 432607 , 0),          # Holy Bulwark shield
             ( 431910 , 0),          # Sun's Avatar buff, healing buff
@@ -1605,6 +1606,8 @@ class SpellDataGenerator(DataGenerator):
             ( 431911 , 0),          # Sun's Avatar damage
             ( 431382 , 0),          # Dawnlight aoe healing
             ( 431399 , 0),          # Dawnlight aoe damage
+            ( 449198 , 0),          # Highlord's Judgment hidden spell
+            ( 431568 , 0),          # Morning Star driver
         ),
 
         # Hunter:
@@ -1891,6 +1894,7 @@ class SpellDataGenerator(DataGenerator):
           ( 290577, 0 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
+          ( 460501, 0 ), # Bloodied blade heart strike
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -2033,6 +2037,9 @@ class SpellDataGenerator(DataGenerator):
           ( 418735, 0 ),                            # Splintering Ray
           ( 419800, 0 ),                            # Intensifying Flame
           ( 424120, 0 ),                            # Glacial Blast
+          ( 461508, 0 ),                            # Energy Reconstitution AE
+          ( 438671, 0 ), ( 438672, 0 ), ( 438674, 0 ), # Excess Fire LB
+          ( 460475, 0 ), ( 460476, 0 ),             # Pyromaniac Pyroblast and Flamestrike
         ),
 
         # Warlock:
@@ -2208,6 +2215,7 @@ class SpellDataGenerator(DataGenerator):
           ( 395414, 3 ), # Fae Exposure Damage Debuff
           ( 451968, 3 ), # Combat Wisdom Expel Harm
           ( 452117, 3 ), # Flurry of Xuen Driver
+          ( 461404, 3 ), # WW Chi Burst Cast
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
@@ -2238,7 +2246,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Tier 33
           ( 457271, 1 ), # BrM 4-piece Flow of Battle
-          
+
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
 
@@ -2812,11 +2820,15 @@ class SpellDataGenerator(DataGenerator):
         if state and not self.spell_state(spell, enabled_effects):
             return None
 
-        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+        if spell.id in constants.REMOVE_CLASS_AND_RACE_MASKS:
             mask_class = 0
             mask_race = 0
 
         filter_list[spell.id] = { 'mask_class': mask_class, 'mask_race': mask_race, 'effect_list': enabled_effects }
+
+        if spell.id in constants.IGNORE_CLASS_AND_RACE_MASKS:
+            mask_class = 0
+            mask_race = 0
 
         spell_id = spell.id
         # Add spell triggers to the filter list recursively

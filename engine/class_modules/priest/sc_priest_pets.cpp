@@ -268,10 +268,12 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().o().buffs.voidform, 0x4U, IGNORE_STACKS );  // Skip E3 for AM
+      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
+                     p().o().talents.archon.perfected_form );
       parse_effects( p().o().buffs.shadowform );
       parse_effects( p().o().buffs.devoured_pride );
-      parse_effects( p().o().buffs.dark_ascension, 0b1000U, IGNORE_STACKS );  // Buffs non-periodic spells - Skip E4
+      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
+                     p().o().talents.archon.perfected_form );  // Buffs non-periodic spells
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -279,11 +281,11 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
       if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0001U, USE_DEFAULT );  // Skip E1
+        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 4 ), USE_DEFAULT );  // Enable E4
       }
       else
       {
-        parse_effects( p().o().buffs.ancient_madness, 0b0011U, USE_DEFAULT );  // Skip E1 and E2
+        parse_effects( p().o().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
       }
     }
 
@@ -304,8 +306,8 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     // Doesn't work on the pet ayy lmao
     /*if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t )->buffs.schism->check(); },
-    p().o().talents.discipline.schism_debuff );
+        parse_target_effects( []( actor_target_data_t* t ) { return static_cast<priest_td_t*>( t
+    )->buffs.schism->check(); }, p().o().talents.discipline.schism_debuff );
     }*/
   }
 
@@ -497,8 +499,7 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1182
-    gcd_type = !p.o().bugs ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+    gcd_type    = gcd_haste_type::SPELL_HASTE;
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
@@ -514,7 +515,7 @@ struct void_flay_t final : public priest_pet_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
-    
+
     m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
 
     return m;
@@ -703,8 +704,8 @@ struct fiend_melee_t : public priest_pet_melee_t
     // Check if it is the first swing or not
     timespan_t swing_time = priest_pet_melee_t::execute_time();
 
-    if ( base_execute_time == timespan_t::zero() || swing_time == timespan_t::zero() )
-      return timespan_t::zero();
+    if ( base_execute_time == 0_ms || swing_time == 0_ms )
+      return 0_ms;
 
     // Mindbender inherits haste from the player
     timespan_t hasted_time = base_execute_time * player->cache.spell_cast_speed();
@@ -945,18 +946,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
   void tick( dot_t* d ) override
   {
     priest_pet_spell_t::tick( d );
@@ -1017,18 +1006,6 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     priest_pet_spell_t::init();
 
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
   }
 };
 
@@ -1163,9 +1140,9 @@ namespace priestspace
 // summoned through the action list, so please check for null.
 spawner::pet_spawner_t<pet_t, priest_t>& priest_t::get_current_main_pet()
 {
-  return talents.voidweaver.voidwraith.enabled() ? pets.voidwraith
-         : talents.shared.mindbender.enabled()   ? pets.mindbender
-                                                 : pets.shadowfiend;
+  return talents.voidweaver.voidwraith.enabled()
+             ? pets.voidwraith
+             : talents.shared.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
 }
 
 void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double mod )
@@ -1236,8 +1213,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     {
       // pet.fiend.X refers to either shadowfiend or mindbender
 
-      auto expr =
-          get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr = get_current_main_pet().create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

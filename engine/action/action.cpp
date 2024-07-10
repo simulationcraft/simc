@@ -359,9 +359,9 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     background(),
     use_off_gcd(),
     use_while_casting(),
-    usable_while_casting( false ),
+    usable_while_casting(),
     interrupt_auto_attack( true ),
-    reset_auto_attack( false ),
+    reset_auto_attack(),
     ignore_false_positive(),
     action_skill( p->base.skill ),
     direct_tick(),
@@ -370,11 +370,11 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     repeating(),
     harmful( true ),
     proc(),
-    is_interrupt( false ),
+    is_interrupt(),
     is_precombat(),
     initialized(),
     may_hit( true ),
-    may_miss(),
+    may_miss( true ),
     may_dodge(),
     may_parry(),
     may_glance(),
@@ -382,7 +382,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     may_crit(),
     tick_may_crit(),
     tick_zero(),
-    tick_on_application( false ),
+    tick_on_application(),
     hasted_ticks(),
     consume_per_tick_(),
     rolling_periodic(),
@@ -414,6 +414,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     base_execute_time(),
     base_tick_time(),
     dot_duration(),
+    hasted_dot_duration(),
     dot_max_stack( 1 ),
     base_costs(),
     secondary_costs(),
@@ -465,7 +466,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     marker(),
     last_used(),
     option(),
-    interrupt_global( false ),
+    interrupt_global(),
     if_expr(),
     target_if_mode( TARGET_IF_NONE ),
     target_if_expr(),
@@ -624,11 +625,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED );
   tick_on_application         = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  hasted_dot_duration         = spell_data.flags( spell_attribute::SX_DURATION_HASTED );
   rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
-  may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   allow_class_ability_procs   = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
   not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
@@ -1134,6 +1135,34 @@ double action_t::cost_pct_multiplier() const
 double action_t::cost_per_tick( resource_e r ) const
 {
   return base_costs_per_tick[ r ];
+}
+
+// action_t::execute_time ===================================================
+
+timespan_t action_t::execute_time() const
+{
+  auto base = base_execute_time.base;
+
+  auto mul = base_execute_time.pct_mul * execute_time_pct_multiplier();
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += base_execute_time.flat_add + execute_time_flat_modifier();
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::execute_time_flat_modifier() const
+{
+  return 0_ms;
+}
+
+double action_t::execute_time_pct_multiplier() const
+{
+  return 1.0;
 }
 
 // action_t::gcd ============================================================
@@ -2227,7 +2256,7 @@ bool action_t::usable_moving() const
   if ( player->buffs.norgannons_sagacity && player->buffs.norgannons_sagacity->check() )
     return true;
 
-  if ( execute_time() > timespan_t::zero() )
+  if ( execute_time() > 0_ms )
     return false;
 
   if ( channeled )
@@ -2244,7 +2273,7 @@ bool action_t::usable_precombat() const
   if ( !harmful )
     return true;
 
-  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+  if ( this->travel_time() > 0_ms || this->base_execute_time > 0_ms )
     return true;
 
   return false;
@@ -2712,7 +2741,7 @@ void action_t::init()
   // the correct (short) GCD.
   min_gcd = std::min( min_gcd, trigger_gcd );
 
-  if ( use_off_gcd && trigger_gcd == timespan_t::zero() )
+  if ( use_off_gcd && trigger_gcd == 0_ms )
   {
     cooldown->add_execute_type( execute_type::OFF_GCD );
     internal_cooldown->add_execute_type( execute_type::OFF_GCD );
@@ -4006,14 +4035,36 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
 }
 
-timespan_t action_t::tick_time( const action_state_t* state ) const
+timespan_t action_t::tick_time( const action_state_t* s ) const
 {
-  timespan_t t = base_tick_time;
+  auto base = base_tick_time.base;
+
+  auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += base_tick_time.flat_add + tick_time_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // Tick time is rounded to nearest ms.
+  // Assuming this applies to all tick time, including hasted duration dots. As tick time is used in calculation for
+  // hasted duration (in order to ensure # of ticks match) using rounding for tick time can have a non-trivial impact
+  // on short duration dots with a large number of ticks, such as eye beam.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
+{
   if ( hasted_ticks )
-  {
-    t *= state->haste;
-  }
-  return t;
+    return s->haste;
+
+  return 1.0;
 }
 
 void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt )
@@ -4053,7 +4104,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_MUL_PET )
-    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
+  {
+    state->pet_multiplier =
+      player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
+  }
 
   if ( flags & STATE_TGT_MUL_DA )
     state->target_da_multiplier = composite_target_da_multiplier( state->target );
@@ -4062,7 +4116,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_ta_multiplier = composite_target_ta_multiplier( state->target );
 
   if ( flags & STATE_TGT_MUL_PET )
-    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( state->target, player->type == PLAYER_GUARDIAN );
+  {
+    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier(
+      state->target, player->type == PLAYER_GUARDIAN );
+  }
 
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
@@ -4077,14 +4134,38 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_armor = composite_target_armor( state->target );
 }
 
+// action_t::composite_dot_duration =========================================
+
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
-  if ( channeled )
+  auto base = dot_duration.base;
+
+  auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+  if ( mul <= 0 )
+    return 0_ms;
+
+  base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
+
+  // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
+  return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+}
+
+timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
+{
+  return 0_ms;
+}
+
+double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
+{
+  if ( hasted_dot_duration )
   {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
+    auto tt = timespan_t::from_millis( std::round( static_cast<double>( base_tick_time.total_millis() ) * s->haste ) );
+    return tt / base_tick_time;
   }
 
-  return dot_duration;
+  return 1.0;
 }
 
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* state )
@@ -5442,6 +5523,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_CRIT:
         crit_chance_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} critical strike chance multiplier modified by {}%", *this, effect.base_value() );
+        value_ = effect.percent();
+        break;
+
+      case P_CAST_TIME:
+        base_execute_time *= 1 + effect.percent();
+        sim->print_debug( "{} cast time modified by {}% to {}", *this, effect.base_value(), base_execute_time );
         value_ = effect.percent();
         break;
 

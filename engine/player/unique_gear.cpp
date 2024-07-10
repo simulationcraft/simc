@@ -147,7 +147,7 @@ namespace racial
 
 namespace generic
 {
-  void windfury_totem( special_effect_t& );
+  void skyfury( special_effect_t& );
   void enable_all_item_effects( special_effect_t& );
 }
 
@@ -3590,37 +3590,31 @@ void racial::combat_analysis( special_effect_t& effect )
   } );
 }
 
-void generic::windfury_totem( special_effect_t& effect )
+void generic::skyfury( special_effect_t& effect )
 {
-  struct wft_proc_callback_t : public dbc_proc_callback_t
+  struct skyfury_cb_t : public dbc_proc_callback_t
   {
     proc_t* proc_mh, *proc_oh;
 
-    wft_proc_callback_t( const special_effect_t& effect ) :
+    skyfury_cb_t( const special_effect_t& effect ) :
       dbc_proc_callback_t( effect.player, effect ), proc_mh( nullptr ), proc_oh( nullptr )
     {
       if ( effect.player->items[ SLOT_MAIN_HAND ].active() &&
            effect.player->items[ SLOT_MAIN_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
       {
-        proc_mh = effect.player->get_proc( "Windfury (Main Hand)" );
+        proc_mh = effect.player->get_proc( "Skyfury (Main Hand)" );
       }
 
       if ( effect.player->items[ SLOT_OFF_HAND ].active() &&
            effect.player->items[ SLOT_OFF_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
       {
-        proc_oh = effect.player->get_proc( "Windfury (Off Hand)" );
+        proc_oh = effect.player->get_proc( "Skyfury (Off Hand)" );
       }
     }
 
     void trigger( action_t* a, action_state_t* s ) override
     {
       if ( !s->action->weapon )
-      {
-        return;
-      }
-
-      // Ranged weapons don't Windfury .. sorry Hunters
-      if ( s->action->weapon->group() == WEAPON_RANGED )
       {
         return;
       }
@@ -3649,7 +3643,7 @@ void generic::windfury_totem( special_effect_t& effect )
 
       auto old_target = atk->target;
 
-      listener->sim->print_log( "{} windfury_totem repeats {}", *listener, *atk );
+      listener->sim->print_log( "{} skyfury repeats {}", *listener, *atk );
       if ( proc )
       {
         proc->occur();
@@ -3673,23 +3667,7 @@ void generic::windfury_totem( special_effect_t& effect )
     return;
   }
 
-  auto proc = new wft_proc_callback_t( effect );
-
-  auto wft_buff = buff_t::find( effect.player, "windfury_totem" );
-  assert( wft_buff );
-  wft_buff->set_stack_change_callback( [proc]( buff_t*, int /* old_ */, int new_ ) {
-    if ( new_ == 1 )
-    {
-      proc->activate();
-    }
-    else
-    {
-      proc->deactivate();
-    }
-  } );
-
-  // Windfury Totem buff controls whether proc is active or not
-  proc->deactivate();
+  new skyfury_cb_t( effect );
 }
 
 void generic::enable_all_item_effects( special_effect_t& effect )
@@ -5069,7 +5047,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 312923, racial::combat_analysis );
 
   /* Generic "global scope" special effects */
-  register_special_effect( 327942, generic::windfury_totem );
+  register_special_effect( 462854, generic::skyfury );
   register_special_effect( 63604, generic::enable_all_item_effects );
 }
 

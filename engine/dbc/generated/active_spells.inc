@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.0.55120
-static const std::array<active_class_spell_t, 305> __active_spells_data { {
+// Active class spells, wow build 11.0.2.55522
+static const std::array<active_class_spell_t, 310> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -42,7 +42,7 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  2,    0, 290608,      0, "Crusader's Direhorn"                },
   {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,    0, 391054,      0, "Intercession"                       },
-  {  2,    0, 453785,      0, "Earthen Judicator's Ramolith"       },
+  {  2,    0, 453785,      0, "Earthen Ordinant's Ramolith"        },
   {  2,   65,    498,      0, "Divine Protection"                  },
   {  2,   65,   4987, 440013, "Cleanse"                            },
   {  2,   65,  53563,      0, "Beacon of Light"                    },
@@ -76,6 +76,8 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  3,    0, 257284,      0, "Hunter's Mark"                      },
   {  3,    0, 272651,      0, "Command Pet"                        },
   {  3,    0, 321297,      0, "Eyes of the Beast"                  },
+  {  3,  255, 186289,      0, "Aspect of the Eagle"                },
+  {  3,  255, 190925,      0, "Harpoon"                            },
   {  4,    0,    408,      0, "Kidney Shot"                        },
   {  4,    0,    921,      0, "Pick Pocket"                        },
   {  4,    0,   1725,      0, "Distract"                           },
@@ -174,6 +176,8 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 192106,      0, "Lightning Shield"                   },
   {  7,    0, 318038,      0, "Flametongue Weapon"                 },
+  {  7,    0, 462854,      0, "Skyfury"                            },
+  {  7,  263, 196884,      0, "Feral Lunge"                        },
   {  7,  264,  52127,      0, "Water Shield"                       },
   {  7,  264,  77130, 440012, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
@@ -194,6 +198,7 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   {  8,    0, 343140,      0, "Portal"                             },
   {  8,   62,  30451,      0, "Arcane Blast"                       },
   {  8,   62,  44425,      0, "Arcane Barrage"                     },
+  {  8,   62, 153626,      0, "Arcane Orb"                         },
   {  8,   63,    133,      0, "Fireball"                           },
   {  8,   63,   2120,      0, "Flamestrike"                        },
   {  8,   64, 190356,      0, "Blizzard"                           },
@@ -307,7 +312,7 @@ static const std::array<active_class_spell_t, 305> __active_spells_data { {
   { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.0.55120
+// Pet active spells, wow build 11.0.2.55522
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
@@ -442,6 +447,6 @@ static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  9, 171021, "Torch Magic"                        },
   {  9, 171023, "Blaze Magic"                        },
   {  9, 171138, "Shadow Lock"                        },
-  {  9, 267964, "Soul Strike"                        },
+  {  9, 264057, "Soul Strike"                        },
 } };
 
