@@ -6726,7 +6726,6 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 3 ).percent(), 0_ms );
       make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t = mage->target ] { a->execute_on_target( t ); }, splinters );
     }
 
