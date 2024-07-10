@@ -5202,7 +5202,7 @@ struct revenge_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
 
-    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    if ( !background && p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
       if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
       {
