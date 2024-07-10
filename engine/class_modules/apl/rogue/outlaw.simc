@@ -72,8 +72,8 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 actions.cds+=/blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)
 # Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish ready
 actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)
-# Use Keep it Rolling with at least 3 of Broadside/True Bearing/Ruthless Precision/Skull and Crossbones, or with any 3 buffs if sim duration ends in <1 min
-actions.cds+=/keep_it_rolling,if=(buff.broadside.up+buff.true_bearing.up+buff.ruthless_precision.up+buff.skull_and_crossbones.up)>=3|fight_remains<60&rtb_buffs>=3
+# Use Keep it Rolling with at least 3 buffs that are not Buried Treasure. If Broadside is not active, then wait until just before the lowest buff expires.
+actions.cds+=/keep_it_rolling,if=rtb_buffs>=3+buff.buried_treasure.up&(rtb_buffs.min_remains<2|buff.broadside.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
 # Manic Grieftorch and Beacon to the Beyond should not be used during stealth and have higher priority than stealth cooldowns
 actions.cds+=/use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
