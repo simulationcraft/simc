@@ -7629,6 +7629,7 @@ void monk_t::init_spells()
   // Conduit of the Celestials
   active_actions.courage_of_the_white_tiger      = new actions::courage_of_the_white_tiger_t( this );
   active_actions.flight_of_the_red_crane_damage  = new actions::flight_of_the_red_crane_dmg_t( this );
+  active_actions.flight_of_the_red_crane_heal    = new actions::flight_of_the_red_crane_heal_t( this );
   active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
   active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
 
@@ -8230,7 +8231,7 @@ void monk_t::create_buffs()
   buff.courage_of_the_white_tiger = make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
                                                         "courage_of_the_white_tiger", find_spell( 460127 ) )
           ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
-            active_actions.strength_of_the_black_ox_dmg->execute();
+            active_actions.courage_of_the_white_tiger->execute();
           } );
   ;
 
@@ -8776,6 +8777,31 @@ void monk_t::init_special_effects()
         talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           active_actions.courage_of_the_white_tiger->set_target( state->target );
+        } );
+  }
+
+  // ======================================
+  // Flight of the Red Crane
+  // ======================================
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    create_proc_callback(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->talent.mistweaver.refreshing_jade_wind->id() ) ||
+             ( p->specialization() == MONK_WINDWALKER && state->action->id == p->talent.windwalker.rushing_jade_wind->id() ) ||
+               state->action->id == p->baseline.monk.spinning_crane_kick->id() )
+            return true;
+
+          return false;
+        } );
+
+    callbacks.register_callback_execute_function(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          if ( specialization() == MONK_MISTWEAVER )
+            active_actions.flight_of_the_red_crane_heal->set_target( state->target );
+          else
+            active_actions.flight_of_the_red_crane_damage->set_target( state->target );
         } );
   }
 
