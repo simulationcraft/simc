@@ -17,6 +17,7 @@
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
 #include "player/action_priority_list.hpp"
+#include "player/action_variable.hpp"
 #include "player/consumable.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
@@ -3171,6 +3172,178 @@ void seal_of_the_poisoned_pact( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, *nature );
 }
+
+void imperfect_ascendancy_serum( special_effect_t& effect )
+{
+  struct ascension_channel_t : public proc_spell_t
+  {
+    buff_t* buff;
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
+
+    ascension_channel_t( const special_effect_t& e, buff_t* ascension )
+      : proc_spell_t( "ascension_channel", e.player, e.driver(), e.item )
+    {
+      channeled = hasted_ticks = hasted_dot_duration = true;
+      harmful                                        = false;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time             = 0_s;
+      buff                          = ascension;
+      effect                        = &e;
+      interrupt_auto_attack         = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = base_tick_time;
+          break;
+        }
+      }
+    }
+
+    void execute() override
+    {
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
+      else
+      {
+        proc_spell_t::execute();
+        event_t::cancel( player->readying );
+        player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      cooldown->adjust( d->duration() );
+
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+      cdgrp->adjust( d->duration() );
+
+      proc_spell_t::last_tick( d );
+      buff->trigger();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready();
+    }
+
+    void precombat_buff()
+    {
+      timespan_t time = 0_ms;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "imperfect_ascendancy_precombat_cast" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time            = data().cast_time();
+        const auto& apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Imperfect Ascendancy Serum exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Imperfect Ascendancy Serum precast timing pushed by {} for {}", delta, a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+      else if ( time < base_tick_time )  // If APL variable can't set to less than cast time
+      {
+        time = base_tick_time;
+      }
+
+      // how long you cast for
+      auto cast = base_tick_time;
+      // total duration of the buff
+      auto total = buff->buff_duration();
+      // actual duration of the buff you'll get in combat
+      auto actual = total + cast - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration + cast - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() + cast - time );
+
+      sim->print_debug( "PRECOMBAT: Imperfect Ascendency Serum started {}s before combat via {}, {}s in-combat buff", time,
+                        use_action ? "APL" : "TWW_OPT", actual );
+
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, cast, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( cast - time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( cast - time );
+
+          cdgrp->adjust( cast - time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
+    }
+  };
+
+  auto value = effect.driver()->effectN( 1 ).average( effect.item );
+
+  auto buff_spell = effect.driver();
+  buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
+                     ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+                     ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect.item ) )
+                     ->add_stat_from_effect( 4, effect.driver()->effectN( 4 ).average( effect.item ) )
+                     ->add_stat_from_effect( 5, effect.driver()->effectN( 5 ).average( effect.item ) )
+                     ->set_cooldown( 0_ms );
+
+  auto action           = new ascension_channel_t( effect, buff );
+  effect.execute_action = action;
+  effect.disable_buff();
+}
+
 }  // namespace items
 
 namespace sets
@@ -3277,6 +3450,7 @@ void register_special_effects()
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   register_special_effect( 455534, items::darkmoon_deck_symbiosis );
+  register_special_effect( 455482, items::imperfect_ascendancy_serum );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
