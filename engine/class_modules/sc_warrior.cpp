@@ -4609,7 +4609,6 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
   }
 };
 
@@ -4620,7 +4619,6 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   {
     background = true;
     aoe        = -1;
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
   }
 };
 
@@ -5202,7 +5200,7 @@ struct revenge_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
 
-    if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
+    if ( !background && p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
       if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
       {
@@ -7985,8 +7983,7 @@ void warrior_t::create_buffs()
       ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
 
   buff.dance_of_death_bladestorm = make_buff( this, "dance_of_death_bladestorm", spell.dance_of_death_bs_buff )
-      ->set_duration( 20_s ) // Slightly longer than max extension
-      ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
+      ->set_duration( 20_s ); // Slightly longer than max extension;
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
 
@@ -9268,6 +9265,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.improved_raging_blow );
   action.apply_affecting_aura( talents.fury.meat_cleaver );
   action.apply_affecting_aura( talents.fury.storm_of_steel );
+  action.apply_affecting_aura( talents.fury.titanic_rage );
 
   // Protection Auras
   action.apply_affecting_aura( talents.protection.storm_of_steel );
