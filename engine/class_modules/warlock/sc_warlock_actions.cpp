@@ -1631,7 +1631,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.dark_harvest.ok() && aoe > 1 )
+      if ( p()->talents.dark_harvest.ok() )
       {
         p()->buffs.dark_harvest_haste->trigger();
         p()->buffs.dark_harvest_crit->trigger();
