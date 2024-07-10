@@ -176,6 +176,10 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.flight_of_the_red_crane );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.inner_compass_crane_stance );
+  parse_effects( p()->buff.inner_compass_ox_stance );
+  parse_effects( p()->buff.inner_compass_serpent_stance );
+  parse_effects( p()->buff.inner_compass_tiger_stance );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -8293,6 +8297,18 @@ void monk_t::create_buffs()
               buff_->expire();
             }
           } );
+
+  buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "crane_stance", find_spell( 443572 ) );
+
+  buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "ox_stance", find_spell( 443574 ) );
+
+  buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                          "serpent_stance", find_spell( 443576 ) );
+
+  buff.inner_compass_tiger_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "tiger_stance", find_spell( 443575 ) );
 
   buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
                                             "jade_sanctuary", find_spell( 448508 ) );

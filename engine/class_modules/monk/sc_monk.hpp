@@ -720,6 +720,10 @@ public:
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
+    propagate_const<buff_t *> inner_compass_crane_stance;
+    propagate_const<buff_t *> inner_compass_ox_stance;
+    propagate_const<buff_t *> inner_compass_serpent_stance;
+    propagate_const<buff_t *> inner_compass_tiger_stance;
     propagate_const<buff_t *> jade_sanctuary;
     propagate_const<buff_t *> strength_of_the_black_ox;
 
