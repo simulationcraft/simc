@@ -4609,7 +4609,6 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
   }
 };
 
@@ -4620,7 +4619,6 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   {
     background = true;
     aoe        = -1;
-    base_multiplier *= 1.0 + p->talents.fury.titanic_rage->effectN( 1 ).percent();
   }
 };
 
@@ -9267,6 +9265,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.improved_raging_blow );
   action.apply_affecting_aura( talents.fury.meat_cleaver );
   action.apply_affecting_aura( talents.fury.storm_of_steel );
+  action.apply_affecting_aura( talents.fury.titanic_rage );
 
   // Protection Auras
   action.apply_affecting_aura( talents.protection.storm_of_steel );
