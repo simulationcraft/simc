@@ -5948,10 +5948,10 @@ struct engulf_t : public evoker_spell_t
   }
 };
 
-struct bombardments_damage_t : public evoker_external_scaling_action_t<spell_t>
+struct bombardments_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
-  using base = evoker_external_scaling_action_t<spell_t>;
+  using base = evoker_external_action_t<spell_t>;
   double diverted_power_chance;
   target_specific_t<cooldown_t> cooldown_objects;
 
@@ -7760,7 +7760,7 @@ void evoker_t::init_assessors()
       auto& tracker = td->chrono_tracker;
 
       time_t accessed_second = sim->current_time().total_millis() / 1000;
-      size_t current_bucket  = as<size_t>( accessed_second % 5 );
+      size_t current_bucket  = as<size_t>( accessed_second ) % 5;
 
       if ( accessed_second > tracker.last_accessed_second )
       {
