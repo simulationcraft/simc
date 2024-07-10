@@ -3998,6 +3998,7 @@ struct mograine_pet_t final : public horseman_pet_t
   mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
   {
     npc_id                      = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
+    main_hand_weapon.type       = WEAPON_BEAST_2H;
     main_hand_weapon.swing_time = 1_s;
     auto_attack_multiplier *= 2.0;
   }
@@ -5309,13 +5310,13 @@ struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_
   double value() override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           p()->buffs.gift_of_the_sanlayn->check_value();
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
     return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
-           p()->buffs.gift_of_the_sanlayn->check_value();
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 };
 
@@ -5334,19 +5335,19 @@ struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
+    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
-    return ( m_data->effectN( 2 ).percent() ) * p()->buffs.gift_of_the_sanlayn->check_value();
+    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 };
 
 struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
 {
   gift_of_the_sanlayn_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell ), gift_bug( false ), idx( p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+    : death_knight_buff_t( p, name, spell ), idx( p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
   {
     set_default_value_from_effect( idx );
     set_duration( 0_ms );  // Handled by DT and VB
@@ -5370,29 +5371,6 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
       }
     } );
   }
-
-  double value() override
-  {
-    if ( gift_bug && check() )
-      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
-    else if ( !gift_bug && check() )
-      return 1.0 + data().effectN( idx ).percent();
-    else
-      return 1.0;
-  }
-
-  double check_value() const override
-  {
-    if ( gift_bug && check() )
-      return p()->buffs.essence_of_the_blood_queen->check() * ( 1 + data().effectN( idx ).percent() );
-    else if ( !gift_bug && check() )
-      return 1.0 + data().effectN( idx ).percent();
-    else
-      return 1.0;
-  }
-
-public:
-  bool gift_bug;
 
 private:
   unsigned idx;
@@ -10121,23 +10099,6 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     }
 
     return cc;
-  }
-
-  void execute() override
-  {
-    wound_spender_base_t::execute();
-    if ( p()->bugs && !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = true;
-      p()->invalidate_cache( CACHE_HASTE );
-      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
-    if ( p()->bugs && p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      debug_cast<buffs::gift_of_the_sanlayn_buff_t*>( p()->buffs.gift_of_the_sanlayn )->gift_bug = false;
-      p()->invalidate_cache( CACHE_HASTE );
-      p()->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
   }
 
   void impact( action_state_t* s ) override
