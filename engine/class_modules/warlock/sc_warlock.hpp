@@ -232,7 +232,7 @@ public:
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t improved_malefic_rapture;
 
-    player_talent_t oblivion; // TODO: New
+    player_talent_t oblivion;
     player_talent_t deaths_embrace; // TODO: New
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;

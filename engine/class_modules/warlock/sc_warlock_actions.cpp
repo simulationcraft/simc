@@ -1632,6 +1632,22 @@ using namespace helpers;
     }
   };
 
+  struct oblivion_t : public warlock_spell_t
+  {
+    oblivion_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Oblivion", p, p->talents.oblivion, options_str )
+    { }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      m *= 1.0 + std::min( td( s->target )->count_affliction_dots(), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
+
+      return m;
+    }
+  };
+
   // Affliction Actions End
   // Demonology Actions Begin
 
@@ -3573,6 +3589,8 @@ using namespace helpers;
       return new soul_rot_t( this, options_str );
     if ( action_name == "seed_of_corruption" )
       return new seed_of_corruption_t( this, options_str );
+    if ( action_name == "oblivion" )
+      return new oblivion_t( this, options_str );
 
     return nullptr;
   }
