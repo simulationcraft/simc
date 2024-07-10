@@ -176,6 +176,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.flight_of_the_red_crane );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
@@ -3862,10 +3863,26 @@ struct breath_of_fire_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
+// Niuzao's Protection ==============================================
 struct fortifying_brew_t : brew_t<monk_spell_t>
 {
+  struct niuzaos_protection_t : public monk_absorb_t
+  {
+    niuzaos_protection_t( monk_t *p )
+      : monk_absorb_t( p, "niuzaos_protection", p->talent.conduit_of_the_celestials.niuzaos_protection )
+    {
+      background  = true;
+      target      = p;
+      base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+      base_dd_max = base_dd_min;
+    }
+  };
+
+  niuzaos_protection_t *absorb;
+
   fortifying_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() )
+    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
+      absorb( new niuzaos_protection_t( p ) )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
@@ -3882,6 +3899,8 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
   {
     brew_t<monk_spell_t>::execute();
 
+    if ( p()->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
+      absorb->execute();
     p()->buff.fortifying_brew->trigger();
     p()->active_actions.special_delivery->execute();
   }
@@ -4314,7 +4333,6 @@ struct strength_of_the_black_ox_t : public monk_spell_t
   }
 };
 
-// TODO: Add HP%
 struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
 {
   strength_of_the_black_ox_absorb_t( monk_t *p )
@@ -4322,7 +4340,9 @@ struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
                      p->talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb )
   {
     background = true;
-    aoe        = data().effectN( 3 ).base_value();
+    aoe         = data().effectN( 3 ).base_value();
+    base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+    base_dd_max = base_dd_min;
   }
 };
 
@@ -4442,8 +4462,6 @@ struct yulon_spell_t : public monk_spell_t
 // ==========================================================================
 // Celestial Conduit
 // ==========================================================================
-// TODO:
-// Add Normal Flight of the Red Crane Celestial
 
 struct celestial_conduit_t : public monk_spell_t
 {
@@ -4546,6 +4564,7 @@ struct celestial_conduit_t : public monk_spell_t
     add_child( crane_heal );
 
     apply_affecting_aura( p->talent.conduit_of_the_celestials.flight_of_the_red_crane );
+    apply_affecting_aura( p->talent.conduit_of_the_celestials.jade_sanctuary );
   }
 
   bool usable_moving() const override
@@ -4564,6 +4583,7 @@ struct celestial_conduit_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
+    p()->buff.jade_sanctuary->trigger();
     if ( p()->specialization() == MONK_MISTWEAVER )
     {
       crane_heal->execute();
@@ -8273,6 +8293,9 @@ void monk_t::create_buffs()
               buff_->expire();
             }
           } );
+
+  buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
+                                            "jade_sanctuary", find_spell( 448508 ) );
 
   buff.strength_of_the_black_ox = make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
                                                 "strength_of_the_black_ox", find_spell( 443112 ) )
