@@ -145,29 +145,29 @@ actions.variables+=/variable,name=st_planning,op=setif,value=1,value_else=0,cond
 actions.variables+=/variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
 actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))
 
-head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=636,gem_id=213482
-neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1537/10255/10394/10879,gem_id=213743/213482
-shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1537
-back=anvilhide_cape,id=221088,bonus_id=1654,ilevel=636
-chest=exhumed_centurions_breastplate,id=212005,bonus_id=1537,enchant=crystalline_radiance_3
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213482
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213743/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
+back=anvilhide_cape,id=221088,bonus_id=1654,ilevel=639
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
 wrists=everforged_vambraces,id=222435,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/36
-hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1537
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=everforged_greatbelt,id=222431,bonus_id=11144/9633/8902/8793/10222/10520/8960/10878,ilevel=629,gem_id=213482,crafted_stats=49/40
-legs=exhumed_centurions_chausses,id=212001,bonus_id=1537,enchant=fierce_armor_kit_3
-feet=boots_of_the_black_bulwark,id=225590,bonus_id=1537,enchant=defenders_march_3
-finger1=key_to_the_unseeming,id=212447,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
-finger2=writhing_ringworm,id=225576,bonus_id=1537/10879,gem_id=213482/213482,enchant=cursed_haste_3
-trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
-trinket2=sigil_of_algari_concordance,id=219295,bonus_id=10273/10390/6652/10383/1654/10255,ilevel=636
-main_hand=wild_hammer,id=56131,ilevel=636,enchant=rune_of_the_fallen_crusader
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=fierce_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_3
+finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
+finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
+trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/3131
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=wild_hammer,id=56131,ilevel=639,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=635.07
-# gear_strength=37793
-# gear_stamina=226296
-# gear_crit_rating=2979
-# gear_haste_rating=19607
-# gear_mastery_rating=14217
-# gear_armor=54933
+# gear_ilvl=637.67
+# gear_strength=35095
+# gear_stamina=234518
+# gear_crit_rating=3017
+# gear_haste_rating=21359
+# gear_mastery_rating=14441
+# gear_armor=55772
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
