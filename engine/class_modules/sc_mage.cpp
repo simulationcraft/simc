@@ -4013,7 +4013,7 @@ struct evocation_t final : public arcane_mage_spell_t
 
 struct fireball_t final : public fire_mage_spell_t
 {
-  bool frostfire;
+  const bool frostfire;
 
   fireball_t( std::string_view n, mage_t* p, std::string_view options_str, bool frostfire_ = false ) :
     fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) ),
@@ -4042,19 +4042,19 @@ struct fireball_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
-  double execute_time_pct_multiplier() const override
+  timespan_t execute_time() const override
   {
-    if ( p()->buffs.frostfire_empowerment->check() )
-      return 0.0;
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+      return 0_ms;
 
-    return fire_mage_spell_t::execute_time_pct_multiplier();
+    return fire_mage_spell_t::execute_time();
   }
 
   void execute() override
   {
     fire_mage_spell_t::execute();
 
-    if ( p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
       p()->buffs.frostfire_empowerment->expire();
       p()->state.trigger_ff_empowerment = true;
@@ -4109,8 +4109,11 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
-    m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-    m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+    if ( frostfire )
+    {
+      m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+    }
 
     return m;
   }
@@ -4119,7 +4122,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -4407,7 +4410,7 @@ struct flurry_t final : public frost_mage_spell_t
 
 struct frostbolt_t final : public frost_mage_spell_t
 {
-  bool frostfire;
+  const bool frostfire;
 
   double fof_chance;
   double bf_chance;
@@ -4481,7 +4484,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   double execute_time_pct_multiplier() const override
   {
-    if ( p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
       return 0.0;
 
     double mul = frost_mage_spell_t::execute_time_pct_multiplier();
@@ -4496,8 +4499,12 @@ struct frostbolt_t final : public frost_mage_spell_t
     double m = frost_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + p()->buffs.slick_ice->check() * p()->buffs.slick_ice->data().effectN( 3 ).percent();
-    m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-    m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+
+    if ( frostfire )
+    {
+      m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+    }
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       m *= 1.0 + fractured_frost_mul;
@@ -4509,7 +4516,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -4538,7 +4545,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
 
-    if ( p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
       p()->buffs.frostfire_empowerment->expire();
       p()->state.trigger_ff_empowerment = true;
@@ -7744,6 +7751,10 @@ void mage_t::create_buffs()
       }
     } );
   }
+
+  // Frostfire Empowerment can be activated through Flash Freezeburn and doesn't need the previous talent
+  if ( talents.flash_freezeburn.ok() )
+    buffs.frostfire_empowerment->default_chance = -1.0;
 }
 
 void mage_t::init_gains()
