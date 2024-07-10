@@ -2828,8 +2828,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
 
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
-  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
+  arcane_orb_bolt_t( std::string_view n, mage_t* p, ao_type type ) :
+    arcane_mage_spell_t( n, p, p->find_spell( type == ao_type::SPELLFROST ? 463357 : 153640 ) )
   {
     background = true;
     affected_by.savant = true;
@@ -2846,15 +2846,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
     if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
       get_td( s->target )->debuffs.controlled_instincts->trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
-
-    return am;
   }
 };
 
@@ -2885,7 +2876,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
         break;
     }
 
-    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p );
+    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p, type );
     add_child( impact_action );
 
     if ( type != ao_type::NORMAL )
@@ -2906,6 +2897,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
+    // TODO: spell data (and dev notes) says 2, currently triggers 4
     if ( s->chain_target == 0 )
       p()->trigger_splinter( s->target, as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() ) );
   }
@@ -6373,7 +6365,8 @@ struct splinter_t final : public mage_spell_t
         p()->cooldowns.frozen_orb->reset( true );
         if ( p()->action.spellfrost_arcane_orb && p()->target )
           p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
-        p()->buffs.spellfrost_teachings->trigger();
+        if ( p()->specialization() == MAGE_FROST )
+          p()->buffs.spellfrost_teachings->trigger();
         p()->state.spellfrost_teachings_attempts = 1;
       }
       else
@@ -7674,7 +7667,7 @@ void mage_t::create_buffs()
 
   // Spellslinger
   buffs.spellfrost_teachings = make_buff( this, "spellfrost_teachings", find_spell( 458411 ) )
-                                 ->set_default_value_from_effect( specialization() == MAGE_FROST ? 3 : 1 )
+                                 ->set_default_value_from_effect( 3 )
                                  ->set_chance( talents.spellfrost_teachings.ok() );
   buffs.unerring_proficiency = make_buff( this, "unerring_proficiency", find_spell( specialization() == MAGE_FROST ? 444976 : 444981 ) )
                                  ->set_default_value_from_effect( 1 )
