@@ -729,15 +729,18 @@ struct evoker_t : public player_t
     double scarlet_overheal = 0.5;
     double heal_eb_chance   = 0.9;
     // How much time should prepulling with Deep Breath delay opener
-    timespan_t prepull_deep_breath_delay        = timespan_t::from_seconds( 0.3 );
-    timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
-    bool naszuro_accurate_behaviour             = true;
-    bool naszuro_bounce_destroy_solo            = true;
-    double naszuro_bounce_chance                = 0.85;
-    std::string force_clutchmates               = "";
-    bool make_simplified_if_alone               = true;
-    bool remove_precombat_ancient_flame         = true;
-    int simplified_actor_ilevel                 = -1;
+    timespan_t prepull_deep_breath_delay                       = timespan_t::from_seconds( 0.3 );
+    timespan_t prepull_deep_breath_delay_stddev                = timespan_t::from_seconds( 0.05 );
+    bool naszuro_accurate_behaviour                            = true;
+    bool naszuro_bounce_destroy_solo                           = true;
+    double naszuro_bounce_chance                               = 0.85;
+    std::string force_clutchmates                              = "";
+    bool make_simplified_if_alone                              = true;
+    bool remove_precombat_ancient_flame                        = true;
+    int simplified_actor_ilevel                                = -1;
+    bool simulate_bombardments                                 = true;
+    timespan_t simulate_bombardments_time_between_procs_mean   = 2.1_s;
+    timespan_t simulate_bombardments_time_between_procs_stddev = 0.2_s;
   } option;
 
   // Action pointers
@@ -6545,8 +6548,6 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 
 struct bombardments_buff_t : public evoker_buff_t<buff_t>
 {
-  dbc_proc_callback_t* cb;
-
   struct bombardments_cb_t : public dbc_proc_callback_t
   {
     evoker_t* source;
@@ -6592,32 +6593,60 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       }
     }
   };
-
+  using e_buff_t = evoker_buff_t<buff_t>;
+  
+  bombardments_cb_t* cb;
+  bool use_bombardments_cb = false;
+  rng::truncated_gauss_t gauss;
   bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
-    : evoker_buff_t<buff_t>( td, name, s )
+    : e_buff_t( td, name, s ),
+      gauss( p()->option.simulate_bombardments_time_between_procs_mean,
+             p()->option.simulate_bombardments_time_between_procs_stddev, data().internal_cooldown() + 1_ms )
   {
     buff_period = 0_s;
 
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
 
     set_cooldown( 0_s );
     set_chance( 1 );
 
-    auto bombardments_effect       = new special_effect_t( td.target );
-    bombardments_effect->name_str  = "bombardments_" + td.source->name_str;
-    bombardments_effect->type      = SPECIAL_EFFECT_EQUIP;
-    bombardments_effect->spell_id  = data().id();
+    auto bombardments_effect                      = new special_effect_t( td.target );
+    bombardments_effect->name_str                 = "bombardments_" + td.source->name_str;
+    bombardments_effect->target_specific_cooldown = true;
+    bombardments_effect->type                     = SPECIAL_EFFECT_EQUIP;
+    bombardments_effect->spell_id                 = data().id();
     td.target->special_effects.push_back( bombardments_effect );
 
     cb = new bombardments_cb_t( td.target, *bombardments_effect, p() );
+
+    use_bombardments_cb = !p()->option.simulate_bombardments;
+    if ( p()->option.simulate_bombardments )
+    {
+      cb->deactivate();
+
+      set_tick_time_callback( [ this ]( const buff_t*, unsigned ) { return rng().gauss( gauss ); } );
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { fake_execute(); } );
+    }
+  }
+
+  void fake_execute()
+  {
+    if ( cb->cooldown->up() )
+    {
+      auto damage_action    = cb->get_bombardments_action( p() );
+      damage_action->evoker = p();
+      damage_action->execute_on_target( player );
+      cb->cooldown->start();
+    }
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( !evoker_buff_t::trigger( stacks, value, chance, duration ) )
+    if ( !e_buff_t::trigger( stacks, value, chance, duration ) )
       return false;
 
-    if ( cb )
+    if ( cb && use_bombardments_cb )
       cb->activate();
 
     return true;
@@ -6625,14 +6654,14 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
 
   void reset() override
   {
-    evoker_buff_t<buff_t>::reset();
+    e_buff_t::reset();
 
     cb->deactivate();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    e_buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( cb )
       cb->deactivate();
@@ -8089,6 +8118,11 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
   add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
   add_option( opt_int( "evoker.simplified_actor_ilevel", option.simplified_actor_ilevel, 0, 4096 ) );
+  add_option( opt_bool( "evoker.simulate_bombardments", option.simulate_bombardments ) ) ;
+  add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_mean",
+                            option.simulate_bombardments_time_between_procs_mean, 0_s, 9999_s ) );
+  add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_stddev",
+                            option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s) );
 }
 
 void evoker_t::analyze( sim_t& sim )
