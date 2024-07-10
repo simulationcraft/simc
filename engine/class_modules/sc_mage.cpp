@@ -3682,6 +3682,14 @@ struct blizzard_shard_t final : public frost_mage_spell_t
 
     return am;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
+      get_td( s->target )->debuffs.controlled_instincts->trigger();
+  }
 };
 
 struct blizzard_t final : public frost_mage_spell_t
@@ -6343,13 +6351,7 @@ struct splinter_t final : public mage_spell_t
 
     if ( controlled_instincts )
     {
-      bool trigger = false;
-      if ( p()->specialization() == MAGE_FROST )
-        trigger = p()->ground_aoe_expiration[ AOE_BLIZZARD ] >= sim->current_time();
-      else if ( auto td = find_td( s->target ) )
-        trigger = td->debuffs.controlled_instincts->check() != 0;
-
-      if ( trigger )
+      if ( auto td = find_td( s->target ); td && td->debuffs.controlled_instincts->check() )
       {
         double pct = p()->talents.controlled_instincts->effectN( p()->specialization() == MAGE_FROST ? 4 : 1 ).percent();
         controlled_instincts->execute_on_target( s->target, pct * s->result_total );
@@ -6743,7 +6745,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                    ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
                                    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                    ->set_chance( mage->talents.arcane_debilitation.ok() );
-  debuffs.controlled_instincts = make_buff( *this, "controlled_instincts", mage->find_spell( 454214 ) )
+  debuffs.controlled_instincts = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
                                    ->set_chance( mage->talents.controlled_instincts.ok() );
   debuffs.frozen               = make_buff( *this, "frozen" )
                                    ->set_refresh_behavior( buff_refresh_behavior::MAX );
