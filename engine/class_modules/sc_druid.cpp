@@ -4067,7 +4067,10 @@ struct bloodseeker_vines_t final : public cat_attack_t
     if ( rng().roll( twin_pct ) && orig_dur == dot_duration )
     {
       const auto& tl = target_list();
-      if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, s->target ) )
+      // TODO: determine if this can hit same target if other targets are available
+      auto exclude = target_list().size() > 1 ? s->target : nullptr;
+
+      if ( auto tar = p()->get_smart_target( tl, &druid_td_t::dots_t::bloodseeker_vines, exclude ) )
         execute_on_target( tar );
     }
   }
@@ -9744,7 +9747,7 @@ void druid_t::init_spells()
 
   sim->print_debug( "Initializing hero talents..." );
   // Druid of the Claw
-  talent.aggravate_wounds               = HT( "Aggravate Wounds" );  // TODO: NYI
+  talent.aggravate_wounds               = HT( "Aggravate Wounds" );
   talent.bestial_strength               = HT( "Bestial Strength" );
   talent.claw_rampage                   = HT( "Claw Rampage" );
   talent.dreadful_wound                 = HT( "Dreadful Wound" );
@@ -13661,7 +13664,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->talent.taste_for_blood, [ this ] { return p()->buff.tigers_fury->check();},
                  p()->talent.taste_for_blood->effectN( 2 ).percent() );
   parse_effects( p()->spec.feral_overrides, [ this ] { return !p()->buff.moonkin_form->check(); } );
-  parse_effects( p()->buff.fell_prey, CONSUME_BUFF );
+  parse_effects( p()->buff.fell_prey, CONSUME_BUFF );  // TODO: determine if this actually buffs rampant ferority
 
   // Guardian
   parse_effects( p()->buff.bear_form );
