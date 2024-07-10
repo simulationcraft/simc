@@ -42,6 +42,7 @@ using namespace helpers;
       // Class
 
       // Affliction
+      bool ravenous_afflictions = false;
 
       // Demonology
 
@@ -186,6 +187,12 @@ using namespace helpers;
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
         p()->procs.shadow_invocation->occur();
+      }
+
+      if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      {
+        p()->buffs.nightfall->trigger();
+        p()->procs.ravenous_afflictions->occur();
       }
     }
 
@@ -567,6 +574,7 @@ using namespace helpers;
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
 
         triggers.shadow_invocation_tick = true;
+        triggers.ravenous_afflictions = true;
 
         affected_by.deaths_embrace = true;
       }
@@ -1043,6 +1051,8 @@ using namespace helpers;
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
 
+      triggers.ravenous_afflictions = true;
+
       affected_by.deaths_embrace = true;
 
       if ( p->talents.perpetual_unstability.ok() )
@@ -1116,6 +1126,8 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
+
+      triggers.ravenous_afflictions = true;
 
       affected_by.deaths_embrace = true;
 
