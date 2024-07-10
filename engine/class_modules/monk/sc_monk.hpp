@@ -494,6 +494,13 @@ public:
     propagate_const<action_t *> chi_wave;
     propagate_const<action_t *> rushing_jade_wind;
 
+    // Conduit of the Celestials
+    propagate_const<action_t *> courage_of_the_white_tiger;
+    propagate_const<action_t *> flight_of_the_red_crane_damage;
+    propagate_const<action_t *> flight_of_the_red_crane_heal;
+    propagate_const<action_t *> strength_of_the_black_ox_dmg;
+    propagate_const<action_t *> strength_of_the_black_ox_absorb;
+
     // Shado-Pan
     propagate_const<action_t *> flurry_strikes;
 
@@ -705,13 +712,15 @@ public:
 
     // Conduit of the Celestials
     propagate_const<buff_t *> celestial_conduit;
+    propagate_const<buff_t *> chi_jis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
+    propagate_const<buff_t *> flight_of_the_red_crane;
     propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
     propagate_const<buff_t *> heart_of_the_jade_serpent_stack_ww;
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
-    propagate_const<buff_t *> strength_of_the_ox;
+    propagate_const<buff_t *> strength_of_the_black_ox;
 
     // Master of Harmony
     buffs::aspect_of_harmony_t *aspect_of_harmony;
@@ -1306,7 +1315,10 @@ public:
       const spell_data_t *strength_of_the_black_ox_absorb;
       const spell_data_t *strength_of_the_black_ox_damage;
       player_talent_t flight_of_the_red_crane;
-      const spell_data_t *flight_of_the_red_crane_celestial;
+      const spell_data_t *flight_of_the_red_crane_dmg;
+      const spell_data_t *flight_of_the_red_crane_heal;
+      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
+      const spell_data_t *flight_of_the_red_crane_celestial_heal;
       // Row 4
       player_talent_t niuzaos_protection;
       player_talent_t jade_sanctuary;
