@@ -4562,11 +4562,9 @@ struct celestial_conduit_t : public monk_spell_t
     {
       double cam = monk_spell_t::composite_aoe_multiplier( state );
 
-      const std::vector<player_t *> &targets = state->action->target_list();
-
-      if ( !targets.empty() )
+      if ( state->n_targets > 0 )
         cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( (double)targets.size(),
+                     std::min( (double)state->n_targets,
                                p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
 
       return cam;
@@ -4586,11 +4584,9 @@ struct celestial_conduit_t : public monk_spell_t
     {
       double cam = monk_heal_t::composite_aoe_multiplier( state );
 
-      const std::vector<player_t *> &targets = state->action->target_list();
-
-      if ( !targets.empty() )
+      if ( state->n_targets > 0 )
         cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( (double)targets.size(),
+                     std::min( (double)state->n_targets,
                                p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
 
       return cam;
@@ -4784,11 +4780,9 @@ struct jadefire_stomp_damage_t : public monk_spell_t
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
 
-    const std::vector<player_t *> &targets = state->action->target_list();
-
-    if ( p()->talent.windwalker.path_of_jade->ok() && !targets.empty() )
+    if ( p()->talent.windwalker.path_of_jade->ok() && state->n_targets > 0 )
       cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
-                   std::min( (double)targets.size(), p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
+                   std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
     return cam;
   }
