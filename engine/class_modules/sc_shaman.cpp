@@ -365,6 +365,7 @@ public:
     attack_t* crash_lightning_aoe;
     action_t* lightning_bolt_pw;
     action_t* lightning_bolt_ti;
+    action_t* tempest_ti;
     action_t* chain_lightning_ti;
     action_t* ti_trigger;
     action_t* lava_burst_pw;
@@ -4356,9 +4357,28 @@ struct windstrike_t : public stormstrike_base_t
          p()->talent.thorims_invocation.ok() &&
          p()->buff.maelstrom_weapon->check() )
     {
-      auto spell = p()->action.ti_trigger
-        ? p()->action.ti_trigger
-        : p()->action.lightning_bolt_ti; // Default to lightning bolt if nothing is seen
+      action_t* spell = nullptr;
+
+      if ( p()->action.ti_trigger == p()->action.lightning_bolt_ti )
+      {
+        if ( p()->buff.tempest->check() )
+        {
+          spell = p()->action.tempest_ti;
+        }
+        else
+        {
+          spell = p()->action.ti_trigger;
+        }
+      }
+      else if ( p()->action.ti_trigger == p()->action.chain_lightning_ti )
+      {
+        spell = p()->action.ti_trigger;
+      }
+      else
+      {
+        spell = p()->action.lightning_bolt_ti; // Default to lightning bolt if nothing is seen
+      }
+
       spell->set_target( execute_state->target );
       spell->execute();
     }
@@ -9053,13 +9073,40 @@ struct molten_slag_t : public residual_action::residual_periodic_action_t<spell_
 
 struct tempest_t : public shaman_spell_t
 {
-  tempest_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "tempest", player, player->find_spell( 452201 ) )
+  tempest_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} ) :
+    shaman_spell_t( ::action_name( "tempest", type_ ), player, player->find_spell( 452201 ), type_ )
   {
     parse_options( options_str );
 
     aoe = -1;
     base_aoe_multiplier = data().effectN( 2 ).percent();
+
+    switch ( exec_type )
+    {
+      case spell_variant::PRIMORDIAL_WAVE:
+      {
+        background = true;
+        base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto pw_action = p()->find_action( "primordial_wave" ) )
+        {
+          pw_action->add_child( this );
+        }
+        break;
+      }
+      case spell_variant::THORIMS_INVOCATION:
+      {
+        background = true;
+        base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto ws_action = p()->find_action( "windstrike" ) )
+        {
+          ws_action->add_child( this );
+        }
+      }
+      default:
+        break;
+    }
   }
 
   void execute() override
@@ -9327,7 +9374,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "primordial_wave" )
     return new primordial_wave_t( this, options_str );
   if ( name == "tempest" )
-    return new tempest_t( this, options_str );
+    return new tempest_t( this, spell_variant::NORMAL, options_str );
 
   // elemental
 
@@ -9641,7 +9688,8 @@ if ( util::str_compare_ci( name, "fb_extension_possible" ) )
   if ( util::str_compare_ci( splits[ 0 ], "ti_lightning_bolt" ) )
   {
     return make_fn_expr( name, [ this ]() {
-        return !action.ti_trigger || action.ti_trigger == action.lightning_bolt_ti;
+        return !action.ti_trigger || action.ti_trigger == action.lightning_bolt_ti ||
+               action.ti_trigger == action.tempest_ti;
     } );
   }
 
@@ -9721,6 +9769,7 @@ void shaman_t::create_actions()
   if ( talent.thorims_invocation.ok() )
   {
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_variant::THORIMS_INVOCATION );
+    action.tempest_ti = new tempest_t( this, spell_variant::THORIMS_INVOCATION );
     action.chain_lightning_ti = new chain_lightning_t( this, spell_variant::THORIMS_INVOCATION );
   }
 
