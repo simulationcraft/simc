@@ -2299,6 +2299,8 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
+
+    p()->buff.deep_thirst->expire();
   }
 
   bool ready() override
@@ -2494,6 +2496,9 @@ struct bloodbath_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
+      p()->buff.bloody_rampage->trigger();
   }
 
   bool ready() override
@@ -2623,6 +2628,8 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p()->buff.overpowering_might->trigger();
     }
+
+    p()->buff.deep_thirst->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3211,6 +3218,8 @@ struct cleave_t : public warrior_attack_t
     {
       p()->buff.overpowering_might->trigger();
     }
+
+    p()->buff.lethal_blows->expire();
   }
 };
 
@@ -4979,6 +4988,7 @@ struct rampage_attack_t : public warrior_attack_t
       p()->buff.meat_cleaver->decrement();
       p()->buff.slaughtering_strikes->expire();
       p()->buff.brutal_finish->expire();
+      p()->buff.bloody_rampage->expire();
     }
   }
 
@@ -5146,6 +5156,8 @@ struct ravager_t : public warrior_attack_t
       // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
       p()->buff.merciless_bonegrinder->trigger(30_s);
     }
+
+    p()->buff.lethal_blows->expire();
   }
 
   void tick( dot_t* d ) override
