@@ -4163,16 +4163,6 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
           .set_eff( &effect );
   }
 
-  //  double composite_aoe_multiplier( const action_state_t *state ) const override
-  //  {
-  //    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
-
-  //    if ( p()->buff.unity_within->check() )
-  //      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
-
-  //    return cam;
-  //  }
-
   void execute() override
   {
     p()->buff.strength_of_the_black_ox->trigger();
@@ -4341,16 +4331,13 @@ struct strength_of_the_black_ox_t : public monk_spell_t
     : monk_spell_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
   {
     background = true;
-  }
 
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double cam = monk_spell_t::composite_aoe_multiplier( state );
-
-    if ( p()->buff.unity_within->check() )
-      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
-
-    return cam;
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 
   void execute() override
@@ -4525,16 +4512,13 @@ struct flight_of_the_red_crane_celestial_dmg_t : public monk_spell_t
   {
     background = true;
     aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
-  }
 
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double cam = monk_spell_t::composite_aoe_multiplier( state );
-
-    if ( p()->buff.unity_within->check() )
-      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
-
-    return cam;
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 
   void execute() override
@@ -4554,16 +4538,13 @@ struct flight_of_the_red_crane_celestial_heal_t : public monk_heal_t
     background = true;
     aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
     target     = p;
-  }
 
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double cam = monk_heal_t::composite_aoe_multiplier( state );
-
-    if ( p()->buff.unity_within->check() )
-      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
-
-    return cam;
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 };
 
