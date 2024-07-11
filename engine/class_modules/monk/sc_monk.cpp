@@ -4156,17 +4156,24 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
       heal( new courage_of_the_white_tiger_heal_t( p ) )
   {
     background = true;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 
-  double composite_aoe_multiplier( const action_state_t *state ) const override
-  {
-    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+//  double composite_aoe_multiplier( const action_state_t *state ) const override
+//  {
+//    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-    if ( p()->buff.unity_within->check() )
-      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
+//    if ( p()->buff.unity_within->check() )
+//      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
 
-    return cam;
-  }
+//    return cam;
+//  }
 
   void execute() override
   {
