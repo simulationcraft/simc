@@ -252,6 +252,7 @@ public:
     const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
     player_talent_t imp_gang_boss;
+    const spell_data_t* imp_gang_boss_buff; // Buff on Wild Imps
     player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
     player_talent_t dreadlash;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites

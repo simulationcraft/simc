@@ -196,6 +196,9 @@ namespace warlock
     talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
     talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
 
+    talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
+    talents.imp_gang_boss_buff = find_spell( 387458 );
+
     talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
 
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
@@ -242,8 +245,6 @@ namespace warlock
 
     talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
     talents.umbral_blaze_dot = find_spell( 405802 );
-
-    talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
     talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
     talents.dread_calling_buff = find_spell( 387393 );

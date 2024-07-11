@@ -44,8 +44,8 @@ void warlock_pet_t::create_buffs()
 
   buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) ); // TODO: Add pet's Dread Calling buff to talent struct 
 
-  buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", find_spell( 387458 ) )
-                            ->set_default_value_from_effect( 2 ); // TODO: Add Imp Gang Boss buff to talent struct
+  buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
+                            ->set_default_value_from_effect( 2 );
 
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
                                 ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
@@ -88,6 +88,7 @@ void warlock_pet_t::create_buffs()
                             } );
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
+  buffs.imp_gang_boss->quiet = true;
   buffs.demonic_strength->quiet = true;
   buffs.grimoire_of_service->quiet = true;
   buffs.annihilan_training->quiet = true;
