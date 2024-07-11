@@ -8893,7 +8893,7 @@ void monk_t::init_special_effects()
     callbacks.register_callback_execute_function(
         talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          active_actions.courage_of_the_white_tiger->set_target( state->target );
+          active_actions.courage_of_the_white_tiger->execute_on_target( state->target );
         } );
   }
 
@@ -8919,13 +8919,11 @@ void monk_t::init_special_effects()
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           if ( specialization() == MONK_MISTWEAVER )
           {
-            active_actions.flight_of_the_red_crane_heal->set_target( state->target );
-            active_actions.flight_of_the_red_crane_heal->execute();
+            active_actions.flight_of_the_red_crane_heal->execute_on_target( state->target );
           }
           else
           {
-            active_actions.flight_of_the_red_crane_damage->set_target( state->target );
-            active_actions.flight_of_the_red_crane_damage->execute();
+            active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
           }
         } );
   }
