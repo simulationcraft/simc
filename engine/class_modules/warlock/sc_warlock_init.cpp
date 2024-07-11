@@ -167,8 +167,17 @@ namespace warlock
 
     talents.improved_malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Malefic Rapture" ); // Should be ID 454378
 
+    talents.oblivion = find_talent_spell( talent_tree::SPECIALIZATION, "Oblivion" ); // Should be ID 417537
+
+    talents.deaths_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Embrace" ); // Should be ID 453189
+
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
+
+    talents.ravenous_afflictions = find_talent_spell( talent_tree::SPECIALIZATION, "Ravenous Afflictions" ); // Should be ID 459440
+
+    talents.malefic_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Touch" ); // Should be ID 458029
+    talents.malefic_touch_proc = find_spell( 458131 );
 
     // Additional Tier Set spell data
   }
@@ -446,8 +455,7 @@ namespace warlock
 
   void warlock_t::create_buffs_affliction()
   {
-    buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
-                          ->set_trigger_spell( talents.nightfall );
+    buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
   }
@@ -627,6 +635,7 @@ namespace warlock
     procs.nightfall = get_proc( "nightfall" );
     procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
+    procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -667,7 +676,9 @@ namespace warlock
   }
 
   void warlock_t::init_rng_affliction()
-  { }
+  {
+    ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
+  }
 
   void warlock_t::init_rng_demonology()
   { }

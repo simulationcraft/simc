@@ -232,12 +232,13 @@ public:
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t improved_malefic_rapture;
 
-    player_talent_t oblivion; // TODO: New
-    player_talent_t deaths_embrace; // TODO: New
+    player_talent_t oblivion;
+    player_talent_t deaths_embrace; // TOCHECK: Volatile Agony/Perpetual Unstability affected?
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;
-    player_talent_t ravenous_afflictions; // TODO: New
-    player_talent_t malefic_touch; // TODO: New
+    player_talent_t ravenous_afflictions;
+    player_talent_t malefic_touch;
+    const spell_data_t* malefic_touch_proc;
 
     // Demonology
     player_talent_t demoniac; // TODO: Move from base section
@@ -429,7 +430,7 @@ public:
     player_talent_t ruination;
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -567,6 +568,7 @@ public:
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
+    proc_t* ravenous_afflictions;
 
     // Demonology
     proc_t* demonic_calling;
@@ -595,6 +597,7 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
+  real_ppm_t* ravenous_afflictions_rng;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

@@ -23,6 +23,7 @@ using namespace helpers;
       bool summoners_embrace_td = false;
       bool malediction = false;
       bool contagion = false;
+      bool deaths_embrace = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -41,6 +42,7 @@ using namespace helpers;
       // Class
 
       // Affliction
+      bool ravenous_afflictions = false;
 
       // Demonology
 
@@ -186,6 +188,12 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
         p()->procs.shadow_invocation->occur();
       }
+
+      if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      {
+        p()->buffs.nightfall->trigger();
+        p()->procs.ravenous_afflictions->occur();
+      }
     }
 
     double composite_crit_chance() const override
@@ -252,6 +260,9 @@ using namespace helpers;
       if ( affliction() && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
 
+      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+        m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
       return m;
     }
 
@@ -264,6 +275,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
+
+      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+        m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       return m;
     }
@@ -560,6 +574,9 @@ using namespace helpers;
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
 
         triggers.shadow_invocation_tick = true;
+        triggers.ravenous_afflictions = true;
+
+        affected_by.deaths_embrace = true;
       }
 
       void tick( dot_t* d ) override
@@ -622,6 +639,8 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
+
+      affected_by.deaths_embrace = true;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -878,9 +897,22 @@ using namespace helpers;
 
   struct malefic_rapture_t : public warlock_spell_t
   {
+    struct malefic_touch_t : public warlock_spell_t
+    {
+      malefic_touch_t( warlock_t* p )
+        : warlock_spell_t( "Malefic Touch", p, p->talents.malefic_touch_proc )
+      {
+        background = dual = true;
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+      }
+    };
+
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
       int target_count;
+      malefic_touch_t* touch;
 
       malefic_rapture_damage_t( warlock_t* p )
         : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg ),
@@ -890,6 +922,15 @@ using namespace helpers;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        affected_by.deaths_embrace = true;
+
+        if ( p->talents.malefic_touch.ok() )
+        {
+          touch = new malefic_touch_t( p );
+          add_child( touch );
+        }
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -906,8 +947,6 @@ using namespace helpers;
 
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
-
-        m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
         return m;
       }
@@ -940,6 +979,9 @@ using namespace helpers;
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
         }
+
+        if ( p()->talents.malefic_touch.ok() )
+          touch->execute_on_target( s->target );
       }
     };
 
@@ -1030,6 +1072,10 @@ using namespace helpers;
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
 
+      triggers.ravenous_afflictions = true;
+
+      affected_by.deaths_embrace = true;
+
       if ( p->talents.perpetual_unstability.ok() )
       {
         perpetual_unstability = new perpetual_unstability_t( p );
@@ -1101,6 +1147,10 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
+
+      triggers.ravenous_afflictions = true;
+
+      affected_by.deaths_embrace = true;
 
       if ( p->talents.volatile_agony.ok() )
       {
@@ -1614,7 +1664,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.dark_harvest.ok() && aoe > 1 )
+      if ( p()->talents.dark_harvest.ok() )
       {
         p()->buffs.dark_harvest_haste->trigger();
         p()->buffs.dark_harvest_crit->trigger();
@@ -1627,6 +1677,22 @@ using namespace helpers;
 
       if ( s->chain_target == 0 && aoe > 1 )
         m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
+
+      return m;
+    }
+  };
+
+  struct oblivion_t : public warlock_spell_t
+  {
+    oblivion_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Oblivion", p, p->talents.oblivion, options_str )
+    { }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      m *= 1.0 + std::min( td( s->target )->count_affliction_dots(), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
 
       return m;
     }
@@ -3573,6 +3639,8 @@ using namespace helpers;
       return new soul_rot_t( this, options_str );
     if ( action_name == "seed_of_corruption" )
       return new seed_of_corruption_t( this, options_str );
+    if ( action_name == "oblivion" )
+      return new oblivion_t( this, options_str );
 
     return nullptr;
   }
