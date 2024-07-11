@@ -715,6 +715,7 @@ public:
     player_talent_t improved_lightning_bolt;
     player_talent_t spirit_walk;
     player_talent_t gust_of_wind; // TODO: NYI
+    player_talent_t enhanced_imbues;
     // Row 8
     player_talent_t natures_swiftness;
     player_talent_t thunderstorm;
@@ -911,6 +912,7 @@ public:
     const spell_data_t* inundate;
     const spell_data_t* storm_swell;
     const spell_data_t* lightning_rod;
+    const spell_data_t* improved_flametongue_weapon;
   } spell;
 
   struct rppm_t
@@ -1416,6 +1418,8 @@ public:
   bool affected_by_amplification_core_da;
   bool affected_by_amplification_core_ta;
 
+  bool affected_by_enhanced_imbues_da;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1446,7 +1450,8 @@ public:
       affected_by_ele_t31_4pc( false ),
       affected_by_arc_discharge( false ),
       affected_by_amplification_core_da( false ),
-      affected_by_amplification_core_ta( false )
+      affected_by_amplification_core_ta( false ),
+      affected_by_enhanced_imbues_da( false ) // Enhancement damage effects, Ele stuff is handled elsewhere
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1513,6 +1518,8 @@ public:
 
     affected_by_amplification_core_da = ab::data().affected_by( player->find_spell( 456369 )->effectN( 1 ) );
     affected_by_amplification_core_ta = ab::data().affected_by( player->find_spell( 456369 )->effectN( 2 ) );
+
+    affected_by_enhanced_imbues_da = ab::data().affected_by( player->talent.enhanced_imbues->effectN( 2 ) );
   }
 
   std::string full_name() const
@@ -1646,6 +1653,11 @@ public:
     if ( affected_by_amplification_core_da && p()->buff.amplification_core->check() )
     {
       m *= 1.0 + p()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_enhanced_imbues_da )
+    {
+      m *= 1.0 + p()->talent.enhanced_imbues->effectN( 2 ).percent();
     }
 
     return m;
@@ -2141,7 +2153,9 @@ public:
          dbc::is_school( this->school, SCHOOL_FIRE ) )
     {
       // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
-      m *= 1.0 + 0.05;
+      // Enhanced Imbues cannot be applied through passive effects.
+      m *= 1.0 + this->p()->spell.improved_flametongue_weapon->effectN( 1 ).percent() *
+        ( 1.0 + this->p()->talent.enhanced_imbues->effectN( 1 ).percent() );
     }
 
     return m;
@@ -10059,6 +10073,7 @@ void shaman_t::init_spells()
   talent.improved_lightning_bolt = _CT( "Improved Lightning Bolt" );
   talent.spirit_walk             = _CT( "Spirit Walk" );
   talent.gust_of_wind            = _CT( "Gust of Wind" );
+  talent.enhanced_imbues         = _CT( "Enhanced Imbues" );
   // Row 8
   talent.natures_swiftness       = _CT( "Nature's Swiftness" );
   talent.thunderstorm            = _CT( "Thunderstorm" );
@@ -10235,6 +10250,7 @@ void shaman_t::init_spells()
   spell.inundate            = find_spell( 378777 );
   spell.storm_swell         = find_spell( 455089 );
   spell.lightning_rod       = find_spell( 210689 );
+  spell.improved_flametongue_weapon = find_spell( 382028 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
