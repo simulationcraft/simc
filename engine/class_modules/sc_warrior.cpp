@@ -302,7 +302,8 @@ public:
     // Mountain Thane
 
     // TWW1 Tier
-    buff_t* overpowering_might;
+    buff_t* overpowering_might; // Arms 2pc
+    buff_t* lethal_blows;       // Arms 4pc
   } buff;
 
   struct rppm_t
@@ -1108,7 +1109,8 @@ public:
     // Mountain Thane
 
     // TWW1 Tier
-    parse_effects( p()->buff.overpowering_might );
+    parse_effects( p()->buff.overpowering_might );  // Arms 2pc
+    parse_effects( p()->buff.lethal_blows );        // Arms 4pc
   }
 
   void apply_debuff_effects()
@@ -1415,6 +1417,8 @@ public:
       p()->proc.tactician->occur();
       if ( p()->talents.slayer.opportunist->ok() )
         p()->buff.opportunist->trigger();
+      if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B4 ) )
+        p()->buff.lethal_blows->trigger();
     }
   }
 
@@ -8054,6 +8058,7 @@ void warrior_t::create_buffs()
 
   // TWW1 Tier
   buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );
+  buff.lethal_blows       = make_buff( this, "lethal_blows", find_spell( 455485 ) );
 }
 
 // warrior_t::init_finished =============================================
