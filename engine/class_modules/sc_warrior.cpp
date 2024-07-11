@@ -306,6 +306,8 @@ public:
     buff_t* lethal_blows;       // Arms 4pc
     buff_t* bloody_rampage;     // Fury 2pc
     buff_t* deep_thirst;        // Fury 4pc
+    buff_t* expert_strategist;  // Prot 2pc
+    buff_t* brutal_followup;    // Prot 4pc
   } buff;
 
   struct rppm_t
@@ -1115,6 +1117,8 @@ public:
     parse_effects( p()->buff.lethal_blows );        // Arms 4pc
     parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
     parse_effects( p()->buff.deep_thirst );         // Fury 4pc
+    parse_effects( p()->buff.expert_strategist );   // Prot 2pc
+    parse_effects( p()->buff.brutal_followup );     // Prot 4pc
   }
 
   void apply_debuff_effects()
@@ -1603,6 +1607,8 @@ struct devastate_t : public warrior_attack_t
     if ( result_is_hit( execute_state->result ) && rng().roll( shield_slam_reset ) )
     {
       p()->cooldown.shield_slam->reset( true );
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
+        p()->buff.expert_strategist->trigger();
     }
 
     if ( p() -> talents.protection.instigate.ok() )
@@ -3560,6 +3566,8 @@ struct thunder_clap_t : public warrior_attack_t
     if ( rng().roll( shield_slam_reset ) )
     {
       p()->cooldown.shield_slam->reset( true );
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
+        p()->buff.expert_strategist->trigger();
     }
 
     if ( p()->talents.protection.thunderlord.ok() )
@@ -3758,7 +3766,11 @@ struct execute_arms_t : public warrior_attack_t
     }
 
     if ( rng().roll( shield_slam_reset ) )
+    {
       p()->cooldown.shield_slam->reset( true );
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
+        p()->buff.expert_strategist->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5222,7 +5234,11 @@ struct revenge_t : public warrior_attack_t
     }
 
     if ( rng().roll( shield_slam_reset ) )
+    {
       p()->cooldown.shield_slam->reset( true );
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
+        p()->buff.expert_strategist->trigger();
+    }
 
     if ( p()->talents.protection.show_of_force->ok() )
     {
@@ -5561,6 +5577,11 @@ struct shield_slam_t : public warrior_attack_t
         }
         p()->buff.colossal_might->trigger();
       }
+    }
+
+    if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B4 ) )
+    {
+      p()->buff.brutal_followup->trigger();
     }
   }
 
@@ -8074,6 +8095,8 @@ void warrior_t::create_buffs()
   buff.lethal_blows       = make_buff( this, "lethal_blows", find_spell( 455485 ) );        // Arms 4pc
   buff.bloody_rampage     = make_buff( this, "bloody_rampage", find_spell( 455490 ) );      // Fury 2pc
   buff.deep_thirst        = make_buff( this, "deep_thirst", find_spell( 455495 ) );         // Fury 4pc
+  buff.expert_strategist  = make_buff( this, "expert_strategist", find_spell( 455499 ) );   // Prot 2pc
+  buff.brutal_followup    = make_buff( this, "brutal_followup", find_spell( 455501 ) );     // Prot 4pc
 }
 
 // warrior_t::init_finished =============================================
