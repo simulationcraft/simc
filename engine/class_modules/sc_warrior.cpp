@@ -304,6 +304,8 @@ public:
     // TWW1 Tier
     buff_t* overpowering_might; // Arms 2pc
     buff_t* lethal_blows;       // Arms 4pc
+    buff_t* bloody_rampage;     // Fury 2pc
+    buff_t* deep_thirst;        // Fury 4pc
   } buff;
 
   struct rppm_t
@@ -1111,6 +1113,8 @@ public:
     // TWW1 Tier
     parse_effects( p()->buff.overpowering_might );  // Arms 2pc
     parse_effects( p()->buff.lethal_blows );        // Arms 4pc
+    parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
+    parse_effects( p()->buff.deep_thirst );         // Fury 4pc
   }
 
   void apply_debuff_effects()
@@ -2286,6 +2290,9 @@ struct bloodthirst_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
+      p()->buff.bloody_rampage->trigger();
   }
 
   bool ready() override
@@ -4389,20 +4396,26 @@ struct raging_blow_t : public warrior_attack_t
          p()->buff.enrage->check() )
     {
       if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
-        {
-          cooldown->reset( true );
-          if ( p()->talents.slayer.opportunist->ok() )
-            p()->buff.opportunist->trigger();
-        }
+      {
+        cooldown->reset( true );
+        if ( p()->talents.slayer.opportunist->ok() )
+          p()->buff.opportunist->trigger();
+
+        if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
+          p()->buff.deep_thirst->trigger();
+      }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() )
     {
       if ( rng().roll( cd_reset_chance ) )
-        {
-          cooldown->reset( true );
-          if ( p()->talents.slayer.opportunist->ok() )
-            p()->buff.opportunist->trigger();
-        }
+      {
+        cooldown->reset( true );
+        if ( p()->talents.slayer.opportunist->ok() )
+          p()->buff.opportunist->trigger();
+
+        if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
+          p()->buff.deep_thirst->trigger();
+      }
     }
     p()->buff.meat_cleaver->decrement();
 
@@ -8057,8 +8070,10 @@ void warrior_t::create_buffs()
   // Mountain Thane
 
   // TWW1 Tier
-  buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );
-  buff.lethal_blows       = make_buff( this, "lethal_blows", find_spell( 455485 ) );
+  buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );  // Arms 2pc
+  buff.lethal_blows       = make_buff( this, "lethal_blows", find_spell( 455485 ) );        // Arms 4pc
+  buff.bloody_rampage     = make_buff( this, "bloody_rampage", find_spell( 455490 ) );      // Fury 2pc
+  buff.deep_thirst        = make_buff( this, "deep_thirst", find_spell( 455495 ) );         // Fury 4pc
 }
 
 // warrior_t::init_finished =============================================
