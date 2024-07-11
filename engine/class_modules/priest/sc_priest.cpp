@@ -1862,30 +1862,6 @@ struct entropic_rift_t final : public priest_spell_t
       }
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    // TODO: check if it does anything after it arrives. For now assume no.
-
-    /*
-
-    if ( priest().talents.voidweaver.entropic_rift.enabled() )
-    {
-      priest().buffs.entropic_rift->extend_duration(
-          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
-    }
-
-    if ( priest().talents.voidweaver.voidheart.enabled() )
-    {
-      priest().buffs.voidheart->extend_duration(
-          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
-    }
-
-    double size_increase_mod = priest().bugs ? 0.5 : 1.0;
-    */
-  }
 };
 
 }  // namespace spells
@@ -3506,8 +3482,10 @@ void priest_t::create_buffs()
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
           // to miss the main target.
-          if ( b->current_tick >= 2 )
+          if ( b->current_tick >= 2 && rng().roll( 1.0 - options.entropic_rift_miss_percent ) )
+          {
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
+          }
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
           if ( !new_ )
@@ -3894,6 +3872,7 @@ void priest_t::create_options()
                             0_s, timespan_t::max() ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
+  add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

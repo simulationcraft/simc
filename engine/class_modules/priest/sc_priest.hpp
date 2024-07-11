@@ -836,6 +836,10 @@ public:
 
     // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
     bool force_devour_matter = false;
+
+    // Chance for Entropic Rift ticks to miss all targets and deal no damage
+    // Can be used to account for boss movement
+    double entropic_rift_miss_percent = 0.00;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
