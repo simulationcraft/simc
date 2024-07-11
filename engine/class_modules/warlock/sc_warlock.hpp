@@ -241,7 +241,7 @@ public:
     const spell_data_t* malefic_touch_proc;
 
     // Demonology
-    player_talent_t demoniac; // TODO: Move from base section
+    player_talent_t demoniac;
     const spell_data_t* demonbolt_spell;
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
@@ -249,9 +249,10 @@ public:
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
     player_talent_t call_dreadstalkers;
-    const spell_data_t* call_dreadstalkers_2; // Contains duration data TODO: Check if still relevant
+    const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
     player_talent_t imp_gang_boss;
+    const spell_data_t* imp_gang_boss_buff; // Buff on Wild Imps
     player_talent_t spiteful_reconstitution; // Increased Implosion damage and consuming Demonic Core may spawn a Wild Imp
     player_talent_t dreadlash;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites

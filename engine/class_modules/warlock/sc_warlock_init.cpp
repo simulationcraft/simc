@@ -185,15 +185,25 @@ namespace warlock
   void warlock_t::init_spells_demonology()
   {
     // Talents
-    talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
-    talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
-
     talents.demoniac = find_talent_spell( talent_tree::SPECIALIZATION, "Demoniac" ); // Should be ID 426115
     talents.demonbolt_spell = find_spell( 264178 );
     talents.demonic_core_spell = find_spell( 267102 );
     talents.demonic_core_buff = find_spell( 264173 );
 
+    talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
+    talents.implosion_aoe = find_spell( 196278 );
+
+    talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
+    talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
+
+    talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
+    talents.imp_gang_boss_buff = find_spell( 387458 );
+
+    talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
+
     talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
+
+    talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
     talents.annihilan_training_buff = find_spell( 386176 );
@@ -210,12 +220,7 @@ namespace warlock
     talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
     talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
 
-    talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
-    talents.implosion_aoe = find_spell( 196278 );
-
     talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
-
-    talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
     talents.shadow_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Invocation" ); // Should be ID 422054
 
@@ -227,8 +232,6 @@ namespace warlock
     talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
-
-    talents.spiteful_reconstitution = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Reconstitution" ); // Should be ID 428394
   
     talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
@@ -242,8 +245,6 @@ namespace warlock
 
     talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
     talents.umbral_blaze_dot = find_spell( 405802 );
-
-    talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 387445
 
     talents.dread_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Calling" ); // Should be ID 387391
     talents.dread_calling_buff = find_spell( 387393 );
@@ -620,7 +621,6 @@ namespace warlock
 
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
-    procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.ritual_of_ruin = get_proc( "ritual_of_ruin" );
     procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
     procs.mayhem = get_proc( "mayhem" );
@@ -645,6 +645,7 @@ namespace warlock
 
   void warlock_t::init_procs_demonology()
   {
+    procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
