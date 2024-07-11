@@ -190,6 +190,9 @@ namespace warlock
     talents.demonic_core_spell = find_spell( 267102 );
     talents.demonic_core_buff = find_spell( 264173 );
 
+    talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
+    talents.implosion_aoe = find_spell( 196278 );
+
     talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
     talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
 
@@ -209,9 +212,6 @@ namespace warlock
   
     talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
     talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
-
-    talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
-    talents.implosion_aoe = find_spell( 196278 );
 
     talents.fel_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Invocation" ); // Should be ID 428351
 
