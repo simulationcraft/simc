@@ -6006,6 +6006,7 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
     {
       return false;
     }
+    // 2024-07-11 -- Reaver's Glaive can't be cast unless a GCD is available, but doesn't trigger a GCD.
     if ( p()->gcd_ready > sim->current_time() )
     {
       return false;
