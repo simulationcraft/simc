@@ -651,6 +651,7 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
+    const spell_data_t* maelstrom_weapon;
 
     const spell_data_t* windfury;
     const spell_data_t* lava_lash_2;
@@ -692,7 +693,6 @@ public:
     player_talent_t spirit_wolf; // TODO: NYU
     player_talent_t thunderous_paws; // TODO: NYI
     player_talent_t frost_shock;
-    player_talent_t maelstrom_weapon;
     // Row 3
     player_talent_t earth_shield;
     player_talent_t fire_and_ice;
@@ -2149,7 +2149,7 @@ public:
 
   void compute_mw_multiplier()
   {
-    if ( !this->p()->talent.maelstrom_weapon.ok() || !affected_by_maelstrom_weapon )
+    if ( !this->p()->spec.maelstrom_weapon->ok() || !affected_by_maelstrom_weapon )
     {
       return;
     }
@@ -5235,6 +5235,11 @@ struct chain_lightning_t : public chained_base_t
     {
       p()->trigger_awakening_storms( execute_state );
     }
+
+    if ( p()->talent.conductive_energy.ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6383,6 +6388,18 @@ struct lightning_bolt_t : public shaman_spell_t
   //  }
   //}
 
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    // Note, in impact() to support Primordial Wave Lightning Bolt applying it on all targets, which
+    // may or may not be a bug.
+    if ( p()->talent.conductive_energy.ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      td( state->target )->debuff.lightning_rod->trigger();
+    }
+  }
+
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
     double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
@@ -7350,6 +7367,11 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.ascendance->extend_duration( p(), duration );
       p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
+    }
+
+    if ( p()->talent.conductive_energy.ok() )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
     }
 
     p()->track_magma_chamber();
@@ -9829,7 +9851,7 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
       return;
     }
 
-    double proc_chance = shaman->talent.maelstrom_weapon->proc_chance();
+    double proc_chance = shaman->spec.maelstrom_weapon->proc_chance();
     proc_chance += shaman->buff.witch_doctors_ancestry->stack_value();
 
     auto triggered = rng().roll( proc_chance );
@@ -9852,10 +9874,10 @@ void shaman_t::create_special_effects()
 {
   player_t::create_special_effects();
 
-  if ( talent.maelstrom_weapon.ok() )
+  if ( spec.maelstrom_weapon->ok() )
   {
     auto mw_effect = new special_effect_t( this );
-    mw_effect->spell_id = talent.maelstrom_weapon->id();
+    mw_effect->spell_id = spec.maelstrom_weapon->id();
     mw_effect->proc_flags2_ = PF2_ALL_HIT;
 
     special_effects.push_back( mw_effect );
@@ -9873,7 +9895,7 @@ void shaman_t::action_init_finished( action_t& action )
 
   // Enable Maelstrom Weapon proccing for selected abilities, if they
   // fulfill the basic conditions for the proc
-  if ( talent.maelstrom_weapon.ok() && action.callbacks &&
+  if ( spec.maelstrom_weapon->ok() && action.callbacks &&
        get_mw_proc_state( action ) == mw_proc_state::DEFAULT && (
          // Auto-attacks (shaman-module convention to set mh to action id 1, oh to id 2)
          ( action.id == 1 || action.id == 2 ) ||
@@ -9981,6 +10003,7 @@ void shaman_t::init_spells()
   spec.dual_wield         = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
   spec.stormbringer       = find_specialization_spell( "Stormbringer" );
+  spec.maelstrom_weapon   = find_specialization_spell( "Maelstrom Weapon" );
 
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
@@ -10015,7 +10038,6 @@ void shaman_t::init_spells()
   talent.spirit_wolf     = _CT( "Spirit Wolf" );
   talent.thunderous_paws = _CT( "Thunderous Paws" );
   talent.frost_shock     = _CT( "Frost Shock" );
-  talent.maelstrom_weapon = _CT( "Maelstrom Weapon" );
   // Row 3
   talent.earth_shield     = _CT( "Earth Shield" );
   talent.fire_and_ice     = _CT( "Fire and Ice" );
@@ -10175,7 +10197,7 @@ void shaman_t::init_spells()
   talent.rolling_thunder       = find_talent_spell( talent_tree::HERO, "Rolling Thunder" );
 
   talent.voltaic_surge         = find_talent_spell( talent_tree::HERO, "Voltaic Surge" );
-  talent.conductive_energy     = find_talent_spell( talent_tree::HERO, "Conductive Energy (NYI)" );
+  talent.conductive_energy     = find_talent_spell( talent_tree::HERO, "Conductive Energy" );
   talent.surging_currents      = find_talent_spell( talent_tree::HERO, "Surging Currents" );
 
   talent.awakening_storms      = find_talent_spell( talent_tree::HERO, "Awakening Storms" );
@@ -10709,7 +10731,7 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
 
 void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks )
 {
-  if ( !talent.maelstrom_weapon.ok() )
+  if ( !spec.maelstrom_weapon->ok() )
   {
     return;
   }
@@ -10773,8 +10795,9 @@ void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
 
 void shaman_t::generate_maelstrom_weapon( const action_t* action, int stacks )
 {
-  if ( !talent.maelstrom_weapon.ok() )
+  if ( !spec.maelstrom_weapon->ok() )
   {
+    assert( 0 );
     return;
   }
 
@@ -13081,7 +13104,7 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
-    if ( p.talent.maelstrom_weapon.ok() )
+    if ( p.spec.maelstrom_weapon->ok() )
     {
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon Details</h3>\n"
