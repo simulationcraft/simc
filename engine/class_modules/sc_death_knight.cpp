@@ -6449,6 +6449,7 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
     stacks                  = 0;
+    soul_rupture_effect_idx = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -6491,11 +6492,12 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     if ( p()->talent.deathbringer.soul_rupture.ok() )
       p()->active_spells.soul_rupture->execute_on_target(
-          state->target, state->result_amount * p()->talent.deathbringer.soul_rupture->effectN( 1 ).percent() );
+          state->target, state->result_amount * p()->talent.deathbringer.soul_rupture->effectN( soul_rupture_effect_idx ).percent() );
   }
 
 private:
   int stacks;
+  int soul_rupture_effect_idx;
 };
 
 struct wave_of_souls_t final : public death_knight_spell_t
@@ -6528,8 +6530,6 @@ struct soul_rupture_t final : public death_knight_spell_t
     background         = true;
     cooldown->duration = 0_ms;
     aoe                = -1;
-    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
-    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
   }
 };
 
