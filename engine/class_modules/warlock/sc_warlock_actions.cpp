@@ -1923,6 +1923,8 @@ using namespace helpers;
         aoe = -1;
         background = dual = true;
         callbacks = false;
+
+        base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
       double action_multiplier() const override
@@ -1931,9 +1933,6 @@ using namespace helpers;
 
         if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
-
-        if ( p()->talents.spiteful_reconstitution.ok() )
-          m *= 1.0 + p()->talents.spiteful_reconstitution->effectN( 1 ).percent();
 
         return m;
       }
