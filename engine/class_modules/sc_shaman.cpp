@@ -10797,7 +10797,6 @@ void shaman_t::generate_maelstrom_weapon( const action_t* action, int stacks )
 {
   if ( !spec.maelstrom_weapon->ok() )
   {
-    assert( 0 );
     return;
   }
 
