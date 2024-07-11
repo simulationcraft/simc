@@ -6385,6 +6385,8 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     cooldown->duration  = 0_ms;
     aoe                 = -1;
     reduced_aoe_targets = p->talent.deathbringer.exterminate->effectN( 5 ).base_value();
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
 
     if ( p->specialization() == DEATH_KNIGHT_FROST )
     {
@@ -6405,6 +6407,9 @@ struct exterminate_t final : public death_knight_spell_t
   {
     background         = true;
     cooldown->duration = 0_ms;
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
+
     add_child( second_hit );
   }
 
@@ -6501,6 +6506,8 @@ struct wave_of_souls_t final : public death_knight_spell_t
     background         = true;
     cooldown->duration = 0_ms;
     aoe                = -1;
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
   }
 
   void impact( action_state_t* state ) override
@@ -6521,6 +6528,8 @@ struct soul_rupture_t final : public death_knight_spell_t
     background         = true;
     cooldown->duration = 0_ms;
     aoe                = -1;
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
   }
 };
 
@@ -6530,6 +6539,9 @@ struct reapers_mark_t final : public death_knight_spell_t
     : death_knight_spell_t( "reapers_mark", p, p->talent.deathbringer.reapers_mark )
   {
     parse_options( options_str );
+    const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 4 : 1;
+    attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
+    
     if ( p->talent.deathbringer.reapers_mark.ok() )
     {
       add_child( p->active_spells.reapers_mark_explosion );
