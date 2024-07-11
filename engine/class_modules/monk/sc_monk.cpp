@@ -2082,8 +2082,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 struct flight_of_the_red_crane_dmg_t : public monk_spell_t
 {
   flight_of_the_red_crane_dmg_t( monk_t *p )
-    : monk_spell_t( p, "flight_of_the_red_crane_dmg",
-                    p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
+    : monk_spell_t( p, "flight_of_the_red_crane_dmg", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
   {
     background = true;
     aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
@@ -2100,8 +2099,7 @@ struct flight_of_the_red_crane_dmg_t : public monk_spell_t
 struct flight_of_the_red_crane_heal_t : public monk_heal_t
 {
   flight_of_the_red_crane_heal_t( monk_t *p )
-    : monk_heal_t( p, "flight_of_the_red_crane_heal",
-                   p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
+    : monk_heal_t( p, "flight_of_the_red_crane_heal", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
   {
     background = true;
     aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
@@ -4159,21 +4157,21 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
 
     // we have to set this up by hand, as Unity Within multiplier is scripted
     if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
-      add_parse_entry( target_multiplier_effects )
+      add_parse_entry( da_multiplier_effects )
           .set_func( [ p ]() { return p->buff.unity_within->check(); } )
           .set_value( effect.percent() )
           .set_eff( &effect );
   }
 
-//  double composite_aoe_multiplier( const action_state_t *state ) const override
-//  {
-//    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
+  //  double composite_aoe_multiplier( const action_state_t *state ) const override
+  //  {
+  //    double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
-//    if ( p()->buff.unity_within->check() )
-//      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
+  //    if ( p()->buff.unity_within->check() )
+  //      cam *= 1 + p()->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ).percent();
 
-//    return cam;
-//  }
+  //    return cam;
+  //  }
 
   void execute() override
   {
@@ -4367,7 +4365,7 @@ struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
     : monk_absorb_t( p, "strength_of_the_black_ox_absorb",
                      p->talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb )
   {
-    background = true;
+    background  = true;
     aoe         = data().effectN( 3 ).base_value();
     base_dd_min = p->max_health() * data().effectN( 2 ).percent();
     base_dd_max = base_dd_min;
@@ -4496,7 +4494,7 @@ struct unity_within_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful              = false;
     usable_while_casting = true;
   }
 
@@ -4558,7 +4556,7 @@ struct flight_of_the_red_crane_celestial_heal_t : public monk_heal_t
     target     = p;
   }
 
-  double composite_aoe_multiplier(const action_state_t* state) const override
+  double composite_aoe_multiplier( const action_state_t *state ) const override
   {
     double cam = monk_heal_t::composite_aoe_multiplier( state );
 
@@ -7555,17 +7553,17 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.celestial_conduit_dmg  = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal = find_spell( 443039 );
     // Row 2
-    talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
-    talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
+    talent.conduit_of_the_celestials.temple_training                   = _HT( "Temple Training" );
+    talent.conduit_of_the_celestials.xuens_guidance                    = _HT( "Xuen's Guidance" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger        = _HT( "Courage of the White Tiger" );
     talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage = find_spell( 457917 );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal = find_spell( 443106 );
-    talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
+    talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
     // Row 3
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb = find_spell( 443113 );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage = find_spell( 443127 );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the_Jade Serpent" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb        = find_spell( 443113 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage        = find_spell( 443127 );
     talent.conduit_of_the_celestials.flight_of_the_red_crane                = _HT( "Flight of the Red Crane" );
     talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg            = find_spell( 443263 );
     talent.conduit_of_the_celestials.flight_of_the_red_crane_heal           = find_spell( 443272 );
@@ -7722,13 +7720,14 @@ void monk_t::init_spells()
   windwalking_aura                 = new actions::windwalking_aura_t( this );
 
   // Conduit of the Celestials
-  active_actions.courage_of_the_white_tiger                = new actions::courage_of_the_white_tiger_t( this );
-  active_actions.flight_of_the_red_crane_damage            = new actions::flight_of_the_red_crane_dmg_t( this );
-  active_actions.flight_of_the_red_crane_heal              = new actions::flight_of_the_red_crane_heal_t( this );
-  active_actions.flight_of_the_red_crane_celestial_damage  = new actions::flight_of_the_red_crane_celestial_dmg_t( this );
-  active_actions.flight_of_the_red_crane_celestial_heal    = new actions::flight_of_the_red_crane_celestial_heal_t( this );
-  active_actions.strength_of_the_black_ox_dmg              = new actions::strength_of_the_black_ox_t( this );
-  active_actions.strength_of_the_black_ox_absorb           = new actions::strength_of_the_black_ox_absorb_t( this );
+  active_actions.courage_of_the_white_tiger     = new actions::courage_of_the_white_tiger_t( this );
+  active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
+  active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
+  active_actions.flight_of_the_red_crane_celestial_damage =
+      new actions::flight_of_the_red_crane_celestial_dmg_t( this );
+  active_actions.flight_of_the_red_crane_celestial_heal = new actions::flight_of_the_red_crane_celestial_heal_t( this );
+  active_actions.strength_of_the_black_ox_dmg           = new actions::strength_of_the_black_ox_t( this );
+  active_actions.strength_of_the_black_ox_absorb        = new actions::strength_of_the_black_ox_absorb_t( this );
 
   // Shado-Pan
   active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
@@ -8325,11 +8324,11 @@ void monk_t::create_buffs()
   buff.chi_jis_swiftness = make_buff_fallback( talent.conduit_of_the_celestials.chi_jis_swiftness->ok(), this,
                                                "chi_jis_swiftness", find_spell( 443569 ) );
 
-  buff.courage_of_the_white_tiger = make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
-                                                        "courage_of_the_white_tiger", find_spell( 460127 ) )
-          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
-            active_actions.courage_of_the_white_tiger->execute();
-          } );
+  buff.courage_of_the_white_tiger =
+      make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
+                          "courage_of_the_white_tiger", find_spell( 460127 ) )
+          ->set_expire_callback(
+              [ this ]( buff_t *buff_, double, timespan_t ) { active_actions.courage_of_the_white_tiger->execute(); } );
   ;
 
   buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
@@ -8359,23 +8358,24 @@ void monk_t::create_buffs()
                                        ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
                                          buff.heart_of_the_jade_serpent_cdr->trigger();
                                        } );
-      ;
+  ;
 
-  buff.heart_of_the_jade_serpent_stack_ww = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
-                                                                this, "heart_of_the_jade_serpent_stack_ww", find_spell( 443616 ) )
-                                                ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
-                                                  if ( new_ == buff_->max_stack() )
-                                                  {
-                                                    buff.heart_of_the_jade_serpent->trigger();
-                                                    buff_->expire();
-                                                  }
-                                                } );
+  buff.heart_of_the_jade_serpent_stack_ww =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443616 ) )
+          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
+            if ( new_ == buff_->max_stack() )
+            {
+              buff.heart_of_the_jade_serpent->trigger();
+              buff_->expire();
+            }
+          } );
 
   buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                         "crane_stance", find_spell( 443572 ) );
 
   buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
-                                                        "ox_stance", find_spell( 443574 ) );
+                                                     "ox_stance", find_spell( 443574 ) );
 
   buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                           "serpent_stance", find_spell( 443576 ) );
@@ -8386,42 +8386,43 @@ void monk_t::create_buffs()
   buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
                                             "jade_sanctuary", find_spell( 448508 ) );
 
-  buff.strength_of_the_black_ox = make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
-                                                "strength_of_the_black_ox", find_spell( 443112 ) )
-                                      ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
-                                        if ( specialization() == MONK_MISTWEAVER )
-                                        {
-                                          active_actions.strength_of_the_black_ox_absorb->execute();
-                                        }
-                                        else
-                                        {
-                                          active_actions.strength_of_the_black_ox_dmg->execute();
-                                          buff.teachings_of_the_monastery->trigger(
-                                              talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 )
-                                                  .base_value() );
-                                        }
-                                      } );
+  buff.strength_of_the_black_ox =
+      make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
+                          "strength_of_the_black_ox", find_spell( 443112 ) )
+          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            else
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
+            }
+          } );
 
-  buff.unity_within = make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
-                                          find_spell( 443592 ) )
-                          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
-                            buff.jade_sanctuary->trigger();
-                            if ( specialization() == MONK_MISTWEAVER )
-                            {
-                              active_actions.flight_of_the_red_crane_celestial_heal->execute();
-                              active_actions.strength_of_the_black_ox_absorb->execute();
-                            }
-                            else
-                            {
-                              active_actions.strength_of_the_black_ox_dmg->execute();
-                              buff.teachings_of_the_monastery->trigger(
-                                talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
+  buff.unity_within =
+      make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
+                          find_spell( 443592 ) )
+          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+            buff.jade_sanctuary->trigger();
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.flight_of_the_red_crane_celestial_heal->execute();
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            else
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
 
-                              active_actions.flight_of_the_red_crane_celestial_damage->execute();
-                            }
-                            buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
-                            active_actions.courage_of_the_white_tiger->execute();
-                          } );
+              active_actions.flight_of_the_red_crane_celestial_damage->execute();
+            }
+            buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
+            active_actions.courage_of_the_white_tiger->execute();
+          } );
 
   // Master of Harmony
   buff.aspect_of_harmony = new buffs::aspect_of_harmony_t( this );
@@ -8896,14 +8897,14 @@ void monk_t::init_special_effects()
   // ======================================
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
   {
-    create_proc_callback( talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell(),
-                          []( monk_t *p, action_state_t *state ) {
-                            if ( (p->specialization() == MONK_MISTWEAVER && state->action->id == p->baseline.monk.vivify->id() ) ||
-                                state->action->id == p->baseline.monk.tiger_palm->id() )
-                              return true;
+    create_proc_callback(
+        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->baseline.monk.vivify->id() ) ||
+               state->action->id == p->baseline.monk.tiger_palm->id() )
+            return true;
 
-                            return false;
-                          } );
+          return false;
+        } );
 
     callbacks.register_callback_execute_function(
         talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
@@ -8919,8 +8920,10 @@ void monk_t::init_special_effects()
   {
     create_proc_callback(
         talent.conduit_of_the_celestials.flight_of_the_red_crane.spell(), []( monk_t *p, action_state_t *state ) {
-          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->talent.mistweaver.refreshing_jade_wind_tick->id() ) ||
-             ( p->specialization() == MONK_WINDWALKER && state->action->id == p->passives.rushing_jade_wind_tick->id() ) ||
+          if ( ( p->specialization() == MONK_MISTWEAVER &&
+                 state->action->id == p->talent.mistweaver.refreshing_jade_wind_tick->id() ) ||
+               ( p->specialization() == MONK_WINDWALKER &&
+                 state->action->id == p->passives.rushing_jade_wind_tick->id() ) ||
                state->action->id == p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() )
             return true;
 
@@ -8930,7 +8933,7 @@ void monk_t::init_special_effects()
     callbacks.register_callback_execute_function(
         talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          if (specialization() == MONK_MISTWEAVER)
+          if ( specialization() == MONK_MISTWEAVER )
           {
             active_actions.flight_of_the_red_crane_heal->set_target( state->target );
             active_actions.flight_of_the_red_crane_heal->execute();
@@ -8939,7 +8942,7 @@ void monk_t::init_special_effects()
           {
             active_actions.flight_of_the_red_crane_damage->set_target( state->target );
             active_actions.flight_of_the_red_crane_damage->execute();
-          }           
+          }
         } );
   }
 
