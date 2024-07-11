@@ -6006,6 +6006,10 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
     {
       return false;
     }
+    if ( p()->gcd_ready > sim->current_time() )
+    {
+      return false;
+    }
 
     return demon_hunter_attack_t::ready();
   }
