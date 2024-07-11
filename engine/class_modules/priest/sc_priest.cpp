@@ -3520,9 +3520,8 @@ void priest_t::create_buffs()
   }
 
   // Tracking buff for Darkening Horizon extension
-  // TODO: use some other buff id or make quiet
   buffs.darkening_horizon =
-      make_buff( this, "darkening_horizon", talents.voidweaver.entropic_rift_aoe )
+      make_buff( this, "darkening_horizon", talents.voidweaver.darkening_horizon )
           ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
                                ? as<int>( talents.voidweaver.darkening_horizon->effectN( 2 ).base_value() )
                                : 1 );
