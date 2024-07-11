@@ -237,7 +237,8 @@ public:
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;
     player_talent_t ravenous_afflictions;
-    player_talent_t malefic_touch; // TODO: New
+    player_talent_t malefic_touch;
+    const spell_data_t* malefic_touch_proc;
 
     // Demonology
     player_talent_t demoniac; // TODO: Move from base section

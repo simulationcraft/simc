@@ -897,9 +897,22 @@ using namespace helpers;
 
   struct malefic_rapture_t : public warlock_spell_t
   {
+    struct malefic_touch_t : public warlock_spell_t
+    {
+      malefic_touch_t( warlock_t* p )
+        : warlock_spell_t( "Malefic Touch", p, p->talents.malefic_touch_proc )
+      {
+        background = dual = true;
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+      }
+    };
+
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
       int target_count;
+      malefic_touch_t* touch;
 
       malefic_rapture_damage_t( warlock_t* p )
         : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg ),
@@ -909,8 +922,15 @@ using namespace helpers;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
         affected_by.deaths_embrace = true;
+
+        if ( p->talents.malefic_touch.ok() )
+        {
+          touch = new malefic_touch_t( p );
+          add_child( touch );
+        }
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -927,8 +947,6 @@ using namespace helpers;
 
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
-
-        m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
         return m;
       }
@@ -961,6 +979,9 @@ using namespace helpers;
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
         }
+
+        if ( p()->talents.malefic_touch.ok() )
+          touch->execute_on_target( s->target );
       }
     };
 

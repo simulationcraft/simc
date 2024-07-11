@@ -171,10 +171,13 @@ namespace warlock
 
     talents.deaths_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Embrace" ); // Should be ID 453189
 
-    talents.ravenous_afflictions = find_talent_spell( talent_tree::SPECIALIZATION, "Ravenous Afflictions" ); // Should be ID 459440
-
     talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
     talents.dark_harvest_buff = find_spell( 387018 );
+
+    talents.ravenous_afflictions = find_talent_spell( talent_tree::SPECIALIZATION, "Ravenous Afflictions" ); // Should be ID 459440
+
+    talents.malefic_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Touch" ); // Should be ID 458029
+    talents.malefic_touch_proc = find_spell( 458131 );
 
     // Additional Tier Set spell data
   }
