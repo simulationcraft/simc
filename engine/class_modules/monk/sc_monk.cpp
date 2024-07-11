@@ -173,13 +173,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.flight_of_the_red_crane );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
-  parse_effects( p()->buff.inner_compass_crane_stance );
-  parse_effects( p()->buff.inner_compass_ox_stance );
-  parse_effects( p()->buff.inner_compass_serpent_stance );
-  parse_effects( p()->buff.inner_compass_tiger_stance );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -480,7 +475,7 @@ void monk_action_t<Base>::consume_resource()
     if ( base_t::cost() > 0 )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent->trigger( base_t::cost() );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( base_t::cost() );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -1999,9 +1994,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       }
 
       if ( p()->specialization() == MONK_WINDWALKER )
-      {
         p()->buff.strength_of_the_black_ox->expire();
-      }
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
@@ -4369,7 +4362,7 @@ struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
   {
     background = true;
     aoe         = data().effectN( 3 ).base_value();
-    base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+    base_dd_min = p->max_health() * data().effectN( 2 ).percent();
     base_dd_max = base_dd_min;
   }
 };
@@ -5981,8 +5974,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::REFRESH );
 
-    modify_duration(
-        timespan_t::from_millis( p->talent.conduit_of_the_celestials.yulons_knowledge->effectN( 1 ).base_value() ) );
+    modify_duration( p->talent.conduit_of_the_celestials.yulons_knowledge->effectN( 1 ).time_value() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -6806,6 +6798,13 @@ void monk_t::parse_player_effects()
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
+
+  // Conduit of the Celestials
+  parse_effects( p()->buff.flight_of_the_red_crane );
+  parse_effects( p()->buff.inner_compass_crane_stance );
+  parse_effects( p()->buff.inner_compass_ox_stance );
+  parse_effects( p()->buff.inner_compass_serpent_stance );
+  parse_effects( p()->buff.inner_compass_tiger_stance );
 }
 
 // monk_t::create_action ====================================================
