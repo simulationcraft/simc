@@ -6800,11 +6800,11 @@ void monk_t::parse_player_effects()
   parse_effects( buff.wisdom_of_the_wall_mastery );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.flight_of_the_red_crane );
-  parse_effects( p()->buff.inner_compass_crane_stance );
-  parse_effects( p()->buff.inner_compass_ox_stance );
-  parse_effects( p()->buff.inner_compass_serpent_stance );
-  parse_effects( p()->buff.inner_compass_tiger_stance );
+  parse_effects( buff.flight_of_the_red_crane );
+  parse_effects( buff.inner_compass_crane_stance );
+  parse_effects( buff.inner_compass_ox_stance );
+  parse_effects( buff.inner_compass_serpent_stance );
+  parse_effects( buff.inner_compass_tiger_stance );
 }
 
 // monk_t::create_action ====================================================
