@@ -1233,8 +1233,10 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     if ( p->o()->talents.dreadlash.ok() )
     {
       aoe = -1;
-      reduced_aoe_targets = 5;
+      reduced_aoe_targets = 5; // TOCHECK: Is this removed in TWW?
       radius = 8.0;
+
+      base_dd_multiplier *= 1.0 + p->o()->talents.dreadlash->effectN( 1 ).percent();
     }
   }
 
@@ -1244,16 +1246,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
       return false;
 
     return warlock_pet_melee_attack_t::ready();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_melee_attack_t::action_multiplier();
-
-    if ( p()->o()->talents.dreadlash.ok() )
-      m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
-
-    return m;
   }
 
   void execute() override
