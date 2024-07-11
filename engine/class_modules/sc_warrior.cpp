@@ -300,6 +300,9 @@ public:
     buff_t* opportunist;
 
     // Mountain Thane
+
+    // TWW1 Tier
+    buff_t* overpowering_might;
   } buff;
 
   struct rppm_t
@@ -1103,6 +1106,9 @@ public:
     parse_effects( p()->buff.opportunist );
 
     // Mountain Thane
+
+    // TWW1 Tier
+    parse_effects( p()->buff.overpowering_might );
   }
 
   void apply_debuff_effects()
@@ -2595,6 +2601,11 @@ struct mortal_strike_t : public warrior_attack_t
         p()->cooldown.reap_the_storm_icd->start();
       }
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B2 ) )
+    {
+      p()->buff.overpowering_might->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3177,6 +3188,11 @@ struct cleave_t : public warrior_attack_t
         p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
       }
       p()->buff.colossal_might->trigger();
+    }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B2 ) )
+    {
+      p()->buff.overpowering_might->trigger();
     }
   }
 };
@@ -4839,6 +4855,7 @@ struct overpower_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_finishing_blows, p()->gain.finishing_blows );
     }
 
+    p()->buff.overpowering_might->expire();
   }
 
   bool ready() override
@@ -8034,6 +8051,9 @@ void warrior_t::create_buffs()
   buff.opportunist          = make_buff( this, "opportunist", find_spell( 456120 ) );
 
   // Mountain Thane
+
+  // TWW1 Tier
+  buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );
 }
 
 // warrior_t::init_finished =============================================
