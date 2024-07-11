@@ -3878,7 +3878,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 
   fortifying_brew_t( monk_t *p, util::string_view options_str )
     : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
-      absorb( new niuzaos_protection_t( p ) )
+      absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
@@ -7701,17 +7701,26 @@ void monk_t::init_spells()
   windwalking_aura                 = new actions::windwalking_aura_t( this );
 
   // Conduit of the Celestials
-  active_actions.courage_of_the_white_tiger     = new actions::courage_of_the_white_tiger_t( this );
-  active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
-  active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
-  active_actions.flight_of_the_red_crane_celestial_damage =
-      new actions::flight_of_the_red_crane_celestial_dmg_t( this );
-  active_actions.flight_of_the_red_crane_celestial_heal = new actions::flight_of_the_red_crane_celestial_heal_t( this );
-  active_actions.strength_of_the_black_ox_dmg           = new actions::strength_of_the_black_ox_t( this );
-  active_actions.strength_of_the_black_ox_absorb        = new actions::strength_of_the_black_ox_absorb_t( this );
+  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+    active_actions.courage_of_the_white_tiger = new actions::courage_of_the_white_tiger_t( this );
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
+    active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
+    active_actions.flight_of_the_red_crane_celestial_damage =
+        new actions::flight_of_the_red_crane_celestial_dmg_t( this );
+    active_actions.flight_of_the_red_crane_celestial_heal =
+        new actions::flight_of_the_red_crane_celestial_heal_t( this );
+  }
+  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() )
+  {
+    active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
+    active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
+  }
 
   // Shado-Pan
-  active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
+  if ( talent.shado_pan.flurry_strikes->ok() )
+    active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
