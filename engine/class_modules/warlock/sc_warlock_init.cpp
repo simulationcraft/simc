@@ -185,13 +185,13 @@ namespace warlock
   void warlock_t::init_spells_demonology()
   {
     // Talents
-    talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
-    talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
-
     talents.demoniac = find_talent_spell( talent_tree::SPECIALIZATION, "Demoniac" ); // Should be ID 426115
     talents.demonbolt_spell = find_spell( 264178 );
     talents.demonic_core_spell = find_spell( 267102 );
     talents.demonic_core_buff = find_spell( 264173 );
+
+    talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
+    talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
 
     talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
 

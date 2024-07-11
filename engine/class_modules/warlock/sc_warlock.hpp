@@ -241,7 +241,7 @@ public:
     const spell_data_t* malefic_touch_proc;
 
     // Demonology
-    player_talent_t demoniac; // TODO: Move from base section
+    player_talent_t demoniac;
     const spell_data_t* demonbolt_spell;
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
