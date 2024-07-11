@@ -1764,10 +1764,12 @@ struct collapsing_void_damage_t final : public priest_spell_t
 
   void trigger( player_t* target, int stacks )
   {
-    parent_stacks = stacks;
+    // The first trigger of the buff on the spawn of the rift does not count towards the damage mod stacks
+    // Only relevant if you didn't extend the rift at all while active
+    parent_stacks = stacks - 1;
 
     player->sim->print_debug( "{} triggered collapsing_void_damage on target {} with {} stacks", priest(), *target,
-                              stacks );
+                              parent_stacks );
 
     // TODO: Handle if the target dies between entropic rift start and collapsing void
     // Make sure the target is still available
@@ -4046,7 +4048,17 @@ void priest_t::trigger_void_shield( double result_amount )
 
 void priest_t::trigger_entropic_rift()
 {
+  // Spawn Entropic Rift
   background_actions.entropic_rift->execute();
+
+  // Trigger the first stack of collapsing rift
+  // This stack does not count for the damage mod
+  if ( !talents.voidweaver.collapsing_void.enabled() )
+  {
+    return;
+  }
+
+  buffs.collapsing_void->trigger();
 }
 
 void priest_t::expand_entropic_rift()
