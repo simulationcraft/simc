@@ -713,6 +713,7 @@ public:
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
+    propagate_const<buff_t *> august_dynasty;
     propagate_const<buff_t *> celestial_conduit;
     propagate_const<buff_t *> chi_jis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;

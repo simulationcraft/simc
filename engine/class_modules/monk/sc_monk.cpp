@@ -173,6 +173,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
 
   // Conduit of the Celestials
+  parse_effects( p()->buff.august_dynasty );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr, 0b0110000U );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial, 0b0110000U );
   parse_effects( p()->buff.jade_sanctuary );
@@ -1734,6 +1735,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
+
+    p()->buff.august_dynasty->expire();
   }
 };
 
@@ -4871,6 +4874,7 @@ struct jadefire_stomp_t : public monk_spell_t
 
     p()->buff.jadefire_stomp->trigger();
     p()->buff.jadefire_brand->trigger();
+    p()->buff.august_dynasty->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -8302,6 +8306,9 @@ void monk_t::create_buffs()
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Conduit of the Celestials
+  buff.august_dynasty    = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
+                                               "august_dynasty", find_spell( 442850 ) );
+
   buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
                                                "celestial_conduit", find_spell( 443028 ) );
 
