@@ -4561,6 +4561,9 @@ struct crushing_blow_t : public warrior_attack_t
         cooldown->reset( true );
         if ( p()->talents.slayer.opportunist->ok() )
           p()->buff.opportunist->trigger();
+
+        if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
+          p()->buff.deep_thirst->trigger();
       }
     }
     else if ( p()->talents.fury.improved_raging_blow->ok() && rng().roll( cd_reset_chance ) )
@@ -4568,6 +4571,9 @@ struct crushing_blow_t : public warrior_attack_t
       cooldown->reset( true );
       if ( p()->talents.slayer.opportunist->ok() )
         p()->buff.opportunist->trigger();
+
+      if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
+          p()->buff.deep_thirst->trigger();
     }
 
     p()->buff.crushing_blow->decrement();
