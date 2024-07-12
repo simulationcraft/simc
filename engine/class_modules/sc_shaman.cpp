@@ -289,7 +289,7 @@ struct shaman_td_t : public actor_target_data_t
   struct debuffs
   {
     // Elemental
-    buff_t* electrified_shocks;
+    //buff_t* electrified_shocks;
     buff_t* lightning_rod;
 
     // Enhancement
@@ -314,7 +314,7 @@ struct shaman_t : public player_t
 {
 public:
   // Misc
-  bool lava_surge_during_lvb;
+  //bool lava_surge_during_lvb;
   bool sk_during_cast;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
@@ -446,7 +446,7 @@ public:
     buff_t* primordial_wave;
 
     // Elemental, Restoration
-    buff_t* lava_surge;
+    //buff_t* lava_surge;
 
     // Elemental, Enhancement
     buff_t* elemental_blast_crit;
@@ -465,7 +465,8 @@ public:
     buff_t* flux_melting;
     buff_t* primordial_surge;
     buff_t* primordial_surge_lava_burst_buff;
-    buff_t* icefury;
+    buff_t* icefury_dmg;
+    buff_t* icefury_cast;
     buff_t* magma_chamber;
     buff_t* master_of_the_elements;
     buff_t* oath_of_the_far_seer;
@@ -474,7 +475,7 @@ public:
     buff_t* stormkeeper;
     buff_t* surge_of_power;
     buff_t* wind_gust;  // Storm Elemental passive 263806
-    buff_t* windspeakers_lava_resurgence;
+    //buff_t* windspeakers_lava_resurgence;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -544,6 +545,10 @@ public:
     rotation_type_e rotation = ROTATION_STANDARD;
     int dre_flat_chance = -1;
     unsigned dre_forced_failures = 2U;
+
+    // Icefury Deck-of-Cards RNG parametrization
+    unsigned icefury_positive = 3U;
+    unsigned icefury_total = 25U;
   } options;
 
   // Cooldowns
@@ -555,7 +560,6 @@ public:
     cooldown_t* fire_elemental;
     cooldown_t* flame_shock;
     cooldown_t* frost_shock;
-    cooldown_t* icefury;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
     cooldown_t* liquid_magma_totem;
@@ -592,19 +596,19 @@ public:
   struct
   {
     // Elemental, Restoration
-    proc_t* lava_surge;
-    proc_t* wasted_lava_surge;
-    proc_t* surge_during_lvb;
+    //proc_t* lava_surge;
+    //proc_t* wasted_lava_surge;
+    //proc_t* surge_during_lvb;
     proc_t* deeply_rooted_elements;
 
     // Elemental
-    proc_t* lava_surge_primordial_surge;
-    proc_t* wasted_lava_surge_primordial_surge;
-    proc_t* lava_surge_windspeakers_lava_resurgence;
+    //proc_t* lava_surge_primordial_surge;
+    //proc_t* wasted_lava_surge_primordial_surge;
+    //proc_t* lava_surge_windspeakers_lava_resurgence;
 
     proc_t* aftershock;
     proc_t* flash_of_lightning;
-    proc_t* further_beyond;
+    //proc_t* further_beyond;
     proc_t* lightning_rod;
     proc_t* searing_flames;
 
@@ -799,7 +803,7 @@ public:
     // Row 4
     player_talent_t call_of_thunder;
     player_talent_t flow_of_power;
-    player_talent_t lava_surge;
+    //player_talent_t lava_surge;
     // Row 5
     player_talent_t unrelenting_calamity;
     player_talent_t icefury;
@@ -808,7 +812,7 @@ public:
     player_talent_t call_of_fire;
     // Row 6
     player_talent_t stormkeeper;
-    player_talent_t electrified_shocks;
+    //player_talent_t electrified_shocks;
     player_talent_t flux_melting;
     player_talent_t aftershock;
     player_talent_t surge_of_power;
@@ -836,9 +840,9 @@ public:
     player_talent_t lightning_rod;
     player_talent_t primordial_surge;
     player_talent_t mountains_will_fall;
-    player_talent_t further_beyond;
+    //player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
-    player_talent_t windspeakers_lava_resurgence;
+    //player_talent_t windspeakers_lava_resurgence;
 
     // Stormbringer
 
@@ -916,11 +920,13 @@ public:
     const spell_data_t* improved_flametongue_weapon;
   } spell;
 
-  struct rppm_t
+  struct rng_obj_t
   {
     real_ppm_t* awakening_storms;
     real_ppm_t* lively_totems;
-  } rppm;
+
+    shuffled_rng_t* icefury;
+  } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
   shaman_attack_t* melee_mh;
@@ -935,7 +941,7 @@ public:
 
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
-      lava_surge_during_lvb( false ),
+      //lava_surge_during_lvb( false ),
       sk_during_cast(false),
       lotfw_counter( 0U ),
       raptor_glyph( false ),
@@ -958,7 +964,7 @@ public:
       uptime(),
       talent(),
       spell(),
-      rppm()
+      rng_obj()
   {
     // Cooldowns
     cooldown.ascendance         = get_cooldown( "ascendance" );
@@ -967,7 +973,6 @@ public:
     cooldown.fire_elemental     = get_cooldown( "fire_elemental" );
     cooldown.flame_shock        = get_cooldown( "flame_shock" );
     cooldown.frost_shock        = get_cooldown( "frost_shock" );
-    cooldown.icefury            = get_cooldown( "icefury" );
     cooldown.lava_burst         = get_cooldown( "lava_burst" );
     cooldown.lava_lash          = get_cooldown( "lava_lash" );
     cooldown.liquid_magma_totem = get_cooldown( "liquid_magma_totem" );
@@ -1051,7 +1056,7 @@ public:
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_hot_hand( const action_state_t* state );
-  void trigger_lava_surge( bool primordial_surge = false );
+  //void trigger_lava_surge( bool primordial_surge = false );
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
@@ -1327,8 +1332,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Elemental
   debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
-  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) )
-    ->set_default_value_from_effect( 1 );
+  //debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) )
+  //  ->set_default_value_from_effect( 1 );
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
@@ -3975,7 +3980,7 @@ struct lava_lash_t : public shaman_attack_t
     p()->buff.ashen_catalyst->expire();
     p()->buff.whirling_fire->decrement();
 
-    if ( p()->rppm.lively_totems->trigger() )
+    if ( p()->rng_obj.lively_totems->trigger() )
     {
       // 2024-07-10: Searing Totem death seems to be delayed from basically nothing to approximately
       // 850ms. Makes it possible to get an extra searing bolt if the timing is right.
@@ -5086,6 +5091,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Collect debuffed targets first
+    /*
     if ( p()->talent.electrified_shocks.ok() )
     {
       range::for_each( sim->target_non_sleeping_list, [this, &tl]( player_t* t ) {
@@ -5095,6 +5101,7 @@ struct chain_lightning_t : public chained_base_t
         }
       } );
     }
+    */
 
     // The rest
     range::for_each( sim->target_non_sleeping_list, [&tl]( player_t* t ) {
@@ -5897,7 +5904,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
-    cast_state( s )->wlr_buffed = p()->buff.windspeakers_lava_resurgence->check();
+    //cast_state( s )->wlr_buffed = p()->buff.windspeakers_lava_resurgence->check();
     cast_state( s )->ps_buffed = p()->buff.primordial_surge_lava_burst_buff->check();
   }
 
@@ -5944,12 +5951,14 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
+    /*
     if ( s->chain_target == 0 && result_is_hit( s->result ) )
     {
       if ( p()->buff.windspeakers_lava_resurgence->up() ) {
         p()->buff.windspeakers_lava_resurgence->decrement();
       }
     }
+    */
   }
 
   double action_multiplier() const override
@@ -5981,11 +5990,13 @@ struct lava_burst_t : public shaman_spell_t
     //                  Neither Primordial Wave echoes, nor T31 4p Elemental
     //                  bonus echoes are affected by WLR.
     //                  Unknown: Ascendance/Deeply Rooted Elements
+    /*
     if ( exec_type == spell_variant::NORMAL && (
     wlr_buffed_impact || p()->buff.windspeakers_lava_resurgence->up() ) )
         {
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
+    */
 
     if ( exec_type == spell_variant::NORMAL && ( 
         ps_buffed_impact || p()->buff.primordial_surge_lava_burst_buff->up() ) )
@@ -6024,11 +6035,13 @@ struct lava_burst_t : public shaman_spell_t
 
     // Lava Surge has procced during the cast of Lava Burst, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
+    /*
     if ( p()->lava_surge_during_lvb )
     {
       d                      = timespan_t::zero();
       cooldown->last_charged = sim->current_time();
     }
+    */
 
     shaman_spell_t::update_ready( d );
   }
@@ -6052,12 +6065,14 @@ struct lava_burst_t : public shaman_spell_t
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
+    /*
     if ( exec_type == spell_variant::NORMAL && !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
     }
 
     p()->lava_surge_during_lvb = false;
+    */
 
     if ( exec_type == spell_variant::NORMAL && p()->buff.t31_4pc_ele->up() && p()->action.lava_burst_mc )
     {
@@ -6087,8 +6102,6 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-
-
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
@@ -6110,19 +6123,27 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.primordial_surge_lava_burst_buff->decrement();
     }
 
-    if ( exec_type == spell_variant::NORMAL ) {
+    if ( exec_type == spell_variant::NORMAL )
+    {
       p()->buff.flux_melting->decrement();
     }
 
     p()->buff.t29_2pc_ele->trigger();
+
+    if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
+    {
+      p()->buff.icefury_cast->trigger();
+    }
   }
 
   timespan_t execute_time() const override
   {
+    /*
     if ( p()->buff.lava_surge->up() )
     {
       return timespan_t::zero();
     }
+    */
 
     return shaman_spell_t::execute_time();
   }
@@ -6627,6 +6648,7 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.echoes_of_great_sundering_eb->trigger();
     }
 
+    /*
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 2 ).time_value();
@@ -6646,6 +6668,7 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
+    */
 
     if ( p()->talent.surge_of_power->ok() )
     {
@@ -6655,6 +6678,7 @@ struct elemental_blast_t : public shaman_spell_t
     p()->track_magma_chamber();
     p()->buff.magma_chamber->expire();
 
+    /*
     if ( p()->talent.windspeakers_lava_resurgence.ok() )
     {
       p()->buff.windspeakers_lava_resurgence->trigger();
@@ -6672,6 +6696,7 @@ struct elemental_blast_t : public shaman_spell_t
 
       p()->buff.lava_surge->trigger();
     }
+    */
     p()->track_t29_2pc_ele();
     p()->buff.t29_2pc_ele->expire();
 
@@ -6723,7 +6748,7 @@ struct icefury_overload_t : public elemental_overload_spell_t
 struct icefury_t : public shaman_spell_t
 {
   icefury_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "icefury", player, player->talent.icefury )
+    shaman_spell_t( "icefury", player, player->find_spell( 210714 ) )
   {
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
@@ -6740,7 +6765,7 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury->trigger( data().initial_stacks() );
+    p()->buff.icefury_dmg->trigger( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() );
   }
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
@@ -6753,6 +6778,21 @@ struct icefury_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.icefury.ok() )
+    {
+      return false;
+    }
+
+    if ( !p()->buff.icefury_cast->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -7142,6 +7182,7 @@ struct earthquake_t : public earthquake_base_t
     p()->buff.echoes_of_great_sundering_es->decrement();
     p()->buff.echoes_of_great_sundering_eb->decrement();
 
+    /*
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
@@ -7161,12 +7202,14 @@ struct earthquake_t : public earthquake_base_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
+    */
 
     p()->track_t29_2pc_ele();
     p()->buff.t29_2pc_ele->expire();
 
     p()->buff.t29_4pc_ele->trigger();
 
+    /*
     if ( p()->talent.windspeakers_lava_resurgence.ok() )
     {
       p()->buff.windspeakers_lava_resurgence->trigger();
@@ -7184,6 +7227,7 @@ struct earthquake_t : public earthquake_base_t
 
       p()->buff.lava_surge->trigger();
     }
+    */
   }
 };
 
@@ -7368,6 +7412,7 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.surge_of_power->trigger();
     }
 
+    /*
     if ( p()->talent.windspeakers_lava_resurgence.ok() )
     {
       p()->buff.windspeakers_lava_resurgence->trigger();
@@ -7383,7 +7428,9 @@ struct earth_shock_t : public shaman_spell_t
 
       p()->buff.lava_surge->trigger();
     }
+    */
 
+    /*
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       timespan_t duration = p()->talent.further_beyond->effectN( 1 ).time_value();
@@ -7403,6 +7450,7 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), duration );
       p()->proc.further_beyond->occur();
     }
+    */
 
     if ( p()->talent.conductive_energy.ok() )
     {
@@ -7605,6 +7653,7 @@ public:
     shaman_spell_t::tick( d );
 
     // proc chance suddenly became 100% and the actual chance became effectN 1
+    /*
     double proc_chance = p()->talent.lava_surge->effectN( 1 ).percent();
 
     if ( p()->talent.lava_surge.ok() && p()->spec.restoration_shaman->ok() )
@@ -7616,6 +7665,7 @@ public:
     {
       p()->trigger_lava_surge();
     }
+    */
 
     if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
     {
@@ -7715,7 +7765,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.icefury->value();
+    m *= 1.0 + p()->buff.icefury_dmg->value();
 
     m *= 1.0 + p()->buff.hailstorm->stack_value();
 
@@ -7738,13 +7788,15 @@ struct frost_shock_t : public shaman_spell_t
       t += targets;
     }
 
-    if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
+    /*
+    if ( p() ->buff.icefury_dmg->up() && p()->talent.electrified_shocks->ok() )
     {
       // It looks like Frost Shock does not have the expected 1 baseline n_targets.
       // Spell data suggests Electrified Shocks adds 3 targets.
       // But the baseline target needs to be added, too.
       t += 1 + as<int>( p()->talent.electrified_shocks->effectN( 1 ).base_value() );
     }
+    */
 
     return t;
   }
@@ -7764,7 +7816,7 @@ struct frost_shock_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( p()->buff.icefury->up() )
+    if ( p()->buff.icefury_dmg->up() )
     {
       maelstrom_gain = p()->spec.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     }
@@ -7784,7 +7836,7 @@ struct frost_shock_t : public shaman_spell_t
 
     p()->buff.flux_melting->trigger();
 
-    p()->buff.icefury->decrement();
+    p()->buff.icefury_dmg->decrement();
 
     p()->buff.hailstorm->expire();
     p()->buff.ice_strike->expire();
@@ -7802,10 +7854,22 @@ struct frost_shock_t : public shaman_spell_t
   {
     shaman_spell_t::impact( s );
 
-    if ( p()->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
+    /*
+    if ( p()->buff.icefury_dmg->up() && p()->talent.electrified_shocks->ok() )
     {
       td( s->target )->debuff.electrified_shocks->trigger();
     }
+    */
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.icefury_cast->check() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -7922,18 +7986,22 @@ struct ascendance_t : public shaman_spell_t
     if ( background )
     {
       p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
+      /*
       if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.further_beyond->ok() ) {
         p()->ascendance_extension_cap = dre_duration * p()->talent.further_beyond->effectN( 3 ).percent();
         p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
       }
+      */
     }
     else
     {
       p()->buff.ascendance->trigger();
+      /*
       if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.further_beyond->ok() ) {
         p()->ascendance_extension_cap = p()->buff.ascendance->base_buff_duration * p()->talent.further_beyond->effectN( 3 ).percent();
         p()->accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
       }
+      */
     }
 
     if ( lvb )
@@ -9543,6 +9611,7 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
+/*
 if ( util::str_compare_ci( name, "fb_extension_possible" ) )
   {
     if ( !talent.further_beyond->ok() )
@@ -9579,6 +9648,7 @@ if ( util::str_compare_ci( name, "fb_extension_possible" ) )
                  : timespan_t::zero().total_seconds();
     } );
   }
+  */
   if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
   {
     return make_fn_expr( name, [ this ]() {
@@ -9874,6 +9944,9 @@ void shaman_t::create_options()
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
   add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
+
+  add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 1U, 100U ) );
+  add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 1U, 100U ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -10221,7 +10294,7 @@ void shaman_t::init_spells()
   // Row 4
   talent.call_of_thunder    = _ST( "Call of Thunder" );
   talent.flow_of_power      = _ST( "Flow of Power" );
-  talent.lava_surge         = _ST( "Lava Surge" );
+  //talent.lava_surge         = _ST( "Lava Surge" );
   // Row 5
   talent.unrelenting_calamity = _ST( "Unrelenting Calamity" );
   talent.icefury              = _ST( "Icefury" );
@@ -10230,7 +10303,7 @@ void shaman_t::init_spells()
   talent.call_of_fire         = _ST( "Call of Fire" );
   // Row 6
   talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 392714 );
-  talent.electrified_shocks = _ST( "Electrified Shocks" );
+  //talent.electrified_shocks = _ST( "Electrified Shocks" );
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
   talent.surge_of_power         = _ST( "Surge of Power" );
@@ -10258,9 +10331,9 @@ void shaman_t::init_spells()
   talent.lightning_rod = _ST( "Lightning Rod" );
   talent.primordial_surge = _ST( "Primordial Surge" );
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
-  talent.further_beyond = _ST( "Further Beyond" );
+  //talent.further_beyond = _ST( "Further Beyond" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
-  talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
+  //talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
 
   // Stormbringer
 
@@ -10992,6 +11065,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   attack->proc_ft->occur();
 }
 
+/*
 void shaman_t::trigger_lava_surge(bool primordial_surge )
 {
   if ( buff.lava_surge->check() )
@@ -11027,6 +11101,7 @@ void shaman_t::trigger_lava_surge(bool primordial_surge )
 
   buff.lava_surge->trigger();
 }
+*/
 
 void shaman_t::trigger_splintered_elements( action_t* secondary )
 {
@@ -11217,7 +11292,7 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
     return;
   }
 
-  if ( !rppm.awakening_storms->trigger() )
+  if ( !rng_obj.awakening_storms->trigger() )
   {
     return;
   }
@@ -11402,16 +11477,21 @@ void shaman_t::create_buffs()
   //
   // Elemental
   //
+  /*
   buff.lava_surge = make_buff( this, "lava_surge", find_spell( 77762 ) )
                         ->set_activated( false )
                         ->set_chance( 1.0 );  // Proc chance is handled externally
+  */
 
   buff.surge_of_power = make_buff( this, "surge_of_power", talent.surge_of_power )
     ->set_duration( find_spell( 285514 )->duration() );
 
-  buff.icefury = make_buff( this, "icefury", talent.icefury )
-                     ->set_cooldown( timespan_t::zero() )  // Handled by the action
-                     ->set_default_value( talent.icefury->effectN( 2 ).percent() );
+  buff.icefury_dmg = make_buff( this, "icefury_dmg", find_spell( 210714 ) )
+                     ->set_default_value( find_spell( 210714 )->effectN( 2 ).percent() )
+                     ->set_trigger_spell( talent.icefury );
+
+  buff.icefury_cast = make_buff( this, "icefury", find_spell( 462818 ) )
+                     ->set_trigger_spell( talent.icefury );
 
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
           ->set_default_value( talent.master_of_the_elements->effectN( 2 ).percent() );
@@ -11436,7 +11516,7 @@ void shaman_t::create_buffs()
 
   buff.primordial_surge = make_buff( this, "primordial_surge", find_spell( 387622 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) { 
-              trigger_lava_surge( true );
+              //trigger_lava_surge( true );
               buff.primordial_surge_lava_burst_buff->trigger();
                               } );
 
@@ -11452,10 +11532,12 @@ void shaman_t::create_buffs()
       make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )
           ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
+  /*
   buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence",
       talent.windspeakers_lava_resurgence->effectN( 1 ).trigger() )
     ->set_default_value(
         talent.windspeakers_lava_resurgence->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+  */
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
@@ -11608,12 +11690,14 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
+  /*
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
   proc.lava_surge_windspeakers_lava_resurgence  = get_proc( "Lava Surge: Windspeaker's Lava Resurgence" );
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_primordial_surge       = get_proc( "Lava Surge: Primordial Surge" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
+  */
 
   proc.deeply_rooted_elements                   = get_proc( "Deeply Rooted Elements" );
 
@@ -11626,7 +11710,7 @@ void shaman_t::init_procs()
 
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
-  proc.further_beyond       = get_proc( "Further Beyond" );
+  //proc.further_beyond       = get_proc( "Further Beyond" );
   proc.lightning_rod        = get_proc( "Lightning Rod" );
   proc.searing_flames       = get_proc( "Searing Flames" );
   for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
@@ -11686,8 +11770,9 @@ void shaman_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
-  rppm.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
+  rng_obj.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
+  rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
+  rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
 }
 
 // shaman_t::apply_affecting_auras ==========================================
@@ -11913,7 +11998,6 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
     precombat->add_action( "potion" );
     precombat->add_action( "stormkeeper" );
-    precombat->add_action( "icefury" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
@@ -11958,7 +12042,7 @@ void shaman_t::init_action_list_elemental()
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled",
         "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
         "keep that logic here)." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&talent.lightning_rod.enabled&talent.windspeakers_lava_resurgence.enabled&dot.flame_shock.remains<target.time_to_die-16&active_enemies<5",
+    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-16&active_enemies<5",
                      "Spread Flame Shock using Surge of Power on up to 4 for Lightning builds with Windspeaker's Lava Resurgence." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock using Surge of Power up to 6." );
@@ -11986,11 +12070,11 @@ void shaman_t::init_action_list_elemental()
         "{T31 fire} Earthquake is still good with Mote and either 15+ Magma Chamber stacks on 6(7)+ targets or 9+ targets.");
     aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used."); 
     aoe->add_action("chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.");
-    aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava Surge is strong.");
-    aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled&!talent.lightning_rod.enabled|buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
-        "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
+    //aoe->add_action(
+    //    "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava Surge is strong.");
+    //aoe->add_action(
+    //    "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled&!talent.lightning_rod.enabled|buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
+    //    "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
     aoe->add_action(
         "earthquake,if=!talent.echoes_of_great_sundering.enabled&active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
@@ -12017,8 +12101,8 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "earth_shock,if=talent.echoes_of_great_sundering.enabled",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
-    aoe->add_action( "icefury,if=!buff.ascendance.up&talent.electrified_shocks.enabled&(talent.lightning_rod.enabled&active_enemies<5&!buff.master_of_the_elements.up|talent.deeply_rooted_elements.enabled&active_enemies=3)", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it. High priority on 3 targets." );
-    aoe->add_action( "frost_shock,if=!buff.ascendance.up&buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<gcd)&(talent.lightning_rod.enabled&active_enemies<5&!buff.master_of_the_elements.up|talent.deeply_rooted_elements.enabled&active_enemies=3)", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
+    //aoe->add_action( "icefury,if=!buff.ascendance.up&talent.electrified_shocks.enabled&(talent.lightning_rod.enabled&active_enemies<5&!buff.master_of_the_elements.up|talent.deeply_rooted_elements.enabled&active_enemies=3)", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it. High priority on 3 targets." );
+    //aoe->add_action( "frost_shock,if=!buff.ascendance.up&buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<gcd)&(talent.lightning_rod.enabled&active_enemies<5&!buff.master_of_the_elements.up|talent.deeply_rooted_elements.enabled&active_enemies=3)", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(buff.stormkeeper.up|t30_2pc_timer.next_tick<3&set_bonus.tier30_2pc)&(maelstrom<60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled-10)&active_enemies<5", "Buff Stormkeeper with Master of the elements on 3-4 targets.");
     aoe->add_action( "lava_beam,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
     aoe->add_action( "chain_lightning,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
@@ -12033,19 +12117,16 @@ void shaman_t::init_action_list_elemental()
         "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
         "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up",
-        "Proc Deeply Rooted Elements against 3 targets." );
-    aoe->add_action(
         "lava_beam,if=buff.master_of_the_elements.up&buff.ascendance.remains>cast_time",
         "Consume Master of the Elements with Lava Beam." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled",
         "Proc Master of the Elements against 3 targets." );
-    aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
-        "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
-    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
-    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
+    //aoe->add_action(
+    //    "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
+    //    "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
+    //aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
+    //aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_beam,if=buff.ascendance.remains>cast_time", "" );
     aoe->add_action( "chain_lightning" );
     aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
@@ -12054,8 +12135,8 @@ void shaman_t::init_action_list_elemental()
     // Single target APL
     single_target->add_action( "fire_elemental", "Keep your cooldowns rolling." );
     single_target->add_action( "storm_elemental", "Keep your cooldowns rolling." );
-    single_target->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>45&(talent.lava_surge.enabled&talent.splintered_elements.enabled|active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1))", "Reset LMT CD as early as possible." );
-    single_target->add_action( "liquid_magma_totem,if=talent.lava_surge.enabled&talent.splintered_elements.enabled|active_dot.flame_shock=0|dot.flame_shock.remains<6|active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Keep your cooldowns rolling." );
+    //single_target->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>45&(talent.lava_surge.enabled&talent.splintered_elements.enabled|active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1))", "Reset LMT CD as early as possible." );
+    //single_target->add_action( "liquid_magma_totem,if=talent.lava_surge.enabled&talent.splintered_elements.enabled|active_dot.flame_shock=0|dot.flame_shock.remains<6|active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Keep your cooldowns rolling." );
     single_target->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&!buff.splintered_elements.up",
         "Use Primordial Wave as much as possible without wasting buffs." );
@@ -12063,9 +12144,9 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_dot.flame_shock=0&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled)&(!buff.master_of_the_elements.up&(buff.stormkeeper.up|cooldown.stormkeeper.remains=0)|!talent.surge_of_power.enabled)",
       "Use Flame shock without Surge of Power if you can't spread it with SoP because it is going to be used on Stormkeeper or Surge of Power is not talented.");
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&refreshable&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled)&(buff.surge_of_power.up&!buff.stormkeeper.up&!cooldown.stormkeeper.remains=0|!talent.surge_of_power.enabled),cycle_targets=1", "Spread Flame Shock to multiple targets only if talents were selected that benefit from it." );
-    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&maelstrom>=116&talent.elemental_blast.enabled&talent.surge_of_power.enabled&talent.swelling_maelstrom.enabled&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/Swelling/SoP Lightning build} Start SK window if you have enough maelstrom to: EB > SoP SK_LB > LvB > EB." );
-    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&buff.surge_of_power.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/SoP Lightning builds} Use Stormkeeper if you already got Surge of Power buff rolling." );
-    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&(!talent.surge_of_power.enabled|!talent.elemental_blast.enabled|talent.lava_surge.enabled|talent.echo_of_the_elements.enabled|talent.primordial_surge.enabled)" );
+    //single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&maelstrom>=116&talent.elemental_blast.enabled&talent.surge_of_power.enabled&talent.swelling_maelstrom.enabled&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/Swelling/SoP Lightning build} Start SK window if you have enough maelstrom to: EB > SoP SK_LB > LvB > EB." );
+    //single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&buff.surge_of_power.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/SoP Lightning builds} Use Stormkeeper if you already got Surge of Power buff rolling." );
+    //single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&(!talent.surge_of_power.enabled|!talent.elemental_blast.enabled|talent.lava_surge.enabled|talent.echo_of_the_elements.enabled|talent.primordial_surge.enabled)" );
     single_target->add_action( "ascendance,if=!buff.stormkeeper.up" );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.stormkeeper.up&!talent.surge_of_power.enabled", "Stormkeeper is strong and should be used." );
@@ -12074,15 +12155,13 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled&buff.master_of_the_elements.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled&!talent.master_of_the_elements.enabled", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up&talent.lightning_rod.enabled", "{Lightning builds} Surge of Power is strong and should be used." );
-    single_target->add_action( "icefury,if=talent.electrified_shocks.enabled&talent.lightning_rod.enabled", "{Lightning builds} High prio IF for lightning builds." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(debuff.electrified_shocks.remains<2|buff.icefury.remains<=gcd)&talent.lightning_rod.enabled", "{Lightning builds} Maintain Electrified Shocks for lightning builds." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up&talent.lightning_rod.enabled", "{Lightning builds} Refresh Electrified Shocks early to buff Stormkeeper for lightning builds." );
+    //single_target->add_action( "icefury,if=talent.electrified_shocks.enabled&talent.lightning_rod.enabled", "{Lightning builds} High prio IF for lightning builds." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(debuff.electrified_shocks.remains<2|buff.icefury.remains<=gcd)&talent.lightning_rod.enabled", "{Lightning builds} Maintain Electrified Shocks for lightning builds." );
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time&!set_bonus.tier31_4pc" );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)", "{EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)", "{ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
-    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|maelstrom>=38&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)|!talent.elemental_blast.enabled)", "Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast." );
-    single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast." );
-    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.ascendance.up&(set_bonus.tier31_4pc|!talent.elemental_blast.enabled)&(!talent.further_beyond.enabled|fb_extension_remaining<2)", "Spam Lava burst in Ascendance (if running Elemental Blast - only with T31 4p, otherwise always) if Further Beyond extension is depleted." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)", "{EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)", "{ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
+    //single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast." );
+    //single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.ascendance.up&(set_bonus.tier31_4pc|!talent.elemental_blast.enabled)&(!talent.further_beyond.enabled|fb_extension_remaining<2)", "Spam Lava burst in Ascendance (if running Elemental Blast - only with T31 4p, otherwise always) if Further Beyond extension is depleted." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.ascendance.up&(!talent.elemental_blast.enabled|!talent.mountains_will_fall.enabled)&!talent.lightning_rod.enabled&set_bonus.tier31_4pc", "{Fire builds, T31 4p} Spam Lava Burst with T31 4p as much as you can (unless you running Elemental Blast + Mountains will fall)." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&!talent.lightning_rod.enabled", "{Fire builds} Buff your next <anything> with MotE." );
     single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130", "{Lightning builds} Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
@@ -12092,22 +12171,22 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.echoes_of_great_sundering.enabled&!talent.elemental_blast.enabled",
         "Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering." );
-    single_target->add_action( "elemental_blast,if=(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&debuff.electrified_shocks.up" );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&maelstrom<110&cooldown.lava_burst.charges_fractional<1.0&talent.electrified_shocks.enabled&talent.elemental_blast.enabled&!talent.lightning_rod.enabled", "{EB/ElS Fire builds} Apply Electrified Shocks if you are out of Lava Burst charges and not close to maelstrom cap." );
+    //single_target->add_action( "elemental_blast,if=(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&debuff.electrified_shocks.up" );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&maelstrom<110&cooldown.lava_burst.charges_fractional<1.0&talent.electrified_shocks.enabled&talent.elemental_blast.enabled&!talent.lightning_rod.enabled", "{EB/ElS Fire builds} Apply Electrified Shocks if you are out of Lava Burst charges and not close to maelstrom cap." );
     single_target->add_action( "elemental_blast,if=buff.master_of_the_elements.up|talent.lightning_rod.enabled", "Default EB line for lightning builds. Requires MotE buff for fire." );
     single_target->add_action( "earth_shock" );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&buff.master_of_the_elements.up&!talent.lightning_rod.enabled&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "{Fire builds}[2t] Els-cleaving Frost Shock with MotE is better than hardcasted Lava Burst on 2 targets." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&buff.master_of_the_elements.up&!talent.lightning_rod.enabled&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "{Fire builds}[2t] Els-cleaving Frost Shock with MotE is better than hardcasted Lava Burst on 2 targets." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.deeply_rooted_elements.enabled", "Fish for DRE procs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&debuff.electrified_shocks.remains<2|buff.icefury.remains<6)",
-                               "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
-    single_target->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge."
-        "enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements."
-        "enabled|buff.stormkeeper.up",
-        "Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use "
-        "Lightning Bolt without wasting Stormkeeper charges." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&debuff.electrified_shocks.remains<2|buff.icefury.remains<6)",
+    //                           "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
+    //single_target->add_action(
+    //    "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge."
+    //    "enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements."
+    //    "enabled|buff.stormkeeper.up",
+    //    "Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use "
+    //    "Lightning Bolt without wasting Stormkeeper charges." );
     single_target->add_action( "elemental_blast" );
     single_target->add_action(
         "chain_lightning,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)",
@@ -12116,19 +12195,19 @@ void shaman_t::init_action_list_elemental()
         "lightning_bolt,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled",
         "Utilize the Power of the Maelstrom buff if your Lightning Bolt is empowered by Unrelenting Calamity." );
     single_target->add_action( "icefury" );
-    single_target->add_action(
-        "chain_lightning,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)",
-        "Spam Chain Lightning if Storm Elemental is active. But honor all previous priorities." );
-    single_target->add_action(
-        "lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)",
-        "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.flux_melting.enabled|talent.electrified_shocks.enabled&!talent.lightning_rod.enabled)" );
-    single_target->add_action( "chain_lightning,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", 
-                              "If you have MotE up and aren't at risk of capping LvB, spend MotE on Chain Lightning." );
-    single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
-                               "Use your Icefury buffs if you didn't improve the talent." );
+    //single_target->add_action(
+    //    "chain_lightning,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)",
+    //    "Spam Chain Lightning if Storm Elemental is active. But honor all previous priorities." );
+    //single_target->add_action(
+    //    "lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)",
+    //    "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.flux_melting.enabled|talent.electrified_shocks.enabled&!talent.lightning_rod.enabled)" );
+    //single_target->add_action( "chain_lightning,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)&active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", 
+    //                          "If you have MotE up and aren't at risk of capping LvB, spend MotE on Chain Lightning." );
+    //single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    //single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
+    //                           "Use your Icefury buffs if you didn't improve the talent." );
     single_target->add_action( "chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Casting Chain Lightning at two targets is more efficient than Lightning Bolt." );
     single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
     single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
@@ -12590,11 +12669,13 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
+  /*
   if ( get_target_data( target )->debuff.electrified_shocks->check() &&
        dbc::is_school( school, SCHOOL_NATURE ))
   {
     m *= 1.0 + get_target_data( target )->debuff.electrified_shocks->value();
   }
+  */
 
   return m;
 }
@@ -12662,7 +12743,7 @@ void shaman_t::reset()
 {
   player_t::reset();
 
-  lava_surge_during_lvb = false;
+  //lava_surge_during_lvb = false;
   sk_during_cast        = false;
 
   accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
