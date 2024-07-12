@@ -1149,7 +1149,7 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
   {
     if ( s.resource_gain.actual[ i ] > 0 )
     {
-      os.format( R"(<tr class="right"><td class=\"left\">{}</td><td class=\"left\">{}</td>)"
+      os.format( R"(<tr class="right"><td class="left">{}</td><td class="left">{}</td>)"
                  "<td>{:.2Lf}</td>"
                  "<td>{:.2Lf}</td>"
                  "<td>{:.2f}%</td>"
