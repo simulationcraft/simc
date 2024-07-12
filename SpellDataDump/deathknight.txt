@@ -18645,6 +18645,7 @@ Description      : $@spelldesc444072
 Tooltip          : Your Runic Power spending abilities deal $w1% increased damage.
 
 Name             : Exterminate (id=441378) [Spell Family (15), Passive] 
+Hotfixed         : Description
 Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
@@ -18675,7 +18676,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a137008[Marrowrend][Obliterate]$?a443564[s][] costs $?a443564[$s4][no] Rune and summon$?a443564[][s] $s1 scythes to strike your enemies.
 
-The first scythe strikes your target for $?a137008[$$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.
+The first scythe strikes your target for $?a137008[$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.
 
 Name             : Exterminate (id=441416) [Spell Family (15)] 
 Class            : Death Knight
