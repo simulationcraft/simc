@@ -4582,8 +4582,8 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     if ( p()->talent.aldrachi_reaver.wounded_quarry->ok() && td( s->target )->debuffs.reavers_mark->up() )
     {
       p()->active.wounded_quarry->execute_on_target( s->target );
-      // 2024-06-16 -- Chance seems to be about 10% per melee hit per beta gameplay.
-      if ( rng().roll( 0.1 ) )
+      // 2024-07-11 -- Chance seems to be about 30% (very conservatively) per melee hit per beta gameplay.
+      if ( rng().roll( 0.30 ) )
       {
         p()->proc.soul_fragment_from_wounded_quarry->occur();
         p()->spawn_soul_fragment( soul_fragment::LESSER );
