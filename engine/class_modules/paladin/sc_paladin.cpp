@@ -31,6 +31,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     beacon_target( nullptr ),
     next_season( SUMMER ),
     next_armament( HOLY_BULWARK ),
+    radiant_glory_accumulator( 0.0 ),
     lights_deliverance_triggered_during_ready( false ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
@@ -106,6 +107,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
   cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
+
+  cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
+  cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -2710,7 +2714,7 @@ public:
     if ( p()->talents.adjudication->ok() )
     {
       // TODO: verify this is right
-      double mastery_chance = p()->cache.mastery_value() * 2;
+      double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
       if ( p()->talents.boundless_judgment->ok() )
       {
         // according to bolas this also increases HoW proc chance
@@ -3414,6 +3418,7 @@ void paladin_t::reset()
 
   next_season = SUMMER;
   next_armament = HOLY_BULWARK;
+  radiant_glory_accumulator = 0.0;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
   lights_deliverance_triggered_during_ready = false;

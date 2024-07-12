@@ -108,6 +108,9 @@ struct es_explosion_t : public paladin_spell_t
     amount += spell_direct_power_coefficient( state ) * ( state->composite_spell_power() );
     amount += attack_direct_power_coefficient( state ) * ( state->composite_attack_power() );
 
+    // this is the only difference from normal direct_amount!
+    amount += accumulated;
+
     // OH penalty, this applies to any OH attack even if is not based on weapon damage
     double weapon_slot_modifier = 1.0;
     if ( weapon && weapon->slot == SLOT_OFF_HAND )
@@ -125,9 +128,6 @@ struct es_explosion_t : public paladin_spell_t
       amount += bonus_da( state );
 
     amount *= state->composite_da_multiplier();
-
-    // this is the only difference from normal direct_amount!
-    amount += accumulated;
 
     // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
     double delta_mod = amount_delta_modifier( state );
@@ -753,14 +753,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( !background )
     {
-      if ( p()->talents.righteous_cause->ok() )
-      {
-        if ( rng().roll( p()->talents.righteous_cause->proc_chance() ) )
-        {
-          p()->procs.righteous_cause->occur();
-          p()->cooldowns.blade_of_justice->reset( true );
-        }
-      }
       if ( p()->buffs.echoes_of_wrath->up() )
       {
         p()->buffs.echoes_of_wrath->expire();
@@ -916,7 +908,7 @@ struct judgment_ret_t : public judgment_t
       }
     }
 
-    double mastery_chance = p()->cache.mastery_value() * 2;
+    double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
     if ( p()->talents.boundless_judgment->ok() )
       mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
 
@@ -970,15 +962,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
 
     if ( p()->buffs.judge_jury_and_executioner->up() )
       p()->buffs.judge_jury_and_executioner->expire();
-
-    if ( p()->talents.righteous_cause->ok() )
-    {
-      if ( rng().roll( p()->talents.righteous_cause->proc_chance() ) )
-      {
-        p()->procs.righteous_cause->occur();
-        p()->cooldowns.blade_of_justice->reset( true );
-      }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -1004,13 +987,13 @@ struct truths_wake_t : public paladin_spell_t
     hasted_ticks = tick_may_crit = true;
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     paladin_spell_t::tick( d );
 
-    if ( d->state->result == RESULT_CRIT && p()->talents.burn_to_ash->ok() )
+    if ( d->state->result == RESULT_CRIT && p()->talents.burn_to_ash->ok() && d->is_ticking() )
     {
-      d->adjust_duration( timespan_t::from_seconds( p()->talents.burn_to_ash->effectN( 1 ).base_value() ) );
+      d->adjust_duration( p()->talents.burn_to_ash->effectN( 1 ).time_value() );
     }
   }
 };
@@ -1315,18 +1298,38 @@ struct templar_strike_t : public base_templar_strike_t
   }
 };
 
+struct templar_slash_dot_t : public paladin_spell_t
+{
+  templar_slash_dot_t( paladin_t* p )
+    : paladin_spell_t( "templar_slash_dot", p, p->find_spell( 447142 ) )
+  {
+    background = true;
+  }
+};
+
 struct templar_slash_t : public base_templar_strike_t
 {
+  templar_slash_dot_t* dot;
+
   templar_slash_t( paladin_t* p, util::string_view options_str )
-    : base_templar_strike_t( "templar_slash", p, options_str, p->find_spell( 406647 ) )
+    : base_templar_strike_t( "templar_slash", p, options_str, p->find_spell( 406647 ) ),
+      dot( new templar_slash_dot_t( p ) )
   {
-    base_crit = 1.0;
+    add_child( dot );
   }
 
   void execute() override
   {
     base_templar_strike_t::execute();
     p()->buffs.templar_strikes->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_templar_strike_t::impact( s );
+
+    dot->target = s->target;
+    dot->execute();
   }
 
   bool ready() override
@@ -1405,8 +1408,6 @@ void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
   double accumulated = get_target_data( target )->debuff.execution_sentence->get_accumulated_damage();
-  if ( talents.penitence->ok() )
-    accumulated *= 1.0 + talents.penitence->effectN( 1 ).percent();
 
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;

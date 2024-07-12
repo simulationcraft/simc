@@ -339,6 +339,7 @@ public:
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
     cooldown_t* radiant_glory_icd;
+    cooldown_t* righteous_cause_icd;
 
     cooldown_t* aurora_icd;
     cooldown_t* second_sunrise_icd;
@@ -746,6 +747,7 @@ public:
 
   season next_season;
   armament next_armament;
+  double radiant_glory_accumulator;
 
   bool lights_deliverance_triggered_during_ready;
 
@@ -1471,7 +1473,7 @@ public:
     double cttm = ab::composite_target_ta_multiplier( target );
 
     paladin_td_t* td = this->td( target );
-    if ( td->dots.truths_wake->is_ticking() && ab::id != 403695 && p()->talents.burn_to_ash->ok() )
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() && ab::id != 403695 )
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;
@@ -1736,9 +1738,31 @@ public:
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3.0;
 
+    if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
+    {
+      // TODO: verify that this is how this works
+      unsigned base_cost = as<int>( ab::base_cost() );
+      for ( unsigned i = 0; i < base_cost; i++ )
+      {
+        if ( ab::rng().roll( p->talents.righteous_cause->effectN( 1 ).percent() ) )
+        {
+          p->procs.righteous_cause->occur();
+          p->cooldowns.blade_of_justice->reset( true );
+          p->cooldowns.righteous_cause_icd->start();
+          break;
+        }
+      }
+    }
+
     if ( p->talents.radiant_glory->ok() )
     {
-      if ( p->rppm.radiant_glory->trigger() )
+      // This is a bit of a hack. As far as we can tell from logs,
+      // this agony-like accumulator logic matches the distribution
+      // of procs pretty closely, tested on a couple thousand TV casts.
+      // This will need periodic re-verification, but is good enough for beta
+      // purposes.
+      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
+      if ( p->radiant_glory_accumulator >= 1.0 )
       {
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
@@ -1749,6 +1773,7 @@ public:
         {
           p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
         }
+        p->radiant_glory_accumulator -= 1.0;
       }
     }
 
