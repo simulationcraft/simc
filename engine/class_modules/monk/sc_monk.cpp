@@ -3205,7 +3205,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     cooldown->duration = data().cooldown();
 
-    parse_effects( p->talent.monk.fatal_touch );
+    apply_affecting_aura( p->talent.monk.fatal_touch );
   }
 
   void init() override
@@ -8017,9 +8017,7 @@ void monk_t::create_buffs()
                            ->set_default_value_from_effect( 1 );
 
   buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch",
-                                         talent.monk.fatal_touch->effectN( 2 ).trigger() )
-                         ->set_default_value_from_effect( 1 )
-                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                         talent.monk.fatal_touch->effectN( 2 ).trigger() );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( this );
 
