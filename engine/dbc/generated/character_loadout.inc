@@ -1,4 +1,4 @@
-static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 649;
+static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 636;
 
 // Character Loadout data, wow build 11.0.2.55522
 static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
