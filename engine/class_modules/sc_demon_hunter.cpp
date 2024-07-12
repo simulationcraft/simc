@@ -840,6 +840,7 @@ public:
     proc_t* soul_fragment_from_sigil_of_spite;
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
+    proc_t* soul_fragment_from_bulk_extraction;
 
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
@@ -2381,6 +2382,10 @@ struct bulk_extraction_t : public demon_hunter_spell_t
 
     unsigned num_souls = std::min( execute_state->n_targets, as<unsigned>( data().effectN( 2 ).base_value() ) );
     p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, true );
+    for (unsigned i = 0; i < num_souls; i++)
+    {
+      p()->proc.soul_fragment_from_bulk_extraction->occur();
+    }
   }
 };
 
@@ -7506,13 +7511,14 @@ void demon_hunter_t::init_procs()
   proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
-  proc.soul_fragment_expire              = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow            = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear          = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture       = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_sigil_of_spite = get_proc( "soul_fragment_from_sigil_of_spite" );
-  proc.soul_fragment_from_fallout        = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta           = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_expire               = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow             = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear           = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture        = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_sigil_of_spite  = get_proc( "soul_fragment_from_sigil_of_spite" );
+  proc.soul_fragment_from_fallout         = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta            = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_from_bulk_extraction = get_proc( "soul_fragment_from_bulk_extraction" );
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
