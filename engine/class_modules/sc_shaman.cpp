@@ -6778,7 +6778,8 @@ struct feral_spirit_spell_t : public shaman_spell_t
     {
       case feral_spirit_cast::NORMAL:
         duration = player->find_spell( 228562 )->duration();
-        n_summons = 2U;
+        n_summons = as<unsigned>( player->find_spell( 228562 )->effectN( 1 ).base_value() ) +
+          as<unsigned>( player->sets->set( SHAMAN_ENHANCEMENT, TWW1, B4 )->effectN( 1 ).base_value() );
         break;
       // TODO: Figure out the T31 driver
       case feral_spirit_cast::ROLLING_THUNDER:
@@ -11713,6 +11714,9 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.pulse_capacitor );
   action.apply_affecting_aura( talent.supportive_imbuements );
   action.apply_affecting_aura( talent.totemic_coordination );
+
+  // Set bonuses
+  action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
