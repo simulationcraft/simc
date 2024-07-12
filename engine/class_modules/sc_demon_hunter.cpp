@@ -2132,7 +2132,8 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
-        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+        make_event<delayed_execute_event_t>(
+            *BASE::sim, BASE::p(), BASE::p()->active.art_of_the_glaive, BASE::p()->target, 0_ms );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
