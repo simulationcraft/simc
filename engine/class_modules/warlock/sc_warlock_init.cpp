@@ -205,6 +205,8 @@ namespace warlock
 
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
+    talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
+
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
     talents.annihilan_training_buff = find_spell( 386176 );
 
@@ -232,8 +234,6 @@ namespace warlock
     talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
-  
-    talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
     talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
   
@@ -474,6 +474,7 @@ namespace warlock
     buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
                              ->set_period( talents.inner_demons->effectN( 1 ).period() )
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                             ->set_tick_zero( true )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                warlock_pet_list.wild_imps.spawn();
                              } );
@@ -739,7 +740,10 @@ namespace warlock
     player_t::combat_begin();
 
     if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
-      buffs.inner_demons->trigger();
+    {
+      timespan_t start = timespan_t::from_seconds( rng().range( talents.inner_demons->effectN( 1 ).period().total_seconds() ) );
+      make_event( sim, start, [ this ] { buffs.inner_demons->trigger(); } );
+    }
   }
 
   void warlock_t::reset()
