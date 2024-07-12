@@ -1075,7 +1075,7 @@ public:
     parse_effects( p()->buff.merciless_bonegrinder );
     parse_effects( p()->buff.storm_of_swords );
     // Gating this to keep the report cleaner
-    if ( specialization() == WARRIOR_ARMS )
+    if ( p()->specialization() == WARRIOR_ARMS )
       parse_effects( p()->buff.recklessness_warlords_torment );
 
     // Fury
@@ -1089,7 +1089,7 @@ public:
     if ( p()->talents.fury.powerful_enrage->ok() )
       parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
     // Gating this to keep the report cleaner
-    if ( specialization() == WARRIOR_FURY)
+    if ( p()->specialization() == WARRIOR_FURY)
       parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
 
