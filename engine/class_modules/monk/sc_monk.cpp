@@ -4609,6 +4609,7 @@ struct celestial_conduit_t : public monk_spell_t
     parse_options( options_str );
 
     may_combo_strike = true;
+    sef_ability      = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
 
     tick_action = damage;
 
