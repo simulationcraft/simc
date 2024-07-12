@@ -68,7 +68,8 @@ enum class spell_variant : unsigned
   SHAKE_THE_FOUNDATIONS,
   PRIMORDIAL_WAVE,
   MOLTEN_CHARGE,
-  THORIMS_INVOCATION
+  THORIMS_INVOCATION,
+  FUSION_OF_ELEMENTS
 };
 
 enum class strike_variant : unsigned
@@ -238,6 +239,7 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
     case spell_variant::MOLTEN_CHARGE: return fmt::format("{}_mc", name);
     case spell_variant::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
+    case spell_variant::FUSION_OF_ELEMENTS: return fmt::format( "{}_foe", name );
     default: return std::string( name );
   }
 }
@@ -252,6 +254,7 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::PRIMORDIAL_WAVE: return "primordial_wave";
     case spell_variant::MOLTEN_CHARGE: return "molten_charge";
     case spell_variant::THORIMS_INVOCATION: return "thorims_invocation";
+    case spell_variant::FUSION_OF_ELEMENTS: return "fusion_of_elements";
     default: return "normal";
   }
 }
@@ -394,6 +397,8 @@ public:
     action_t* awakening_storms; // Awakening Storms damage
     action_t* whirling_air_ss;
     action_t* whirling_air_ws;
+
+    action_t* elemental_blast_foe; // Fusion of Elements
   } action;
 
   // Pets
@@ -468,6 +473,8 @@ public:
     buff_t* stormkeeper;
     buff_t* surge_of_power;
     buff_t* wind_gust;  // Storm Elemental passive 263806
+    buff_t* fusion_of_elements_1;
+    buff_t* fusion_of_elements_2;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -1067,6 +1074,7 @@ public:
   void trigger_earthsurge( const action_state_t* state );
   void trigger_whirling_air( const action_state_t* state );
   void trigger_reactivity( const action_state_t* state );
+  void trigger_fusion_of_elements( const action_state_t* state );
   void trigger_totemic_rebound( const action_state_t* state );
 
   // Legendary
@@ -2334,6 +2342,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       p()->buff.master_of_the_elements->decrement();
       proc_moe->occur();
+    }
+
+    if ( exec_type == spell_variant::NORMAL )
+    {
+      p()->trigger_fusion_of_elements( execute_state );
     }
   }
 
@@ -6438,6 +6451,7 @@ struct elemental_blast_t : public shaman_spell_t
     )
   {
     parse_options( options_str );
+
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
@@ -6457,6 +6471,19 @@ struct elemental_blast_t : public shaman_spell_t
         cooldown->charges += as<int>( player->find_spell( 394152 )->effectN( 2 ).base_value() );
       }
     }
+
+    switch ( type_ )
+    {
+      case spell_variant::PRIMORDIAL_WAVE:
+      case spell_variant::FUSION_OF_ELEMENTS:
+        base_execute_time = 0_ms;
+        background = true;
+        base_costs[ RESOURCE_MANA ] = 0;
+        base_costs[ RESOURCE_MAELSTROM ] = 0;
+        break;
+      default:
+        break;
+    }
   }
 
   double action_multiplier() const override
@@ -6471,6 +6498,11 @@ struct elemental_blast_t : public shaman_spell_t
     if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
       m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
+    }
+
+    if ( exec_type == spell_variant::FUSION_OF_ELEMENTS )
+    {
+      m *= p()->talent.fusion_of_elements->effectN( 1 ).percent();
     }
 
     return m;
@@ -6582,7 +6614,12 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
+    p()->buff.icefury_dmg->trigger( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() );
+
+    p()->buff.fusion_of_elements_1->trigger();
+    p()->buff.fusion_of_elements_2->trigger();
+
+    p()->buff.icefury_cast->decrement();
   }
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
@@ -9625,6 +9662,12 @@ void shaman_t::create_actions()
     action.whirling_air_ss = new stormstrike_t( this, "", strike_variant::WHIRLING_AIR );
     action.whirling_air_ws = new windstrike_t( this, "", strike_variant::WHIRLING_AIR );
   }
+
+  if ( talent.fusion_of_elements.ok() )
+  {
+    action.elemental_blast_foe = new elemental_blast_t( this, spell_variant::FUSION_OF_ELEMENTS );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -9634,9 +9677,6 @@ void shaman_t::create_actions()
   if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   {
     action.elemental_blast = new elemental_blast_t( this, spell_variant::PRIMORDIAL_WAVE );
-    action.elemental_blast->background = true;
-    action.elemental_blast->base_costs[ RESOURCE_MANA ] = 0;
-    action.elemental_blast->base_costs[ RESOURCE_MAELSTROM ] = 0;
   }
 
   if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
@@ -11082,6 +11122,33 @@ void shaman_t::trigger_reactivity( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_fusion_of_elements( const action_state_t* state )
+{
+  if ( !talent.fusion_of_elements.ok() )
+  {
+    return;
+  }
+
+  bool consumed = false;
+
+  if ( buff.fusion_of_elements_1->up() && dbc::is_school( state->action->school, SCHOOL_NATURE ) )
+  {
+    buff.fusion_of_elements_1->expire();
+    consumed = true;
+  }
+
+  if ( buff.fusion_of_elements_2->up() && dbc::is_school( state->action->school, SCHOOL_FIRE ) )
+  {
+    buff.fusion_of_elements_2->expire();
+    consumed = true;
+  }
+
+  if ( consumed && !buff.fusion_of_elements_1->check() && !buff.fusion_of_elements_2->check() )
+  {
+    action.elemental_blast_foe->execute_on_target( state->target );
+  }
+}
+
 void shaman_t::trigger_totemic_rebound( const action_state_t* state )
 {
   if ( !pet.surging_totem.n_active_pets() )
@@ -11265,6 +11332,13 @@ void shaman_t::create_buffs()
   buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
   buff.splintered_elements = new splintered_elements_buff_t( this );
+
+  buff.fusion_of_elements_1 = make_buff( this, "fusion_of_elements_1",
+                                         talent.fusion_of_elements->effectN( 1 ).trigger() )
+                                ->set_trigger_spell( talent.fusion_of_elements );
+  buff.fusion_of_elements_2 = make_buff( this, "fusion_of_elements_2",
+                                         talent.fusion_of_elements->effectN( 2 ).trigger() )
+                                ->set_trigger_spell( talent.fusion_of_elements );
 
   //
   // Enhancement
