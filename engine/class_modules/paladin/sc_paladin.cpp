@@ -401,7 +401,8 @@ struct consecration_t : public paladin_spell_t
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
 
-    if ( p->talents.divine_hammer->ok() || p->talents.consecrated_blade->ok() )
+    // technically this doesn't work for characters under level 11?
+    if ( p->specialization() == PALADIN_RETRIBUTION )
       background = true;
 
     add_child( damage_tick );

@@ -355,7 +355,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( p()->talents.consecrated_blade->ok() && p()->cooldowns.consecrated_blade_icd->up() )
+    if ( p()->spells.consecrated_blade->ok() && p()->cooldowns.consecrated_blade_icd->up() )
     {
       p()->active.background_cons->schedule_execute();
       p()->cooldowns.consecrated_blade_icd->start();
@@ -1549,7 +1549,6 @@ void paladin_t::init_spells_retribution()
   talents.highlords_wrath             = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Wrath");
   talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
-  talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" );
   talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" );
   talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" );
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
@@ -1607,6 +1606,7 @@ void paladin_t::init_spells_retribution()
     spec.improved_crusader_strike = find_specialization_spell( 383254 );
 
     spells.judgment_debuff = find_spell( 197277 );
+    spells.consecrated_blade = find_specialization_spell( 404834 );
   }
 
   passives.boundless_conviction = find_spell( 115675 );

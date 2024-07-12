@@ -418,6 +418,7 @@ public:
 
     const spell_data_t* ashen_hallow_how;
 
+    const spell_data_t* consecrated_blade;
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
@@ -627,7 +628,6 @@ public:
     const spell_data_t* crusading_strikes;
     const spell_data_t* templar_strikes;
     const spell_data_t* divine_wrath;
-    const spell_data_t* consecrated_blade;
     const spell_data_t* divine_hammer;
     const spell_data_t* blade_of_vengeance;
     const spell_data_t* empyrean_legacy;
