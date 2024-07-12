@@ -289,7 +289,6 @@ struct shaman_td_t : public actor_target_data_t
   struct debuffs
   {
     // Elemental
-    //buff_t* electrified_shocks;
     buff_t* lightning_rod;
 
     // Enhancement
@@ -846,7 +845,7 @@ public:
 
     // Row 2
     player_talent_t unlimited_power;
-    player_talent_t tempest_row2;
+    player_talent_t stormcaller;
     // player_talent_t shocking_grasp;
 
     // Row 3
@@ -1328,8 +1327,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Elemental
   debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
-  //debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) )
-  //  ->set_default_value_from_effect( 1 );
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
@@ -5085,19 +5082,6 @@ struct chain_lightning_t : public chained_base_t
       tl.push_back( target );
     }
 
-    // Collect debuffed targets first
-    /*
-    if ( p()->talent.electrified_shocks.ok() )
-    {
-      range::for_each( sim->target_non_sleeping_list, [this, &tl]( player_t* t ) {
-        if ( td( t )->debuff.electrified_shocks->check() && t->is_enemy() && t != target )
-        {
-          tl.emplace_back( t );
-        }
-      } );
-    }
-    */
-
     // The rest
     range::for_each( sim->target_non_sleeping_list, [&tl]( player_t* t ) {
       if ( t->is_enemy() && !range::contains( tl, t ) )
@@ -7538,16 +7522,6 @@ struct frost_shock_t : public shaman_spell_t
       t += targets;
     }
 
-    /*
-    if ( p() ->buff.icefury_dmg->up() && p()->talent.electrified_shocks->ok() )
-    {
-      // It looks like Frost Shock does not have the expected 1 baseline n_targets.
-      // Spell data suggests Electrified Shocks adds 3 targets.
-      // But the baseline target needs to be added, too.
-      t += 1 + as<int>( p()->talent.electrified_shocks->effectN( 1 ).base_value() );
-    }
-    */
-
     return t;
   }
 
@@ -7598,18 +7572,6 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     maelstrom_gain = 0.0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    shaman_spell_t::impact( s );
-
-    /*
-    if ( p()->buff.icefury_dmg->up() && p()->talent.electrified_shocks->ok() )
-    {
-      td( s->target )->debuff.electrified_shocks->trigger();
-    }
-    */
   }
 
   bool ready() override
@@ -10049,48 +10011,58 @@ void shaman_t::init_spells()
   talent.fire_elemental = _ST( "Fire Elemental" );
   talent.storm_elemental = _ST( "Storm Elemental" );
   // Row 3
-  // Row 4
-  talent.flow_of_power      = _ST( "Flow of Power" );
-  //talent.lava_surge         = _ST( "Lava Surge" );
-  // Row 5
-  talent.unrelenting_calamity = _ST( "Unrelenting Calamity" );
-  talent.icefury              = _ST( "Icefury" );
-  talent.swelling_maelstrom   = _ST( "Swelling Maelstrom" );
-  talent.echo_of_the_elements = _ST( "Echo of the Elements" );
-  // Row 6
-  talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 392714 );
-  //talent.electrified_shocks = _ST( "Electrified Shocks" );
-  talent.flux_melting = _ST( "Flux Melting" );
-  talent.aftershock = _ST( "Aftershock" );
+  talent.flash_of_lightning     = _ST( "Flash of Lightning" );
+  talent.aftershock             = _ST( "Aftershock" );
   talent.surge_of_power         = _ST( "Surge of Power" );
+  talent.echo_of_the_elements   = _ST( "Echo of the Elements" );
+  // Row 4
+  talent.icefury                = _ST( "Icefury" );
+  talent.unrelenting_calamity   = _ST( "Unrelenting Calamity" );
+  talent.master_of_the_elements = _ST( "Master of the Elements" );
+  // Row 5
+  talent.fusion_of_elements     = _ST( "Fusion of Elements" );
+  talent.storm_frenzy           = _ST( "Storm Frenzy" );
+  talent.swelling_maelstrom     = _ST( "Swelling Maelstrom" );
+  talent.primordial_fury        = _ST( "Primordial Fury" );
+  talent.flow_of_power          = _ST( "Flow of Power" );
+  talent.elemental_unity        = _ST( "Elemental Unity" );
+  // Row 6
+  talent.flux_melting           = _ST( "Flux Melting" );
+  talent.lightning_conduit      = _ST( "Lightning Conduit" );
+  talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
+  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
+  talent.everlasting_elements   = _ST( "Everlasting Elements" );
   talent.flames_of_the_cauldron = _ST( "Flames of the Cauldron" );
   // Row 7
-  talent.flash_of_lightning = _ST( "Flash of Lightning" );
-  talent.eye_of_the_storm = _ST( "Eye of the Storm" );
-  talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
-  talent.master_of_the_elements = _ST( "Master of the Elements" );
-  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
+  talent.eye_of_the_storm       = _ST( "Eye of the Storm" );
+  talent.thunderstrike_ward     = _ST( "Thunderstrike Ward" );
+  talent.echo_chamber           = _ST( "Echo Chamber" );
+  talent.searing_flames         = _ST( "Searing Flames" );
+  talent.earthen_rage           = _ST( "Earthen Rage" );
   // Row 8
-  talent.deeply_rooted_elements = _ST( "Deeply Rooted Elements" );
-  talent.liquid_magma_totem = _ST( "Liquid Magma Totem" );
-  talent.primal_elementalist = _ST( "Primal Elementalist" );
+  talent.elemental_equilibrium  = _ST( "Elemental Equilibrium" );
+  talent.stormkeeper            = _ST( "Stormkeeper" );
+  talent.echo_of_the_elementals = _ST( "Echo of the Elementals" );
   // Row 9
-  talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
-  talent.elemental_equilibrium = _ST( "Elemental Equilibrium" );
-  talent.echo_chamber = _ST( "Echo Chamber" );
-  talent.magma_chamber = _ST( "Magma Chamber" );
-  talent.searing_flames = _ST( "Searing Flames" );
-  // Row 10
-  talent.lightning_rod = _ST( "Lightning Rod" );
-  talent.mountains_will_fall = _ST( "Mountains Will Fall" );
+  talent.mountains_will_fall    = _ST( "Mountains Will Fall" );
+  talent.first_ascendant        = _ST( "First Ascendant" );
+  talent.preeminence            = _ST( "Preeminence" );
+  talent.fury_of_the_storms     = _ST( "Fury of the Storms" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
+  talent.magma_chamber          = _ST( "Magma Chamber" );
+  // Row 10
+  talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
+  talent.deeply_rooted_elements = _ST( "Deeply Rooted Elements" );
+  talent.lightning_rod          = _ST( "Lightning Rod" );
+  talent.primal_elementalist    = _ST( "Primal Elementalist" );
+  talent.liquid_magma_totem     = _ST( "Liquid Magma Totem" );
 
   // Stormbringer
 
   talent.tempest               = find_talent_spell( talent_tree::HERO, 454009 );
 
   talent.unlimited_power       = find_talent_spell( talent_tree::HERO, "Unlimited Power" );
-  talent.tempest_row2          = find_talent_spell( talent_tree::HERO, 454021 );
+  talent.stormcaller           = find_talent_spell( talent_tree::HERO, "Stormcaller" );
   //talent.shocking_grasp   = find_talent_spell( talent_tree::HERO, "Shocking Grasp" );
 
   talent.supercharge           = find_talent_spell( talent_tree::HERO, "Supercharge" );
@@ -11536,7 +11508,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.fire_and_ice );
   action.apply_affecting_aura( talent.thorims_invocation );
 
-  action.apply_affecting_aura( talent.tempest_row2 );
+  action.apply_affecting_aura( talent.stormcaller );
   action.apply_affecting_aura( talent.voltaic_surge );
   action.apply_affecting_aura( talent.pulse_capacitor );
   action.apply_affecting_aura( talent.supportive_imbuements );
@@ -12396,14 +12368,6 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
-
-  /*
-  if ( get_target_data( target )->debuff.electrified_shocks->check() &&
-       dbc::is_school( school, SCHOOL_NATURE ))
-  {
-    m *= 1.0 + get_target_data( target )->debuff.electrified_shocks->value();
-  }
-  */
 
   return m;
 }
