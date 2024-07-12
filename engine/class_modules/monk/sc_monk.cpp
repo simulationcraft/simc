@@ -160,6 +160,7 @@ void monk_action_t<Base>::apply_buff_effects()
    */
 
   // Monk
+  parse_effects( p()->buff.fatal_touch );
 
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
@@ -655,6 +656,7 @@ void monk_action_t<Base>::tick( dot_t *dot )
           double result        = dot->state->result_amount;
           double increase      = std::fmin( current_value + result,
                                             p()->max_health() );  // accumulator is capped at the player's current max hp
+          p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
           p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
           p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
         }
@@ -3203,6 +3205,8 @@ struct touch_of_death_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown->duration = data().cooldown();
+
+    parse_effects( p->talent.monk.fatal_touch );
   }
 
   void init() override
@@ -3227,7 +3231,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
     // Only applicable in health based sims
-    if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
+    if ( target->current_health() > 0 && target->current_health() <= p()->max_health() )
       return monk_melee_attack_t::target_ready( target );
 
     return false;
@@ -3238,6 +3242,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.touch_of_death_ww->trigger();
+    p()->buff.fatal_touch->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -3245,7 +3250,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     double max_hp, amount;
 
     // In execute range ToD deals player's max HP
-    amount = max_hp = p()->resources.max[ RESOURCE_HEALTH ];
+    amount = max_hp = p()->max_health();
 
     // Not in execute range
     // or not a health-based fight style
@@ -3383,7 +3388,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
 
     if ( pct_health > 0 )
     {
-      double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
+      double damage_amount = pct_health * player->max_health();
 
       // Redirects 70% of the damage absorbed
       damage_amount *= data().effectN( 4 ).percent();
@@ -3874,7 +3879,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     {
       background  = true;
       target      = p;
-      base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+      base_dd_min = p->max_health() * data().effectN( 2 ).percent();
       base_dd_max = base_dd_min;
     }
   };
@@ -5614,7 +5619,7 @@ struct life_cocoon_t : public monk_absorb_t
     parse_options( options_str );
     harmful = may_crit = false;
 
-    base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * p->talent.mistweaver.life_cocoon->effectN( 3 ).percent();
+    base_dd_min = p->max_health() * p->talent.mistweaver.life_cocoon->effectN( 3 ).percent();
     base_dd_max = base_dd_min;
   }
 
@@ -5886,7 +5891,7 @@ struct fortifying_brew_t : public monk_buff_t
     //   health_multiplier = p().talent.monk.fortifying_brew->effectN( 6 ).percent();
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * health_multiplier );
+    health_gain = static_cast<int>( p().max_health() * health_multiplier );
 
     p().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t *)nullptr, (action_t *)nullptr, true );
     p().stat_gain( STAT_HEALTH, health_gain, (gain_t *)nullptr, (action_t *)nullptr, true );
@@ -7995,22 +8000,6 @@ void monk_t::create_buffs()
 
   buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
 
-  buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
-                         ->set_trigger_spell( talent.windwalker.dual_threat )
-                         ->set_default_value_from_effect( 1 );
-
-  buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
-                           ->set_trigger_spell( talent.windwalker.combat_wisdom )
-                           ->set_default_value_from_effect( 1 );
-
-  buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
-                            ->set_trigger_spell( shared.jadefire_stomp )
-                            ->set_default_value_from_effect( 2 );
-
-  buff.fortifying_brew = new buffs::fortifying_brew_t( this );
-
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( this, "rushing_jade_wind", passives.rushing_jade_wind );
-
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.monk.dampen_harm );
 
   buff.diffuse_magic =
@@ -8023,6 +8012,23 @@ void monk_t::create_buffs()
                               ->add_invalidate( CACHE_ATTACK_HASTE )
                               ->add_invalidate( CACHE_HASTE )
                               ->add_invalidate( CACHE_SPELL_HASTE );
+
+  buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
+                           ->set_trigger_spell( talent.windwalker.combat_wisdom )
+                           ->set_default_value_from_effect( 1 );
+
+  buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch",
+                                         talent.monk.fatal_touch->effectN( 2 ).trigger() )
+                         ->set_default_value_from_effect( 1 )
+                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.fortifying_brew = new buffs::fortifying_brew_t( this );
+
+  buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
+                            ->set_trigger_spell( shared.jadefire_stomp )
+                            ->set_default_value_from_effect( 2 );
+
+  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( this, "rushing_jade_wind", passives.rushing_jade_wind );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", baseline.monk.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
@@ -8167,10 +8173,6 @@ void monk_t::create_buffs()
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.mistweaver.focused_thunder->effectN( 1 ).base_value() ) );
 
-  buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch", find_spell( 450832 ) )
-                         ->set_default_value_from_effect( 1 )
-                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   // Windwalker
   buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
                       ->set_trigger_spell( baseline.windwalker.combo_breaker )
@@ -8201,6 +8203,10 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane", find_spell( 459841 ) )
           ->modify_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
           ->set_default_value_from_effect( 1 );
+
+  buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
+                         ->set_trigger_spell( talent.windwalker.dual_threat )
+                         ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff_fallback( talent.windwalker.jadefire_harmony->ok(), this, "jadefire_brand_heal",
                                             talent.windwalker.jadefire_brand_heal )
