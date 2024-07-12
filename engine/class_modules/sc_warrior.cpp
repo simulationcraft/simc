@@ -1074,6 +1074,9 @@ public:
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
     parse_effects( p()->buff.storm_of_swords );
+    // Gating this to keep the report cleaner
+    if ( p()->specialization() == WARRIOR_ARMS )
+      parse_effects( p()->buff.recklessness_warlords_torment );
 
     // Fury
     parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
@@ -1085,8 +1088,9 @@ public:
     // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
     if ( p()->talents.fury.powerful_enrage->ok() )
       parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
-    parse_effects( p()->buff.recklessness );
-    parse_effects( p()->buff.recklessness_warlords_torment );
+    // Gating this to keep the report cleaner
+    if ( p()->specialization() == WARRIOR_FURY)
+      parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
 
     // Protection
@@ -2484,6 +2488,8 @@ struct bloodbath_t : public warrior_attack_t
       {
         p()->enrage();
       }
+
+      p()->buff.deep_thirst->expire();
     }
 
     p()->buff.fierce_followthrough->expire();
@@ -2629,7 +2635,7 @@ struct mortal_strike_t : public warrior_attack_t
       p()->buff.overpowering_might->trigger();
     }
 
-    p()->buff.deep_thirst->expire();
+    p()->buff.lethal_blows->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -5162,8 +5168,6 @@ struct ravager_t : public warrior_attack_t
       // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
       p()->buff.merciless_bonegrinder->trigger(30_s);
     }
-
-    p()->buff.lethal_blows->expire();
   }
 
   void tick( dot_t* d ) override
@@ -8011,8 +8015,7 @@ void warrior_t::create_buffs()
     ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
   buff.recklessness_warlords_torment = make_buff( this, "recklessness_warlords_torment", spell.recklessness_buff )
-    ->set_cooldown( timespan_t::zero() )
-    ->apply_affecting_aura( talents.fury.depths_of_insanity );
+    ->set_cooldown( timespan_t::zero() );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
 
