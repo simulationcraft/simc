@@ -5426,7 +5426,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       impact_flags(), wlr_buffed_impact( false ), ps_buffed_impact( false )
   {
     maelstrom_gain = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
-    maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
+    //maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
   }
@@ -5806,7 +5806,7 @@ struct lava_burst_t : public shaman_spell_t
       base_costs[ RESOURCE_MANA ] = 0;
 
       maelstrom_gain = player->spec.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
-      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
+      maelstrom_gain += player->talent.flow_of_power->effectN( 1 ).base_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -6159,7 +6159,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain  = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
-    maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
+    //maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
 
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
@@ -6206,7 +6206,7 @@ struct lightning_bolt_t : public shaman_spell_t
       affected_by_master_of_the_elements = true;
 
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
+      maelstrom_gain += player->talent.flow_of_power->effectN( 2 ).base_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -7632,7 +7632,8 @@ public:
       p()->buff.ashen_catalyst->trigger();
     }
 
-    if ( p()->talent.searing_flames->ok() && rng().roll( p()->talent.searing_flames->effectN( 2 ).percent() ) )
+    // TODO: Determine proc chance / model
+    if ( p()->talent.searing_flames->ok() && rng().roll( 1.0 ) )
     {
       p()->trigger_maelstrom_gain( p()->talent.searing_flames->effectN( 1 ).base_value(), p()->gain.searing_flames );
       p()->proc.searing_flames->occur();
@@ -9071,6 +9072,15 @@ struct molten_slag_t : public residual_action::residual_periodic_action_t<spell_
 // Tempest
 // ==========================================================================
 
+struct tempest_overload_t : public elemental_overload_spell_t
+{
+  tempest_overload_t( shaman_t* p, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, "tempest_overload", p->find_spell( 463351 ), parent_ )
+  {
+    aoe = -1;
+    base_aoe_multiplier = data().effectN( 2 ).percent();
+  }
+};
 
 struct tempest_t : public shaman_spell_t
 {
@@ -9081,6 +9091,11 @@ struct tempest_t : public shaman_spell_t
 
     aoe = -1;
     base_aoe_multiplier = data().effectN( 2 ).percent();
+
+    if ( player->mastery.elemental_overload->ok() )
+    {
+      overload = new tempest_overload_t( player, this );
+    }
 
     switch ( exec_type )
     {
