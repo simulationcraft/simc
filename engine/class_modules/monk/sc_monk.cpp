@@ -174,8 +174,8 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr, 0b0110000U );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial, 0b0110000U );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
