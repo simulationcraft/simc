@@ -5671,6 +5671,10 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         if ( data().charge_cooldown() > 0_ms )
         {
           base_recharge_multiplier *= 1 + effect.percent();
+          if ( base_recharge_multiplier <= 0 )
+          {
+            cooldown->duration = timespan_t::zero();
+          }
           sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
           value_ = effect.percent();
         }
