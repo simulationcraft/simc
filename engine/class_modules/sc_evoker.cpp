@@ -6038,7 +6038,7 @@ public:
   {
     base::impact( s );
 
-    if ( p( s )->talent.scalecommander.wingleader.ok() )
+    if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
 
