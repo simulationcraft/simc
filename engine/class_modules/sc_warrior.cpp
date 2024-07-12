@@ -1074,6 +1074,9 @@ public:
     parse_effects( p()->buff.juggernaut );
     parse_effects( p()->buff.merciless_bonegrinder );
     parse_effects( p()->buff.storm_of_swords );
+    // Gating this to keep the report cleaner
+    if ( specialization() == WARRIOR_ARMS )
+      parse_effects( p()->buff.recklessness_warlords_torment );
 
     // Fury
     parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
@@ -1085,8 +1088,9 @@ public:
     // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
     if ( p()->talents.fury.powerful_enrage->ok() )
       parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
-    parse_effects( p()->buff.recklessness );
-    parse_effects( p()->buff.recklessness_warlords_torment );
+    // Gating this to keep the report cleaner
+    if ( specialization() == WARRIOR_FURY)
+      parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
 
     // Protection
@@ -8011,8 +8015,7 @@ void warrior_t::create_buffs()
     ->apply_affecting_aura( talents.fury.depths_of_insanity );
 
   buff.recklessness_warlords_torment = make_buff( this, "recklessness_warlords_torment", spell.recklessness_buff )
-    ->set_cooldown( timespan_t::zero() )
-    ->apply_affecting_aura( talents.fury.depths_of_insanity );
+    ->set_cooldown( timespan_t::zero() );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
 
