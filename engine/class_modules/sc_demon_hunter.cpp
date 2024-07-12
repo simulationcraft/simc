@@ -840,6 +840,7 @@ public:
     proc_t* soul_fragment_from_sigil_of_spite;
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
+    proc_t* soul_fragment_from_bulk_extraction;
 
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
@@ -2381,6 +2382,10 @@ struct bulk_extraction_t : public demon_hunter_spell_t
 
     unsigned num_souls = std::min( execute_state->n_targets, as<unsigned>( data().effectN( 2 ).base_value() ) );
     p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, true );
+    for (unsigned i = 0; i < num_souls; i++)
+    {
+      p()->proc.soul_fragment_from_bulk_extraction->occur();
+    }
   }
 };
 
@@ -4168,8 +4173,7 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
   sigil_of_spite_sigil_t* sigil;
 
   sigil_of_spite_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "sigil_of_spite", p, p->spell.sigil_of_spite, options_str ),
-      sigil( nullptr )
+    : demon_hunter_spell_t( "sigil_of_spite", p, p->spell.sigil_of_spite, options_str ), sigil( nullptr )
   {
     if ( p->spell.sigil_of_spite->ok() )
     {
@@ -4583,8 +4587,8 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     if ( p()->talent.aldrachi_reaver.wounded_quarry->ok() && td( s->target )->debuffs.reavers_mark->up() )
     {
       p()->active.wounded_quarry->execute_on_target( s->target );
-      // 2024-06-16 -- Chance seems to be about 10% per melee hit per beta gameplay.
-      if ( rng().roll( 0.1 ) )
+      // 2024-07-11 -- Chance seems to be about 30% (very conservatively) per melee hit per beta gameplay.
+      if ( rng().roll( 0.30 ) )
       {
         p()->proc.soul_fragment_from_wounded_quarry->occur();
         p()->spawn_soul_fragment( soul_fragment::LESSER );
@@ -6004,6 +6008,11 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
   bool ready() override
   {
     if ( !p()->buff.reavers_glaive->up() )
+    {
+      return false;
+    }
+    // 2024-07-11 -- Reaver's Glaive can't be cast unless a GCD is available, but doesn't trigger a GCD.
+    if ( p()->gcd_ready > sim->current_time() )
     {
       return false;
     }
@@ -7502,13 +7511,14 @@ void demon_hunter_t::init_procs()
   proc.eye_beam_canceled               = get_proc( "eye_beam_canceled" );
 
   // Vengeance
-  proc.soul_fragment_expire              = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow            = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear          = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture       = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_sigil_of_spite = get_proc( "soul_fragment_from_sigil_of_spite" );
-  proc.soul_fragment_from_fallout        = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta           = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_expire               = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow             = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear           = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture        = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_sigil_of_spite  = get_proc( "soul_fragment_from_sigil_of_spite" );
+  proc.soul_fragment_from_fallout         = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta            = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_from_bulk_extraction = get_proc( "soul_fragment_from_bulk_extraction" );
 
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
@@ -7986,7 +7996,9 @@ void demon_hunter_t::init_spells()
       talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
   hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
   hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
-  hero_spec.spirit_burst       = talent.felscarred.demonsurge->ok() ? find_spell( 452437 ) : spell_data_t::not_found();
+  hero_spec.spirit_burst       = talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok()
+                                     ? find_spell( 452437 )
+                                     : spell_data_t::not_found();
   hero_spec.sigil_of_doom =
       talent.felscarred.demonic_intensity->ok() ? find_spell( 452490 ) : spell_data_t::not_found();
   hero_spec.sigil_of_doom_damage =

@@ -1981,6 +1981,7 @@ class SpellDataGenerator(DataGenerator):
           ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
           ( 390287, 0 ),                                # Improved Stormbringer damage spell
           ( 289439, 0 ),                                # Frost Shock Maelstrom generator
+          ( 463351, 0 ),                                # Tempest Overload
         ),
 
         # Mage:

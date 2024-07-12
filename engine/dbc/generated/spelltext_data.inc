@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55522
-static const std::array<spelltext_data_t, 26208> __spelltext_data { {
+static const std::array<spelltext_data_t, 26210> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23541,7 +23541,7 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
   { 441348, "Your movement speed is increased by $441347s1% anytime you have not attacked for $441352d.", 0, 0 },
   { 441359, "Taking damage from an area-of-effect attack while Feint is active or dodging while Evasion is active refreshes your opportunity to strike with Unseen Blade.\r\n\r\nThis effect may only occur once every $proccooldown sec.", 0, 0 },
   { 441367, "$?a137036[Blade Flurry damage is increased by $s1%]?s200758[Your auto-attacks, Backstab, Shadowstrike, and Eviscerate also strike up to $s2 additional nearby targets for $s3% of normal damage][Your auto-attacks, Backstab, Shadowstrike, and Eviscerate also strike up to $s2 additional nearby targets for $s3% of normal damage] while Flawless Form is active.", 0, 0 },
-  { 441378, "After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a137008[Marrowrend][Obliterate]$?a443564[s][] costs $?a443564[$s4][no] Rune and summon$?a443564[][s] $s1 scythes to strike your enemies.\r\n\r\nThe first scythe strikes your target for $?a137008[$$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.", 0, 0 },
+  { 441378, "After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a137008[Marrowrend][Obliterate]$?a443564[s][] costs $?a443564[$s4][no] Rune and summon$?a443564[][s] $s1 scythes to strike your enemies.\r\n\r\nThe first scythe strikes your target for $?a137008[$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.", 0, 0 },
   { 441387, "$@spelldesc440993", "Healing $202147s1% health every $202147t1 sec.", 0 },
   { 441398, "Finishing moves have $s1% increased chance to critically strike Fazed targets.", 0, 0 },
   { 441403, "Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.", 0, 0 },
@@ -26162,6 +26162,7 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
+  { 462661, "Blessed by the void, increases critical chance by $s1% for $d.", "Critical-hit chance increased by $s1%.", 0 },
   { 462695, "Your next Chain Lightning or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest, ][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
@@ -26201,6 +26202,7 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
   { 463192, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
   { 463301, "Summons a Vanquished Tentacle to your aid for $d.", 0, 0 },
   { 463323, "$@spelldesc453812", "$@spelldesc453812", 0 },
+  { 463351, "Deal $s1 Nature damage to your target, and ${$m1*$m2/100} Nature damage to other enemy targets within $A1 yds of your target.", 0, 0 },
   { 463357, "$@spelldesc153626", 0, 0 },
   { 463429, "+$s1 Sparkle.", "+$w1 Sparkle.", 0 },
   { 463513, "Reveal the location of a Rumor on your map in Azj-Kahet.", 0, 0 },
@@ -26211,7 +26213,8 @@ static const std::array<spelltext_data_t, 26208> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55522
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  441378,  0, "After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a137008[Marrowrend][Obliterate]$?a443564[s][] costs $?a443564[$s4][no] Rune and summon$?a443564[][s] $s1 scythes to strike your enemies.\r\n\r\nThe first scythe strikes your target for $?a137008[$$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.", "After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a137008[Marrowrend][Obliterate]$?a443564[s][] costs $?a443564[$s4][no] Rune and summon$?a443564[][s] $s1 scythes to strike your enemies.\r\n\r\nThe first scythe strikes your target for $?a137008[$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets." },
 } };
 
 // Spell description variables, wow build 11.0.2.55522

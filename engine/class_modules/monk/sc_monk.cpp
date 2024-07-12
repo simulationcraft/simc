@@ -135,6 +135,8 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
 
   // Conduit of the Celestials
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
   apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
@@ -171,6 +173,11 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.press_the_advantage );
 
   // Conduit of the Celestials
+  parse_effects( p()->buff.august_dynasty );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.jade_sanctuary );
+  parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
@@ -466,11 +473,16 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    if ( base_t::cost() > 0 )
+    auto cost = base_t::cost();
+
+    if ( cost )
     {
+      // This triggers prior to cost reduction
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( cost );
+
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
-        p()->spiritual_focus_count += base_t::cost();
+        p()->spiritual_focus_count += cost;
 
         if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
         {
@@ -488,7 +500,7 @@ void monk_action_t<Base>::consume_resource()
       if ( p()->buff.storm_earth_and_fire->up() )
       {
         auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-        time_extend *= base_t::cost();
+        time_extend *= cost;
 
         p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
@@ -1725,6 +1737,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
       p()->buff.tigers_ferocity->trigger();
+
+    p()->buff.august_dynasty->expire();
   }
 };
 
@@ -1976,7 +1990,16 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
       p()->buff.transfer_the_power->trigger();
 
-      p()->buff.teachings_of_the_monastery->expire();
+      if ( p()->buff.teachings_of_the_monastery->up() )
+      {
+        p()->buff.teachings_of_the_monastery->expire();
+
+        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+          p()->buff.teachings_of_the_monastery->trigger();
+      }
+
+      if ( p()->specialization() == MONK_WINDWALKER )
+        p()->buff.strength_of_the_black_ox->expire();
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
@@ -2060,6 +2083,34 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 // ==========================================================================
 // Rushing Jade Wind
 // ==========================================================================
+
+struct flight_of_the_red_crane_dmg_t : public monk_spell_t
+{
+  flight_of_the_red_crane_dmg_t( monk_t *p )
+    : monk_spell_t( p, "flight_of_the_red_crane_dmg", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
+  {
+    background = true;
+    aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.flight_of_the_red_crane->trigger();
+  }
+};
+
+struct flight_of_the_red_crane_heal_t : public monk_heal_t
+{
+  flight_of_the_red_crane_heal_t( monk_t *p )
+    : monk_heal_t( p, "flight_of_the_red_crane_heal", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
+  {
+    background = true;
+    aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
+    target     = p;
+  }
+};
 
 struct rjw_tick_action_t : public monk_melee_attack_t
 {
@@ -2841,6 +2892,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
+
+    p()->buff.heart_of_the_jade_serpent->decrement();
   }
 };
 
@@ -3811,10 +3864,26 @@ struct breath_of_fire_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
+// Niuzao's Protection ==============================================
 struct fortifying_brew_t : brew_t<monk_spell_t>
 {
+  struct niuzaos_protection_t : public monk_absorb_t
+  {
+    niuzaos_protection_t( monk_t *p )
+      : monk_absorb_t( p, "niuzaos_protection", p->talent.conduit_of_the_celestials.niuzaos_protection )
+    {
+      background  = true;
+      target      = p;
+      base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+      base_dd_max = base_dd_min;
+    }
+  };
+
+  niuzaos_protection_t *absorb;
+
   fortifying_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() )
+    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
+      absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
@@ -3831,6 +3900,8 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
   {
     brew_t<monk_spell_t>::execute();
 
+    if ( p()->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
+      absorb->execute();
     p()->buff.fortifying_brew->trigger();
     p()->active_actions.special_delivery->execute();
   }
@@ -4065,6 +4136,58 @@ struct diffuse_magic_t : public monk_spell_t
 // Invoke Xuen, the White Tiger
 // ==========================================================================
 
+// Courage of the White Tiger ability ===================================================
+struct courage_of_the_white_tiger_t : public monk_melee_attack_t
+{
+  struct courage_of_the_white_tiger_heal_t : public monk_heal_t
+  {
+    courage_of_the_white_tiger_heal_t( monk_t *p )
+      : monk_heal_t( p, "courage_of_the_white_tiger_heal",
+                     p->talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal )
+    {
+      background = dual = true;
+      target            = p;
+      base_dd_min = base_dd_max = 1.0;
+    }
+  };
+
+  courage_of_the_white_tiger_heal_t *heal;
+
+  courage_of_the_white_tiger_t( monk_t *p )
+    : monk_melee_attack_t( p, "courage_of_the_white_tiger_dmg",
+                           p->talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage ),
+      heal( new courage_of_the_white_tiger_heal_t( p ) )
+  {
+    background = true;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+
+  void execute() override
+  {
+    p()->buff.strength_of_the_black_ox->trigger();
+
+    monk_melee_attack_t::execute();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    double result = s->result_total;
+
+    result *= p()->talent.conduit_of_the_celestials.courage_of_the_white_tiger->effectN( 2 ).percent();
+
+    heal->base_dd_min = heal->base_dd_max = result;
+    heal->execute();
+  }
+};
+
 struct xuen_spell_t : public monk_spell_t
 {
   xuen_spell_t( monk_t *p, util::string_view options_str )
@@ -4104,6 +4227,11 @@ struct xuen_spell_t : public monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
+
+    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
+      p()->buff.rushing_jade_wind->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
   }
 };
 
@@ -4202,6 +4330,40 @@ struct flurry_of_xuen_t : public monk_spell_t
 // Invoke Niuzao, the Black Ox
 // ==========================================================================
 
+struct strength_of_the_black_ox_t : public monk_spell_t
+{
+  strength_of_the_black_ox_t( monk_t *p )
+    : monk_spell_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
+  {
+    background = true;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+  }
+};
+
+struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
+{
+  strength_of_the_black_ox_absorb_t( monk_t *p )
+    : monk_absorb_t( p, "strength_of_the_black_ox_absorb",
+                     p->talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb )
+  {
+    background  = true;
+    aoe         = data().effectN( 3 ).base_value();
+    base_dd_min = p->max_health() * data().effectN( 2 ).percent();
+    base_dd_max = base_dd_min;
+  }
+};
+
 struct niuzao_spell_t : public monk_spell_t
 {
   niuzao_spell_t( monk_t *p, util::string_view options_str )
@@ -4278,6 +4440,8 @@ struct chiji_spell_t : public monk_spell_t
     p()->buff.invoke_chiji->trigger();
 
     p()->buff.invokers_delight->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
   }
 };
 
@@ -4306,6 +4470,176 @@ struct yulon_spell_t : public monk_spell_t
     p()->pets.yulon.spawn( p()->talent.mistweaver.invoke_yulon_the_jade_serpent->duration(), 1 );
 
     p()->buff.invokers_delight->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
+  }
+};
+
+// ==========================================================================
+// Unity Within
+// ==========================================================================
+
+struct unity_within_t : public monk_spell_t
+{
+  unity_within_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "unity_within", p->talent.conduit_of_the_celestials.unity_within )
+  {
+    parse_options( options_str );
+
+    harmful              = false;
+    usable_while_casting = true;
+  }
+
+  bool ready() override
+  {
+    return p()->buff.unity_within->up();
+  }
+
+  void execute() override
+  {
+    // Expiring this before the execute so that there is an easy way to apply the damage bonus.
+    p()->buff.unity_within->expire();
+
+    monk_spell_t::execute();
+  }
+};
+
+// ==========================================================================
+// Celestial Conduit
+// ==========================================================================
+
+// This is a separate spell from the normal Flight of the Red Crane damage spell
+struct flight_of_the_red_crane_celestial_dmg_t : public monk_spell_t
+{
+  flight_of_the_red_crane_celestial_dmg_t( monk_t *p )
+    : monk_spell_t( p, "flight_of_the_red_crane_celestial_dmg",
+                    p->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg )
+  {
+    background = true;
+    aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.flight_of_the_red_crane->trigger();
+  }
+};
+
+struct flight_of_the_red_crane_celestial_heal_t : public monk_heal_t
+{
+  flight_of_the_red_crane_celestial_heal_t( monk_t *p )
+    : monk_heal_t( p, "flight_of_the_red_crane_celestial",
+                   p->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg )
+  {
+    background = true;
+    aoe        = p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value();
+    target     = p;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+};
+
+struct celestial_conduit_t : public monk_spell_t
+{
+  struct celestial_conduit_dmg_t : public monk_spell_t
+  {
+    celestial_conduit_dmg_t( monk_t *p )
+      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+    {
+      background = true;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_spell_t::composite_aoe_multiplier( state );
+
+      if ( state->n_targets > 0 )
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( (double)state->n_targets,
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  struct celestial_conduit_heal_t : public monk_heal_t
+  {
+    celestial_conduit_heal_t( monk_t *p )
+      : monk_heal_t( p, "celestial_conduit_heal", p->talent.conduit_of_the_celestials.celestial_conduit_heal )
+    {
+      background = true;
+      target     = p;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_heal_t::composite_aoe_multiplier( state );
+
+      if ( state->n_targets > 0 )
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( (double)state->n_targets,
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  celestial_conduit_dmg_t *damage;
+  celestial_conduit_heal_t *heal;
+
+  celestial_conduit_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit ),
+      damage( new celestial_conduit_dmg_t( p ) ),
+      heal( new celestial_conduit_heal_t( p ) )
+  {
+    parse_options( options_str );
+
+    may_combo_strike = true;
+
+    tick_action = damage;
+
+    apply_affecting_aura( p->talent.conduit_of_the_celestials.flight_of_the_red_crane );
+    apply_affecting_aura( p->talent.conduit_of_the_celestials.jade_sanctuary );
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.unity_within->trigger();
+  }
+
+  void tick( dot_t *d ) override
+  {
+    monk_spell_t::tick( d );
+
+    heal->execute();
+  }
+
+  void last_tick( dot_t *dot ) override
+  {
+    monk_spell_t::last_tick( dot );
+
+    p()->buff.unity_within->expire();
   }
 };
 
@@ -4451,11 +4785,10 @@ struct jadefire_stomp_damage_t : public monk_spell_t
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
 
-    const std::vector<player_t *> &targets = state->action->target_list();
-
-    if ( p()->talent.windwalker.path_of_jade->ok() && !targets.empty() )
-      cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
-                   std::min( (double)targets.size(), p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
+    if ( p()->talent.windwalker.path_of_jade->ok() && state->n_targets > 0 )
+      cam *=
+          1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
+                std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
     return cam;
   }
@@ -4544,6 +4877,7 @@ struct jadefire_stomp_t : public monk_spell_t
 
     p()->buff.jadefire_stomp->trigger();
     p()->buff.jadefire_brand->trigger();
+    p()->buff.august_dynasty->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -5626,6 +5960,8 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( rjw_callback );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+
+    modify_duration( p->talent.conduit_of_the_celestials.yulons_knowledge->effectN( 1 ).time_value() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -6449,6 +6785,13 @@ void monk_t::parse_player_effects()
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
+
+  // Conduit of the Celestials
+  parse_effects( buff.flight_of_the_red_crane );
+  parse_effects( buff.inner_compass_crane_stance );
+  parse_effects( buff.inner_compass_ox_stance );
+  parse_effects( buff.inner_compass_serpent_stance );
+  parse_effects( buff.inner_compass_tiger_stance );
 }
 
 // monk_t::create_action ====================================================
@@ -6573,6 +6916,12 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new jadefire_stomp_t( this, options_str );
   if ( name == "weapons_of_order" )
     return new weapons_of_order_t( this, options_str );
+
+  // Hero Talents
+  if ( name == "celestial_conduit" )
+    return new celestial_conduit_t( this, options_str );
+  if ( name == "unity_within" )
+    return new unity_within_t( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -7064,14 +7413,15 @@ void monk_t::init_spells()
     talent.mistweaver.deep_clarity                  = _ST( "Deep Clarity" );
     talent.mistweaver.rapid_diffusion               = _ST( "Rapid Diffusion" );
     // Row 7
-    talent.mistweaver.chrysalis            = _ST( "Chrysalis" );
-    talent.mistweaver.burst_of_life        = _ST( "Burst of Life" );
-    talent.mistweaver.yulons_whisper       = _ST( "Yu'lon's Whisper" );
-    talent.mistweaver.mist_wrap            = _ST( "Mist Wrap" );
-    talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
-    talent.mistweaver.celestial_harmony    = _ST( "Celestial Harmony" );
-    talent.mistweaver.dancing_mists        = _ST( "Dancing Mists" );
-    talent.mistweaver.chi_harmony          = _ST( "Chi Harmony" );
+    talent.mistweaver.chrysalis                 = _ST( "Chrysalis" );
+    talent.mistweaver.burst_of_life             = _ST( "Burst of Life" );
+    talent.mistweaver.yulons_whisper            = _ST( "Yu'lon's Whisper" );
+    talent.mistweaver.mist_wrap                 = _ST( "Mist Wrap" );
+    talent.mistweaver.refreshing_jade_wind      = _ST( "Refreshing Jade Wind" );
+    talent.mistweaver.refreshing_jade_wind_tick = find_spell( 162530 );
+    talent.mistweaver.celestial_harmony         = _ST( "Celestial Harmony" );
+    talent.mistweaver.dancing_mists             = _ST( "Dancing Mists" );
+    talent.mistweaver.chi_harmony               = _ST( "Chi Harmony" );
     // Row 8
     talent.mistweaver.jadefire_stomp         = _ST( "Jadefire Stomp" );
     talent.mistweaver.peer_into_peace        = _ST( "Peer Into Peace" );
@@ -7181,16 +7531,26 @@ void monk_t::init_spells()
   // monk_t::talent::conduit_of_the_celestials
   {
     // Row 1
-    talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit      = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit_dmg  = find_spell( 443038 );
+    talent.conduit_of_the_celestials.celestial_conduit_heal = find_spell( 443039 );
     // Row 2
-    talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
-    talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
-    talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
+    talent.conduit_of_the_celestials.temple_training                   = _HT( "Temple Training" );
+    talent.conduit_of_the_celestials.xuens_guidance                    = _HT( "Xuen's Guidance" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger        = _HT( "Courage of the White Tiger" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage = find_spell( 457917 );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
+    talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
     // Row 3
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
-    talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the Jade Serpent" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb        = find_spell( 443113 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage        = find_spell( 443127 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane                = _HT( "Flight of the Red Crane" );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg            = find_spell( 443263 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_heal           = find_spell( 443272 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg  = find_spell( 443611 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_heal = find_spell( 443614 );
     // Row 4
     talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
     talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
@@ -7198,7 +7558,8 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
     talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
     // Row 5
-    talent.conduit_of_the_celestials.unity_within = _HT( "Unity Within" );
+    talent.conduit_of_the_celestials.unity_within          = _HT( "Unity Within" );
+    talent.conduit_of_the_celestials.unity_within_dmg_mult = find_spell( 443591 );
   }
 
   // monk_t::talent::master_of_harmony
@@ -7340,8 +7701,27 @@ void monk_t::init_spells()
   active_actions.rushing_jade_wind = new actions::rjw_tick_action_t( this );
   windwalking_aura                 = new actions::windwalking_aura_t( this );
 
+  // Conduit of the Celestials
+  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+    active_actions.courage_of_the_white_tiger = new actions::courage_of_the_white_tiger_t( this );
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
+    active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
+    active_actions.flight_of_the_red_crane_celestial_damage =
+        new actions::flight_of_the_red_crane_celestial_dmg_t( this );
+    active_actions.flight_of_the_red_crane_celestial_heal =
+        new actions::flight_of_the_red_crane_celestial_heal_t( this );
+  }
+  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() )
+  {
+    active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
+    active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
+  }
+
   // Shado-Pan
-  active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
+  if ( talent.shado_pan.flurry_strikes->ok() )
+    active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -7929,6 +8309,114 @@ void monk_t::create_buffs()
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Conduit of the Celestials
+  buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
+                                            "august_dynasty", find_spell( 442850 ) );
+
+  buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
+                                               "celestial_conduit", find_spell( 443028 ) );
+
+  buff.chi_jis_swiftness = make_buff_fallback( talent.conduit_of_the_celestials.chi_jis_swiftness->ok(), this,
+                                               "chi_jis_swiftness", find_spell( 443569 ) );
+
+  buff.courage_of_the_white_tiger =
+      make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
+                          "courage_of_the_white_tiger", find_spell( 460127 ) )
+          ->set_expire_callback(
+              [ this ]( buff_t *buff_, double, timespan_t ) { active_actions.courage_of_the_white_tiger->execute(); } );
+  ;
+
+  buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
+                                                     this, "flight_of_the_red_crane", find_spell( 457459 ) );
+
+  buff.heart_of_the_jade_serpent_cdr =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
+
+  buff.heart_of_the_jade_serpent_cdr_celestial =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
+
+  buff.heart_of_the_jade_serpent_stack_mw =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_stack_mw", find_spell( 443506 ) )
+          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
+            if ( new_ == buff_->max_stack() )
+            {
+              buff.heart_of_the_jade_serpent_cdr->trigger();
+              buff_->expire();
+            }
+          } );
+
+  buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
+                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) )
+                                       ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+                                         buff.heart_of_the_jade_serpent_cdr->trigger();
+                                       } );
+  ;
+
+  buff.heart_of_the_jade_serpent_stack_ww =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
+          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
+            if ( new_ == buff_->max_stack() )
+            {
+              buff.heart_of_the_jade_serpent->trigger();
+              buff_->expire();
+            }
+          } );
+
+  buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "crane_stance", find_spell( 443572 ) );
+
+  buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                     "ox_stance", find_spell( 443574 ) );
+
+  buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                          "serpent_stance", find_spell( 443576 ) );
+
+  buff.inner_compass_tiger_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "tiger_stance", find_spell( 443575 ) );
+
+  buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
+                                            "jade_sanctuary", find_spell( 448508 ) );
+
+  buff.strength_of_the_black_ox =
+      make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
+                          "strength_of_the_black_ox", find_spell( 443112 ) )
+          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            else
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
+            }
+          } );
+
+  buff.unity_within =
+      make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
+                          find_spell( 443592 ) )
+          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+            buff.jade_sanctuary->trigger();
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.flight_of_the_red_crane_celestial_heal->execute();
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            else
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
+
+              active_actions.flight_of_the_red_crane_celestial_damage->execute();
+            }
+            buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
+            active_actions.courage_of_the_white_tiger->execute();
+          } );
 
   // Master of Harmony
   buff.aspect_of_harmony = new buffs::aspect_of_harmony_t( this );
@@ -8396,6 +8884,58 @@ void monk_t::init_special_effects()
     create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver, cb );
     create_proc_callback( talent.master_of_harmony.aspect_of_harmony_damage, cb );
     create_proc_callback( talent.master_of_harmony.aspect_of_harmony_heal, cb );
+  }
+
+  // ======================================
+  // Courage of the White Tiger
+  // ======================================
+  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+  {
+    create_proc_callback(
+        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->baseline.monk.vivify->id() ) ||
+               state->action->id == p->baseline.monk.tiger_palm->id() )
+            return true;
+
+          return false;
+        } );
+
+    callbacks.register_callback_execute_function(
+        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          active_actions.courage_of_the_white_tiger->execute_on_target( state->target );
+        } );
+  }
+
+  // ======================================
+  // Flight of the Red Crane
+  // ======================================
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    create_proc_callback(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER &&
+                 state->action->id == p->talent.mistweaver.refreshing_jade_wind_tick->id() ) ||
+               ( p->specialization() == MONK_WINDWALKER &&
+                 state->action->id == p->passives.rushing_jade_wind_tick->id() ) ||
+               state->action->id == p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() )
+            return true;
+
+          return false;
+        } );
+
+    callbacks.register_callback_execute_function(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          if ( specialization() == MONK_MISTWEAVER )
+          {
+            active_actions.flight_of_the_red_crane_heal->execute_on_target( state->target );
+          }
+          else
+          {
+            active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
+          }
+        } );
   }
 
   // ======================================
