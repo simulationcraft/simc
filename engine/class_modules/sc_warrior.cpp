@@ -2484,6 +2484,8 @@ struct bloodbath_t : public warrior_attack_t
       {
         p()->enrage();
       }
+
+      p()->buff.deep_thirst->expire();
     }
 
     p()->buff.fierce_followthrough->expire();
@@ -2629,7 +2631,7 @@ struct mortal_strike_t : public warrior_attack_t
       p()->buff.overpowering_might->trigger();
     }
 
-    p()->buff.deep_thirst->expire();
+    p()->buff.lethal_blows->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -5156,8 +5158,6 @@ struct ravager_t : public warrior_attack_t
       // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
       p()->buff.merciless_bonegrinder->trigger(30_s);
     }
-
-    p()->buff.lethal_blows->expire();
   }
 
   void tick( dot_t* d ) override
