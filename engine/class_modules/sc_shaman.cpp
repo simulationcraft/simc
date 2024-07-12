@@ -657,6 +657,7 @@ public:
     const spell_data_t* windfury;
     const spell_data_t* lava_lash_2;
     const spell_data_t* stormbringer;
+    const spell_data_t* feral_lunge;
 
     // Restoration
     const spell_data_t* purification;
@@ -752,7 +753,6 @@ public:
     // Row 4
     player_talent_t unruly_winds; // TODO: Spell data still has conduit scaling (prolly non-issue)
     player_talent_t raging_maelstrom;
-    player_talent_t feral_lunge;
     player_talent_t ashen_catalyst;
     // Row 5
     player_talent_t doom_winds;
@@ -7262,7 +7262,7 @@ struct feral_lunge_t : public shaman_spell_t
   };
 
   feral_lunge_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "feral_lunge", player, player->talent.feral_lunge )
+    shaman_spell_t( "feral_lunge", player, player->spec.feral_lunge )
   {
     parse_options( options_str );
     unshift_ghost_wolf = false;
@@ -10111,7 +10111,6 @@ void shaman_t::init_spells()
   talent.ancestral_defense   = _CT( "Ancestral Defense" );
   talent.static_charge       = _CT( "Static Charge" );
   talent.guardians_cudgel    = _CT( "Guardian's Cudgel" );
-  talent.flurry              = _CT( "Flurry" );
   // Row 5
   talent.graceful_spirit     = _CT( "Graceful Spirit" );
   talent.natures_fury        = _CT( "Nature's Fury" );
@@ -10159,7 +10158,6 @@ void shaman_t::init_spells()
   // Row 4
   talent.unruly_winds = _ST( "Unruly Winds" );
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
-  talent.feral_lunge = _ST( "Feral Lunge" );
   talent.lashing_flames = _ST( "Lashing Flames" );
   talent.ashen_catalyst = _ST( "Ashen Catalyst" );
   // Row 5
@@ -10171,6 +10169,7 @@ void shaman_t::init_spells()
   talent.elemental_weapons = _ST( "Elemental Weapons" );
   talent.crashing_storms = _ST( "Crashing Storms" );
   talent.tempest_strikes = _ST( "Tempest strikes" );
+  talent.flurry          = _ST( "Flurry" );
   // Row 6
   talent.storms_wrath = _ST( "Storm's Wrath" );
   talent.crash_lightning = _ST( "Crash Lightning" );
@@ -12153,7 +12152,6 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "windfury_weapon" );
   precombat->add_action( "flametongue_weapon" );
   precombat->add_action( "lightning_shield" );
-  precombat->add_action( "windfury_totem" );
   precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.algethar_puzzle_box|trinket.1.is.manic_grieftorch|trinket.1.is.elementium_pocket_anvil|trinket.1.is.beacon_to_the_beyond" );
   precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.manic_grieftorch|trinket.2.is.elementium_pocket_anvil|trinket.2.is.beacon_to_the_beyond" );
   precombat->add_action( "variable,name=min_talented_cd_remains,value=((cooldown.feral_spirit.remains%(1+1.5*talent.witch_doctors_ancestry.rank))+1000*!talent.feral_spirit.enabled)<?(cooldown.doom_winds.remains+1000*!talent.doom_winds.enabled)<?(cooldown.ascendance.remains+1000*!talent.ascendance.enabled)" );
@@ -12207,7 +12205,6 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))" );
     single->add_action( "stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)" );
     single->add_action( "lava_lash,if=buff.hot_hand.up" );
-    single->add_action( "windfury_totem,if=!buff.windfury_totem.up" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=8&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)" );
     single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=8&buff.crackling_thunder.up&talent.elemental_spirits.enabled" );
@@ -12236,7 +12233,6 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "flame_shock" );
     single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down" );
-    single->add_action( "windfury_totem,if=buff.windfury_totem.remains<30" );
 
     aoe->add_action( "crash_lightning,if=talent.crashing_storms.enabled&((talent.unruly_winds.enabled&active_enemies>=10)|active_enemies>=15)" );
     aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
@@ -12265,7 +12261,6 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "fire_nova,if=active_dot.flame_shock>=2" );
     aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|feral_spirit.active>=2)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
     aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );
-    aoe->add_action( "windfury_totem,if=buff.windfury_totem.remains<30" );
     aoe->add_action( "flame_shock,if=!ticking" );
     aoe->add_action( "frost_shock,if=!talent.hailstorm.enabled" );
 
@@ -12298,7 +12293,6 @@ void shaman_t::init_action_list_enhancement()
     funnel->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5" );
     funnel->add_action( "lava_burst,if=(buff.molten_weapon.stack+buff.volcanic_strength.up>buff.crackling_surge.stack)&buff.maelstrom_weapon.stack>=5" );
     funnel->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
-    funnel->add_action( "windfury_totem,if=buff.windfury_totem.remains<30" );
     funnel->add_action( "flame_shock,if=!ticking" );
     funnel->add_action( "frost_shock,if=!talent.hailstorm.enabled" );
  
