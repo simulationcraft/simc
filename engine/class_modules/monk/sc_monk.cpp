@@ -473,14 +473,16 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    if ( base_t::cost() > 0 )
+    auto cost = base_t::cost();
+
+    if ( cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( base_t::cost() );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( cost );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
-        p()->spiritual_focus_count += base_t::cost();
+        p()->spiritual_focus_count += cost;
 
         if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
         {
@@ -498,7 +500,7 @@ void monk_action_t<Base>::consume_resource()
       if ( p()->buff.storm_earth_and_fire->up() )
       {
         auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-        time_extend *= base_t::cost();
+        time_extend *= cost;
 
         p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
@@ -2891,7 +2893,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
-    p()->buff.heart_of_the_jade_serpent->expire();
+    p()->buff.heart_of_the_jade_serpent->decrement();
   }
 };
 
@@ -4784,8 +4786,9 @@ struct jadefire_stomp_damage_t : public monk_spell_t
     double cam = monk_spell_t::composite_aoe_multiplier( state );
 
     if ( p()->talent.windwalker.path_of_jade->ok() && state->n_targets > 0 )
-      cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
-                   std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
+      cam *=
+          1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
+                std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
     return cam;
   }
@@ -7539,7 +7542,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
     talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
     // Row 3
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the_Jade Serpent" );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the Jade Serpent" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb        = find_spell( 443113 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_damage        = find_spell( 443127 );
@@ -8306,8 +8309,8 @@ void monk_t::create_buffs()
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Conduit of the Celestials
-  buff.august_dynasty    = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
-                                               "august_dynasty", find_spell( 442850 ) );
+  buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
+                                            "august_dynasty", find_spell( 442850 ) );
 
   buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
                                                "celestial_conduit", find_spell( 443028 ) );
@@ -8353,7 +8356,7 @@ void monk_t::create_buffs()
 
   buff.heart_of_the_jade_serpent_stack_ww =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443616 ) )
+                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
             {
