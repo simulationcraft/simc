@@ -4361,6 +4361,19 @@ double paladin_t::composite_base_armor_multiplier() const
 double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double cptm      = player_t::composite_player_target_multiplier( target, school );
+
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
+  {
+    if ( talents.holy_flames->ok() )
+    {
+      paladin_td_t* td = get_target_data( target );
+      if ( td->dots.expurgation->is_ticking() )
+      {
+        cptm *= 1.0 + talents.holy_flames->effectN( 2 ).percent();
+      }
+    }
+  }
+
   return cptm;
 }
 

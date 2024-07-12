@@ -428,6 +428,10 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
 
     aoe = -1;
     base_multiplier *= multiplier;
+    if ( p->talents.holy_flames->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
+    }
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
 
@@ -437,6 +441,7 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
       add_child( tempest );
     }
   }
+
   void execute() override
   {
     paladin_melee_attack_t::execute();
@@ -462,6 +467,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       background = true;
 
     is_divine_storm = true;
+
+    if ( p->talents.holy_flames->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
+    }
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
@@ -495,6 +505,10 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     background = is_free;
     base_multiplier *= mul;
+    if ( p->talents.holy_flames->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
+    }
 
     if ( p->talents.tempest_of_the_lightbringer->ok() )
     {
@@ -504,13 +518,13 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
     {
-      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() );
+      echo = new divine_storm_echo_t( p, p->buffs.echoes_of_wrath->data().effectN( 1 ).percent() * mul );
       add_child( echo );
     }
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
-      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() * mul );
       add_child( sunrise_echo );
     }
   }
@@ -1581,6 +1595,7 @@ void paladin_t::init_spells_retribution()
   talents.adjudication                = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );
   talents.heart_of_the_crusader       = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Crusader" );
   talents.divine_hammer               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Hammer" );
+  talents.holy_flames                 = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Flames" );
   talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
   talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
   talents.aegis_of_protection         = find_talent_spell( talent_tree::SPECIALIZATION, "Aegis of Protection" );

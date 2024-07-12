@@ -77,6 +77,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* heartfire;  // T30 2p Prot
     buff_t* empyrean_hammer;
     buff_t* vanguard_of_justice;
+    buff_t* holy_flames;
   } debuff;
 
   struct
@@ -630,6 +631,7 @@ public:
     const spell_data_t* divine_wrath;
     const spell_data_t* divine_hammer;
     const spell_data_t* blade_of_vengeance;
+    const spell_data_t* holy_flames;
     const spell_data_t* empyrean_legacy;
 
     const spell_data_t* vanguard_of_justice;
