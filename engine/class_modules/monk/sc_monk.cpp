@@ -657,7 +657,6 @@ void monk_action_t<Base>::tick( dot_t *dot )
           double increase      = std::fmin( current_value + result,
                                             p()->max_health() );  // accumulator is capped at the player's current max hp
           p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-          p()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
           p()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
         }
       }
