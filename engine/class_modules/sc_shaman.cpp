@@ -9825,6 +9825,11 @@ if ( util::str_compare_ci( name, "fb_extension_possible" ) )
     return expr_t::create_constant( name, rotation_type == options.rotation );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "tempest_mael_count" ) )
+  {
+    return make_ref_expr( splits[ 0 ], tempest_counter );
+  }
+
   return player_t::create_expression( name );
 }
 
