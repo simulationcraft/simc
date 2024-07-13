@@ -13,7 +13,7 @@
 #include "item.hpp"
 #include "player/player.hpp"
 #include "player/unique_gear_helper.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 
 namespace
 {

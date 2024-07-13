@@ -60,10 +60,12 @@ struct player_report_extension_t;
 struct player_scaling_t;
 struct plot_data_t;
 struct proc_t;
+struct proc_rng_t;
 struct real_ppm_t;
+struct shuffled_rng_t;
+struct accumulated_rng_t;
 struct scaling_metric_data_t;
 struct set_bonus_t;
-class shuffled_rng_t;
 struct special_effect_t;
 struct spelleffect_data_t;
 struct stat_buff_t;
@@ -73,8 +75,8 @@ struct player_talent_points_t;
 struct uptime_t;
 struct ground_aoe_params_t;
 namespace azerite {
-    class azerite_state_t;
-    class azerite_essence_state_t;
+  class azerite_state_t;
+  class azerite_essence_state_t;
 }
 namespace io {
   class ofstream;
@@ -83,7 +85,7 @@ namespace report {
   using sc_html_stream = io::ofstream;
 }
 namespace js {
-    struct JsonOutput;
+  struct JsonOutput;
 }
 namespace covenant {
   class covenant_state_t;
@@ -367,8 +369,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<uptime_t*>> uptime_list;
   auto_dispose<std::vector<cooldown_t*>> cooldown_list;
   auto_dispose<std::vector<target_specific_cooldown_t*>> target_specific_cooldown_list;
-  auto_dispose<std::vector<real_ppm_t*>> rppm_list;
-  auto_dispose<std::vector<shuffled_rng_t*>> shuffled_rng_list;
+  auto_dispose<std::vector<proc_rng_t*>> proc_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array<std::vector<plot_data_t>, STAT_MAX> dps_plot_data;
   std::vector<std::vector<plot_data_t>> reforge_plot_data;
@@ -994,10 +995,14 @@ public:
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
   target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
-  real_ppm_t* get_rppm    ( util::string_view );
-  real_ppm_t* get_rppm    ( util::string_view, const spell_data_t* data, const item_t* item = nullptr );
-  real_ppm_t* get_rppm    ( util::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
-  shuffled_rng_t* get_shuffled_rng( util::string_view name, int success_entries = 0, int total_entries = 0);
+  real_ppm_t* find_rppm( std::string_view );
+  real_ppm_t* get_rppm( std::string_view );
+  real_ppm_t* get_rppm( std::string_view, const spell_data_t* data, const item_t* item = nullptr );
+  real_ppm_t* get_rppm( std::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
+  shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
+  accumulated_rng_t* get_accumulated_rng( std::string_view name, double proc_chance,
+                                          std::function<double( double, unsigned )> accumulator_fn = nullptr,
+                                          unsigned initial_count = 0 );
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
   proc_t*     get_proc    ( util::string_view name );

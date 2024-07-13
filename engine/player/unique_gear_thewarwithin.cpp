@@ -23,7 +23,7 @@
 #include "player/pet_spawner.hpp"
 #include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 #include "sim/sim.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
