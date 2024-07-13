@@ -1124,7 +1124,6 @@ void wild_imp_pet_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
 }
 
-//TODO: Utilize new execute_on_target
 void wild_imp_pet_t::reschedule_firebolt()
 {
   if ( executing || is_sleeping() || player_t::buffs.movement->check() || player_t::buffs.stunned->check() )

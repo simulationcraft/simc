@@ -220,6 +220,8 @@ namespace warlock
 
     talents.rune_of_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Rune of Shadows" ); // Should be ID 453744
 
+    talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
+
     talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
     talents.annihilan_training_buff = find_spell( 386176 );
 
@@ -236,8 +238,6 @@ namespace warlock
 
     talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
     talents.power_siphon_buff = find_spell( 334581 );
-
-    talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 
