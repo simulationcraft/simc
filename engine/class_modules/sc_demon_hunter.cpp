@@ -1894,25 +1894,22 @@ public:
         trigger_fury_refund();
       }
 
-      if ( p()->talent.havoc.shattered_destiny->ok() )
+      // 2024-07-12 -- Shattered Destiny only accumulates while in Metamorphosis
+      if ( p()->talent.havoc.shattered_destiny->ok() && p()->buff.metamorphosis->check() )
       {
         // 2024-07-12 -- If a cast costs Fury, it seems to use the base cost instead of the actual cost.
         resource_e cr  = ab::current_resource();
         const auto& bc = ab::base_costs[ cr ];
         auto base      = bc.base;
 
-        // DFALPHA TOCHECK -- Does this carry over across from pre-Meta or reset?
         p()->shattered_destiny_accumulator += base;
         const double threshold = p()->talent.havoc.shattered_destiny->effectN( 2 ).base_value();
         while ( p()->shattered_destiny_accumulator >= threshold )
         {
           p()->shattered_destiny_accumulator -= threshold;
-          if ( p()->buff.metamorphosis->check() )
-          {
-            p()->buff.metamorphosis->extend_duration( p(),
-                                                      p()->talent.havoc.shattered_destiny->effectN( 1 ).time_value() );
-            p()->proc.shattered_destiny->occur();
-          }
+          p()->buff.metamorphosis->extend_duration( p(),
+                                                    p()->talent.havoc.shattered_destiny->effectN( 1 ).time_value() );
+          p()->proc.shattered_destiny->occur();
         }
       }
     }
@@ -2194,7 +2191,6 @@ struct cycle_of_hatred_trigger_t : public BASE
     BASE::p()->cooldown.eye_beam->adjust( -adjust_seconds );
   }
 };
-
 
 // ==========================================================================
 // Demon Hunter heals
