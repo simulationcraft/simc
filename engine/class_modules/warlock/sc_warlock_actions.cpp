@@ -27,6 +27,7 @@ using namespace helpers;
 
       // Demonology
       bool master_demonologist_dd = false;
+      bool sacrificed_souls = false;
       bool houndmasters = false;
       bool soul_conduit_base_cost = false;
 
@@ -262,6 +263,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
+        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
       return m;
     }
@@ -666,6 +670,7 @@ using namespace helpers;
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
+      affected_by.sacrificed_souls = true;
       triggers.shadow_invocation_direct = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
@@ -741,9 +746,6 @@ using namespace helpers;
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
-
-      if ( p()->talents.sacrificed_souls.ok() )
-        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
       return m;
     }
@@ -1841,6 +1843,7 @@ using namespace helpers;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 2.0;
 
+      affected_by.sacrificed_souls = true;
       triggers.shadow_invocation_direct = true;
     }
 
@@ -1899,9 +1902,6 @@ using namespace helpers;
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.sacrificed_souls.ok() )
-        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
       
       if ( p()->talents.power_siphon.ok() )
         m *= 1.0 + p()->buffs.power_siphon->check_value();

@@ -265,6 +265,7 @@ public:
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
 
+    player_talent_t sacrificed_souls;
     player_talent_t rune_of_shadows; // TODO: New
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
     player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
@@ -309,7 +310,6 @@ public:
     player_talent_t demonic_brutality; // TODO: New
 
     player_talent_t pact_of_the_eredruin; // TODO: New
-    player_talent_t sacrificed_souls;
     player_talent_t mark_of_shatug; // TODO: New
     player_talent_t mark_of_fharg; // TODO: New
     player_talent_t the_houndmasters_gambit; // TODO: New
@@ -421,7 +421,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -618,7 +618,7 @@ public:
   void create_options() override;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
-  int active_demon_count() const; // TODO: Move to helpers?
+  int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;
