@@ -2370,12 +2370,7 @@ using namespace helpers;
   {
     summon_vilefiend_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend, options_str )
-    {
-      harmful = may_crit = false;
-
-      if ( p->talents.fel_invocation.ok() )
-        base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
-    }
+    { harmful = may_crit = false; }
 
     void execute() override
     {

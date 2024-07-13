@@ -727,8 +727,8 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
-
     // TOCHECK: As of 2023-10-16 PTR, Soul Cleave appears to be double-dipping on both Annihilan Training and Antoran Armaments multipliers. Not currently implemented
+
     base_multiplier *= 1.0 + p->o()->talents.fel_invocation->effectN( 1 ).percent();
   }
 
@@ -1458,9 +1458,6 @@ void vilefiend_t::arise()
   warlock_simple_pet_t::arise();
 
   bile_spit_executes = 1;
-
-  if ( o()->talents.fel_invocation.ok() )
-    caustic_presence->trigger();
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
