@@ -1897,9 +1897,9 @@ public:
       if ( p()->talent.havoc.shattered_destiny->ok() )
       {
         // 2024-07-12 -- If a cast costs Fury, it seems to use the base cost instead of the actual cost.
-        resource_e cr = ab::current_resource();
+        resource_e cr  = ab::current_resource();
         const auto& bc = ab::base_costs[ cr ];
-        auto base = bc.base;
+        auto base      = bc.base;
 
         // DFALPHA TOCHECK -- Does this carry over across from pre-Meta or reset?
         p()->shattered_destiny_accumulator += base;
@@ -1973,18 +1973,6 @@ public:
 
     p()->buff.initiative->trigger();
     td( s->target )->debuffs.initiative_tracker->trigger();
-  }
-
-  void trigger_cycle_of_hatred()
-  {
-    if ( !p()->talent.havoc.cycle_of_hatred->ok() )
-      return;
-
-    if ( !p()->cooldown.eye_beam->down() )
-      return;
-
-    timespan_t adjust_seconds = p()->talent.havoc.cycle_of_hatred->effectN( 1 ).time_value();
-    p()->cooldown.eye_beam->adjust( -adjust_seconds );
   }
 
 protected:
@@ -2137,8 +2125,8 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
-        make_event<delayed_execute_event_t>(
-            *BASE::sim, BASE::p(), BASE::p()->active.art_of_the_glaive, BASE::p()->target, 0_ms );
+        make_event<delayed_execute_event_t>( *BASE::sim, BASE::p(), BASE::p()->active.art_of_the_glaive,
+                                             BASE::p()->target, 0_ms );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
@@ -2176,6 +2164,37 @@ struct art_of_the_glaive_trigger_t : public BASE
     }
   }
 };
+
+template <typename BASE>
+struct cycle_of_hatred_trigger_t : public BASE
+{
+  using base_t = cycle_of_hatred_trigger_t<BASE>;
+
+  cycle_of_hatred_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool has_talents_for_cycle_of_hatred()
+  {
+    return BASE::p()->talent.havoc.cycle_of_hatred->ok();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( !has_talents_for_cycle_of_hatred() )
+      return;
+
+    if ( !BASE::p()->cooldown.eye_beam->down() )
+      return;
+
+    timespan_t adjust_seconds = BASE::p()->talent.havoc.cycle_of_hatred->effectN( 1 ).time_value();
+    BASE::p()->cooldown.eye_beam->adjust( -adjust_seconds );
+  }
+};
+
 
 // ==========================================================================
 // Demon Hunter heals
@@ -2388,7 +2407,7 @@ struct bulk_extraction_t : public demon_hunter_spell_t
 
     unsigned num_souls = std::min( execute_state->n_targets, as<unsigned>( data().effectN( 2 ).base_value() ) );
     p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, true );
-    for (unsigned i = 0; i < num_souls; i++)
+    for ( unsigned i = 0; i < num_souls; i++ )
     {
       p()->proc.soul_fragment_from_bulk_extraction->occur();
     }
@@ -3076,7 +3095,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
 // Glaive Tempest ===========================================================
 
-struct glaive_tempest_t : public demon_hunter_spell_t
+struct glaive_tempest_t : public cycle_of_hatred_trigger_t<demon_hunter_spell_t>
 {
   struct glaive_tempest_damage_t : public demon_hunter_attack_t
   {
@@ -3093,7 +3112,7 @@ struct glaive_tempest_t : public demon_hunter_spell_t
   glaive_tempest_damage_t* glaive_tempest_oh;
 
   glaive_tempest_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "glaive_tempest", p, p->talent.havoc.glaive_tempest, options_str )
+    : base_t( "glaive_tempest", p, p->talent.havoc.glaive_tempest, options_str )
   {
     school            = SCHOOL_CHAOS;  // Reporting purposes only
     glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( "glaive_tempest_mh" );
@@ -3121,10 +3140,9 @@ struct glaive_tempest_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+    base_t::execute();
     make_ground_aoe_event( glaive_tempest_mh );
     make_ground_aoe_event( glaive_tempest_oh );
-    trigger_cycle_of_hatred();
   }
 };
 
@@ -4683,7 +4701,8 @@ struct auto_attack_t : public demon_hunter_attack_t
 // Blade Dance =============================================================
 
 struct blade_dance_base_t
-  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
+  : public cycle_of_hatred_trigger_t<
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>
 {
   struct trail_of_ruin_dot_t : public demon_hunter_spell_t
   {
@@ -4851,7 +4870,6 @@ struct blade_dance_base_t
     base_t::execute();
 
     p()->buff.chaos_theory->trigger();
-    trigger_cycle_of_hatred();
 
     // Metamorphosis benefit and Essence Break stats tracking
     if ( p()->buff.metamorphosis->up() )
@@ -4990,7 +5008,8 @@ struct death_sweep_t : public blade_dance_base_t
 // Chaos Strike =============================================================
 
 struct chaos_strike_base_t
-  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
+  : public cycle_of_hatred_trigger_t<
+        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
   struct chaos_strike_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
   {
@@ -5167,8 +5186,6 @@ struct chaos_strike_base_t
       make_event<delayed_execute_event_t>( *sim, p(), p()->active.inner_demon, target, 1.25_s );
       p()->buff.inner_demon->expire();
     }
-
-    trigger_cycle_of_hatred();
 
     // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
     // Note - cannot proc fury reduction buff if blade dance is not on cooldown
@@ -5877,7 +5894,7 @@ struct soul_cleave_t : public soul_cleave_base_t
 
 // Throw Glaive =============================================================
 
-struct throw_glaive_t : public demon_hunter_attack_t
+struct throw_glaive_t : public cycle_of_hatred_trigger_t<demon_hunter_attack_t>
 {
   struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
   {
@@ -5910,7 +5927,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
   throw_glaive_damage_t* furious_throws;
 
   throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
+    : base_t( name, p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
   {
     throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage" );
 
@@ -5931,7 +5948,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
   void init() override
   {
     track_cd_waste = false;
-    demon_hunter_attack_t::init();
+    base_t::init();
 
     track_cd_waste = true;
     cd_wasted_exec =
@@ -5942,14 +5959,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
         p()->template get_data_entry<simple_sample_data_t, simple_data_t>( "throw_glaive", p()->cd_waste_iter );
   }
 
+  bool has_talents_for_cycle_of_hatred() override
+  {
+    return base_t::has_talents_for_cycle_of_hatred() && p()->talent.havoc.furious_throws->ok();
+  }
+
   void execute() override
   {
-    demon_hunter_attack_t::execute();
-
-    if ( p()->talent.havoc.furious_throws->ok() )
-    {
-      trigger_cycle_of_hatred();
-    }
+    base_t::execute();
 
     if ( hit_any_target && furious_throws )
     {
@@ -5974,7 +5991,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
       return false;
     }
 
-    return demon_hunter_attack_t::ready();
+    return base_t::ready();
   }
 };
 
@@ -6000,7 +6017,7 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
   {
     p()->buff.reavers_glaive->expire();
 
-    demon_hunter_attack_t::execute();
+    base_t::execute();
 
     if ( p()->active.preemptive_strike )
     {
@@ -6023,7 +6040,7 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
       return false;
     }
 
-    return demon_hunter_attack_t::ready();
+    return base_t::ready();
   }
 };
 
