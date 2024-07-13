@@ -4631,7 +4631,8 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     {
       p()->active.wounded_quarry->execute_on_target( s->target );
       // 2024-07-11 -- Chance seems to be about 30% (very conservatively) per melee hit per beta gameplay.
-      if ( rng().roll( p()->hero_spec.wounded_quarry_proc_rate ) )
+      // 2024-07-12 -- Chance seems to be multiplied by the number of stacks present on the target.
+      if ( rng().roll( p()->hero_spec.wounded_quarry_proc_rate * td( s->target )->debuffs.reavers_mark->stack() ) )
       {
         p()->proc.soul_fragment_from_wounded_quarry->occur();
         p()->spawn_soul_fragment( soul_fragment::LESSER );
@@ -7426,10 +7427,8 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
-  add_option(
-      opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
-  add_option(
-      opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
+  add_option( opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
+  add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8061,7 +8060,8 @@ void demon_hunter_t::init_spells()
     hero_spec.reavers_glaive_buff = spell_data_t::not_found();
   }
 
-  hero_spec.wounded_quarry_proc_rate = specialization() == DEMON_HUNTER_HAVOC ? options.wounded_quarry_chance_havoc : options.wounded_quarry_chance_vengeance;
+  hero_spec.wounded_quarry_proc_rate = specialization() == DEMON_HUNTER_HAVOC ? options.wounded_quarry_chance_havoc
+                                                                              : options.wounded_quarry_chance_vengeance;
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
