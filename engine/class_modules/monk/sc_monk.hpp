@@ -395,7 +395,6 @@ public:
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> enveloping_mist;
     propagate_const<dot_t *> renewing_mist;
-    propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
 
@@ -491,9 +490,7 @@ public:
   struct active_actions_t
   {
     // General
-    propagate_const<action_t *> bountiful_brew;
     propagate_const<action_t *> chi_wave;
-    propagate_const<action_t *> rushing_jade_wind;
 
     // Conduit of the Celestials
     propagate_const<action_t *> courage_of_the_white_tiger;
@@ -790,7 +787,6 @@ public:
     propagate_const<gain_t *> open_palm_strikes;
     propagate_const<gain_t *> ordered_elements;
     propagate_const<gain_t *> power_strikes;
-    propagate_const<gain_t *> rushing_jade_wind_tick;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
     propagate_const<gain_t *> weapons_of_order;
@@ -852,8 +848,6 @@ public:
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> rushing_jade_wind_brm;
-    propagate_const<cooldown_t *> rushing_jade_wind_ww;
     propagate_const<cooldown_t *> storm_earth_and_fire;
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;

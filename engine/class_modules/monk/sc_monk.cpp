@@ -2120,57 +2120,18 @@ struct flight_of_the_red_crane_heal_t : public monk_heal_t
   }
 };
 
-struct rjw_tick_action_t : public monk_melee_attack_t
-{
-  double test_softcap;
-  rjw_tick_action_t( monk_t *p )
-    : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->passives.rushing_jade_wind_tick )
-  {
-    ww_mastery = true;
-
-    dual = background   = true;
-    aoe                 = -1;
-    reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
-    radius              = data().effectN( 1 ).radius();
-
-    // Reset some variables to ensure proper execution
-    dot_duration       = timespan_t::zero();
-    cooldown->duration = timespan_t::zero();
-
-    // Merge action statistics if RJW exists as an active ability
-    auto rjw_action = p->find_action( "rushing_jade_wind" );
-
-    if ( rjw_action )
-      stats = rjw_action->stats;
-  }
-};
-
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
-  rushing_jade_wind_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "rushing_jade_wind", p->shared.rushing_jade_wind )
+  rushing_jade_wind_t( monk_t *player, util::string_view options_str )
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind )
   {
     parse_options( options_str );
-
     may_combo_strike = true;
-    gcd_type         = gcd_haste_type::NONE;
-
-    // Set dot data to 0, since we handle everything through the buff.
-    base_tick_time = timespan_t::zero();
-    dot_duration   = timespan_t::zero();
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    update_flags &= ~STATE_HASTE;
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
-
     p()->buff.rushing_jade_wind->trigger();
   }
 };
@@ -2331,9 +2292,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
 
-    tick_action        = new sck_tick_action_t( p, "spinning_crane_kick_tick",
-                                                p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
-    tick_action->stats = stats;
+    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick",
+                                         p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
+    stats       = tick_action->stats;
 
     // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
@@ -5945,49 +5906,47 @@ struct touch_of_karma_buff_t : public monk_buff_t
 // ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t
 {
-  // gonna assume this is 1 buff per monk combatant
+  struct tick_action_t : monk_melee_attack_t
+  {
+    tick_action_t( monk_t *p ) : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->passives.rushing_jade_wind_tick )
+    {
+      ww_mastery = true;
+
+      dual = background   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
+
+      // Merge action statistics if RJW exists as an active ability
+      if ( action_t *action = p->find_action( "rushing_jade_wind" ); action )
+        stats = action->stats;
+    }
+  };
+
   timespan_t _period;
+  action_t *rushing_jade_wind_tick;
 
-  static void rjw_callback( buff_t *b, int, timespan_t )
+  rushing_jade_wind_buff_t( monk_t *player )
+    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ),
+      rushing_jade_wind_tick( new tick_action_t( player ) )
   {
-    auto *p = debug_cast<monk_t *>( b->player );
-
-    p->active_actions.rushing_jade_wind->execute();
-  }
-
-  rushing_jade_wind_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_can_cancel( true );
-    set_tick_zero( true );
-    set_cooldown( timespan_t::zero() );
-
-    set_period( s->effectN( 1 ).period() );
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
-    set_tick_time_callback( [ & ]( const buff_t *, unsigned int ) { return _period; } );
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-    set_partial_tick( true );
+    set_tick_time_callback( [ this ]( const buff_t *, unsigned int ) { return _period; } );
 
-    // if ( p.specialization() == MONK_BREWMASTER )
-    //   set_duration_multiplier( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() );
-
-    set_tick_callback( rjw_callback );
+    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { rushing_jade_wind_tick->execute(); } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
 
-    modify_duration( p->talent.conduit_of_the_celestials.yulons_knowledge->effectN( 1 ).time_value() );
+    apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
+    apply_affecting_aura( player->baseline.brewmaster.aura );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_cast_speed();
-    // RJW snapshots the tick period on cast. this + the tick_time
-    // callback represent that behavior
-    _period = this->buff_period * p().cache.spell_cast_speed();
+    // RJW snapshots the tick period on cast.
+    if ( duration < timespan_t::zero() )
+      duration = monk_buff_t::buff_duration();
+    duration *= p().cache.spell_cast_speed();
+    _period = monk_buff_t::buff_period * p().cache.spell_cast_speed();
     return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6685,7 +6644,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   dot.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
   dot.enveloping_mist   = target->get_dot( "enveloping_mist", p );
   dot.renewing_mist     = target->get_dot( "renewing_mist", p );
-  dot.rushing_jade_wind = target->get_dot( "rushing_jade_wind", p );
   dot.soothing_mist     = target->get_dot( "soothing_mist", p );
   dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
   dot.aspect_of_harmony = target->get_dot( "aspect_of_harmony_damage", p );
@@ -6732,8 +6690,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
-  cooldown.rushing_jade_wind_brm  = get_cooldown( "rushing_jade_wind" );
-  cooldown.rushing_jade_wind_ww   = get_cooldown( "rushing_jade_wind" );
   cooldown.storm_earth_and_fire   = get_cooldown( "storm_earth_and_fire" );
   cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
   cooldown.thunder_focus_tea      = get_cooldown( "thunder_focus_tea" );
@@ -7718,9 +7674,8 @@ void monk_t::init_spells()
   // Active Action Spells
 
   // General
-  active_actions.chi_wave          = new actions::chi_wave_t( this );
-  active_actions.rushing_jade_wind = new actions::rjw_tick_action_t( this );
-  windwalking_aura                 = new actions::windwalking_aura_t( this );
+  active_actions.chi_wave = new actions::chi_wave_t( this );
+  windwalking_aura        = new actions::windwalking_aura_t( this );
 
   // Conduit of the Celestials
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
@@ -8041,7 +7996,10 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( shared.jadefire_stomp )
                             ->set_default_value_from_effect( 2 );
 
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( this, "rushing_jade_wind", passives.rushing_jade_wind );
+  buff.rushing_jade_wind = make_buff_fallback<buffs::rushing_jade_wind_buff_t>(
+      talent.brewmaster.rushing_jade_wind->ok() || talent.windwalker.rushing_jade_wind->ok() ||
+          talent.conduit_of_the_celestials.restore_balance->ok(),
+      this, "rushing_jade_wind" );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", baseline.monk.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
@@ -8342,8 +8300,7 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
                           "courage_of_the_white_tiger", find_spell( 460127 ) )
           ->set_expire_callback(
-              [ this ]( buff_t *buff_, double, timespan_t ) { active_actions.courage_of_the_white_tiger->execute(); } );
-  ;
+              [ this ]( buff_t *, double, timespan_t ) { active_actions.courage_of_the_white_tiger->execute(); } );
 
   buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
                                                      this, "flight_of_the_red_crane", find_spell( 457459 ) );
@@ -8361,15 +8318,13 @@ void monk_t::create_buffs()
                           "heart_of_the_jade_serpent_stack_mw", find_spell( 443506 ) )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
-            {
               buff.heart_of_the_jade_serpent_cdr->trigger();
-            }
           } )
           ->set_expire_at_max_stack( true );
 
   buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
                                                        this, "heart_of_the_jade_serpent", find_spell( 456368 ) )
-                                       ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+                                       ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
                                          buff.heart_of_the_jade_serpent_cdr->trigger();
                                        } );
 
@@ -8378,9 +8333,7 @@ void monk_t::create_buffs()
                           "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
-            {
               buff.heart_of_the_jade_serpent->trigger();
-            }
           } )
           ->set_expire_at_max_stack( true );
 
@@ -8402,12 +8355,12 @@ void monk_t::create_buffs()
   buff.strength_of_the_black_ox =
       make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
                           "strength_of_the_black_ox", find_spell( 443112 ) )
-          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+          ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
             if ( specialization() == MONK_MISTWEAVER )
             {
               active_actions.strength_of_the_black_ox_absorb->execute();
             }
-            else
+            if ( specialization() == MONK_WINDWALKER )
             {
               active_actions.strength_of_the_black_ox_dmg->execute();
               buff.teachings_of_the_monastery->trigger(
@@ -8418,14 +8371,14 @@ void monk_t::create_buffs()
   buff.unity_within =
       make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
                           find_spell( 443592 ) )
-          ->set_expire_callback( [ this ]( buff_t *buff_, double, timespan_t ) {
+          ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
             buff.jade_sanctuary->trigger();
             if ( specialization() == MONK_MISTWEAVER )
             {
               active_actions.flight_of_the_red_crane_celestial_heal->execute();
               active_actions.strength_of_the_black_ox_absorb->execute();
             }
-            else
+            if ( specialization() == MONK_WINDWALKER )
             {
               active_actions.strength_of_the_black_ox_dmg->execute();
               buff.teachings_of_the_monastery->trigger(
@@ -8576,7 +8529,6 @@ void monk_t::init_gains()
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
   gain.ordered_elements         = get_gain( "ordered_elements" );
   gain.power_strikes            = get_gain( "power_strikes" );
-  gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
 }
@@ -8904,12 +8856,8 @@ void monk_t::init_special_effects()
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
   {
     auto register_cb = [ this ]( const spell_data_t *spell_data ) {
-      auto filter_cb = []( monk_t *p, action_state_t *state ) {
-        p->sim->print_debug( "ZXC FILTER CB" );
-        return true;
-      };
+      auto filter_cb  = []( monk_t *, action_state_t  *) { return true; };
       auto trigger_cb = [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-        sim->print_debug( "ZXC TRIGGER CB" );
         buff.aspect_of_harmony->trigger( state );
       };
       create_proc_callback( spell_data, filter_cb );
