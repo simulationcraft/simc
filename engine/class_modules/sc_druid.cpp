@@ -8998,8 +8998,9 @@ struct druid_melee_t : public Base
   using ab = Base;
   using base_t = druid_melee_t<Base>;
 
+  accumulated_rng_t* ravage_proc = nullptr;
+  buff_t* ravage_buff = nullptr;
   double ooc_chance = 0.0;
-  double ravage_chance = 0.0;
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
@@ -9028,8 +9029,13 @@ struct druid_melee_t : public Base
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    if ( p->talent.ravage.ok() )
-      ravage_chance = 2.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
+    // Feral: 0.286% via community testing (~197k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+    if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
+    {
+      ravage_proc = p->get_accumulated_rng( "ravage", 0.00286 );
+      ravage_buff = p->buff.ravage_fb;
+    }
   }
 
   timespan_t execute_time() const override
@@ -9059,12 +9065,8 @@ struct druid_melee_t : public Base
         }
       }
 
-      if ( ravage_chance )
-      {
-        double chance = ab::weapon->proc_chance_on_swing( ravage_chance );
-        ab::p()->buff.ravage_fb->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
-        ab::p()->buff.ravage_maul->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
-      }
+      if ( ravage_proc && ravage_proc->trigger() )
+        ravage_buff->trigger();
     }
   }
 };
@@ -10762,10 +10764,12 @@ void druid_t::create_buffs()
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.ravage_fb = make_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
-    this, "ravage", find_spell( 441585 ) );
+    this, "ravage", find_spell( 441585 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.ravage_maul = make_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
-    this, "ravage", find_spell( 441602 ) );
+    this, "ravage", find_spell( 441602 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
