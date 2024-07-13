@@ -205,18 +205,22 @@ namespace warlock
 
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
-    talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
-    talents.annihilan_training_buff = find_spell( 386176 );
+    talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
-    talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
-
-    talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057. NOTE: Updated to 428344 in 10.2
+    talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 428344
+    talents.soul_strike_pet = find_spell( 264057 );
+    talents.soul_strike_dmg = find_spell( 267964 );
 
     talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
     talents.bilescourge_bombers_aoe = find_spell( 267213 );
 
     talents.demonic_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Strength" ); // Should be ID 267171
-  
+
+    talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
+    talents.annihilan_training_buff = find_spell( 386176 );
+
+    talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
+
     talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
     talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
 
@@ -232,8 +236,6 @@ namespace warlock
     talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
-  
-    talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
 
     talents.doom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom" ); // Should be ID 603
   
@@ -474,6 +476,7 @@ namespace warlock
     buffs.inner_demons = make_buff( this, "inner_demons", talents.inner_demons )
                              ->set_period( talents.inner_demons->effectN( 1 ).period() )
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                             ->set_tick_zero( true )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                warlock_pet_list.wild_imps.spawn();
                              } );
@@ -739,7 +742,10 @@ namespace warlock
     player_t::combat_begin();
 
     if ( specialization() == WARLOCK_DEMONOLOGY && buffs.inner_demons && talents.inner_demons->ok() )
-      buffs.inner_demons->trigger();
+    {
+      timespan_t start = timespan_t::from_seconds( rng().range( talents.inner_demons->effectN( 1 ).period().total_seconds() ) );
+      make_event( sim, start, [ this ] { buffs.inner_demons->trigger(); } );
+    }
   }
 
   void warlock_t::reset()

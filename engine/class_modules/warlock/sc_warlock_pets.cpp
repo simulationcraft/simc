@@ -659,7 +659,7 @@ struct demonic_strength_t : public felstorm_t
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
     : felstorm_t( p, options_str, std::string( "Felstorm (Demonic Strength)" ) )
   {
-    if ( p->o()->talents.fel_sunder->ok() )
+    if ( p->o()->talents.fel_sunder.ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
   }
 
@@ -718,9 +718,12 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
   soul_cleave_t* soul_cleave;
 
-  soul_strike_t( warlock_pet_t* p, util::string_view options_str ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
+  soul_strike_t( warlock_pet_t* p, util::string_view options_str ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->o()->talents.soul_strike_dmg )
   {
     parse_options( options_str );
+
+    cooldown->duration = p->o()->talents.soul_strike_pet->cooldown();
+    trigger_gcd = p->o()->talents.soul_strike_pet->gcd();
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );

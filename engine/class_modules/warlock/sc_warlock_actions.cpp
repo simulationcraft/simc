@@ -2158,7 +2158,7 @@ using namespace helpers;
   {
     demonic_strength_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength, options_str )
-    { internal_cooldown = p->get_cooldown( "felstorm_icd" ); }
+    { internal_cooldown = p->cooldowns.felstorm_icd; }
 
     bool ready() override
     {
