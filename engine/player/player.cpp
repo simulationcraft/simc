@@ -2624,7 +2624,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
   // add any freely granted traits
   for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
   {
-    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
+    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
     {
       auto id = trait.id_trait_node_entry;
       auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
@@ -2700,6 +2700,7 @@ constexpr size_t byte_size    = 6;
 static std::string generate_traits_hash( player_t* player )
 {
   std::string export_str;
+  auto ptr = player->is_ptr();
 
   if ( player->player_traits.empty() )
     return export_str;
@@ -2737,7 +2738,7 @@ static std::string generate_traits_hash( player_t* player )
     if ( !ranks )
       continue;
 
-    auto trait_data = trait_data_t::find( id_entry, maybe_ptr( player->dbc->ptr ) );
+    auto trait_data = trait_data_t::find( id_entry, ptr );
     auto tree_entry = &tree_nodes[ trait_data->id_node ];
 
     for ( auto& entry : *tree_entry )
@@ -2754,8 +2755,8 @@ static std::string generate_traits_hash( player_t* player )
   {
     if ( node.size() > 1 )
     {
-      range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-        return sort_node_entries( a.first, b.first, player->is_ptr() );
+      range::sort( node, [ player, ptr ]( const auto& a, const auto& b ) {
+        return sort_node_entries( a.first, b.first, ptr );
       } );
     }
 
@@ -2786,7 +2787,7 @@ static std::string generate_traits_hash( player_t* player )
     }
 
     // is node purchased? granted nodes are baseline 1 rank.
-    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1U : 0U ) )
+    if ( rank > ( trait_data_t::is_granted( trait, player->type, player->specialization(), ptr ) ? 1U : 0U ) )
     {
       put_bit( 1, 1 );
     }
@@ -2908,7 +2909,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       size_t rank = trait->max_ranks;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      // hero talents don't seem to require a matching specialization
+      // hero talents don't seem to require a matching id_spec_set
+      // TODO: utilize logic in trait_data_t::is_granted() to check against id_spec_set of the subtree selection trait
       if ( _tree != talent_tree::HERO &&
            !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
@@ -3113,10 +3115,9 @@ void player_t::init_talents()
       continue;
     }
 
-    const auto trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+    const auto trait = trait_data_t::find( trait_node_entry_id, is_ptr() );
     assert( trait );
-    const auto effect_points = trait_definition_effect_entry_t::find( trait->id_trait_definition,
-        dbc->ptr );
+    const auto effect_points = trait_definition_effect_entry_t::find( trait->id_trait_definition, is_ptr() );
     auto spell = dbc::find_spell( this, trait->id_spell );
 
     if ( spell->id() != trait->id_spell )
@@ -3155,7 +3156,7 @@ void player_t::init_talents()
         continue;
       }
 
-      auto curve_data = curve_point_t::find( effect_point.id_curve, dbc->ptr );
+      auto curve_data = curve_point_t::find( effect_point.id_curve, is_ptr() );
       auto value = 0.0f;
       auto it = range::find_if( curve_data, [rank]( const auto& point ) {
         return point.primary1 == as<float>( rank );

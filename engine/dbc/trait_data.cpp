@@ -220,13 +220,18 @@ unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
   return 0;
 }
 
-bool trait_data_t::is_granted( const trait_data_t* trait, specialization_e spec )
+// TODO: perhaps this should be locally cached post processing for 'missing' id_spec_starter. currently only called
+// during player initialization & html report generation, so not a runtime issue.
+bool trait_data_t::is_granted( const trait_data_t* trait, player_e type, specialization_e spec, bool ptr )
 {
   // check if the trait is the initial starting node on the spec/hero tree (1,1)
   // we can parse this from DBC via traitcond for the nodegroup but seems unnecessary for now
   if ( static_cast<talent_tree>( trait->tree_index ) == talent_tree::HERO && trait->col == 1 && trait->row == 1 )
   {
-    return true;
+    // as hero traits can be missing proper id_spec, check the id_spec of the sub tree's selection talent
+    for ( const auto& entry : data( util::class_id( type ), talent_tree::SELECTION, ptr ) )
+      if ( entry.id_sub_tree == trait->id_sub_tree && range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
+        return true;
   }
   // check if trait is a free class trait for the spec
   else if ( trait->id_spec_starter[ 0 ] && range::contains( trait->id_spec_starter, spec ) )
