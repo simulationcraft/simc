@@ -402,6 +402,8 @@ public:
     action_t* elemental_blast_foe; // Fusion of Elements
 
     action_t* thunderstrike_ward;
+
+    action_t* earthen_rage;
   } action;
 
   // Pets
@@ -835,7 +837,7 @@ public:
     player_talent_t thunderstrike_ward;
     player_talent_t echo_chamber;
     player_talent_t searing_flames;
-    player_talent_t earthen_rage; // NEW NYI
+    player_talent_t earthen_rage; // NEW Partial implementation
     // Row 8
     player_talent_t elemental_equilibrium;
     player_talent_t stormkeeper;
@@ -1085,6 +1087,7 @@ public:
   void trigger_reactivity( const action_state_t* state );
   void trigger_fusion_of_elements( const action_state_t* state );
   void trigger_thunderstrike_ward( const action_state_t* state );
+  void trigger_earthen_rage( const action_state_t* state );
   void trigger_totemic_rebound( const action_state_t* state );
 
   // Legendary
@@ -2421,6 +2424,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       p()->trigger_fusion_of_elements( execute_state );
     }
+
+    p()->trigger_earthen_rage( execute_state );
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3778,6 +3783,33 @@ struct thunderstrike_ward_damage_t : public shaman_spell_t
 
     return m;
   }
+};
+
+struct earthen_rage_spell_t : public shaman_spell_t
+{
+  earthen_rage_spell_t( shaman_t* p ) : shaman_spell_t( "earthen_rage_damage", p, p -> find_spell( 170379 ) )
+  {
+    background = proc = true;
+    callbacks = false;
+  }
+};
+
+struct earthen_rage_driver_t : public spell_t
+{
+  earthen_rage_driver_t( shaman_t* p ) : spell_t( "earthen_rage", p, p -> find_spell( 170377 ) )
+  {
+    may_miss = may_crit = callbacks = proc = tick_may_crit = tick_zero = false;
+    background = quiet = dual = dynamic_tick_action = true;
+
+    tick_action = new earthen_rage_spell_t( p );
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * state -> haste ) ); }
+
+  // Maximum duration is extended by max of 6 seconds
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
+  { return data().duration(); }
 };
 
 // Honestly why even bother with resto heals?
@@ -9804,6 +9836,11 @@ void shaman_t::create_actions()
     action.thunderstrike_ward = new thunderstrike_ward_damage_t( this );
   }
 
+  if ( talent.earthen_rage.ok() )
+  {
+    action.earthen_rage = new earthen_rage_driver_t( this );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -11304,6 +11341,36 @@ void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
   {
     action.thunderstrike_ward->execute_on_target( state->target );
   }
+}
+
+// TODO: Target swaps
+void shaman_t::trigger_earthen_rage( const action_state_t* state )
+{
+  if ( !talent.earthen_rage -> ok() )
+  {
+    return;
+  }
+
+  if ( !state->action->harmful )
+  {
+    return;
+  }
+
+  if ( !state->action->result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  // Earthen Rage damage does not trigger itself
+  if ( state->action == action.earthen_rage->tick_action ||
+       state->action == action.earthen_rage )
+  {
+    return;
+  }
+
+  sim->out_debug.print( "{} earthen_rage proc by {}", *this, *state->action );
+
+  action.earthen_rage->execute_on_target( state->target );
 }
 
 void shaman_t::trigger_totemic_rebound( const action_state_t* state )
