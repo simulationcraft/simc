@@ -4223,6 +4223,9 @@ struct fury_of_xuen_summon_t final : monk_spell_t
   {
     monk_spell_t::execute();
 
+    if ( !p()->talent.windwalker.fury_of_xuen->ok() )
+      return;
+
     if ( p()->bugs )
     {
       // BUG: Invoke Xuen and Fury of Xuen reset both damage cache to 0 when either spawn
@@ -8193,10 +8196,11 @@ void monk_t::create_buffs()
                                                           "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
                                           ->set_trigger_spell( baseline.windwalker.flying_serpent_kick );
 
-  buff.fury_of_xuen_stacks =
-      new buffs::fury_of_xuen_stacking_buff_t( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
+  buff.fury_of_xuen_stacks = make_buff_fallback<buffs::fury_of_xuen_stacking_buff_t>(
+      talent.windwalker.fury_of_xuen->ok(), this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-  buff.fury_of_xuen = new buffs::fury_of_xuen_t( this, "fury_of_xuen", passives.fury_of_xuen );
+  buff.fury_of_xuen = make_buff_fallback<buffs::fury_of_xuen_t>( talent.windwalker.fury_of_xuen->ok(), this,
+                                                                 "fury_of_xuen", passives.fury_of_xuen );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )
