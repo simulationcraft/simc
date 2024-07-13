@@ -1896,8 +1896,13 @@ public:
 
       if ( p()->talent.havoc.shattered_destiny->ok() )
       {
+        // 2024-07-12 -- If a cast costs Fury, it seems to use the base cost instead of the actual cost.
+        resource_e cr = ab::current_resource();
+        const auto& bc = ab::base_costs[ cr ];
+        auto base = bc.base;
+
         // DFALPHA TOCHECK -- Does this carry over across from pre-Meta or reset?
-        p()->shattered_destiny_accumulator += ab::last_resource_cost;
+        p()->shattered_destiny_accumulator += base;
         const double threshold = p()->talent.havoc.shattered_destiny->effectN( 2 ).base_value();
         while ( p()->shattered_destiny_accumulator >= threshold )
         {
@@ -5171,7 +5176,7 @@ struct chaos_strike_base_t
          p()->rng().roll( tww1_reset_proc_chance ) )
     {
       p()->buff.tww1_havoc_4pc->trigger();
-      p()->cooldown.blade_dance->reset( 1 );
+      p()->cooldown.blade_dance->reset( true );
     }
   }
 
