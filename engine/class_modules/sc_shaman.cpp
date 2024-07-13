@@ -475,6 +475,7 @@ public:
     buff_t* wind_gust;  // Storm Elemental passive 263806
     buff_t* fusion_of_elements_1;
     buff_t* fusion_of_elements_2;
+    buff_t* storm_frenzy;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -808,8 +809,8 @@ public:
     player_talent_t unrelenting_calamity;
     player_talent_t master_of_the_elements;
     // Row 5
-    player_talent_t fusion_of_elements; // NEW NYI
-    player_talent_t storm_frenzy; // NEW NYI
+    player_talent_t fusion_of_elements;
+    player_talent_t storm_frenzy;
     player_talent_t swelling_maelstrom;
     player_talent_t primordial_fury; // NEW NYI
     player_talent_t flow_of_power;
@@ -1427,6 +1428,8 @@ public:
 
   bool affected_by_enhanced_imbues_da;
 
+  bool affected_by_storm_frenzy;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1458,7 +1461,8 @@ public:
       affected_by_arc_discharge( false ),
       affected_by_amplification_core_da( false ),
       affected_by_amplification_core_ta( false ),
-      affected_by_enhanced_imbues_da( false ) // Enhancement damage effects, Ele stuff is handled elsewhere
+      affected_by_enhanced_imbues_da( false ), // Enhancement damage effects, Ele stuff is handled elsewhere
+      affected_by_storm_frenzy( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1527,6 +1531,8 @@ public:
     affected_by_amplification_core_ta = ab::data().affected_by( player->find_spell( 456369 )->effectN( 2 ) );
 
     affected_by_enhanced_imbues_da = ab::data().affected_by( player->talent.enhanced_imbues->effectN( 2 ) );
+
+    affected_by_storm_frenzy = ab::data().affected_by( player->buff.storm_frenzy->data().effectN( 1 ) );
   }
 
   std::string full_name() const
@@ -1786,6 +1792,11 @@ public:
       mul *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
     }
 
+    if ( affected_by_storm_frenzy && p()->buff.storm_frenzy->check() )
+    {
+      mul *= 1.0 + p()->buff.storm_frenzy->value();
+    }
+
     return mul;
   }
 
@@ -1847,6 +1858,11 @@ public:
     if ( affected_by_arc_discharge )
     {
       this->p()->buff.arc_discharge->decrement();
+    }
+
+    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL )
+    {
+      this->p()->buff.storm_frenzy->decrement();
     }
   }
 
@@ -6462,7 +6478,6 @@ struct elemental_blast_t : public shaman_spell_t
       }
 
       resource_current = RESOURCE_MAELSTROM;
-      cooldown->duration = 0_ms;
     }
     else if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -6556,6 +6571,11 @@ struct elemental_blast_t : public shaman_spell_t
     {
       p()->buff.whirling_earth->decrement();
       cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
+    }
+
+    if ( exec_type == spell_variant::NORMAL )
+    {
+      p()->buff.storm_frenzy->trigger();
     }
   }
 
@@ -7040,6 +7060,11 @@ struct earthquake_t : public earthquake_base_t
     p()->buff.t29_2pc_ele->expire();
 
     p()->buff.t29_4pc_ele->trigger();
+
+    if ( exec_type == spell_variant::NORMAL )
+    {
+      p()->buff.storm_frenzy->trigger();
+    }
   }
 };
 
@@ -7208,7 +7233,6 @@ struct earth_shock_t : public shaman_spell_t
     return m;
   }
 
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -7235,6 +7259,7 @@ struct earth_shock_t : public shaman_spell_t
     p()->buff.t29_2pc_ele->expire();
 
     p()->buff.t29_4pc_ele->trigger();
+    p()->buff.storm_frenzy->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -11339,6 +11364,9 @@ void shaman_t::create_buffs()
   buff.fusion_of_elements_2 = make_buff( this, "fusion_of_elements_2",
                                          talent.fusion_of_elements->effectN( 2 ).trigger() )
                                 ->set_trigger_spell( talent.fusion_of_elements );
+  buff.storm_frenzy = make_buff( this, "storm_frenzy", talent.storm_frenzy->effectN( 1 ).trigger() )
+                                ->set_default_value_from_effect( 1 )
+                                ->set_trigger_spell( talent.storm_frenzy );
 
   //
   // Enhancement
