@@ -734,6 +734,8 @@ public:
 
     // Master of Harmony
     buffs::aspect_of_harmony_t *aspect_of_harmony;
+    propagate_const<buff_t *> balanced_stratagem_physical;
+    propagate_const<buff_t *> balanced_stratagem_magic;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -1261,7 +1263,9 @@ public:
       const spell_data_t *purified_spirit_damage;
       const spell_data_t *purified_spirit_heal;
       player_talent_t harmonic_gambit;
-      player_talent_t balanced_strategem;
+      player_talent_t balanced_stratagem;
+      const spell_data_t *balanced_stratagem_physical;
+      const spell_data_t *balanced_stratagem_magic;
       // Row 3
       player_talent_t tigers_vigor;
       player_talent_t roar_from_the_heavens;

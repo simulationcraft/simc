@@ -188,6 +188,8 @@ void monk_action_t<Base>::apply_buff_effects()
                      return false;
                    return p()->buff.aspect_of_harmony->heal->is_ticking();
                  } );
+  parse_effects( p()->buff.balanced_stratagem_physical );
+  parse_effects( p()->buff.balanced_stratagem_magic );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -557,6 +559,11 @@ void monk_action_t<Base>::impact( action_state_t *s )
     trigger_mystic_touch( s );
 
   base_t::impact( s );
+
+  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_physical->data().effectN( 1 ) ) )
+    p()->buff.balanced_stratagem_physical->expire();
+  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_magic->data().effectN( 1 ) ) )
+    p()->buff.balanced_stratagem_magic->expire();
 
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
   {
@@ -6451,7 +6458,8 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
        effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
     multiplier *= 1.0 + effect.percent();
 
-  monk_buff_t::trigger( -1, check_value() + state->result_amount * multiplier );
+  double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
+  monk_buff_t::trigger( -1, amount );
 }
 
 aspect_of_harmony_t::spender_t::spender_t( monk_t *player )
@@ -6467,11 +6475,17 @@ aspect_of_harmony_t::spender_t::spender_t( monk_t *player )
 {
   set_default_value( 0.0 );
   if ( player->specialization() == MONK_BREWMASTER )
+  {
     purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
         player, player->talent.master_of_harmony.purified_spirit_damage, this );
+    damage->add_child( purified_spirit );
+  }
   if ( player->specialization() == MONK_MISTWEAVER )
+  {
     purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
         player, player->talent.master_of_harmony.purified_spirit_heal, this );
+    heal->add_child( purified_spirit );
+  }
 
   set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
     if ( !new_ )
@@ -7577,12 +7591,14 @@ void monk_t::init_spells()
     talent.master_of_harmony.aspect_of_harmony_damage      = find_spell( 450763 );
     talent.master_of_harmony.aspect_of_harmony_heal        = find_spell( 450769 );
     // Row 2
-    talent.master_of_harmony.manifestation          = _HT( "Manifestation" );
-    talent.master_of_harmony.purified_spirit        = _HT( "Purified Spirit" );
-    talent.master_of_harmony.purified_spirit_damage = find_spell( 450820 );
-    talent.master_of_harmony.purified_spirit_heal   = find_spell( 450805 );
-    talent.master_of_harmony.harmonic_gambit        = _HT( "Harmonic Gambit" );
-    talent.master_of_harmony.balanced_strategem     = _HT( "Balanced Strategem" );
+    talent.master_of_harmony.manifestation               = _HT( "Manifestation" );
+    talent.master_of_harmony.purified_spirit             = _HT( "Purified Spirit" );
+    talent.master_of_harmony.purified_spirit_damage      = find_spell( 450820 );
+    talent.master_of_harmony.purified_spirit_heal        = find_spell( 450805 );
+    talent.master_of_harmony.harmonic_gambit             = _HT( "Harmonic Gambit" );
+    talent.master_of_harmony.balanced_stratagem          = _HT( "Balanced Stratagem" );
+    talent.master_of_harmony.balanced_stratagem_magic    = find_spell( 451508 );
+    talent.master_of_harmony.balanced_stratagem_physical = find_spell( 451514 );
     // Row 3
     talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
     talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
@@ -8429,6 +8445,13 @@ void monk_t::create_buffs()
                           talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() );
   buff.aspect_of_harmony->path_of_resurgence->apply_affecting_aura( talent.monk.chi_wave );
 
+  buff.balanced_stratagem_magic =
+      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic",
+                          talent.master_of_harmony.balanced_stratagem_magic );
+  buff.balanced_stratagem_physical =
+      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical",
+                          talent.master_of_harmony.balanced_stratagem_physical );
+
   // Shado-Pan
 
   buff.against_all_odds =
@@ -8779,7 +8802,6 @@ void monk_t::init_special_effects()
   // ======================================
 
   if ( talent.brewmaster.exploding_keg.ok() )
-  {
     create_proc_callback( talent.brewmaster.exploding_keg.spell(), []( monk_t *p, action_state_t *state ) {
       // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
       if ( !p->buff.exploding_keg->up() )
@@ -8787,17 +8809,14 @@ void monk_t::init_special_effects()
       p->active_actions.exploding_keg->set_target( state->target );
       return true;
     } );
-  }
 
   // ======================================
   // Blackout Reinforcement ( Windwalker T31 Set Bonus )
   // ======================================
 
   if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-  {
     create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                           []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
-  }
 
   // ======================================
   // Flurry of Xuen ( Windwalker Talent )
@@ -8809,7 +8828,6 @@ void monk_t::init_special_effects()
       if ( state->action->id == p->active_actions.flurry_of_xuen->id ||
            state->action->id == p->active_actions.empowered_tiger_lightning->id )
         return false;
-
       return true;
     } );
 
@@ -8826,7 +8844,6 @@ void monk_t::init_special_effects()
   // ======================================
 
   if ( talent.windwalker.darting_hurricane.ok() )
-  {
     create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
       if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
            state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
@@ -8835,14 +8852,12 @@ void monk_t::init_special_effects()
         return false;
       return true;
     } );
-  }
 
   // ======================================
   // Veteran's Eye ( Shado-pan Talent )
   // ======================================
 
   if ( talent.shado_pan.veterans_eye->ok() )
-  {
     create_proc_callback(
         talent.shado_pan.veterans_eye.spell(),
         []( monk_t *p, action_state_t *state ) {
@@ -8859,7 +8874,6 @@ void monk_t::init_special_effects()
           return true;
         },
         PF2_ALL_HIT );
-  }
 
   // ======================================
   // Chi Burst ( Monk Talent )
@@ -8871,23 +8885,57 @@ void monk_t::init_special_effects()
   // Spirit of the Ox ( Brewmaster Talent )
   // ======================================
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
+  {
     create_proc_callback( talent.brewmaster.spirit_of_the_ox.spell(), []( monk_t *player, action_state_t *state ) {
       if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
            state->action->id != player->baseline.brewmaster.blackout_kick->id() )
         return false;
-      player->buff.gift_of_the_ox->spawn_orb( 1 );
       return true;
     } );
+    callbacks.register_callback_execute_function(
+        talent.brewmaster.spirit_of_the_ox.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.gift_of_the_ox->spawn_orb( 1 );
+        } );
+  }
 
+  // ======================================
+  // Master of Harmony
+  // ======================================
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
   {
-    auto cb = []( monk_t *player, action_state_t *state ) {
-      player->buff.aspect_of_harmony->trigger( state );
-      return true;
+    auto register_cb = [ this ]( const spell_data_t *spell_data ) {
+      auto filter_cb = []( monk_t *p, action_state_t *state ) {
+        p->sim->print_debug( "ZXC FILTER CB" );
+        return true;
+      };
+      auto trigger_cb = [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+        sim->print_debug( "ZXC TRIGGER CB" );
+        buff.aspect_of_harmony->trigger( state );
+      };
+      create_proc_callback( spell_data, filter_cb );
+      callbacks.register_callback_execute_function( spell_data->id(), trigger_cb );
     };
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver, cb );
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_damage, cb );
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_heal, cb );
+    register_cb( talent.master_of_harmony.aspect_of_harmony_driver );
+    register_cb( talent.master_of_harmony.aspect_of_harmony_damage );
+    register_cb( talent.master_of_harmony.aspect_of_harmony_heal );
+  }
+
+  if ( talent.master_of_harmony.balanced_stratagem->ok() )
+  {
+    create_proc_callback( talent.master_of_harmony.balanced_stratagem, []( monk_t *, action_state_t *state ) {
+      if ( state->action->school == SCHOOL_NONE )
+        return false;
+      return true;
+    } );
+    callbacks.register_callback_execute_function(
+        talent.master_of_harmony.balanced_stratagem->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          if ( state->action->school == SCHOOL_PHYSICAL )
+            buff.balanced_stratagem_magic->trigger();
+          if ( state->action->school != SCHOOL_PHYSICAL )
+            buff.balanced_stratagem_physical->trigger();
+        } );
   }
 
   // ======================================
