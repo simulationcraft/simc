@@ -268,7 +268,7 @@ public:
     player_talent_t sacrificed_souls;
     player_talent_t rune_of_shadows;
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
-    player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
+    player_talent_t fel_invocation;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
     player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc. TODO: Review proc chances from AoE hits
