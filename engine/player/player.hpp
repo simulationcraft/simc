@@ -996,7 +996,6 @@ public:
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
   target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
   real_ppm_t* find_rppm( std::string_view );
-  real_ppm_t* get_rppm( std::string_view );
   real_ppm_t* get_rppm( std::string_view, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm( std::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );

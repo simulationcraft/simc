@@ -2754,7 +2754,7 @@ static std::string generate_traits_hash( player_t* player )
   {
     if ( node.size() > 1 )
     {
-      range::sort( node, [ player, ptr ]( const auto& a, const auto& b ) {
+      range::sort( node, [ ptr ]( const auto& a, const auto& b ) {
         return sort_node_entries( a.first, b.first, ptr );
       } );
     }
@@ -8282,11 +8282,6 @@ real_ppm_t* player_t::find_rppm( std::string_view name )
   {
     return nullptr;
   }
-}
-
-real_ppm_t* player_t::get_rppm( std::string_view name )
-{
-  return get_rppm( name, spell_data_t::nil(), nullptr );
 }
 
 real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* data, const item_t* item )

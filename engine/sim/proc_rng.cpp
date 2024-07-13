@@ -171,8 +171,8 @@ bool shuffled_rng_t::trigger()
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
                                       std::function<double( double, unsigned )> fn, unsigned initial_count )
   : proc_rng_t( n, p, rng_type_e::RNG_ACCUMULATE ),
-    accumulator_fn( std::move( accumulator_fn ) ),
-    proc_chance( proc_chance ),
+    accumulator_fn( std::move( fn ) ),
+    proc_chance( c ),
     initial_count( initial_count ),
     trigger_count( initial_count )
 {}
