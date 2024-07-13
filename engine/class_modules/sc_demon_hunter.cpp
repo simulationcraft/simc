@@ -2038,6 +2038,10 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     {
       unsigned num_souls = as<unsigned>( p()->talent.demon_hunter.soul_sigils->effectN( 1 ).base_value() );
       p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false );
+      for ( unsigned i = 0; i < num_souls; i++ )
+      {
+        p()->proc.soul_fragment_from_soul_sigils->occur();
+      }
     }
     if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
     {
