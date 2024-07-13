@@ -1399,6 +1399,15 @@ enum ready_e
   READY_TRIGGER = 1
 };
 
+// proc rng type
+enum rng_type_e
+{
+  RNG_SIMPLE = 0,
+  RNG_RPPM,
+  RNG_SHUFFLE,
+  RNG_ACCUMULATE
+};
+
 /// Real PPM scale stats
 enum rppm_scale_e : uint8_t
 {

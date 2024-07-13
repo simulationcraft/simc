@@ -18,7 +18,7 @@
 #include "sim/cooldown.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
