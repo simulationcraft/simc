@@ -46,10 +46,10 @@ using namespace helpers;
       bool ravenous_afflictions = false;
 
       // Demonology
+      bool shadow_invocation = false;
 
       // Destruction
-      bool shadow_invocation_direct = false;
-      bool shadow_invocation_tick = false;
+
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -167,7 +167,7 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation && rng().roll( p()->shadow_invocation_proc_chance ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
@@ -182,12 +182,6 @@ using namespace helpers;
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
-      }
-
-      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_tick && rng().roll( p()->shadow_invocation_proc_chance ) )
-      {
-        p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
-        p()->procs.shadow_invocation->occur();
       }
 
       if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
@@ -499,8 +493,6 @@ using namespace helpers;
       add_child( aoe_dot );
 
       channeled = true;
-
-      triggers.shadow_invocation_tick = true;
     }
 
     void execute() override
@@ -577,7 +569,6 @@ using namespace helpers;
         base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
 
-        triggers.shadow_invocation_tick = true;
         triggers.ravenous_afflictions = true;
 
         affected_by.deaths_embrace = true;
@@ -671,7 +662,7 @@ using namespace helpers;
       : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
       affected_by.sacrificed_souls = true;
-      triggers.shadow_invocation_direct = true;
+      triggers.shadow_invocation = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
@@ -1716,8 +1707,6 @@ using namespace helpers;
         background = dual = true;
         hasted_ticks = false;
         base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
-        
-        triggers.shadow_invocation_tick = true;
       }
     };
 
@@ -1735,7 +1724,7 @@ using namespace helpers;
         aoe = -1;
         dual = true;
         
-        triggers.shadow_invocation_direct = true;
+        triggers.shadow_invocation = true;
 
         if ( p->talents.umbral_blaze.ok() )
         {
@@ -1847,7 +1836,7 @@ using namespace helpers;
       energize_amount = 2.0;
 
       affected_by.sacrificed_souls = true;
-      triggers.shadow_invocation_direct = true;
+      triggers.shadow_invocation = true;
     }
 
     double execute_time_pct_multiplier() const override
@@ -2146,7 +2135,7 @@ using namespace helpers;
   struct bilescourge_bombers_proc_t : public warlock_spell_t
   {
     bilescourge_bombers_proc_t( warlock_t* p )
-      : warlock_spell_t( "Bilescourge Bombers (proc)", p, p->find_spell( 267213 ) )
+      : warlock_spell_t( "Bilescourge Bombers (proc)", p, p->talents.bilescourge_bombers_aoe )
     {
       aoe = -1;
       background = dual = direct_tick = true;

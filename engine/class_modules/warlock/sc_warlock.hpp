@@ -271,7 +271,7 @@ public:
     player_talent_t fel_invocation;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
-    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc. TODO: Review proc chances from AoE hits
+    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc
     player_talent_t wicked_maw; // TODO: Previously Houndmaster's Strategem. Convert/rename as necessary
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
