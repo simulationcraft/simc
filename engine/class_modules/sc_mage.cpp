@@ -1025,7 +1025,6 @@ struct mage_pet_spell_t : public spell_t
   mage_pet_spell_t( std::string_view n, mage_pet_t* p, const spell_data_t* s ) :
     spell_t( n, p, s )
   {
-    may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
     gcd_type = gcd_haste_type::NONE;
   }
@@ -1514,7 +1513,6 @@ public:
     affected_by(),
     triggers()
   {
-    may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
@@ -2631,6 +2629,16 @@ struct frost_mage_spell_t : public mage_spell_t
   virtual result_e calculate_impact_result( action_state_t* s ) const
   { return mage_spell_t::calculate_result( s ); }
 
+  void enable_calculate_on_impact( unsigned spell_id )
+  {
+    calculate_on_impact = true;
+    auto spell = player->find_spell( spell_id );
+    for ( const auto& eff : spell->effects() )
+      parse_effect_data( eff );
+    may_crit = !spell->flags( SX_CANNOT_CRIT );
+    tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+  }
+
   void record_shatter_source( const action_state_t* s, shatter_source_t* source )
   {
     if ( !source )
@@ -2855,7 +2863,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = false;
+    may_miss = false;
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
 
@@ -3703,7 +3711,7 @@ struct blizzard_t final : public frost_mage_spell_t
     parse_options( options_str );
     add_child( blizzard_shard );
     cooldown->hasted = true;
-    may_miss = may_crit = affected_by.shatter = false;
+    may_miss = affected_by.shatter = false;
   }
 
   timespan_t execute_time() const override
@@ -3813,7 +3821,7 @@ struct comet_storm_t final : public frost_mage_spell_t
     isothermic( isothermic_ )
   {
     parse_options( options_str );
-    may_miss = may_crit = affected_by.shatter = false;
+    may_miss = affected_by.shatter = false;
     add_child( projectile );
     travel_delay = p->find_spell( 228601 )->missile_speed();
 
@@ -3904,7 +3912,7 @@ struct counterspell_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_class_spell( "Counterspell" ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = false;
+    may_miss = false;
     ignore_false_positive = is_interrupt = true;
   }
 
@@ -4029,10 +4037,6 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( frostfire )
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
-
-    // TODO: Frostfire Bolt ticks currently cannot crit, probably a bug
-    if ( p->bugs )
-      tick_may_crit = false;
   }
 
   timespan_t travel_time() const override
@@ -4152,7 +4156,6 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
   {
     background = true;
     triggers.ignite = true;
-    may_crit = false;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value(); // TODO: Check this
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
@@ -4275,7 +4278,6 @@ struct shattered_ice_t final : public spell_t
     spell_t( n, p, p->find_spell( 408763 ) )
   {
     background = true;
-    may_crit = false;
     aoe = -1;
     reduced_aoe_targets = p->sets->set( MAGE_FROST, T30, B2 )->effectN( 3 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -4355,7 +4357,7 @@ struct flurry_t final : public frost_mage_spell_t
     flurry_bolt( get_action<flurry_bolt_t>( "flurry_bolt", p ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = affected_by.shatter = false;
+    may_miss = affected_by.shatter = false;
     cooldown->charges += as<int>( p->talents.perpetual_winter->effectN( 1 ).base_value() );
 
     add_child( flurry_bolt );
@@ -4426,14 +4428,9 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     // TODO: this is most likely a bug since it breaks some core Frost mechanics
     if ( !frostfire )
-    {
-      parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-      calculate_on_impact = true;
-    }
+      enable_calculate_on_impact( 228597 );
     else
-    {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
-    }
 
     track_shatter = consumes_winters_chill = true;
     // TODO: currently bugged and doesn't trigger Bone Chilling
@@ -4443,17 +4440,13 @@ struct frostbolt_t final : public frost_mage_spell_t
     base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
-    // TODO: ticks currently cannot crit, probably a bug
-    if ( p->bugs )
-      tick_may_crit = false;
-
     const auto& ft = p->talents.frozen_touch;
     fof_chance = ( 1.0 + ft->effectN( 1 ).percent() ) * p->talents.fingers_of_frost->effectN( 1 ).percent();
     bf_chance = ( 1.0 + ft->effectN( 2 ).percent() ) * p->talents.brain_freeze->effectN( 1 ).percent();
 
     fractured_frost_mul = p->find_spell( 378445 )->effectN( 3 ).percent();
 
-    if ( p->spec.icicles->ok() )
+    if ( data().ok() && p->spec.icicles->ok() )
       add_child( p->action.icicle.frostbolt );
   }
 
@@ -4667,7 +4660,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     frozen_orb_bolt( get_action<frozen_orb_bolt_t>( cold_front ? "cold_front_frozen_orb_bolt" : "frozen_orb_bolt", p ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = affected_by.shatter = false;
+    may_miss = affected_by.shatter = false;
     add_child( frozen_orb_bolt );
 
     if ( cold_front )
@@ -4736,7 +4729,6 @@ struct glacial_blast_t final : public spell_t
     spell_t( n, p, p->find_spell( 424120 ) )
   {
     background = true;
-    may_crit = false;
     aoe = -1;
     reduced_aoe_targets = p->sets->set( MAGE_FROST, T31, B2 )->effectN( 3 ).base_value();
     base_dd_min = base_dd_max = 1.0;
@@ -4761,8 +4753,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
   {
     parse_options( options_str );
-    parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    enable_calculate_on_impact( 228600 );
+    track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T31, B2 )->effectN( 1 ).percent();
@@ -4875,7 +4867,7 @@ struct ice_floes_t final : public mage_spell_t
     mage_spell_t( n, p, p->talents.ice_floes )
   {
     parse_options( options_str );
-    may_miss = may_crit = harmful = false;
+    may_miss = harmful = false;
     usable_while_casting = true;
     internal_cooldown->duration = data().internal_cooldown();
   }
@@ -4936,8 +4928,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.ice_lance )
   {
     parse_options( options_str );
-    parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    enable_calculate_on_impact( 228598 );
+    track_shatter = consumes_winters_chill = true;
     triggers.overflowing_energy = true;
     affected_by.icicles_st = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
@@ -5700,7 +5692,7 @@ struct splintering_ray_t final : public spell_t
     spell_t( n, p, p->find_spell( 418735 ) )
   {
     background = true;
-    may_miss = may_crit = false;
+    may_miss = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
@@ -5976,7 +5968,7 @@ struct touch_of_the_magi_explosion_t final : public spell_t
     spell_t( n, p, p->find_spell( 210833 ) )
   {
     background = true;
-    may_miss = may_crit = callbacks = false;
+    may_miss = callbacks = false;
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
