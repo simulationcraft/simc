@@ -812,7 +812,7 @@ public:
     player_talent_t fusion_of_elements;
     player_talent_t storm_frenzy;
     player_talent_t swelling_maelstrom;
-    player_talent_t primordial_fury; // NEW NYI
+    player_talent_t primordial_fury;
     player_talent_t flow_of_power;
     player_talent_t elemental_unity; // NEW NYI
     // Row 6
@@ -11585,6 +11585,23 @@ void shaman_t::init_rng()
 
 void shaman_t::apply_affecting_auras( action_t& action )
 {
+  auto print_debug = [ this, &action ]( const spelleffect_data_t& effect ) {
+    if ( !sim->debug )
+    {
+      return;
+    }
+
+    const spell_data_t& spell = *effect.spell();
+    std::string desc_str;
+    const auto& spell_text = dbc->spell_text( spell.id() );
+    if ( spell_text.rank() )
+      desc_str = fmt::format( " (desc={})", spell_text.rank() );
+
+    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})",
+      *this, action, effect.id(), spell.name_cstr(), desc_str, spell.id(),
+      effect.spell_effect_num() + 1 );
+  };
+
   // Generic
   action.apply_affecting_aura( spec.shaman );
   action.apply_affecting_aura( talent.call_of_the_elements );
@@ -11618,6 +11635,27 @@ void shaman_t::apply_affecting_auras( action_t& action )
 
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
+
+  // Custom
+
+  // Elemental Fury + Primordial Fury
+  if ( action.data().affected_by_all( talent.elemental_fury->effectN( 1 ) ) )
+  {
+    print_debug( talent.elemental_fury->effectN( 1 ) );
+    action.crit_bonus_multiplier = talent.elemental_fury->effectN( 1 ).percent() +
+                                   talent.primordial_fury->effectN( 1 ).percent();
+    sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
+      talent.elemental_fury->effectN( 1 ).base_value() + talent.primordial_fury->effectN( 1 ).base_value() );
+  }
+
+  if ( action.data().affected_by_all( talent.elemental_fury->effectN( 2 ) ) )
+  {
+    print_debug( talent.elemental_fury->effectN( 2 ) );
+    action.crit_bonus_multiplier = talent.elemental_fury->effectN( 2 ).percent() +
+                                   talent.primordial_fury->effectN( 2 ).percent();
+    sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
+      talent.elemental_fury->effectN( 2 ).base_value() + talent.primordial_fury->effectN( 2 ).base_value() );
+  }
 }
 
 // shaman_t::generate_bloodlust_options =====================================
