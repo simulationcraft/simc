@@ -676,6 +676,7 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.improved_shadow_bolt->effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
 
       if ( demonology() )
       {
@@ -699,6 +700,8 @@ using namespace helpers;
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 1 ).percent();
 
       m *= 1.0 + p()->talents.improved_shadow_bolt->effectN( 1 ).percent();
+
+      m *= 1.0 + p()->talents.rune_of_shadows->effectN( 2 ).percent();
 
       return m;
     }

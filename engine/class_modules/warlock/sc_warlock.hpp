@@ -266,7 +266,7 @@ public:
     player_talent_t demonic_strength;
 
     player_talent_t sacrificed_souls;
-    player_talent_t rune_of_shadows; // TODO: New
+    player_talent_t rune_of_shadows;
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
     player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
@@ -421,7 +421,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;

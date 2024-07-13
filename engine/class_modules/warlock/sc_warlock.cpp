@@ -271,6 +271,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + cache.mastery_value();
     else
       m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+    if ( !guardian && talents.rune_of_shadows.ok() )
+      m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
