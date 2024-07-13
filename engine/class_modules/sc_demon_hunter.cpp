@@ -1931,18 +1931,6 @@ public:
     p()->frailty_accumulator += s->result_amount * multiplier;
   }
 
-  void trigger_felblade( action_state_t* s )
-  {
-    if ( ab::result_is_miss( s->result ) )
-      return;
-
-    if ( p()->talent.demon_hunter.felblade->ok() && p()->rppm.felblade->trigger() )
-    {
-      p()->proc.felblade_reset->occur();
-      p()->cooldown.felblade->reset( true );
-    }
-  }
-
   void trigger_chaos_brand( action_state_t* s )
   {
     if ( ab::sim->overrides.chaos_brand )
@@ -4514,6 +4502,32 @@ struct soulscar_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct felblade_trigger_t : public BASE
+{
+  using base_t = felblade_trigger_t<BASE>;
+
+  felblade_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                      util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.demon_hunter.felblade->ok() || !BASE::p()->rppm.felblade->trigger() )
+      return;
+
+    if ( action_t::result_is_miss( s->result ) )
+      return;
+
+    BASE::p()->proc.felblade_reset->occur();
+    BASE::p()->cooldown.felblade->reset( true );
+  }
+};
+
 // Auto Attack ==============================================================
 
 struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
@@ -5330,17 +5344,17 @@ struct burning_wound_t : public demon_hunter_spell_t
 
 // Demon's Bite =============================================================
 
-struct demons_bite_t : public demon_hunter_attack_t
+struct demons_bite_t : public felblade_trigger_t<demon_hunter_attack_t>
 {
   demons_bite_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
+    : base_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+    double ea = base_t::composite_energize_amount( s );
 
     if ( p()->talent.havoc.insatiable_hunger->ok() )
     {
@@ -5353,7 +5367,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    demon_hunter_attack_t::execute();
+    base_t::execute();
 
     if ( p()->buff.metamorphosis->check() )
     {
@@ -5363,8 +5377,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
   void impact( action_state_t* s ) override
   {
-    demon_hunter_attack_t::impact( s );
-    trigger_felblade( s );
+    base_t::impact( s );
 
     if ( p()->spec.burning_wound_debuff->ok() )
     {
@@ -5383,9 +5396,9 @@ struct demons_bite_t : public demon_hunter_attack_t
 
 // Demon Blades =============================================================
 
-struct demon_blades_t : public demon_hunter_attack_t
+struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
 {
-  demon_blades_t( demon_hunter_t* p ) : demon_hunter_attack_t( "demon_blades", p, p->spec.demon_blades_damage )
+  demon_blades_t( demon_hunter_t* p ) : base_t( "demon_blades", p, p->spec.demon_blades_damage )
   {
     background     = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
@@ -5393,8 +5406,7 @@ struct demon_blades_t : public demon_hunter_attack_t
 
   void impact( action_state_t* s ) override
   {
-    demon_hunter_attack_t::impact( s );
-    trigger_felblade( s );
+    base_t::impact( s );
 
     if ( p()->spec.burning_wound_debuff->ok() )
     {
@@ -5569,7 +5581,8 @@ struct fel_rush_t : public demon_hunter_attack_t
 
 // Fracture =================================================================
 
-struct fracture_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
+struct fracture_t : public felblade_trigger_t<
+                        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
   struct fracture_damage_t : public demon_hunter_attack_t
   {
@@ -5631,7 +5644,6 @@ struct fracture_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
-    trigger_felblade( s );
 
     /*
      * logged event ordering for Fracture:
@@ -5692,7 +5704,8 @@ struct inner_demon_t : public demon_hunter_spell_t
 
 // Shear ====================================================================
 
-struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>
+struct shear_t : public felblade_trigger_t<
+                     art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
   shear_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "shear", p, p->spec.shear, options_str )
   {
@@ -5701,7 +5714,6 @@ struct shear_t : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::R
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
-    trigger_felblade( s );
 
     if ( result_is_hit( s->result ) )
     {
