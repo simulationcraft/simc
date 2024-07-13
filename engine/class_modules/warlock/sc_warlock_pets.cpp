@@ -659,7 +659,7 @@ struct demonic_strength_t : public felstorm_t
   demonic_strength_t( warlock_pet_t* p, util::string_view options_str )
     : felstorm_t( p, options_str, std::string( "Felstorm (Demonic Strength)" ) )
   {
-    if ( p->o()->talents.fel_sunder->ok() )
+    if ( p->o()->talents.fel_sunder.ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
   }
 
