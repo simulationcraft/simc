@@ -463,6 +463,7 @@ public:
     buff_t* elemental_equilibrium_frost;
     buff_t* elemental_equilibrium_nature;
     buff_t* fire_elemental;
+    buff_t* storm_elemental;
     buff_t* flux_melting;
     buff_t* icefury_dmg;
     buff_t* icefury_cast;
@@ -814,7 +815,7 @@ public:
     player_talent_t swelling_maelstrom;
     player_talent_t primordial_fury;
     player_talent_t flow_of_power;
-    player_talent_t elemental_unity; // NEW NYI
+    player_talent_t elemental_unity;
     // Row 6
     player_talent_t flux_melting;
     player_talent_t lightning_conduit; // NEW NYI
@@ -1430,6 +1431,11 @@ public:
 
   bool affected_by_storm_frenzy;
 
+  bool affected_by_elemental_unity_fe_da;
+  bool affected_by_elemental_unity_fe_ta;
+  bool affected_by_elemental_unity_se_da;
+  bool affected_by_elemental_unity_se_ta;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1462,7 +1468,11 @@ public:
       affected_by_amplification_core_da( false ),
       affected_by_amplification_core_ta( false ),
       affected_by_enhanced_imbues_da( false ), // Enhancement damage effects, Ele stuff is handled elsewhere
-      affected_by_storm_frenzy( false )
+      affected_by_storm_frenzy( false ),
+      affected_by_elemental_unity_fe_da( false ),
+      affected_by_elemental_unity_fe_ta( false ),
+      affected_by_elemental_unity_se_da( false ),
+      affected_by_elemental_unity_se_ta( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1533,6 +1543,11 @@ public:
     affected_by_enhanced_imbues_da = ab::data().affected_by( player->talent.enhanced_imbues->effectN( 2 ) );
 
     affected_by_storm_frenzy = ab::data().affected_by( player->buff.storm_frenzy->data().effectN( 1 ) );
+
+    affected_by_elemental_unity_fe_da = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_fe_ta = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 5 ) );
+    affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -1673,6 +1688,19 @@ public:
       m *= 1.0 + p()->talent.enhanced_imbues->effectN( 2 ).percent();
     }
 
+    if ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
+         p()->buff.fire_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
+    }
+
+    if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+         p()->buff.storm_elemental->check() )
+    {
+      assert( 0 );
+      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+    }
+
     return m;
   }
 
@@ -1727,6 +1755,18 @@ public:
     if ( affected_by_amplification_core_ta && p()->buff.amplification_core->check() )
     {
       m *= 1.0 + p()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+         p()->buff.fire_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 5 ).percent();
+    }
+
+    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+         p()->buff.storm_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 5 ).percent();
     }
 
     return m;
@@ -4797,6 +4837,7 @@ struct storm_elemental_t : public shaman_spell_t
     p()->buff.wind_gust->expire();
 
     p()->summon_storm_elemental( p()->spell.storm_elemental->duration() );
+    p()->buff.storm_elemental->trigger();
   }
 };
 
@@ -11356,6 +11397,7 @@ void shaman_t::create_buffs()
 
   buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
+  buff.storm_elemental = make_buff( this, "storm_elemental", spell.storm_elemental );
   buff.splintered_elements = new splintered_elements_buff_t( this );
 
   buff.fusion_of_elements_1 = make_buff( this, "fusion_of_elements_1",
