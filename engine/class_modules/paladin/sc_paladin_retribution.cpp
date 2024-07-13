@@ -290,31 +290,80 @@ struct execution_sentence_t : public paladin_melee_attack_t
   }
 };
 
+struct expurgation_t : public paladin_spell_t
+{
+  expurgation_t( paladin_t* p ):
+    paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
+  {
+    searing_light_disabled = true;
+
+    // Jurisdiction doesn't increase Expurgation's damage in-game
+    // It's increasing Spell Direct Amount instead of Spell Periodic Amount
+    if ( p->talents.jurisdiction->ok() && p->bugs)
+    {
+      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
+    }
+    if (p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2))
+    {
+      dot_duration +=
+          timespan_t::from_millis( p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 2 ).base_value() );
+      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 1 ).percent();
+    }
+  }
+
+  double get_bank( dot_t* d )
+  {
+    if ( !d->is_ticking() )
+      return 0.0;
+
+    auto state = d->state;
+    return calculate_tick_amount( state, d->current_stack() ) * d->ticks_left_fractional();
+  }
+};
+
+void paladin_t::spread_expurgation( action_t* act, player_t* og )
+{
+  if ( !talents.expurgation->ok() )
+    return;
+
+  auto source = active.expurgation->get_dot( og );
+  if ( !source->is_ticking() )
+    return;
+
+  std::vector<dot_t*> expurgs;
+  for ( auto t : act->target_list() )
+    expurgs.push_back( active.expurgation->get_dot( t ) );
+
+  expurgation_t* exp = debug_cast<expurgation_t*>( active.expurgation );
+
+  std::stable_sort( expurgs.begin(), expurgs.end(), [exp]( dot_t* a, dot_t* b ) {
+    double a_amt = exp->get_bank( a );
+    double b_amt = exp->get_bank( b );
+    return a_amt < b_amt;
+  });
+
+  double source_bank = exp->get_bank( source );
+  auto targets_remaining = as<int>( talents.holy_flames->effectN( 3 ).base_value() );
+
+  for ( auto destination : expurgs )
+  {
+    if ( source == destination )
+      continue;
+
+    if ( targets_remaining-- <= 0 )
+      break;
+
+    if ( exp->get_bank( destination ) >= source_bank )
+      break;
+
+    source->copy( destination->target, DOT_COPY_CLONE );
+  }
+}
+
 // Blade of Justice =========================================================
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct expurgation_t : public paladin_spell_t
-  {
-    expurgation_t( paladin_t* p ):
-      paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
-    {
-      searing_light_disabled = true;
-
-      // Jurisdiction doesn't increase Expurgation's damage in-game
-      // It's increasing Spell Direct Amount instead of Spell Periodic Amount
-      if ( p->talents.jurisdiction->ok() && p->bugs)
-      {
-        base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-      }
-      if (p->sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2))
-      {
-        dot_duration +=
-            timespan_t::from_millis( p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 2 ).base_value() );
-        base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T31, B2 )->effectN( 1 ).percent();
-      }
-    }
-  };
 
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice )
@@ -585,6 +634,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p()->active.sun_sear->target = s->target;
         p()->active.sun_sear->execute();
+      }
+
+      if ( p()->talents.holy_flames->ok() && target_data->dots.expurgation->is_ticking() )
+      {
+        p()->spread_expurgation( this, s->target );
       }
     }
   }
@@ -1474,7 +1528,7 @@ void paladin_t::create_ret_actions()
 
   if (talents.expurgation->ok())
   {
-    active.expurgation = new blade_of_justice_t::expurgation_t( this );
+    active.expurgation = new expurgation_t( this );
   }
 
   if ( specialization() == PALADIN_RETRIBUTION )
