@@ -821,7 +821,7 @@ public:
     player_talent_t lightning_conduit;
     player_talent_t power_of_the_maelstrom;
     player_talent_t improved_flametongue_weapon;
-    player_talent_t everlasting_elements; // NEW NYI
+    player_talent_t everlasting_elements;
     player_talent_t flames_of_the_cauldron;
     // Row 7
     player_talent_t eye_of_the_storm;
@@ -4767,6 +4767,9 @@ struct earth_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    timespan_t duration = p()->spell.earth_elemental->duration() *
+      ( 1.0 + p()->talent.everlasting_elements->effectN( 1 ).percent() );
+
     if ( p()->talent.primal_elementalist->ok() )
     {
       if ( p()->talent.storm_elemental->ok() && p()->pet.pet_storm_elemental )
@@ -4777,11 +4780,11 @@ struct earth_elemental_t : public shaman_spell_t
       {
         p()->pet.pet_fire_elemental->demise();
       }
-      p()->pet.pet_earth_elemental->summon( p()->spell.earth_elemental->duration() );
+      p()->pet.pet_earth_elemental->summon( duration );
     }
     else
     {
-      p()->pet.guardian_earth_elemental->summon( p()->spell.earth_elemental->duration() );
+      p()->pet.guardian_earth_elemental->summon( duration );
     }
 
     // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
@@ -4809,7 +4812,7 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_fire_elemental( p()->spell.fire_elemental->duration() );
+    p()->summon_fire_elemental( p()->buff.fire_elemental->buff_duration() );
     p()->buff.fire_elemental->trigger();
   }
 
@@ -4845,7 +4848,7 @@ struct storm_elemental_t : public shaman_spell_t
     // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
     p()->buff.wind_gust->expire();
 
-    p()->summon_storm_elemental( p()->spell.storm_elemental->duration() );
+    p()->summon_storm_elemental( p()->buff.storm_elemental->buff_duration() );
     p()->buff.storm_elemental->trigger();
   }
 };
@@ -11406,8 +11409,12 @@ void shaman_t::create_buffs()
                            } );
 
   buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
-  buff.storm_elemental = make_buff( this, "storm_elemental", spell.storm_elemental );
+                        ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
+                        ->set_duration( spell.storm_elemental->duration() *
+                          ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
+  buff.storm_elemental = make_buff( this, "storm_elemental", spell.storm_elemental )
+                         ->set_duration( spell.storm_elemental->duration() *
+                          ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
   buff.splintered_elements = new splintered_elements_buff_t( this );
 
   buff.fusion_of_elements_1 = make_buff( this, "fusion_of_elements_1",
