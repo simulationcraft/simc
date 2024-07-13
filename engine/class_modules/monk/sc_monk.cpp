@@ -224,9 +224,6 @@ void monk_action_t<Base>::apply_debuff_effects()
 
   if ( p()->talent.windwalker.jadefire_harmony->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
-
-  parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
-                        p()->talent.windwalker.acclamation->effectN( 1 ).trigger() );
 }
 
 template <class Base>
@@ -2514,7 +2511,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
+    {
       p()->buff.fury_of_xuen_stacks->expire();
+      p()->buff.fury_of_xuen->expire();
+      p()->active_actions.fury_of_xuen_summon->execute();
+    }
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
@@ -2535,20 +2536,13 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
 
     p()->buff.fists_of_flowing_momentum_fof->expire();
-
     p()->buff.transfer_the_power->expire();
-
     p()->buff.pressure_point->trigger();
 
     if ( p()->talent.windwalker.momentum_boost->ok() )
     {
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
-    }
-
-    // If Fists of Fury went the full duration
-    if ( dot->current_tick == dot->num_ticks() )
-    {
     }
   }
 };
@@ -5995,17 +5989,10 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t
   fury_of_xuen_stacking_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
     // Currently this is saved as 100, but we need to utilize it as a percent so (100 / 100) = 1 * 0.01 = 1%
-    set_default_value( ( s->effectN( 3 ).base_value() / 100 ) * 0.01 );
+    set_default_value( ( s->effectN( 3 ).percent() / 100 ) );
     set_cooldown( p->talent.windwalker.fury_of_xuen->internal_cooldown() );
     set_trigger_spell( p->talent.windwalker.fury_of_xuen );
     set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    p().buff.fury_of_xuen->trigger();
-    p().active_actions.fury_of_xuen_summon->execute();
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6742,6 +6729,11 @@ void monk_t::parse_player_effects()
 
   // mistweaver talent auras
   // windwalker talent auras
+  parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
+                        talent.windwalker.acclamation->effectN( 1 ).trigger() );
+
+  if ( talent.windwalker.jadefire_harmony->ok() )
+    parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg, 0b001U );
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
