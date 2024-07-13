@@ -925,6 +925,8 @@ struct judgment_ret_t : public judgment_t
     double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
     if ( p()->talents.boundless_judgment->ok() )
       mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+   if ( p()->talents.highlords_wrath->ok() )
+      mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value();
 
     if ( rng().roll( mastery_chance ) )
     {

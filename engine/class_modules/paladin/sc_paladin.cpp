@@ -2585,6 +2585,7 @@ private:
   {
     background = true;
   }
+
 public:
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
@@ -2629,13 +2630,18 @@ public:
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
       echo = new hammer_of_wrath_t( p );
+      echo->base_multiplier = base_multiplier;
+      echo->aoe = aoe;
+      echo->base_aoe_multiplier = base_aoe_multiplier;
+      echo->crit_bonus_multiplier = crit_bonus_multiplier;
+      echo->triggers_higher_calling = true;
       echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
     }
   }
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( !p()->get_how_availability( candidate_target ) )
+    if ( !background && !p()->get_how_availability( candidate_target ) )
     {
       return false;
     }
@@ -2720,6 +2726,10 @@ public:
       {
         // according to bolas this also increases HoW proc chance
         mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+      }
+      if ( p()->talents.highlords_wrath->ok() )
+      {
+        mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value();
       }
 
       if ( rng().roll( mastery_chance ) )
