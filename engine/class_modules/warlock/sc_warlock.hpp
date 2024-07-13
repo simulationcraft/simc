@@ -258,7 +258,9 @@ public:
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
 
     player_talent_t inner_demons;
-    player_talent_t soul_strike; // TODO: Make sure older iterations have been cleaned up
+    player_talent_t soul_strike;
+    const spell_data_t* soul_strike_pet;
+    const spell_data_t* soul_strike_dmg;
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
