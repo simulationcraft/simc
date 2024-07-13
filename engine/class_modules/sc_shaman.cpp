@@ -84,7 +84,8 @@ enum imbue_e
   IMBUE_NONE = 0,
   FLAMETONGUE_IMBUE,
   WINDFURY_IMBUE,
-  EARTHLIVING_IMBUE
+  EARTHLIVING_IMBUE,
+  THUNDERSTRIKE_WARD
 };
 
 enum rotation_type_e
@@ -399,6 +400,8 @@ public:
     action_t* whirling_air_ws;
 
     action_t* elemental_blast_foe; // Fusion of Elements
+
+    action_t* thunderstrike_ward;
   } action;
 
   // Pets
@@ -553,6 +556,10 @@ public:
     // Icefury Deck-of-Cards RNG parametrization
     unsigned icefury_positive = 3U;
     unsigned icefury_total = 25U;
+
+    // Thunderstrike Ward Uniform RNG proc chance
+    // TODO: Proper RNG
+    double thunderstrike_ward_proc_chance = 0.1;
   } options;
 
   // Cooldowns
@@ -825,7 +832,7 @@ public:
     player_talent_t flames_of_the_cauldron;
     // Row 7
     player_talent_t eye_of_the_storm;
-    player_talent_t thunderstrike_ward; // NEW NYI
+    player_talent_t thunderstrike_ward;
     player_talent_t echo_chamber;
     player_talent_t searing_flames;
     player_talent_t earthen_rage; // NEW NYI
@@ -1077,6 +1084,7 @@ public:
   void trigger_whirling_air( const action_state_t* state );
   void trigger_reactivity( const action_state_t* state );
   void trigger_fusion_of_elements( const action_state_t* state );
+  void trigger_thunderstrike_ward( const action_state_t* state );
   void trigger_totemic_rebound( const action_state_t* state );
 
   // Legendary
@@ -3750,6 +3758,28 @@ struct elemental_overload_spell_t : public shaman_spell_t
   }
 };
 
+
+struct thunderstrike_ward_damage_t : public shaman_spell_t
+{
+  thunderstrike_ward_damage_t( shaman_t* player )
+    : shaman_spell_t( "thunderstrike", player, player->find_spell( 462763 ) )
+  {
+    background = true;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    if ( p()->talent.enhanced_imbues->ok() )
+    {
+      m *= 1.0 + p()->talent.enhanced_imbues->effectN( 9 ).percent();
+    }
+
+    return m;
+  }
+};
+
 // Honestly why even bother with resto heals?
 // shaman_heal_t::impact ====================================================
 
@@ -4672,6 +4702,23 @@ struct flametongue_weapon_t : public weapon_imbue_t
   }
 };
 
+// Thunderstrike Ward Imbue ================================================
+
+struct thunderstrike_ward_t : public weapon_imbue_t
+{
+  thunderstrike_ward_t( shaman_t* player, util::string_view options_str ) :
+    weapon_imbue_t( "thunderstrike_ward", player, SLOT_OFF_HAND,
+                    player->talent.thunderstrike_ward, options_str )
+  {
+    imbue = THUNDERSTRIKE_WARD;
+
+    if ( slot == SLOT_MAIN_HAND )
+    {
+      sim->error( "{} invalid Thunderstrike Ward slot '{}'", player->name(), slot_str );
+    }
+  }
+};
+
 // Crash Lightning Attack ===================================================
 
 struct crash_lightning_t : public shaman_attack_t
@@ -5342,6 +5389,8 @@ struct chain_lightning_t : public chained_base_t
     {
       td( execute_state->target )->debuff.lightning_rod->trigger();
     }
+
+    p()->trigger_thunderstrike_ward( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -6324,6 +6373,8 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->generate_maelstrom_weapon( execute_state->action,
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
+
+    p()->trigger_thunderstrike_ward( execute_state );
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -9406,6 +9457,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   // Hero talents
   if ( name == "surging_totem" )
     return new surging_totem_spell_t( this, options_str );
+  if ( name == "thunderstrike_ward" )
+    return new thunderstrike_ward_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -9746,6 +9799,11 @@ void shaman_t::create_actions()
     action.elemental_blast_foe = new elemental_blast_t( this, spell_variant::FUSION_OF_ELEMENTS );
   }
 
+  if ( talent.thunderstrike_ward.ok() )
+  {
+    action.thunderstrike_ward = new thunderstrike_ward_damage_t( this );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -9785,6 +9843,9 @@ void shaman_t::create_options()
 
   add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 1U, 100U ) );
   add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 1U, 100U ) );
+
+  add_option( opt_float( "shaman.thunderstrike_ward_proc_chance", options.thunderstrike_ward_proc_chance,
+                         0.0, 1.0 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -11227,6 +11288,24 @@ void shaman_t::trigger_fusion_of_elements( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
+{
+  if ( !talent.thunderstrike_ward.ok() )
+  {
+    return;
+  }
+
+  if ( !rng().roll( options.thunderstrike_ward_proc_chance ) )
+  {
+    return;
+  }
+
+  for ( int i = 0; i < talent.thunderstrike_ward->effectN( 1 ).base_value(); ++i )
+  {
+    action.thunderstrike_ward->execute_on_target( state->target );
+  }
+}
+
 void shaman_t::trigger_totemic_rebound( const action_state_t* state )
 {
   if ( !pet.surging_totem.n_active_pets() )
@@ -11898,6 +11977,7 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "potion" );
     precombat->add_action( "stormkeeper" );
     precombat->add_action( "lightning_shield" );
+    precombat->add_action( "thunderstrike_ward" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
