@@ -4318,17 +4318,17 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    trigger_winters_chill( s );
-    consume_cold_front( s->target );
-
-    if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
-      make_event( *sim, 1.0_s, [ this, t = s->target ] { p()->action.glacial_assault->execute_on_target( t ); } );
-
     if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
     {
       p()->action.excess_ice_nova->execute_on_target( s->target );
       p()->buffs.excess_frost->expire();
     }
+
+    trigger_winters_chill( s );
+    consume_cold_front( s->target );
+
+    if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
+      make_event( *sim, 1.0_s, [ this, t = s->target ] { p()->action.glacial_assault->execute_on_target( t ); } );
 
     if ( p()->action.shattered_ice )
     {
