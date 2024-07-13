@@ -818,7 +818,7 @@ public:
     player_talent_t elemental_unity;
     // Row 6
     player_talent_t flux_melting;
-    player_talent_t lightning_conduit; // NEW NYI
+    player_talent_t lightning_conduit;
     player_talent_t power_of_the_maelstrom;
     player_talent_t improved_flametongue_weapon;
     player_talent_t everlasting_elements; // NEW NYI
@@ -1203,14 +1203,6 @@ public:
 // ==========================================================================
 //
 
-struct lightning_shield_buff_t : public buff_t
-{
-  lightning_shield_buff_t( shaman_t* p ) : buff_t( p, "lightning_shield", p->find_spell( 192106 ) )
-  {
-    set_duration( s_data->duration() );
-  }
-};
-
 struct maelstrom_weapon_buff_t : public buff_t
 {
   shaman_t* shaman;
@@ -1436,6 +1428,9 @@ public:
   bool affected_by_elemental_unity_se_da;
   bool affected_by_elemental_unity_se_ta;
 
+  bool affected_by_lightning_conduit_da;
+  bool affected_by_lightning_conduit_ta;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1472,7 +1467,9 @@ public:
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
       affected_by_elemental_unity_se_da( false ),
-      affected_by_elemental_unity_se_ta( false )
+      affected_by_elemental_unity_se_ta( false ),
+      affected_by_lightning_conduit_da( false ),
+      affected_by_lightning_conduit_ta( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1548,6 +1545,9 @@ public:
     affected_by_elemental_unity_fe_ta = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 5 ) );
     affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) );
     affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) );
+
+    affected_by_lightning_conduit_da = ab::data().affected_by( player->talent.lightning_conduit->effectN( 1 ) );
+    affected_by_lightning_conduit_ta = ab::data().affected_by( player->talent.lightning_conduit->effectN( 2 ) );
   }
 
   std::string full_name() const
@@ -1697,8 +1697,12 @@ public:
     if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
          p()->buff.storm_elemental->check() )
     {
-      assert( 0 );
       m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+    }
+
+    if ( affected_by_lightning_conduit_da && p()->buff.lightning_shield->check() )
+    {
+      m *= 1.0 + p()->talent.lightning_conduit->effectN( 3 ).percent();
     }
 
     return m;
@@ -1767,6 +1771,11 @@ public:
          p()->buff.storm_elemental->check() )
     {
       m *= 1.0 + p()->buff.storm_elemental->data().effectN( 5 ).percent();
+    }
+
+    if ( affected_by_lightning_conduit_ta && p()->buff.lightning_shield->check() )
+    {
+      m *= 1.0 + p()->talent.lightning_conduit->effectN( 3 ).percent();
     }
 
     return m;
@@ -4846,7 +4855,7 @@ struct storm_elemental_t : public shaman_spell_t
 struct lightning_shield_t : public shaman_spell_t
 {
   lightning_shield_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "lightning_shield", player, player->find_talent_spell( "Lightning Shield" ) )
+    shaman_spell_t( "lightning_shield", player, player->find_class_spell( "Lightning Shield" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -11332,6 +11341,7 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.whirling_elements );
   buff.whirling_earth = make_buff( this, "whirling_earth", find_spell( 453406 ) )
     ->set_trigger_spell( talent.whirling_elements );
+  buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) );
 
   buff.awakening_storms = make_buff( this, "awakening_storms", find_spell( 462131 ) )
     ->set_chance( talent.awakening_storms.ok() ? 1.0 : 0.0 );
@@ -11413,7 +11423,7 @@ void shaman_t::create_buffs()
   //
   // Enhancement
   //
-  buff.lightning_shield = new lightning_shield_buff_t( this );
+
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -11880,6 +11890,7 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
     precombat->add_action( "potion" );
     precombat->add_action( "stormkeeper" );
+    precombat->add_action( "lightning_shield" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
     def->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
@@ -11891,6 +11902,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
     def->add_action( "use_items" );
+    def->add_action( "lightning_shield,if=buff.lightning_shield.down" );
     // def->add_action( "auto_attack" );
     def->add_action( "natures_swiftness" );
     def->add_action( "invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled",
