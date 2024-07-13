@@ -52,7 +52,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_infirmity;
 
   // Demo
-  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
+  propagate_const<buff_t*> debuffs_wicked_maw;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
 
   // Destro
@@ -265,21 +265,21 @@ public:
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
 
-    player_talent_t rune_of_shadows; // TODO: New
+    player_talent_t sacrificed_souls;
+    player_talent_t rune_of_shadows;
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
-    player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
+    player_talent_t fel_invocation;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
-    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc. TODO: Review proc chances from AoE hits
-    player_talent_t wicked_maw; // TODO: Previously Houndmaster's Strategem. Convert/rename as necessary
+    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc
+    player_talent_t wicked_maw;
+    const spell_data_t* wicked_maw_debuff; // TOCHECK: Other pet abilities besides Soul Strike/Dreadbite?
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
     player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
-    player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
-    const spell_data_t* the_houndmasters_stratagem_debuff;
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t blood_invocation; // TODO: New
@@ -309,7 +309,6 @@ public:
     player_talent_t demonic_brutality; // TODO: New
 
     player_talent_t pact_of_the_eredruin; // TODO: New
-    player_talent_t sacrificed_souls;
     player_talent_t mark_of_shatug; // TODO: New
     player_talent_t mark_of_fharg; // TODO: New
     player_talent_t the_houndmasters_gambit; // TODO: New
@@ -421,7 +420,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -618,7 +617,7 @@ public:
   void create_options() override;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
-  int active_demon_count() const; // TODO: Move to helpers?
+  int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;
