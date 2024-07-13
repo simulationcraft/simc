@@ -689,6 +689,7 @@ public:
     const spell_data_t* wounded_quarry_damage;
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff;
+    double wounded_quarry_proc_rate;
 
     // Fel-scarred
     const spell_data_t* burning_blades_debuff;
@@ -917,6 +918,10 @@ public:
     double movement_direction_factor = 1.8;
     // Chance of souls to be incidentally picked up on any movement ability due to being in pickup range
     double soul_fragment_movement_consume_chance = 0.85;
+    // Proc rate for Wounded Quarry for Vengeance
+    double wounded_quarry_chance_vengeance = 0.30;
+    // Proc rate for Wounded Quarry for Havoc
+    double wounded_quarry_chance_havoc = 0.10;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -4626,7 +4631,7 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     {
       p()->active.wounded_quarry->execute_on_target( s->target );
       // 2024-07-11 -- Chance seems to be about 30% (very conservatively) per melee hit per beta gameplay.
-      if ( rng().roll( 0.30 ) )
+      if ( rng().roll( p()->hero_spec.wounded_quarry_proc_rate ) )
       {
         p()->proc.soul_fragment_from_wounded_quarry->occur();
         p()->spawn_soul_fragment( soul_fragment::LESSER );
@@ -7421,6 +7426,10 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
   add_option(
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
+  add_option(
+      opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
+  add_option(
+      opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8051,6 +8060,8 @@ void demon_hunter_t::init_spells()
   {
     hero_spec.reavers_glaive_buff = spell_data_t::not_found();
   }
+
+  hero_spec.wounded_quarry_proc_rate = specialization() == DEMON_HUNTER_HAVOC ? options.wounded_quarry_chance_havoc : options.wounded_quarry_chance_vengeance;
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
