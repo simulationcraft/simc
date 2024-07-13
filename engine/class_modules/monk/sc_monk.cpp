@@ -4644,48 +4644,33 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 // Chi Surge
 // ==========================================================================
 
-struct chi_surge_t : public monk_spell_t
+struct chi_surge_t : monk_spell_t
 {
-  chi_surge_t( monk_t *p ) : monk_spell_t( p, "chi_surge", p->talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
+  chi_surge_t( monk_t *player )
+    : monk_spell_t( player, "chi_surge", player->talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
   {
     harmful = true;
     dual = background = true;
     aoe               = -1;
-    school            = SCHOOL_NATURE;
+
+    apply_affecting_aura( player->talent.brewmaster.press_the_advantage );
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t *state ) const override
   {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p()->talent.brewmaster.press_the_advantage->ok() )
-      am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 4 ).percent();
-
-    return am;
-  }
-
-  double composite_total_spell_power() const override
-  {
-    return std::max( monk_spell_t::composite_total_spell_power(), monk_spell_t::composite_total_attack_power() );
-  }
-
-  double composite_persistent_multiplier( const action_state_t *s ) const override
-  {
-    return monk_spell_t::composite_persistent_multiplier( s ) / s->n_targets;
+    return monk_spell_t::composite_persistent_multiplier( state ) / as<double>( state->n_targets );
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    int targets_hit = std::min( 5U, execute_state->n_targets );
-
-    if ( targets_hit > 0 )
-    {
-      double cdr = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value();  // Saved as 4
-      p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
-      p()->proc.chi_surge->occur();
-    }
+    if ( execute_state->n_targets <= 0 )
+      return;
+    unsigned targets_hit = std::min( 5U, execute_state->n_targets );
+    double cdr           = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value();  // Saved as 4
+    p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
+    p()->proc.chi_surge->occur();
   }
 };
 
