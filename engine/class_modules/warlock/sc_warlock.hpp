@@ -52,7 +52,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_infirmity;
 
   // Demo
-  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
+  propagate_const<buff_t*> debuffs_wicked_maw;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
 
   // Destro
@@ -272,15 +272,14 @@ public:
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
     player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc
-    player_talent_t wicked_maw; // TODO: Previously Houndmaster's Strategem. Convert/rename as necessary
+    player_talent_t wicked_maw;
+    const spell_data_t* wicked_maw_debuff; // TOCHECK: Other pet abilities besides Soul Strike/Dreadbite?
 
     player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
     player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
-    player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
-    const spell_data_t* the_houndmasters_stratagem_debuff;
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t blood_invocation; // TODO: New

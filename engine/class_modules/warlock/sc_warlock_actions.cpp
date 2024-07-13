@@ -28,7 +28,7 @@ using namespace helpers;
       // Demonology
       bool master_demonologist_dd = false;
       bool sacrificed_souls = false;
-      bool houndmasters = false;
+      bool wicked_maw = false;
       bool soul_conduit_base_cost = false;
 
       // Destruction
@@ -69,7 +69,8 @@ using namespace helpers;
       affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
-      affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
+      // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
+      affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
 
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
     }
@@ -215,8 +216,8 @@ using namespace helpers;
     {
       double m = spell_t::composite_target_multiplier( t );
 
-      if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
-        m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
+      if ( demonology() && affected_by.wicked_maw && p()->talents.wicked_maw.ok() )
+        m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
       if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
