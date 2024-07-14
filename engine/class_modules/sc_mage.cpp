@@ -2816,8 +2816,6 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
-    callbacks = true;
-
     if ( p->talents.intensifying_flame.ok() )
       intensifying_flame = get_action<intensifying_flame_t>( "intensifying_flame", p );
   }
@@ -3921,7 +3919,6 @@ struct counterspell_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_class_spell( "Counterspell" ) )
   {
     parse_options( options_str );
-    may_miss = false;
     ignore_false_positive = is_interrupt = true;
   }
 
@@ -5369,7 +5366,6 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = true;
-    callbacks = false;
   }
 };
 
@@ -5545,9 +5541,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = affected_by.unleashed_inferno = triggers.ignite = true;
-    // TODO: PF doesn't trigger normal RPPM effects, but somehow triggers the class trinket.
-    // Enable callbacks for now until we find what exactly causes this.
-    // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.from_the_ashes->effectN( 2 ).percent();
@@ -5709,7 +5702,6 @@ struct splintering_ray_t final : public spell_t
     spell_t( n, p, p->find_spell( 418735 ) )
   {
     background = true;
-    may_miss = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
@@ -5985,7 +5977,6 @@ struct touch_of_the_magi_explosion_t final : public spell_t
     spell_t( n, p, p->find_spell( 210833 ) )
   {
     background = true;
-    may_miss = callbacks = false;
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
