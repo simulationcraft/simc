@@ -3680,7 +3680,7 @@ struct execute_damage_t : public warrior_attack_t
       if ( p()->talents.slayer.unrelenting_onslaught->ok() )
       {
         p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
-        td( state->target )->debuffs_overwhelmed->trigger( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() );
+        td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * td( state->target )->debuffs_marked_for_execution->stack() );
       }
       td( state->target )->debuffs_marked_for_execution->expire();
     }
@@ -3876,7 +3876,7 @@ struct execute_main_hand_t : public warrior_attack_t
     if ( p()->talents.slayer.unrelenting_onslaught->ok() && td( state->target )->debuffs_marked_for_execution->up() )
     {
       p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() ) ) );
-      td( state->target )->debuffs_overwhelmed->trigger( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() * td( state->target )->debuffs_marked_for_execution->stack() );
+      td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * td( state->target )->debuffs_marked_for_execution->stack() );
     }
   }
 };

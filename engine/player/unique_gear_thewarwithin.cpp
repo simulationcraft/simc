@@ -3329,8 +3329,6 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
     }
   };
 
-  auto value = effect.driver()->effectN( 1 ).average( effect.item );
-
   auto buff_spell = effect.driver();
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
                      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )

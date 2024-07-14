@@ -828,7 +828,7 @@ struct vampiric_touch_t final : public priest_spell_t
       mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    double composite_da_multiplier( const action_state_t* ) const override
     {
       return 1.0;
     }
@@ -1492,7 +1492,7 @@ struct void_torrent_t final : public priest_spell_t
   {
     priest().buffs.void_torrent->expire();
 
-    timespan_t channeled_time = dot_duration - d->remains();
+    [[maybe_unused]] timespan_t channeled_time = dot_duration - d->remains();
 
     if ( priest().talents.voidweaver.entropic_rift.enabled() )
     {

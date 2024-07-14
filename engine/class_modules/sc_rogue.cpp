@@ -1861,7 +1861,7 @@ public:
 
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
-      ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ||
+      ( ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ) ||
         ab::data().affected_by_label( p->spec.improved_shiv_debuff->effectN( 4 ) ) );
 
     if ( p->talent.assassination.systemic_failure->ok() )
@@ -9652,7 +9652,7 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   buff_t*& debuff = p()->deathstalkers_mark_debuff;
   if ( debuff && debuff->check() )
   {
-    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
+    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker's Mark
     // 2024-07-05 -- Exception being that Darkest Night can refresh the stack
     if ( debuff->player == state->target && !from_darkest_night )
       return false;
@@ -12051,20 +12051,24 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+      {
         if ( buffs.fatebound_lucky_coin->check() )
           active.fatebound.lucky_coin->execute();
         else
           buffs.fatebound_lucky_coin->trigger();
+      }
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+      {
         if ( buffs.fatebound_lucky_coin->check() )
           active.fatebound.lucky_coin->execute();
         else
           buffs.fatebound_lucky_coin->trigger();
+      }
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   if ( talent.fatebound.chosens_revelry->ok() )

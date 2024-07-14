@@ -3508,7 +3508,7 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
     return da;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     base_t::impact( state );
 
@@ -3606,13 +3606,13 @@ struct fire_breath_t : public empowered_charge_spell_t
   {
     timespan_t dot_dur_per_emp;
     action_t* chrono_flames;
-    size_t max_afterimage_targets;
+    int max_afterimage_targets;
 
     fire_breath_damage_t( evoker_t* p )
       : base_t( "fire_breath_damage", p, p->spec.fire_breath_damage ),
         dot_dur_per_emp( 6_s ),
         chrono_flames( nullptr ),
-        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
+        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
     {
       aoe                 = -1;  // TODO: actually a cone so we need to model it if possible
       reduced_aoe_targets = 5.0;
@@ -3710,7 +3710,7 @@ struct fire_breath_t : public empowered_charge_spell_t
       p()->buff.burnout->trigger();
     }
 
-    void impact(action_state_t* s)
+    void impact( action_state_t* s ) override
     {
       empowered_release_spell_t::impact( s );
 
@@ -5106,21 +5106,22 @@ struct upheaval_t : public empowered_charge_spell_t
   struct upheaval_damage_t : public empowered_release_spell_t
   {
     reverberations_t* reverberations;
-    action_t* chrono_flames;
-    size_t max_afterimage_targets;
-    upheaval_damage_t* rumbling_earth;
-    bool is_rumbling_earth;
     double reverb_mul;
-    size_t repeats;
+    int repeats;
+    upheaval_damage_t* rumbling_earth;
+    action_t* chrono_flames;
+    int max_afterimage_targets;
+    bool is_rumbling_earth;
 
     upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth )
       : base_t( name, p, p->find_spell( 396288 ) ),
         reverberations( nullptr ),
         reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
-        repeats( as<size_t>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
+        repeats( as<int>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
         rumbling_earth( nullptr ),
         chrono_flames( nullptr ),
-        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
+        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) ),
+        is_rumbling_earth( is_rumbling_earth )
     {
       aoe = -1;
 
@@ -5164,7 +5165,7 @@ struct upheaval_t : public empowered_charge_spell_t
       return da;
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       empowered_release_spell_t::impact( s );
 
@@ -5179,7 +5180,7 @@ struct upheaval_t : public empowered_charge_spell_t
       }
     }
 
-    void execute()
+    void execute() override
     {
       if ( rumbling_earth )
       {
@@ -6123,9 +6124,8 @@ public:
     evoker_t* source;
     spells::thread_of_fate_damage_t* thread_of_fate_damage;
     spells::thread_of_fate_heal_t* thread_of_fate_heal;
-    buff_t* source_buff;
-
     double mult;
+    buff_t* source_buff;
 
     thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, buff_t* source_buff_ )
       : dbc_proc_callback_t( p, e ),

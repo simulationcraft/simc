@@ -1706,7 +1706,7 @@ public:
   void init_procs() override;
   void init_finished() override;
   bool validate_fight_style( fight_style_e style ) const override;
-  double composite_attribute( attribute_e ) const;
+  double composite_attribute( attribute_e ) const override;
   double composite_bonus_armor() const override;
   void combat_begin() override;
   void activate() override;

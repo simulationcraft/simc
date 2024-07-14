@@ -1040,7 +1040,7 @@ using namespace helpers;
       debug_cast<malefic_rapture_damage_t*>( impact_action )->target_count = as<int>( s->n_targets );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl )
+    size_t available_targets( std::vector<player_t*>& tl ) const override
     {
       warlock_spell_t::available_targets( tl );
 
@@ -3188,7 +3188,7 @@ using namespace helpers;
         tick_action = new rift_shadow_bolt_t( p );
       }
 
-      double last_tick_factor( const dot_t* d, timespan_t t, timespan_t dur ) const override
+      double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
       { return 1.0; }
     };
 

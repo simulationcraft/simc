@@ -1782,7 +1782,7 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || triggers.clearcasting == TO_DEFAULT && harmful && !background;
+    bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || ( triggers.clearcasting == TO_DEFAULT && harmful && !background );
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
     {
       // Best guess at how this is gonna work, assuming the bugs are fixed.
@@ -6229,12 +6229,12 @@ struct embedded_splinter_t final : public mage_spell_t
     background = true;
   }
 
-  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
   {
     return duration;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -6315,7 +6315,7 @@ struct splinter_t final : public mage_spell_t
       add_child( p->action.splinterstorm );
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -7099,7 +7099,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( talents.icy_veins.ok() && find_action( "icy_veins" ) || specialization() == MAGE_FROST && talents.time_anomaly.ok() )
+  if ( ( talents.icy_veins.ok() && find_action( "icy_veins" ) ) || ( specialization() == MAGE_FROST && talents.time_anomaly.ok() ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   if ( talents.mirror_image.ok() && find_action( "mirror_image" ) )

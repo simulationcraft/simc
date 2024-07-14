@@ -386,7 +386,7 @@ void warlock_t::init_assessors()
 {
   player_t::init_assessors();
 
-  auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
+  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ){
     if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
       accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
 
@@ -558,7 +558,7 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view pet_type )
+pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
   if ( p )

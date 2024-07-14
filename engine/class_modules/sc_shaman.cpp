@@ -6767,7 +6767,7 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury_dmg->trigger( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() );
+    p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
   }
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
@@ -11352,7 +11352,7 @@ void shaman_t::trigger_whirling_air( const action_state_t* state )
 
   auto a = state->action->id == 115356 ? action.whirling_air_ws : action.whirling_air_ss;
 
-  int n_targets = buff.whirling_air->data().effectN( 3 ).base_value();
+  int n_targets = as<int>( buff.whirling_air->data().effectN( 3 ).base_value() );
   size_t target_idx = 0U;
 
   do
