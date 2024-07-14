@@ -287,7 +287,7 @@ namespace warlock
     talents.the_houndmasters_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Gambit" ); // Should be ID 455572
     talents.houndmasters_aura = find_spell( 455611 );
 
-    talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
+    talents.improved_demonic_tactics = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Demonic Tactics" ); // Should be ID 453800
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
 

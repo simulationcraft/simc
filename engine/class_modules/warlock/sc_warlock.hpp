@@ -315,7 +315,7 @@ public:
     player_talent_t foul_mouth;
     player_talent_t the_houndmasters_gambit;
     const spell_data_t* houndmasters_aura; // Contains actual referenced % increase
-    player_talent_t improved_demonic_tactics; // TODO: Possibly migrated/combined from other effects (Cavitation/Heavy Handed)
+    player_talent_t improved_demonic_tactics;
     player_talent_t demonic_brutality; // TODO: New
 
     player_talent_t pact_of_the_eredruin; // TODO: New
@@ -327,7 +327,6 @@ public:
     player_talent_t guillotine;
 
     player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
-    player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
