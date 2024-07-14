@@ -1357,6 +1357,16 @@ void dreadstalker_t::demise()
   warlock_pet_t::demise();
 }
 
+double dreadstalker_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+    m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
+
+  return m;
+}
+
 timespan_t dreadstalker_t::available() const
 {
   // Dreadstalker does not need to wake up after it has travelled and done its Dreadbite

@@ -403,6 +403,7 @@ struct dreadstalker_t : public warlock_pet_t
   void demise() override;
   timespan_t available() const override;
   action_t* create_action( util::string_view, util::string_view ) override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 struct vilefiend_t : public warlock_simple_pet_t
