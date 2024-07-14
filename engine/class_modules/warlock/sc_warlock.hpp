@@ -322,7 +322,7 @@ public:
     player_talent_t pact_of_the_eredruin;
     const spell_data_t* doomguard;
     const spell_data_t* doom_bolt;
-    player_talent_t shadowtouched; // TODO: New
+    player_talent_t shadowtouched;
     player_talent_t mark_of_shatug; // TODO: New
     player_talent_t mark_of_fharg; // TODO: New
     player_talent_t flametouched; // TODO: New

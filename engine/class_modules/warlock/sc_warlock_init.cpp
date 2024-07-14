@@ -295,6 +295,8 @@ namespace warlock
     talents.doomguard = find_spell( 453590 );
     talents.doom_bolt = find_spell( 453616 );
 
+    talents.shadowtouched = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowtouched" ); // Should be ID 453619
+
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
 
     talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833

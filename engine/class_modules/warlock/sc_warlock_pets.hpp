@@ -201,6 +201,16 @@ public:
 
   const warlock_pet_td_t* pet_td( player_t* t ) const
   { return p()->get_target_data( t ); }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = ab::composite_target_multiplier( target );
+
+    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
+      m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 // TODO: Switch to a general autoattack template if one is added
