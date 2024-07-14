@@ -1885,8 +1885,7 @@ using namespace helpers;
 
       p()->buffs.demonic_core->decrement();
 
-      if ( p()->talents.power_siphon.ok() )
-        p()->buffs.power_siphon->decrement();
+      p()->buffs.power_siphon->decrement();
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
@@ -1896,8 +1895,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
       
-      if ( p()->talents.power_siphon.ok() )
-        m *= 1.0 + p()->buffs.power_siphon->check_value();
+      m *= 1.0 + p()->buffs.power_siphon->check_value();
 
       return m;
     }
@@ -2309,7 +2307,7 @@ using namespace helpers;
           wild_imp_counter++;
           demon_counter++;
         }
-        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || lock_pet->is_main_pet )
+        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || pet_type == PET_FELGUARD )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;

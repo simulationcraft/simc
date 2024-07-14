@@ -36,8 +36,8 @@ void warlock_pet_t::create_buffs()
                                ->set_default_value( o()->talents.demonic_strength->effectN( 2 ).percent() )
                                ->set_cooldown( 0_ms );
 
-  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
-                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() ); // TODO: Add Grimoire of Service data to talent struct
+  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", o()->talents.grimoire_of_service )
+                                  ->set_default_value_from_effect( 1 );
 
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
@@ -63,7 +63,7 @@ void warlock_pet_t::create_buffs()
                              ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
-                            ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
+                            ->set_default_value_from_effect( 5 );
 
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
@@ -1104,6 +1104,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
+
+    if ( p()->buffs.demonic_power->check() )
+      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
 
     return c;
   }
