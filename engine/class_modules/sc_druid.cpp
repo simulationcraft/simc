@@ -8998,7 +8998,8 @@ struct druid_melee_t : public Base
   using ab = Base;
   using base_t = druid_melee_t<Base>;
 
-  accumulated_rng_t* ravage_proc = nullptr;
+  accumulated_rng_t* ravage_rng = nullptr;
+  proc_t* ravage_proc = nullptr;
   buff_t* ravage_buff = nullptr;
   double ooc_chance = 0.0;
 
@@ -9033,7 +9034,8 @@ struct druid_melee_t : public Base
     // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
     if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
     {
-      ravage_proc = p->get_accumulated_rng( "ravage", 0.00286 );
+      ravage_rng = p->get_accumulated_rng( "ravage", 0.00286 );
+      ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
       ravage_buff = p->buff.ravage_fb;
     }
   }
@@ -9065,8 +9067,11 @@ struct druid_melee_t : public Base
         }
       }
 
-      if ( ravage_proc && ravage_proc->trigger() )
+      if ( ravage_rng && ravage_rng->trigger() )
+      {
+        ravage_proc->occur();
         ravage_buff->trigger();
+      }
     }
   }
 };

@@ -4340,7 +4340,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 
       if ( p.sim->report_details && ( show_count || show_interval ) )
       {
-        os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
+        os.format( R"(<tr class="details hide"><td colspan="{}">)", columns );
 
         if ( show_count )
           report_helper::print_distribution_chart( os, p, &proc->count, name, token, "_proc" );
