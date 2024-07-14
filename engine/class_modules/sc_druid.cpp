@@ -10583,7 +10583,8 @@ void druid_t::create_buffs()
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore )
-    ->set_cooldown( talent.gore->internal_cooldown() );
+    ->set_cooldown( talent.gore->internal_cooldown() )
+    ->set_chance( talent.gore->effectN( 1 ).percent() );
 
   buff.gory_fur = make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
     ->set_trigger_spell( talent.gory_fur );
