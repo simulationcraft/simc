@@ -4060,7 +4060,9 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
-      p()->buffs.frostfire_empowerment->decrement();
+      // Buff is decremented with a short delay, allowing two spells to benefit.
+      // TODO: Double check this later
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
       p()->state.trigger_ff_empowerment = true;
       trigger_frostfire_mastery( true );
     }
@@ -4544,7 +4546,9 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
-      p()->buffs.frostfire_empowerment->decrement();
+      // Buff is decremented with a short delay, allowing two spells to benefit.
+      // TODO: Double check this later
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
       p()->state.trigger_ff_empowerment = true;
       trigger_frostfire_mastery( true );
     }
