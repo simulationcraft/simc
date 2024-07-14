@@ -295,6 +295,8 @@ struct expurgation_t : public paladin_spell_t
   expurgation_t( paladin_t* p ):
     paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
   {
+    searing_light_disabled = true;
+
     // Jurisdiction doesn't increase Expurgation's damage in-game
     // It's increasing Spell Direct Amount instead of Spell Periodic Amount
     if ( p->talents.jurisdiction->ok() && p->bugs)
