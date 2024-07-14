@@ -185,6 +185,16 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     cooldown->duration = 0_ms;
   }
 
+
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool res = absorb_buff_t::trigger( stacks, value, chance, duration );
+    if ( res )
+      max_absorb = value;
+    return res;
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -194,8 +204,10 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
         p->options.fake_sov ? max_absorb : current_value;
     p->active.shield_of_vengeance_damage->execute();
+    max_absorb = 0.0;
   }
 };
+
 struct sacrosanct_crusade_t :public absorb_buff_t
 {
   sacrosanct_crusade_t(player_t* p) : absorb_buff_t(p, "sacrosanct_crusade", p->find_spell(461867))

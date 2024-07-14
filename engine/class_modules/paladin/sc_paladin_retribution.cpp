@@ -1063,7 +1063,7 @@ struct truths_wake_t : public paladin_spell_t
 
     if ( d->state->result == RESULT_CRIT && p()->talents.burn_to_ash->ok() && d->remains() > 0_ms )
     {
-      d->adjust_duration( p()->talents.burn_to_ash->effectN( 1 ).time_value() );
+      d->adjust_duration( timespan_t::from_seconds( p()->talents.burn_to_ash->effectN( 1 ).base_value() ) );
     }
   }
 };
