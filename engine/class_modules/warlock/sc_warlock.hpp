@@ -328,7 +328,7 @@ public:
     player_talent_t mark_of_fharg;
     const spell_data_t* infernal_presence;
     const spell_data_t* infernal_presence_dmg;
-    player_talent_t flametouched; // TODO: New
+    player_talent_t flametouched;
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
 

@@ -304,6 +304,8 @@ namespace warlock
     talents.infernal_presence = find_spell( 428453 );
     talents.infernal_presence_dmg = find_spell( 428455 );
 
+    talents.flametouched = find_talent_spell( talent_tree::SPECIALIZATION, "Flametouched" ); // Should be ID 453699
+
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
 
     talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833

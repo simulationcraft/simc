@@ -183,6 +183,9 @@ double warlock_pet_t::composite_spell_haste() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -193,6 +196,9 @@ double warlock_pet_t::composite_spell_cast_speed() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -202,6 +208,9 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 
   if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
 }
@@ -1360,6 +1369,24 @@ double dreadstalker_t::composite_player_multiplier( school_e school ) const
 
   if ( o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
     m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
+
+  return m;
+}
+
+double dreadstalker_t::composite_melee_crit_chance() const
+{
+  double m = warlock_pet_t::composite_melee_crit_chance();
+
+  m += o()->talents.flametouched->effectN( 2 ).percent();
+
+  return m;
+}
+
+double dreadstalker_t::composite_spell_crit_chance() const
+{
+  double m = warlock_pet_t::composite_spell_crit_chance();
+
+  m += o()->talents.flametouched->effectN( 2 ).percent();
 
   return m;
 }
