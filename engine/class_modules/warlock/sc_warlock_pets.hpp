@@ -369,6 +369,8 @@ struct grimoire_felguard_pet_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
   void arise() override;
+  void demise() override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 struct wild_imp_pet_t : public warlock_pet_t

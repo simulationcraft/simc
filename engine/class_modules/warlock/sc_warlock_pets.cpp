@@ -960,6 +960,23 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    buffs.grimoire_of_service->trigger();
  }
 
+ void grimoire_felguard_pet_t::demise()
+ {
+   warlock_pet_t::demise();
+
+   if ( o()->talents.fiendish_oblation.ok() )
+     o()->buffs.demonic_core->trigger();
+ }
+
+ double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
+ {
+   double m = warlock_pet_t::composite_player_multiplier( school );
+
+   m *= 1.0 + o()->talents.fiendish_oblation->effectN( 1 ).percent();
+
+   return m;
+ }
+
  // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
 timespan_t grimoire_felguard_pet_t::available() const
 {

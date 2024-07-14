@@ -291,7 +291,7 @@ public:
     const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
-    player_talent_t fiendish_oblation; // TODO: New
+    player_talent_t fiendish_oblation;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
     const spell_data_t* fel_sunder_debuff;
 
