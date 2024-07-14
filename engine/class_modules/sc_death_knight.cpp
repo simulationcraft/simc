@@ -2620,14 +2620,14 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
   bool first;
 
-  auto_attack_melee_t( T* p, util::string_view name = "auto_attack_mh" ) : pet_melee_attack_t<T>( p, name ), first( true )
+  auto_attack_melee_t( T* p, util::string_view name = "auto_attack_mh" )
+    : pet_melee_attack_t<T>( p, name ), first( true )
   {
     this->background = this->repeating = true;
     this->not_a_proc = this->may_crit = true;
     this->special                     = false;
     this->weapon_multiplier           = 1.0;
     this->trigger_gcd                 = 0_ms;
-
   }
 
   void init_finished() override
@@ -2686,11 +2686,11 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   };
   double composite_crit_chance() const override
   {
-    return action_t::composite_crit_chance() + dk()->cache.attack_crit_chance();
+    return action_t::composite_crit_chance() + pet()->current_pet_stats.composite_melee_crit;
   };
   double composite_haste() const override
   {
-    return action_t::composite_haste() + dk()->cache.attack_haste();
+    return action_t::composite_haste() + pet()->current_pet_stats.composite_melee_haste;
   };
   double composite_versatility( const action_state_t* state ) const override
   {
