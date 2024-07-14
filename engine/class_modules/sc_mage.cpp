@@ -1908,7 +1908,7 @@ public:
 
   void trigger_frostfire_mastery( bool empowerment = false )
   {
-    if ( empowerment && !p()->talents.flash_freezeburn.ok() )
+    if ( !p()->talents.frostfire_mastery.ok() || ( empowerment && !p()->talents.flash_freezeburn.ok() ) )
       return;
 
     auto s = get_school();
@@ -2046,6 +2046,9 @@ struct arcane_mage_spell_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
 
     if ( auto td = find_td( s->target ) )
     {
@@ -3022,6 +3025,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
+    if ( !result_is_hit( s->result ) )
+      return;
+
     if ( p()->state.trigger_dematerialize )
     {
       p()->state.trigger_dematerialize = false;
@@ -3146,6 +3152,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
 
     if ( p()->state.trigger_dematerialize )
     {
@@ -6006,7 +6015,7 @@ struct touch_of_the_magi_explosion_t final : public spell_t
     spell_t::impact( s );
 
     auto mage = debug_cast<mage_t*>( player );
-    if ( mage->talents.nether_munitions.ok() )
+    if ( result_is_hit( s->result ) && mage->talents.nether_munitions.ok() )
       mage->get_target_data( s->target )->debuffs.nether_munitions->trigger();
   }
 };
@@ -6356,7 +6365,7 @@ struct splinter_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( controlled_instincts )
+    if ( result_is_hit( s->result ) && controlled_instincts )
     {
       if ( auto td = find_td( s->target ); td && td->debuffs.controlled_instincts->check() )
       {
