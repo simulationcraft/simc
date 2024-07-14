@@ -278,6 +278,8 @@ namespace warlock
     talents.antoran_armaments_buff = find_spell( 387496 );
     talents.soul_cleave = find_spell( 387502 );
 
+    talents.doom_eternal = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Eternal" ); // Should be ID 455585
+
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154

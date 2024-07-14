@@ -1914,7 +1914,7 @@ using namespace helpers;
           for ( const auto t : p()->sim->target_non_sleeping_list )
           {
             if ( td( t )->debuffs_doom->check() )
-              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() );
+              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() - p()->talents.doom_eternal->effectN( 1 ).time_value() );
           }
         }
       }

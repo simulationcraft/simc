@@ -310,7 +310,7 @@ public:
     const spell_data_t* antoran_armaments_buff;
     const spell_data_t* soul_cleave;
 
-    player_talent_t doom_eternal; // TODO: New
+    player_talent_t doom_eternal;
     player_talent_t impending_doom; // TODO: New
     player_talent_t flametouched; // TODO: New
     player_talent_t foul_mouth; // TODO: New
