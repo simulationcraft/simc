@@ -1829,6 +1829,34 @@ using namespace helpers;
 
   struct demonbolt_t : public warlock_spell_t
   {
+    struct demonbolt_state_t : public action_state_t
+    {
+      bool core_spent;
+
+      demonbolt_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        core_spent( false )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        core_spent = false;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s ) << " core_spent=" << core_spent;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        core_spent = debug_cast<const demonbolt_state_t*>( s )->core_spent;
+      }
+    };
+
     demonbolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found(), options_str )
     {
@@ -1838,6 +1866,15 @@ using namespace helpers;
 
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
+    }
+
+    action_state_t* new_state() override
+    { return new demonbolt_state_t( this, target ); }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      debug_cast<demonbolt_state_t*>( s )->core_spent = p()->buffs.demonic_core->up();
+      warlock_spell_t::snapshot_state( s, rt );
     }
 
     double execute_time_pct_multiplier() const override
@@ -1871,6 +1908,15 @@ using namespace helpers;
           if ( active_pet->pet_type == PET_FELGUARD )
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
+
+        if ( p()->talents.doom.ok() )
+        {
+          for ( const auto t : p()->sim->target_non_sleeping_list )
+          {
+            if ( td( t )->debuffs_doom->check() )
+              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() );
+          }
+        }
       }
       else
       {
@@ -1889,6 +1935,14 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.doom.ok() && debug_cast<demonbolt_state_t*>( s )->core_spent && !td( s->target )->debuffs_doom->check() )
+        td( s->target )->debuffs_doom->trigger();
     }
 
     double action_multiplier() const override
@@ -2405,6 +2459,17 @@ using namespace helpers;
 
         internal_cooldown->start( 6_s );
       }
+    }
+  };
+
+  struct doom_t : public warlock_spell_t
+  {
+    doom_t( warlock_t* p )
+      : warlock_spell_t( "Doom", p, p->talents.doom_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = p->talents.doom->effectN( 2 ).base_value();
     }
   };
 
@@ -3708,6 +3773,7 @@ using namespace helpers;
   void warlock_t::create_demonology_proc_actions()
   {
     proc_actions.bilescourge_bombers_proc = new bilescourge_bombers_proc_t( this );
+    proc_actions.doom_proc = new doom_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()

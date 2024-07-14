@@ -54,6 +54,7 @@ struct warlock_td_t : public actor_target_data_t
   // Demo
   propagate_const<buff_t*> debuffs_wicked_maw;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_doom;
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -295,7 +296,9 @@ public:
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t doom; // TODO: Heavily changed, now a passive
+    player_talent_t doom;
+    const spell_data_t* doom_debuff;
+    const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
     player_talent_t summon_vilefiend;
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
@@ -470,6 +473,7 @@ public:
   {
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
+    action_t* doom_proc;
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
