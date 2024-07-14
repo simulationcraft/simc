@@ -310,6 +310,10 @@ namespace warlock
     talents.immutable_hatred_proc = find_spell( 405681 );
 
     talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
+    talents.guillotine_pet = find_spell( 386542 );
+    talents.fiendish_wrath_buff = find_spell( 386601 );
+    talents.fiendish_wrath_dmg = find_spell( 386702 );
+    talents.fel_explosion = find_spell( 386609 );
 
     // Additional Tier Set spell data
 

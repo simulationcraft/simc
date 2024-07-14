@@ -56,8 +56,8 @@ void warlock_pet_t::create_buffs()
   buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
                                ->set_default_value_from_effect( 1 );
 
-  buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
-                             ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
+  buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", o()->talents.fiendish_wrath_buff )
+                             ->set_default_value_from_effect( 1 );
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value_from_effect( 5 );
@@ -481,10 +481,28 @@ struct felguard_melee_t : public warlock_pet_melee_t
 {
   struct fiendish_wrath_t : public warlock_pet_melee_attack_t
   {
-    fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->find_spell( 386601 ) )
+    fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->o()->talents.fiendish_wrath_dmg )
     {
       background = dual = true;
       aoe = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_pet_melee_attack_t::action_multiplier();
+
+      // Renormalize out these multipliers
+      m /= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 5 ).percent();
+
+      m /= 1.0 + ( p()->o()->cache.mastery_value() ) * ( p()->o()->warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / p()->o()->warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+      if ( p()->o()->talents.annihilan_training.ok() )
+        m /= 1.0 + p()->buffs.annihilan_training->check_value();
+
+      if ( p()->o()->talents.antoran_armaments.ok() )
+        m /= 1.0 + p()->buffs.antoran_armaments->check_value();
+
+      return m;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -752,7 +770,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
 struct fel_explosion_t : public warlock_pet_spell_t
 {
-  fel_explosion_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Fel Explosion", p, p->find_spell( 386609 ) )
+  fel_explosion_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Fel Explosion", p, p->o()->talents.fel_explosion )
   {
     background = dual = true;
     callbacks = false;
@@ -764,7 +782,7 @@ struct felguard_guillotine_t : public warlock_pet_spell_t
 {
   fel_explosion_t* fel_explosion;
 
-  felguard_guillotine_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Guillotine", p, p->find_spell( 386542 ) )
+  felguard_guillotine_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Guillotine", p, p->o()->talents.guillotine_pet )
   {
     background = true;
     may_miss = may_crit = false;
@@ -857,6 +875,8 @@ void felguard_pet_t::init_base_stats()
 
   // 2023-09-20: Validated coefficients
   owner_coeff.ap_from_sp = 0.741;
+  owner_coeff.sp_from_sp = 1.15;
+
   melee_attack->base_dd_multiplier *= 1.42;
 
   special_action = new axe_toss_t( this, "" );

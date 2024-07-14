@@ -332,6 +332,10 @@ public:
     player_talent_t immutable_hatred;
     const spell_data_t* immutable_hatred_proc;
     player_talent_t guillotine;
+    const spell_data_t* guillotine_pet;
+    const spell_data_t* fiendish_wrath_buff;
+    const spell_data_t* fiendish_wrath_dmg;
+    const spell_data_t* fel_explosion;
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
