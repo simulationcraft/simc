@@ -285,7 +285,7 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     const spell_data_t* the_expendables_buff;
     player_talent_t blood_invocation;
-    player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
+    player_talent_t umbral_blaze;
     const spell_data_t* umbral_blaze_dot;
     player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
     const spell_data_t* demonic_servitude;
