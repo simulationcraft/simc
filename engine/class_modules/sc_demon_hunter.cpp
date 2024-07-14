@@ -6223,6 +6223,7 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
     {
       background = dual  = true;
+      aoe                = -1;
       name_str_reporting = reporting_name;
     }
   };
@@ -7163,10 +7164,11 @@ void demon_hunter_t::create_buffs()
             if ( new_ > old )
             {
               int target_stacks = static_cast<int>( b->default_value );
-              if ( new_ >= target_stacks && !buff.reavers_glaive->check() && cooldown.art_of_the_glaive_consumption_icd->up() )
+              if ( new_ >= target_stacks && !buff.reavers_glaive->check() &&
+                   cooldown.art_of_the_glaive_consumption_icd->up() )
               {
                 // use a cooldown to prevent multiple consumptions
-                cooldown.art_of_the_glaive_consumption_icd->start(100_ms);
+                cooldown.art_of_the_glaive_consumption_icd->start( 100_ms );
 
                 // using an event
                 make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
