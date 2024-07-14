@@ -350,7 +350,6 @@ struct consecration_tick_t : public paladin_spell_t
     background  = true;
     may_crit    = true;
     ground_aoe  = true;
-    searing_light_disabled = true;
   }
 
   double action_multiplier() const override
@@ -404,6 +403,8 @@ struct consecration_t : public paladin_spell_t
     // technically this doesn't work for characters under level 11?
     if ( p->specialization() == PALADIN_RETRIBUTION )
       background = true;
+
+    searing_light_disabled = true;
 
     add_child( damage_tick );
   }
