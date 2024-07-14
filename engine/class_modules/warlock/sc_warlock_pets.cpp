@@ -549,7 +549,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 {
   struct felstorm_tick_t : public warlock_pet_melee_attack_t
   {
-    bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
+    bool applies_fel_sunder;
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
       : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
@@ -596,7 +596,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_sunder->ok() )
+    // 2024-07-14 GFG Felstorm applies Fel Sunder, possibly bug
+    if ( ( main_pet || p->bugs ) && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
     if ( !main_pet )
