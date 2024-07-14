@@ -216,7 +216,7 @@ using namespace helpers;
     {
       double m = spell_t::composite_target_multiplier( t );
 
-      if ( demonology() && affected_by.wicked_maw && p()->talents.wicked_maw.ok() )
+      if ( demonology() && affected_by.wicked_maw )
         m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
       if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )

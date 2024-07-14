@@ -1414,6 +1414,14 @@ struct bile_spit_t : public warlock_pet_spell_t
 
     debug_cast< vilefiend_t* >( p() )->bile_spit_executes--;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.foul_mouth.ok() )
+      owner_td( s->target )->debuffs_wicked_maw->trigger();
+  }
 };
 
 struct headbutt_t : public warlock_pet_melee_attack_t
@@ -1430,6 +1438,15 @@ struct caustic_presence_t : public warlock_pet_spell_t
     aoe = -1;
   }
 };
+
+double vilefiend_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_simple_pet_t::composite_player_multiplier( school );
+
+  m *= 1.0 + o()->talents.foul_mouth->effectN( 1 ).percent();
+
+  return m;
+}
 
 void vilefiend_t::init_base_stats()
 {

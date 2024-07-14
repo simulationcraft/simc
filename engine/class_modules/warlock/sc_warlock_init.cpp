@@ -282,6 +282,8 @@ namespace warlock
 
     talents.impending_doom = find_talent_spell( talent_tree::SPECIALIZATION, "Impending Doom" ); // Should be ID 455587
 
+    talents.foul_mouth = find_talent_spell( talent_tree::SPECIALIZATION, "Foul Mouth" ); // Should be ID 455502
+
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154

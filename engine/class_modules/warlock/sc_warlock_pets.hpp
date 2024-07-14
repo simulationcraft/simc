@@ -415,6 +415,7 @@ struct vilefiend_t : public warlock_simple_pet_t
   void create_buffs() override;
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 struct demonic_tyrant_t : public warlock_pet_t

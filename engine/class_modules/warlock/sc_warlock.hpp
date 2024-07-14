@@ -312,15 +312,15 @@ public:
 
     player_talent_t doom_eternal;
     player_talent_t impending_doom;
-    player_talent_t flametouched; // TODO: New
-    player_talent_t foul_mouth; // TODO: New
-    player_talent_t shadowtouched; // TODO: New
+    player_talent_t foul_mouth;
     player_talent_t improved_demonic_tactics; // TODO: Possibly migrated/combined from other effects (Cavitation/Heavy Handed)
     player_talent_t demonic_brutality; // TODO: New
 
     player_talent_t pact_of_the_eredruin; // TODO: New
+    player_talent_t shadowtouched; // TODO: New
     player_talent_t mark_of_shatug; // TODO: New
     player_talent_t mark_of_fharg; // TODO: New
+    player_talent_t flametouched; // TODO: New
     player_talent_t the_houndmasters_gambit; // TODO: New
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
