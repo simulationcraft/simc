@@ -6759,9 +6759,11 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs()
 {
   // Baseline
-  // TODO: Does the 0.5% per stack actually do anything with only 1 rank of the talent?
+  // TODO: For some reason, the debuff has a base value of 0.5 and then the talent modifies the
+  // effect by adding 0.5/1.0 on top (depending on the rank). The value is then rounded, resulting
+  // in 1% damage increase with 1 rank and 2% damage increase with 2 ranks.
   debuffs.arcane_debilitation  = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
-                                   ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
+                                   ->set_default_value( ( mage->bugs ? 2.0 : 1.0 ) * mage->talents.arcane_debilitation->effectN( 2 ).percent() )
                                    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                    ->set_chance( mage->talents.arcane_debilitation.ok() );
   debuffs.controlled_instincts = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
