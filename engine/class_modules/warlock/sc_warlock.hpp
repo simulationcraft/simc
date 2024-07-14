@@ -143,6 +143,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+    spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -318,13 +319,23 @@ public:
     player_talent_t improved_demonic_tactics;
     player_talent_t demonic_brutality; // TOCHECK: Pets may not be properly benefitting from this in-game
 
-    player_talent_t pact_of_the_eredruin; // TODO: New
-    player_talent_t shadowtouched; // TODO: New
-    player_talent_t mark_of_shatug; // TODO: New
-    player_talent_t mark_of_fharg; // TODO: New
-    player_talent_t flametouched; // TODO: New
-    player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
+    player_talent_t pact_of_the_eredruin;
+    const spell_data_t* doomguard;
+    const spell_data_t* doom_bolt;
+    player_talent_t shadowtouched;
+    player_talent_t mark_of_shatug;
+    const spell_data_t* gloom_slash;
+    player_talent_t mark_of_fharg;
+    const spell_data_t* infernal_presence;
+    const spell_data_t* infernal_presence_dmg;
+    player_talent_t flametouched;
+    player_talent_t immutable_hatred;
+    const spell_data_t* immutable_hatred_proc;
     player_talent_t guillotine;
+    const spell_data_t* guillotine_pet;
+    const spell_data_t* fiendish_wrath_buff;
+    const spell_data_t* fiendish_wrath_dmg;
+    const spell_data_t* fel_explosion;
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
@@ -592,6 +603,7 @@ public:
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
+    proc_t* pact_of_the_eredruin;
 
     // Destruction
     proc_t* reverse_entropy;

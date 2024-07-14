@@ -201,6 +201,16 @@ public:
 
   const warlock_pet_td_t* pet_td( player_t* t ) const
   { return p()->get_target_data( t ); }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = ab::composite_target_multiplier( target );
+
+    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
+      m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 // TODO: Switch to a general autoattack template if one is added
@@ -404,12 +414,16 @@ struct dreadstalker_t : public warlock_pet_t
   timespan_t available() const override;
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
 };
 
 struct vilefiend_t : public warlock_simple_pet_t
 {
   int bile_spit_executes;
-  buff_t* caustic_presence; // TODO: This was renamed to Infernal Presence for Mark of F'harg
+  buff_t* infernal_presence;
+  buff_t* mark_of_shatug; // Dummy buff to track if this is a Gloomhound
+  buff_t* mark_of_fharg; // Dummy buff to track if this is a Charhound
 
   vilefiend_t( warlock_t* );
   void init_base_stats() override;
@@ -424,6 +438,16 @@ struct demonic_tyrant_t : public warlock_pet_t
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_player_multiplier( school_e ) const override;
+};
+
+struct doomguard_t : public warlock_simple_pet_t
+{
+  int doom_bolt_executes;
+
+  doomguard_t( warlock_t* );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
 };
 }  // namespace demonology
 

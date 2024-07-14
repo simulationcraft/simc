@@ -56,8 +56,8 @@ void warlock_pet_t::create_buffs()
   buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
                                ->set_default_value_from_effect( 1 );
 
-  buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
-                             ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
+  buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", o()->talents.fiendish_wrath_buff )
+                             ->set_default_value_from_effect( 1 );
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value_from_effect( 5 );
@@ -183,6 +183,9 @@ double warlock_pet_t::composite_spell_haste() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -193,6 +196,9 @@ double warlock_pet_t::composite_spell_cast_speed() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -202,6 +208,9 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 
   if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+
+  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
 }
@@ -472,10 +481,28 @@ struct felguard_melee_t : public warlock_pet_melee_t
 {
   struct fiendish_wrath_t : public warlock_pet_melee_attack_t
   {
-    fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->find_spell( 386601 ) )
+    fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->o()->talents.fiendish_wrath_dmg )
     {
       background = dual = true;
       aoe = -1;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = warlock_pet_melee_attack_t::action_multiplier();
+
+      // Renormalize out these multipliers
+      m /= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 5 ).percent();
+
+      m /= 1.0 + ( p()->o()->cache.mastery_value() ) * ( p()->o()->warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / p()->o()->warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+      if ( p()->o()->talents.annihilan_training.ok() )
+        m /= 1.0 + p()->buffs.annihilan_training->check_value();
+
+      if ( p()->o()->talents.antoran_armaments.ok() )
+        m /= 1.0 + p()->buffs.antoran_armaments->check_value();
+
+      return m;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -545,7 +572,8 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t
 {
-  immutable_hatred_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Immutable Hatred", p, p->find_spell( 405681 ) )
+  immutable_hatred_t( warlock_pet_t* p )
+    : warlock_pet_melee_attack_t( "Immutable Hatred", p, p->o()->talents.immutable_hatred_proc )
   {
     background = dual = true;
     weapon = &( p->main_hand_weapon );
@@ -742,7 +770,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
 struct fel_explosion_t : public warlock_pet_spell_t
 {
-  fel_explosion_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Fel Explosion", p, p->find_spell( 386609 ) )
+  fel_explosion_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Fel Explosion", p, p->o()->talents.fel_explosion )
   {
     background = dual = true;
     callbacks = false;
@@ -754,7 +782,7 @@ struct felguard_guillotine_t : public warlock_pet_spell_t
 {
   fel_explosion_t* fel_explosion;
 
-  felguard_guillotine_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Guillotine", p, p->find_spell( 386542 ) )
+  felguard_guillotine_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Guillotine", p, p->o()->talents.guillotine_pet )
   {
     background = true;
     may_miss = may_crit = false;
@@ -847,6 +875,8 @@ void felguard_pet_t::init_base_stats()
 
   // 2023-09-20: Validated coefficients
   owner_coeff.ap_from_sp = 0.741;
+  owner_coeff.sp_from_sp = 1.15;
+
   melee_attack->base_dd_multiplier *= 1.42;
 
   special_action = new axe_toss_t( this, "" );
@@ -1364,6 +1394,24 @@ double dreadstalker_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double dreadstalker_t::composite_melee_crit_chance() const
+{
+  double m = warlock_pet_t::composite_melee_crit_chance();
+
+  m += o()->talents.flametouched->effectN( 2 ).percent();
+
+  return m;
+}
+
+double dreadstalker_t::composite_spell_crit_chance() const
+{
+  double m = warlock_pet_t::composite_spell_crit_chance();
+
+  m += o()->talents.flametouched->effectN( 2 ).percent();
+
+  return m;
+}
+
 timespan_t dreadstalker_t::available() const
 {
   // Dreadstalker does not need to wake up after it has travelled and done its Dreadbite
@@ -1385,7 +1433,7 @@ action_t* dreadstalker_t::create_action( util::string_view name, util::string_vi
 /// Vilefiend Begin
 
 vilefiend_t::vilefiend_t( warlock_t* owner )
-  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND ), caustic_presence( nullptr )
+  : warlock_simple_pet_t( owner, "vilefiend", PET_VILEFIEND )
 {
   action_list_str = "bile_spit";
   action_list_str += "/travel";
@@ -1398,6 +1446,33 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
   bile_spit_executes = 1; // Only one Bile Spit per summon
 }
+
+struct gloom_slash_t : public warlock_pet_spell_t
+{
+  gloom_slash_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Gloom Slash", p, p->o()->talents.gloom_slash )
+  { background = dual = true; }
+};
+
+struct vilefiend_melee_t : public warlock_pet_melee_t
+{
+  gloom_slash_t* gloom;
+
+  vilefiend_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" )
+    : warlock_pet_melee_t( p, wm, name )
+  {
+    gloom = new gloom_slash_t( p );
+    add_child( gloom );
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_t::execute();
+
+    if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
+      gloom->execute_on_target( target );
+  }
+};
 
 struct bile_spit_t : public warlock_pet_spell_t
 {
@@ -1437,9 +1512,10 @@ struct headbutt_t : public warlock_pet_melee_attack_t
   { cooldown->duration = 5_s; }
 };
 
-struct caustic_presence_t : public warlock_pet_spell_t
+struct infernal_presence_t : public warlock_pet_spell_t
 {
-  caustic_presence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Caustic Presence", p, p->find_spell( 428455 ) )
+  infernal_presence_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Infernal Presence", p, p->o()->talents.infernal_presence_dmg )
   {
     background = true;
     aoe = -1;
@@ -1459,7 +1535,7 @@ void vilefiend_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
+  melee_attack = new vilefiend_melee_t( this, 2.0 );
 
   special_ability = new headbutt_t( this );
 }
@@ -1468,18 +1544,19 @@ void vilefiend_t::create_buffs()
 {
   warlock_simple_pet_t::create_buffs();
 
-  auto damage = new caustic_presence_t( this );
+  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug" );
 
-  caustic_presence = make_buff<buff_t>( this, "caustic_presence", find_spell( 428453 ) )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                               ->set_tick_zero( true )
-                               ->set_period( 1_s )
+  mark_of_fharg = make_buff<buff_t>( this, "mark_of_fharg" );
+
+  auto damage = new infernal_presence_t( this );
+
+  infernal_presence = make_buff<buff_t>( this, "infernal_presence", o()->talents.infernal_presence )
                                ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
                                  if ( target )
                                    damage->execute_on_target( target );
                                } );
 
-  caustic_presence->quiet = true;
+  infernal_presence->quiet = true;
 }
 
 void vilefiend_t::arise()
@@ -1487,6 +1564,15 @@ void vilefiend_t::arise()
   warlock_simple_pet_t::arise();
 
   bile_spit_executes = 1;
+
+  if ( o()->talents.mark_of_shatug.ok() )
+    mark_of_shatug->trigger();
+
+  if ( o()->talents.mark_of_fharg.ok() )
+  {
+    mark_of_fharg->trigger();
+    infernal_presence->trigger();
+  }
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
@@ -1535,6 +1621,67 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 }
 
 /// Demonic Tyrant End
+
+/// Doomguard Begin
+
+struct doom_bolt_t : public warlock_pet_spell_t
+{
+  doom_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Doom Bolt", p, p->o()->talents.doom_bolt )
+  { }
+
+  double cost_pct_multiplier() const override
+  { return 0.0; }
+
+  void execute() override
+  {
+    if ( debug_cast<doomguard_t*>( p() )->doom_bolt_executes <= 0 )
+    {
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+      return;
+    }
+
+    warlock_pet_spell_t::execute();
+
+    debug_cast<doomguard_t*>( p() )->doom_bolt_executes--;
+  }
+};
+
+doomguard_t::doomguard_t( warlock_t* owner )
+  : warlock_simple_pet_t( owner, "Doomguard", PET_DOOMGUARD )
+{
+  action_list_str = "travel/doom_bolt";
+
+  owner_coeff.ap_from_sp = 1.0;
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void doomguard_t::init_base_stats()
+{
+  warlock_simple_pet_t::init_base_stats();
+
+  doom_bolt_executes = as<int>( o()->talents.pact_of_the_eredruin->effectN( 1 ).base_value() );
+
+  special_ability = new doom_bolt_t( this );
+}
+
+action_t* doomguard_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "doom_bolt" )
+    return new doom_bolt_t( this );
+
+  return warlock_simple_pet_t::create_action( name, options_str );
+}
+
+void doomguard_t::arise()
+{
+  warlock_simple_pet_t::arise();
+
+  doom_bolt_executes = as<int>( o()->talents.pact_of_the_eredruin->effectN( 1 ).base_value() );
+}
+
+/// Doomguard End
+
 }  // namespace demonology
 
 namespace destruction

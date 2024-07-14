@@ -291,9 +291,29 @@ namespace warlock
 
     talents.demonic_brutality = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Brutality" ); // Should be ID 453908
 
+    talents.pact_of_the_eredruin = find_talent_spell( talent_tree::SPECIALIZATION, "Pact of the Ered'ruin" ); // Should be ID 453568
+    talents.doomguard = find_spell( 453590 );
+    talents.doom_bolt = find_spell( 453616 );
+
+    talents.shadowtouched = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowtouched" ); // Should be ID 453619
+
+    talents.mark_of_shatug = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Shatug" ); // Should be ID 455449
+    talents.gloom_slash = find_spell( 455491 );
+
+    talents.mark_of_fharg = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of F'harg" ); // Should be ID 455450
+    talents.infernal_presence = find_spell( 428453 );
+    talents.infernal_presence_dmg = find_spell( 428455 );
+
+    talents.flametouched = find_talent_spell( talent_tree::SPECIALIZATION, "Flametouched" ); // Should be ID 453699
+
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
+    talents.immutable_hatred_proc = find_spell( 405681 );
 
     talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
+    talents.guillotine_pet = find_spell( 386542 );
+    talents.fiendish_wrath_buff = find_spell( 386601 );
+    talents.fiendish_wrath_dmg = find_spell( 386702 );
+    talents.fel_explosion = find_spell( 386609 );
 
     // Additional Tier Set spell data
 
@@ -301,6 +321,8 @@ namespace warlock
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
     warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
+
+    warlock_pet_list.doomguards.set_default_duration( talents.doomguard->duration() );
   }
 
   void warlock_t::init_spells_destruction()
@@ -675,6 +697,7 @@ namespace warlock
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+    procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {

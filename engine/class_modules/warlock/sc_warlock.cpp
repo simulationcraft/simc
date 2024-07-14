@@ -50,7 +50,15 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_doom = make_buff( *this, "doom", p.talents.doom_debuff )
                      ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                        if ( cur == 0 )
+                       {
                          p.proc_actions.doom_proc->execute_on_target( b->player );
+
+                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( 0.3 ) )
+                         {
+                           p.warlock_pet_list.doomguards.spawn( 1u );
+                           p.procs.pact_of_the_eredruin->occur();
+                         }
+                       }
                        } );
 
   // Destruction
@@ -816,7 +824,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
-    wild_imps( "wild_imp", w )
+    wild_imps( "wild_imp", w ),
+    doomguards( "Doomguard", w )
 { }
 }  // namespace warlock
 
