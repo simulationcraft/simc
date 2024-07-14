@@ -2311,7 +2311,12 @@ struct death_knight_pet_t : public pet_t
     return debug_cast<death_knight_t*>( owner );
   }
 
-  virtual attack_t* create_auto_attack()
+  virtual attack_t* create_main_hand_auto_attack()
+  {
+    return nullptr;
+  }
+
+  virtual attack_t* create_off_hand_auto_attack()
   {
     return nullptr;
   }
@@ -2377,17 +2382,33 @@ struct death_knight_pet_t : public pet_t
   // Standard Death Knight pet actions
   struct auto_attack_t final : public melee_attack_t
   {
-    auto_attack_t( death_knight_pet_t* p ) : melee_attack_t( "main_hand", p )
+    auto_attack_t( death_knight_pet_t* p ) : melee_attack_t( "auto_attack", p )
     {
       assert( p->main_hand_weapon.type != WEAPON_NONE );
-      p->main_hand_attack = p->create_auto_attack();
-      trigger_gcd         = 0_ms;
-      school              = SCHOOL_PHYSICAL;
+      p->main_hand_attack                    = p->create_main_hand_auto_attack();
+      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+      if ( p->off_hand_weapon.type != WEAPON_NONE )
+      {
+        p->off_hand_attack                    = p->create_off_hand_auto_attack();
+        p->off_hand_attack->weapon            = &( p->off_hand_weapon );
+        p->off_hand_attack->base_execute_time = p->off_hand_weapon.swing_time;
+        p->off_hand_attack->id                = 1;
+      }
+
+      ignore_false_positive = true;
+      trigger_gcd = 0_ms;
+      school = SCHOOL_PHYSICAL;
     }
 
     void execute() override
     {
       player->main_hand_attack->schedule_execute();
+      if ( player->off_hand_attack )
+      {
+        player->off_hand_attack->schedule_execute();
+      }
     }
 
     bool ready() override
@@ -2400,7 +2421,7 @@ struct death_knight_pet_t : public pet_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "main_hand" )
+    if ( name == "auto_attack" )
       return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
@@ -2410,7 +2431,7 @@ struct death_knight_pet_t : public pet_t
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( use_auto_attack )
-      def->add_action( "main_hand" );
+      def->add_action( "auto_attack" );
 
     pet_t::init_action_list();
   }
@@ -2597,13 +2618,26 @@ private:
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
-  auto_attack_melee_t( T* p, util::string_view name = "main_hand" ) : pet_melee_attack_t<T>( p, name )
+  bool first;
+
+  auto_attack_melee_t( T* p, util::string_view name = "auto_attack_mh" ) : pet_melee_attack_t<T>( p, name ), first( true )
   {
     this->background = this->repeating = true;
-    this->special                      = false;
-    this->weapon                       = &( p->main_hand_weapon );
-    this->weapon_multiplier            = 1.0;
-    this->base_execute_time            = this->weapon->swing_time;
+    this->not_a_proc = this->may_crit = true;
+    this->special                     = false;
+    this->weapon_multiplier           = 1.0;
+    this->trigger_gcd                 = 0_ms;
+
+  }
+
+  void init_finished() override
+  {
+    pet_melee_attack_t<T>::init_finished();
+    if ( this->weapon->slot == SLOT_OFF_HAND )
+    {
+      // Currently all DK dual wield pets dont appear to have the 0.5x offhand penalty
+      this->weapon_multiplier = 2.0;
+    }
   }
 
   void execute() override
@@ -2613,6 +2647,26 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
       this->schedule_execute();
     else
       pet_melee_attack_t<T>::execute();
+
+    if ( first )
+      first = false;
+  }
+
+  void reset() override
+  {
+    pet_melee_attack_t<T>::reset();
+
+    this->first = true;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = pet_melee_attack_t<T>::execute_time();
+
+    if ( this->first && this->weapon->slot == SLOT_OFF_HAND )
+      return t / 2;
+    else
+      return t;
   }
 
   T* pet() const
@@ -2656,7 +2710,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 2.0_s;
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new auto_attack_melee_t<base_ghoul_pet_t>( this );
   }
@@ -3514,7 +3568,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     dk()->buffs.dancing_rune_weapon->expire();
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new auto_attack_melee_t<dancing_rune_weapon_pet_t>( this );
   }
@@ -3535,7 +3589,7 @@ struct bloodworm_pet_t : public death_knight_pet_t
     resource_regeneration  = regen_type::DISABLED;
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new auto_attack_melee_t<bloodworm_pet_t>( this );
   }
@@ -3800,7 +3854,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     return death_knight_pet_t::create_action( name, options_str );
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new blood_beast_melee_t( this );
   }
@@ -3907,9 +3961,21 @@ struct horseman_pet_t : public death_knight_pet_t
     return death_knight_pet_t::create_action( name, options_str );
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new auto_attack_melee_t<horseman_pet_t>( this );
+  }
+
+  attack_t* create_off_hand_auto_attack() override
+  {
+    if ( off_hand_weapon.type != WEAPON_NONE )
+    {
+      return new auto_attack_melee_t<horseman_pet_t>( this, "auto_attack_oh" );
+    }
+    else
+    {
+      return nullptr;
+    }
   }
 
 public:
@@ -3984,9 +4050,10 @@ struct mograine_pet_t final : public horseman_pet_t
   mograine_pet_t( death_knight_t* owner ) : horseman_pet_t( owner, "mograine" )
   {
     npc_id                      = owner->spell.summon_mograine->effectN( 1 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST_2H;
-    main_hand_weapon.swing_time = 1_s;
-    auto_attack_multiplier *= 2.0;
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = 2_s;
+    off_hand_weapon.type        = WEAPON_BEAST;
+    off_hand_weapon.swing_time  = 2_s;
   }
 
   void init_spells() override
@@ -4008,6 +4075,11 @@ struct mograine_pet_t final : public horseman_pet_t
     // Default "auto-pilot" pet APL (if everything is left on auto-cast
     action_priority_list_t* def = get_action_priority_list( "default" );
     def->add_action( "heart_strike" );
+  }
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new auto_attack_melee_t<horseman_pet_t>( this, "auto_attack_mh" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -4257,7 +4329,7 @@ struct abomination_pet_t : public death_knight_pet_t
     disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
   }
 
-  attack_t* create_auto_attack() override
+  attack_t* create_main_hand_auto_attack() override
   {
     return new abomination_melee_t( this, "main_hand" );
   }
