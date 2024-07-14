@@ -77,8 +77,6 @@ private:
   static constexpr timespan_t max_bad_luck_prot = 1000_s;
 
 public:
-  real_ppm_t();
-
   real_ppm_t( std::string_view n, player_t* p, double f = 0, double mod = 1.0, unsigned s = RPPM_NONE,
               blp b = BLP_ENABLED );
 

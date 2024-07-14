@@ -27,15 +27,6 @@ bool simple_proc_t::trigger()
   return player->rng().roll( chance );
 }
 
-real_ppm_t::real_ppm_t()
-  : proc_rng_t( "", nullptr, rng_type_e::RNG_RPPM ),
-    freq( 0 ),
-    modifier( 1.0 ),
-    rppm( 0 ),
-    scales_with( RPPM_NONE ),
-    blp_state( BLP_ENABLED )
-{}
-
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, unsigned s, blp b )
   : proc_rng_t( n, p, rng_type_e::RNG_RPPM ),
     freq( f ),
