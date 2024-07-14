@@ -47,8 +47,8 @@ void warlock_pet_t::create_buffs()
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
                             ->set_default_value_from_effect( 2 );
 
-  buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
-                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
+  buffs.antoran_armaments = make_buff( this, "antoran_armaments", o()->talents.antoran_armaments_buff )
+                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
 
   buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
                               ->set_default_value_from_effect( 1 );
@@ -662,7 +662,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 {
   struct soul_cleave_t : public warlock_pet_melee_attack_t
   {
-    soul_cleave_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Cleave", p, p->find_spell( 387502 ) )
+    soul_cleave_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Cleave", p, p->o()->talents.soul_cleave )
     {
       background = dual = true;
       aoe = -1;

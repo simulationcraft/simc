@@ -306,7 +306,9 @@ public:
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock
     const spell_data_t* dread_calling_pet;
-    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave TODO: Check if GFG is benefiting
+    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave
+    const spell_data_t* antoran_armaments_buff;
+    const spell_data_t* soul_cleave;
 
     player_talent_t doom_eternal; // TODO: New
     player_talent_t impending_doom; // TODO: New

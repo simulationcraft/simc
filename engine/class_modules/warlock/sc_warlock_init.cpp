@@ -274,11 +274,13 @@ namespace warlock
     talents.dread_calling_buff = find_spell( 387393 );
     talents.dread_calling_pet = find_spell( 387392 );
 
+    talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
+    talents.antoran_armaments_buff = find_spell( 387496 );
+    talents.soul_cleave = find_spell( 387502 );
+
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
 
     talents.cavitation = find_talent_spell( talent_tree::SPECIALIZATION, "Cavitation" ); // Should be ID 416154
-
-    talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 387494
 
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
 
