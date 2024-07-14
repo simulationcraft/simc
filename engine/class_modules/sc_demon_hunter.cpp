@@ -773,9 +773,12 @@ public:
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_silence;
     cooldown_t* volatile_flameblood_icd;
+    cooldown_t* soul_cleave;
+
+    // Aldrachi Reaver
+    cooldown_t* art_of_the_glaive_consumption_icd;
 
     // Fel-scarred
-    cooldown_t* soul_cleave;
   } cooldown;
 
   // Gains
@@ -7160,8 +7163,11 @@ void demon_hunter_t::create_buffs()
             if ( new_ > old )
             {
               int target_stacks = static_cast<int>( b->default_value );
-              if ( b->current_stack >= target_stacks && !buff.reavers_glaive->check() )
+              if ( new_ >= target_stacks && !buff.reavers_glaive->check() && cooldown.art_of_the_glaive_consumption_icd->up() )
               {
+                // use a cooldown to prevent multiple consumptions
+                cooldown.art_of_the_glaive_consumption_icd->start(100_ms);
+
                 // using an event
                 make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
                   b->decrement( target_stacks );
@@ -8379,9 +8385,12 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_silence        = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation         = get_cooldown( "fel_devastation" );
   cooldown.volatile_flameblood_icd = get_cooldown( "volatile_flameblood_icd" );
+  cooldown.soul_cleave             = get_cooldown( "soul_cleave" );
+
+  // Aldrachi Reaver
+  cooldown.art_of_the_glaive_consumption_icd = get_cooldown( "art_of_the_glaive_consumption_icd" );
 
   // Fel-scarred
-  cooldown.soul_cleave = get_cooldown( "soul_cleave" );
 }
 
 // demon_hunter_t::create_gains =============================================
