@@ -50,8 +50,8 @@ void warlock_pet_t::create_buffs()
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
                                 ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
 
-  buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
-                              ->set_default_value_from_effect( 1 ); // TODO: Add Expendables buff to talent struct
+  buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
+                              ->set_default_value_from_effect( 1 );
 
   buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
 

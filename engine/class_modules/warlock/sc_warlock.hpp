@@ -283,6 +283,7 @@ public:
     const spell_data_t* grimoire_of_service; // Buff on Grimoire: Felguard
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
+    const spell_data_t* the_expendables_buff;
     player_talent_t blood_invocation; // TODO: New
     player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
     const spell_data_t* umbral_blaze_dot;
