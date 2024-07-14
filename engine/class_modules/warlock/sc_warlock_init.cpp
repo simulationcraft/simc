@@ -300,6 +300,10 @@ namespace warlock
     talents.mark_of_shatug = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Shatug" ); // Should be ID 455449
     talents.gloom_slash = find_spell( 455491 );
 
+    talents.mark_of_fharg = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of F'harg" ); // Should be ID 455450
+    talents.infernal_presence = find_spell( 428453 );
+    talents.infernal_presence_dmg = find_spell( 428455 );
+
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
 
     talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
