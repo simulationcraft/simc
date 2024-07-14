@@ -42,13 +42,13 @@ void warlock_pet_t::create_buffs()
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
 
-  buffs.dread_calling = make_buff( this, "dread_calling", find_spell( 387392 ) ); // TODO: Add pet's Dread Calling buff to talent struct 
+  buffs.dread_calling = make_buff( this, "dread_calling", o()->talents.dread_calling_pet );
 
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
                             ->set_default_value_from_effect( 2 );
 
-  buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
-                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
+  buffs.antoran_armaments = make_buff( this, "antoran_armaments", o()->talents.antoran_armaments_buff )
+                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
 
   buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
                               ->set_default_value_from_effect( 1 );
@@ -662,7 +662,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 {
   struct soul_cleave_t : public warlock_pet_melee_attack_t
   {
-    soul_cleave_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Cleave", p, p->find_spell( 387502 ) )
+    soul_cleave_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Cleave", p, p->o()->talents.soul_cleave )
     {
       background = dual = true;
       aoe = -1;
@@ -1384,11 +1384,8 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
-  owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
-  owner_coeff.sp_from_sp = 1.7;
-
-  owner_coeff.ap_from_sp *= 1.15; // TODO: Combine into one new coefficient after confirming current values
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.45;
+  owner_coeff.sp_from_sp = 1.95;
 
   owner_coeff.health = 0.75;
 
@@ -1397,7 +1394,7 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
 struct bile_spit_t : public warlock_pet_spell_t
 {
-  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->find_spell( 267997 ) )
+  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->o()->talents.bile_spit )
   {
     tick_may_crit = false;
     hasted_ticks  = false;
@@ -1421,7 +1418,7 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->find_spell( 267999 ) )
+  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->o()->talents.headbutt )
   { cooldown->duration = 5_s; }
 };
 

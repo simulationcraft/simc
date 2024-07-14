@@ -47,6 +47,12 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
 
+  debuffs_doom = make_buff( *this, "doom", p.talents.doom_debuff )
+                     ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                       if ( cur == 0 )
+                         p.proc_actions.doom_proc->execute_on_target( b->player );
+                       } );
+
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 

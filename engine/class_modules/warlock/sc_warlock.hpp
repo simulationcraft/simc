@@ -54,6 +54,7 @@ struct warlock_td_t : public actor_target_data_t
   // Demo
   propagate_const<buff_t*> debuffs_wicked_maw;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_doom;
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -295,12 +296,19 @@ public:
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t doom; // TODO: Heavily changed, now a passive
+    player_talent_t doom;
+    const spell_data_t* doom_debuff;
+    const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
     player_talent_t summon_vilefiend;
+    const spell_data_t* bile_spit;
+    const spell_data_t* headbutt;
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
-    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
-    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave TODO: Check if GFG is benefiting
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock
+    const spell_data_t* dread_calling_pet;
+    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave
+    const spell_data_t* antoran_armaments_buff;
+    const spell_data_t* soul_cleave;
 
     player_talent_t doom_eternal; // TODO: New
     player_talent_t impending_doom; // TODO: New
@@ -470,6 +478,7 @@ public:
   {
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
+    action_t* doom_proc;
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
