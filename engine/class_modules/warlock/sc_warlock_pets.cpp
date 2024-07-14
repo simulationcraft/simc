@@ -53,11 +53,8 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
                               ->set_default_value_from_effect( 1 );
 
-  buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
-
-  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
-                               ->set_default_value( o()->talents.reign_of_tyranny->effectN( 2 ).percent() )
-                               ->set_max_stack( 99 );
+  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
+                               ->set_default_value_from_effect( 1 );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
                              ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
@@ -206,41 +203,11 @@ void warlock_pet_t::arise()
     melee_attack->reset();
 
   pet_t::arise();
-
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    if ( pet_type == PET_WILD_IMP )
-    {
-      o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
-    }
-    else if ( pet_type != PET_DEMONIC_TYRANT )
-    {
-      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
-      {
-        o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
-      }
-    }
-  }
 }
 
 void warlock_pet_t::demise()
 {
   pet_t::demise();
-
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    if ( pet_type == PET_WILD_IMP )
-    {
-      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
-    }
-    else if ( pet_type != PET_DEMONIC_TYRANT )
-    {
-      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
-      {
-        o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
-      }
-    }
-  }
 
   if ( melee_attack )
     melee_attack->reset();
@@ -1523,12 +1490,7 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    m *= 1.0 + buffs.demonic_servitude->check_value();
-
-    m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
-  }
+  m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
   return m;
 }

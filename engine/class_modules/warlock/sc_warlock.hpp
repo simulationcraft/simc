@@ -287,8 +287,8 @@ public:
     player_talent_t blood_invocation;
     player_talent_t umbral_blaze; // TOCHECK: What is the duration behavior on refresh?
     const spell_data_t* umbral_blaze_dot;
-    player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
-    const spell_data_t* demonic_servitude;
+    player_talent_t reign_of_tyranny;
+    const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation; // TODO: New
@@ -519,7 +519,6 @@ public:
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
