@@ -35,12 +35,8 @@ constexpr unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 struct spelllabel_data_t
 {
-  unsigned _id;
   unsigned _id_spell;
   short    _label;
-
-  unsigned id() const
-  { return _id; }
 
   unsigned id_spell() const
   { return _id_spell; }
