@@ -30,6 +30,7 @@ using namespace helpers;
       bool sacrificed_souls = false;
       bool wicked_maw = false;
       bool soul_conduit_base_cost = false;
+      bool demonic_brutality = false;
 
       // Destruction
       bool chaotic_energies = false;
@@ -71,6 +72,7 @@ using namespace helpers;
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
       affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
+      affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
     }
@@ -209,6 +211,9 @@ using namespace helpers;
       if ( affliction() && affected_by.contagion )
         m *= 1.0 + p()->talents.contagion->effectN( 1 ).percent();
 
+      if ( demonology() && affected_by.demonic_brutality )
+        m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -216,7 +221,7 @@ using namespace helpers;
     {
       double m = spell_t::composite_target_multiplier( t );
 
-      if ( demonology() && affected_by.wicked_maw && p()->talents.wicked_maw.ok() )
+      if ( demonology() && affected_by.wicked_maw )
         m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
       if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
@@ -1914,7 +1919,7 @@ using namespace helpers;
           for ( const auto t : p()->sim->target_non_sleeping_list )
           {
             if ( td( t )->debuffs_doom->check() )
-              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() );
+              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() - p()->talents.doom_eternal->effectN( 1 ).time_value() );
           }
         }
       }
@@ -2470,6 +2475,16 @@ using namespace helpers;
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talents.doom->effectN( 2 ).base_value();
+
+      base_dd_multiplier *= 1.0 + p->talents.impending_doom->effectN( 1 ).percent();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.impending_doom.ok() )
+        p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
     }
   };
 

@@ -167,6 +167,15 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double warlock_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = pet_t::composite_player_critical_damage_multiplier( s );
+
+  m += o()->talents.demonic_brutality->effectN( 1 ).percent() / 2.0;
+
+  return m;
+}
+
 double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
@@ -910,8 +919,7 @@ double felguard_pet_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  if ( o()->talents.heavy_handed.ok() )
-    m += o()->talents.heavy_handed->effectN( 1 ).percent();
+  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 2 ).percent();
 
   return m;
 }
@@ -920,18 +928,7 @@ double felguard_pet_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  if ( o()->talents.heavy_handed.ok() )
-    m += o()->talents.heavy_handed->effectN( 1 ).percent();
-
-  return m;
-}
-
-double felguard_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s );
-
-  if ( o()->talents.cavitation.ok() )
-    m *= 1.0 + o()->talents.cavitation->effectN( 1 ).percent();
+  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 2 ).percent();
 
   return m;
 }
@@ -1357,6 +1354,16 @@ void dreadstalker_t::demise()
   warlock_pet_t::demise();
 }
 
+double dreadstalker_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+    m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
+
+  return m;
+}
+
 timespan_t dreadstalker_t::available() const
 {
   // Dreadstalker does not need to wake up after it has travelled and done its Dreadbite
@@ -1414,6 +1421,14 @@ struct bile_spit_t : public warlock_pet_spell_t
 
     debug_cast< vilefiend_t* >( p() )->bile_spit_executes--;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.foul_mouth.ok() )
+      owner_td( s->target )->debuffs_wicked_maw->trigger();
+  }
 };
 
 struct headbutt_t : public warlock_pet_melee_attack_t
@@ -1430,6 +1445,15 @@ struct caustic_presence_t : public warlock_pet_spell_t
     aoe = -1;
   }
 };
+
+double vilefiend_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_simple_pet_t::composite_player_multiplier( school );
+
+  m *= 1.0 + o()->talents.foul_mouth->effectN( 1 ).percent();
+
+  return m;
+}
 
 void vilefiend_t::init_base_stats()
 {
