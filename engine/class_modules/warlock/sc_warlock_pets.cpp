@@ -1535,6 +1535,67 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 }
 
 /// Demonic Tyrant End
+
+/// Doomguard Begin
+
+struct doom_bolt_t : public warlock_pet_spell_t
+{
+  doom_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Doom Bolt", p, p->o()->talents.doom_bolt )
+  { }
+
+  double cost_pct_multiplier() const override
+  { return 0.0; }
+
+  void execute() override
+  {
+    if ( debug_cast<doomguard_t*>( p() )->doom_bolt_executes <= 0 )
+    {
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+      return;
+    }
+
+    warlock_pet_spell_t::execute();
+
+    debug_cast<doomguard_t*>( p() )->doom_bolt_executes--;
+  }
+};
+
+doomguard_t::doomguard_t( warlock_t* owner )
+  : warlock_simple_pet_t( owner, "Doomguard", PET_DOOMGUARD )
+{
+  action_list_str = "travel/doom_bolt";
+
+  owner_coeff.ap_from_sp = 1.0;
+  owner_coeff.sp_from_sp = 1.0;
+}
+
+void doomguard_t::init_base_stats()
+{
+  warlock_simple_pet_t::init_base_stats();
+
+  doom_bolt_executes = as<int>( o()->talents.pact_of_the_eredruin->effectN( 1 ).base_value() );
+
+  special_ability = new doom_bolt_t( this );
+}
+
+action_t* doomguard_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "doom_bolt" )
+    return new doom_bolt_t( this );
+
+  return warlock_simple_pet_t::create_action( name, options_str );
+}
+
+void doomguard_t::arise()
+{
+  warlock_simple_pet_t::arise();
+
+  doom_bolt_executes = as<int>( o()->talents.pact_of_the_eredruin->effectN( 1 ).base_value() );
+}
+
+/// Doomguard End
+
 }  // namespace demonology
 
 namespace destruction

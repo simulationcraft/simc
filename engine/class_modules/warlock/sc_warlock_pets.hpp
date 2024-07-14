@@ -425,6 +425,16 @@ struct demonic_tyrant_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_player_multiplier( school_e ) const override;
 };
+
+struct doomguard_t : public warlock_simple_pet_t
+{
+  int doom_bolt_executes;
+
+  doomguard_t( warlock_t* );
+  void init_base_stats() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+  void arise() override;
+};
 }  // namespace demonology
 
 namespace destruction
