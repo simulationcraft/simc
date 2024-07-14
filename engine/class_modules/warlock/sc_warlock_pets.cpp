@@ -1384,11 +1384,8 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
-  owner_coeff.ap_from_sp = 0.39; // 2023-09-01 update: Live VF damage was found to be lower in sims than on Live
-  owner_coeff.sp_from_sp = 1.7;
-
-  owner_coeff.ap_from_sp *= 1.15; // TODO: Combine into one new coefficient after confirming current values
-  owner_coeff.sp_from_sp *= 1.15;
+  owner_coeff.ap_from_sp = 0.45;
+  owner_coeff.sp_from_sp = 1.95;
 
   owner_coeff.health = 0.75;
 
@@ -1397,7 +1394,7 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
 
 struct bile_spit_t : public warlock_pet_spell_t
 {
-  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->find_spell( 267997 ) )
+  bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->o()->talents.bile_spit )
   {
     tick_may_crit = false;
     hasted_ticks  = false;
@@ -1421,7 +1418,7 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
-  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->find_spell( 267999 ) )
+  headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->o()->talents.headbutt )
   { cooldown->duration = 5_s; }
 };
 

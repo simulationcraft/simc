@@ -301,6 +301,8 @@ public:
     const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
     player_talent_t summon_vilefiend;
+    const spell_data_t* bile_spit;
+    const spell_data_t* headbutt;
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
     const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
     player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave TODO: Check if GFG is benefiting
