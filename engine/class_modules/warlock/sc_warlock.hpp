@@ -280,6 +280,7 @@ public:
     player_talent_t summon_demonic_tyrant;
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
+    const spell_data_t* grimoire_of_service; // Buff on Grimoire: Felguard
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     player_talent_t blood_invocation; // TODO: New

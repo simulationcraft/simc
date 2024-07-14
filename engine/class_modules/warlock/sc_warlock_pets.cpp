@@ -36,8 +36,8 @@ void warlock_pet_t::create_buffs()
                                ->set_default_value( o()->talents.demonic_strength->effectN( 2 ).percent() )
                                ->set_cooldown( 0_ms );
 
-  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", find_spell( 216187 ) )
-                                  ->set_default_value( find_spell( 216187 )->effectN( 1 ).percent() ); // TODO: Add Grimoire of Service data to talent struct
+  buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", o()->talents.grimoire_of_service )
+                                  ->set_default_value_from_effect( 1 );
 
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
