@@ -63,7 +63,7 @@ void warlock_pet_t::create_buffs()
                              ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
 
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
-                            ->set_default_value( o()->talents.demonic_power_buff->effectN( 1 ).percent() );
+                            ->set_default_value_from_effect( 5 );
 
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
@@ -1104,6 +1104,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
+
+    if ( p()->buffs.demonic_power->check() )
+      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
 
     return c;
   }

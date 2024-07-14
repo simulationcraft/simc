@@ -277,7 +277,7 @@ public:
 
     player_talent_t power_siphon;
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
+    player_talent_t summon_demonic_tyrant;
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
 

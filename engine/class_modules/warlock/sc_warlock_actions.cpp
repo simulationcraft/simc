@@ -2307,7 +2307,7 @@ using namespace helpers;
           wild_imp_counter++;
           demon_counter++;
         }
-        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || lock_pet->is_main_pet )
+        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || pet_type == PET_FELGUARD )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
