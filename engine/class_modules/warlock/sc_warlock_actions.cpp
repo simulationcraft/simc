@@ -2470,6 +2470,16 @@ using namespace helpers;
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->talents.doom->effectN( 2 ).base_value();
+
+      base_dd_multiplier *= 1.0 + p->talents.impending_doom->effectN( 1 ).percent();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.impending_doom.ok() )
+        p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
     }
   };
 
