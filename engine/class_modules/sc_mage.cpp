@@ -4116,7 +4116,9 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      // TODO: the damage buff scales with stacks when it shouldn't,
+      // presumably the crit portion does too, but that doesn't matter
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_stack_value();
     }
 
     return m;
@@ -4496,7 +4498,9 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      // TODO: the damage buff scales with stacks when it shouldn't,
+      // presumably the crit portion does too, but that doesn't matter
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_stack_value();
     }
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
