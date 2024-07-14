@@ -6365,7 +6365,10 @@ struct splinter_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && controlled_instincts )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( controlled_instincts )
     {
       if ( auto td = find_td( s->target ); td && td->debuffs.controlled_instincts->check() )
       {
