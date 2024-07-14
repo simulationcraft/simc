@@ -314,8 +314,8 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2022-11-27
-    if ( talents.fel_sunder.ok() && !guardian )
+    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
+    if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
@@ -481,10 +481,6 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
       continue;
 
     if ( lock_pet == source )
-      continue;
-
-    // Pit Lord is not affected by The Expendables
-    if ( lock_pet->pet_type == PET_PIT_LORD )
       continue;
 
     lock_pet->buffs.the_expendables->trigger();

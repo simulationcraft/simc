@@ -50,14 +50,11 @@ void warlock_pet_t::create_buffs()
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", find_spell( 387496 ) )
                                 ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() ); // TODO: Add Antoran Armaments buff to talent struct
 
-  buffs.the_expendables = make_buff( this, "the_expendables", find_spell( 387601 ) )
-                              ->set_default_value_from_effect( 1 ); // TODO: Add Expendables buff to talent struct
+  buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
+                              ->set_default_value_from_effect( 1 );
 
-  buffs.demonic_servitude = make_buff( this, "demonic_servitude" );
-
-  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny )
-                               ->set_default_value( o()->talents.reign_of_tyranny->effectN( 2 ).percent() )
-                               ->set_max_stack( 99 );
+  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
+                               ->set_default_value_from_effect( 1 );
 
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", find_spell( 386601 ) )
                              ->set_default_value_from_effect( 1 ); // TODO: Add Fiendish Wrath buff to talent struct
@@ -206,41 +203,11 @@ void warlock_pet_t::arise()
     melee_attack->reset();
 
   pet_t::arise();
-
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    if ( pet_type == PET_WILD_IMP )
-    {
-      o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
-    }
-    else if ( pet_type != PET_DEMONIC_TYRANT )
-    {
-      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
-      {
-        o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
-      }
-    }
-  }
 }
 
 void warlock_pet_t::demise()
 {
   pet_t::demise();
-
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    if ( pet_type == PET_WILD_IMP )
-    {
-      o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
-    }
-    else if ( pet_type != PET_DEMONIC_TYRANT )
-    {
-      if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
-      {
-        o()->buffs.demonic_servitude->decrement( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
-      }
-    }
-  }
 
   if ( melee_attack )
     melee_attack->reset();
@@ -582,7 +549,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 {
   struct felstorm_tick_t : public warlock_pet_melee_attack_t
   {
-    bool applies_fel_sunder; // Fel Sunder is applied only by primary pet using Felstorm
+    bool applies_fel_sunder;
 
     felstorm_tick_t( warlock_pet_t* p, const spell_data_t *s )
       : warlock_pet_melee_attack_t( "Felstorm (tick)", p, s )
@@ -629,7 +596,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
     : felstorm_t( p, options_str, n )
   {
-    if ( main_pet && p->o()->talents.fel_sunder->ok() )
+    // 2024-07-14 GFG Felstorm applies Fel Sunder, possibly bug
+    if ( ( main_pet || p->bugs ) && p->o()->talents.fel_sunder->ok() )
       debug_cast<felstorm_tick_t*>( tick_action )->applies_fel_sunder = true;
 
     if ( !main_pet )
@@ -991,6 +959,23 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    warlock_pet_t::arise();
 
    buffs.grimoire_of_service->trigger();
+ }
+
+ void grimoire_felguard_pet_t::demise()
+ {
+   warlock_pet_t::demise();
+
+   if ( o()->talents.fiendish_oblation.ok() )
+     o()->buffs.demonic_core->trigger();
+ }
+
+ double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
+ {
+   double m = warlock_pet_t::composite_player_multiplier( school );
+
+   m *= 1.0 + o()->talents.fiendish_oblation->effectN( 1 ).percent();
+
+   return m;
  }
 
  // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
@@ -1523,12 +1508,7 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.reign_of_tyranny.ok() )
-  {
-    m *= 1.0 + buffs.demonic_servitude->check_value();
-
-    m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
-  }
+  m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
   return m;
 }

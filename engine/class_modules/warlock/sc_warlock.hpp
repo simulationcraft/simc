@@ -283,15 +283,16 @@ public:
     const spell_data_t* grimoire_of_service; // Buff on Grimoire: Felguard
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
-    player_talent_t blood_invocation; // TODO: New
-    player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
+    const spell_data_t* the_expendables_buff;
+    player_talent_t blood_invocation;
+    player_talent_t umbral_blaze; // TOCHECK: What is the duration behavior on refresh?
     const spell_data_t* umbral_blaze_dot;
-    player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
-    const spell_data_t* demonic_servitude;
+    player_talent_t reign_of_tyranny;
+    const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
-    player_talent_t fiendish_oblation; // TODO: New
-    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
+    player_talent_t fiendish_oblation;
+    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
     player_talent_t doom; // TODO: Heavily changed, now a passive
@@ -421,7 +422,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -518,7 +519,6 @@ public:
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
