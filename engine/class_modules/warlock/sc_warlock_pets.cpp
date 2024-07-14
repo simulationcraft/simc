@@ -554,7 +554,8 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t
 {
-  immutable_hatred_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Immutable Hatred", p, p->find_spell( 405681 ) )
+  immutable_hatred_t( warlock_pet_t* p )
+    : warlock_pet_melee_attack_t( "Immutable Hatred", p, p->o()->talents.immutable_hatred_proc )
   {
     background = dual = true;
     weapon = &( p->main_hand_weapon );
