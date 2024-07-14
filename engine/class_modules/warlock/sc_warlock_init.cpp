@@ -244,6 +244,8 @@ namespace warlock
     talents.the_expendables = find_talent_spell( talent_tree::SPECIALIZATION, "The Expendables" ); // Should be ID 387600
     talents.the_expendables_buff = find_spell( 387601 );
 
+    talents.blood_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Invocation" ); // Should be ID 455576
+
     talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
@@ -472,7 +474,7 @@ namespace warlock
     buffs.demonic_core = make_buff( this, "demonic_core", talents.demonic_core_buff );
 
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
-                             ->set_default_value_from_effect( 1 );
+                             ->set_default_value( talents.power_siphon_buff->effectN( 1 ).percent() + talents.blood_invocation->effectN( 2 ).percent() );
 
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
