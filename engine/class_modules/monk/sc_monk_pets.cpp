@@ -1168,8 +1168,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_celestial_conduit_tick_t : public sef_tick_action_t
   {
     sef_celestial_conduit_tick_t( storm_earth_and_fire_pet_t *p )
-      : sef_tick_action_t( "celestial_conduit_tick", p,
-                           p->o()->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+      : sef_tick_action_t( "celestial_conduit_tick", p, p->o()->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
       base_dd_min = base_dd_max = 1.0;  // parse state flags
 
@@ -1181,7 +1180,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_celestial_conduit_t : public sef_melee_attack_t
   {
     sef_celestial_conduit_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "celestial_conduit", player, player->o()->talent.conduit_of_the_celestials.celestial_conduit )
+      : sef_melee_attack_t( "celestial_conduit", player,
+                            player->o()->talent.conduit_of_the_celestials.celestial_conduit )
     {
       channeled = tick_zero = interrupt_auto_attack = true;
 
@@ -1308,7 +1308,7 @@ public:
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) =
         new sef_strike_of_the_windlord_oh_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT )      = new sef_celestial_conduit_t( this );
+    attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT ) = new sef_celestial_conduit_t( this );
 
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
@@ -1532,32 +1532,13 @@ struct niuzao_pet_t : public monk_pet_t
       parse_options( options_str );
       aoe      = -1;
       may_crit = true;
-      if ( pet->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-        split_aoe_damage = true;
-    }
-
-    double bonus_da( const action_state_t *state ) const override
-    {
-      double base_da = pet_melee_attack_t::bonus_da( state );
-      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-      {
-        // close enough, not exact though
-        // the base damage from stomp is not split, but the added damage from recent purification is split
-        double base_stomp = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
-        double purify     = o()->buff.recent_purifies->check_value();
-        double added_damage =
-            purify * o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-        o()->sim->print_debug( "applying bonus purify damage (base da: {}, purify: {}, added: {}, final: {})", base_da,
-                               purify, added_damage, base_da + added_damage );
-        return base_stomp * ( state->n_targets - 1 ) + base_da + added_damage;
-      }
-      return base_da;
     }
 
     double action_multiplier() const override
     {
       double am = pet_melee_attack_t::action_multiplier();
       am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
+      am *= 1.0 + o()->buff.recent_purifies->check_value();
       return am;
     }
 

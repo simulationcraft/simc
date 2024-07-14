@@ -3975,12 +3975,12 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       p()->buff.aspect_of_harmony->trigger_flat(
           stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
           ( 1.0 + p()->composite_damage_versatility() ) );
+      p()->buff.recent_purifies->trigger( stacks );
     }
 
     double purify_percent = data().effectN( 1 ).percent();
     purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
-    p()->buff.recent_purifies->trigger( 1, cleared );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -6066,74 +6066,19 @@ struct fury_of_xuen_t : public monk_buff_t
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t
 {
-  std::deque<double> values;
-  // tracking variable for debug code
-  bool ignore_empty;
-  purifying_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t *player ) : monk_buff_t( player, "purifying_brew", spell_data_t::nil() )
   {
-    set_trigger_spell( p->talent.brewmaster.purifying_brew );
+    set_trigger_spell( player->talent.brewmaster.purifying_brew );
     set_can_cancel( true );
     set_quiet( true );
     set_cooldown( timespan_t::zero() );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_default_value( 0.2 );
 
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    set_duration( timespan_t::from_seconds( 6 ) );
+    set_duration( 6_s );
     set_max_stack( 99 );
-
-    ignore_empty = false;
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    ignore_empty = false;
-    p().sim->print_debug( "adding recent purify (amount: {})", value );
-    // Make sure the value is reset upon each trigger
-    current_value = 0;
-
-    values.push_back( value );
-
-    return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  double check_value() const override
-  {
-    double total_value = 0;
-
-    if ( !values.empty() )
-    {
-      for ( auto &i : values )
-        total_value += i;
-    }
-
-    return total_value;
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    if ( values.empty() )
-    {
-      // decrement ends up being called after expire_override sometimes. if this
-      // debug msg is showing, then we have an error besides that that is
-      // leading to stack/queue mismatches
-      if ( !ignore_empty )
-      {
-        p().sim->print_debug( "purifying_buff decrement called with no values in queue!" );
-      }
-    }
-    else
-    {
-      values.pop_front();
-    }
-    monk_buff_t::decrement( stacks, value );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    ignore_empty = true;
-    values.clear();
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -8085,7 +8030,8 @@ void monk_t::create_buffs()
                                               talent.brewmaster.weapons_of_order )
                               ->set_trigger_spell( talent.brewmaster.weapons_of_order );
 
-  buff.recent_purifies = new buffs::purifying_buff_t( this, "recent_purifies", spell_data_t::nil() );
+  buff.recent_purifies = make_buff_fallback<buffs::purifying_buff_t>(
+      talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
 
   buff.leverage = make_buff( this, "leverage", tier.t30.leverage )
                       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ) )
