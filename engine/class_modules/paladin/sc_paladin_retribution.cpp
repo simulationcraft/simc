@@ -356,7 +356,10 @@ void paladin_t::spread_expurgation( action_t* act, player_t* og )
     if ( exp->get_bank( destination ) >= source_bank )
       break;
 
-    source->copy( destination->target, DOT_COPY_CLONE );
+    if ( !destination->is_ticking() )
+      active.expurgation->execute_on_target( destination->target );
+    else if ( destination->remains() < source->remains() )
+      destination->adjust_duration( source->remains() - destination->remains() );
   }
 }
 
@@ -638,7 +641,10 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
       if ( p()->talents.holy_flames->ok() && target_data->dots.expurgation->is_ticking() )
       {
-        p()->spread_expurgation( this, s->target );
+        // Don't trigger on expurgations that were just applied
+        auto max_duration = p()->active.expurgation->composite_dot_duration( target_data->dots.expurgation->state );
+        if ( target_data->dots.expurgation->remains() < max_duration )
+          p()->spread_expurgation( this, s->target );
       }
     }
   }
