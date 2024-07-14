@@ -316,7 +316,7 @@ public:
     player_talent_t the_houndmasters_gambit;
     const spell_data_t* houndmasters_aura; // Contains actual referenced % increase
     player_talent_t improved_demonic_tactics;
-    player_talent_t demonic_brutality; // TODO: New
+    player_talent_t demonic_brutality; // TOCHECK: Pets may not be properly benefitting from this in-game
 
     player_talent_t pact_of_the_eredruin; // TODO: New
     player_talent_t shadowtouched; // TODO: New
@@ -325,8 +325,6 @@ public:
     player_talent_t flametouched; // TODO: New
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
     player_talent_t guillotine;
-
-    player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges

@@ -167,6 +167,15 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double warlock_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = pet_t::composite_player_critical_damage_multiplier( s );
+
+  m += o()->talents.demonic_brutality->effectN( 1 ).percent() / 2.0;
+
+  return m;
+}
+
 double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
@@ -920,16 +929,6 @@ double felguard_pet_t::composite_spell_crit_chance() const
   double m = warlock_pet_t::composite_spell_crit_chance();
 
   m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 2 ).percent();
-
-  return m;
-}
-
-double felguard_pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double m = warlock_pet_t::composite_player_critical_damage_multiplier( s );
-
-  if ( o()->talents.cavitation.ok() )
-    m *= 1.0 + o()->talents.cavitation->effectN( 1 ).percent();
 
   return m;
 }
