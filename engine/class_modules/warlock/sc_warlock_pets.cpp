@@ -1399,6 +1399,33 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   bile_spit_executes = 1; // Only one Bile Spit per summon
 }
 
+struct gloom_slash_t : public warlock_pet_spell_t
+{
+  gloom_slash_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Gloom Slash", p, p->o()->talents.gloom_slash )
+  { background = dual = true; }
+};
+
+struct vilefiend_melee_t : public warlock_pet_melee_t
+{
+  gloom_slash_t* gloom;
+
+  vilefiend_melee_t( warlock_pet_t* p, double wm, const char* name = "melee" )
+    : warlock_pet_melee_t( p, wm, name )
+  {
+    gloom = new gloom_slash_t( p );
+    add_child( gloom );
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_t::execute();
+
+    if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
+      gloom->execute_on_target( target );
+  }
+};
+
 struct bile_spit_t : public warlock_pet_spell_t
 {
   bile_spit_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Bile Spit", p, p->o()->talents.bile_spit )
@@ -1459,7 +1486,7 @@ void vilefiend_t::init_base_stats()
 {
   warlock_simple_pet_t::init_base_stats();
 
-  melee_attack = new warlock_pet_melee_t( this, 2.0 );
+  melee_attack = new vilefiend_melee_t( this, 2.0 );
 
   special_ability = new headbutt_t( this );
 }
@@ -1467,6 +1494,8 @@ void vilefiend_t::init_base_stats()
 void vilefiend_t::create_buffs()
 {
   warlock_simple_pet_t::create_buffs();
+
+  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug" );
 
   auto damage = new caustic_presence_t( this );
 
@@ -1487,6 +1516,9 @@ void vilefiend_t::arise()
   warlock_simple_pet_t::arise();
 
   bile_spit_executes = 1;
+
+  if ( o()->talents.mark_of_shatug.ok() )
+    mark_of_shatug->trigger();
 }
 
 action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )

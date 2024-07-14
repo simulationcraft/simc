@@ -323,7 +323,8 @@ public:
     const spell_data_t* doomguard;
     const spell_data_t* doom_bolt;
     player_talent_t shadowtouched;
-    player_talent_t mark_of_shatug; // TODO: New
+    player_talent_t mark_of_shatug;
+    const spell_data_t* gloom_slash;
     player_talent_t mark_of_fharg; // TODO: New
     player_talent_t flametouched; // TODO: New
     player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
