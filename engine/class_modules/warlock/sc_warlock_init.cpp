@@ -232,12 +232,12 @@ namespace warlock
     talents.wicked_maw = find_talent_spell( talent_tree::SPECIALIZATION, "Wicked Maw" ); // Should be ID 267170
     talents.wicked_maw_debuff = find_spell( 270569 );
 
+    talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
+    talents.power_siphon_buff = find_spell( 334581 );
+
     talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
     talents.heavy_handed = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed" ); // Should be ID 416183
-
-    talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
-    talents.power_siphon_buff = find_spell( 334581 );
 
     talents.grimoire_felguard = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire: Felguard" ); // Should be ID 111898
 

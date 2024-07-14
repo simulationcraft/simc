@@ -1885,8 +1885,7 @@ using namespace helpers;
 
       p()->buffs.demonic_core->decrement();
 
-      if ( p()->talents.power_siphon.ok() )
-        p()->buffs.power_siphon->decrement();
+      p()->buffs.power_siphon->decrement();
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
@@ -1896,8 +1895,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
       
-      if ( p()->talents.power_siphon.ok() )
-        m *= 1.0 + p()->buffs.power_siphon->check_value();
+      m *= 1.0 + p()->buffs.power_siphon->check_value();
 
       return m;
     }
