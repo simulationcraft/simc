@@ -4077,11 +4077,6 @@ struct mograine_pet_t final : public horseman_pet_t
     def->add_action( "heart_strike" );
   }
 
-  attack_t* create_main_hand_auto_attack() override
-  {
-    return new auto_attack_melee_t<horseman_pet_t>( this, "auto_attack_mh" );
-  }
-
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "heart_strike" )
