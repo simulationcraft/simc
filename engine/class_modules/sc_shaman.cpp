@@ -55,9 +55,18 @@ enum class feral_spirit_cast : unsigned
 
 enum class elemental
 {
-  FIRE,
-  EARTH,
-  STORM,
+  GREATER_FIRE,
+  PRIMAL_FIRE,
+  GREATER_STORM,
+  PRIMAL_STORM,
+  GREATER_EARTH,
+  PRIMAL_EARTH
+};
+
+enum class elemental_variant
+{
+  GREATER,
+  LESSER
 };
 
 enum class spell_variant : unsigned
@@ -230,6 +239,56 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   return tl;
 }
 
+static std::string elemental_name( elemental type, elemental_variant variant )
+{
+  std::string name_;
+
+  switch ( variant )
+  {
+    case elemental_variant::LESSER:
+      name_ += "lesser_";
+      break;
+    default:
+      break;
+  }
+
+  switch ( type )
+  {
+    case elemental::GREATER_FIRE:
+      name_ += "fire_elemental";
+      break;
+    case elemental::PRIMAL_FIRE:
+      name_ += "primal_fire_elemental";
+      break;
+    case elemental::GREATER_STORM:
+      name_ += "storm_elemental";
+      break;
+    case elemental::PRIMAL_STORM:
+      name_ += "primal_storm_elemental";
+      break;
+    case elemental::GREATER_EARTH:
+      name_ += "earth_elemental";
+      break;
+    case elemental::PRIMAL_EARTH:
+      name_ += "primal_earth_elemental";
+      break;
+    default:
+      assert( 0 );
+  }
+
+  return name_;
+}
+
+static bool is_pet_elemental( elemental type )
+{
+  return type == elemental::PRIMAL_FIRE || type == elemental::PRIMAL_STORM || type == elemental::PRIMAL_EARTH;
+}
+
+static bool elemental_autoattack( elemental type )
+{
+  return type == elemental::PRIMAL_EARTH || type == elemental::GREATER_EARTH;
+}
+
 static std::string action_name( util::string_view name, spell_variant t )
 {
   switch ( t )
@@ -281,6 +340,7 @@ using heal_totem_pet_t = shaman_totem_pet_t<heal_t>;
 namespace pet
 {
 struct base_wolf_t;
+struct primal_elemental_t;
 }
 
 struct shaman_td_t : public actor_target_data_t
@@ -409,13 +469,11 @@ public:
   // Pets
   struct pets_t
   {
-    pet_t* pet_fire_elemental;
-    pet_t* pet_storm_elemental;
-    pet_t* pet_earth_elemental;
-
-    pet_t* guardian_fire_elemental;
-    pet_t* guardian_storm_elemental;
-    pet_t* guardian_earth_elemental;
+    spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> fire_elemental;
+    spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> storm_elemental;
+    spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> earth_elemental;
+    spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> lesser_fire_elemental;
+    spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> lesser_storm_elemental;
 
     spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> spirit_wolves;
     spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> fire_wolves;
@@ -469,6 +527,7 @@ public:
     buff_t* elemental_equilibrium_nature;
     buff_t* fire_elemental;
     buff_t* storm_elemental;
+    buff_t* earth_elemental;
     buff_t* flux_melting;
     buff_t* icefury_dmg;
     buff_t* icefury_cast;
@@ -482,6 +541,8 @@ public:
     buff_t* fusion_of_elements_1;
     buff_t* fusion_of_elements_2;
     buff_t* storm_frenzy;
+    buff_t* lesser_fire_elemental;
+    buff_t* lesser_storm_elemental;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -1021,8 +1082,8 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_fire_elemental( timespan_t duration );
-  void summon_storm_elemental( timespan_t duration );
+  void summon_elemental( elemental type, timespan_t override_duration = 0_ms );
+  void summon_lesser_elemental( elemental type, timespan_t override_duration = 0_ms );
   timespan_t last_t30_proc;
   bool t30_proc_possible;
 
@@ -1552,10 +1613,14 @@ public:
 
     affected_by_storm_frenzy = ab::data().affected_by( player->buff.storm_frenzy->data().effectN( 1 ) );
 
-    affected_by_elemental_unity_fe_da = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 4 ) );
-    affected_by_elemental_unity_fe_ta = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 5 ) );
-    affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) );
-    affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) );
+    affected_by_elemental_unity_fe_da = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 4 ) ) ||
+                                        ab::data().affected_by( player->buff.lesser_fire_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_fe_ta = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 5 ) ) ||
+                                        ab::data().affected_by( player->buff.lesser_fire_elemental->data().effectN( 5 ) );
+    affected_by_elemental_unity_se_da = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 4 ) ) ||
+                                        ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) ) ||
+                                        ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 5 ) );
 
     affected_by_lightning_conduit_da = ab::data().affected_by( player->talent.lightning_conduit->effectN( 1 ) );
     affected_by_lightning_conduit_ta = ab::data().affected_by( player->talent.lightning_conduit->effectN( 2 ) );
@@ -1705,10 +1770,22 @@ public:
       m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
     }
 
+    if ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
+         p()->buff.lesser_fire_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.lesser_fire_elemental->data().effectN( 4 ).percent();
+    }
+
     if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
          p()->buff.storm_elemental->check() )
     {
       m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
+    }
+
+    if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+         p()->buff.lesser_storm_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 4 ).percent();
     }
 
     if ( affected_by_lightning_conduit_da && p()->buff.lightning_shield->check() )
@@ -1778,11 +1855,24 @@ public:
       m *= 1.0 + p()->buff.fire_elemental->data().effectN( 5 ).percent();
     }
 
+    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+         p()->buff.lesser_fire_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.lesser_fire_elemental->data().effectN( 5 ).percent();
+    }
+
     if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
          p()->buff.storm_elemental->check() )
     {
       m *= 1.0 + p()->buff.storm_elemental->data().effectN( 5 ).percent();
     }
+
+    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+         p()->buff.lesser_storm_elemental->check() )
+    {
+      m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 5 ).percent();
+    }
+
 
     if ( affected_by_lightning_conduit_ta && p()->buff.lightning_shield->check() )
     {
@@ -3005,31 +3095,29 @@ struct primal_elemental_t : public shaman_pet_t
   struct travel_t : public action_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
-    {
-      background = true;
-    }
+    { background = true; }
+
     void execute() override
-    {
-      player->current.distance = 1;
-    }
+    { player->current.distance = 1; }
+
     timespan_t execute_time() const override
-    {
-      return timespan_t::from_seconds( player->current.distance / 10.0 );
-    }
+    { return timespan_t::from_seconds( player->current.distance / 10.0 ); }
+
     bool ready() override
-    {
-      return ( player->current.distance > 1 );
-    }
+    { return ( player->current.distance > 1 ); }
+
     bool usable_moving() const override
-    {
-      return true;
-    }
+    { return true; }
   };
 
-  primal_elemental_t( shaman_t* owner, util::string_view name, bool guardian = false, bool auto_attack = true )
-    : shaman_pet_t( owner, name, guardian, auto_attack )
-  {
-  }
+  elemental type;
+  elemental_variant variant;
+
+  primal_elemental_t( shaman_t* owner, elemental type_, elemental_variant variant_ )
+    : shaman_pet_t( owner, elemental_name( type_, variant_ ), !is_pet_elemental( type_ ),
+                    elemental_autoattack( type_ ) ),
+      type( type_ ), variant( variant_ )
+  { }
 
   void create_default_apl() override
   {
@@ -3087,8 +3175,8 @@ struct primal_elemental_t : public shaman_pet_t
 
 struct earth_elemental_t : public primal_elemental_t
 {
-  earth_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
+  earth_elemental_t( shaman_t* owner, elemental type_, elemental_variant variant_ ) :
+    primal_elemental_t( owner, type_, variant_ )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
@@ -3101,12 +3189,14 @@ struct earth_elemental_t : public primal_elemental_t
 
 struct fire_elemental_t : public primal_elemental_t
 {
-  fire_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false )
+  cooldown_t* meteor_cd;
+
+  fire_elemental_t( shaman_t* owner, elemental type_, elemental_variant variant_ ) :
+    primal_elemental_t( owner, type_, variant_ )
   {
-    if ( o()->talent.fire_and_ice.ok() ) {
-      owner_coeff.sp_from_sp *= 1.0 + o()->talent.fire_and_ice->effectN( 3 ).percent();
-    }
+    owner_coeff.sp_from_sp = variant == elemental_variant::GREATER ? 1.0 : 0.65;
+
+    meteor_cd = get_cooldown( "meteor" );
   }
 
   struct meteor_t : public pet_spell_t<fire_elemental_t>
@@ -3122,13 +3212,10 @@ struct fire_elemental_t : public primal_elemental_t
   {
     fire_blast_t( fire_elemental_t* player, util::string_view options )
       : super( player, "fire_blast", player->find_spell( 57984 ), options )
-    {
-    }
+    { }
 
     bool usable_moving() const override
-    {
-      return true;
-    }
+    { return true; }
   };
 
   struct immolate_t : public pet_spell_t<fire_elemental_t>
@@ -3146,7 +3233,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    if ( o()->talent.primal_elementalist->ok() )
+    if ( type == elemental::PRIMAL_FIRE )
     {
       def->add_action( "meteor" );
       def->add_action( "immolate,target_if=!ticking" );
@@ -3167,9 +3254,24 @@ struct fire_elemental_t : public primal_elemental_t
     return primal_elemental_t::create_action( name, options_str );
   }
 
+  void summon( timespan_t duration ) override
+  {
+    primal_elemental_t::summon( duration );
+
+    if ( type == elemental::PRIMAL_FIRE )
+    {
+      meteor_cd->reset( false );
+    }
+  }
+
   void dismiss( bool expired ) override
   {
     primal_elemental_t::dismiss( expired );
+
+    if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
+    {
+      o()->summon_lesser_elemental( type );
+    }
   }
 };
 
@@ -3233,16 +3335,14 @@ struct storm_elemental_t : public primal_elemental_t
   {
     wind_gust_t( storm_elemental_t* player, util::string_view options )
       : super( player, "wind_gust", player->find_spell( 157331 ), options )
-    {
-    }
+    { }
   };
 
   struct call_lightning_t : public pet_spell_t<storm_elemental_t>
   {
     call_lightning_t( storm_elemental_t* player, util::string_view options )
       : super( player, "call_lightning", player->find_spell( 157348 ), options )
-    {
-    }
+    { }
 
     void execute() override
     {
@@ -3253,12 +3353,14 @@ struct storm_elemental_t : public primal_elemental_t
   };
 
   buff_t* call_lightning;
+  cooldown_t* tempest_cd;
 
-  storm_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( !guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian,
-                          false ),
-      call_lightning( nullptr )
+  storm_elemental_t( shaman_t* owner, elemental type_, elemental_variant variant_ )
+    : primal_elemental_t( owner, type_, variant_ ), call_lightning( nullptr )
   {
+    owner_coeff.sp_from_sp = variant == elemental_variant::GREATER ? 1.0 : 0.65;
+
+    tempest_cd = get_cooldown( "tempest" );
   }
 
   void create_default_apl() override
@@ -3266,7 +3368,7 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( o()->talent.primal_elementalist->ok() )
+    if ( type == elemental::PRIMAL_STORM )
     {
       def->add_action( "tempest,if=buff.call_lightning.remains>=10" );
     }
@@ -3278,7 +3380,8 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::create_buffs();
 
-    call_lightning = make_buff( this, "call_lightning", find_spell( 157348 ) )->set_cooldown( timespan_t::zero() );
+    call_lightning = make_buff( this, "call_lightning",
+      find_spell( 157348 ) )->set_cooldown( timespan_t::zero() );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3286,7 +3389,9 @@ struct storm_elemental_t : public primal_elemental_t
     double m = primal_elemental_t::composite_player_multiplier( school );
 
     if ( call_lightning->up() )
+    {
       m *= 1.0 + call_lightning->data().effectN( 2 ).percent();
+    }
 
     return m;
   }
@@ -3303,18 +3408,26 @@ struct storm_elemental_t : public primal_elemental_t
     return primal_elemental_t::create_action( name, options_str );
   }
 
+  void summon( timespan_t duration ) override
+  {
+    primal_elemental_t::summon( duration );
+
+    if ( type == elemental::PRIMAL_STORM )
+    {
+      tempest_cd->reset( false );
+    }
+  }
+
   void dismiss( bool expired ) override
   {
     primal_elemental_t::dismiss( expired );
-    o()->buff.wind_gust->expire();
-  }
 
-  void demise() override {
-    primal_elemental_t::demise();
-    o()->buff.wind_gust->expire();
+    if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
+    {
+      o()->summon_lesser_elemental( type );
+    }
   }
 };
-
 }  // end namespace pet
 
 // ==========================================================================
@@ -4846,25 +4959,7 @@ struct earth_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    timespan_t duration = p()->spell.earth_elemental->duration() *
-      ( 1.0 + p()->talent.everlasting_elements->effectN( 1 ).percent() );
-
-    if ( p()->talent.primal_elementalist->ok() )
-    {
-      if ( p()->talent.storm_elemental->ok() && p()->pet.pet_storm_elemental )
-      {
-        p()->pet.pet_storm_elemental->demise();
-      }
-      else if ( !p()->talent.storm_elemental->ok() && p()->pet.pet_fire_elemental )
-      {
-        p()->pet.pet_fire_elemental->demise();
-      }
-      p()->pet.pet_earth_elemental->summon( duration );
-    }
-    else
-    {
-      p()->pet.guardian_earth_elemental->summon( duration );
-    }
+    p()->summon_elemental( elemental::GREATER_EARTH );
 
     // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
     if ( p()->bugs && p()->main_hand_attack && p()->main_hand_attack->execute_event )
@@ -4891,8 +4986,7 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_fire_elemental( p()->buff.fire_elemental->buff_duration() );
-    p()->buff.fire_elemental->trigger();
+    p()->summon_elemental( elemental::GREATER_FIRE );
   }
 
   bool ready() override
@@ -4927,8 +5021,7 @@ struct storm_elemental_t : public shaman_spell_t
     // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
     p()->buff.wind_gust->expire();
 
-    p()->summon_storm_elemental( p()->buff.storm_elemental->buff_duration() );
-    p()->buff.storm_elemental->trigger();
+    p()->summon_elemental( elemental::GREATER_STORM );
   }
 };
 
@@ -5324,18 +5417,14 @@ struct chain_lightning_t : public chained_base_t
     chained_base_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
-    if ( p()->talent.storm_elemental->ok() )
+    if ( p()->buff.storm_elemental->check() || p()->buff.lesser_storm_elemental->check() )
     {
-      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental &&
-           !p()->pet.pet_storm_elemental->is_sleeping() )
-      {
-        p()->buff.wind_gust->trigger();
-      }
-      else if ( !p()->talent.primal_elementalist->ok() && p()->pet.guardian_storm_elemental &&
-                !p()->pet.guardian_storm_elemental->is_sleeping() )
-      {
-        p()->buff.wind_gust->trigger();
-      }
+      p()->buff.wind_gust->trigger();
+    }
+
+    if ( p()->buff.lesser_storm_elemental->check() )
+    {
+      p()->buff.wind_gust->trigger();
     }
 
     if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -6352,18 +6441,14 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
-    if ( p()->talent.storm_elemental->ok() )
+    if ( p()->buff.storm_elemental->check() || p()->buff.lesser_storm_elemental->check() )
     {
-      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental &&
-           !p()->pet.pet_storm_elemental->is_sleeping() )
-      {
-        p()->buff.wind_gust->trigger();
-      }
-      else if ( !p()->talent.primal_elementalist->ok() && p()->pet.guardian_storm_elemental &&
-                !p()->pet.guardian_storm_elemental->is_sleeping() )
-      {
-        p()->buff.wind_gust->trigger();
-      }
+      p()->buff.wind_gust->trigger();
+    }
+
+    if ( p()->buff.lesser_storm_elemental->check() )
+    {
+      p()->buff.wind_gust->trigger();
     }
 
     if ( exec_type == spell_variant::NORMAL &&
@@ -7567,6 +7652,11 @@ public:
       mul *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
     }
 
+    if ( p()->buff.lesser_fire_elemental->check() )
+    {
+      mul *= 1.0 + p()->buff.lesser_fire_elemental->data().effectN( 3 ).percent();
+    }
+
     return mul;
   }
 
@@ -7575,6 +7665,7 @@ public:
     auto mul = shaman_spell_t::tick_time_pct_multiplier( state );
 
     mul *= 1.0 + p()->buff.fire_elemental->stack_value();
+    mul *= 1.0 + p()->buff.lesser_fire_elemental->stack_value();
 
     mul *= 1.0 + p()->talent.flames_of_the_cauldron->effectN( 1 ).percent();
 
@@ -9504,19 +9595,6 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
   if ( p )
     return p;
 
-  if ( pet_name == "primal_fire_elemental" )
-    return new pet::fire_elemental_t( this, false );
-  if ( pet_name == "greater_fire_elemental" )
-    return new pet::fire_elemental_t( this, true );
-  if ( pet_name == "primal_storm_elemental" )
-    return new pet::storm_elemental_t( this, false );
-  if ( pet_name == "greater_storm_elemental" )
-    return new pet::storm_elemental_t( this, true );
-  if ( pet_name == "primal_earth_elemental" )
-    return new pet::earth_elemental_t( this, false );
-  if ( pet_name == "greater_earth_elemental" )
-    return new pet::earth_elemental_t( this, true );
-
   return nullptr;
 }
 
@@ -9524,40 +9602,7 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
 
 void shaman_t::create_pets()
 {
-  if ( talent.primal_elementalist->ok() )
-  {
-    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
-    {
-      pet.pet_fire_elemental = create_pet( "primal_fire_elemental" );
-    }
-
-    if ( find_action( "earth_elemental" ) )
-    {
-      pet.pet_earth_elemental = create_pet( "primal_earth_elemental" );
-    }
-
-    if ( talent.storm_elemental->ok() && find_action( "storm_elemental" ) )
-    {
-      pet.pet_storm_elemental = create_pet( "primal_storm_elemental" );
-    }
-  }
-  else
-  {
-    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
-    {
-      pet.guardian_fire_elemental = new pet::fire_elemental_t( this, true );
-    }
-
-    if ( find_action( "earth_elemental" ) )
-    {
-      pet.guardian_earth_elemental = create_pet( "greater_earth_elemental" );
-    }
-
-    if ( talent.storm_elemental->ok() && find_action( "storm_elemental" ) )
-    {
-      pet.guardian_storm_elemental = new pet::storm_elemental_t( this, true );
-    }
-  }
+  player_t::create_pets();
 }
 
 // shaman_t::create_expression ==============================================
@@ -9579,61 +9624,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
   }
 
   auto splits = util::string_split<util::string_view>( name, "." );
-
-  if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
-  {
-    auto require_primal = splits[ 1 ].find( "primal_" ) != util::string_view::npos;
-    auto et             = elemental::FIRE;
-    if ( util::str_in_str_ci( splits[ 1 ], "fire" ) )
-    {
-      et = elemental::FIRE;
-    }
-    else if ( util::str_in_str_ci( splits[ 1 ], "earth" ) )
-    {
-      et = elemental::EARTH;
-    }
-    else if ( util::str_in_str_ci( splits[ 1 ], "storm" ) )
-    {
-      et = elemental::STORM;
-    }
-    else
-    {
-      return player_t::create_expression( name );
-    }
-
-    const pet_t* p = nullptr;
-    auto pe        = require_primal || talent.primal_elementalist->ok();
-    switch ( et )
-    {
-      case elemental::FIRE:
-        p = pe ? pet.pet_fire_elemental : pet.guardian_fire_elemental;
-        break;
-      case elemental::EARTH:
-        p = pe ? pet.pet_earth_elemental : pet.guardian_earth_elemental;
-        break;
-      case elemental::STORM:
-        p = pe ? pet.pet_storm_elemental : pet.guardian_storm_elemental;
-        break;
-    }
-
-    if ( !p )
-    {
-      return expr_t::create_constant( name, 0.0 );
-    }
-
-    if ( util::str_compare_ci( splits[ 2 ], "active" ) )
-    {
-      return make_fn_expr( name, [ p ]() { return static_cast<double>( !p->is_sleeping() ); } );
-    }
-    else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
-    {
-      return make_fn_expr( name, [ p ]() { return p->expiration ? p->expiration->remains().total_seconds() : 0.0; } );
-    }
-    else
-    {
-      return player_t::create_expression( name );
-    }
-  }
 
   if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
@@ -10401,122 +10391,145 @@ void shaman_t::init_scaling()
 
 bool shaman_t::is_elemental_pet_active() const
 {
-  if ( talent.primal_elementalist->ok() )
-  {
-    return ( pet.pet_fire_elemental && !pet.pet_fire_elemental->is_sleeping() ) ||
-           ( pet.pet_storm_elemental && !pet.pet_storm_elemental->is_sleeping() );
-  }
-  else
-  {
-    return ( pet.guardian_fire_elemental && !pet.guardian_fire_elemental->is_sleeping() ) ||
-           ( pet.guardian_storm_elemental && !pet.guardian_storm_elemental->is_sleeping() );
-  }
+  return pet.fire_elemental.n_active_pets() || pet.lesser_fire_elemental.n_active_pets() ||
+    pet.storm_elemental.n_active_pets() || pet.lesser_storm_elemental.n_active_pets();
 }
 
 pet_t* shaman_t::get_active_elemental_pet() const
 {
-  if ( talent.primal_elementalist->ok() )
+  if ( talent.storm_elemental.ok() )
   {
-    if( pet.pet_fire_elemental && !pet.pet_fire_elemental->is_sleeping() )
+    if ( pet.storm_elemental.n_active_pets() )
     {
-      return pet.pet_fire_elemental;
+      return pet.storm_elemental.active_pet();
     }
-    if ( pet.pet_storm_elemental && !pet.pet_storm_elemental->is_sleeping() )
+    else if ( pet.lesser_storm_elemental.n_active_pets() )
     {
-      return pet.pet_storm_elemental;
+      return pet.lesser_storm_elemental.active_pet();
     }
   }
   else
   {
-    if ( pet.guardian_fire_elemental && !pet.guardian_fire_elemental->is_sleeping() )
+    if ( pet.fire_elemental.n_active_pets() )
     {
-      return pet.guardian_fire_elemental;
+      return pet.fire_elemental.active_pet();
     }
-    if ( pet.guardian_storm_elemental && !pet.guardian_storm_elemental->is_sleeping() )
+    else if ( pet.lesser_fire_elemental.n_active_pets() )
     {
-      return pet.guardian_storm_elemental;
+      return pet.lesser_fire_elemental.active_pet();
     }
   }
+
   return nullptr;
 }
 
-void shaman_t::summon_fire_elemental( timespan_t duration )
+void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
 {
-  if ( talent.storm_elemental->ok() )
+  spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t>* spawner_ptr = nullptr;
+  buff_t* elemental_buff = nullptr;
+
+  switch ( type )
   {
-    return;
+    case elemental::GREATER_FIRE:
+    case elemental::PRIMAL_FIRE:
+    {
+      elemental_buff = buff.fire_elemental;
+      spawner_ptr = &( pet.fire_elemental );
+
+      pet.earth_elemental.despawn();
+      pet.storm_elemental.despawn();
+      buff.storm_elemental->expire();
+      break;
+    }
+    case elemental::GREATER_STORM:
+    case elemental::PRIMAL_STORM:
+    {
+      elemental_buff = buff.storm_elemental;
+      spawner_ptr = &( pet.storm_elemental );
+
+      pet.earth_elemental.despawn();
+      pet.fire_elemental.despawn();
+      buff.fire_elemental->expire();
+      break;
+    }
+    case elemental::GREATER_EARTH:
+    case elemental::PRIMAL_EARTH:
+    {
+      elemental_buff = buff.earth_elemental;
+      spawner_ptr = &( pet.earth_elemental );
+
+      pet.storm_elemental.despawn();
+      pet.fire_elemental.despawn();
+      buff.fire_elemental->expire();
+      buff.storm_elemental->expire();
+      break;
+    }
+    default:
+      assert( 0 );
+      break;
   }
 
-  if ( talent.primal_elementalist->ok() )
+  if ( spawner_ptr->n_active_pets() > 0 )
   {
-    if ( pet.pet_fire_elemental->is_sleeping() )
-    {
-      if ( pet.pet_earth_elemental )
-      {
-        pet.pet_earth_elemental->demise();
-      }
-      pet.pet_fire_elemental->summon( duration );
-      pet.pet_fire_elemental->get_cooldown( "meteor" )->reset( false );
-    }
-    else
-    {
-      auto new_duration = pet.pet_fire_elemental->expiration->remains();
-      new_duration += duration;
-      pet.pet_fire_elemental->expiration->reschedule( new_duration );
-    }
+    timespan_t new_duration = spawner_ptr->active_pet()->expiration->remains();
+    new_duration += override_duration > 0_ms ? override_duration : elemental_buff->buff_duration();
+
+    elemental_buff->extend_duration( this,
+      override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    spawner_ptr->active_pet()->expiration->reschedule( new_duration );
   }
   else
   {
-    if ( pet.guardian_fire_elemental->is_sleeping() )
-    {
-      pet.guardian_fire_elemental->summon( duration );
-    }
-    else
-    {
-      auto new_duration = pet.guardian_fire_elemental->expiration->remains();
-      new_duration += duration;
-      pet.guardian_fire_elemental->expiration->reschedule( new_duration );
-    }
+    elemental_buff->trigger( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    spawner_ptr->spawn( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
   }
 }
 
-void shaman_t::summon_storm_elemental( timespan_t duration )
+void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_duration )
 {
-  if ( !talent.storm_elemental->ok() )
+  spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t>* spawner_ptr = nullptr;
+  buff_t* elemental_buff = nullptr;
+
+  switch ( type )
   {
-    return;
+    case elemental::GREATER_FIRE:
+    case elemental::PRIMAL_FIRE:
+    {
+      elemental_buff = buff.lesser_fire_elemental;
+      spawner_ptr = &( pet.lesser_fire_elemental );
+
+      pet.lesser_storm_elemental.despawn();
+      buff.lesser_storm_elemental->expire();
+      break;
+    }
+    case elemental::GREATER_STORM:
+    case elemental::PRIMAL_STORM:
+    {
+      elemental_buff = buff.lesser_storm_elemental;
+      spawner_ptr = &( pet.lesser_storm_elemental );
+
+      pet.lesser_fire_elemental.despawn();
+      buff.lesser_fire_elemental->expire();
+      break;
+    }
+    default:
+      assert( 0 );
+      break;
   }
 
-  if ( talent.primal_elementalist->ok() )
+  if ( spawner_ptr->n_active_pets() > 0 )
   {
-    if ( pet.pet_storm_elemental->is_sleeping() )
-    {
-      if ( pet.pet_earth_elemental )
-      {
-        pet.pet_earth_elemental->demise();
-      }
-      pet.pet_storm_elemental->summon( duration );
-      pet.pet_storm_elemental->get_cooldown( "tempest" )->reset( false );
-    }
-    else
-    {
-      auto new_duration = pet.pet_storm_elemental->expiration->remains();
-      new_duration += duration;
-      pet.pet_storm_elemental->expiration->reschedule( new_duration );
-    }
+    timespan_t new_duration = spawner_ptr->active_pet()->expiration->remains();
+    new_duration += override_duration > 0_ms ? override_duration : elemental_buff->buff_duration();
+
+    elemental_buff->extend_duration( this,
+      override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    spawner_ptr->active_pet()->expiration->reschedule( new_duration );
   }
   else
   {
-    if ( pet.guardian_storm_elemental->is_sleeping() )
-    {
-      pet.guardian_storm_elemental->summon( duration );
-    }
-    else
-    {
-      auto new_duration = pet.guardian_storm_elemental->expiration->remains();
-      new_duration += duration;
-      pet.guardian_storm_elemental->expiration->reschedule( new_duration );
-    }
+    elemental_buff->trigger( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    spawner_ptr->spawn( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
   }
 }
 
@@ -11368,7 +11381,10 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     return;
   }
 
-  sim->out_debug.print( "{} earthen_rage proc by {}", *this, *state->action );
+  if ( sim->debug )
+  {
+    sim->out_debug.print( "{} earthen_rage proc by {}", *this, *state->action );
+  }
 
   action.earthen_rage->execute_on_target( state->target );
 }
@@ -11554,12 +11570,22 @@ void shaman_t::create_buffs()
                              } );
                            } );
 
+  buff.earth_elemental = make_buff( this, "earth_elemental", find_spell( 188616 ))
+                        ->set_duration( find_spell( 188616 )->duration() *
+                          ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
   buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
                         ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
-                        ->set_duration( spell.storm_elemental->duration() *
+                        ->set_duration( spell.fire_elemental->duration() *
+                          ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
+  buff.lesser_fire_elemental = make_buff( this, "lesser_fire_elemental", find_spell( 462992 ))
+                        ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
+                        ->set_duration( find_spell( 462992 )->duration() *
                           ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
   buff.storm_elemental = make_buff( this, "storm_elemental", spell.storm_elemental )
                          ->set_duration( spell.storm_elemental->duration() *
+                          ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
+  buff.lesser_storm_elemental = make_buff( this, "lesser_storm_elemental", find_spell( 462993 ))
+                        ->set_duration( find_spell( 462993 )->duration() *
                           ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
   buff.splintered_elements = new splintered_elements_buff_t( this );
 
@@ -13393,13 +13419,36 @@ struct shaman_module_t : public module_t
   { }
 };
 
-shaman_t::pets_t::pets_t( shaman_t* s )
-  : pet_fire_elemental( nullptr ),
-    pet_storm_elemental( nullptr ),
-    pet_earth_elemental( nullptr ),
-    guardian_fire_elemental( nullptr ),
-    guardian_storm_elemental( nullptr ),
-    guardian_earth_elemental( nullptr ),
+shaman_t::pets_t::pets_t( shaman_t* s ) :
+    fire_elemental( "fire_elemental", s, []( shaman_t* s ) {
+      return new pet::fire_elemental_t( s,
+        s->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE,
+        elemental_variant::GREATER );
+    } ),
+
+    storm_elemental( "storm_elemental", s, []( shaman_t* s ) {
+      return new pet::storm_elemental_t( s,
+        s->talent.primal_elementalist.ok() ? elemental::PRIMAL_STORM : elemental::GREATER_STORM,
+        elemental_variant::GREATER );
+    } ),
+
+    earth_elemental( "earth_elemental", s, []( shaman_t* s ) {
+      return new pet::storm_elemental_t( s,
+        s->talent.primal_elementalist.ok() ? elemental::PRIMAL_EARTH : elemental::GREATER_EARTH,
+        elemental_variant::GREATER );
+    } ),
+
+    lesser_fire_elemental( "lesser_fire_elemental", s, []( shaman_t* s ) {
+      return new pet::fire_elemental_t( s,
+        s->talent.primal_elementalist.ok() ? elemental::PRIMAL_FIRE : elemental::GREATER_FIRE,
+        elemental_variant::LESSER );
+    } ),
+
+    lesser_storm_elemental( "lesser_storm_elemental", s, []( shaman_t* s ) {
+      return new pet::storm_elemental_t( s,
+        s->talent.primal_elementalist.ok() ? elemental::PRIMAL_STORM : elemental::GREATER_STORM,
+        elemental_variant::LESSER );
+    } ),
 
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
