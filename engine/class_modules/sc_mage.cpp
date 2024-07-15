@@ -4273,6 +4273,15 @@ struct flamestrike_t final : public hot_streak_spell_t
     return m;
   }
 
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
+
+    m *= 1.0 + p()->talents.mark_of_the_firelord->effectN( 1 ).percent();
+
+    return m;
+  }
+
   void execute() override
   {
     num_targets_crit = 0;
@@ -5470,7 +5479,7 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
-    background = true;
+    background = triggers.ignite = true;
     base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
   }
 
@@ -5485,6 +5494,15 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
       am *= 1.0 + p()->talents.explosivo->effectN( 2 ).percent();
 
     return am;
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+
+    m *= 1.0 + p()->talents.mark_of_the_firelord->effectN( 1 ).percent();
+
+    return m;
   }
 };
 
