@@ -372,6 +372,9 @@ public:
   // Buffs
   struct buffs_t
   {
+    // Hunter Tree
+    buff_t* trigger_finger;
+
     // Marksmanship Tree
     buff_t* precise_shots;
     buff_t* lone_wolf;
@@ -558,7 +561,7 @@ public:
 
     spell_data_ptr_t bursting_shot; //Verify functionality remains same after move from Marksmanship tree
     spell_data_ptr_t scatter_shot; // NYI - 
-    spell_data_ptr_t trigger_finger; //NYI - You have your pet have 2.5% increase attack speed. This effect is increased by 100% if you do not have a pet active.
+    spell_data_ptr_t trigger_finger;
     spell_data_ptr_t blackrock_munitions; 
     spell_data_ptr_t keen_eyesight;
 
@@ -1953,6 +1956,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
     spec_passive() -> trigger();
     o() -> buffs.lone_wolf -> expire();
+    o()->buffs.trigger_finger->trigger( 1, o()->talents.trigger_finger->effectN( 1 ).percent() );
   }
 
   void demise() override
@@ -1964,11 +1968,24 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       o() -> pets.main = nullptr;
 
       spec_passive() -> expire();
-      if ( ! sim -> event_mgr.canceled )
-        o() -> buffs.lone_wolf -> trigger();
+      if ( !sim->event_mgr.canceled )
+      {
+        o()->buffs.lone_wolf->trigger();
+        o()->buffs.trigger_finger->trigger();
+      }
     }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
+  }
+
+  double composite_melee_auto_attack_speed() const override
+  {
+    double ah = hunter_main_pet_base_t::composite_melee_auto_attack_speed();
+
+    if ( o()->talents.trigger_finger.ok() )
+      ah /= 1 + o()->talents.trigger_finger->effectN( 4 ).percent();
+
+    return ah;
   }
 
   target_specific_t<hunter_main_pet_td_t> target_data;
@@ -7626,6 +7643,14 @@ void hunter_t::create_buffs()
 {
   player_t::create_buffs();
 
+  // Hunter Tree
+
+  buffs.trigger_finger =
+    make_buff( this, "trigger_finger", talents.trigger_finger )
+      ->set_default_value( talents.trigger_finger->effectN( 1 ).percent() * ( 1 + talents.trigger_finger->effectN( 3 ).percent() ) )
+      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
+      ->set_quiet(true);
+
   // Marksmanship Tree
 
   buffs.bombardment =
@@ -8239,6 +8264,7 @@ void hunter_t::arise()
   player_t::arise();
 
   buffs.lone_wolf -> trigger();
+  buffs.trigger_finger->trigger();
 }
 
 // hunter_t::combat_begin ==================================================
@@ -8327,6 +8353,9 @@ double hunter_t::composite_melee_auto_attack_speed() const
 
   if ( buffs.bloodseeker -> check() )
     s /= 1 + buffs.bloodseeker -> check_stack_value();
+
+  if ( buffs.trigger_finger->check() )
+    s /= 1 + buffs.trigger_finger->check_value();
 
   return s;
 }
