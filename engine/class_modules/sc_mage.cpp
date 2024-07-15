@@ -120,6 +120,7 @@ struct mage_td_t final : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* arcane_debilitation;
+    buff_t* controlled_destruction;
     buff_t* controlled_instincts;
     buff_t* frozen;
     buff_t* improved_scorch;
@@ -2243,12 +2244,15 @@ struct fire_mage_spell_t : public mage_spell_t
     return mul;
   }
 
-  virtual double composite_ignite_multiplier( const action_state_t* ) const
+  virtual double composite_ignite_multiplier( const action_state_t* s ) const
   {
     double m = 1.0;
 
     if ( !p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
+
+    if ( auto td = find_td( s->target ) )
+      m *= 1.0 + td->debuffs.controlled_destruction->check_stack_value();
 
     return m;
   }
@@ -5805,6 +5809,8 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      get_td( s->target )->debuffs.controlled_destruction->trigger();
+
       if ( !consume_firefall( s->target ) )
         trigger_firefall();
     }
@@ -6868,27 +6874,30 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   // TODO: For some reason, the debuff has a base value of 0.5 and then the talent modifies the
   // effect by adding 0.5/1.0 on top (depending on the rank). The value is then rounded, resulting
   // in 1% damage increase with 1 rank and 2% damage increase with 2 ranks.
-  debuffs.arcane_debilitation  = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
-                                   ->set_default_value( ( mage->bugs ? 2.0 : 1.0 ) * mage->talents.arcane_debilitation->effectN( 2 ).percent() )
-                                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                   ->set_chance( mage->talents.arcane_debilitation.ok() );
-  debuffs.controlled_instincts = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
-                                   ->set_chance( mage->talents.controlled_instincts.ok() );
-  debuffs.frozen               = make_buff( *this, "frozen" )
-                                   ->set_refresh_behavior( buff_refresh_behavior::MAX );
-  debuffs.magis_spark_ab       = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
-  debuffs.magis_spark_abar     = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
-  debuffs.magis_spark_am       = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
-  debuffs.improved_scorch      = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
-                                   ->set_default_value_from_effect( 1 );
-  debuffs.nether_munitions     = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
-                                   ->set_default_value_from_effect( 1 )
-                                   ->set_chance( mage->talents.nether_munitions.ok() );
-  debuffs.numbing_blast        = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
-                                   ->set_default_value_from_effect( 1 )
-                                   ->set_chance( mage->talents.glacial_assault.ok() );
-  debuffs.touch_of_the_magi    = make_buff<buffs::touch_of_the_magi_t>( this );
-  debuffs.winters_chill        = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
+  debuffs.arcane_debilitation    = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
+                                     ->set_default_value( ( mage->bugs ? 2.0 : 1.0 ) * mage->talents.arcane_debilitation->effectN( 2 ).percent() )
+                                     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                     ->set_chance( mage->talents.arcane_debilitation.ok() );
+  debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
+                                     ->set_default_value( mage->talents.controlled_destruction->effectN( 1 ).percent() )
+                                     ->set_chance( mage->talents.controlled_destruction.ok() );
+  debuffs.controlled_instincts   = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
+                                     ->set_chance( mage->talents.controlled_instincts.ok() );
+  debuffs.frozen                 = make_buff( *this, "frozen" )
+                                     ->set_refresh_behavior( buff_refresh_behavior::MAX );
+  debuffs.magis_spark_ab         = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
+  debuffs.magis_spark_abar       = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
+  debuffs.magis_spark_am         = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
+  debuffs.improved_scorch        = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
+                                     ->set_default_value_from_effect( 1 );
+  debuffs.nether_munitions       = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( mage->talents.nether_munitions.ok() );
+  debuffs.numbing_blast          = make_buff( *this, "numbing_blast", mage->find_spell( 417490 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( mage->talents.glacial_assault.ok() );
+  debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
+  debuffs.winters_chill          = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
 
   // Set Bonuses
   debuffs.charring_embers = make_buff( *this, "charring_embers", mage->find_spell( 408665 ) )
