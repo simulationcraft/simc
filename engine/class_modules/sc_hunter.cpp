@@ -528,9 +528,6 @@ public:
     spell_data_ptr_t dire_pack;
 
     // Survival
-    spell_data_ptr_t harpoon; // TODO made baseline
-    spell_data_ptr_t aspect_of_the_eagle; // TODO made baseline
-
     spell_data_ptr_t carve;
     spell_data_ptr_t coordinated_kill;
     spell_data_ptr_t birds_of_prey;
@@ -5433,7 +5430,7 @@ struct harpoon_t: public hunter_melee_attack_t
   terms_of_engagement_t* terms_of_engagement = nullptr;
 
   harpoon_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "harpoon", p, p -> talents.harpoon )
+    hunter_melee_attack_t( "harpoon", p, p -> find_spell( 190925 ) )
   {
     parse_options( options_str );
 
@@ -6867,7 +6864,7 @@ struct wildfire_bomb_background_t: public wildfire_bomb_t
 struct aspect_of_the_eagle_t: public hunter_spell_t
 {
   aspect_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "aspect_of_the_eagle", p, p -> talents.aspect_of_the_eagle )
+    hunter_spell_t( "aspect_of_the_eagle", p, p -> find_spell( 186289 ) )
   {
     parse_options( options_str );
 
@@ -7382,10 +7379,6 @@ void hunter_t::init_spells()
   if ( specialization() == HUNTER_SURVIVAL )
   {
     // TODO Delete these
-    // Made baseline
-    talents.harpoon                           = find_talent_spell( talent_tree::SPECIALIZATION, "Harpoon", HUNTER_SURVIVAL );
-    // Made baseline
-    talents.aspect_of_the_eagle               = find_talent_spell( talent_tree::SPECIALIZATION, "Aspect of the Eagle", HUNTER_SURVIVAL );
     talents.carve                             = find_talent_spell( talent_tree::SPECIALIZATION, "Carve", HUNTER_SURVIVAL );
     talents.coordinated_kill                  = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Kill", HUNTER_SURVIVAL );
     talents.birds_of_prey                     = find_talent_spell( talent_tree::SPECIALIZATION, "Birds of Prey", HUNTER_SURVIVAL );
@@ -7917,7 +7910,7 @@ void hunter_t::create_buffs()
       -> set_affects_regen( true );
 
   buffs.aspect_of_the_eagle =
-    make_buff( this, "aspect_of_the_eagle", talents.aspect_of_the_eagle )
+    make_buff( this, "aspect_of_the_eagle", find_spell( 186289 ) )
       -> set_cooldown( 0_ms );
 
   buffs.mongoose_fury =
