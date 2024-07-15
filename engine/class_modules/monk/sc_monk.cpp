@@ -197,7 +197,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // TWW S1 Set Effects
   parse_effects( p()->buff.tiger_strikes );
   parse_effects( p()->buff.tigers_ferocity );
-  parse_effects( p()->buff.flow_of_battle );
+  parse_effects( p()->buff.flow_of_battle_damage );
 
   // TWW S2 Set Effects
 
@@ -1901,11 +1901,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 {
   using base_t = charred_passions_t<monk_melee_attack_t>;
   blackout_kick_totm_proc_t *bok_totm_proc;
+  cooldown_t *keg_smash_cooldown;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
     : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                       : p->baseline.monk.blackout_kick ) )
+                                                       : p->baseline.monk.blackout_kick ) ),
+      keg_smash_cooldown( nullptr )
   {
     parse_options( options_str );
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1926,6 +1928,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->buff.blackout_reinforcement );
     parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
+
+    if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
+      keg_smash_cooldown = player->get_cooldown( "keg_smash" );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -1962,6 +1967,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     base_t::execute();
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+
+    p()->buff.flow_of_battle_damage->trigger();
+    if ( keg_smash_cooldown && p()->rng().roll( 0.5 ) )
+    {
+      keg_smash_cooldown->reset( false );
+      p()->buff.flow_of_battle_free_keg_smash->trigger();
+    }
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2291,7 +2303,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick",
                                          p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
-    stats       = tick_action->stats;
+    // stats       = tick_action->stats;
 
     // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
@@ -3115,6 +3127,7 @@ struct keg_smash_t : monk_melee_attack_t
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
           .set_value( effect.percent() )
           .set_eff( &effect );
+    parse_effects( player->buff.flow_of_battle_free_keg_smash );
   }
 
   void execute() override
@@ -3122,6 +3135,7 @@ struct keg_smash_t : monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.hit_scheme->expire();
+    p()->buff.flow_of_battle_free_keg_smash->expire();
 
     if ( p()->talent.brewmaster.salsalabims_strength->ok() )
     {
@@ -6695,6 +6709,15 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
+
+  // TWW S1 Set Effects
+  parse_effects( buff.shuffle, sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+
+  // TWW S2 Set Effects
+
+  // TWW S3 Set Effects
+
+  // TWW S4 Set Effects
 }
 
 // monk_t::create_action ====================================================
@@ -7539,7 +7562,9 @@ void monk_t::init_spells()
     tier.t31.charred_dreams_heal = find_spell( 425298 );
     tier.t31.t31_celestial_brew  = find_spell( 425965 );
 
-    tier.tww1.ww_4pc = find_spell( 454505 );
+    tier.tww1.ww_4pc                      = find_spell( 454505 );
+    tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
+    tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
   }
 
   // Passives =========================================
@@ -8023,8 +8048,14 @@ void monk_t::create_buffs()
       make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B4 )->ok(), this, "tigers_ferocity", find_spell( 454502 ) )
           ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
 
-  buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
-                            ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+  buff.flow_of_battle_damage = make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this,
+                                                   "flow_of_battle_damage", tier.tww1.brm_4pc_damage_buff )
+                                   ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+
+  buff.flow_of_battle_free_keg_smash =
+      make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this, "flow_of_battle_free_keg_smash",
+                          tier.tww1.brm_4pc_free_keg_smash_buff )
+          ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   buff.weapons_of_order = make_buff_fallback( talent.brewmaster.weapons_of_order->ok(), this, "weapons_of_order",
                                               talent.brewmaster.weapons_of_order )
