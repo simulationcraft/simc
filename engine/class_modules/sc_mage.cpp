@@ -554,6 +554,7 @@ public:
     bool trigger_dematerialize;
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
+    bool trigger_flash_freezeburn;
     int embedded_splinters;
   } state;
 
@@ -1010,6 +1011,7 @@ public:
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_lit_fuse();
   void trigger_merged_buff( buff_t* buff, bool trigger );
+  void trigger_flash_freezeburn( bool ffb = false );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
@@ -2551,8 +2553,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     {
       expire_skb = true;
       // Extending Combustion doesn't trigger Frostfire Empowerment
-      if ( !p()->buffs.combustion->check() && p()->talents.flash_freezeburn.ok() )
-        p()->buffs.frostfire_empowerment->execute();
+      if ( !p()->buffs.combustion->check() )
+        p()->trigger_flash_freezeburn();
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
@@ -3848,8 +3850,7 @@ struct combustion_t final : public fire_mage_spell_t
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
     p()->cooldowns.phoenix_flames->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 2 ).base_value() ) );
     p()->buffs.tier31_4pc->trigger();
-    if ( p()->talents.flash_freezeburn.ok() )
-      p()->buffs.frostfire_empowerment->execute();
+    p()->trigger_flash_freezeburn();
     if ( p()->talents.explosivo.ok() )
       p()->buffs.lit_fuse->trigger();
 
@@ -4134,6 +4135,8 @@ struct fireball_t final : public fire_mage_spell_t
       p()->state.trigger_ff_empowerment = true;
       trigger_frostfire_mastery( true );
     }
+
+    p()->trigger_flash_freezeburn( true );
   }
 
   void impact( action_state_t* s ) override
@@ -4656,6 +4659,8 @@ struct frostbolt_t final : public frost_mage_spell_t
       p()->state.trigger_ff_empowerment = true;
       trigger_frostfire_mastery( true );
     }
+
+    p()->trigger_flash_freezeburn( true );
   }
 
   void impact( action_state_t* s ) override
@@ -5302,8 +5307,7 @@ struct icy_veins_t final : public frost_mage_spell_t
 
     p()->buffs.icy_veins->trigger();
     p()->buffs.cryopathy->trigger( p()->buffs.cryopathy->max_stack() );
-    if ( p()->talents.flash_freezeburn.ok() )
-      p()->buffs.frostfire_empowerment->execute();
+    p()->trigger_flash_freezeburn();
     if ( p()->pets.water_elemental->is_sleeping() )
       p()->pets.water_elemental->summon();
   }
@@ -6876,8 +6880,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
             break;
           case TA_COMBUSTION:
             mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
-            if ( mage->talents.flash_freezeburn.ok() )
-              mage->buffs.frostfire_empowerment->execute();
+            mage->trigger_flash_freezeburn();
             break;
           case TA_FIRE_BLAST:
             mage->cooldowns.fire_blast->reset( true );
@@ -6889,8 +6892,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
           case TA_ICY_VEINS:
             mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
             mage->buffs.cryopathy->trigger( mage->buffs.cryopathy->max_stack() );
-            if ( mage->talents.flash_freezeburn.ok() )
-              mage->buffs.frostfire_empowerment->execute();
+            mage->trigger_flash_freezeburn();
             if ( mage->pets.water_elemental->is_sleeping() )
               mage->pets.water_elemental->summon();
             break;
@@ -7173,7 +7175,7 @@ void mage_t::create_actions()
   if ( talents.frostfire_infusion.ok() )
     action.frostfire_infusion = get_action<frostfire_infusion_t>( "frostfire_infusion", this );
 
-  if ( talents.frostfire_empowerment.ok() )
+  if ( talents.frostfire_empowerment.ok() || talents.flash_freezeburn.ok() )
     action.frostfire_empowerment = get_action<frostfire_empowerment_t>( "frostfire_empowerment", this );
 
   if ( talents.excess_frost.ok() )
@@ -8804,6 +8806,42 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
     it->expire = true;
     it->stacks = 0;
   }
+}
+
+void mage_t::trigger_flash_freezeburn( bool ffb )
+{
+  if ( !talents.flash_freezeburn.ok() )
+    return;
+
+  bool schedule_event = false;
+  // Attempt to apply a "banked" proc
+  if ( ffb )
+  {
+    if ( state.trigger_flash_freezeburn )
+    {
+      state.trigger_flash_freezeburn = false;
+      schedule_event = true;
+    }
+  }
+  else
+  {
+    // If the player is currently casting a Frostfire Bolt, the proc isn't
+    // applied immediately and is instead "banked," to be applied when
+    // a Frostfire Bolt executes (generally the one that's currently being
+    // cast, but could be a different one if the player is interrupted).
+    // TODO: You can also do this with Icy Veins + FFB macro, implying there's
+    // some small delay on this trigger as well.
+    if ( executing && executing->id == 431044 )
+      state.trigger_flash_freezeburn = true;
+    else
+      schedule_event = true;
+  }
+
+  if ( schedule_event )
+    // The buff is applied with a small delay, which kinda defeats the
+    // purpose of this whole mechanic.
+    // TODO: double check this later
+    make_event( *sim, 15_ms, [ this ] { buffs.frostfire_empowerment->execute(); } );
 }
 
 // If the target isn't specified, picks a random target.
