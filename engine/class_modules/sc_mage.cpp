@@ -1537,11 +1537,11 @@ public:
 
     // TODO: the spec check is missing ingame
     const auto& ea = p->talents.elemental_affinity;
-    if ( p->specialization() == MAGE_FIRE )
+    if ( p->bugs || p->specialization() == MAGE_FIRE )
       for ( int ix : { 1, 2, 5 } )
         apply_affecting_effect( ea->effectN( ix ) );
 
-    if ( p->specialization() == MAGE_FROST )
+    if ( p->bugs || p->specialization() == MAGE_FROST )
       apply_affecting_effect( ea->effectN( 3 ) );
   }
 
@@ -1631,7 +1631,7 @@ public:
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
 
     // TODO: in game, it currently doesn't increase damage of any spells
-    if ( affected_by.deaths_chill )
+    if ( !p()->bugs && affected_by.deaths_chill )
       m *= 1.0 + p()->buffs.deaths_chill->check_stack_value();
 
     if ( affected_by.frigid_empowerment )
@@ -1815,7 +1815,8 @@ public:
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
     {
       // Best guess at how this is gonna work, assuming the bugs are fixed.
-      // TODO: Currently it looks like CC is 10% proc chance normally and 8% with IT.
+      // TODO: Currently it looks like CC is 16% instead of the stated 8% (on ab/abar at least)
+      // Use override to sim the bugged behavior for now
       double chance = p()->spec.clearcasting->effectN( 2 ).percent();
       chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
       p()->trigger_clearcasting( chance );
@@ -3400,7 +3401,8 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   {
     background = true;
     // TODO: Arcane Debilitation currently affects the AM channel (which doesn't do damage) rather than the ticks
-    affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
+    affected_by.arcane_debilitation = !p->bugs;
+    affected_by.savant = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
     const auto& aa = p->buffs.aether_attunement->data();
@@ -4109,7 +4111,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     // TODO: Frostfire Bolt currently doesn't respect the max travel time
-    return std::min( t, 0.75_s );
+    return p()->bugs ? t : std::min( t, 0.75_s );
   }
 
   timespan_t execute_time() const override
@@ -4538,7 +4540,8 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     track_shatter = consumes_winters_chill = true;
     // TODO: currently bugged and doesn't trigger Bone Chilling
-    triggers.chill = triggers.overflowing_energy = true;
+    triggers.chill = !frostfire || !p->bugs;
+    triggers.overflowing_energy = true;
     triggers.calefaction = TT_MAIN_TARGET;
     base_dd_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
@@ -4626,7 +4629,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
     // TODO: this doesn't work with Frostfire Bolt ingame
-    fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
+    if ( !p()->bugs )
+      fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
   }
