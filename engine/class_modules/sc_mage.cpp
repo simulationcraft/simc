@@ -3914,7 +3914,7 @@ struct comet_storm_t final : public frost_mage_spell_t
       .n_pulses( pulse_count )
       .action( projectile ) );
 
-    if ( isothermic )
+    if ( !p()->bugs && isothermic )
       trigger_frostfire_mastery();
   }
 
