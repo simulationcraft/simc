@@ -1047,7 +1047,7 @@ public:
       if ( ab::data().mechanic() == MECHANIC_BLEED || ab::data().effectN( i ).mechanic() == MECHANIC_BLEED )
         affected_by.serrated_shots = true;
     }
-    affected_by.unnatural_causes = check_affected_by( this, p->talents.unnatural_causes );
+    affected_by.unnatural_causes = parse_damage_affecting_aura( this, p->talents.unnatural_causes );
 
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
