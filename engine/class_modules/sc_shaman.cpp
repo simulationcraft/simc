@@ -906,7 +906,7 @@ public:
     // Row 9
     player_talent_t mountains_will_fall;
     player_talent_t first_ascendant;
-    player_talent_t preeminence; // NEW NYI
+    player_talent_t preeminence;
     player_talent_t fury_of_the_storms; // NEW NYI
     player_talent_t skybreakers_fiery_demise;
     player_talent_t magma_chamber;
@@ -1309,6 +1309,12 @@ struct ascendance_buff_t : public buff_t
       lava_burst( nullptr )
   {
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
+
+    if ( p->talent.preeminence.ok() )
+    {
+      add_invalidate( CACHE_HASTE );
+      set_duration( data().duration() + p->talent.preeminence->effectN( 1 ).time_value() );
+    }
   }
 
   void ascendance( attack_t* mh, attack_t* oh );
@@ -8039,8 +8045,6 @@ struct ascendance_t : public shaman_spell_t
         p()->buff.static_accumulation->trigger();
       }
     }
-
-    
   }
 
   bool ready() override
@@ -12700,6 +12704,11 @@ double shaman_t::composite_melee_haste() const
                           talent.splintered_elements->effectN( 2 ).percent() );
   }
 
+  if ( talent.preeminence.ok() && buff.ascendance->up() )
+  {
+    haste *= 1.0 / ( 1.0 + talent.preeminence->effectN( 2 ).percent() );
+  }
+
   return haste;
 }
 
@@ -12714,6 +12723,11 @@ double shaman_t::composite_spell_haste() const
     haste *= 1.0 / ( 1.0 + talent.splintered_elements->effectN( 1 ).percent() +
                       std::max( buff.splintered_elements->stack() - 1, 0 ) *
                           talent.splintered_elements->effectN( 2 ).percent() );
+  }
+
+  if ( talent.preeminence.ok() && buff.ascendance->up() )
+  {
+    haste *= 1.0 / ( 1.0 + talent.preeminence->effectN( 2 ).percent() );
   }
 
   return haste;
