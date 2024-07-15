@@ -266,6 +266,7 @@ public:
     buff_t* recklessness;
     buff_t* recklessness_warlords_torment;
     buff_t* revenge;
+    buff_t* seismic_reverberation_revenge;
     buff_t* shield_block;
     buff_t* shield_charge_movement;
     buff_t* shield_wall;
@@ -434,6 +435,7 @@ public:
     // Fury
 
     // Protection
+    const spell_data_t* seismic_reverberation_revenge;
 
     // Extra Spells To Make Things Work
 
@@ -460,6 +462,7 @@ public:
     const spell_data_t* reap_the_storm;
 
     // Mountain Thane
+    const spell_data_t* lightning_strike;
   } spell;
 
   // Mastery
@@ -805,7 +808,7 @@ public:
 
     struct mountain_thane_talents_t
     {
-      player_talent_t lightning_strikes; // NYI
+      player_talent_t lightning_strikes;
       player_talent_t crashing_thunder; // NYI
       player_talent_t ground_current; // NYI
       player_talent_t strength_of_the_mountain; // NYI
@@ -1095,6 +1098,7 @@ public:
 
     // Protection
     parse_effects( p()->buff.juggernaut_prot );
+    parse_effects( p()->buff.seismic_reverberation_revenge );
 
     // Colossus
     parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ) );
@@ -2092,6 +2096,17 @@ struct rend_prot_t : public warrior_attack_t
       return false;
     }
     return warrior_attack_t::ready();
+  }
+};
+
+// Lightning Strike =========================================================
+
+struct lightning_strike_t : public warrior_attack_t
+{
+  lightning_strike_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.lightning_strike )
+  {
+    background = true;
   }
 };
 
@@ -3503,6 +3518,7 @@ struct thunder_clap_t : public warrior_attack_t
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
+  action_t* lightning_strike;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
@@ -3510,6 +3526,7 @@ struct thunder_clap_t : public warrior_attack_t
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
+      lightning_strike( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -3535,6 +3552,12 @@ struct thunder_clap_t : public warrior_attack_t
         else
           rend = new rend_dot_prot_t( p );
       }
+    }
+
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_thunder_clap", p );
+      add_child( lightning_strike );
     }
   }
 
@@ -3607,9 +3630,20 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->talents.mountain_thane.crashing_thunder->ok() )
     {
       if ( p()->talents.fury.improved_whirlwind->ok() )
-    {
-      p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      {
+        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      }
     }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -3690,11 +3724,16 @@ struct execute_damage_t : public warrior_attack_t
 struct execute_arms_t : public warrior_attack_t
 {
   execute_damage_t* trigger_attack;
+  action_t* lightning_strike;
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
   execute_arms_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spell.execute ), max_rage( 40 ), execute_pct( 20 ),
+    : warrior_attack_t( "execute", p, p->spell.execute ),
+    trigger_attack( nullptr ),
+    lightning_strike( nullptr ),
+    max_rage( 40 ),
+    execute_pct( 20 ),
     shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
@@ -3709,6 +3748,12 @@ struct execute_arms_t : public warrior_attack_t
     if ( p->talents.protection.massacre->ok() )
     {
       execute_pct = p->talents.protection.massacre->effectN( 2 ).base_value();
+    }
+
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
+      add_child( lightning_strike );
     }
   }
 
@@ -3785,6 +3830,17 @@ struct execute_arms_t : public warrior_attack_t
       p()->cooldown.shield_slam->reset( true );
       if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
         p()->buff.expert_strategist->trigger();
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -3914,17 +3970,21 @@ struct execute_off_hand_t : public warrior_attack_t
   }
 };
 
-struct fury_execute_parent_t : public warrior_attack_t
+struct execute_fury_t : public warrior_attack_t
 {
   execute_main_hand_t* mh_attack;
   execute_off_hand_t* oh_attack;
+  action_t* lightning_strike;
   bool improved_execute;
   double execute_pct;
   //double cost_rage;
   double max_rage;
   double rage_from_improved_execute;
-  fury_execute_parent_t( warrior_t* p, util::string_view options_str )
+  execute_fury_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "execute", p, p->spec.execute ),
+      mh_attack( nullptr ),
+      oh_attack( nullptr ),
+      lightning_strike( nullptr ),
       improved_execute( false ),
       execute_pct( 20 ),
       max_rage( 40 ),
@@ -3944,6 +4004,12 @@ struct fury_execute_parent_t : public warrior_attack_t
       {
         cooldown -> duration -= timespan_t::from_millis( p -> talents.fury.massacre -> effectN( 3 ).base_value() );
       }
+    }
+
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
+      add_child( lightning_strike );
     }
   }
 
@@ -3997,6 +4063,17 @@ struct fury_execute_parent_t : public warrior_attack_t
     if ( p()->talents.fury.ashen_juggernaut->ok() )
     {
       p()->buff.ashen_juggernaut->trigger();
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -4379,12 +4456,14 @@ struct raging_blow_t : public warrior_attack_t
 {
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
+  action_t* lightning_strike;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->talents.fury.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
+      lightning_strike( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
   {
@@ -4401,6 +4480,11 @@ struct raging_blow_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_raging_blow", p );
+      add_child( lightning_strike );
     }
   }
 
@@ -4454,6 +4538,17 @@ struct raging_blow_t : public warrior_attack_t
     if ( p()->talents.fury.bloodcraze->ok() )
     {
       p()->buff.bloodcraze->trigger();
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -4518,11 +4613,13 @@ struct crushing_blow_t : public warrior_attack_t
 {
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
+  action_t* lightning_strike;
   double cd_reset_chance, wrath_and_fury_reset_chance;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
+      lightning_strike( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
   {
@@ -4541,6 +4638,12 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_crushing_blow", p );
+      add_child( lightning_strike );
     }
   }
 
@@ -4593,6 +4696,17 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->talents.fury.bloodcraze->ok() )
     {
       p()->buff.bloodcraze->trigger();
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -5211,12 +5325,14 @@ struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
   action_t* seismic_action;
+  action_t* lightning_strike;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   revenge_t( warrior_t* p, util::string_view options_str, bool seismic = false )
     : warrior_attack_t( seismic ? "revenge_seismic_reverberation" : "revenge", p, p->talents.protection.revenge ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       seismic_action( nullptr ),
+      lightning_strike( nullptr ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() )
     {
@@ -5233,6 +5349,15 @@ struct revenge_t : public warrior_attack_t
       {
         seismic_action = new revenge_t( p, "", true );
         add_child( seismic_action );
+      }
+
+      if ( p->talents.mountain_thane.lightning_strikes->ok() )
+      {
+        if ( seismic )
+          lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge_seismic_reverberation", p );
+        else
+          lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge", p );
+        add_child( lightning_strike );
       }
   }
 
@@ -5252,6 +5377,7 @@ struct revenge_t : public warrior_attack_t
     if ( p()->talents.warrior.seismic_reverberation->ok() && !background &&
     execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
+      p()->buff.seismic_reverberation_revenge->trigger();
       seismic_action->execute_on_target( target );
     }
 
@@ -5279,6 +5405,17 @@ struct revenge_t : public warrior_attack_t
         p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
       }
       p()->buff.colossal_might->trigger();
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
     }
   }
 
@@ -6907,7 +7044,7 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
   {
     if ( specialization() == WARRIOR_FURY )
     {
-      return new fury_execute_parent_t( this, options_str );
+      return new execute_fury_t( this, options_str );
     }
     else
     {
@@ -7074,6 +7211,7 @@ void warrior_t::init_spells()
   spec.revenge_trigger          = find_specialization_spell("Revenge Trigger");
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
+  spell.seismic_reverberation_revenge = find_spell( 384730 );
 
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
@@ -7085,6 +7223,7 @@ void warrior_t::init_spells()
   spell.reap_the_storm              = find_spell( 446005 );
 
   // Mountain Thane Spells
+  spell.lightning_strike            = find_spell( 435791 );
 
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
@@ -8018,6 +8157,8 @@ void warrior_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   buff.sudden_death = make_buff( this, "sudden_death", specialization() == WARRIOR_FURY ? spell.sudden_death_fury : specialization() == WARRIOR_ARMS ? spell.sudden_death_arms : spell.sudden_death_arms );
+
+  buff.seismic_reverberation_revenge = make_buff( this, "seismic_reverberation_revenge", spell.seismic_reverberation_revenge );
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_duration( spell.shield_block_buff->duration() + talents.protection.enduring_defenses->effectN( 1 ).time_value() )
