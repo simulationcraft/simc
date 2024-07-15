@@ -1484,6 +1484,7 @@ struct hunter_pet_t: public pet_t
   struct actives_t
   {
     action_t* beast_cleave = nullptr;
+    action_t* laceration = nullptr; 
   } active;
 
   hunter_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
@@ -1813,6 +1814,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
   }
 
   void init_spells() override;
+  void init_special_effects() override;
 
   void moving() override { return; }
 };
@@ -2543,6 +2545,15 @@ struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
   }
 };
 
+// Laceration ===============================================================
+
+struct laceration_t : public residual_action::residual_periodic_action_t<hunter_pet_action_t<hunter_pet_t, attack_t>>
+{
+  laceration_t( hunter_pet_t* p ): 
+    residual_action::residual_periodic_action_t<hunter_pet_action_t<hunter_pet_t, attack_t>>( "laceration", p, p -> find_spell( 459560 ) )
+  { }
+};
+
 // Pet Melee ================================================================
 
 struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
@@ -2698,9 +2709,24 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
     base_dd_multiplier *= o() -> talents.stomp -> effectN( 1 ).base_value();
   }
 
+  double bleed_amount = o() -> find_spell( 459555 ) -> effectN( 1 ).percent(); 
+
   void impact( action_state_t* s ) override
   {
     hunter_pet_action_t::impact( s );
+
+    //Only the main pet or animal companion can trigger laceration
+    auto pet = o() -> pets.main;
+    auto animal_companion = o() -> pets.animal_companion;
+    if ( !( pet == p() || animal_companion == p() ) )
+      return;
+
+    //TODO - 2024-07-16 - Stomp only triggers laceration on primary target
+    if( p() -> active.laceration && s -> result == RESULT_CRIT and s -> chain_target < 1 )
+    {
+      double amount = s -> result_amount * bleed_amount; 
+      residual_action::trigger( p() -> active.laceration, s -> target, amount );
+    }
   }
 };
 
@@ -2775,6 +2801,9 @@ void hunter_pet_t::init_spells()
   main_hand_attack = new actions::pet_melee_t( "melee", this );
   
   active.beast_cleave = new actions::beast_cleave_attack_t( this );
+  
+  if ( o() -> talents.laceration.ok() )
+    active.laceration = new actions::laceration_t( this );
 }
 
 void stable_pet_t::init_spells()
@@ -2836,6 +2865,50 @@ void dire_critter_t::init_spells()
 
     if ( o() -> talents.kill_cleave.ok() )
       active.kill_cleave = new actions::kill_cleave_t( this );
+  }
+}
+
+// hunter_main_pet_base_t::init_special_effects ==============================
+
+void hunter_main_pet_base_t::init_special_effects()
+{
+  stable_pet_t::init_special_effects();
+
+  if( o() -> talents.laceration.ok() )
+  {
+    struct laceration_cb_t : public dbc_proc_callback_t
+    {
+      double bleed_amount; 
+      action_t* bleed; 
+
+      laceration_cb_t( const special_effect_t& e, double amount, action_t* bleed ) : dbc_proc_callback_t( e.player, e ),
+        bleed_amount( amount ), bleed( bleed )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        if ( s && s -> target -> is_sleeping() )
+        {
+          return;
+        }
+
+        double amount = s -> result_amount * bleed_amount;
+        if ( amount > 0 )
+          residual_action::trigger( bleed, s -> target, amount );
+      }  
+    };
+
+    auto const effect = new special_effect_t( this );
+    effect -> name_str = "laceration";
+    effect -> spell_id =  459555;
+    effect -> proc_flags2_ = PF2_CRIT;
+    //Pet melee, bestial wrath on demand damage and Kill Command are procs in simc implemenation
+    effect -> set_can_proc_from_procs(true);
+    special_effects.push_back( effect );
+
+    auto cb = new laceration_cb_t( *effect, find_spell( 459555 ) -> effectN( 1 ).percent(), hunter_pet_t::active.laceration );
+    cb -> initialize();
   }
 }
 
