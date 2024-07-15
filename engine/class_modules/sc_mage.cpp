@@ -1246,6 +1246,9 @@ struct combustion_t final : public buff_t
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->talents.improved_combustion->effectN( 1 ).time_value() );
 
+    if ( p->talents.fires_ire.ok() )
+      add_invalidate( CACHE_CRIT_CHANCE );
+
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
     {
       if ( old == 0 )
@@ -1698,9 +1701,6 @@ public:
     if ( affected_by.combustion )
       c += p()->buffs.combustion->check_value();
 
-    if ( affected_by.fires_ire && !p()->buffs.combustion->check() )
-      c += p()->talents.fires_ire->effectN( 1 ).percent();
-
     if ( affected_by.overflowing_energy )
       c += p()->buffs.overflowing_energy->check_stack_value();
 
@@ -1712,9 +1712,14 @@ public:
     double m = spell_t::composite_crit_damage_bonus_multiplier();
 
     if ( affected_by.fires_ire && p()->buffs.combustion->check() )
+    {
       // TODO: The value here comes from spell 453385 effect#2, which is then adjusted based on the talent rank.
       // For now, just use effect#3, which is what Blizzard is using for the tooltip.
-      m *= 1.0 + 0.00001 * p()->talents.fires_ire->effectN( 3 ).base_value();
+      double value = 0.001 * p()->talents.fires_ire->effectN( 3 ).base_value();
+      if ( p()->bugs )
+        value = std::floor( value );
+      m *= 1.0 + value * 0.01;
+    }
 
     if ( affected_by.wildfire )
       m *= 1.0 + p()->buffs.wildfire->check_value();
@@ -8323,6 +8328,20 @@ double mage_t::composite_spell_crit_chance() const
   c += talents.tome_of_rhonin->effectN( 1 ).percent();
   c += talents.critical_mass->effectN( 1 ).percent();
   c += talents.force_of_will->effectN( 1 ).percent();
+
+  if ( !buffs.combustion->check() && talents.fires_ire.ok() )
+  {
+    if ( bugs )
+    {
+      int rank = talents.fires_ire.rank();
+      double rank_value = std::round( talents.fires_ire->effectN( 1 ).base_value() / rank );
+      c += rank * rank_value * 0.01;
+    }
+    else
+    {
+      c += talents.fires_ire->effectN( 1 ).percent();
+    }
+  }
 
   return c;
 }
