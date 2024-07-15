@@ -8492,6 +8492,9 @@ struct totem_pulse_action_t : public T
   shaman_totem_pet_t<T>* totem;
   unsigned pulse;
 
+  bool affected_by_enh_mastery_da;
+  bool affected_by_enh_mastery_ta;
+
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
@@ -8507,6 +8510,9 @@ struct totem_pulse_action_t : public T
     {
       this->harmful = true;
     }
+
+    affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
+    affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
   }
 
   void init() override
@@ -8540,6 +8546,30 @@ struct totem_pulse_action_t : public T
     double m = T::action_multiplier();
 
     m *= pulse_multiplier;
+
+    return m;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = T::action_da_multiplier();
+
+    if ( affected_by_enh_mastery_da )
+    {
+      m *= 1.0 + o()->cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double action_ta_multiplier() const override
+  {
+    double m = T::action_ta_multiplier();
+
+    if ( affected_by_enh_mastery_ta )
+    {
+      m *= 1.0 + o()->cache.mastery_value();
+    }
 
     return m;
   }
