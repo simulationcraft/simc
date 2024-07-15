@@ -5429,10 +5429,10 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
     if ( primary )
     {
+      std::vector<player_t*> targets = explosion()->target_list(); // make a copy
       if ( !excess )
       {
         bool was_spread = false;
-        std::vector<player_t*> targets = explosion()->target_list(); // make a copy
         rng().shuffle( targets.begin(), targets.end() );
         size_t i = 0;
         for ( auto t : targets )
@@ -5453,7 +5453,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
       }
       else
       {
-        for ( auto t : target_list() )
+        for ( auto t : targets )
         {
           if ( t == target )
             continue;
