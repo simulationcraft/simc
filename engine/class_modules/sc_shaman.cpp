@@ -474,6 +474,7 @@ public:
     spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> earth_elemental;
     spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> lesser_fire_elemental;
     spawner::pet_spawner_t<pet::primal_elemental_t, shaman_t> lesser_storm_elemental;
+    spawner::pet_spawner_t<pet_t, shaman_t> lightning_elemental;
 
     spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> spirit_wolves;
     spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> fire_wolves;
@@ -543,6 +544,7 @@ public:
     buff_t* storm_frenzy;
     buff_t* lesser_fire_elemental;
     buff_t* lesser_storm_elemental;
+    buff_t* fury_of_the_storms;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -907,7 +909,7 @@ public:
     player_talent_t mountains_will_fall;
     player_talent_t first_ascendant;
     player_talent_t preeminence;
-    player_talent_t fury_of_the_storms; // NEW NYI
+    player_talent_t fury_of_the_storms;
     player_talent_t skybreakers_fiery_demise;
     player_talent_t magma_chamber;
     // Row 10
@@ -3434,6 +3436,61 @@ struct storm_elemental_t : public primal_elemental_t
     }
   }
 };
+
+// ==========================================================================
+// Greater Lightning Elemental (Fury of the Storms Talent)
+// ==========================================================================
+
+struct greater_lightning_elemental_t : public shaman_pet_t
+{
+  struct lightning_blast_t : public pet_spell_t<greater_lightning_elemental_t>
+  {
+    lightning_blast_t( greater_lightning_elemental_t* p, util::string_view options ) :
+      super( p, "lightning_blast", p->find_spell( 191726 ), options )
+    {
+      ability_lag = { timespan_t::from_millis( 300 ), timespan_t::from_millis( 25 ) };
+    }
+  };
+
+  struct chain_lightning_t : public pet_spell_t<greater_lightning_elemental_t>
+  {
+    chain_lightning_t( greater_lightning_elemental_t* p, util::string_view options ) :
+      super( p, "chain_lightning", p->find_spell( 191732 ), options )
+    {
+      if ( data().effectN( 1 ).chain_multiplier() != 0 )
+      {
+        chain_multiplier = data().effectN( 1 ).chain_multiplier();
+      }
+
+      ability_lag = { timespan_t::from_millis( 300 ), timespan_t::from_millis( 25 ) };
+    }
+  };
+
+  greater_lightning_elemental_t( shaman_t* owner ) :
+    shaman_pet_t( owner, "greater_lightning_elemental", true, false )
+  {
+    owner_coeff.sp_from_sp = 1.0;
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this, options_str );
+    if ( name == "chain_lightning" ) return new chain_lightning_t( this, options_str );
+
+    return shaman_pet_t::create_action( name, options_str );
+  }
+
+  void create_default_apl() override
+  {
+    shaman_pet_t::create_default_apl();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+
+    def -> add_action( "chain_lightning,if=spell_targets.chain_lightning>1" );
+    def -> add_action( "lightning_blast" );
+  }
+};
+
 }  // end namespace pet
 
 // ==========================================================================
@@ -8116,6 +8173,11 @@ struct stormkeeper_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->trigger( p()->buff.stormkeeper->max_stack() );
+
+    if ( p()->buff.fury_of_the_storms->trigger() )
+    {
+      p() -> pet.lightning_elemental.spawn( p()->buff.fury_of_the_storms->buff_duration() );
+    }
   }
 
   bool ready() override
@@ -11602,6 +11664,8 @@ void shaman_t::create_buffs()
   buff.storm_frenzy = make_buff( this, "storm_frenzy", talent.storm_frenzy->effectN( 1 ).trigger() )
                                 ->set_default_value_from_effect( 1 )
                                 ->set_trigger_spell( talent.storm_frenzy );
+  buff.fury_of_the_storms = make_buff( this, "fury_of_storms", find_spell( 191716 ) )
+                                ->set_trigger_spell( talent.fury_of_the_storms );
 
   //
   // Enhancement
@@ -13463,6 +13527,10 @@ shaman_t::pets_t::pets_t( shaman_t* s ) :
       return new pet::storm_elemental_t( s,
         s->talent.primal_elementalist.ok() ? elemental::PRIMAL_STORM : elemental::GREATER_STORM,
         elemental_variant::LESSER );
+    } ),
+
+    lightning_elemental( "greater_lightning_elemental", s, []( shaman_t* s ) {
+      return new pet::greater_lightning_elemental_t( s );
     } ),
 
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
