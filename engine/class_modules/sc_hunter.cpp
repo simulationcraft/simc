@@ -3204,6 +3204,18 @@ struct barrage_t: public hunter_spell_t
   {
     hunter_spell_t::schedule_execute( state );
   }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if( p() -> talents.beast_cleave.ok() )
+    {
+      p() -> buffs.beast_cleave -> trigger(); 
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+        pet -> buffs.beast_cleave -> trigger();
+    }
+  }
 };
 
 struct residual_bleed_base_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
