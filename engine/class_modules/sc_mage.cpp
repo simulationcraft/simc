@@ -5430,6 +5430,10 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
   void trigger_explosion( player_t* target )
   {
+    // Don't trigger explosions when the iteration ends
+    if ( sim->event_mgr.canceled )
+      return;
+
     explosion()->set_target( target );
 
     if ( primary )
