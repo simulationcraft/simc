@@ -1491,6 +1491,7 @@ struct mage_spell_t : public spell_t
 
     // Misc
     bool combustion = true;
+    bool fires_ire = true;
     bool flame_accelerant = false;
     bool force_of_will = true;
     bool ice_floes = false;
@@ -1697,6 +1698,9 @@ public:
     if ( affected_by.combustion )
       c += p()->buffs.combustion->check_value();
 
+    if ( affected_by.fires_ire && !p()->buffs.combustion->check() )
+      c += p()->talents.fires_ire->effectN( 1 ).percent();
+
     if ( affected_by.overflowing_energy )
       c += p()->buffs.overflowing_energy->check_stack_value();
 
@@ -1706,6 +1710,11 @@ public:
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.fires_ire && p()->buffs.combustion->check() )
+      // TODO: The value here comes from spell 453385 effect#2, which is then adjusted based on the talent rank.
+      // For now, just use effect#3, which is what Blizzard is using for the tooltip.
+      m *= 1.0 + 0.00001 * p()->talents.fires_ire->effectN( 3 ).base_value();
 
     if ( affected_by.wildfire )
       m *= 1.0 + p()->buffs.wildfire->check_value();
