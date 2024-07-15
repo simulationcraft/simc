@@ -5416,13 +5416,9 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
   {
-    background = true;
     aoe = -1;
-    triggers.ignite = true;
-    split_aoe_damage = p->talents.deep_impact.ok();
-    base_multiplier *= 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
-    if ( !p->talents.deep_impact.ok() )
-      reduced_aoe_targets = 8;
+    reduced_aoe_targets = 8;
+    background = split_aoe_damage = triggers.ignite = true;
   }
 
   void execute() override
@@ -5438,6 +5434,17 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     if ( type == meteor_type::ISOTHERMIC )
       trigger_frostfire_mastery();
+
+    if ( p()->talents.deep_impact.ok() )
+    {
+      // TODO: Check if Meteor needs to actually hit the target that has Living Bomb applied.
+      const auto& tl = target_list();
+      if ( !tl.empty() )
+      {
+        player_t* t = tl[ rng().range( tl.size() ) ];
+        p()->action.living_bomb_dot->execute_on_target( t );
+      }
+    }
   }
 };
 
@@ -5454,7 +5461,7 @@ struct meteor_t final : public fire_mage_spell_t
     if ( !data().ok() )
       return;
 
-    cooldown->duration += p->talents.deep_impact->effectN( 2 ).time_value();
+    cooldown->duration += p->talents.deep_impact->effectN( 1 ).time_value();
 
     std::string_view burn_name;
     std::string_view impact_name;
