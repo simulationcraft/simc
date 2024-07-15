@@ -352,6 +352,7 @@ public:
     buff_t* flame_accelerant;
     buff_t* frenetic_speed;
     buff_t* fury_of_the_sun_king;
+    buff_t* heat_shimmer;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* hyperthermia;
@@ -2374,6 +2375,9 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
+    if ( p()->buffs.heat_shimmer->check() )
+      return true;
+
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
   }
 
@@ -2381,6 +2385,9 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     if ( !p()->talents.improved_scorch.ok() )
       return false;
+
+    if ( p()->buffs.heat_shimmer->check() )
+      return true;
 
     return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value();
   }
@@ -2846,6 +2853,7 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
+    p->buffs.heat_shimmer->trigger();
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -5932,6 +5940,14 @@ struct scorch_t final : public fire_mage_spell_t
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
+  timespan_t execute_time() const override
+  {
+    if ( p()->buffs.heat_shimmer->check() )
+      return 0_ms;
+
+    return fire_mage_spell_t::execute_time();
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
@@ -5962,6 +5978,9 @@ struct scorch_t final : public fire_mage_spell_t
         p()->buffs.frenetic_speed->trigger();
       if ( improved_scorch_active( s->target ) )
         get_td( s->target )->debuffs.improved_scorch->trigger();
+      if ( p()->buffs.heat_shimmer->check() )
+        // The currently casting Scorch and a queued Scorch can both fully benefit from Heat Shimmer.
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.heat_shimmer->decrement(); } );
     }
   }
 
@@ -7717,6 +7736,8 @@ void mage_t::create_buffs()
                                      ->set_chance( talents.scorch.ok() );
   buffs.fury_of_the_sun_king     = make_buff( this, "fury_of_the_sun_king", find_spell( 383883 ) )
                                      ->set_default_value_from_effect( 2 );
+  buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
+                                     ->set_trigger_spell( talents.heat_shimmer );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
