@@ -350,12 +350,14 @@ public:
     buff_t* firefall_ready;
     buff_t* flame_accelerant;
     buff_t* frenetic_speed;
+    buff_t* fury_of_the_sun_king;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* hyperthermia;
+    buff_t* lit_fuse;
     buff_t* pyrotechnics;
+    buff_t* sparking_cinders;
     buff_t* sun_kings_blessing;
-    buff_t* fury_of_the_sun_king;
     buff_t* wildfire;
 
 
@@ -1002,6 +1004,7 @@ public:
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
+  void trigger_lit_fuse();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
@@ -2515,6 +2518,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
     fire_mage_spell_t::execute();
 
+    p()->buffs.sparking_cinders->decrement();
+
     if ( expire_skb )
       p()->buffs.fury_of_the_sun_king->expire();
 
@@ -2526,15 +2531,21 @@ struct hot_streak_spell_t : public fire_mage_spell_t
         p()->buffs.hyperthermia->trigger();
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
+      p()->trigger_lit_fuse();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
       if ( p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
       {
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
+        p()->trigger_lit_fuse();
         assert( pyromaniac_action );
         // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
-        make_event( *sim, 500_ms, [ this, t = target ] { pyromaniac_action->execute_on_target( t ); } );
+        make_event( *sim, 500_ms, [ this, t = target ]
+        {
+          pyromaniac_action->execute_on_target( t );
+          p()->buffs.sparking_cinders->decrement();
+        } );
       }
     }
   }
@@ -3795,6 +3806,8 @@ struct combustion_t final : public fire_mage_spell_t
     p()->buffs.tier31_4pc->trigger();
     if ( p()->talents.flash_freezeburn.ok() )
       p()->buffs.frostfire_empowerment->execute();
+    if ( p()->talents.explosivo.ok() )
+      p()->buffs.lit_fuse->trigger();
 
     p()->expression_support.kindling_reduction = 0_ms;
   }
@@ -4183,6 +4196,9 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
     if ( p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
 
+    if ( p()->buffs.sparking_cinders->check() )
+      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
+
     return m;
   }
 };
@@ -4218,6 +4234,9 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( p()->buffs.combustion->check() )
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
+
+    if ( p()->buffs.sparking_cinders->check() )
+      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
 
     return m;
   }
@@ -5218,6 +5237,8 @@ struct icy_veins_t final : public frost_mage_spell_t
 
 struct fire_blast_t final : public fire_mage_spell_t
 {
+  size_t lit_fuse_targets;
+
   fire_blast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
@@ -5230,6 +5251,8 @@ struct fire_blast_t final : public fire_mage_spell_t
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
     cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
+    lit_fuse_targets = as<size_t>( p->talents.lit_fuse->effectN( 2 ).base_value() );
+    lit_fuse_targets += as<size_t>( p->talents.blast_zone->effectN( 3 ).base_value() );
 
     if ( p->talents.fire_blast.ok() )
     {
@@ -5244,6 +5267,19 @@ struct fire_blast_t final : public fire_mage_spell_t
 
     if ( p()->specialization() == MAGE_FIRE )
       p()->trigger_time_manipulation();
+
+    if ( p()->buffs.lit_fuse->check() )
+    {
+      p()->buffs.lit_fuse->decrement();
+      std::vector<player_t*> tl = target_list(); // Make a copy.
+      if ( !tl.empty() )
+      {
+        // TODO: Check for targeting conditions.
+        rng().shuffle( tl.begin(), tl.end() );
+        for ( size_t i = 0; i < lit_fuse_targets && i < tl.size(); i++ )
+          p()->action.living_bomb_dot->execute_on_target( tl[ i ] );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -5281,6 +5317,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
   // post-spread one. This allows two copies of the DoT to be up on one target.
   const bool primary;
   const bool excess;
+  size_t max_spread_targets;
 
   static unsigned dot_spell_id( bool primary, bool excess )
   {
@@ -5293,9 +5330,16 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
   living_bomb_dot_t( std::string_view n, mage_t* p, bool primary_, bool excess_ = false ) :
     fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( primary_, excess_ ) ) ),
     primary( primary_ ),
-    excess( excess_ )
+    excess( excess_ ),
+    max_spread_targets()
   {
     background = true;
+
+    if ( !excess && p->talents.lit_fuse.ok() )
+    {
+      max_spread_targets = as<size_t>( p->talents.lit_fuse->effectN( 3 ).base_value() );
+      max_spread_targets += as<size_t>( p->talents.blast_zone->effectN( 4 ).base_value() );
+    }
   }
 
   action_t* dot_spread()
@@ -5320,23 +5364,45 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
     if ( primary )
     {
-      auto targets = explosion()->target_list();
-      for ( auto t : targets )
+      if ( !excess )
       {
-        if ( t == target )
-          continue;
+        bool was_spread = false;
+        std::vector<player_t*> targets = explosion()->target_list(); // make a copy
+        rng().shuffle( targets.begin(), targets.end() );
+        size_t i = 0;
+        for ( auto t : targets )
+        {
+          if ( i >= max_spread_targets )
+            break;
 
-        dot_spread()->execute_on_target( t );
+          if ( t == target )
+            continue;
+
+          dot_spread()->execute_on_target( t );
+          was_spread = true;
+          i++;
+        }
+
+        if ( p()->talents.convection.ok() && !was_spread )
+          dot_spread()->execute_on_target( target );
       }
-
-      if ( excess )
+      else
       {
+        for ( auto t : target_list() )
+        {
+          if ( t == target )
+            continue;
+
+          dot_spread()->execute_on_target( t );
+        }
+
         p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
         p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
       }
     }
 
     explosion()->execute();
+    p()->buffs.sparking_cinders->trigger();
   }
 
   void execute() override
@@ -5371,6 +5437,20 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = true;
+    base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      // TODO: This is currently "Add Flat Multiplier" in the data. Verify the
+      // specific numbers in game, especially because scripting is involved.
+      // There is also a zeroed "Add Percent Multiplier" on Combustion for Living Bomb.
+      am *= 1.0 + p()->talents.explosivo->effectN( 2 ).percent();
+
+    return am;
   }
 };
 
@@ -5438,7 +5518,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
 
     if ( p()->talents.deep_impact.ok() )
     {
-      // TODO: Check if Meteor needs to actually hit the target that has Living Bomb applied.
       const auto& tl = target_list();
       if ( !tl.empty() )
       {
@@ -5644,6 +5723,16 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.sparking_cinders->check() )
+      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+
+    return m;
+  }
+
   double composite_crit_chance() const override
   {
     double c = fire_mage_spell_t::composite_crit_chance();
@@ -5671,11 +5760,8 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     double m = hot_streak_spell_t::composite_da_multiplier( s );
 
-    if ( s->target->health_percentage() <= p()->talents.controlled_destruction->effectN( 2 ).base_value()
-      || s->target->health_percentage() >= p()->talents.controlled_destruction->effectN( 3 ).base_value() )
-    {
-      m *= 1.0 + p()->talents.controlled_destruction->effectN( 1 ).percent();
-    }
+    if ( p()->buffs.sparking_cinders->check() )
+      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
 
     return m;
   }
@@ -7593,18 +7679,23 @@ void mage_t::create_buffs()
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_RUN_SPEED )
                                      ->set_chance( talents.scorch.ok() );
+  buffs.fury_of_the_sun_king     = make_buff( this, "fury_of_the_sun_king", find_spell( 383883 ) )
+                                     ->set_default_value_from_effect( 2 );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) );
   buffs.hyperthermia             = make_buff( this, "hyperthermia", find_spell( 383874 ) )
                                      ->set_default_value_from_effect( 2 )
                                      ->set_trigger_spell( talents.hyperthermia );
+  buffs.lit_fuse                 = make_buff( this, "lit_fuse", find_spell( 453207 ) )
+                                     // Lit Fuse can be applied by Explosivo, but it does nothing without the talent.
+                                     ->set_chance( talents.lit_fuse.ok() );
   buffs.pyrotechnics             = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyrotechnics.ok() );
+  buffs.sparking_cinders         = make_buff( this, "sparking_cinders", find_spell( 457729 ) )
+                                     ->set_trigger_spell( talents.sparking_cinders );
   buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 383882 ) )
                                      ->set_chance( talents.sun_kings_blessing.ok() );
-  buffs.fury_of_the_sun_king     = make_buff( this, "fury_of_the_sun_king", find_spell( 383883 ) )
-                                     ->set_default_value_from_effect( 2 );
   buffs.wildfire                 = make_buff( this, "wildfire", find_spell( 383492 ) )
                                      ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
                                      ->set_chance( talents.wildfire.ok() );
@@ -8736,6 +8827,19 @@ void mage_t::trigger_arcane_charge( int stacks )
     return;
 
   buffs.arcane_charge->trigger( stacks );
+}
+
+void mage_t::trigger_lit_fuse()
+{
+  if ( !talents.lit_fuse.ok() )
+    return;
+
+  // TODO: Verify the proc chance with every combination of the relevant talents.
+  double chance = talents.lit_fuse->effectN( 4 ).percent() + talents.explosive_ingenuity->effectN( 1 ).percent();
+  if ( buffs.combustion->check() )
+    chance += talents.explosivo->effectN( 1 ).percent();
+  if ( rng().roll( chance ) )
+    buffs.lit_fuse->trigger();
 }
 
 /* Report Extension Class
