@@ -518,6 +518,7 @@ public:
     buff_t* whirling_earth;
 
     buff_t* awakening_storms;
+    buff_t* totemic_rebound;
 
     // Restoration
     buff_t* spirit_walk;
@@ -1073,6 +1074,7 @@ public:
   void trigger_earthsurge( const action_state_t* state );
   void trigger_whirling_air( const action_state_t* state );
   void trigger_reactivity( const action_state_t* state );
+  void trigger_totemic_rebound( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -4282,6 +4284,7 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->trigger_awakening_storms( execute_state );
     p()->trigger_whirling_air( execute_state );
+    p()->trigger_totemic_rebound( execute_state );
   }
 };
 
@@ -8495,6 +8498,8 @@ struct totem_pulse_action_t : public T
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
 
+  bool affected_by_totemic_rebound_da;
+
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
@@ -8513,6 +8518,8 @@ struct totem_pulse_action_t : public T
 
     affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
+    affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
+                                     T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 2 ) );
   }
 
   void init() override
@@ -8557,6 +8564,11 @@ struct totem_pulse_action_t : public T
     if ( affected_by_enh_mastery_da )
     {
       m *= 1.0 + o()->cache.mastery_value();
+    }
+
+    if ( affected_by_totemic_rebound_da )
+    {
+      m *= 1.0 + o()->buff.totemic_rebound->stack_value();
     }
 
     return m;
@@ -8905,12 +8917,31 @@ struct surging_totem_pulse_t : public spell_totem_action_t
   }
 };
 
+struct surging_bolt_t : public spell_totem_action_t
+{
+  surging_bolt_t( spell_totem_pet_t* totem )
+    : spell_totem_action_t( "surging_bolt", totem, totem->find_spell( 458267 ) )
+  {
+    background = true;
+  }
+};
+
 struct surging_totem_t : public spell_totem_pet_t
 {
-  surging_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "surging_totem" )
+  surging_bolt_t* surging_bolt;
+
+  surging_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "surging_totem" ), surging_bolt( nullptr )
   {
     pulse_amplitude = owner->find_spell(
       owner->specialization() == SHAMAN_ENHANCEMENT ? 455593 : 45594 )->effectN( 1 ).period();
+  }
+
+  void trigger_surging_bolt( player_t* target )
+  {
+    if ( surging_bolt )
+    {
+      surging_bolt->execute_on_target( target );
+    }
   }
 
   void init_spells() override
@@ -8918,6 +8949,11 @@ struct surging_totem_t : public spell_totem_pet_t
     spell_totem_pet_t::init_spells();
 
     pulse_action = new surging_totem_pulse_t( this );
+
+    if ( o()->talent.totemic_rebound.ok() )
+    {
+      surging_bolt = new surging_bolt_t( this );
+    }
   }
 
   void summon( timespan_t duration ) override
@@ -8934,6 +8970,7 @@ struct surging_totem_t : public spell_totem_pet_t
     o()->buff.whirling_air->expire();
     o()->buff.whirling_fire->expire();
     o()->buff.whirling_earth->expire();
+    o()->buff.totemic_rebound->expire();
   }
 };
 
@@ -11422,6 +11459,24 @@ void shaman_t::trigger_reactivity( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_totemic_rebound( const action_state_t* state )
+{
+  if ( !pet.surging_totem.n_active_pets() )
+  {
+    return;
+  }
+
+  if ( !buff.totemic_rebound->trigger() )
+  {
+    return;
+  }
+
+  for ( auto totem : pet.surging_totem )
+  {
+    debug_cast<surging_totem_t*>( totem )->trigger_surging_bolt( state->target );
+  }
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -11524,6 +11579,10 @@ void shaman_t::create_buffs()
 
   buff.awakening_storms = make_buff( this, "awakening_storms", find_spell( 462131 ) )
     ->set_chance( talent.awakening_storms.ok() ? 1.0 : 0.0 );
+
+  buff.totemic_rebound = make_buff( this, "totemic_rebound", find_spell( 458269 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_trigger_spell( talent.totemic_rebound );
 
   //
   // Elemental
