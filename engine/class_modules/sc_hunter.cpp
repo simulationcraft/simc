@@ -573,7 +573,7 @@ public:
 
     spell_data_ptr_t high_explosive_trap; //Verify functionality remains same
     spell_data_ptr_t implosive_trap; // NYI
-    spell_data_ptr_t unnatural_causes; //NYI - Your damage over time effects deal 10% increase damage. This effect is increased by 50% on targets below 20% health.
+    spell_data_ptr_t unnatural_causes;
     
     // Shared
     // BM + SV
@@ -1014,6 +1014,7 @@ public:
 
   struct {
     bool serrated_shots = false;
+    damage_affected_by unnatural_causes;
     // bm
     bool thrill_of_the_hunt = false;
     damage_affected_by bestial_wrath;
@@ -1046,6 +1047,7 @@ public:
       if ( ab::data().mechanic() == MECHANIC_BLEED || ab::data().effectN( i ).mechanic() == MECHANIC_BLEED )
         affected_by.serrated_shots = true;
     }
+    affected_by.unnatural_causes = check_affected_by( this, p->talents.unnatural_causes );
 
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
@@ -1235,6 +1237,15 @@ public:
     if ( affected_by.t29_sv_4pc_dmg.direct && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.direct ).percent();
 
+    if ( affected_by.unnatural_causes.direct )
+    {
+      double amount = p()->talents.unnatural_causes->effectN( affected_by.unnatural_causes.direct ).percent();
+      if ( s->target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
+        amount *= 1 + p()->talents.unnatural_causes->effectN( 2 ).percent();
+
+      am *= 1 + amount;
+    }
+
     return am;
   }
 
@@ -1263,6 +1274,15 @@ public:
         am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
       else
         am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+    }
+
+    if ( affected_by.unnatural_causes.tick )
+    {
+      double amount = p()->talents.unnatural_causes->effectN( affected_by.unnatural_causes.tick ).percent();
+      if ( s->target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
+        amount *= 1 + p()->talents.unnatural_causes->effectN( 2 ).percent();
+
+      am *= 1 + amount;
     }
 
     return am;
