@@ -339,7 +339,7 @@ public:
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
-    const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
+    const spell_data_t* conflagrate_2; // Energize data
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
