@@ -11311,8 +11311,6 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
 
   if ( ++awakening_storms_counter == talent.awakening_storms->effectN( 2 ).base_value() )
   {
-    action.awakening_storms->execute_on_target( state->target );
-
     if ( buff.tempest->check() )
     {
       proc.tempest_awakening_storms->occur();
@@ -11320,6 +11318,8 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
     buff.tempest->trigger();
     awakening_storms_counter = 0;
   }
+
+  action.awakening_storms->execute_on_target( state->target );
 }
 
 void shaman_t::trigger_earthsurge( const action_state_t* /* state */ )
