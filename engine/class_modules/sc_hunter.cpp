@@ -408,6 +408,7 @@ public:
     buff_t* dire_pack;
     buff_t* beast_cleave; 
     buff_t* explosive_venom;
+    buff_t* a_murder_of_crows;
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -451,7 +452,6 @@ public:
     cooldown_t* trueshot;
 
     cooldown_t* barbed_shot;
-    cooldown_t* a_murder_of_crows;
     cooldown_t* bestial_wrath;
 
     cooldown_t* wildfire_bomb;
@@ -832,6 +832,7 @@ public:
     action_t* volley_t31 = nullptr;
     action_t* wildfire_bomb_t31 = nullptr;
     action_t* shadow_surge = nullptr;
+    action_t* a_murder_of_crows = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -878,7 +879,6 @@ public:
     cooldowns.trueshot              = get_cooldown( "trueshot" );
 
     cooldowns.barbed_shot           = get_cooldown( "barbed_shot" );
-    cooldowns.a_murder_of_crows     = get_cooldown( "a_murder_of_crows" );
     cooldowns.bestial_wrath         = get_cooldown( "bestial_wrath" );
 
     cooldowns.wildfire_bomb         = get_cooldown( "wildfire_bomb" );
@@ -3907,6 +3907,41 @@ struct master_marksman_t : residual_bleed_base_t
   { }
 };
 
+// A Murder of Crows ========================================================
+
+struct a_murder_of_crows_t : public hunter_spell_t
+{
+  struct peck_t final : public hunter_ranged_attack_t
+  {
+    peck_t( util::string_view n, hunter_t* p ) :
+      hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
+    { }
+
+    timespan_t travel_time() const override
+    {
+      return timespan_t::from_seconds( data().missile_speed() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+    }
+  };
+
+  a_murder_of_crows_t( hunter_t* p ) :
+    hunter_spell_t( "a_murder_of_crows", p, p -> find_spell( 131894 ) )
+  {
+    background = true;
+    tick_action = p -> get_background_action<peck_t>( "crow_peck" );
+  }
+
+  //Spell data for A Murder of Crows still has it listed as costing focus
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
 namespace death_chakram
 {
 /**
@@ -5724,42 +5759,6 @@ struct interrupt_base_t: public hunter_spell_t
   }
 };
 
-// A Murder of Crows ========================================================
-
-struct a_murder_of_crows_t : public hunter_spell_t
-{
-  struct peck_t final : public hunter_ranged_attack_t
-  {
-    peck_t( util::string_view n, hunter_t* p ) :
-      hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
-    { }
-
-    timespan_t travel_time() const override
-    {
-      return timespan_t::from_seconds( data().missile_speed() );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_ranged_attack_t::impact( s );
-    }
-  };
-
-  a_murder_of_crows_t( hunter_t* p, util::string_view options_str ) :
-    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
-  {
-    parse_options( options_str );
-
-    tick_action = p -> get_background_action<peck_t>( "crow_peck" );
-    starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-  }
-};
-
 //==============================
 // Shared spells
 //==============================
@@ -6053,6 +6052,16 @@ struct kill_command_t: public hunter_spell_t
     if ( p() -> tier_set.t30_bm_4pc.ok() )
     {
       p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
+
+    if( p() -> talents.a_murder_of_crows.ok() )
+    {
+      p() -> buffs.a_murder_of_crows -> trigger();
+      if ( p() -> buffs.a_murder_of_crows -> at_max_stacks() )
+      {
+        p() -> actions.a_murder_of_crows -> execute_on_target( target );
+        p() -> buffs.a_murder_of_crows -> expire();
+      }
     }
   }
 
@@ -7018,12 +7027,6 @@ void hunter_td_t::target_demise()
     return;
 
   hunter_t* p = static_cast<hunter_t*>( source );
-  if ( p -> talents.a_murder_of_crows.ok() && dots.a_murder_of_crows -> is_ticking() )
-  {
-    p -> sim -> print_debug( "{} a_murder_of_crows cooldown reset on target death.", p -> name() );
-    p -> cooldowns.a_murder_of_crows -> reset( true );
-  }
-
   if ( p -> talents.terms_of_engagement.ok() && damaged )
   {
     p -> sim -> print_debug( "{} harpoon cooldown reset on damaged target death.", p -> name() );
@@ -7123,7 +7126,6 @@ action_t* hunter_t::create_action( util::string_view name,
   using namespace attacks;
   using namespace spells;
 
-  if ( name == "a_murder_of_crows"     ) return new      a_murder_of_crows_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
@@ -7690,6 +7692,9 @@ void hunter_t::create_actions()
 
   if ( talents.shadow_surge.ok() )
     actions.shadow_surge = new attacks::shadow_surge_t( this );
+  
+  if ( talents.a_murder_of_crows.ok() )
+    actions.a_murder_of_crows = new attacks::a_murder_of_crows_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7930,6 +7935,10 @@ void hunter_t::create_buffs()
 
   buffs.explosive_venom = 
     make_buff( this, "explosive_venom", find_spell( 459689 ) )
+    -> set_default_value_from_effect( 1 );
+
+  buffs.a_murder_of_crows = 
+    make_buff( this, "a_murder_of_crows", find_spell( 459759 ) )
     -> set_default_value_from_effect( 1 );
 
   // Survival
