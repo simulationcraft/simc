@@ -2104,7 +2104,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         return;
 
       p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
-      debuff->expire();
+      debuff->decrement();
 
       if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
         p()->action.magis_spark->execute_on_target( s->target );
@@ -3029,13 +3029,13 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.leydrinker->check() )
     {
-      p()->buffs.leydrinker->expire();
+      p()->buffs.leydrinker->decrement();
       p()->state.trigger_leydrinker = true;
     }
 
     if ( p()->buffs.intuition->check() )
     {
-      p()->buffs.intuition->expire();
+      p()->buffs.intuition->decrement();
       p()->trigger_arcane_charge( intuition_charges );
     }
     p()->buffs.intuition->trigger();
@@ -3163,7 +3163,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.leydrinker->check() )
     {
-      p()->buffs.leydrinker->expire();
+      p()->buffs.leydrinker->decrement();
       p()->state.trigger_leydrinker = true;
     }
 
@@ -4427,7 +4427,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
     {
       p()->action.excess_ice_nova->execute_on_target( s->target );
-      p()->buffs.excess_frost->expire();
+      p()->buffs.excess_frost->decrement();
     }
 
     trigger_winters_chill( s );
@@ -5189,7 +5189,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( p()->buffs.excess_fire->check() )
     {
       p()->action.excess_living_bomb_dot->execute_on_target( s->target );
-      p()->buffs.excess_fire->expire();
+      p()->buffs.excess_fire->decrement();
     }
 
     if ( frozen & FF_FINGERS_OF_FROST && frigid_pulse )
@@ -5369,7 +5369,7 @@ struct fire_blast_t final : public fire_mage_spell_t
       if ( p()->buffs.excess_fire->check() )
       {
         p()->action.excess_living_bomb_dot->execute_on_target( s->target );
-        p()->buffs.excess_fire->expire();
+        p()->buffs.excess_fire->decrement();
       }
     }
   }
@@ -5746,7 +5746,7 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
       if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
       {
         p()->action.excess_ice_nova->execute_on_target( s->target );
-        p()->buffs.excess_frost->expire();
+        p()->buffs.excess_frost->decrement();
       }
     }
   }
