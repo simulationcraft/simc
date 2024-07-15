@@ -7004,6 +7004,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   procs(),
   shuffled_rng(),
   rppm(),
+  accumulated_rng(),
   sample_data(),
   spec(),
   state(),
