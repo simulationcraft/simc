@@ -3816,6 +3816,8 @@ struct combustion_t final : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
+    p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
+    p()->cooldowns.phoenix_flames->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 2 ).base_value() ) );
     p()->buffs.tier31_4pc->trigger();
     if ( p()->talents.flash_freezeburn.ok() )
       p()->buffs.frostfire_empowerment->execute();
