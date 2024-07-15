@@ -355,9 +355,6 @@ public:
   /// Tempest stack count
   unsigned tempest_counter;
 
-  /// Awakening storms counter
-  int awakening_storms_counter;
-
   // Cached actions
   struct actions_t
   {
@@ -519,6 +516,8 @@ public:
     buff_t* whirling_air;
     buff_t* whirling_fire;
     buff_t* whirling_earth;
+
+    buff_t* awakening_storms;
 
     // Restoration
     buff_t* spirit_walk;
@@ -11314,14 +11313,16 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
     return;
   }
 
-  if ( ++awakening_storms_counter == talent.awakening_storms->effectN( 2 ).base_value() )
+  buff.awakening_storms->trigger();
+
+  if ( buff.awakening_storms->stack() == talent.awakening_storms->effectN( 2 ).base_value() )
   {
     if ( buff.tempest->check() )
     {
       proc.tempest_awakening_storms->occur();
     }
+    buff.awakening_storms->expire();
     buff.tempest->trigger();
-    awakening_storms_counter = 0;
   }
 
   action.awakening_storms->execute_on_target( state->target );
@@ -11490,6 +11491,9 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.whirling_elements );
   buff.whirling_earth = make_buff( this, "whirling_earth", find_spell( 453406 ) )
     ->set_trigger_spell( talent.whirling_elements );
+
+  buff.awakening_storms = make_buff( this, "awakening_storms", find_spell( 462131 ) )
+    ->set_chance( talent.awakening_storms.ok() ? 1.0 : 0.0 );
 
   //
   // Elemental
@@ -12764,7 +12768,6 @@ void shaman_t::reset()
   accumulated_ascendance_extension_time = timespan_t::from_seconds( 0.0 );
   ascendance_extension_cap = timespan_t::from_seconds( 0.0 );
   tempest_counter = 0U;
-  awakening_storms_counter = 0;
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
