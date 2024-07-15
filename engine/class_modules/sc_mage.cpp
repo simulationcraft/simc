@@ -355,6 +355,7 @@ public:
     buff_t* hot_streak;
     buff_t* hyperthermia;
     buff_t* lit_fuse;
+    buff_t* majesty_of_the_phoenix;
     buff_t* pyrotechnics;
     buff_t* sparking_cinders;
     buff_t* sun_kings_blessing;
@@ -4199,6 +4200,9 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
 
+    if ( p()->buffs.majesty_of_the_phoenix->check() )
+      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
     return m;
   }
 };
@@ -4228,6 +4232,16 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
+  timespan_t execute_time_flat_modifier() const override
+  {
+    auto add = hot_streak_spell_t::execute_time_flat_modifier();
+
+    if ( p()->buffs.majesty_of_the_phoenix->check() )
+      add += p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).time_value();
+
+    return add;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
@@ -4238,6 +4252,9 @@ struct flamestrike_t final : public hot_streak_spell_t
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
 
+    if ( p()->buffs.majesty_of_the_phoenix->check() )
+      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
     return m;
   }
 
@@ -4246,6 +4263,8 @@ struct flamestrike_t final : public hot_streak_spell_t
     num_targets_crit = 0;
 
     hot_streak_spell_t::execute();
+
+    p()->buffs.majesty_of_the_phoenix->decrement();
 
     if ( p()->buffs.combustion->check() )
     {
@@ -5637,6 +5656,14 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     base_multiplier *= 1.0 + p->talents.from_the_ashes->effectN( 2 ).percent();
     base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( num_targets_hit >= as<int>( p()->talents.majesty_of_the_phoenix->effectN( 1 ).base_value() ) )
+      p()->buffs.majesty_of_the_phoenix->trigger( p()->buffs.majesty_of_the_phoenix->max_stack() );
   }
 
   void impact( action_state_t* s ) override
@@ -7689,6 +7716,8 @@ void mage_t::create_buffs()
   buffs.lit_fuse                 = make_buff( this, "lit_fuse", find_spell( 453207 ) )
                                      // Lit Fuse can be applied by Explosivo, but it does nothing without the talent.
                                      ->set_chance( talents.lit_fuse.ok() );
+  buffs.majesty_of_the_phoenix   = make_buff( this, "majesty_of_the_phoenix", find_spell( 453329 ) )
+                                     ->set_chance( talents.majesty_of_the_phoenix.ok() );
   buffs.pyrotechnics             = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( talents.pyrotechnics.ok() );
