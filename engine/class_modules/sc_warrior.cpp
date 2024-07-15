@@ -2754,6 +2754,7 @@ struct bladestorm_t : public warrior_attack_t
     bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ), spell->effectN( 1 ).trigger() ) ),
       bladestorm_oh( nullptr ),
       mortal_strike( nullptr ),
+      bloodthirst( nullptr ),
       bloodbath( nullptr )
   {
     parse_options( options_str );
