@@ -3640,6 +3640,8 @@ struct thunder_clap_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -3837,6 +3839,8 @@ struct execute_arms_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4070,6 +4074,8 @@ struct execute_fury_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4545,6 +4551,8 @@ struct raging_blow_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4703,6 +4711,8 @@ struct crushing_blow_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -5412,6 +5422,8 @@ struct revenge_t : public warrior_attack_t
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
         chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
