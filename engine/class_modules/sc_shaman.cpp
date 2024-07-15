@@ -8407,12 +8407,17 @@ struct shaman_totem_pet_t : public pet_t
 
   double composite_spell_power( school_e school ) const override
   {
-    return owner->cache.spell_power( school );
+    return owner->composite_spell_power( school );
   }
 
   double composite_spell_power_multiplier() const override
   {
     return owner->composite_spell_power_multiplier();
+  }
+
+  double composite_total_spell_power( school_e school ) const override
+  {
+    return owner->composite_total_spell_power( school );
   }
 
   double composite_total_attack_power_by_type( attack_power_type type ) const override
