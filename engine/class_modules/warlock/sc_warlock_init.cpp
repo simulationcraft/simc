@@ -331,6 +331,9 @@ namespace warlock
     talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
     talents.conflagrate_2 = find_spell( 245330 );
 
+    talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
+    talents.backdraft_buff = find_spell( 117828 );
+
     talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
     talents.reverse_entropy_buff = find_spell( 266030 );
 
@@ -338,9 +341,6 @@ namespace warlock
 
     talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
     talents.rain_of_fire_tick = find_spell( 42223 );
-
-    talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
-    talents.backdraft_buff = find_spell( 117828 );
 
     talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
 
@@ -548,7 +548,6 @@ namespace warlock
 
   void warlock_t::create_buffs_destruction()
   {
-    // destruction buffs
     buffs.backdraft = make_buff( this, "backdraft", talents.backdraft_buff );
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
