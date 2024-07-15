@@ -501,6 +501,11 @@ public:
     real_ppm_t* frostfire_infusion;
   } rppm;
 
+  struct accumulated_rngs_t
+  {
+    accumulated_rng_t* spellfrost_teachings;
+  } accumulated_rng;
+
   // Sample data
   struct sample_data_t
   {
@@ -543,7 +548,6 @@ public:
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
     int embedded_splinters;
-    int spellfrost_teachings_attempts = 1;
   } state;
 
   struct expression_support_t
@@ -6368,23 +6372,13 @@ struct splinter_t final : public mage_spell_t
       }
     }
 
-    if ( p()->talents.spellfrost_teachings.ok() )
+    if ( p()->accumulated_rng.spellfrost_teachings->trigger() )
     {
-      // This proc chance is not present in spell data and should be periodically checked.
-      bool success = rng().roll( 0.0004 * p()->state.spellfrost_teachings_attempts );
-      if ( success )
-      {
-        p()->cooldowns.frozen_orb->reset( true );
-        if ( p()->action.spellfrost_arcane_orb && p()->target )
-          p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
-        if ( p()->specialization() == MAGE_FROST )
-          p()->buffs.spellfrost_teachings->trigger();
-        p()->state.spellfrost_teachings_attempts = 1;
-      }
-      else
-      {
-        p()->state.spellfrost_teachings_attempts++;
-      }
+      p()->cooldowns.frozen_orb->reset( true );
+      if ( p()->action.spellfrost_arcane_orb && p()->target )
+        p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
+      if ( p()->specialization() == MAGE_FROST )
+        p()->buffs.spellfrost_teachings->trigger();
     }
 
     if ( splinterstorm && p()->specialization() == MAGE_FROST )
@@ -7865,6 +7859,8 @@ void mage_t::init_rng()
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
   rppm.energy_reconstitution = get_rppm( "energy_reconstitution", talents.energy_reconstitution );
   rppm.frostfire_infusion = get_rppm( "frostfire_infusion", talents.frostfire_infusion );
+  // Accumulated RNG is also not present in the game data.
+  accumulated_rng.spellfrost_teachings = get_accumulated_rng( "spellfrost_teachings", talents.spellfrost_teachings.ok() ? 0.0004 : 0.0 );
 }
 
 void mage_t::init_items()
