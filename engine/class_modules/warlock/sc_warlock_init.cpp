@@ -58,9 +58,6 @@ namespace warlock
     talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
     talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
 
-    talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
-    talents.havoc_debuff = find_spell( 80240 );
-
     talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
 
     talents.wrathful_minion = find_talent_spell( talent_tree::CLASS, "Wrathful Minion" ); // Should be ID 386864
@@ -331,36 +328,41 @@ namespace warlock
     talents.conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagrate" ); // Should be ID 17962
     talents.conflagrate_2 = find_spell( 245330 );
 
-    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
-    talents.reverse_entropy_buff = find_spell( 266030 );
-
-    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
-
-    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
-    talents.rain_of_fire_tick = find_spell( 42223 );
-
     talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
     talents.backdraft_buff = find_spell( 117828 );
 
-    talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
+    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
+    talents.reverse_entropy_buff = find_spell( 266030 );
 
-    talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
-    talents.pyrogenics_debuff = find_spell( 387096 );
+    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
+    talents.rain_of_fire_tick = find_spell( 42223 );
 
     talents.roaring_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Blaze" ); // Should be ID 205184
     talents.conflagrate_debuff = find_spell( 265931 );
 
     talents.improved_conflagrate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Conflagrate" ); // Should be ID 231793
 
+    talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
+
+    talents.mayhem = find_talent_spell( talent_tree::SPECIALIZATION, "Mayhem" ); // Should be ID 387506
+
+    talents.havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Havoc" ); // Should be spell 80240
+    talents.havoc_debuff = find_spell( 80240 );
+
+    talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
+    talents.pyrogenics_debuff = find_spell( 387096 );
+
+    talents.inferno = find_talent_spell(talent_tree::SPECIALIZATION, "Inferno"); // Should be ID 270545
+
+    talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm" ); // Should be ID 152108
+
+    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+
     talents.explosive_potential = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Potential" ); // Should be ID 388827
 
     talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
-
-    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 270545
-
-    talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm" ); // Should be ID 152108
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = find_spell( 281490 );
@@ -372,8 +374,6 @@ namespace warlock
 
     talents.rolling_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Havoc" ); // Should be ID 387569
     talents.rolling_havoc_buff = find_spell( 387570 );
-
-    talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
 
     talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
@@ -548,7 +548,6 @@ namespace warlock
 
   void warlock_t::create_buffs_destruction()
   {
-    // destruction buffs
     buffs.backdraft = make_buff( this, "backdraft", talents.backdraft_buff );
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )

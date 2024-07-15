@@ -339,7 +339,7 @@ public:
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
-    const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
+    const spell_data_t* conflagrate_2; // Energize data
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
@@ -349,13 +349,13 @@ public:
     player_talent_t roaring_blaze;
     const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
-    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
+    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
     player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
-    player_talent_t inferno; // TODO: Heavily changed
+    player_talent_t inferno;
     player_talent_t cataclysm;
 
     player_talent_t indiscriminate_flames; // TODO: New
@@ -439,7 +439,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -448,10 +448,10 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination;
+    player_talent_t ruination; // TODO: Backdraft
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;

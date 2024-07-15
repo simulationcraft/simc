@@ -35,6 +35,7 @@ using namespace helpers;
       // Destruction
       bool chaotic_energies = false;
       bool havoc = false;
+      bool backdraft = false;
       bool roaring_blaze = false;
       bool chaos_incarnate = false;
     } affected_by;
@@ -74,6 +75,7 @@ using namespace helpers;
       affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
       affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
+      affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
     }
 
@@ -224,7 +226,7 @@ using namespace helpers;
       if ( demonology() && affected_by.wicked_maw )
         m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
-      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
+      if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
       return m;
@@ -284,6 +286,35 @@ using namespace helpers;
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       return m;
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = spell_t::execute_time_pct_multiplier();
+
+      if ( destruction() && affected_by.backdraft && p()->buffs.backdraft->check() )
+        m *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      return m;
+    }
+
+    timespan_t gcd() const override
+    {
+      timespan_t t = spell_t::gcd();
+
+      if ( !destruction() )
+        return t;
+
+      if ( t == 0_ms )
+        return t;
+
+      if ( affected_by.backdraft && p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+      if ( t < min_gcd )
+        t = min_gcd;
+
+      return t;
     }
 
     void extend_dot( dot_t* dot, timespan_t extend_duration )
@@ -2584,32 +2615,6 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
-    double execute_time_pct_multiplier() const override
-    {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
-
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
-
-      return mul;
-    }
-
-    timespan_t gcd() const override
-    {
-      timespan_t t = warlock_spell_t::gcd();
-
-      if ( t == 0_ms )
-        return t;
-
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
-    }
-
     void execute() override
     {
       warlock_spell_t::execute();
@@ -2769,16 +2774,13 @@ using namespace helpers;
 
     double execute_time_pct_multiplier() const override
     {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
       if ( p()->buffs.ritual_of_ruin->check() )
-        mul *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
-    
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        m *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
 
-      return mul;
+      return m;
     }
 
     double action_multiplier() const override
@@ -2799,23 +2801,6 @@ using namespace helpers;
         m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
-    }
-
-    timespan_t gcd() const override
-    {
-      timespan_t t = warlock_spell_t::gcd();
-
-      if ( t == 0_ms )
-        return t;
-
-      // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
     }
 
     void impact( action_state_t* s ) override
@@ -2972,6 +2957,8 @@ using namespace helpers;
       base_tick_time = 1_s;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
+
+      base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
       if ( !p->proc_actions.rain_of_fire_tick )
       {
@@ -3454,32 +3441,6 @@ using namespace helpers;
       immolate->dual = true;
       immolate->base_costs[ RESOURCE_MANA ] = 0;
       immolate->base_dd_multiplier = 0.0;
-    }
-
-    double execute_time_pct_multiplier() const override
-    {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
-
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
-
-      return mul;
-    }
-
-    timespan_t gcd() const override
-    {
-      timespan_t t = warlock_spell_t::gcd();
-
-      if ( t == 0_ms )
-        return t;
-
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
     }
 
     void execute() override
