@@ -895,6 +895,7 @@ public:
     propagate_const<action_t*> festering_wound;
     propagate_const<action_t*> festering_wound_application;
     propagate_const<action_t*> virulent_eruption;
+    propagate_const<action_t*> virulent_plague;
     propagate_const<action_t*> ruptured_viscera;
     propagate_const<action_t*> outbreak_aoe;
     propagate_const<action_t*> unholy_blight;
@@ -1799,7 +1800,6 @@ public:
   void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr );
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
-  void start_unholy_aura();
   // Start the repeated stacking of buffs, called at combat start
   void start_cold_heart();
   void start_inexorable_assault();
@@ -4278,8 +4278,9 @@ struct abomination_pet_t : public death_knight_pet_t
     disease_cloud_t( util::string_view name, abomination_pet_t* p )
       : pet_spell_t( p, name, p->dk()->pet_spell.abomination_disease_cloud )
     {
-      background     = true;
-      execute_action = dk()->active_spells.outbreak_aoe;
+      background    = true;
+      aoe           = 0;
+      impact_action = dk()->active_spells.virulent_plague;
     }
   };
 
@@ -4309,19 +4310,28 @@ struct abomination_pet_t : public death_knight_pet_t
     tww1_4pc_proc                     = true;
     owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
-
-    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-      if ( c )
-      {
-        disease_cloud->execute();
-      }
-    } );
   }
 
-  void init_spells() override
+  void arise() override
   {
-    death_knight_pet_t::init_spells();
+    death_knight_pet_t::arise();
+    for ( auto& t : sim->target_non_sleeping_list )
+    {
+      disease_cloud->execute_on_target( t );
+    }
+  }
+
+  void create_actions() override
+  {
+    death_knight_pet_t::create_actions();
     disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
+
+    sim->target_non_sleeping_list.register_callback( [ & ]( player_t* t ) {
+      if ( !t->is_enemy() || dk()->pets.abomination.active_pet() == nullptr )
+        return;
+
+      disease_cloud->execute_on_target( t );
+    } );
   }
 
   attack_t* create_main_hand_auto_attack() override
@@ -11515,27 +11525,6 @@ void death_knight_t::start_inexorable_assault()
   } );
 }
 
-void death_knight_t::start_unholy_aura()
-{
-  if ( !talent.unholy.unholy_aura.ok() )
-  {
-    return;
-  }
-
-  register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
-    if ( c )
-    {
-      make_event( *sim, timespan_t::from_millis( rng().range( 0, 2000 ) ), [ this ]() {
-        for ( auto& enemy : sim->target_non_sleeping_list )
-        {
-          auto enemy_td = get_target_data( enemy );
-          enemy_td->debuff.unholy_aura->trigger();
-        }
-      } );
-    }
-  } );
-}
-
 // Launches the repeting event for the cold heart talent
 void death_knight_t::start_cold_heart()
 {
@@ -11976,6 +11965,7 @@ void death_knight_t::create_actions()
     if ( spec.outbreak->ok() )
     {
       active_spells.outbreak_aoe = get_action<outbreak_aoe_t>( "outbreak_aoe", this );
+      active_spells.virulent_plague = get_action<virulent_plague_t>( "virulent_plague", this );
     }
     if ( spec.festering_wound->ok() )
     {
@@ -14017,6 +14007,21 @@ void death_knight_t::activate()
 
   if ( spec.outbreak->ok() || talent.unholy.unholy_blight.ok() )
     register_on_kill_callback( [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
+
+  if ( talent.unholy.unholy_aura.ok() )
+  {
+    sim->target_non_sleeping_list.register_callback( [ & ]( player_t* t ) {
+      if ( !t->is_enemy() )
+        return;
+
+      auto enemy_td = get_target_data( t );
+      if ( !enemy_td->debuff.unholy_aura->check() )
+      {
+        make_event( *sim, timespan_t::from_millis( rng().range( 0, 2000 ) ),
+                    [ enemy_td ]() { enemy_td->debuff.unholy_aura->trigger(); } );
+      }
+    } );
+  }
 }
 
 // death_knight_t::reset ====================================================
@@ -14347,11 +14352,6 @@ void death_knight_t::arise()
   if ( talent.rider.a_feast_of_souls.ok() )
   {
     start_a_feast_of_souls();
-  }
-
-  if ( talent.unholy.unholy_aura.ok() )
-  {
-    start_unholy_aura();
   }
 }
 
