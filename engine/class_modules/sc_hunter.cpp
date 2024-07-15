@@ -684,8 +684,8 @@ public:
     spell_data_ptr_t wild_instincts;
     spell_data_ptr_t bloody_frenzy;
     spell_data_ptr_t piercing_fangs;
-    spell_data_ptr_t venomous_bite; // NYI - Bloodshed increases all damage taken from your pet by an additional 15%, and Kill Command deals 20% increased damage to the target. 
-    spell_data_ptr_t shower_of_blood; // NYI - Bloodshed now hits 2 additional nearby targets.
+    spell_data_ptr_t venomous_bite;
+    spell_data_ptr_t shower_of_blood;
 
     // Survival Tree
     spell_data_ptr_t wildfire_bomb;
@@ -2740,6 +2740,7 @@ struct bloodshed_t : hunter_main_pet_attack_t
     hunter_main_pet_attack_t( "bloodshed", p, p -> spells.bloodshed )
   {
     background = true;
+    aoe = o() -> talents.shower_of_blood.ok() ? as<int>( o() -> talents.shower_of_blood -> effectN( 1 ).base_value() ) : 1;
   }
 
   void impact( action_state_t* s ) override
