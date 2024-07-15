@@ -8863,8 +8863,10 @@ struct surging_totem_pulse_t : public spell_totem_action_t
   surging_totem_pulse_t( spell_totem_pet_t* totem )
     : spell_totem_action_t( "tremor", totem, totem->find_spell( 455622 ) ), sundered( false )
   {
-    // TODO: Reduction past N enemies
     aoe          = 1;
+    full_amount_targets = as<double>( data().effectN( 2 ).base_value() );
+    // TODO: Reduction past N enemies
+    reduced_aoe_targets = as<double>( data().effectN( 2 ).base_value() );
     hasted_pulse = true;
   }
 
