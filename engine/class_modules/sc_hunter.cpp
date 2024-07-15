@@ -306,6 +306,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* stampede;
     buff_t* shredded_armor;
     buff_t* wild_instincts;
+    buff_t* basilisk_collar;
   } debuffs;
 
   struct dots_t
@@ -315,6 +316,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* pheromone_bomb;
     dot_t* shrapnel_bomb;
     dot_t* black_arrow;
+    dot_t* barbed_shot;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -979,6 +981,7 @@ public:
   }
 
   void trigger_bloodseeker_update();
+  void trigger_basilisk_collar_update( hunter_t* p );
   void trigger_t30_sv_4p( action_t* action, double cost );
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
@@ -1868,6 +1871,7 @@ public:
   {
     dot_t* bloodshed = nullptr;
     dot_t* bloodseeker = nullptr;
+    dot_t* laceration = nullptr;
   } dots;
 
   struct debuffs_t
@@ -2776,6 +2780,7 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 {
   dots.bloodseeker = target -> get_dot( "kill_command", p );
   dots.bloodshed   = target -> get_dot( "bloodshed", p );
+  dots.laceration  = target -> get_dot( "laceration", p );
 
   debuffs.venomous_bite = 
     make_buff( *this, "venomous_bite", p -> find_spell( 459668 ) )
@@ -3017,6 +3022,45 @@ void hunter_t::trigger_bloodseeker_update()
     buffs.bloodseeker -> decrement( current - bleeding_targets );
     if ( auto pet = pets.main )
       pet -> buffs.bloodseeker -> decrement( current - bleeding_targets );
+  }
+}
+
+void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
+{
+  if ( !talents.basilisk_collar.ok() )
+    return;
+
+  for ( player_t* t : sim -> target_non_sleeping_list )
+  {
+    if ( t -> is_enemy() )
+    {
+      auto td = p -> get_target_data( t );
+      int current = td -> debuffs.basilisk_collar -> check(); 
+      int new_stacks = 0;
+      
+      auto hunter_dots = td -> dots;
+      new_stacks += hunter_dots.a_murder_of_crows -> is_ticking(); 
+      new_stacks += hunter_dots.barbed_shot -> is_ticking();
+      new_stacks += hunter_dots.black_arrow -> is_ticking(); 
+      new_stacks += hunter_dots.serpent_sting -> is_ticking(); 
+
+      auto pet_dots = p -> pets.main -> get_target_data( t ) -> dots; 
+      new_stacks += pet_dots.bloodshed -> is_ticking(); 
+      new_stacks += pet_dots.laceration -> is_ticking(); 
+      //TODO Add Bleed from Fenryr as a dot
+      //new_stacks += pet_dots.fenryr_bleed -> is_ticking(); 
+
+      new_stacks = std::min( new_stacks, td -> debuffs.basilisk_collar -> max_stack() );
+
+      if ( current < new_stacks )
+      {
+        td -> debuffs.basilisk_collar -> trigger( new_stacks - current );
+      }
+      else if ( current > new_stacks )
+      {
+        td -> debuffs.basilisk_collar -> decrement( current - new_stacks ); 
+      }
+    }
   }
 }
 
@@ -7069,11 +7113,16 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
     -> set_default_value_from_effect( 1 );
 
+  debuffs.basilisk_collar = make_buff( *this, "basilisk_collar", p -> find_spell( 459575 ) )
+    -> set_default_value( p -> talents.basilisk_collar -> effectN( 1 ).base_value() )
+    -> set_period( 0_s );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
-  dots.black_arrow = target->get_dot( "black_arrow", p );
+  dots.black_arrow = target -> get_dot( "black_arrow", p );
+  dots.barbed_shot = target -> get_dot( "barbed_shot", p );
 
   target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -8369,6 +8418,11 @@ void hunter_t::combat_begin()
     make_repeating_event( *sim, 1_s, [ this ] { trigger_bloodseeker_update(); } );
   }
 
+  if ( talents.basilisk_collar.ok() )
+  {
+    make_repeating_event( *sim, 1_s, [ this ] { trigger_basilisk_collar_update( this ); } );
+  }
+
   player_t::combat_begin();
 }
 
@@ -8534,13 +8588,21 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   m *= 1 + get_target_data( target ) -> debuffs.death_chakram -> value();
 
-  if( !guardian )
+  if ( !guardian )
   {
     auto td = get_target_data( target ); 
     auto wi_debuff = td -> debuffs.wild_instincts;
     int stacks = wi_debuff -> stack();
     double amp_per_stack = wi_debuff -> data().effectN( 1 ).percent();
     m *= 1 + stacks * amp_per_stack;
+  }
+
+  if ( talents.basilisk_collar -> ok() )
+  {
+    //2024-07-15 - Guardians only benefit from the first point of Basilisk Collar
+    double bonus = guardian ? talents.basilisk_collar -> effectN( 2 ).percent() : talents.basilisk_collar -> effectN( 1 ).percent();
+    int stacks = get_target_data( target ) -> debuffs.basilisk_collar -> stack();
+    m *= 1 + ( bonus * stacks );
   }
 
   return m;
