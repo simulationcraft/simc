@@ -2958,6 +2958,8 @@ using namespace helpers;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
 
+      base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
+
       if ( !p->proc_actions.rain_of_fire_tick )
       {
         p->proc_actions.rain_of_fire_tick = new rain_of_fire_tick_t( p );

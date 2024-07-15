@@ -355,7 +355,7 @@ public:
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
-    player_talent_t inferno; // TODO: Heavily changed
+    player_talent_t inferno;
     player_talent_t cataclysm;
 
     player_talent_t indiscriminate_flames; // TODO: New
