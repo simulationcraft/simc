@@ -399,13 +399,11 @@ public:
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* flamewakers_cobra_sting;
-    buff_t* cobra_sting;
     buff_t* thrill_of_the_hunt;
     buff_t* dire_beast;
     buff_t* bestial_wrath;
     buff_t* hunters_prey;
     buff_t* call_of_the_wild;
-    buff_t* dire_pack;
     buff_t* beast_cleave; 
     buff_t* explosive_venom;
     buff_t* a_murder_of_crows;
@@ -519,13 +517,6 @@ public:
     spell_data_ptr_t sharpshooter;
     spell_data_ptr_t windrunners_barrage;
     spell_data_ptr_t windrunners_guidance;
-
-    // Beast Mastery
-    spell_data_ptr_t sharp_barbs;
-    spell_data_ptr_t cobra_sting;
-    spell_data_ptr_t killer_command;
-    spell_data_ptr_t one_with_the_pack;
-    spell_data_ptr_t dire_pack;
 
     // Survival
     spell_data_ptr_t carve;
@@ -847,7 +838,6 @@ public:
     double focus_used_T30_sv_4p = 0; 
     // Last KC target used for T30 Survival 4pc (410167)
     player_t* last_kc_target;
-    unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
     unsigned lotw_counter = 0;
     unsigned windrunners_guidance_counter = 0;
@@ -1085,8 +1075,6 @@ public:
     ab::apply_affecting_aura( p -> talents.tactical_reload );
 
     // Beast Mastery Tree passives
-    ab::apply_affecting_aura( p -> talents.killer_command );
-    ab::apply_affecting_aura( p -> talents.sharp_barbs );
     ab::apply_affecting_aura( p -> talents.war_orders );
     ab::apply_affecting_aura( p -> talents.savagery );
 
@@ -1597,6 +1585,7 @@ public:
     //Marksmanship
 
     //Survival
+    ab::apply_affecting_aura( o() -> talents.killer_companion );
 
     //Hero Trees
     ab::apply_affecting_aura( o() -> talents.overshadow );
@@ -1605,10 +1594,6 @@ public:
     //Tier, Set Bonuses, and Legendaries etc
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
     ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
-
-    //Unsorted
-    ab::apply_affecting_aura( o() -> talents.killer_companion );
-    ab::apply_affecting_aura( o() -> talents.killer_command );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -2082,8 +2067,6 @@ struct dire_critter_t final : public hunter_pet_t
     action_t* kill_cleave = nullptr;
   } active;
 
-  unsigned dire_pack_threshold;
-
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
@@ -2092,8 +2075,6 @@ struct dire_critter_t final : public hunter_pet_t
     owner_coeff.ap_from_ap = 0.9;
     
     resource_regeneration = regen_type::DISABLED;
-
-    dire_pack_threshold = as<int>( o() -> talents.dire_pack -> effectN( 1 ).base_value() );
   }
 
   void init_spells() override;
@@ -2103,14 +2084,6 @@ struct dire_critter_t final : public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     o() -> buffs.dire_beast -> trigger( duration );
-
-    o() -> state.dire_pack_counter++;
-    if ( o() -> state.dire_pack_counter == dire_pack_threshold )
-    {
-      o() -> state.dire_pack_counter = 0;
-      o() -> cooldowns.kill_command -> reset( true );
-      o() -> buffs.dire_pack -> trigger();
-    }
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
@@ -3123,9 +3096,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
   auto_shot_t( hunter_t* p ) : auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    wild_call_chance =
-      p -> talents.wild_call -> effectN( 1 ).percent() +
-      p -> talents.one_with_the_pack -> effectN( 1 ).percent();
+    wild_call_chance = p -> talents.wild_call -> effectN( 1 ).percent();
   }
 
   action_state_t* new_state() override
@@ -4379,8 +4350,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::schedule_travel( s );
 
     p() -> cooldowns.kill_command -> adjust( kill_command_reduction );
-
-    p() -> buffs.cobra_sting -> trigger();
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( s -> target );
@@ -6047,9 +6016,6 @@ struct kill_command_t: public hunter_spell_t
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
     p() -> buffs.flamewakers_cobra_sting -> decrement();
 
-    p() -> buffs.cobra_sting -> up(); // benefit tracking
-    p() -> buffs.cobra_sting -> decrement();
-
     if ( rng().roll( p()->talents.hunters_prey->effectN( 1 ).percent() ) )
       p()->buffs.hunters_prey->trigger();
 
@@ -6081,8 +6047,6 @@ struct kill_command_t: public hunter_spell_t
     double c = hunter_spell_t::cost_pct_multiplier();
 
     c *= 1 + p() -> buffs.flamewakers_cobra_sting -> check_value();
-    c *= 1 + p() -> buffs.cobra_sting -> check_value();
-    c *= 1 + p() -> buffs.dire_pack -> check_value();
 
     return c;
   }
@@ -6090,8 +6054,6 @@ struct kill_command_t: public hunter_spell_t
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
     double m = hunter_spell_t::recharge_rate_multiplier( cd );
-
-    m *= 1 + p() -> buffs.dire_pack -> check_value();
 
     return m;
   }
@@ -7082,11 +7044,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "dire_pack_count" )
-  {
-    return make_fn_expr( expression_str, [ this ] { return state.dire_pack_counter; });
-  }
-  else if ( splits.size() == 1 && splits[ 0 ] == "lotw_count" )
+  if ( splits.size() == 1 && splits[ 0 ] == "lotw_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.lotw_counter; } );
   }
@@ -7363,15 +7321,6 @@ void hunter_t::init_spells()
   // Beast Mastery Tree
   if (specialization() == HUNTER_BEAST_MASTERY)
   {
-    // TODO Delete these
-    talents.sharp_barbs                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sharp Barbs", HUNTER_BEAST_MASTERY );
-    talents.cobra_sting                       = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Sting", HUNTER_BEAST_MASTERY );
-    talents.killer_command                    = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Command", HUNTER_BEAST_MASTERY );
-    talents.one_with_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "One with the Pack", HUNTER_BEAST_MASTERY );
-    talents.dire_pack                         = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Pack", HUNTER_BEAST_MASTERY );
-    talents.wailing_arrow                     = find_talent_spell( talent_tree::SPECIALIZATION, "Wailing Arrow", HUNTER_BEAST_MASTERY );
-    // END TODO
-
     talents.kill_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Command", HUNTER_BEAST_MASTERY );
 
     talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
@@ -7859,11 +7808,6 @@ void hunter_t::create_buffs()
     make_buff( this, "flamewakers_cobra_sting", find_spell( 336826 ) )
       -> set_default_value_from_effect( 1 );
 
-  buffs.cobra_sting =
-    make_buff( this, "cobra_sting", talents.cobra_sting -> effectN( 1 ).trigger() )
-      -> set_chance( talents.cobra_sting -> effectN( 2 ).percent() )
-      -> set_default_value_from_effect( 1 );
-
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> apply_affecting_aura( talents.savagery )
@@ -7929,15 +7873,6 @@ void hunter_t::create_buffs()
               }
             }
           }
-        } );
-
-  buffs.dire_pack =
-    make_buff( this, "dire_pack", find_spell( 378747 ) )
-      -> set_default_value_from_effect( 1 )
-      -> set_chance( talents.dire_pack.ok() )
-      -> set_stack_change_callback(
-        [ this ]( buff_t*, int, int ) {
-          cooldowns.kill_command -> adjust_recharge_multiplier();
         } );
 
   buffs.beast_cleave = 
@@ -8663,7 +8598,6 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
   add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
-  add_option( opt_obsoleted( "hunter.dire_pack_start" ) );
 }
 
 // hunter_t::create_profile =================================================
