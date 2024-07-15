@@ -4232,6 +4232,7 @@ struct flamestrike_t final : public hot_streak_spell_t
     triggers.ignite = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    base_dd_multiplier *= 1.0 + p->talents.quickflame->effectN( 1 ).percent();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
