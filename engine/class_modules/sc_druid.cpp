@@ -9256,6 +9256,32 @@ void druid_t::activate()
     } );
   }
 
+  if ( talent.lycaras_teachings.ok() )
+  {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+      buff_t* new_buff;
+
+      switch ( get_form() )
+      {
+        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit; break;
+        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers; break;
+        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast; break;
+        default:           return;
+      }
+
+      if ( !new_buff->check() )
+      {
+        buff.lycaras_teachings_haste->expire();
+        buff.lycaras_teachings_crit->expire();
+        buff.lycaras_teachings_vers->expire();
+        buff.lycaras_teachings_mast->expire();
+
+        new_buff->trigger();
+      }
+    } );
+  }
+
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
@@ -12024,29 +12050,6 @@ void druid_t::precombat_init()
   start_buff( buff.shooting_stars_sunfire );
   start_buff( buff.treants_of_the_moon );
   start_buff( buff.yseras_gift );
-
-  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    buff_t* new_buff;
-
-    switch( get_form() )
-    {
-      case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-      case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
-      case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
-      case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
-      default: return;
-    }
-
-    if ( !new_buff->check() )
-    {
-      buff.lycaras_teachings_haste->expire();
-      buff.lycaras_teachings_crit->expire();
-      buff.lycaras_teachings_vers->expire();
-      buff.lycaras_teachings_mast->expire();
-
-      new_buff->trigger();
-    }
-  } );
 }
 
 // druid_t::combat_begin (called after precombat apl before default apl)=======
