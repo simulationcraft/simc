@@ -5573,7 +5573,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
   {
     aoe = -1;
     reduced_aoe_targets = 8;
-    background = split_aoe_damage = triggers.ignite = true;
+    background = triggers.ignite = true;
   }
 
   void execute() override
