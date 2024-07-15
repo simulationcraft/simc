@@ -1880,6 +1880,11 @@ public:
     dot_t* bloodseeker = nullptr;
   } dots;
 
+  struct debuffs_t
+  {
+    buff_t* venomous_bite = nullptr;
+  } debuffs; 
+
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
 };
 
@@ -2053,7 +2058,14 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
   {
     const hunter_main_pet_td_t* td = main_pet -> find_target_data( target );
     if ( td && td -> dots.bloodshed -> is_ticking() && spells.bloodshed -> effectN( 2 ).has_common_school( school ) )
-      m *= 1 + spells.bloodshed -> effectN( 2 ).percent();
+    {
+      double bonus = spells.bloodshed -> effectN( 2 ).percent();
+      if ( td -> debuffs.venomous_bite -> check() )
+      {
+        bonus *= 2;
+      }
+      m *= 1 + bonus; 
+    }
   }
 
   return m;
@@ -2392,6 +2404,23 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
     double am = kill_command_base_t::action_multiplier();
 
     am *= 1 + p() -> buffs.lethal_command -> value();
+
+    return am;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double am = kill_command_base_t::composite_target_multiplier( t );
+
+    auto pet = o() -> pets.main;
+    if ( pet == p() )
+    {
+      const hunter_main_pet_td_t* td = pet -> find_target_data( target );
+      if ( td && td -> debuffs.venomous_bite -> check() )
+      {
+        am *= 1 + td -> debuffs.venomous_bite -> data().effectN( 1 ).percent();
+      }
+    }
 
     return am;
   }
@@ -2744,6 +2773,12 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 {
   dots.bloodseeker = target -> get_dot( "kill_command", p );
   dots.bloodshed   = target -> get_dot( "bloodshed", p );
+
+  debuffs.venomous_bite = 
+    make_buff( *this, "venomous_bite", p -> find_spell( 459668 ) )
+      -> set_default_value_from_effect( 1 )
+      //Grab duration from bloodshed as they're interlinked and venomous bite has no duration in data
+      -> set_duration( p -> find_spell( 346396 ) -> duration() );
 }
 
 // hunter_pet_t::create_action ==============================================
@@ -6324,7 +6359,11 @@ struct bloodshed_t : hunter_spell_t
     hunter_spell_t::execute();
 
     if ( auto pet = p() -> pets.main )
+    {
       pet -> active.bloodshed -> execute_on_target( target );
+      if ( p() -> talents.venomous_bite.ok() ) 
+        pet -> get_target_data( target ) -> debuffs.venomous_bite -> trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
