@@ -503,6 +503,7 @@ public:
 
   struct accumulated_rngs_t
   {
+    accumulated_rng_t* pyromaniac;
     accumulated_rng_t* spellfrost_teachings;
   } accumulated_rng;
 
@@ -2527,7 +2528,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
-      if ( p()->cooldowns.pyromaniac->up() && rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
+      if ( p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
       {
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
@@ -7867,6 +7868,7 @@ void mage_t::init_rng()
   rppm.energy_reconstitution = get_rppm( "energy_reconstitution", talents.energy_reconstitution );
   rppm.frostfire_infusion = get_rppm( "frostfire_infusion", talents.frostfire_infusion );
   // Accumulated RNG is also not present in the game data.
+  accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
   accumulated_rng.spellfrost_teachings = get_accumulated_rng( "spellfrost_teachings", talents.spellfrost_teachings.ok() ? 0.0004 : 0.0 );
 }
 
