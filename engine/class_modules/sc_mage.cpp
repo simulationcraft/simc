@@ -5703,6 +5703,26 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
 
     return am;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( s->n_targets <= as<unsigned>( p()->talents.ashen_feather->effectN( 1 ).base_value() ) )
+      m *= 1.0 + p()->talents.ashen_feather->effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+
+    if ( s->n_targets <= as<unsigned>( p()->talents.ashen_feather->effectN( 1 ).base_value() ) )
+      m *= p()->talents.ashen_feather->effectN( 3 ).percent();
+
+    return m;
+  }
 };
 
 struct phoenix_flames_t final : public fire_mage_spell_t
