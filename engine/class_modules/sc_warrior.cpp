@@ -9538,6 +9538,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.slayer.slayers_malice );
 
   // Mountain Thane
+  action.apply_affecting_aura( talents.mountain_thane.strength_of_the_mountain );
 }
 
 /* Report Extension Class
