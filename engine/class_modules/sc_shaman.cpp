@@ -902,10 +902,10 @@ public:
     // Row 8
     player_talent_t elemental_equilibrium;
     player_talent_t stormkeeper;
-    player_talent_t echo_of_the_elementals; // NEW NYI
+    player_talent_t echo_of_the_elementals;
     // Row 9
     player_talent_t mountains_will_fall;
-    player_talent_t first_ascendant; // NEW NYI
+    player_talent_t first_ascendant;
     player_talent_t preeminence; // NEW NYI
     player_talent_t fury_of_the_storms; // NEW NYI
     player_talent_t skybreakers_fiery_demise;
@@ -11863,6 +11863,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.pulse_capacitor );
   action.apply_affecting_aura( talent.supportive_imbuements );
   action.apply_affecting_aura( talent.totemic_coordination );
+  action.apply_affecting_aura( talent.first_ascendant );
 
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
