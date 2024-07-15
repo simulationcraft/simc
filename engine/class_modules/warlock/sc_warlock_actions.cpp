@@ -226,7 +226,7 @@ using namespace helpers;
       if ( demonology() && affected_by.wicked_maw )
         m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
-      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
+      if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
       return m;
