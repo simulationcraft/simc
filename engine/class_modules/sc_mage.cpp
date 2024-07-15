@@ -127,6 +127,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* magis_spark_ab;
     buff_t* magis_spark_abar;
     buff_t* magis_spark_am;
+    buff_t* molten_fury;
     buff_t* nether_munitions;
     buff_t* numbing_blast;
     buff_t* touch_of_the_magi;
@@ -1477,6 +1478,7 @@ struct mage_spell_t : public spell_t
     bool icicles_st = false;
     bool improved_scorch = true;
     bool incanters_flow = true;
+    bool molten_fury = true;
     bool nether_munitions = true;
     bool numbing_blast = true;
     bool savant = false;
@@ -1675,6 +1677,8 @@ public:
         m *= 1.0 + td->debuffs.arcane_debilitation->check_stack_value();
       if ( affected_by.improved_scorch )
         m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
+      if ( affected_by.molten_fury )
+        m *= 1.0 + td->debuffs.molten_fury->check_value();
       if ( affected_by.nether_munitions )
         m *= 1.0 + td->debuffs.nether_munitions->check_value();
       if ( affected_by.numbing_blast )
@@ -1827,6 +1831,15 @@ public:
 
     if ( tt_applicable( s, triggers.calefaction ) )
       trigger_calefaction( s->target );
+
+    // TODO: Test the exact behavior of the hidden Molten Fury debuff.
+    if ( p()->talents.molten_fury.ok() )
+    {
+      if ( target->health_percentage() <= p()->talents.molten_fury->effectN( 1 ).base_value() )
+        get_td( s->target )->debuffs.molten_fury->trigger();
+      else
+        get_td( s->target )->debuffs.molten_fury->expire();
+    }
 
     if ( callbacks && dbc::has_common_school( get_school(), SCHOOL_FROSTFIRE ) && s->result_type == result_amount_type::DMG_DIRECT )
     {
@@ -6945,11 +6958,14 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_chance( mage->talents.controlled_instincts.ok() );
   debuffs.frozen                 = make_buff( *this, "frozen" )
                                      ->set_refresh_behavior( buff_refresh_behavior::MAX );
+  debuffs.improved_scorch        = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
+                                     ->set_default_value_from_effect( 1 );
   debuffs.magis_spark_ab         = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
   debuffs.magis_spark_abar       = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
   debuffs.magis_spark_am         = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
-  debuffs.improved_scorch        = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
-                                     ->set_default_value_from_effect( 1 );
+  debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
+                                     ->set_default_value_from_effect( 1 )
+                                     ->set_chance( mage->talents.molten_fury.ok() );
   debuffs.nether_munitions       = make_buff( *this, "nether_munitions", mage->find_spell( 454004 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.nether_munitions.ok() );
