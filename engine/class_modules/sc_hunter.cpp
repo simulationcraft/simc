@@ -589,7 +589,7 @@ public:
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t master_marksman;
 
-    spell_data_ptr_t fan_the_hammer; // NYI - Rapid Fire shoots 3 additional shots 
+    spell_data_ptr_t fan_the_hammer;
     spell_data_ptr_t careful_aim;
     spell_data_ptr_t light_ammo;
     spell_data_ptr_t heavy_ammo;
@@ -4930,6 +4930,8 @@ struct rapid_fire_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     channeled = reset_auto_attack = true;
+
+    base_num_ticks += p -> talents.fan_the_hammer.ok() ? as<int>( p -> talents.fan_the_hammer -> effectN( 2 ).base_value() ) : 0;
   }
 
   void init() override
@@ -4969,6 +4971,7 @@ struct rapid_fire_t: public hunter_spell_t
 
     p() -> consume_trick_shots();
 
+    //2024-07-16: When talented into Fan The Hammer, In The Rhythm will trigger on the old last tick (7th instead of 10th).
     p() -> buffs.in_the_rhythm -> trigger();
 
     if( p() -> tier_set.t31_mm_4pc -> ok() )
@@ -4986,6 +4989,11 @@ struct rapid_fire_t: public hunter_spell_t
       mul *= 1.0 + p() -> tier_set.t31_mm_4pc_buff -> effectN( 2 ).percent();
     }
 
+    if ( p() -> talents.fan_the_hammer.ok() )
+    {
+      mul *= 1.0 + p() -> talents.fan_the_hammer -> effectN( 1 ).percent();
+    }
+
     return mul;
   }
 
@@ -4993,6 +5001,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     // substract 1 here because RF has a tick at zero
     timespan_t base_duration = ( base_num_ticks - 1 ) * tick_time( s ); 
+    p() -> sim -> print_debug( "Rapid Fire base duration: {} with {} ticks", base_duration.total_seconds(), base_num_ticks );
     timespan_t extra_duration_from_rr = base_num_ticks * tick_time( s ) * p() -> buffs.rapid_reload -> check_value();
     
     return base_duration + extra_duration_from_rr; 
