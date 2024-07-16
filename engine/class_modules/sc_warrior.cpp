@@ -3301,11 +3301,12 @@ struct slam_t : public warrior_attack_t
 struct cleave_seismic_reverberation_t : public warrior_attack_t
 {
   cleave_seismic_reverberation_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( "cleave", p, p->find_spell( 458459 ) )
+    : warrior_attack_t( name, p, p->find_spell( 458459 ) )
   {
     weapon = &( player->main_hand_weapon );
     aoe = -1;
     reduced_aoe_targets = 5.0;
+    background = true;
   }
 
   double action_multiplier() const override
@@ -3318,6 +3319,8 @@ struct cleave_seismic_reverberation_t : public warrior_attack_t
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
     }
+
+    am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
 
     return am;
   }
@@ -3349,7 +3352,8 @@ struct cleave_t : public warrior_attack_t
     fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-    reap_the_storm( nullptr )
+    reap_the_storm( nullptr ),
+    seismic_action( nullptr )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
