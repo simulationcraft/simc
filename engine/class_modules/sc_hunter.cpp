@@ -585,7 +585,7 @@ public:
     spell_data_ptr_t improved_steady_shot;
     spell_data_ptr_t crack_shot;
 
-    spell_data_ptr_t penetrating_shots; // NYI - Gain critical strike damage equal to 20% of your critical strike chance.
+    spell_data_ptr_t penetrating_shots;
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t master_marksman;
 
@@ -638,7 +638,7 @@ public:
 
     spell_data_ptr_t go_for_the_throat;
     spell_data_ptr_t multishot_bm;
-    spell_data_ptr_t laceration; // NYI - When your pets critically strike, they cause their target to bleed for 15% of the damage dealt over 6 sec.
+    spell_data_ptr_t laceration;
 
     spell_data_ptr_t cobra_senses;
     spell_data_ptr_t improved_kill_command;
@@ -8466,6 +8466,9 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   if ( buffs.unerring_vision -> data().effectN( 2 ).has_common_school( s -> action -> school ) )
     m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+
+  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.penetrating_shots -> effectN( 2 ).percent() * cache.attack_crit_chance();
 
   return m;
 }
