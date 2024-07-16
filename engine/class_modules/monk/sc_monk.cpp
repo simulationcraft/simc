@@ -163,7 +163,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.fatal_touch );
 
   // Brewmaster
-  parse_effects( p()->buff.blackout_combo );
+  parse_effects( p()->buff.blackout_combo, CONSUME_BUFF );
+  parse_effects( p()->buff.counterstrike, CONSUME_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -188,15 +189,15 @@ void monk_action_t<Base>::apply_buff_effects()
                      return false;
                    return p()->buff.aspect_of_harmony->heal->is_ticking();
                  } );
-  parse_effects( p()->buff.balanced_stratagem_physical );
-  parse_effects( p()->buff.balanced_stratagem_magic );
+  parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
-  parse_effects( p()->buff.tigers_ferocity );
+  parse_effects( p()->buff.tiger_strikes, CONSUME_BUFF );
+  parse_effects( p()->buff.tigers_ferocity, CONSUME_BUFF );
   parse_effects( p()->buff.flow_of_battle_damage );
 
   // TWW S2 Set Effects
@@ -1389,7 +1390,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
     parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
-    parse_effects( p->buff.counterstrike );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
@@ -1414,37 +1414,22 @@ struct tiger_palm_t : public monk_melee_attack_t
 
   void execute() override
   {
-    //============
-    // Pre-Execute
-    //============
-
     if ( ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
       p()->proc.face_palm->occur();
 
-    if ( p()->buff.blackout_combo->up() )
+    if ( p()->buff.blackout_combo->check() )
       p()->proc.blackout_combo_tiger_palm->occur();
-    p()->buff.blackout_combo->expire();
 
-    if ( p()->buff.counterstrike->up() )
+    if ( p()->buff.counterstrike->check() )
       p()->proc.counterstrike_tp->occur();
-    p()->buff.counterstrike->expire();
-
-    //------------
 
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    //-----------
-
-    //============
-    // Post-hit
-    //============
-
     p()->buff.teachings_of_the_monastery->trigger();
 
-    // Combo Breaker calculation
     if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
          p()->buff.storm_earth_and_fire->up() )
     {
@@ -1452,7 +1437,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
     }
 
-    // Reduces the remaining cooldown on your Brews by 1 sec
     p()->baseline.brewmaster.brews->adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
@@ -1563,14 +1547,12 @@ struct press_the_advantage_t : base_action_t
     {
       base_action_t::p()->buff.press_the_advantage->expire();
 
-      face_palm = base_action_t::rng().roll( base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
-      base_action_t::execute();
-
-      if ( face_palm )
+      if ( ( face_palm = base_action_t::rng().roll(
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
         base_action_t::p()->baseline.brewmaster.brews->adjust(
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-      base_action_t::p()->buff.counterstrike->expire();
-      base_action_t::p()->buff.blackout_combo->expire();
+
+      base_action_t::execute();
 
       if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
         base_action_t::p()->active_actions.chi_surge->execute();
@@ -2185,7 +2167,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
-    // kotfm and cs are scripted for SCK, we can add this id to the whitelist instead
+    // kofm and cs are scripted for SCK, we can add this id to the whitelist instead
     parse_effects( p->buff.kicks_of_flowing_momentum, affect_list_t( 1 ).adjust_spell( data->id() ) );
     parse_effects( p->buff.counterstrike, affect_list_t( 1 ).adjust_spell( data->id() ) );
 
@@ -3121,6 +3103,14 @@ struct keg_smash_t : monk_melee_attack_t
 
   void execute() override
   {
+    timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
+
+    if ( p()->buff.blackout_combo->check() )
+    {
+      reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
+      p()->proc.blackout_combo_keg_smash->occur();
+    }
+
     monk_melee_attack_t::execute();
 
     p()->buff.hit_scheme->expire();
@@ -3133,14 +3123,6 @@ struct keg_smash_t : monk_melee_attack_t
     }
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
-
-    timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
-    if ( p()->buff.blackout_combo->up() )
-    {
-      reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
-      p()->proc.blackout_combo_keg_smash->occur();
-    }
-    p()->buff.blackout_combo->expire();
 
     p()->baseline.brewmaster.brews->adjust( reduction );
   }
@@ -3812,11 +3794,12 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit )
       return;
 
+    if ( p()->buff.blackout_combo->check() )
+      p()->proc.blackout_combo_breath_of_fire->occur();
+
     monk_spell_t::execute();
     dragonfire_brew->execute();
 
-    if ( p()->buff.blackout_combo->up() )
-      p()->proc.blackout_combo_breath_of_fire->occur();
     // defer boc consumption to be handled by bof dot
   }
 
@@ -3965,6 +3948,13 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   void execute() override
   {
+    if ( p()->buff.blackout_combo->check() )
+    {
+      timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
+      p()->stagger[ "Stagger" ]->delay_tick( delay );
+      p()->proc.blackout_combo_purifying_brew->occur();
+    }
+
     brew_t<monk_spell_t>::execute();
 
     p()->buff.pretense_of_instability->trigger();
@@ -3992,14 +3982,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       gai_plins->target                               = p();
       gai_plins->execute();
     }
-
-    if ( p()->buff.blackout_combo->up() )
-    {
-      timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->stagger[ "Stagger" ]->delay_tick( delay );
-      p()->proc.blackout_combo_purifying_brew->occur();
-    }
-    p()->buff.blackout_combo->expire();
   }
 };
 
@@ -5537,12 +5519,12 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
 
   void execute() override
   {
-    if ( p()->buff.blackout_combo->up() )
+    if ( p()->buff.blackout_combo->check() )
     {
-      p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
+      p()->buff.purified_chi->trigger(
+          std::lround( p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() ) );
       p()->proc.blackout_combo_celestial_brew->occur();
     }
-    p()->buff.blackout_combo->expire();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
     {
@@ -6639,7 +6621,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
 void monk_t::parse_player_effects()
 {
   /*
-   * Permanent actor-specific effects go here.
+   * All actor-specific effects go here.
    * Make sure to use a specific `find_spell` method (i.e. `find_specialization_spell`)
    * for all of these spells or they will be applied to actors of the incorrect spec.
    */
@@ -6676,7 +6658,7 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
-  parse_effects( buff.weapons_of_order, 0b11111110U );
+  parse_effects( buff.weapons_of_order, effect_mask_t( false ).enable( 1 ) );
 
   // mistweaver talent auras
   // windwalker talent auras
@@ -6687,7 +6669,7 @@ void monk_t::parse_player_effects()
   parse_effects( buff.momentum_boost_speed );
 
   if ( talent.windwalker.jadefire_harmony->ok() )
-    parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg, 0b001U );
+    parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg );
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
@@ -7379,7 +7361,7 @@ void monk_t::init_spells()
     // Row 3
     talent.windwalker.touch_of_the_tiger = _ST( "Touch of the Tiger" );
     talent.windwalker.hardened_soles     = _ST( "Hardened Soles" );
-    talent.windwalker.ascension          = _ST( "Ascension" );  // TODO: NYI: EFFECT 2 ENERGY REGEN
+    talent.windwalker.ascension          = _ST( "Ascension" );
     talent.windwalker.ferociousness      = _ST( "Ferociousness" );
     // Row 4
     talent.windwalker.crane_vortex                             = _ST( "Crane Vortex" );
