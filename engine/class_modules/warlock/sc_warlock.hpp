@@ -358,7 +358,7 @@ public:
     player_talent_t inferno;
     player_talent_t cataclysm;
 
-    player_talent_t indiscriminate_flames; // TODO: New
+    player_talent_t indiscriminate_flames;
     player_talent_t rolling_havoc; // Increased damage buff when spells are duplicated by Mayhem/Havoc
     const spell_data_t* rolling_havoc_buff;
     player_talent_t scalding_flames; // Increased Immolate damage and duration
@@ -439,7 +439,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -448,7 +448,7 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze
