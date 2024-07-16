@@ -3143,7 +3143,6 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        // TOCHECK: Is this needed?
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
       }
 
@@ -3153,6 +3152,16 @@ using namespace helpers;
 
         if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
           td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        if ( s->chain_target != 0 )
+          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        return m;
       }
     };
 
@@ -3165,6 +3174,7 @@ using namespace helpers;
       channeled = true;
       hasted_ticks = true;
       may_crit = false;
+      cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
 
@@ -3174,13 +3184,6 @@ using namespace helpers;
         base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
         dot_duration = num_ticks * base_tick_time;
       }
-    }
-
-    void init() override
-    {
-      warlock_spell_t::init();
-
-      cooldown->hasted = true;
     }
 
     std::vector<player_t*>& target_list() const override
