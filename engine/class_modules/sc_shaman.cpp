@@ -12144,6 +12144,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.first_ascendant );
 
   action.apply_affecting_aura( talent.latent_wisdom );
+  action.apply_affecting_aura( talent.elemental_reverb );
 
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
