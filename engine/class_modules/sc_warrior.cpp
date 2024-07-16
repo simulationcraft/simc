@@ -3298,6 +3298,43 @@ struct slam_t : public warrior_attack_t
 };
 
 // Cleave ===================================================================
+struct cleave_seismic_reverberation_t : public warrior_attack_t
+{
+  cleave_seismic_reverberation_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( "cleave", p, p->find_spell( 458459 ) )
+  {
+    weapon = &( player->main_hand_weapon );
+    aoe = -1;
+    reduced_aoe_targets = 5.0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
+
+    if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
+    {
+      am *= 1.0 + p()->buff.collateral_damage->stack_value();
+    }
+
+    return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
+};
 
 struct cleave_t : public warrior_attack_t
 {
@@ -3306,7 +3343,8 @@ struct cleave_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   action_t* reap_the_storm;
-  cleave_t( warrior_t* p, util::string_view options_str ) 
+  action_t* seismic_action;
+  cleave_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
     fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
@@ -3328,6 +3366,11 @@ struct cleave_t : public warrior_attack_t
     {
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_cleave", p );
       add_child( reap_the_storm );
+    }
+    if ( p->talents.warrior.seismic_reverberation->ok() )
+    {
+      seismic_action = new cleave_seismic_reverberation_t( "cleave_seismic_reverberation", p );
+      add_child( seismic_action );
     }
   }
 
@@ -3378,6 +3421,12 @@ struct cleave_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->talents.warrior.seismic_reverberation->ok() &&
+          execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      seismic_action->execute_on_target( target );
+    }
 
     cost_rage = last_resource_cost;
     if ( p()->talents.warrior.frothing_berserker->ok() && rng().roll( frothing_berserker_chance ) )
