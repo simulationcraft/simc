@@ -451,7 +451,7 @@ public:
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;

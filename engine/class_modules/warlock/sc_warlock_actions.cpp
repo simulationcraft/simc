@@ -2689,6 +2689,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
+        dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
+
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
         base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
       }
