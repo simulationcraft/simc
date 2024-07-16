@@ -2298,6 +2298,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
   }
 
+  bool ready() override
+  {
+    if ( p()->channeling && p()->channeling->id == id )
+      return false;
+
+    return monk_melee_attack_t::ready();
+  }
+
   bool usable_moving() const override
   {
     return true;
