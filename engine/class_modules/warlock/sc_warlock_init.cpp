@@ -358,6 +358,9 @@ namespace warlock
 
     talents.indiscriminate_flames = find_talent_spell( talent_tree::SPECIALIZATION, "Indiscriminate Flames" ); // Should be ID 457114
 
+    talents.rolling_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Havoc" ); // Should be ID 387569
+    talents.rolling_havoc_buff = find_spell( 387570 );
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.explosive_potential = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Potential" ); // Should be ID 388827
@@ -373,9 +376,6 @@ namespace warlock
     talents.shadowburn_2 = find_spell( 245731 );
 
     talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
-
-    talents.rolling_havoc = find_talent_spell( talent_tree::SPECIALIZATION, "Rolling Havoc" ); // Should be ID 387569
-    talents.rolling_havoc_buff = find_spell( 387570 );
 
     talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
