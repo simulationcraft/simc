@@ -762,7 +762,8 @@ public:
     // T32 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
     propagate_const<buff_t *> tigers_ferocity;
-    propagate_const<buff_t *> flow_of_battle;
+    propagate_const<buff_t *> flow_of_battle_damage;
+    propagate_const<buff_t *> flow_of_battle_free_keg_smash;
 
     propagate_const<hp_triggered_buff_t<monk_t, actions::monk_buff_t> *> flow_of_chi;
   } buff;
@@ -1366,6 +1367,8 @@ public:
     struct
     {
       const spell_data_t *ww_4pc;
+      const spell_data_t *brm_4pc_damage_buff;
+      const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;
   } tier;
 

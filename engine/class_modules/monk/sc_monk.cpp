@@ -197,7 +197,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // TWW S1 Set Effects
   parse_effects( p()->buff.tiger_strikes );
   parse_effects( p()->buff.tigers_ferocity );
-  parse_effects( p()->buff.flow_of_battle );
+  parse_effects( p()->buff.flow_of_battle_damage );
 
   // TWW S2 Set Effects
 
@@ -1901,11 +1901,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 {
   using base_t = charred_passions_t<monk_melee_attack_t>;
   blackout_kick_totm_proc_t *bok_totm_proc;
+  cooldown_t *keg_smash_cooldown;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
     : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                       : p->baseline.monk.blackout_kick ) )
+                                                       : p->baseline.monk.blackout_kick ) ),
+      keg_smash_cooldown( nullptr )
   {
     parse_options( options_str );
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1926,6 +1928,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->buff.blackout_reinforcement );
     parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
+
+    if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
+      keg_smash_cooldown = player->get_cooldown( "keg_smash" );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -1962,6 +1967,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     base_t::execute();
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+
+    p()->buff.flow_of_battle_damage->trigger();
+    if ( keg_smash_cooldown && p()->rng().roll( 0.5 ) )
+    {
+      keg_smash_cooldown->reset( false );
+      p()->buff.flow_of_battle_free_keg_smash->trigger();
+    }
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2168,13 +2180,8 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius_max();
 
-    // Reset some variables to ensure proper execution
-    base_costs[ RESOURCE_ENERGY ] = 0;
-
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
@@ -2190,6 +2197,11 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
           .set_eff( &effect );
 
     // TODO: Mark of the Crane parsing
+  }
+
+  result_amount_type report_amount_type( const action_state_t * ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
   }
 
   int motc_counter() const
@@ -2215,20 +2227,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     }
 
     return count;
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->tier.t30.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
-
-    return c;
   }
 
   double action_multiplier() const override
@@ -2278,31 +2276,24 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike = true;
+    sef_ability           = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
+    may_combo_strike      = true;
+    interrupt_auto_attack = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = false;
-    tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
-    // Does not incur channel lag when interrupted by a cast-thru ability
-    ability_lag = p->world_lag;
-
-    spell_power_mod.direct = 0.0;
-
-    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick",
-                                         p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
-    stats       = tick_action->stats;
-
-    // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
     }
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      dot_behavior = DOT_CLIP;
+
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
       chi_x = new chi_explosion_t( p );
-
       add_child( chi_x );
     }
   }
@@ -3115,6 +3106,7 @@ struct keg_smash_t : monk_melee_attack_t
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
           .set_value( effect.percent() )
           .set_eff( &effect );
+    parse_effects( player->buff.flow_of_battle_free_keg_smash );
   }
 
   void execute() override
@@ -3122,6 +3114,7 @@ struct keg_smash_t : monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.hit_scheme->expire();
+    p()->buff.flow_of_battle_free_keg_smash->expire();
 
     if ( p()->talent.brewmaster.salsalabims_strength->ok() )
     {
@@ -3975,12 +3968,12 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       p()->buff.aspect_of_harmony->trigger_flat(
           stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
           ( 1.0 + p()->composite_damage_versatility() ) );
+      p()->buff.recent_purifies->trigger( stacks );
     }
 
     double purify_percent = data().effectN( 1 ).percent();
     purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
-    p()->buff.recent_purifies->trigger( 1, cleared );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -6066,74 +6059,19 @@ struct fury_of_xuen_t : public monk_buff_t
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t
 {
-  std::deque<double> values;
-  // tracking variable for debug code
-  bool ignore_empty;
-  purifying_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t *player ) : monk_buff_t( player, "purifying_brew", spell_data_t::nil() )
   {
-    set_trigger_spell( p->talent.brewmaster.purifying_brew );
+    set_trigger_spell( player->talent.brewmaster.purifying_brew );
     set_can_cancel( true );
     set_quiet( true );
     set_cooldown( timespan_t::zero() );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_default_value( 0.2 );
 
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    set_duration( timespan_t::from_seconds( 6 ) );
+    set_duration( 6_s );
     set_max_stack( 99 );
-
-    ignore_empty = false;
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    ignore_empty = false;
-    p().sim->print_debug( "adding recent purify (amount: {})", value );
-    // Make sure the value is reset upon each trigger
-    current_value = 0;
-
-    values.push_back( value );
-
-    return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  double check_value() const override
-  {
-    double total_value = 0;
-
-    if ( !values.empty() )
-    {
-      for ( auto &i : values )
-        total_value += i;
-    }
-
-    return total_value;
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    if ( values.empty() )
-    {
-      // decrement ends up being called after expire_override sometimes. if this
-      // debug msg is showing, then we have an error besides that that is
-      // leading to stack/queue mismatches
-      if ( !ignore_empty )
-      {
-        p().sim->print_debug( "purifying_buff decrement called with no values in queue!" );
-      }
-    }
-    else
-    {
-      values.pop_front();
-    }
-    monk_buff_t::decrement( stacks, value );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    ignore_empty = true;
-    values.clear();
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6750,6 +6688,15 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
+
+  // TWW S1 Set Effects
+  parse_effects( buff.shuffle, sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+
+  // TWW S2 Set Effects
+
+  // TWW S3 Set Effects
+
+  // TWW S4 Set Effects
 }
 
 // monk_t::create_action ====================================================
@@ -7594,7 +7541,9 @@ void monk_t::init_spells()
     tier.t31.charred_dreams_heal = find_spell( 425298 );
     tier.t31.t31_celestial_brew  = find_spell( 425965 );
 
-    tier.tww1.ww_4pc = find_spell( 454505 );
+    tier.tww1.ww_4pc                      = find_spell( 454505 );
+    tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
+    tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
   }
 
   // Passives =========================================
@@ -8078,14 +8027,21 @@ void monk_t::create_buffs()
       make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B4 )->ok(), this, "tigers_ferocity", find_spell( 454502 ) )
           ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
 
-  buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
-                            ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+  buff.flow_of_battle_damage = make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this,
+                                                   "flow_of_battle_damage", tier.tww1.brm_4pc_damage_buff )
+                                   ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+
+  buff.flow_of_battle_free_keg_smash =
+      make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this, "flow_of_battle_free_keg_smash",
+                          tier.tww1.brm_4pc_free_keg_smash_buff )
+          ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   buff.weapons_of_order = make_buff_fallback( talent.brewmaster.weapons_of_order->ok(), this, "weapons_of_order",
                                               talent.brewmaster.weapons_of_order )
                               ->set_trigger_spell( talent.brewmaster.weapons_of_order );
 
-  buff.recent_purifies = new buffs::purifying_buff_t( this, "recent_purifies", spell_data_t::nil() );
+  buff.recent_purifies = make_buff_fallback<buffs::purifying_buff_t>(
+      talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
 
   buff.leverage = make_buff( this, "leverage", tier.t30.leverage )
                       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ) )
