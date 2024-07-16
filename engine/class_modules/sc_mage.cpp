@@ -4805,9 +4805,12 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->buffs.freezing_winds->trigger();
     p()->buffs.permafrost_lances->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
+    // The Cold Front Frozen Orb seems to trigger Freezing Winds and then (almost always) immediately
+    // expire it. However, if Freezing Winds is already up, it refreshes the buff as normal.
+    // TODO: double check that this is the case, maybe quantify the fail chance as well?
+    if ( !background || !p()->bugs || p()->buffs.freezing_winds->check() ) p()->buffs.freezing_winds->trigger();
   }
 
   void impact( action_state_t* s ) override
