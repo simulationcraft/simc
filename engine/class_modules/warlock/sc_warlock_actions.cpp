@@ -37,6 +37,7 @@ using namespace helpers;
       bool havoc = false;
       bool backdraft = false;
       bool roaring_blaze = false;
+      bool ashen_remains = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -228,6 +229,9 @@ using namespace helpers;
 
       if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
+
+      if ( destruction() && affected_by.ashen_remains && td( t )->dots_immolate->is_ticking() )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -2533,6 +2537,7 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+        affected_by.ashen_remains = true;
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
@@ -2574,16 +2579,6 @@ using namespace helpers;
         return m;
       }
 
-      double composite_target_multiplier( player_t* t ) const override
-      {
-        double m = warlock_spell_t::composite_target_multiplier( t );
-
-        if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-          m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-        return m;
-      }
-
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -2619,6 +2614,7 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
 
       add_child( fnb_action );
 
@@ -2653,16 +2649,6 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
-
-      return m;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -2774,6 +2760,7 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       if ( p->talents.internal_combustion.ok() )
@@ -2813,16 +2800,6 @@ using namespace helpers;
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
-
-      return m;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -3085,6 +3062,7 @@ using namespace helpers;
       
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
@@ -3117,16 +3095,6 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-      return m;
     }
 
     double composite_target_crit_chance( player_t* t ) const override

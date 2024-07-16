@@ -369,7 +369,7 @@ public:
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
     // Summoner's Embrace (shared with Affliction)
     // Grimoire of Sacrifice (shared with Affliction)
-    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate TODO: Review behavior
+    player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
@@ -452,7 +452,7 @@ public:
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
