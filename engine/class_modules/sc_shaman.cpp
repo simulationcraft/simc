@@ -2439,7 +2439,10 @@ public:
 
     this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
 
-    this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
+    if ( this->exec_type == spell_variant::NORMAL && !this->background )
+    {
+      this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
+    }
   }
 };
 
@@ -8133,6 +8136,7 @@ struct ascendance_t : public shaman_spell_t
     }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
+    ancestor_trigger = ancestor_cast::CHAIN_LIGHTNING;
 
     // Cache pointer for MW tracking uses
     p()->action.ascendance = this;
@@ -10049,7 +10053,6 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
-  debug_cast<flame_shock_t*>( action.flame_shock )->ancestor_trigger = ancestor_cast::CHAIN_LIGHTNING;
 
   if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   {
