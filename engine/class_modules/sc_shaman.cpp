@@ -778,7 +778,6 @@ public:
     player_talent_t capacitor_totem;
     // Row 4
     player_talent_t spiritwalkers_grace;
-    player_talent_t ancestral_defense; // TODO: Avoidance
     player_talent_t static_charge;
     player_talent_t guardians_cudgel; // TODO: NYI
     player_talent_t flurry;
@@ -1213,7 +1212,6 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
-  double composite_leech() const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -10189,7 +10187,6 @@ void shaman_t::init_spells()
   talent.capacitor_totem  = _CT( "Capacitor Totem" );
   // Row 4
   talent.spiritwalkers_grace = _CT( "Spiritwalker's Grace" );
-  talent.ancestral_defense   = _CT( "Ancestral Defense" );
   talent.static_charge       = _CT( "Static Charge" );
   talent.guardians_cudgel    = _CT( "Guardian's Cudgel" );
   // Row 5
@@ -12840,17 +12837,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + buff.elemental_equilibrium->value();
 
   return m;
-}
-
-// shaman_t::composite_leech ================================================
-
-double shaman_t::composite_leech() const
-{
-  double l = player_t::composite_leech();
-
-  l *= 1.0 + talent.ancestral_defense->effectN( 1 ).percent();
-
-  return l;
 }
 
 // shaman_t::invalidate_cache ===============================================
