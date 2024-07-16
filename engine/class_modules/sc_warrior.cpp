@@ -8727,8 +8727,6 @@ void warrior_t::create_buffs()
 
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
-  buff.whirlwind = make_buff( this, "whirlwind", find_spell( 85739 ) );
-
   buff.dance_of_death_ravager = make_buff( this, "dance_of_death_ravager", find_spell( 459567 ) )
       ->set_duration( 0_s ) // Handled by the ravager action
       ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
