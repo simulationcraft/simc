@@ -12828,13 +12828,21 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  // Elemental
-  m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
+  if ( !guardian )
+  {
+    m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
+    m *= 1.0 + spec.elemental_shaman->effectN( 28 ).percent();
 
-  // Enhancement
-  m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
+    m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
-  m *= 1.0 + buff.elemental_equilibrium->value();
+    m *= 1.0 + buff.elemental_equilibrium->value();
+  }
+  else
+  {
+    m *= 1.0 + spec.elemental_shaman->effectN( 14 ).percent();
+
+    m *= 1.0 + spec.enhancement_shaman->effectN( 13 ).percent();
+  }
 
   return m;
 }
