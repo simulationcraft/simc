@@ -35,12 +35,8 @@ constexpr unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 struct spelllabel_data_t
 {
-  unsigned _id;
   unsigned _id_spell;
   short    _label;
-
-  unsigned id() const
-  { return _id; }
 
   unsigned id_spell() const
   { return _id_spell; }
@@ -773,6 +769,7 @@ struct spell_data_t
   bool affected_by_label( const spelleffect_data_t& effect ) const;
   bool affected_by_label( int label ) const;
   bool affected_by( const spell_data_t* ) const;
+  bool affected_by( const spell_data_t& ) const;
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;
 

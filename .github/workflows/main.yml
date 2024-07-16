@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ thewarwithin ] # TODO: remove if-checks for only DF branch when TWW APLS are ready
+    branches: [ thewarwithin ]
   push:
     branches: [ thewarwithin ]
     paths-ignore:
@@ -403,7 +403,7 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
-    if: github.ref_name == 'dragonflight'
+    if: false # TODO: re-enable when all TWW APLs are ready && CI.simc has all specs
 
     strategy:
       fail-fast: false
@@ -454,7 +454,7 @@ jobs:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push' && github.ref_name == 'dragonflight'
+    if: github.event_name == 'push' && false # TODO: re-enable when all TWW APLs are ready
 
     strategy:
       fail-fast: false
@@ -502,7 +502,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: github.ref_name == 'dragonflight'
+        if: false # TODO: re-enable when all TWW APLs are ready
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -514,7 +514,7 @@ jobs:
         arch: [x64, amd64_arm64]
         include:
           - arch: x64
-            runSmokeTest: true
+            runSmokeTest: false # TODO: re-enable when all TWW APLs are ready
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
@@ -539,5 +539,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: matrix.runSmokeTest && github.ref_name == 'dragonflight'
+        if: matrix.runSmokeTest
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

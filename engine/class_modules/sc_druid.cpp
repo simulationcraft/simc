@@ -8998,8 +8998,10 @@ struct druid_melee_t : public Base
   using ab = Base;
   using base_t = druid_melee_t<Base>;
 
+  accumulated_rng_t* ravage_rng = nullptr;
+  proc_t* ravage_proc = nullptr;
+  buff_t* ravage_buff = nullptr;
   double ooc_chance = 0.0;
-  double ravage_chance = 0.0;
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
@@ -9028,8 +9030,14 @@ struct druid_melee_t : public Base
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    if ( p->talent.ravage.ok() )
-      ravage_chance = 2.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
+    // Feral: 0.286% via community testing (~197k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+    if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
+    {
+      ravage_rng = p->get_accumulated_rng( "ravage", 0.00286 );
+      ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
+      ravage_buff = p->buff.ravage_fb;
+    }
   }
 
   timespan_t execute_time() const override
@@ -9059,11 +9067,10 @@ struct druid_melee_t : public Base
         }
       }
 
-      if ( ravage_chance )
+      if ( ravage_rng && ravage_rng->trigger() )
       {
-        double chance = ab::weapon->proc_chance_on_swing( ravage_chance );
-        ab::p()->buff.ravage_fb->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
-        ab::p()->buff.ravage_maul->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+        ravage_proc->occur();
+        ravage_buff->trigger();
       }
     }
   }
@@ -9245,6 +9252,32 @@ void druid_t::activate()
       else
       {
         event_t::cancel( astral_power_decay );
+      }
+    } );
+  }
+
+  if ( talent.lycaras_teachings.ok() )
+  {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+      buff_t* new_buff;
+
+      switch ( get_form() )
+      {
+        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit; break;
+        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers; break;
+        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast; break;
+        default:           return;
+      }
+
+      if ( !new_buff->check() )
+      {
+        buff.lycaras_teachings_haste->expire();
+        buff.lycaras_teachings_crit->expire();
+        buff.lycaras_teachings_vers->expire();
+        buff.lycaras_teachings_mast->expire();
+
+        new_buff->trigger();
       }
     } );
   }
@@ -10576,7 +10609,8 @@ void druid_t::create_buffs()
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore )
-    ->set_cooldown( talent.gore->internal_cooldown() );
+    ->set_cooldown( talent.gore->internal_cooldown() )
+    ->set_chance( talent.gore->effectN( 1 ).percent() );
 
   buff.gory_fur = make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
     ->set_trigger_spell( talent.gory_fur );
@@ -10762,10 +10796,12 @@ void druid_t::create_buffs()
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.ravage_fb = make_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
-    this, "ravage", find_spell( 441585 ) );
+    this, "ravage", find_spell( 441585 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.ravage_maul = make_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
-    this, "ravage", find_spell( 441602 ) );
+    this, "ravage", find_spell( 441602 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
@@ -12014,29 +12050,6 @@ void druid_t::precombat_init()
   start_buff( buff.shooting_stars_sunfire );
   start_buff( buff.treants_of_the_moon );
   start_buff( buff.yseras_gift );
-
-  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    buff_t* new_buff;
-
-    switch( get_form() )
-    {
-      case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-      case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
-      case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
-      case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
-      default: return;
-    }
-
-    if ( !new_buff->check() )
-    {
-      buff.lycaras_teachings_haste->expire();
-      buff.lycaras_teachings_crit->expire();
-      buff.lycaras_teachings_vers->expire();
-      buff.lycaras_teachings_mast->expire();
-
-      new_buff->trigger();
-    }
-  } );
 }
 
 // druid_t::combat_begin (called after precombat apl before default apl)=======

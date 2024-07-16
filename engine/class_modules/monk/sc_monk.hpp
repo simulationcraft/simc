@@ -104,6 +104,7 @@ enum class sef_ability_e
   SEF_WHIRLING_DRAGON_PUNCH,
   SEF_STRIKE_OF_THE_WINDLORD,
   SEF_STRIKE_OF_THE_WINDLORD_OH,
+  SEF_CELESTIAL_CONDUIT,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -394,7 +395,6 @@ public:
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> enveloping_mist;
     propagate_const<dot_t *> renewing_mist;
-    propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
 
@@ -490,9 +490,7 @@ public:
   struct active_actions_t
   {
     // General
-    propagate_const<action_t *> bountiful_brew;
     propagate_const<action_t *> chi_wave;
-    propagate_const<action_t *> rushing_jade_wind;
 
     // Conduit of the Celestials
     propagate_const<action_t *> courage_of_the_white_tiger;
@@ -733,6 +731,8 @@ public:
 
     // Master of Harmony
     buffs::aspect_of_harmony_t *aspect_of_harmony;
+    propagate_const<buff_t *> balanced_stratagem_physical;
+    propagate_const<buff_t *> balanced_stratagem_magic;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -762,7 +762,8 @@ public:
     // T32 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
     propagate_const<buff_t *> tigers_ferocity;
-    propagate_const<buff_t *> flow_of_battle;
+    propagate_const<buff_t *> flow_of_battle_damage;
+    propagate_const<buff_t *> flow_of_battle_free_keg_smash;
 
     propagate_const<hp_triggered_buff_t<monk_t, actions::monk_buff_t> *> flow_of_chi;
   } buff;
@@ -787,7 +788,6 @@ public:
     propagate_const<gain_t *> open_palm_strikes;
     propagate_const<gain_t *> ordered_elements;
     propagate_const<gain_t *> power_strikes;
-    propagate_const<gain_t *> rushing_jade_wind_tick;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
     propagate_const<gain_t *> weapons_of_order;
@@ -849,8 +849,6 @@ public:
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> rushing_jade_wind_brm;
-    propagate_const<cooldown_t *> rushing_jade_wind_ww;
     propagate_const<cooldown_t *> storm_earth_and_fire;
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;
@@ -1260,7 +1258,9 @@ public:
       const spell_data_t *purified_spirit_damage;
       const spell_data_t *purified_spirit_heal;
       player_talent_t harmonic_gambit;
-      player_talent_t balanced_strategem;
+      player_talent_t balanced_stratagem;
+      const spell_data_t *balanced_stratagem_physical;
+      const spell_data_t *balanced_stratagem_magic;
       // Row 3
       player_talent_t tigers_vigor;
       player_talent_t roar_from_the_heavens;
@@ -1367,6 +1367,8 @@ public:
     struct
     {
       const spell_data_t *ww_4pc;
+      const spell_data_t *brm_4pc_damage_buff;
+      const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;
   } tier;
 
@@ -1456,7 +1458,6 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;

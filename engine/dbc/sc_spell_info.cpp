@@ -2239,24 +2239,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   for ( size_t i = 1, end = spell->label_count(); i <= end; ++i )
   {
     auto label = spell->labelN( i );
-    if ( _label_strings.find( label ) != _label_strings.end() )
-      continue;
-
     auto affecting_effects = dbc.effect_labels_affecting_label( label );
 
     if ( !first_label )
     {
-      if ( affecting_effects.empty() )
-      {
-        if ( i < end )
-        {
-          s << ", ";
-        }
-      }
-      else
-      {
-        s << "                 : ";
-      }
+      s << "                 : ";
     }
     else
     {
@@ -2266,7 +2253,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     s << label;
 
-    if ( !affecting_effects.empty() )
+    auto it = _label_strings.find( label );
+    if ( it != _label_strings.end() )
+    {
+      s << ": " << it->second;
+    }
+    else if ( !affecting_effects.empty() )
     {
       s << ": " << concatenate( affecting_effects, []( std::stringstream& s, const spelleffect_data_t* e ) {
         s << e->spell()->name_cstr() << " (" << e->spell()->id() << " effect#" << ( e->index() + 1 ) << ")";

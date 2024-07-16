@@ -660,7 +660,8 @@ bool stagger_t<derived_actor_t>::is_ticking()
 template <class derived_actor_t>
 double stagger_t<derived_actor_t>::level_index() const
 {
-  return levels.size() - std::distance( levels.begin(), std::find( levels.begin(), levels.end(), current ) ) - 1;
+  return as<double>( levels.size() -
+                     std::distance( levels.begin(), std::find( levels.begin(), levels.end(), current ) ) - 1 );
 }
 
 template <class derived_actor_t>

@@ -744,7 +744,7 @@ struct judgment_prot_t : public judgment_t
       if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
         hopo += sw_holy_power;
       if ( p()->buffs.bastion_of_light->up() )
-        hopo += p()->buffs.bastion_of_light->default_value;
+        hopo += as<int>( p()->buffs.bastion_of_light->default_value );
       if ( hopo > 0 )
         p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
     }

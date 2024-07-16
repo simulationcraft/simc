@@ -452,6 +452,11 @@ bool spell_data_t::affected_by_label( int label ) const
   return range::contains( labels(), label, &spelllabel_data_t::label );
 }
 
+bool spell_data_t::affected_by( const spell_data_t& spell ) const
+{
+  return affected_by( &( spell ) );
+}
+
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
 {
   if ( class_family() != spell->class_family() )

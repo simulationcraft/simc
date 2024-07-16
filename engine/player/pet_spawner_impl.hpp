@@ -183,6 +183,12 @@ pet_spawner_t<T, O>&  pet_spawner_t<T, O>::set_replacement_strategy( pet_replace
 
 // Despawners
 template <typename T, typename O>
+size_t pet_spawner_t<T, O>::despawn()
+{
+  return despawn( { m_active_pets } );
+}
+
+template <typename T, typename O>
 bool pet_spawner_t<T, O>::despawn( T* obj )
 {
   bool despawned = false;
@@ -430,7 +436,7 @@ std::vector<const T*> pet_spawner_t<T, O>::pets() const
 }
 
 template <typename T, typename O>
-T* pet_spawner_t<T, O>::active_pet( size_t index )
+T* pet_spawner_t<T, O>::active_pet( size_t index ) const
 {
   if ( index >= m_active )
   {
@@ -664,7 +670,7 @@ void pet_spawner_t<T, O>::datacollection_end()
 }
 
 template <typename T, typename O>
-void pet_spawner_t<T, O>::update_state()
+void pet_spawner_t<T, O>::update_state() const
 {
   if ( ! m_dirty )
   {

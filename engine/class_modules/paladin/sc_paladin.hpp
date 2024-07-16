@@ -884,6 +884,8 @@ public:
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
 
+  void spread_expurgation( action_t* act, player_t* og );
+
   target_specific_t<paladin_td_t> target_data;
 
   virtual const paladin_td_t* find_target_data( const player_t* target ) const override;
@@ -1701,7 +1703,7 @@ public:
     {
       int additionalTargets = 0;
       if ( p->buffs.templar.shake_the_heavens->up() )
-        additionalTargets += p->talents.templar.hammerfall->effectN( 2 ).base_value();
+        additionalTargets += as<int>( p->talents.templar.hammerfall->effectN( 2 ).base_value() );
       p->trigger_empyrean_hammer( nullptr, 1 + additionalTargets,
                                   timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
                                   true );

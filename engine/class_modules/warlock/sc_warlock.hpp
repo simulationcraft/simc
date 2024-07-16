@@ -52,8 +52,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_infirmity;
 
   // Demo
-  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
+  propagate_const<buff_t*> debuffs_wicked_maw;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
+  propagate_const<buff_t*> debuffs_doom;
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -142,6 +143,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+    spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -258,68 +260,86 @@ public:
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
 
     player_talent_t inner_demons;
-    player_talent_t soul_strike; // TODO: Make sure older iterations have been cleaned up
+    player_talent_t soul_strike;
+    const spell_data_t* soul_strike_pet;
+    const spell_data_t* soul_strike_dmg;
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
 
-    player_talent_t rune_of_shadows; // TODO: New
+    player_talent_t sacrificed_souls;
+    player_talent_t rune_of_shadows;
     player_talent_t imperator; // Increased critical strike chance for Wild Imps' Fel Firebolt (additive)
-    player_talent_t fel_invocation; // TODO: Update given new design and tree placement for VF
+    player_talent_t fel_invocation;
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
-    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc. TODO: Review proc chances from AoE hits
-    player_talent_t wicked_maw; // TODO: Previously Houndmaster's Strategem. Convert/rename as necessary
+    player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc
+    player_talent_t wicked_maw;
+    const spell_data_t* wicked_maw_debuff; // TOCHECK: Other pet abilities besides Soul Strike/Dreadbite?
 
-    player_talent_t power_siphon; // NOTE: Power Siphon WILL consume Imp Gang Boss as if it were a regular imp (last checked 2022-10-04)
+    player_talent_t power_siphon;
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
-    player_talent_t summon_demonic_tyrant; // TODO: Review what is considered baseline given updated tree placement
+    player_talent_t summon_demonic_tyrant;
     const spell_data_t* demonic_power_buff;
     player_talent_t grimoire_felguard;
-    player_talent_t the_houndmasters_stratagem; // TODO: Possibly migrated to Wicked Maw. Remove after migration
-    const spell_data_t* the_houndmasters_stratagem_debuff;
+    const spell_data_t* grimoire_of_service; // Buff on Grimoire: Felguard
 
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
-    player_talent_t blood_invocation; // TODO: New
-    player_talent_t umbral_blaze; // TODO: May now be rolling periodic, check DoT behavior
+    const spell_data_t* the_expendables_buff;
+    player_talent_t blood_invocation;
+    player_talent_t umbral_blaze; // TOCHECK: What is the duration behavior on refresh?
     const spell_data_t* umbral_blaze_dot;
-    player_talent_t reign_of_tyranny; // TODO: Review behavior due to updated tree placement
-    const spell_data_t* demonic_servitude;
+    player_talent_t reign_of_tyranny;
+    const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
-    player_talent_t fiendish_oblation; // TODO: New
-    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm TODO: Check GFG does not proc
+    player_talent_t fiendish_oblation;
+    player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t doom; // TODO: Heavily changed, now a passive
+    player_talent_t doom;
+    const spell_data_t* doom_debuff;
+    const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
     player_talent_t summon_vilefiend;
+    const spell_data_t* bile_spit;
+    const spell_data_t* headbutt;
     player_talent_t dread_calling; // Stacking buff to next Dreadstalkers damage
-    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock, a different one applies to the pet
-    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave TODO: Check if GFG is benefiting
+    const spell_data_t* dread_calling_buff; // This buffs stacks on the warlock
+    const spell_data_t* dread_calling_pet;
+    player_talent_t antoran_armaments; // Increased Felguard damage and Soul Strike cleave
+    const spell_data_t* antoran_armaments_buff;
+    const spell_data_t* soul_cleave;
 
-    player_talent_t doom_eternal; // TODO: New
-    player_talent_t impending_doom; // TODO: New
-    player_talent_t flametouched; // TODO: New
-    player_talent_t foul_mouth; // TODO: New
-    player_talent_t shadowtouched; // TODO: New
-    player_talent_t improved_demonic_tactics; // TODO: Possibly migrated/combined from other effects (Cavitation/Heavy Handed)
-    player_talent_t demonic_brutality; // TODO: New
+    player_talent_t doom_eternal;
+    player_talent_t impending_doom;
+    player_talent_t foul_mouth;
+    player_talent_t the_houndmasters_gambit;
+    const spell_data_t* houndmasters_aura; // Contains actual referenced % increase
+    player_talent_t improved_demonic_tactics;
+    player_talent_t demonic_brutality; // TOCHECK: Pets may not be properly benefitting from this in-game
 
-    player_talent_t pact_of_the_eredruin; // TODO: New
-    player_talent_t sacrificed_souls;
-    player_talent_t mark_of_shatug; // TODO: New
-    player_talent_t mark_of_fharg; // TODO: New
-    player_talent_t the_houndmasters_gambit; // TODO: New
-    player_talent_t immutable_hatred; // TODO: Review behavior in new core economy
+    player_talent_t pact_of_the_eredruin;
+    const spell_data_t* doomguard;
+    const spell_data_t* doom_bolt;
+    player_talent_t shadowtouched;
+    player_talent_t mark_of_shatug;
+    const spell_data_t* gloom_slash;
+    player_talent_t mark_of_fharg;
+    const spell_data_t* infernal_presence;
+    const spell_data_t* infernal_presence_dmg;
+    player_talent_t flametouched;
+    player_talent_t immutable_hatred;
+    const spell_data_t* immutable_hatred_proc;
     player_talent_t guillotine;
-
-    player_talent_t cavitation; // TODO: Possibly migrated to Improved Demonic Tactics. Remove after migration
-    player_talent_t heavy_handed; // TODO: Remove (maybe merged/overlapped with Cavitation -> Improved Demonic Tactics)
+    const spell_data_t* guillotine_pet;
+    const spell_data_t* fiendish_wrath_buff;
+    const spell_data_t* fiendish_wrath_dmg;
+    const spell_data_t* fel_explosion;
 
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
-    const spell_data_t* conflagrate_2; // TODO: Check if separate spells still needed
+    const spell_data_t* conflagrate_2; // Energize data
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
@@ -329,13 +349,13 @@ public:
     player_talent_t roaring_blaze;
     const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
-    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Damage proc when physically attacked
+    player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
     player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
     player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
-    player_talent_t inferno; // TODO: Heavily changed
+    player_talent_t inferno;
     player_talent_t cataclysm;
 
     player_talent_t indiscriminate_flames; // TODO: New
@@ -419,7 +439,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -428,10 +448,10 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination;
+    player_talent_t ruination; // TODO: Backdraft
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -467,6 +487,7 @@ public:
   {
     action_t* bilescourge_bombers_aoe_tick;
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
+    action_t* doom_proc;
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
@@ -516,7 +537,6 @@ public:
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
@@ -583,6 +603,7 @@ public:
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
+    proc_t* pact_of_the_eredruin;
 
     // Destruction
     proc_t* reverse_entropy;
@@ -616,7 +637,7 @@ public:
   void create_options() override;
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
-  int active_demon_count() const; // TODO: Move to helpers?
+  int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;

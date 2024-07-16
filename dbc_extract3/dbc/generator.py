@@ -3351,14 +3351,16 @@ class SpellDataGenerator(DataGenerator):
 
         labels = []
         for label in self.db('SpellLabel').values():
-            if label.label not in included_labels:
-                continue
             if label.id_parent not in id_keys:
                 continue
+
             if label.label in constants.SPELL_LABEL_BLACKLIST:
                 continue
-            labels.append(label)
-            spelllabel_index[label.id_parent] += 1
+
+            label_tuple = (label.id_parent, label.label, label)
+            if label_tuple not in labels:
+                labels.append(label_tuple)
+                spelllabel_index[label.id_parent] += 1
 
         for spell_id, effect_ids in spelleffect_index.items():
             for effect_id in effect_ids:
@@ -3651,13 +3653,13 @@ class SpellDataGenerator(DataGenerator):
 
         # Write out labels
         self.output_header(
-                header = 'Applied spell labels',
+                header = 'Spell labels',
                 type = 'spelllabel_data_t',
                 array = 'spelllabel',
                 length = len(labels))
 
-        for label in sorted(labels, key=lambda l: (l.id_parent, l.id)):
-            self.output_record(label.field('id', 'id_parent', 'label'))
+        for _, _, label in sorted(labels, key=lambda l: (l[0], l[1])):
+            self.output_record(label.field('id_parent', 'label'))
 
         self.output_footer()
 

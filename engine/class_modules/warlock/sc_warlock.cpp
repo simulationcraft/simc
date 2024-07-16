@@ -41,11 +41,25 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Demonology
-  debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
-                                           ->set_default_value_from_effect( 1 );
+  debuffs_wicked_maw = make_buff( *this, "wicked_maw", p.talents.wicked_maw_debuff )
+                           ->set_default_value_from_effect( 1 );
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
+
+  debuffs_doom = make_buff( *this, "doom", p.talents.doom_debuff )
+                     ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                       if ( cur == 0 )
+                       {
+                         p.proc_actions.doom_proc->execute_on_target( b->player );
+
+                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( 0.3 ) )
+                         {
+                           p.warlock_pet_list.doomguards.spawn( 1u );
+                           p.procs.pact_of_the_eredruin->occur();
+                         }
+                       }
+                       } );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
@@ -271,6 +285,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + cache.mastery_value();
     else
       m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+    if ( !guardian && talents.rune_of_shadows.ok() )
+      m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -311,8 +328,8 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2022-11-27
-    if ( talents.fel_sunder.ok() && !guardian )
+    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
+    if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
@@ -383,7 +400,7 @@ void warlock_t::init_assessors()
 {
   player_t::init_assessors();
 
-  auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
+  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ){
     if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
       accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
 
@@ -480,10 +497,6 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet == source )
       continue;
 
-    // Pit Lord is not affected by The Expendables
-    if ( lock_pet->pet_type == PET_PIT_LORD )
-      continue;
-
     lock_pet->buffs.the_expendables->trigger();
   }
 }
@@ -555,7 +568,7 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view pet_type )
+pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
   if ( p )
@@ -811,7 +824,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
-    wild_imps( "wild_imp", w )
+    wild_imps( "wild_imp", w ),
+    doomguards( "Doomguard", w )
 { }
 }  // namespace warlock
 
