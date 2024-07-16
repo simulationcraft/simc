@@ -2180,13 +2180,8 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius_max();
 
-    // Reset some variables to ensure proper execution
-    base_costs[ RESOURCE_ENERGY ] = 0;
-
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
@@ -2202,6 +2197,11 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
           .set_eff( &effect );
 
     // TODO: Mark of the Crane parsing
+  }
+
+  result_amount_type report_amount_type( const action_state_t * ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
   }
 
   int motc_counter() const
@@ -2227,20 +2227,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     }
 
     return count;
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->tier.t30.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
-
-    return c;
   }
 
   double action_multiplier() const override
@@ -2290,31 +2276,24 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike = true;
+    sef_ability           = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
+    may_combo_strike      = true;
+    interrupt_auto_attack = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = false;
-    tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
-    // Does not incur channel lag when interrupted by a cast-thru ability
-    ability_lag = p->world_lag;
-
-    spell_power_mod.direct = 0.0;
-
-    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick",
-                                         p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
-    // stats       = tick_action->stats;
-
-    // Brewmaster can use SCK again after the GCD
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
     }
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      dot_behavior = DOT_CLIP;
+
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
       chi_x = new chi_explosion_t( p );
-
       add_child( chi_x );
     }
   }
