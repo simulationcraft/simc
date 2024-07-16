@@ -451,6 +451,7 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
+    bool treat_bloodlust_as_time_warp = false;
   } options;
 
   // Pets
@@ -6886,7 +6887,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
         possible_procs.push_back( TA_ICY_VEINS );
       if ( spec == MAGE_FROST && !mage->buffs.brain_freeze->check() )
         possible_procs.push_back( TA_BRAIN_FREEZE );
-      if ( !mage->buffs.time_warp->check() )
+      if ( !mage->buffs.time_warp->check() && ( !mage->player_t::buffs.bloodlust->check() || !mage->options.treat_bloodlust_as_time_warp ) )
         possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
@@ -7246,6 +7247,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_bool( "mage.treat_bloodlust_as_time_warp", options.treat_bloodlust_as_time_warp ) );
 
   player_t::create_options();
 }
