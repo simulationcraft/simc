@@ -9958,6 +9958,12 @@ struct pillar_of_frost_t final : public death_knight_spell_t
       whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
       add_child( whelp );
     }
+
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      wrath_of_the_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "wrath_of_the_frostwyrm", p );
+      add_child( wrath_of_the_frostwyrm );
+    }
   }
 
   void execute() override
@@ -9967,11 +9973,16 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     {
       whelp->execute();
     }
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      wrath_of_the_frostwyrm->execute();
+    }
     p()->buffs.pillar_of_frost->trigger();
   }
 
 private:
   propagate_const<action_t*> whelp;
+  propagate_const<action_t*> wrath_of_the_frostwyrm;
 };
 
 // Vile Contagion =============================================================
