@@ -140,7 +140,15 @@ struct modify_effect_t
   { eff = e; return *this; }
 };
 
-// handy wrapper to create ignore masks with verbose effect index enable/disable methods
+/*
+ * Wrapper to create ignore masks effects for parse_effects and parse_target_effects.
+ * effect_mask_t( bool b ): default state for effects (true = all enabled, false = all disabled)
+ * enable( ints... ): enable effects by index
+ * disable( ints... ): disable effects by index
+ *
+ * e.g.
+ * effect_mask_t( true ).disable( 2, 4 ); enables all effects, then disables 2 and 4
+ */
 struct effect_mask_t
 {
   uint32_t mask;
@@ -165,6 +173,18 @@ struct effect_mask_t
   { return mask; }
 };
 
+/*
+ * Modifies whitelists of effects.
+ * affect_list_t( ints... ): selects effects to modify
+ * positive int enables family/label/spell.
+ * negative int disables family/label/spell.
+ * adjust_family( ints... );
+ * adjust_label( ints... );
+ * adjust_spell( ints... );
+ *
+ * affect_list_t( 1, 3 ).adjust_spell( 1, -2 );
+ * modifies effect 1 and 3 whitelist. adds spell id 1, removes spell id 2
+ */
 struct affect_list_t
 {
   std::vector<uint8_t> idx;
