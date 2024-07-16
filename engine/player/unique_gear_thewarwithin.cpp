@@ -423,11 +423,18 @@ namespace enchants
 {
 void authority_of_radiant_power( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 448730 ) )
-    ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect.player ) );
+  auto found = effect.player->find_action( "authority_of_radiant_power" );
 
-  auto damage = create_proc_action<generic_proc_t>( effect.name(), effect, 448744 );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+  auto damage = create_proc_action<generic_proc_t>( "authority_of_radiant_power", effect, 448744 );
+  auto damage_val = effect.driver()->effectN( 1 ).average( effect.player );
+  damage->base_dd_min += damage_val;
+  damage->base_dd_max += damage_val;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 448730 ) )
+    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect.player ) );
+
+  if ( found )
+    return;
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -443,8 +450,13 @@ void authority_of_radiant_power( special_effect_t& effect )
 // TODO: confirm coeff is per tick and not for entire dot
 void authority_of_the_depths( special_effect_t& effect )
 {
+  auto found = effect.player->find_action( "suffocating_darkness" );
+
   auto damage = create_proc_action<generic_proc_t>( "suffocating_darkness", effect, 449217 );
-  damage->base_td = effect.driver()->effectN( 1 ).average( effect.player );
+  damage->base_td += effect.driver()->effectN( 1 ).average( effect.player );
+
+  if ( found )
+    return;
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -455,8 +467,16 @@ void authority_of_the_depths( special_effect_t& effect )
 
 void secondary_weapon_enchant( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger()->effectN( 1 ).trigger() )
-    ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
+  auto buff_data = effect.trigger()->effectN( 1 ).trigger();
+  auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
+
+  auto found = buff_t::find( effect.player, buff_name );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_name, buff_data )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
+
+  if ( found )
+    return;
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
