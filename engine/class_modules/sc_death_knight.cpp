@@ -5188,8 +5188,9 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
       return;
     }
 
-    pillar_extension++;
-    extend_duration( p(), timespan_t::from_seconds( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() ) );
+    int added_duration = as<unsigned>(p()->talent.frost.the_long_winter->effectN( 1 ).base_value());
+    pillar_extension += added_duration;
+    extend_duration( p(), timespan_t::from_seconds( added_duration ) );
   }
 
   void trigger_enduring_strength()
