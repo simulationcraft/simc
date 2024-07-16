@@ -1506,9 +1506,6 @@ public:
   bool affected_by_elemental_unity_se_da;
   bool affected_by_elemental_unity_se_ta;
 
-  bool affected_by_lightning_conduit_da;
-  bool affected_by_lightning_conduit_ta;
-
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1545,9 +1542,7 @@ public:
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
       affected_by_elemental_unity_se_da( false ),
-      affected_by_elemental_unity_se_ta( false ),
-      affected_by_lightning_conduit_da( false ),
-      affected_by_lightning_conduit_ta( false )
+      affected_by_elemental_unity_se_ta( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1627,9 +1622,6 @@ public:
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 4 ) );
     affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) ) ||
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 5 ) );
-
-    affected_by_lightning_conduit_da = ab::data().affected_by( player->talent.lightning_conduit->effectN( 1 ) );
-    affected_by_lightning_conduit_ta = ab::data().affected_by( player->talent.lightning_conduit->effectN( 2 ) );
   }
 
   std::string full_name() const
@@ -1794,11 +1786,6 @@ public:
       m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 4 ).percent();
     }
 
-    if ( affected_by_lightning_conduit_da && p()->buff.lightning_shield->check() )
-    {
-      m *= 1.0 + p()->talent.lightning_conduit->effectN( 3 ).percent();
-    }
-
     return m;
   }
 
@@ -1877,12 +1864,6 @@ public:
          p()->buff.lesser_storm_elemental->check() )
     {
       m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 5 ).percent();
-    }
-
-
-    if ( affected_by_lightning_conduit_ta && p()->buff.lightning_shield->check() )
-    {
-      m *= 1.0 + p()->talent.lightning_conduit->effectN( 3 ).percent();
     }
 
     return m;
@@ -12808,6 +12789,12 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   {
     unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
     m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
+  }
+
+  if ( dbc::is_school( school, SCHOOL_NATURE ) && buff.lightning_shield->up() &&
+       talent.lightning_conduit.ok() )
+  {
+    m *= 1.0 + talent.lightning_conduit->effectN( 3 ).percent();
   }
 
   return m;
