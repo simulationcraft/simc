@@ -6425,6 +6425,11 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.icefury_cast->trigger();
     }
+
+    if ( p()->talent.routine_communication.ok() && exec_type == spell_variant::NORMAL )
+    {
+      p()->summon_ancestor( p()->talent.routine_communication->effectN( 2 ).percent() );
+    }
   }
 
   timespan_t execute_time() const override
