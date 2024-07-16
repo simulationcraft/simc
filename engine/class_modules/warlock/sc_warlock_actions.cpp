@@ -260,7 +260,7 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_dd )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_dd )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
@@ -279,7 +279,7 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_td )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )

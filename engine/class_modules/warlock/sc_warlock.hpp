@@ -170,6 +170,7 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
+    player_talent_t summoners_embrace;
 
     // Affliction
     player_talent_t unstable_affliction;
@@ -193,7 +194,7 @@ public:
     player_talent_t improved_shadow_bolt;
     player_talent_t drain_soul; // This represents the talent node but not much else
     const spell_data_t* drain_soul_dot; // Contains all channel data
-    player_talent_t summoners_embrace;
+    // Summoner's Embrace (shared with Destruction)
     // Grimoire of Sacrifice (shared with Destruction)
     player_talent_t phantom_singularity;
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
@@ -366,8 +367,8 @@ public:
     player_talent_t shadowburn;
     const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
-    // TODO: Summoner's Embrace - may be shared with Affliction?
-    // Grimoire of Sacrifice - shared with Affliction
+    // Summoner's Embrace (shared with Affliction)
+    // Grimoire of Sacrifice (shared with Affliction)
     player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate TODO: Review behavior
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
