@@ -3583,6 +3583,16 @@ struct ancestor_t : public shaman_pet_t
         break;
     }
   }
+
+  void dismiss( bool expiration ) override
+  {
+    shaman_pet_t::dismiss( expiration );
+
+    if ( expiration && o()->talent.ancient_fellowship.ok() )
+    {
+      o()->summon_ancestor( o()->talent.ancient_fellowship->effectN( 1 ).percent() );
+    }
+  }
 };
 }  // end namespace pet
 
@@ -11858,6 +11868,7 @@ void shaman_t::create_buffs()
                                 ->set_trigger_spell( talent.fury_of_the_storms );
 
   buff.call_of_the_ancestors = make_buff( this, "call_of_the_ancestors", find_spell( 447244 ) )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_trigger_spell( talent.call_of_the_ancestors );
 
   //
