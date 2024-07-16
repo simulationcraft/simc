@@ -11869,6 +11869,7 @@ void shaman_t::create_buffs()
 
   buff.call_of_the_ancestors = make_buff( this, "call_of_the_ancestors", find_spell( 447244 ) )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->apply_affecting_aura( talent.heed_my_call )
     ->set_trigger_spell( talent.call_of_the_ancestors );
 
   //
