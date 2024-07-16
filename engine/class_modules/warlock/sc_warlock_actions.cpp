@@ -3133,7 +3133,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_crit_chance( t );
 
-      if ( target->health_percentage() <= 20.0 )
+      if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
 
       return m;
