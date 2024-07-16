@@ -2276,12 +2276,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability           = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike      = true;
-    interrupt_auto_attack = true;
+    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
+    may_combo_strike = true;
 
     tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
+    interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
@@ -2289,7 +2289,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
+    {
       dot_behavior = DOT_CLIP;
+    }
 
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
