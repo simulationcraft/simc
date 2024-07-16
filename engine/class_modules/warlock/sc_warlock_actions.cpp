@@ -2591,6 +2591,16 @@ using namespace helpers;
         if ( s->result == RESULT_CRIT )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
       }
+
+      double composite_crit_chance() const override
+      {
+        double c = warlock_spell_t::composite_crit_chance();
+
+        if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+          c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+        return c;
+      }
     };
 
     double energize_mult;
@@ -2619,14 +2629,13 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
       
-      p()->buffs.backdraft->decrement();
-
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
       if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
         p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
 
+      p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
     }
 
@@ -2657,6 +2666,16 @@ using namespace helpers;
 
       return m;
     }
+
+    double composite_crit_chance() const override
+    {
+      double c = warlock_spell_t::composite_crit_chance();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
+    }
   };
 
   struct immolate_t : public warlock_spell_t
@@ -2669,6 +2688,8 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+
+        dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
 
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
         base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
@@ -2789,6 +2810,9 @@ using namespace helpers;
 
       if ( p()->buffs.crashing_chaos->check() )
         m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
 
       return m;
     }
@@ -3450,6 +3474,16 @@ using namespace helpers;
       immolate->execute_on_target( target );
 
       p()->buffs.backdraft->decrement();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = warlock_spell_t::composite_crit_chance();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
     }
   };
 
