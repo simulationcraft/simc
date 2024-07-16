@@ -11743,7 +11743,7 @@ void shaman_t::create_buffs()
   buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch", find_spell( 384451 ) )
     ->set_default_value( talent.legacy_of_the_frost_witch->effectN( 1 ).percent() );
   buff.elemental_equilibrium = make_buff<buff_t>( this, "elemental_equilibrium",
-      find_spell( 347348 ) )
+      find_spell( 378275 ) )
     ->set_default_value( talent.elemental_equilibrium->effectN( 4 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.elemental_equilibrium_debuff = make_buff<buff_t>( this, "elemental_equilibrium_debuff",
