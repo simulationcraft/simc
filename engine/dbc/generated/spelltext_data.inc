@@ -1,5 +1,5 @@
-// Spell text, wow build 10.2.7.55261
-static const std::array<spelltext_data_t, 21154> __spelltext_data { {
+// Spell text, wow build 10.2.7.55664
+static const std::array<spelltext_data_t, 21153> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing ${$<shield>*$<aegis>*$<benevolence>} damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20803,7 +20803,6 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 428880, 0, "Grounding effect will be suppressed.", 0 },
   { 429007, "Versatility increased by $s1%.\r\nParty members within $453445A2 yards recuperate $s2% of their class resource every $t2 sec.", 0, 0 },
   { 429023, 0, "Protected from loss of control effects by $@auracaster.", 0 },
-  { 429024, "$@spelldesc429026", 0, 0 },
   { 429025, 0, "$@spellname429023 has recently removed a loss of control effect.", 0 },
   { 429026, "Avoidance increased by $s1%.\r\nAllies within $429023A1 yards will immediately be purified of loss of control effects. This effect can only occur once every $429025d.", 0, 0 },
   { 429135, "Fully attune this item and receive the Symbiotic Glowspore Grip.", 0, 0 },
@@ -21156,11 +21155,11 @@ static const std::array<spelltext_data_t, 21154> __spelltext_data { {
   { 459337, 0, "Bronze earned from Bronze Caches increased by $s1%.\r\nThreads earned from Spools of Eternal Thread increased by $s2%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.2.7.55261
+// spelltext hotfix entries, wow build 10.2.7.55664
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.2.7.55261
+// Spell description variables, wow build 10.2.7.55664
 static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.37}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$benevolence=$?a415416[${1+$415416s1/100}][${1}]\r\n$aegis=$?a238135&a134735[${1+$238135s1*2/3/100}]?a238135[${1+$238135s1/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<weal>*$<shadowinpvp>*$<discinpvp>*$<pvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -21614,7 +21613,7 @@ static const std::array<spelldesc_vars_data_t, 450> __spelldesc_vars_data { {
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.2.7.55261
+// spelldesc_vars hotfix entries, wow build 10.2.7.55664
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
