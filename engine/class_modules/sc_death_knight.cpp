@@ -1597,6 +1597,12 @@ public:
     propagate_const<proc_t*> km_from_obliteration_ga_wasted;  // Glacial Advance during Obliteration
     propagate_const<proc_t*> km_from_obliteration_sr_wasted;  // Soul Reaper during Obliteration
 
+    // Razorice applied by
+    propagate_const<proc_t*> razorice_from_arctic_assault;
+    propagate_const<proc_t*> razorice_from_avalanche;
+    propagate_const<proc_t*> razorice_from_glacial_advance;
+    propagate_const<proc_t*> razorice_from_runeforge;
+
     // Runic corruption triggered by
     propagate_const<proc_t*> rp_runic_corruption;  // from RP spent
     propagate_const<proc_t*> sr_runic_corruption;  // from soul reaper
@@ -4981,6 +4987,7 @@ struct razorice_attack_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
     get_td( s->target )->debuff.razorice->trigger();
+    p()->procs.razorice_from_runeforge->occur();
   }
 };
 
@@ -9024,6 +9031,14 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
          p()->runeforge.rune_of_razorice_mh || p()->runeforge.rune_of_razorice_oh )
     {
       get_td( state->target )->debuff.razorice->trigger();
+      if ( is_arctic_assault )
+      {
+        p()->procs.razorice_from_arctic_assault->occur();
+      }
+      else
+      {
+        p()->procs.razorice_from_glacial_advance->occur();
+      }
     }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
@@ -9394,6 +9409,7 @@ struct avalanche_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
 
     get_td( state->target )->debuff.razorice->trigger();
+    p()->procs.razorice_from_avalanche->occur();
   }
 };
 
@@ -14099,6 +14115,11 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_hb_wasted = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
   procs.km_from_obliteration_sr_wasted = get_proc( "Killing Machine wasted: Soul Reaper" );
+
+  procs.razorice_from_arctic_assault  = get_proc( "Razorice from Arctic Assault" );
+  procs.razorice_from_avalanche       = get_proc( "Razorice from Avalanche" );
+  procs.razorice_from_glacial_advance = get_proc( "Razorice from Glacial Advance" );
+  procs.razorice_from_runeforge       = get_proc( "Razorice from Runeforge" );
 
   procs.ready_rune = get_proc( "Rune ready" );
 
