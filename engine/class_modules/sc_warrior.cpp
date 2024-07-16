@@ -3978,8 +3978,7 @@ struct thunder_clap_t : public warrior_attack_t
           p()->talents.warrior.seismic_reverberation->ok() &&
           state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      //printf("DEBUGME2: result_raw: %f\tresult_amount: %f\tresult_total: %f\tresult_mitigated: %f\n", state->result_raw, state->result_amount, state->result_total, state->result_mitigated );
-      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount;
+      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 4 ).percent() );
       seismic_action->execute_on_target( target );
     }
   }
