@@ -37,6 +37,7 @@ using namespace helpers;
       bool havoc = false;
       bool backdraft = false;
       bool roaring_blaze = false;
+      bool ashen_remains = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -229,6 +230,9 @@ using namespace helpers;
       if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
+      if ( destruction() && affected_by.ashen_remains && td( t )->dots_immolate->is_ticking() )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -260,7 +264,7 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_dd )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_dd )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
@@ -279,7 +283,7 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_td )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
@@ -2533,6 +2537,7 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+        affected_by.ashen_remains = true;
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
@@ -2574,16 +2579,6 @@ using namespace helpers;
         return m;
       }
 
-      double composite_target_multiplier( player_t* t ) const override
-      {
-        double m = warlock_spell_t::composite_target_multiplier( t );
-
-        if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-          m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-        return m;
-      }
-
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -2619,6 +2614,7 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
 
       add_child( fnb_action );
 
@@ -2653,16 +2649,6 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
-
-      return m;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -2774,6 +2760,7 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       if ( p->talents.internal_combustion.ok() )
@@ -2813,16 +2800,6 @@ using namespace helpers;
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
-
-      return m;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -3085,6 +3062,7 @@ using namespace helpers;
       
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
@@ -3119,21 +3097,11 @@ using namespace helpers;
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
     }
 
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-      return m;
-    }
-
     double composite_target_crit_chance( player_t* t ) const override
     {
       double m = warlock_spell_t::composite_target_crit_chance( t );
 
-      if ( target->health_percentage() <= 20.0 )
+      if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
 
       return m;
@@ -3175,7 +3143,6 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        // TOCHECK: Is this needed?
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
       }
 
@@ -3185,6 +3152,16 @@ using namespace helpers;
 
         if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
           td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        if ( s->chain_target != 0 )
+          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        return m;
       }
     };
 
@@ -3197,6 +3174,7 @@ using namespace helpers;
       channeled = true;
       hasted_ticks = true;
       may_crit = false;
+      cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
 
@@ -3206,13 +3184,6 @@ using namespace helpers;
         base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
         dot_duration = num_ticks * base_tick_time;
       }
-    }
-
-    void init() override
-    {
-      warlock_spell_t::init();
-
-      cooldown->hasted = true;
     }
 
     std::vector<player_t*>& target_list() const override
