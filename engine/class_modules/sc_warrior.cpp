@@ -1165,7 +1165,6 @@ public:
     parse_effects( p()->buff.opportunist );
 
     // Mountain Thane
-
     // Crashing Thunder
     // Damage amps
     parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 1, 2, 3, 9 ) );
@@ -1179,6 +1178,7 @@ public:
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
       parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
     }
+
 
     // TWW1 Tier
     parse_effects( p()->buff.overpowering_might );  // Arms 2pc
@@ -6636,6 +6636,8 @@ struct storm_bolt_t : public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
+    if ( p->talents.mountain_thane.storm_bolts->ok() )
+      aoe = 1 + p->talents.mountain_thane.storm_bolts->effectN( 1 ).base_value();
   }
 
   bool ready() override
@@ -10441,6 +10443,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Mountain Thane
   action.apply_affecting_aura( talents.mountain_thane.strength_of_the_mountain );
   action.apply_affecting_aura( talents.mountain_thane.thunder_blast );
+  action.apply_affecting_aura( talents.mountain_thane.storm_bolts );
 }
 
 /* Report Extension Class
