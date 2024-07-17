@@ -3484,14 +3484,25 @@ struct stormblast_t : public shaman_attack_t
     weapon = &( p->main_hand_weapon );
     background = may_crit = callbacks = false;
 
-    affected_by_enh_mastery_da = true; // TODO: Until Blizzard fixes data
+    if ( !p->bugs )
+    {
+      // [BUG] Stormblast benefits from Crackling Surge (Lightning Elemental Spirit Aura) for some reason
+      affected_by_crackling_surge_da = false;
+    }
+    else
+    {
+      // [BUG] Stormblast double-dips on Mastery: Enhanced Elements for some reason
+      affected_by_enh_mastery_da = true;
+      // [BUG] 2024-07-17: Stormblast has a mystery 50% damage bonus multiplier in-game
+      base_dd_multiplier *= 1.5;
+    }
   }
 
   void init() override
   {
     shaman_attack_t::init();
 
-    snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA;
+    snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_ability_procs = false;
@@ -3762,8 +3773,7 @@ struct stormstrike_attack_t : public shaman_attack_t
       auto dmg = p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
       stormblast->base_dd_min = stormblast->base_dd_max = dmg;
 
-      stormblast->set_target( state->target );
-      stormblast->execute();
+      stormblast->execute_on_target( state->target );
     }
   }
 };
