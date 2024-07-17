@@ -565,6 +565,7 @@ public:
     buff_t* lesser_storm_elemental;
     buff_t* fury_of_the_storms;
     buff_t* call_of_the_ancestors;
+    buff_t* ancestral_swiftness;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -667,6 +668,7 @@ public:
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
     cooldown_t* totemic_recall;
     cooldown_t* tempest_strikes;
+    cooldown_t* ancestral_swiftness;
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -1101,6 +1103,7 @@ public:
     cooldown.strike             = get_cooldown( "strike" );
     cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
     cooldown.tempest_strikes    = get_cooldown( "tempest_strikes" );
+    cooldown.ancestral_swiftness= get_cooldown( "ancestral_swiftness" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -1524,8 +1527,8 @@ public:
   bool affected_by_earthen_weapon_da;
   bool affected_by_earthen_weapon_ta;
   bool affected_by_natures_fury;
-  bool affected_by_ns_cost;
-  bool affected_by_ns_cast_time;
+  bool affected_by_xs_cost;
+  bool affected_by_xs_cast_time;
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
   bool affected_by_enh_t29_2pc;
@@ -1567,8 +1570,8 @@ public:
       affected_by_icy_edge_da( false ),
       affected_by_icy_edge_ta( false ),
       affected_by_natures_fury( false ),
-      affected_by_ns_cost( false ),
-      affected_by_ns_cast_time( false ),
+      affected_by_xs_cost( false ),
+      affected_by_xs_cast_time( false ),
       affected_by_enh_mastery_da( false ),
       affected_by_enh_mastery_ta( false ),
       affected_by_enh_t29_2pc( false ),
@@ -1632,9 +1635,13 @@ public:
       ab::data().affected_by( player->talent.natures_fury->effectN( 1 ) ) ||
       ab::data().affected_by_label( player->talent.natures_fury->effectN( 2 ) );
 
-    affected_by_ns_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) );
-    affected_by_ns_cast_time =
-      ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) );
+    affected_by_xs_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) ) ||
+                          ab::data().affected_by( player->talent.natures_swiftness->effectN( 3 ) ) ||
+                          ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 1 ) ) ||
+                          ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 3 ) );
+    affected_by_xs_cast_time =
+      ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) ) ||
+      ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 2 ) );
 
     affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
@@ -1964,9 +1971,14 @@ public:
   {
     auto mul = ab::execute_time_pct_multiplier();
 
-    if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
+    if ( affected_by_xs_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
       mul *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
+    }
+
+    if ( affected_by_xs_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
+    {
+      mul *= 1.0 + p()->talent.ancestral_swiftness->effectN( 2 ).percent();
     }
 
     if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
@@ -2002,10 +2014,16 @@ public:
   {
     double c = ab::cost_pct_multiplier();
 
-    if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
+    if ( affected_by_xs_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();
     }
+
+    if ( affected_by_xs_cost && p()->buff.ancestral_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
+    {
+      c *= 1.0 + p()->talent.ancestral_swiftness->effectN( 1 ).percent();
+    }
+
 
     return c;
   }
@@ -2024,9 +2042,14 @@ public:
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
 
-    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_xs_cast_time || affected_by_xs_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
     {
       p()->buff.natures_swiftness->decrement();
+    }
+
+    if ( ( affected_by_xs_cast_time || affected_by_xs_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    {
+      p()->buff.ancestral_swiftness->decrement();
     }
 
     if ( exec_type != spell_variant::PRIMORDIAL_WAVE && affected_by_enh_t29_2pc &&
@@ -7606,6 +7629,41 @@ struct natures_swiftness_t : public shaman_spell_t
 
     p()->buff.natures_swiftness->trigger();
   }
+
+  bool ready() override
+  {
+    if ( p()->talent.ancestral_swiftness.ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
+};
+
+// Ancestral Swiftness Spell =================================================
+
+struct ancestral_swiftness_t : public shaman_spell_t
+{
+  ancestral_swiftness_t( shaman_t* player, util::string_view options_str ) :
+    shaman_spell_t( "ancestral_swiftness", player, player->talent.ancestral_swiftness )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.ancestral_swiftness->trigger();
+
+    if ( p()->talent.natures_swiftness.ok() )
+    {
+      p()->summon_ancestor();
+    }
+  }
 };
 
 // ==========================================================================
@@ -9811,6 +9869,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new surging_totem_spell_t( this, options_str );
   if ( name == "thunderstrike_ward" )
     return new thunderstrike_ward_t( this, options_str );
+  if ( name == "ancestral_swiftness" )
+    return new ancestral_swiftness_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -11332,30 +11392,29 @@ void shaman_t::trigger_flash_of_lightning()
     return;
   }
 
-  if ( !talent.stormkeeper.enabled() &&
-       !talent.storm_elemental.enabled() && !talent.totemic_recall.enabled() )
-  {
-    return;
-  }
+  auto reduction = talent.flash_of_lightning.spell()->effectN( 1 ).time_value();
 
   if ( talent.storm_elemental.enabled() )
   {
-    cooldown.storm_elemental->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
-  }
-  if ( talent.stormkeeper.enabled() )
-  {
-    cooldown.stormkeeper->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
-  }
-  if ( talent.natures_swiftness.enabled() )
-  {
-    cooldown.natures_swiftness->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
-  }
-  if ( talent.totemic_recall.enabled() )
-  {
-    cooldown.totemic_recall->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+    cooldown.storm_elemental->adjust( reduction, false );
   }
 
-  cooldown.flame_shock->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  if ( talent.stormkeeper.enabled() )
+  {
+    cooldown.stormkeeper->adjust( reduction, false );
+  }
+
+  if ( talent.natures_swiftness.enabled() )
+  {
+    cooldown.natures_swiftness->adjust( reduction, false );
+  }
+
+  if ( talent.totemic_recall.enabled() )
+  {
+    cooldown.totemic_recall->adjust( reduction, false );
+  }
+
+  cooldown.flame_shock->adjust( reduction, false );
 
   proc.flash_of_lightning->occur();
 }
@@ -11901,6 +11960,7 @@ void shaman_t::create_buffs()
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( talent.heed_my_call )
     ->set_trigger_spell( talent.call_of_the_ancestors );
+  buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", talent.ancestral_swiftness );
 
   //
   // Enhancement
@@ -12393,6 +12453,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "lightning_shield,if=buff.lightning_shield.down" );
     // def->add_action( "auto_attack" );
     def->add_action( "natures_swiftness" );
+    def->add_action( "ancestral_swiftness" );
     def->add_action( "invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled",
         "If you've selected <a href='https://www.wowhead.com/spell=114050/ascendance'>Ascendance</a> sync "
         "<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with it. Otherwise use "
