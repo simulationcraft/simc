@@ -830,15 +830,15 @@ public:
     {
       player_talent_t lightning_strikes;
       player_talent_t crashing_thunder; // NYI
-      player_talent_t ground_current; // NYI
-      player_talent_t strength_of_the_mountain; // NYI
-      player_talent_t thunder_blast; // NYI
-      player_talent_t storm_bolts; // NYI
+      player_talent_t ground_current;
+      player_talent_t strength_of_the_mountain;
+      player_talent_t thunder_blast;
+      player_talent_t storm_bolts;
       player_talent_t storm_shield; // NYI
       player_talent_t keep_your_feet_on_the_ground; // NYI
-      player_talent_t steadfast_as_the_peaks; // NYI
+      player_talent_t steadfast_as_the_peaks;
       player_talent_t flashing_skies; // NYI
-      player_talent_t snap_induction; // NYI
+      player_talent_t snap_induction;
       player_talent_t gathering_clouds; // NYI
       player_talent_t thorims_might; // NYI
       player_talent_t burst_of_power; // NYI
@@ -3770,6 +3770,11 @@ struct demoralizing_shout_t : public warrior_attack_t
     if ( rage_gain > 0 )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.booming_voice );
+    }
+
+    if ( p()->talents.mountain_thane.snap_induction->ok() )
+    {
+      p()->buff.thunder_blast->trigger();
     }
   }
 
@@ -7582,6 +7587,11 @@ struct recklessness_t : public warrior_spell_t
     {
       action_t* torment_ability = p()->active.torment_avatar;
       torment_ability->schedule_execute();
+    }
+
+    if ( p()->talents.mountain_thane.snap_induction->ok() )
+    {
+      p()->buff.thunder_blast->trigger();
     }
   }
 
