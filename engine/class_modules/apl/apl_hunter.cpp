@@ -80,7 +80,6 @@ void beast_mastery( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
   st->add_action( "kill_command,if=!talent.wild_instincts&full_recharge_time<gcd&talent.alpha_predator" );
   st->add_action( "call_of_the_wild,if=!talent.wild_instincts&variable.cotw_ready" );
-  st->add_action( "stampede" );
   st->add_action( "bloodshed" );
   st->add_action( "bestial_wrath" );
   st->add_action( "death_chakram" );
@@ -103,7 +102,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "call_of_the_wild,if=variable.cotw_ready" );
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "explosive_shot" );
-  cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
@@ -162,7 +160,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "explosive_shot" );
-  cleave->add_action( "stampede" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "death_chakram" );
   cleave->add_action( "barbed_shot,target_if=max:debuff.latent_poison.stack,if=debuff.latent_poison.stack>9&(buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery)" );
@@ -180,7 +177,6 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)" );
   st->add_action( "kill_command,if=!talent.wild_instincts&full_recharge_time<gcd&talent.alpha_predator" );
   st->add_action( "call_of_the_wild,if=!talent.wild_instincts" );
-  st->add_action( "stampede" );
   st->add_action( "bloodshed" );
   st->add_action( "bestial_wrath" );
   st->add_action( "death_chakram" );
@@ -248,7 +244,6 @@ void marksmanship( player_t* p )
   st->add_action( "kill_shot,if=focus+cast_regen<focus.max" );
   st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
   st->add_action( "explosive_shot" );
-  st->add_action( "stampede" );
   st->add_action( "death_chakram" );
   st->add_action( "rapid_fire,if=(talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time)&(focus+cast_regen<focus.max)" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
@@ -265,7 +260,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
-  trickshots->add_action( "stampede" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots" );
@@ -329,7 +323,6 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "kill_shot,if=focus+cast_regen<focus.max" );
   st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
   st->add_action( "explosive_shot" );
-  st->add_action( "stampede" );
   st->add_action( "death_chakram" );
   st->add_action( "rapid_fire,if=(talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time)&(focus+cast_regen<focus.max)" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
@@ -346,7 +339,6 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
-  trickshots->add_action( "stampede" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots" );
@@ -412,7 +404,6 @@ void survival( player_t* p )
   cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey" );
   cleave->add_action( "death_chakram,if=cooldown.death_chakram.duration=45" );
   cleave->add_action( "wildfire_bomb" );
-  cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault,if=(cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle)" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
@@ -450,7 +441,6 @@ void survival( player_t* p )
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  st->add_action( "stampede" );
   st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
@@ -507,7 +497,6 @@ void survival_ptr( player_t* p )
   cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey" );
   cleave->add_action( "death_chakram,if=cooldown.death_chakram.duration=45" );
   cleave->add_action( "wildfire_bomb" );
-  cleave->add_action( "stampede" );
   cleave->add_action( "coordinated_assault,if=(cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle)" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
@@ -545,7 +534,6 @@ void survival_ptr( player_t* p )
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  st->add_action( "stampede" );
   st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
