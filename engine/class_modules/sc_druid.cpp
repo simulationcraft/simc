@@ -6000,8 +6000,14 @@ struct regrowth_t final : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( t == player )
-      ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
+    if ( t == player && p()->talent.harmonious_constitution.ok() )
+    {
+      auto hc_mul = p()->talent.harmonious_constitution->effectN( 1 ).percent();
+      if ( p()->specialization() == DRUID_FERAL )
+        hc_mul += p()->spec_spell->effectN( 16 ).percent();
+
+      ctm *= 1.0 + hc_mul;
+    }
 
     return ctm;
   }
