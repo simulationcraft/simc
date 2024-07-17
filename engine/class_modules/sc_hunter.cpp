@@ -608,7 +608,7 @@ public:
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t lone_wolf;
     spell_data_ptr_t bullseye;
-    spell_data_ptr_t hydras_bite; // TODO - Verify functionality after moving to MM + removal of serpent sting
+    spell_data_ptr_t hydras_bite;
     spell_data_ptr_t volley;
 
     spell_data_ptr_t legacy_of_the_windrunners; // TODO - Reworked
@@ -1076,6 +1076,7 @@ public:
     ab::apply_affecting_aura( p -> talents.tactical_reload );
     ab::apply_affecting_aura( p -> talents.night_hunter );
     ab::apply_affecting_aura( p -> talents.small_game_hunter );
+    ab::apply_affecting_aura( p -> talents.fan_the_hammer );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
@@ -4992,11 +4993,6 @@ struct rapid_fire_t: public hunter_spell_t
       mul *= 1.0 + p() -> tier_set.t31_mm_4pc_buff -> effectN( 2 ).percent();
     }
 
-    if ( p() -> talents.fan_the_hammer.ok() )
-    {
-      mul *= 1.0 + p() -> talents.fan_the_hammer -> effectN( 1 ).percent();
-    }
-
     return mul;
   }
 
@@ -5004,7 +5000,6 @@ struct rapid_fire_t: public hunter_spell_t
   {
     // substract 1 here because RF has a tick at zero
     timespan_t base_duration = ( base_num_ticks - 1 ) * tick_time( s ); 
-    p() -> sim -> print_debug( "Rapid Fire base duration: {} with {} ticks", base_duration.total_seconds(), base_num_ticks );
     timespan_t extra_duration_from_rr = base_num_ticks * tick_time( s ) * p() -> buffs.rapid_reload -> check_value();
     
     return base_duration + extra_duration_from_rr; 
