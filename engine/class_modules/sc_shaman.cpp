@@ -1765,7 +1765,7 @@ public:
 
     if ( affected_by_ele_mastery_da )
     {
-      m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery_value();
+      m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery();
     }
 
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
@@ -1868,7 +1868,7 @@ public:
 
     if ( affected_by_ele_mastery_ta )
     {
-      m *= 1.0 + p()->mastery.elemental_overload->effectN( 5 ).mastery_value() * p()->cache.mastery_value();
+      m *= 1.0 + p()->mastery.elemental_overload->effectN( 5 ).mastery_value() * p()->cache.mastery();
     }
 
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
