@@ -8009,41 +8009,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
     return m;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( p()->talent.unholy.coil_of_devastation.ok() && result_is_hit( state->result ) )
-    {
-      residual_action::trigger( coil_of_devastation, state->target,
-                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
-    }
-  }
-
-private:
-  propagate_const<action_t*> coil_of_devastation;
-};
-
-struct death_coil_t final : public death_knight_spell_t
-{
-  death_coil_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "death_coil", p, p->spec.death_coil )
-  {
-    parse_options( options_str );
-
-    impact_action        = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    impact_action->stats = stats;
-    stats->action_list.push_back( impact_action );
-
-    if ( p->talent.unholy.coil_of_devastation.ok() )
-      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
-
-    if ( p->talent.unholy.doomed_bidding.ok() )
-    {
-      p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
-  }
-
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -8065,6 +8030,7 @@ struct death_coil_t final : public death_knight_spell_t
     }
 
     p()->buffs.sudden_doom->decrement();
+
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->trigger_vampiric_strike_proc( target );
@@ -8074,6 +8040,12 @@ struct death_coil_t final : public death_knight_spell_t
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
+
+    if ( p()->talent.unholy.coil_of_devastation.ok() && result_is_hit( state->result ) )
+    {
+      residual_action::trigger( coil_of_devastation, state->target,
+                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
+    }
 
     if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state->result ) )
     {
@@ -8094,6 +8066,30 @@ struct death_coil_t final : public death_knight_spell_t
     {
       p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
                                   p()->procs.fw_sudden_doom );
+    }
+  }
+
+private:
+  propagate_const<action_t*> coil_of_devastation;
+};
+
+struct death_coil_t final : public death_knight_spell_t
+{
+  death_coil_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "death_coil", p, p->spec.death_coil )
+  {
+    parse_options( options_str );
+
+    execute_action        = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    execute_action->stats = stats;
+    stats->action_list.push_back( execute_action );
+
+    if ( p->talent.unholy.coil_of_devastation.ok() )
+      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
+
+    if ( p->talent.unholy.doomed_bidding.ok() )
+    {
+      p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
   }
 };
