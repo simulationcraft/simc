@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55522
-static const std::array<spelltext_data_t, 26210> __spelltext_data { {
+static const std::array<spelltext_data_t, 26213> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24171,6 +24171,9 @@ static const std::array<spelltext_data_t, 26210> __spelltext_data { {
   { 447258, "Deals $s1 damage to enemy targets. Reduced above $s2 targets.", 0, 0 },
   { 447262, "$@spelldesc445696", "Your next Kill Command strikes a second time for $s2% of normal damage.", 0 },
   { 447303, "$@spelldesc443735", "An ember waiting for another to set aflame.", 0 },
+  { 447419, "Hurls molten lava at the target, critically dealing $?a134735[${$s1*(1+$s3/100)}][${$s1*(1+$s2/100)}] Fire damage.", 0, 0 },
+  { 447425, "Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.", 0, 0 },
+  { 447427, "Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.", 0, 0 },
   { 447444, "$?c3[Void Torrent][Mind Blast] tears open an Entropic Rift that follows the enemy for $450193d. Enemies caught in its path suffer $447448s1 Shadow damage every $459314t1 sec while within its reach.", 0, 0 },
   { 447445, "$@spelldesc447444", 0, 0 },
   { 447448, "$@spelldesc447444", 0, 0 },
