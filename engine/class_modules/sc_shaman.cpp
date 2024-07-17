@@ -536,6 +536,7 @@ public:
     buff_t* elemental_blast_crit;
     buff_t* elemental_blast_haste;
     buff_t* elemental_blast_mastery;
+    buff_t* flametongue_weapon;
 
     // Elemental
     buff_t* echoes_of_great_sundering_es;
@@ -566,6 +567,7 @@ public:
     buff_t* fury_of_the_storms;
     buff_t* call_of_the_ancestors;
     buff_t* ancestral_swiftness;
+    buff_t* thunderstrike_ward;
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
@@ -585,6 +587,7 @@ public:
     buff_t* lightning_shield;
     buff_t* stormbringer;
     buff_t* hailstorm;
+    buff_t* windfury_weapon;
 
     buff_t* forceful_winds;
     buff_t* icy_edge;
@@ -3086,7 +3089,7 @@ struct spirit_wolf_t : public base_wolf_t
     { }
   };
 
-  spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
+  spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, owner->raptor_glyph ? "spirit_raptor" : "spirit_wolf" )
   {
     dynamic = true;
   }
@@ -3242,6 +3245,8 @@ struct earth_elemental_t : public primal_elemental_t
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
+
+    npc_id = type_ == elemental::GREATER_EARTH ? 95072 : 187322;
   }
 };
 
@@ -3257,6 +3262,17 @@ struct fire_elemental_t : public primal_elemental_t
     primal_elemental_t( owner, type_, variant_ )
   {
     owner_coeff.sp_from_sp = variant == elemental_variant::GREATER ? 1.0 : 0.65;
+    switch ( type_ )
+    {
+      case elemental::GREATER_FIRE:
+        npc_id = variant == elemental_variant::GREATER ? 95061 : 229800;
+        break;
+      case elemental::PRIMAL_FIRE:
+        npc_id = variant == elemental_variant::GREATER ? 61029 : 229799;
+        break;
+      default:
+        break;
+    }
 
     meteor_cd = get_cooldown( "meteor" );
   }
@@ -3421,6 +3437,17 @@ struct storm_elemental_t : public primal_elemental_t
     : primal_elemental_t( owner, type_, variant_ ), call_lightning( nullptr )
   {
     owner_coeff.sp_from_sp = variant == elemental_variant::GREATER ? 1.0 : 0.65;
+    switch ( type_ )
+    {
+      case elemental::GREATER_STORM:
+        npc_id = variant == elemental_variant::GREATER ? 77936 : 229801;
+        break;
+      case elemental::PRIMAL_STORM:
+        npc_id = variant == elemental_variant::GREATER ? 77942 : 229798;
+        break;
+      default:
+        break;
+    }
 
     tempest_cd = get_cooldown( "tempest" );
   }
@@ -3524,6 +3551,7 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     shaman_pet_t( owner, "greater_lightning_elemental", true, false )
   {
     owner_coeff.sp_from_sp = 1.0;
+    npc_id = 97022;
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -4937,9 +4965,11 @@ struct weapon_imbue_t : public shaman_spell_t
   std::string slot_str;
   slot_e slot, default_slot;
   imbue_e imbue;
+  buff_t* imbue_buff;
 
   weapon_imbue_t( util::string_view name, shaman_t* player, slot_e d_, const spell_data_t* spell, util::string_view options_str ) :
-    shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), default_slot( d_ ), imbue( IMBUE_NONE )
+    shaman_spell_t( name, player, spell ), slot( SLOT_INVALID ), default_slot( d_ ), imbue( IMBUE_NONE ),
+    imbue_buff( nullptr )
   {
     harmful = callbacks = false;
     target = player;
@@ -4983,6 +5013,11 @@ struct weapon_imbue_t : public shaman_spell_t
     {
       player->off_hand_weapon.buff_type = imbue;
     }
+
+    if ( imbue_buff != nullptr )
+    {
+      imbue_buff->trigger();
+    }
   }
 
   bool ready() override
@@ -5011,6 +5046,7 @@ struct windfury_weapon_t : public weapon_imbue_t
                     options_str )
   {
     imbue = WINDFURY_IMBUE;
+    imbue_buff = player->buff.windfury_weapon;
 
     if ( slot == SLOT_MAIN_HAND )
     {
@@ -5040,6 +5076,7 @@ struct flametongue_weapon_t : public weapon_imbue_t
                     player->find_class_spell( "Flametongue Weapon" ), options_str )
   {
     imbue = FLAMETONGUE_IMBUE;
+    imbue_buff = player->buff.flametongue_weapon;
 
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND )
     {
@@ -5061,6 +5098,7 @@ struct thunderstrike_ward_t : public weapon_imbue_t
                     player->talent.thunderstrike_ward, options_str )
   {
     imbue = THUNDERSTRIKE_WARD;
+    imbue_buff = player->buff.thunderstrike_ward;
 
     if ( slot == SLOT_MAIN_HAND )
     {
@@ -8968,6 +9006,7 @@ struct liquid_magma_totem_t : public spell_totem_pet_t
   liquid_magma_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "liquid_magma_totem" )
   {
     pulse_amplitude = owner->find_spell( 192226 )->effectN( 1 ).period();
+    npc_id = 97369;
   }
 
   void init_spells() override
@@ -9033,6 +9072,7 @@ struct capacitor_totem_t : public spell_totem_pet_t
   capacitor_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "capacitor_totem" )
   {
     pulse_amplitude = owner->find_spell( 192058 )->duration();
+    npc_id = 199672;
   }
 
   void init_spells() override
@@ -9058,6 +9098,7 @@ struct healing_stream_totem_t : public heal_totem_pet_t
     heal_totem_pet_t( owner, "healing_stream_totem" )
   {
     pulse_amplitude = owner->find_spell( 5672 )->effectN( 1 ).period();
+    npc_id = 3527;
   }
 
   void init_spells() override
@@ -9168,6 +9209,7 @@ struct surging_totem_t : public spell_totem_pet_t
   {
     pulse_amplitude = owner->find_spell(
       owner->specialization() == SHAMAN_ENHANCEMENT ? 455593 : 45594 )->effectN( 1 ).period();
+    npc_id = 225409;
   }
 
   void trigger_surging_bolt( player_t* target )
@@ -9293,6 +9335,7 @@ struct searing_totem_t : public spell_totem_pet_t
   searing_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "searing_totem" ), volley( nullptr )
   {
     pulse_amplitude = owner->find_spell( 3606 )->cast_time();
+    npc_id = 2523;
   }
 
   void init_spells() override
@@ -11859,6 +11902,8 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.totemic_rebound );
 
+  buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_class_spell( "Flametongue Weapon") );
+
   //
   // Elemental
   //
@@ -11950,6 +11995,7 @@ void shaman_t::create_buffs()
     ->apply_affecting_aura( talent.heed_my_call )
     ->set_trigger_spell( talent.call_of_the_ancestors );
   buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", talent.ancestral_swiftness );
+  buff.thunderstrike_ward = make_buff( this, "thunderstrike_ward", talent.thunderstrike_ward );
 
   //
   // Enhancement
@@ -12034,6 +12080,8 @@ void shaman_t::create_buffs()
   buff.doom_winds = make_buff( this, "doom_winds", talent.doom_winds );
   buff.ice_strike = make_buff( this, "ice_strike", talent.ice_strike->effectN( 3 ).trigger() )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
+  buff.windfury_weapon = make_buff( this, "windfury_weapon", find_spell( 319773 ) )
+    ->set_trigger_spell( talent.windfury_weapon );
 
   //
   // Restoration
