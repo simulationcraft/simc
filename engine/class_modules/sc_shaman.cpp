@@ -989,17 +989,17 @@ public:
     // Farseer
 
     // Row 1
-    player_talent_t call_of_the_ancestors; // NEW NYI
+    player_talent_t call_of_the_ancestors;
 
     // Row 2
-    player_talent_t latent_wisdom; // NEW NYI
-    player_talent_t ancient_fellowship; // NEW NYI
-    player_talent_t heed_my_call; // NEW NYI
-    player_talent_t routine_communication; // NEW NYI
-    player_talent_t elemental_reverb; // NEW NYI
+    player_talent_t latent_wisdom;
+    player_talent_t ancient_fellowship;
+    player_talent_t heed_my_call;
+    player_talent_t routine_communication;
+    player_talent_t elemental_reverb;
 
     // Row 3
-    player_talent_t offering_from_beyond; // NEW NYI
+    player_talent_t offering_from_beyond;
     player_talent_t primordial_capacity; // NEW NYI
 
     // Row 4
@@ -10729,6 +10729,12 @@ void shaman_t::summon_ancestor( double proc_chance )
   if ( !rng().roll( proc_chance ) )
   {
     return;
+  }
+
+  if ( talent.offering_from_beyond.ok() )
+  {
+    cooldown.fire_elemental->adjust( talent.offering_from_beyond->effectN( 1 ).time_value() );
+    cooldown.storm_elemental->adjust( talent.offering_from_beyond->effectN( 1 ).time_value() );
   }
 
   pet.ancestor.spawn( buff.call_of_the_ancestors->buff_duration() );
