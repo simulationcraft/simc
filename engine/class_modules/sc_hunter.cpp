@@ -619,7 +619,7 @@ public:
     spell_data_ptr_t wailing_arrow; // NYI - After summoning 20 wind arrows, your next aimed shot becomes a wailing arrow
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t small_game_hunter; // NYI - Multi-Shot deals 100% increased damage and Explosive Shot deals 25% increased damage
+    spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t kill_zone; // NYI - Your spells and attacks deal 8% increased damage and ingore line of sight against any target in your volley. 
 
     spell_data_ptr_t readiness;
@@ -1074,6 +1074,7 @@ public:
     ab::apply_affecting_aura( p -> talents.dead_eye );
     ab::apply_affecting_aura( p -> talents.tactical_reload );
     ab::apply_affecting_aura( p -> talents.night_hunter );
+    ab::apply_affecting_aura( p -> talents.small_game_hunter );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
