@@ -301,6 +301,7 @@ public:
     buff_t* opportunist;
 
     // Mountain Thane
+    buff_t* thunder_blast;
 
     // DF Tier
     buff_t* strike_vulnerabilities;
@@ -2476,6 +2477,11 @@ struct bloodthirst_t : public warrior_attack_t
 
     p()->buff.furious_bloodthirst->decrement();
     p()->buff.merciless_assault->expire();
+
+    if ( p()->talents.mountain_thane.thunder_blast->ok() && rng().roll( p()->talents.mountain_thane.thunder_blast->effectN( 1 ).percent() ) )
+    {
+      p()->buff.thunder_blast->trigger();
+    }
   }
 
   bool ready() override
@@ -2715,6 +2721,11 @@ struct bloodbath_t : public warrior_attack_t
 
     p()->buff.furious_bloodthirst->decrement();
     p()->buff.merciless_assault->expire();
+
+    if ( p()->talents.mountain_thane.thunder_blast->ok() && rng().roll( p()->talents.mountain_thane.thunder_blast->effectN( 1 ).percent() ) )
+    {
+      p()->buff.thunder_blast->trigger();
+    }
   }
 
   bool ready() override
@@ -3820,6 +3831,229 @@ struct thunderous_roar_t : public warrior_attack_t
 
 // Thunder Clap =============================================================
 
+struct thunder_blast_seismic_reverberation_t : public warrior_attack_t
+{
+  thunder_blast_seismic_reverberation_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 436793 ) )
+  {
+    background = true;
+    may_dodge = may_parry = may_block = false;
+    may_crit = false;
+    tick_may_crit = false;
+
+    energize_type = action_energize::NONE;
+  }
+};
+
+struct thunder_blast_t : public warrior_attack_t
+{
+  bool from_t31;
+  double rage_gain;
+  double shield_slam_reset;
+  warrior_attack_t* rend;
+  action_t* lightning_strike;
+  action_t* seismic_action;
+  double rend_target_cap;
+  double rend_targets_hit;
+  thunder_blast_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "thunder_blast", p, p->find_spell( 435222 ) ),
+      from_t31( false ),
+      rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
+      shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
+      rend( nullptr ),
+      lightning_strike( nullptr ),
+      seismic_action( nullptr ),
+      rend_target_cap( 0 ),
+      rend_targets_hit( 0 )
+  {
+    parse_options( options_str );
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+
+    energize_type = action_energize::NONE;
+
+    if ( p->spec.protection_warrior->ok() )
+      rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
+
+    if ( p->talents.shared.rend.ok() )
+    {
+      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
+      if ( p->talents.arms.rend->ok() )
+        rend = new rend_dot_t( p );
+      if ( p->talents.protection.rend->ok() )
+      {
+        // Arma: 2022 Nov 4th.  Even if you are prot, the arms rend dot is being applied.
+        if ( p->bugs )
+          rend = new rend_dot_t( p );
+        else
+          rend = new rend_dot_prot_t( p );
+      }
+    }
+
+    if ( p->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      lightning_strike = get_action<lightning_strike_t>( "lightning_strike_thunder_blast", p );
+      add_child( lightning_strike );
+    }
+
+    if ( p->talents.mountain_thane.crashing_thunder->ok() && p->talents.warrior.seismic_reverberation->ok() )
+    {
+      seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
+      add_child( seismic_action );
+    }
+  }
+
+  // T31 constructor
+  thunder_blast_t( warrior_t* p )
+    : warrior_attack_t( "thunder_blast_t31", p, p->find_spell( 396719 ) ),
+      from_t31( true ),
+      rend( nullptr ),
+      rend_target_cap( 0 ),
+      rend_targets_hit( 0 )
+  {
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+    background                        = true;
+
+    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
+    energize_type = action_energize::NONE;
+
+    if ( p->talents.shared.rend.ok() )
+    {
+      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
+       if ( p->talents.arms.rend->ok() )
+        rend = new rend_dot_t( p );
+    }
+    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.show_of_force->check() )
+    {
+      am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
+    }
+
+    if ( p()->buff.violent_outburst->check() )
+    {
+      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    if ( from_t31 )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( from_t31 )
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double da = warrior_attack_t::bonus_da( s );
+
+    return da;
+  }
+
+  void execute() override
+  {
+    rend_targets_hit = 0;
+
+    warrior_attack_t::execute();
+
+    if ( p()->buff.show_of_force->up() )
+    {
+      p()->buff.show_of_force->expire();
+    }
+
+    if ( rng().roll( shield_slam_reset ) )
+    {
+      p()->cooldown.shield_slam->reset( true );
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW1, B2 ) )
+        p()->buff.expert_strategist->trigger();
+    }
+
+    if ( p()->talents.protection.thunderlord.ok() )
+    {
+      p()->cooldown.demoralizing_shout->adjust(
+          -p()->talents.protection.thunderlord->effectN( 1 ).time_value() *
+          std::min( execute_state->n_targets,
+                    as<unsigned int>( p()->talents.protection.thunderlord->effectN( 2 ).base_value() ) ) );
+    }
+
+    auto total_rage_gain = rage_gain;
+
+    if ( p()->buff.violent_outburst->check() )
+    {
+      p()->buff.ignore_pain->trigger();
+      p()->buff.violent_outburst->expire();
+      total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
+    }
+
+    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap );
+
+    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
+    {
+      if ( p()->talents.fury.improved_whirlwind->ok() )
+      {
+        p()->buff.meat_cleaver->trigger( p()->buff.meat_cleaver->max_stack() );
+      }
+    }
+
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
+    {
+      auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
+      if ( p()->buff.avatar->check() )
+        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+      if ( p()->talents.mountain_thane.gathering_clouds->ok() )
+        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+      if ( rng().roll( chance ) )
+      {
+        lightning_strike->execute();
+      }
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.shared.rend.ok() )
+    {
+      if ( rend_targets_hit < rend_target_cap )
+      {
+        rend->execute_on_target( state->target );
+        rend_targets_hit++;
+      }
+    }
+
+    if ( p()->talents.mountain_thane.crashing_thunder->ok() &&
+          p()->talents.warrior.seismic_reverberation->ok() &&
+          state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 4 ).percent() );
+      seismic_action->execute_on_target( target );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! p()->buff.thunder_blast->check() && !background )
+      return false;
+    return warrior_attack_t::ready();
+  }
+};
+
 struct thunder_clap_seismic_reverberation_t : public warrior_attack_t
 {
   thunder_clap_seismic_reverberation_t( util::string_view name, warrior_t* p )
@@ -3930,11 +4164,6 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
-    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
-    {
-      am *= 1.0 + p()->talents.mountain_thane.crashing_thunder->effectN( 1 ).percent();
-    }
-
     return am;
   }
 
@@ -4038,6 +4267,13 @@ struct thunder_clap_t : public warrior_attack_t
       seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 4 ).percent() );
       seismic_action->execute_on_target( target );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.thunder_blast->check() && !background )
+      return false;
+    return warrior_attack_t::ready();
   }
 };
 
@@ -6202,6 +6438,11 @@ struct shield_slam_t : public warrior_attack_t
     p() -> buff.meat_cleaver->decrement();
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
+
+    if ( p()->talents.mountain_thane.thunder_blast->ok() && rng().roll( p()->talents.mountain_thane.thunder_blast->effectN( 1 ).percent() ) )
+    {
+      p()->buff.thunder_blast->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -8875,6 +9116,7 @@ void warrior_t::create_buffs()
   buff.opportunist          = make_buff( this, "opportunist", find_spell( 456120 ) );
 
   // Mountain Thane
+  buff.thunder_blast        = make_buff( this, "thunder_blast", find_spell( 435615 ) );
 
   // TWW1 Tier
   buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );  // Arms 2pc
@@ -10196,6 +10438,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   // Mountain Thane
   action.apply_affecting_aura( talents.mountain_thane.strength_of_the_mountain );
+  action.apply_affecting_aura( talents.mountain_thane.thunder_blast );
 }
 
 /* Report Extension Class
