@@ -3646,18 +3646,9 @@ struct stormblast_t : public shaman_attack_t
     weapon = &( p->main_hand_weapon );
     background = may_crit = callbacks = false;
 
-    if ( !p->bugs )
-    {
-      // [BUG] Stormblast benefits from Crackling Surge (Lightning Elemental Spirit Aura) for some reason
-      affected_by_crackling_surge_da = false;
-    }
-    else
-    {
-      // [BUG] Stormblast double-dips on Mastery: Enhanced Elements for some reason
       affected_by_enh_mastery_da = true;
       // [BUG] 2024-07-17: Stormblast has a mystery 50% damage bonus multiplier in-game
-      base_dd_multiplier *= 1.5;
-    }
+      base_dd_multiplier *= p->bugs ? 1.5 : 1.0;
   }
 
   void init() override
@@ -8937,12 +8928,12 @@ struct magma_eruption_t : public shaman_spell_t
       p()->trigger_secondary_flame_shock( target_list()[ i ] );
     }
   }
-
 };
 
-struct liquid_magma_globule_t : public spell_t
+struct liquid_magma_globule_t : public spell_totem_action_t
 {
-  liquid_magma_globule_t( spell_totem_pet_t* p ) : spell_t( "liquid_magma", p, p->find_spell( 192231 ) )
+  liquid_magma_globule_t( spell_totem_pet_t* p ) :
+    spell_totem_action_t( "liquid_magma", p, p->find_spell( 192231 ) )
   {
     aoe        = -1;
     background = may_crit = true;
@@ -8968,15 +8959,12 @@ struct liquid_magma_totem_pulse_t : public spell_totem_action_t
   {
     spell_totem_action_t::impact( state );
 
-    globule->set_target( state->target );
-    globule->schedule_execute();
+    globule->execute_on_target( state->target );
   }
 };
 
 struct liquid_magma_totem_t : public spell_totem_pet_t
 {
-  action_t* magma_eruption;
-
   liquid_magma_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "liquid_magma_totem" )
   {
     pulse_amplitude = owner->find_spell( 192226 )->effectN( 1 ).period();
@@ -9008,8 +8996,7 @@ struct liquid_magma_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, sha
   {
     shaman_totem_t<spell_totem_pet_t, shaman_spell_t>::execute();
 
-    eruption->set_target( execute_state->target );
-    eruption->execute();
+    eruption->execute_on_target( execute_state->target );
   }
 };
 
