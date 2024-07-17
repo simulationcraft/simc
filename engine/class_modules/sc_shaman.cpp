@@ -1000,10 +1000,10 @@ public:
 
     // Row 3
     player_talent_t offering_from_beyond;
-    player_talent_t primordial_capacity; // NEW NYI
+    player_talent_t primordial_capacity;
 
     // Row 4
-    player_talent_t maelstrom_supremacy; // NEW NYI
+    player_talent_t maelstrom_supremacy;
     player_talent_t final_calling; // NEW NYI
 
     // Row 5
@@ -10530,7 +10530,7 @@ void shaman_t::init_spells()
   talent.offering_from_beyond  = find_talent_spell( talent_tree::HERO, "Offering from Beyond" );
   talent.primordial_capacity   = find_talent_spell( talent_tree::HERO, "Primordial Capacity" );
 
-  talent.maelstrom_supremacy   = find_talent_spell( talent_tree::HERO, "Primordial Supremacy" );
+  talent.maelstrom_supremacy   = find_talent_spell( talent_tree::HERO, "Maelstrom Supremacy" );
   talent.final_calling         = find_talent_spell( talent_tree::HERO, "Final Calling" );
 
   talent.ancestral_swiftness   = find_talent_spell( talent_tree::HERO, "Ancestral Swiftness" );
@@ -12158,6 +12158,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
 
   action.apply_affecting_aura( talent.latent_wisdom );
   action.apply_affecting_aura( talent.elemental_reverb );
+  action.apply_affecting_aura( talent.maelstrom_supremacy );
 
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
