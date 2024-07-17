@@ -3362,7 +3362,7 @@ Effects          :
 Description      : $@spelldesc6544
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3380,7 +3380,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -4044,7 +4044,7 @@ Effects          :
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -6166,7 +6166,7 @@ Immune to crowd control.
 Variables        : $dmg=$?c2[${(1+($d/$t))*($50622sw1+($95738sw1/2))}][${(1+($d/$t))*$50622sw1}]
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)

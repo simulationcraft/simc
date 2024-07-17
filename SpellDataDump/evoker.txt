@@ -117,7 +117,7 @@ Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -135,7 +135,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -179,7 +179,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -269,7 +269,7 @@ Gain a shield that absorbs $382289s1% of your maximum health for $382290d after 
 Tooltip          : Shimmering.
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
-Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
