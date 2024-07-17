@@ -720,7 +720,7 @@ public:
     spell_data_ptr_t spearhead;
 
     spell_data_ptr_t ruthless_marauder;
-    spell_data_ptr_t symbiotic_adrenaline; // NYI - The cooldown of Coordinated Assault is reduced by 60 seconds. 
+    spell_data_ptr_t symbiotic_adrenaline;
     spell_data_ptr_t relentless_primal_ferocity; // NYI - Coordinated Assault sends you and your pet into a state of primal power. For the duration of Coordinated Assault, Kill Command generates 1 additional stack of Tip of the Spear, you gain 10% haste, and Tip of the Spear's damage bonus is increased by 50%.
     spell_data_ptr_t bombardier; // TODO - Reworked
     spell_data_ptr_t deadly_duo;
@@ -1090,6 +1090,7 @@ public:
     ab::apply_affecting_aura( p -> talents.tactical_advantage );
     ab::apply_affecting_aura( p -> talents.ranger );
     ab::apply_affecting_aura( p -> talents.explosives_expert );
+    ab::apply_affecting_aura( p -> talents.symbiotic_adrenaline );
 
     // Set Bonus passives
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
@@ -5739,6 +5740,11 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     {
       pet -> buffs.coordinated_assault -> trigger();
       pet -> active.coordinated_assault -> execute_on_target( target );
+    }
+
+    if( p() -> talents.symbiotic_adrenaline.ok() )
+    {
+      p() -> buffs.tip_of_the_spear -> trigger( as<int>( p() -> talents.symbiotic_adrenaline -> effectN( 2 ).base_value() ) );
     }
   }
 };
