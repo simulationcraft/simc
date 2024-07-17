@@ -1081,7 +1081,6 @@ public:
     // Survival Tree passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
     ab::apply_affecting_aura( p -> talents.guerrilla_tactics );
-    ab::apply_affecting_aura( p -> talents.lunge );
     ab::apply_affecting_aura( p -> talents.improved_wildfire_bomb );
     ab::apply_affecting_aura( p -> talents.spear_focus );
     ab::apply_affecting_aura( p -> talents.sweeping_spear );
