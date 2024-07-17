@@ -1165,9 +1165,10 @@ public:
 
     // Mountain Thane
     parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 1, 2, 3, 9 ) );
-    if ( specialization() == WARRIOR_FURY )
+    if ( p()->specialization() == WARRIOR_FURY )
     {
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
+      parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
     }
 
     // TWW1 Tier
