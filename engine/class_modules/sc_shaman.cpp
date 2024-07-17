@@ -9567,7 +9567,9 @@ struct tempest_t : public shaman_spell_t
 
     // TODO: Is Tempest applying Lightning Rod to targets before or after for Tempest lightning rod
     // damage?
-    if ( p()->talent.conductive_energy.ok() )
+    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
+           p()->talent.lightning_rod.ok() ) )
     {
       td( state->target )->debuff.lightning_rod->trigger();
       p()->trigger_lightning_rod_damage( state );
