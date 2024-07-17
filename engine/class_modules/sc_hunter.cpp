@@ -598,7 +598,7 @@ public:
     spell_data_ptr_t steady_focus;
 
     spell_data_ptr_t deathblow;
-    spell_data_ptr_t night_hunter; // NYI - Aimed Shot and Rapid Fire critical strike chance increased by 5%.
+    spell_data_ptr_t night_hunter;
     spell_data_ptr_t tactical_reload;
     spell_data_ptr_t serpentstalkers_trickery; //Verify functionality with removal of serpent sting
     spell_data_ptr_t chimaera_shot;
@@ -1073,6 +1073,7 @@ public:
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
     ab::apply_affecting_aura( p -> talents.tactical_reload );
+    ab::apply_affecting_aura( p -> talents.night_hunter );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
