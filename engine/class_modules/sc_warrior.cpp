@@ -2175,12 +2175,55 @@ struct rend_prot_t : public warrior_attack_t
 
 // Lightning Strike =========================================================
 
-struct lightning_strike_t : public warrior_attack_t
+struct ground_current_t : public warrior_attack_t
 {
-  lightning_strike_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->spell.lightning_strike )
+  ground_current_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 460670 ) )
   {
     background = true;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    warrior_attack_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
+
+struct lightning_strike_t : public warrior_attack_t
+{
+  action_t* ground_current;
+  lightning_strike_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.lightning_strike ),
+    ground_current( nullptr )
+  {
+    background = true;
+    if ( p->talents.mountain_thane.ground_current->ok() )
+    {
+      std::string s = "ground_current_";
+      s += name;
+      ground_current = get_action<ground_current_t>( s, p );
+      add_child( ground_current );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( ground_current )
+    {
+      ground_current->execute_on_target( s->target );
+    }
   }
 };
 
