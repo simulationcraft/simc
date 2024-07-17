@@ -8038,11 +8038,6 @@ struct death_coil_t final : public death_knight_spell_t
     if ( p->talent.unholy.coil_of_devastation.ok() )
       add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
 
-    if ( p->talent.unholy.improved_death_coil.ok() )
-    {
-      aoe = 1 + as<int>( p->talent.unholy.improved_death_coil->effectN( 2 ).base_value() );
-    }
-
     if ( p->talent.unholy.doomed_bidding.ok() )
     {
       p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
