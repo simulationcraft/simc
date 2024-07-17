@@ -302,6 +302,7 @@ public:
 
     // Mountain Thane
     buff_t* thunder_blast;
+    buff_t* steadfast_as_the_peaks;
 
     // DF Tier
     buff_t* strike_vulnerabilities;
@@ -8650,6 +8651,51 @@ struct rallying_cry_t : public buff_t
   }
 };
 
+// Steadfast as the Peaks =====================================================
+
+struct steadfast_as_the_peaks_buff_t : public warrior_buff_t<buff_t>
+{
+  double health_change;
+  steadfast_as_the_peaks_buff_t( warrior_t& p, util::string_view n, const spell_data_t* s ) :
+    base_t( p, n, s ), health_change( data().effectN( 3 ).percent() )
+  {
+    add_invalidate( CACHE_BLOCK );
+    set_cooldown( timespan_t::zero() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    warrior_buff_t<buff_t>::start( stacks, value, duration );
+
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+    player -> resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
+
+    sim -> print_debug( "{} gains Steadfast as the Peaks: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
+    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
+    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player -> resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+
+    sim -> print_debug( "{} loses Steadfast as the Peaks: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        player -> name(), health_change * 100.0,
+                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
+  }
+};
+
 // Last Stand ======================================================================
 
 struct last_stand_buff_t : public warrior_buff_t<buff_t>
@@ -9120,7 +9166,8 @@ void warrior_t::create_buffs()
   buff.opportunist          = make_buff( this, "opportunist", find_spell( 456120 ) );
 
   // Mountain Thane
-  buff.thunder_blast        = make_buff( this, "thunder_blast", find_spell( 435615 ) );
+  buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
+  buff.steadfast_as_the_peaks = new buffs::steadfast_as_the_peaks_buff_t( *this, "steadfast_as_the_peaks", find_spell( 437152 ) );
 
   // TWW1 Tier
   buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );  // Arms 2pc
@@ -10356,6 +10403,9 @@ void warrior_t::parse_player_effects()
   // Slayer
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
                          spell.overwhelmed_debuff );
+
+  // Mountain Thane
+  parse_effects( talents.mountain_thane.steadfast_as_the_peaks );
 }
 
 void warrior_t::apply_affecting_auras( action_t& action )
