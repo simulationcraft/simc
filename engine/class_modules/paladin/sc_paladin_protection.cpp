@@ -954,7 +954,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.blessing_of_dusk->up() )
   {
-    s->result_amount *= 1.0 + buffs.blessing_of_dusk->value();
+    s->result_amount *= 1.0 + buffs.blessing_of_dusk->data().effectN( 1 ).percent();
   }
 
   if ( buffs.devotion_aura->up() )
