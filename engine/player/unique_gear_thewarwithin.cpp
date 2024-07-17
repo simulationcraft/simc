@@ -2627,12 +2627,13 @@ void carved_blazikon_wax( special_effect_t& effect )
                 e.player->thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev )
     {
       auto light_spell = e.player->find_spell( 451368 );
+      auto buff_spell = e.player->find_spell( 451367 );
       light =
         create_buff<stat_buff_t>( e.player, util::tokenize_fn( light_spell->name_cstr() ) + "_light", light_spell )
           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) )
           ->set_name_reporting( "In Light" );
 
-      buff = create_buff<stat_buff_t>( e.player, e.trigger() )
+      buff = create_buff<stat_buff_t>( e.player, buff_spell )
         ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
     }
 
