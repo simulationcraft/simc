@@ -2017,7 +2017,9 @@
       { "data_type": "h", "field": "override_width" },
       { "data_type": "h", "field": "override_height" },
       { "data_type": "b", "field": "flags" },
-      { "data_type": "b", "field": "id_ui_canvas" }
+      { "data_type": "b", "field": "id_ui_canvas" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "h", "field": "unk_2" }
     ]
   }
 }
