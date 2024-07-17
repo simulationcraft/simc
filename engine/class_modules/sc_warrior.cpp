@@ -838,9 +838,9 @@ public:
       player_talent_t keep_your_feet_on_the_ground; // NYI
       player_talent_t steadfast_as_the_peaks;
       player_talent_t flashing_skies; // NYI
-      player_talent_t snap_induction;
-      player_talent_t gathering_clouds; // NYI
-      player_talent_t thorims_might; // NYI
+      player_talent_t snap_induction; // NYI
+      player_talent_t gathering_clouds;
+      player_talent_t thorims_might;
       player_talent_t burst_of_power; // NYI
       player_talent_t avatar_of_the_storm; // NYI
     } mountain_thane;
@@ -10504,6 +10504,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.mountain_thane.strength_of_the_mountain );
   action.apply_affecting_aura( talents.mountain_thane.thunder_blast );
   action.apply_affecting_aura( talents.mountain_thane.storm_bolts );
+  action.apply_affecting_aura( talents.mountain_thane.thorims_might );
 }
 
 /* Report Extension Class
