@@ -1557,6 +1557,9 @@ public:
   bool affected_by_elemental_unity_se_da;
   bool affected_by_elemental_unity_se_ta;
 
+  bool affected_by_ele_mastery_da;
+  bool affected_by_ele_mastery_ta;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1593,7 +1596,9 @@ public:
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
       affected_by_elemental_unity_se_da( false ),
-      affected_by_elemental_unity_se_ta( false )
+      affected_by_elemental_unity_se_ta( false ),
+      affected_by_ele_mastery_da( false ),
+      affected_by_ele_mastery_ta( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1677,6 +1682,9 @@ public:
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 4 ) );
     affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) ) ||
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 5 ) );
+
+    affected_by_ele_mastery_da = ab::data().affected_by( player->mastery.elemental_overload->effectN( 4 ) );
+    affected_by_ele_mastery_ta = ab::data().affected_by( player->mastery.elemental_overload->effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -1753,6 +1761,11 @@ public:
     if ( affected_by_enh_mastery_da )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by_ele_mastery_da )
+    {
+      m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery_value();
     }
 
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
@@ -1851,6 +1864,11 @@ public:
     if ( affected_by_enh_mastery_ta )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by_ele_mastery_ta )
+    {
+      m *= 1.0 + p()->mastery.elemental_overload->effectN( 5 ).mastery_value() * p()->cache.mastery_value();
     }
 
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
