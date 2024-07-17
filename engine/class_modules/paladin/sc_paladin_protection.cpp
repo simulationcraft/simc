@@ -998,9 +998,6 @@ void paladin_t::target_mitigation( school_e school,
   {
     double reduction = spec.consecration_2->effectN( 1 ).percent()
     + cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
-    // Sanctuary reduces damage taken by an additional 5%, additive
-    if ( talents.sanctuary->ok() )
-      reduction += talents.sanctuary->effectN( 1 ).percent();
     s->result_amount *= 1.0 + reduction;
   }
 
