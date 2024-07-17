@@ -3898,7 +3898,7 @@ struct thunder_blast_t : public warrior_attack_t
 
     if ( p->talents.mountain_thane.crashing_thunder->ok() && p->talents.warrior.seismic_reverberation->ok() )
     {
-      seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
+      seismic_action = new thunder_blast_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
       add_child( seismic_action );
     }
   }
@@ -7927,6 +7927,8 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new taunt_t( this, options_str );
   if ( name == "thunder_clap" )
     return new thunder_clap_t( this, options_str );
+  if ( name == "thunder_blast" )
+    return new thunder_blast_t( this, options_str );
   if ( name == "victory_rush" )
     return new victory_rush_t( this, options_str );
   if ( name == "warbreaker" )
