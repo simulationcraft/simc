@@ -4387,8 +4387,8 @@ struct lava_lash_t : public shaman_attack_t
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
-    // Add a 8 yard radius to support Flame Shock spreading in 9.2
-    radius = 8.0;
+    // Add a 12 yard radius to support Flame Shock spreading in 11.0
+    radius = 12.0;
 
     parse_options( options_str );
     weapon = &( player->off_hand_weapon );
