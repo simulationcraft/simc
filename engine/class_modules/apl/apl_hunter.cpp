@@ -89,7 +89,6 @@ void beast_mastery( player_t* p )
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -111,7 +110,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "dire_beast" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   cleave->add_action( "barrage,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<gcd*2" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -171,7 +169,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "dire_beast" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   cleave->add_action( "barrage,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<gcd*2" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -192,7 +189,6 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "explosive_shot" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "dire_beast" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
   st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -251,7 +247,6 @@ void marksmanship( player_t* p )
   st->add_action( "rapid_fire,if=buff.trick_shots.remains<execute_time" );
   st->add_action( "kill_shot,if=focus+cast_regen<focus.max" );
   st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
-  st->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down" );
   st->add_action( "explosive_shot" );
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
@@ -271,7 +266,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots" );
@@ -281,7 +275,6 @@ void marksmanship( player_t* p )
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
   trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
   trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -335,7 +328,6 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "rapid_fire,if=buff.trick_shots.remains<execute_time" );
   st->add_action( "kill_shot,if=focus+cast_regen<focus.max" );
   st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
-  st->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down" );
   st->add_action( "explosive_shot" );
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
@@ -355,7 +347,6 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "death_chakram" );
   trickshots->add_action( "stampede" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
   trickshots->add_action( "barrage,if=active_enemies>7" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots" );
@@ -365,7 +356,6 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
   trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
   trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
-  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
   trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
@@ -441,7 +431,6 @@ void survival( player_t* p )
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
@@ -457,7 +446,6 @@ void survival( player_t* p )
   st->add_action( "kill_shot,if=!buff.coordinated_assault.up&!buff.spearhead.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
@@ -466,7 +454,6 @@ void survival( player_t* p )
   st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&(!dot.wildfire_bomb.ticking&focus+cast_regen<focus.max|active_enemies>1)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
@@ -539,7 +526,6 @@ void survival_ptr( player_t* p )
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
-  cleave->add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>12&(!talent.vipers_venom|talent.hydras_bite)" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
@@ -555,7 +541,6 @@ void survival_ptr( player_t* p )
   st->add_action( "kill_shot,if=!buff.coordinated_assault.up&!buff.spearhead.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&!talent.vipers_venom" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
@@ -564,7 +549,6 @@ void survival_ptr( player_t* p )
   st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
-  st->add_action( "serpent_sting,target_if=min:remains,if=refreshable&!talent.vipers_venom" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&(!dot.wildfire_bomb.ticking&focus+cast_regen<focus.max|active_enemies>1)" );
   st->add_action( "mongoose_bite,target_if=max:debuff.latent_poison.stack,if=buff.mongoose_fury.up" );
