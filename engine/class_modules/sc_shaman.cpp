@@ -1004,7 +1004,7 @@ public:
 
     // Row 4
     player_talent_t maelstrom_supremacy;
-    player_talent_t final_calling; // NEW NYI
+    player_talent_t final_calling; // NEW Partial implementation (rest are bugs?)
 
     // Row 5
     player_talent_t ancestral_swiftness; // NEW NYI
@@ -3589,6 +3589,18 @@ struct ancestor_t : public shaman_pet_t
 
   void dismiss( bool expiration ) override
   {
+    if ( expiration && o()->talent.final_calling.ok() )
+    {
+      // Pick a random target to shoot the Elemental Blast on for now
+      if ( !elemental_blast->target_list().empty() )
+      {
+        auto idx = static_cast<unsigned>( rng().range(
+          as<double>( elemental_blast->target_list().size() ) ) );
+
+        trigger_cast( ancestor_cast::ELEMENTAL_BLAST, elemental_blast->target_list()[ idx ] );
+      }
+    }
+
     shaman_pet_t::dismiss( expiration );
 
     if ( expiration && o()->talent.ancient_fellowship.ok() )
