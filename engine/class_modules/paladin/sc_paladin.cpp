@@ -2301,7 +2301,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   {
     if ( ( i > 0 && random_after_first ) || target == nullptr )
     {
-      int result = as<int>( rng().real() * sim->target_non_sleeping_list.size() );
+      int result  = as<int>( std::floor( rng().real() * sim->target_non_sleeping_list.size() ) );
       next_target   = sim->target_non_sleeping_list[ result ];
     }
     make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
