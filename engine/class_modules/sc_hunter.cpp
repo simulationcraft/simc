@@ -541,7 +541,7 @@ public:
     spell_data_ptr_t counter_shot; //NYI - TODO Tie up counter shot implementation with this talent
     spell_data_ptr_t muzzle; //NYI - TODO Tie up muzzle implementation with this talent
 
-    spell_data_ptr_t lone_survivor; //NYI - Reduce the cooldown of Counter Shot and Muzzle by 2 seconds
+    spell_data_ptr_t lone_survivor;
     spell_data_ptr_t specialized_arsenal;
     spell_data_ptr_t disruptive_rounds; //NYI - When Counter Shot interrupts a cast, gain 10 focus. 
 
@@ -1062,6 +1062,7 @@ public:
     ab::apply_affecting_aura( p -> talents.arctic_bola );
     ab::apply_affecting_aura( p -> talents.hydras_bite );
     ab::apply_affecting_aura( p -> talents.blackrock_munitions );
+    ab::apply_affecting_aura( p -> talents.lone_survivor );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
