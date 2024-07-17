@@ -9010,6 +9010,16 @@ struct surging_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, shaman_s
     p()->buff.whirling_fire->trigger();
     p()->buff.whirling_earth->trigger();
   }
+
+  bool ready() override
+  {
+    if ( !p()->talent.surging_totem.ok() )
+    {
+      return false;
+    }
+
+    return shaman_totem_t<spell_totem_pet_t, shaman_spell_t>::ready();
+  }
 };
 
 // Searing Totem ============================================================
