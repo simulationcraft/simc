@@ -382,6 +382,10 @@ public:
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
+    const spell_data_t* immolation_buff; // Buff on Infernal pet
+    const spell_data_t* immolation_dmg; // Ticking AoE damage from buff
+    const spell_data_t* embers; // Buff which generates Soul Shards
+    const spell_data_t* burning_ember; // Energize data for Soul Shards
     player_talent_t fire_and_brimstone;
     player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
     const spell_data_t* flashpoint_buff;

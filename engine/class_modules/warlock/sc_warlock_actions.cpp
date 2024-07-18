@@ -3414,7 +3414,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
       
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
+      p()->warlock_pet_list.infernals.spawn();
     }
   };
 

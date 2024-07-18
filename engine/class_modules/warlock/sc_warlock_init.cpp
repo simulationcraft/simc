@@ -382,6 +382,14 @@ namespace warlock
 
     talents.emberstorm = find_talent_spell( talent_tree::SPECIALIZATION, "Emberstorm" ); // Should be ID 454744
 
+    talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
+    talents.summon_infernal_main = find_spell( 111685 );
+    talents.infernal_awakening = find_spell( 22703 );
+    talents.immolation_buff = find_spell( 19483 );
+    talents.immolation_dmg = find_spell( 20153 );
+    talents.embers = find_spell( 264364 );
+    talents.burning_ember = find_spell( 264365 );
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
@@ -400,10 +408,6 @@ namespace warlock
 
     talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
     talents.eradication_debuff = find_spell( 196414 );
-
-    talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
-    talents.summon_infernal_main = find_spell( 111685 );
-    talents.infernal_awakening = find_spell( 22703 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -442,6 +446,9 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
+
+    // Initialize some default values for pet spawners
+    warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
   }
 
   void warlock_t::init_base_stats()
