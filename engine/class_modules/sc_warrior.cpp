@@ -9349,7 +9349,12 @@ double warrior_t::composite_armor_multiplier() const
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
   if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
   {
-    auto q = spec.vanguard -> effectN( 1 ).percent() * talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() * (1 + talents.warrior.reinforced_plates->effectN( 1 ).percent()) * ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() );
+    auto q = spec.vanguard -> effectN( 1 ).percent() *
+              talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() *
+              ( 1+talents.warrior.reinforced_plates->effectN( 1 ).percent()) *
+              ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
+              ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
+
     ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
   }
 
