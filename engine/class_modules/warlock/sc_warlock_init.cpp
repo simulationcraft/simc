@@ -392,6 +392,9 @@ namespace warlock
 
     talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
+    talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
+    talents.flashpoint_buff = find_spell( 387263 );
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
@@ -400,9 +403,6 @@ namespace warlock
     talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
 
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
-
-    talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
-    talents.flashpoint_buff = find_spell( 387263 );
 
     talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
 
@@ -594,7 +594,7 @@ namespace warlock
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
+                           ->set_default_value_from_effect( 1 );
 
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
                                  ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
