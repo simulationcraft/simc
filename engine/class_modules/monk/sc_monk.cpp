@@ -8273,10 +8273,7 @@ void monk_t::create_buffs()
           ->set_expire_at_max_stack( true );
 
   buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
-                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) )
-                                       ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
-                                         // buff.heart_of_the_jade_serpent_cdr->trigger();
-                                       } );
+                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) );
 
   buff.heart_of_the_jade_serpent_stack_ww =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
