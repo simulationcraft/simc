@@ -271,9 +271,7 @@ public:
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* excess_ice_nova;
-    action_t* excess_living_bomb_dot;
-    action_t* excess_living_bomb_dot_spread;
-    action_t* excess_living_bomb_explosion;
+    action_t* excess_living_bomb;
     action_t* firefall_meteor;
     action_t* frostfire_empowerment;
     action_t* frostfire_infusion;
@@ -282,9 +280,7 @@ public:
     action_t* isothermic_comet_storm;
     action_t* isothermic_meteor;
     action_t* leydrinker_echo;
-    action_t* living_bomb_dot;
-    action_t* living_bomb_dot_spread;
-    action_t* living_bomb_explosion;
+    action_t* living_bomb;
     action_t* magis_spark;
     action_t* magis_spark_echo;
     action_t* pet_freeze;
@@ -455,6 +451,7 @@ public:
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
+    bool treat_bloodlust_as_time_warp = false;
   } options;
 
   // Pets
@@ -4808,9 +4805,12 @@ struct frozen_orb_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->buffs.freezing_winds->trigger();
     p()->buffs.permafrost_lances->trigger();
     if ( !background ) p()->buffs.freezing_rain->trigger();
+    // The Cold Front Frozen Orb seems to trigger Freezing Winds and then (almost always) immediately
+    // expire it. However, if Freezing Winds is already up, it refreshes the buff as normal.
+    // TODO: double check that this is the case, maybe quantify the fail chance as well?
+    if ( !background || !p()->bugs || p()->buffs.freezing_winds->check() ) p()->buffs.freezing_winds->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5193,7 +5193,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p()->buffs.excess_fire->check() )
     {
-      p()->action.excess_living_bomb_dot->execute_on_target( s->target );
+      p()->action.excess_living_bomb->execute_on_target( s->target );
       p()->buffs.excess_fire->decrement();
     }
 
@@ -5355,7 +5355,7 @@ struct fire_blast_t final : public fire_mage_spell_t
         // TODO: Check for targeting conditions.
         rng().shuffle( tl.begin(), tl.end() );
         for ( size_t i = 0; i < lit_fuse_targets && i < tl.size(); i++ )
-          p()->action.living_bomb_dot->execute_on_target( tl[ i ] );
+          p()->action.living_bomb->execute_on_target( tl[ i ] );
       }
     }
   }
@@ -5372,7 +5372,7 @@ struct fire_blast_t final : public fire_mage_spell_t
 
       if ( p()->buffs.excess_fire->check() )
       {
-        p()->action.excess_living_bomb_dot->execute_on_target( s->target );
+        p()->action.excess_living_bomb->execute_on_target( s->target );
         p()->buffs.excess_fire->decrement();
       }
     }
@@ -5389,15 +5389,73 @@ struct fire_blast_t final : public fire_mage_spell_t
   }
 };
 
+struct living_bomb_explosion_t final : public fire_mage_spell_t
+{
+  const bool excess;
+
+  static unsigned explosion_spell_id( bool excess, bool primary )
+  {
+    if ( excess )
+      return 438674;
+    else
+      return primary ? 44461 : 453251;
+  }
+
+  living_bomb_explosion_t( std::string_view n, mage_t* p, bool excess_, bool primary_ ) :
+    fire_mage_spell_t( n, p, p->find_spell( explosion_spell_id( excess_, primary_ ) ) ),
+    excess( excess_ )
+  {
+    aoe = -1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
+    background = triggers.ignite = true;
+    base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
+  }
+
+  void init() override
+  {
+    fire_mage_spell_t::init();
+
+    action_t* parent = excess ? p()->action.excess_living_bomb : p()->action.living_bomb;
+    if ( parent && this != parent )
+      parent->add_child( this );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = fire_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.combustion->check() )
+      // TODO: This is currently "Add Flat Multiplier" in the data. Verify the
+      // specific numbers in game, especially because scripting is involved.
+      // There is also a zeroed "Add Percent Multiplier" on Combustion for Living Bomb.
+      am *= 1.0 + p()->talents.explosivo->effectN( 2 ).percent();
+
+    return am;
+  }
+
+  double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+
+    m *= 1.0 + p()->talents.mark_of_the_firelord->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
 struct living_bomb_dot_t final : public fire_mage_spell_t
 {
   // The game has two spells for the DoT, one for pre-spread one and one for
   // post-spread one. This allows two copies of the DoT to be up on one target.
-  const bool primary;
   const bool excess;
+  const bool primary;
   size_t max_spread_targets;
 
-  static unsigned dot_spell_id( bool primary, bool excess )
+  action_t* dot_spread = nullptr;
+  action_t* explosion = nullptr;
+
+  static unsigned dot_spell_id( bool excess, bool primary )
   {
     if ( excess )
       return primary ? 438672 : 438671;
@@ -5405,10 +5463,15 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
       return primary ? 217694 : 244813;
   }
 
-  living_bomb_dot_t( std::string_view n, mage_t* p, bool primary_, bool excess_ = false ) :
-    fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( primary_, excess_ ) ) ),
-    primary( primary_ ),
+  static std::string spell_name( bool explosion, bool excess, bool primary )
+  {
+    return fmt::format( "{}living_bomb{}{}", excess ? "excess_" : "", primary ? "" : "_spread", explosion ? "_explosion" : "" );
+  }
+
+  living_bomb_dot_t( std::string_view n, mage_t* p, bool excess_ = false, bool primary_ = true ) :
+    fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( excess_, primary_ ) ) ),
     excess( excess_ ),
+    primary( primary_ ),
     max_spread_targets()
   {
     background = true;
@@ -5418,22 +5481,20 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
       max_spread_targets = as<size_t>( p->talents.lit_fuse->effectN( 3 ).base_value() );
       max_spread_targets += as<size_t>( p->talents.blast_zone->effectN( 4 ).base_value() );
     }
-  }
 
-  action_t* dot_spread()
-  {
-    return excess ? p()->action.excess_living_bomb_dot_spread : p()->action.living_bomb_dot_spread;
-  }
-
-  action_t* explosion()
-  {
-    return excess ? p()->action.excess_living_bomb_explosion : p()->action.living_bomb_explosion;
+    explosion = get_action<living_bomb_explosion_t>( spell_name( true, excess, primary ), p, excess, primary );
+    if ( primary )
+      dot_spread = get_action<living_bomb_dot_t>( spell_name( false, excess, false ), p, excess, false );
   }
 
   void init() override
   {
     fire_mage_spell_t::init();
     update_flags &= ~STATE_HASTE;
+
+    action_t* parent = excess ? p()->action.excess_living_bomb : p()->action.living_bomb;
+    if ( parent && this != parent )
+      parent->add_child( this );
   }
 
   void trigger_explosion( player_t* target )
@@ -5442,11 +5503,11 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     if ( sim->event_mgr.canceled )
       return;
 
-    explosion()->set_target( target );
+    explosion->set_target( target );
 
     if ( primary )
     {
-      std::vector<player_t*> targets = explosion()->target_list(); // make a copy
+      std::vector<player_t*> targets = explosion->target_list(); // make a copy
       if ( !excess )
       {
         bool was_spread = false;
@@ -5460,13 +5521,13 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
           if ( t == target )
             continue;
 
-          dot_spread()->execute_on_target( t );
+          dot_spread->execute_on_target( t );
           was_spread = true;
           i++;
         }
 
         if ( p()->talents.convection.ok() && !was_spread )
-          dot_spread()->execute_on_target( target );
+          dot_spread->execute_on_target( target );
       }
       else
       {
@@ -5475,7 +5536,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
           if ( t == target )
             continue;
 
-          dot_spread()->execute_on_target( t );
+          dot_spread->execute_on_target( t );
         }
 
         p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
@@ -5483,7 +5544,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
       }
     }
 
-    explosion()->execute();
+    explosion->execute();
     p()->buffs.sparking_cinders->trigger();
   }
 
@@ -5507,41 +5568,6 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::last_tick( d );
     trigger_explosion( d->target );
-  }
-};
-
-struct living_bomb_explosion_t final : public fire_mage_spell_t
-{
-  living_bomb_explosion_t( std::string_view n, mage_t* p, bool excess_ = false ) :
-    fire_mage_spell_t( n, p, p->find_spell( excess_ ? 438674 : 44461 ) )
-  {
-    aoe = -1;
-    reduced_aoe_targets = 1.0;
-    full_amount_targets = 1;
-    background = triggers.ignite = true;
-    base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = fire_mage_spell_t::composite_da_multiplier( s );
-
-    if ( p()->buffs.combustion->check() )
-      // TODO: This is currently "Add Flat Multiplier" in the data. Verify the
-      // specific numbers in game, especially because scripting is involved.
-      // There is also a zeroed "Add Percent Multiplier" on Combustion for Living Bomb.
-      am *= 1.0 + p()->talents.explosivo->effectN( 2 ).percent();
-
-    return am;
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
-
-    m *= 1.0 + p()->talents.mark_of_the_firelord->effectN( 1 ).percent();
-
-    return m;
   }
 };
 
@@ -5613,7 +5639,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
       if ( !tl.empty() )
       {
         player_t* t = tl[ rng().range( tl.size() ) ];
-        p()->action.living_bomb_dot->execute_on_target( t );
+        p()->action.living_bomb->execute_on_target( t );
       }
     }
   }
@@ -6864,7 +6890,7 @@ struct time_anomaly_tick_event_t final : public mage_event_t
         possible_procs.push_back( TA_ICY_VEINS );
       if ( spec == MAGE_FROST && !mage->buffs.brain_freeze->check() )
         possible_procs.push_back( TA_BRAIN_FREEZE );
-      if ( !mage->buffs.time_warp->check() )
+      if ( !mage->buffs.time_warp->check() && ( !mage->player_t::buffs.bloodlust->check() || !mage->options.treat_bloodlust_as_time_warp ) )
         possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
@@ -7139,11 +7165,7 @@ void mage_t::create_actions()
     action.arcane_echo = get_action<arcane_echo_t>( "arcane_echo", this );
 
   if ( talents.lit_fuse.ok() || talents.deep_impact.ok() )
-  {
-    action.living_bomb_dot        = get_action<living_bomb_dot_t>( "living_bomb_dot", this, true );
-    action.living_bomb_dot_spread = get_action<living_bomb_dot_t>( "living_bomb_dot_spread", this, false );
-    action.living_bomb_explosion  = get_action<living_bomb_explosion_t>( "living_bomb_explosion", this );
-  }
+    action.living_bomb = get_action<living_bomb_dot_t>( "living_bomb", this );
 
   if ( talents.glacial_assault.ok() )
     action.glacial_assault = get_action<glacial_assault_t>( "glacial_assault", this );
@@ -7185,11 +7207,7 @@ void mage_t::create_actions()
     action.spellfrost_arcane_orb = get_action<arcane_orb_t>( "spellfrost_arcane_orb", this, "", ao_type::SPELLFROST );
 
   if ( talents.excess_fire.ok() )
-  {
-    action.excess_living_bomb_dot        = get_action<living_bomb_dot_t>( "excess_living_bomb_dot", this, true, true );
-    action.excess_living_bomb_dot_spread = get_action<living_bomb_dot_t>( "excess_living_bomb_dot_spread", this, false, true );
-    action.excess_living_bomb_explosion  = get_action<living_bomb_explosion_t>( "excess_living_bomb_explosion", this, true );
-  }
+    action.excess_living_bomb = get_action<living_bomb_dot_t>( "excess_living_bomb", this, true );
 
   if ( talents.isothermic_core.ok() )
   {
@@ -7232,6 +7250,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
+  add_option( opt_bool( "mage.treat_bloodlust_as_time_warp", options.treat_bloodlust_as_time_warp ) );
 
   player_t::create_options();
 }

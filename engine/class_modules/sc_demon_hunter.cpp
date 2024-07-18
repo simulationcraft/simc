@@ -3778,6 +3778,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       }
       p()->buff.demonsurge_demonic->trigger();
       p()->buff.demonsurge_hardcast->trigger();
+      p()->buff.demonsurge->expire();
 
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
@@ -3813,6 +3814,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       p()->buff.demonsurge_demonic->trigger();
       p()->buff.demonsurge_hardcast->trigger();
       p()->buff.metamorphosis->trigger();
+      p()->buff.demonsurge->expire();
 
       if ( p()->talent.felscarred.violent_transformation->ok() )
       {
@@ -9122,7 +9124,6 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability )
 {
   if ( active.demonsurge && buff.demonsurge_abilities[ ability ]->up() )
   {
-    active.demonsurge->execute_on_target( target );
     buff.demonsurge_abilities[ ability ]->expire();
     make_event<delayed_execute_event_t>(
         *sim, this, active.demonsurge, target,

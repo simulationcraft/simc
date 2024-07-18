@@ -287,6 +287,8 @@ struct hunter_main_pet_t;
 struct animal_companion_t;
 struct dire_critter_t;
 struct shadow_hound_t;
+struct fenryr_t;
+struct hati_t;
 }
 
 namespace events
@@ -306,6 +308,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* stampede;
     buff_t* shredded_armor;
     buff_t* wild_instincts;
+    buff_t* basilisk_collar;
   } debuffs;
 
   struct dots_t
@@ -315,6 +318,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* pheromone_bomb;
     dot_t* shrapnel_bomb;
     dot_t* black_arrow;
+    dot_t* barbed_shot;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -333,9 +337,11 @@ public:
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
     spawner::pet_spawner_t<pets::shadow_hound_t, hunter_t> dark_hound;
+    spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
+    spawner::pet_spawner_t<pets::hati_t, hunter_t> hati;
 
     pets_t( hunter_t* p )
-      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p )
+      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p ), fenryr( "fenryr", p ), hati( "hati", p )
     {
     }
   } pets;
@@ -407,6 +413,9 @@ public:
     buff_t* beast_cleave; 
     buff_t* explosive_venom;
     buff_t* a_murder_of_crows;
+    buff_t* huntmasters_call; 
+    buff_t* summon_fenryr;
+    buff_t* summon_hati;  
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -469,6 +478,7 @@ public:
     gain_t* legacy_of_the_windrunners;
 
     gain_t* barbed_shot;
+    gain_t* dire_beast;
 
     gain_t* terms_of_engagement;
     gain_t* coordinated_kill;
@@ -541,7 +551,7 @@ public:
     spell_data_ptr_t counter_shot; //NYI - TODO Tie up counter shot implementation with this talent
     spell_data_ptr_t muzzle; //NYI - TODO Tie up muzzle implementation with this talent
 
-    spell_data_ptr_t lone_survivor; //NYI - Reduce the cooldown of Counter Shot and Muzzle by 2 seconds
+    spell_data_ptr_t lone_survivor;
     spell_data_ptr_t specialized_arsenal;
     spell_data_ptr_t disruptive_rounds; //NYI - When Counter Shot interrupts a cast, gain 10 focus. 
 
@@ -585,11 +595,11 @@ public:
     spell_data_ptr_t improved_steady_shot;
     spell_data_ptr_t crack_shot;
 
-    spell_data_ptr_t penetrating_shots; // NYI - Gain critical strike damage equal to 20% of your critical strike chance.
+    spell_data_ptr_t penetrating_shots;
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t master_marksman;
 
-    spell_data_ptr_t fan_the_hammer; // NYI - Rapid Fire shoots 3 additional shots 
+    spell_data_ptr_t fan_the_hammer;
     spell_data_ptr_t careful_aim;
     spell_data_ptr_t light_ammo;
     spell_data_ptr_t heavy_ammo;
@@ -598,7 +608,7 @@ public:
     spell_data_ptr_t steady_focus;
 
     spell_data_ptr_t deathblow;
-    spell_data_ptr_t night_hunter; // NYI - Aimed Shot and Rapid Fire critical strike chance increased by 5%.
+    spell_data_ptr_t night_hunter;
     spell_data_ptr_t tactical_reload;
     spell_data_ptr_t serpentstalkers_trickery; //Verify functionality with removal of serpent sting
     spell_data_ptr_t chimaera_shot;
@@ -608,7 +618,7 @@ public:
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t lone_wolf;
     spell_data_ptr_t bullseye;
-    spell_data_ptr_t hydras_bite; // TODO - Verify functionality after moving to MM + removal of serpent sting
+    spell_data_ptr_t hydras_bite;
     spell_data_ptr_t volley;
 
     spell_data_ptr_t legacy_of_the_windrunners; // TODO - Reworked
@@ -619,7 +629,7 @@ public:
     spell_data_ptr_t wailing_arrow; // NYI - After summoning 20 wind arrows, your next aimed shot becomes a wailing arrow
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t small_game_hunter; // NYI - Multi-Shot deals 100% increased damage and Explosive Shot deals 25% increased damage
+    spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t kill_zone; // NYI - Your spells and attacks deal 8% increased damage and ingore line of sight against any target in your volley. 
 
     spell_data_ptr_t readiness;
@@ -638,7 +648,7 @@ public:
 
     spell_data_ptr_t go_for_the_throat;
     spell_data_ptr_t multishot_bm;
-    spell_data_ptr_t laceration; // NYI - When your pets critically strike, they cause their target to bleed for 15% of the damage dealt over 6 sec.
+    spell_data_ptr_t laceration;
 
     spell_data_ptr_t cobra_senses;
     spell_data_ptr_t improved_kill_command;
@@ -657,15 +667,15 @@ public:
     spell_data_ptr_t savagery;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t dire_command;
-    spell_data_ptr_t huntmasters_call; // NYI - Every 3 casts of Dire Beast sounds the Horn of Valor, summoning either Hati or Fenryr to battle.
+    spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t dire_frenzy;
 
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
     spell_data_ptr_t explosive_venom;
-    spell_data_ptr_t basilisk_collar; // NYI - Each damage over time effect on a target increases teh damage they receive from your pet's attacks by 5%
-
+    spell_data_ptr_t basilisk_collar;
+    
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t killer_cobra;
     spell_data_ptr_t scent_of_blood;
@@ -720,7 +730,7 @@ public:
     spell_data_ptr_t spearhead;
 
     spell_data_ptr_t ruthless_marauder;
-    spell_data_ptr_t symbiotic_adrenaline; // NYI - The cooldown of Coordinated Assault is reduced by 60 seconds. 
+    spell_data_ptr_t symbiotic_adrenaline;
     spell_data_ptr_t relentless_primal_ferocity; // NYI - Coordinated Assault sends you and your pet into a state of primal power. For the duration of Coordinated Assault, Kill Command generates 1 additional stack of Tip of the Spear, you gain 10% haste, and Tip of the Spear's damage bonus is increased by 50%.
     spell_data_ptr_t bombardier; // TODO - Reworked
     spell_data_ptr_t deadly_duo;
@@ -979,6 +989,7 @@ public:
   }
 
   void trigger_bloodseeker_update();
+  void trigger_basilisk_collar_update( hunter_t* p );
   void trigger_t30_sv_4p( action_t* action, double cost );
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
@@ -1062,6 +1073,7 @@ public:
     ab::apply_affecting_aura( p -> talents.arctic_bola );
     ab::apply_affecting_aura( p -> talents.hydras_bite );
     ab::apply_affecting_aura( p -> talents.blackrock_munitions );
+    ab::apply_affecting_aura( p -> talents.lone_survivor );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
@@ -1073,6 +1085,9 @@ public:
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
     ab::apply_affecting_aura( p -> talents.tactical_reload );
+    ab::apply_affecting_aura( p -> talents.night_hunter );
+    ab::apply_affecting_aura( p -> talents.small_game_hunter );
+    ab::apply_affecting_aura( p -> talents.fan_the_hammer );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
@@ -1081,13 +1096,13 @@ public:
     // Survival Tree passives
     ab::apply_affecting_aura( p -> talents.terms_of_engagement );
     ab::apply_affecting_aura( p -> talents.guerrilla_tactics );
-    ab::apply_affecting_aura( p -> talents.lunge );
     ab::apply_affecting_aura( p -> talents.improved_wildfire_bomb );
     ab::apply_affecting_aura( p -> talents.spear_focus );
     ab::apply_affecting_aura( p -> talents.sweeping_spear );
     ab::apply_affecting_aura( p -> talents.tactical_advantage );
     ab::apply_affecting_aura( p -> talents.ranger );
     ab::apply_affecting_aura( p -> talents.explosives_expert );
+    ab::apply_affecting_aura( p -> talents.symbiotic_adrenaline );
 
     // Set Bonus passives
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
@@ -1484,6 +1499,7 @@ struct hunter_pet_t: public pet_t
   struct actives_t
   {
     action_t* beast_cleave = nullptr;
+    action_t* laceration = nullptr; 
   } active;
 
   hunter_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
@@ -1813,6 +1829,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
   }
 
   void init_spells() override;
+  void init_special_effects() override;
 
   void moving() override { return; }
 };
@@ -1862,6 +1879,8 @@ public:
   {
     dot_t* bloodshed = nullptr;
     dot_t* bloodseeker = nullptr;
+    dot_t* laceration = nullptr;
+    dot_t* ravenous_leap = nullptr;
   } dots;
 
   struct debuffs_t
@@ -2046,8 +2065,9 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
       double bonus = spells.bloodshed -> effectN( 2 ).percent();
       if ( td -> debuffs.venomous_bite -> check() )
       {
-        bonus *= 2;
+        bonus *= 1 + o() -> talents.venomous_bite -> effectN( 1 ).percent();
       }
+
       m *= 1 + bonus; 
     }
   }
@@ -2059,13 +2079,15 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
 // Dire Critter
 // ==========================================================================
 
-struct dire_critter_t final : public hunter_pet_t
+struct dire_critter_t : public hunter_pet_t
 {
   struct actives_t
   {
     action_t* kill_command = nullptr;
     action_t* kill_cleave = nullptr;
   } active;
+
+  const spell_data_t* energize = find_spell( 281036 );
 
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
@@ -2084,9 +2106,26 @@ struct dire_critter_t final : public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     o() -> buffs.dire_beast -> trigger( duration );
+    o() -> resource_gain( RESOURCE_FOCUS, energize -> effectN( 2 ).base_value(), o() -> gains.dire_beast );
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
+
+    o() -> buffs.huntmasters_call -> trigger();
+    if ( o() -> buffs.huntmasters_call -> at_max_stacks() )
+    {
+      if( rng().roll( 0.5 ) )
+      {
+        o() -> buffs.summon_fenryr -> trigger();
+        o() -> pets.fenryr.spawn( o() -> buffs.summon_fenryr -> buff_duration() );
+      }
+      else
+      {
+        o() -> buffs.summon_hati -> trigger();
+        o() -> pets.hati.spawn( o() -> buffs.summon_hati -> buff_duration() );
+      }
+      o() -> buffs.huntmasters_call -> expire();
+    }
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2132,6 +2171,56 @@ struct shadow_hound_t final : public hunter_pet_t
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+  }
+};
+
+// =========================================================================
+// Fenryr
+// =========================================================================
+
+//TODO - Fenryr and Hati melee attacks are hitting almost 3 times as hard a dire beast melee attacks in-game BUT the damage of the ravenous leap is accurate, figure out why that is the case.
+struct fenryr_t final : public dire_critter_t
+{
+  struct actives_t
+  {
+    action_t* ravenous_leap = nullptr;
+  } active;
+
+  fenryr_t( hunter_t* owner, util::string_view n = "fenryr" )
+    : dire_critter_t( owner, n )
+  {
+  }
+
+  void init_spells() override;
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+
+    active.ravenous_leap -> execute_on_target( target );
+  }
+};
+
+// ==========================================================================
+// Hati
+// ==========================================================================
+
+struct hati_t final : public dire_critter_t
+{
+  hati_t( hunter_t* owner, util::string_view n = "hati" )
+    : dire_critter_t( owner, n )
+  {
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -2543,6 +2632,15 @@ struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
   }
 };
 
+// Laceration ===============================================================
+
+struct laceration_t : public residual_action::residual_periodic_action_t<hunter_pet_action_t<hunter_pet_t, attack_t>>
+{
+  laceration_t( hunter_pet_t* p ): 
+    residual_action::residual_periodic_action_t<hunter_pet_action_t<hunter_pet_t, attack_t>>( "laceration", p, p -> find_spell( 459560 ) )
+  { }
+};
+
 // Pet Melee ================================================================
 
 struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
@@ -2698,9 +2796,24 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
     base_dd_multiplier *= o() -> talents.stomp -> effectN( 1 ).base_value();
   }
 
+  double bleed_amount = o() -> find_spell( 459555 ) -> effectN( 1 ).percent(); 
+
   void impact( action_state_t* s ) override
   {
     hunter_pet_action_t::impact( s );
+
+    //Only the main pet or animal companion can trigger laceration
+    auto pet = o() -> pets.main;
+    auto animal_companion = o() -> pets.animal_companion;
+    if ( !( pet == p() || animal_companion == p() ) )
+      return;
+
+    //TODO - 2024-07-16 - Stomp only triggers laceration on primary target
+    if( p() -> active.laceration && s -> result == RESULT_CRIT and s -> chain_target < 1 )
+    {
+      double amount = s -> result_amount * bleed_amount; 
+      residual_action::trigger( p() -> active.laceration, s -> target, amount );
+    }
   }
 };
 
@@ -2739,13 +2852,31 @@ struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attac
   }
 };
 
+// Ravenous Leap (Fenryr) ===================================================
+
+struct ravenous_leap_t : public hunter_pet_action_t<fenryr_t, attack_t>
+{
+  ravenous_leap_t( fenryr_t* p ):
+    hunter_pet_action_t( "ravenous_leap", p, p -> find_spell( 459753 ) )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_action_t::impact( s );
+  }
+};
+
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
   actor_target_data_t( target, p )
 {
-  dots.bloodseeker = target -> get_dot( "kill_command", p );
-  dots.bloodshed   = target -> get_dot( "bloodshed", p );
+  dots.bloodseeker    = target -> get_dot( "kill_command", p );
+  dots.bloodshed      = target -> get_dot( "bloodshed", p );
+  dots.laceration     = target -> get_dot( "laceration", p );
+  dots.ravenous_leap  = target -> get_dot( "ravenous_leap", p );
 
   debuffs.venomous_bite = 
     make_buff( *this, "venomous_bite", p -> find_spell( 459668 ) )
@@ -2775,6 +2906,9 @@ void hunter_pet_t::init_spells()
   main_hand_attack = new actions::pet_melee_t( "melee", this );
   
   active.beast_cleave = new actions::beast_cleave_attack_t( this );
+  
+  if ( o() -> talents.laceration.ok() )
+    active.laceration = new actions::laceration_t( this );
 }
 
 void stable_pet_t::init_spells()
@@ -2836,6 +2970,57 @@ void dire_critter_t::init_spells()
 
     if ( o() -> talents.kill_cleave.ok() )
       active.kill_cleave = new actions::kill_cleave_t( this );
+  }
+}
+
+void fenryr_t::init_spells()
+{
+  hunter_pet_t::init_spells();
+
+  active.ravenous_leap = new actions::ravenous_leap_t( this );
+}
+
+// hunter_main_pet_base_t::init_special_effects ==============================
+
+void hunter_main_pet_base_t::init_special_effects()
+{
+  stable_pet_t::init_special_effects();
+
+  if( o() -> talents.laceration.ok() )
+  {
+    struct laceration_cb_t : public dbc_proc_callback_t
+    {
+      double bleed_amount; 
+      action_t* bleed; 
+
+      laceration_cb_t( const special_effect_t& e, double amount, action_t* bleed ) : dbc_proc_callback_t( e.player, e ),
+        bleed_amount( amount ), bleed( bleed )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        if ( s && s -> target -> is_sleeping() )
+        {
+          return;
+        }
+
+        double amount = s -> result_amount * bleed_amount;
+        if ( amount > 0 )
+          residual_action::trigger( bleed, s -> target, amount );
+      }  
+    };
+
+    auto const effect = new special_effect_t( this );
+    effect -> name_str = "laceration";
+    effect -> spell_id =  459555;
+    effect -> proc_flags2_ = PF2_CRIT;
+    //Pet melee, bestial wrath on demand damage and Kill Command are procs in simc implemenation
+    effect -> set_can_proc_from_procs(true);
+    special_effects.push_back( effect );
+
+    auto cb = new laceration_cb_t( *effect, find_spell( 459555 ) -> effectN( 1 ).percent(), hunter_pet_t::active.laceration );
+    cb -> initialize();
   }
 }
 
@@ -2940,6 +3125,44 @@ void hunter_t::trigger_bloodseeker_update()
     buffs.bloodseeker -> decrement( current - bleeding_targets );
     if ( auto pet = pets.main )
       pet -> buffs.bloodseeker -> decrement( current - bleeding_targets );
+  }
+}
+
+void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
+{
+  if ( !talents.basilisk_collar.ok() )
+    return;
+
+  for ( player_t* t : sim -> target_non_sleeping_list )
+  {
+    if ( t -> is_enemy() )
+    {
+      auto td = p -> get_target_data( t );
+      int current = td -> debuffs.basilisk_collar -> check(); 
+      int new_stacks = 0;
+      
+      auto hunter_dots = td -> dots;
+      new_stacks += hunter_dots.a_murder_of_crows -> is_ticking(); 
+      new_stacks += hunter_dots.barbed_shot -> is_ticking();
+      new_stacks += hunter_dots.black_arrow -> is_ticking(); 
+      new_stacks += hunter_dots.serpent_sting -> is_ticking(); 
+
+      auto pet_dots = p -> pets.main -> get_target_data( t ) -> dots; 
+      new_stacks += pet_dots.bloodshed -> is_ticking(); 
+      new_stacks += pet_dots.laceration -> is_ticking(); 
+      new_stacks += pet_dots.ravenous_leap -> is_ticking(); 
+
+      new_stacks = std::min( new_stacks, td -> debuffs.basilisk_collar -> max_stack() );
+
+      if ( current < new_stacks )
+      {
+        td -> debuffs.basilisk_collar -> trigger( new_stacks - current );
+      }
+      else if ( current > new_stacks )
+      {
+        td -> debuffs.basilisk_collar -> decrement( current - new_stacks ); 
+      }
+    }
   }
 }
 
@@ -4857,6 +5080,8 @@ struct rapid_fire_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     channeled = reset_auto_attack = true;
+
+    base_num_ticks += p -> talents.fan_the_hammer.ok() ? as<int>( p -> talents.fan_the_hammer -> effectN( 2 ).base_value() ) : 0;
   }
 
   void init() override
@@ -4896,6 +5121,7 @@ struct rapid_fire_t: public hunter_spell_t
 
     p() -> consume_trick_shots();
 
+    //2024-07-16: When talented into Fan The Hammer, In The Rhythm will trigger on the old last tick (7th instead of 10th).
     p() -> buffs.in_the_rhythm -> trigger();
 
     if( p() -> tier_set.t31_mm_4pc -> ok() )
@@ -5655,6 +5881,11 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     {
       pet -> buffs.coordinated_assault -> trigger();
       pet -> active.coordinated_assault -> execute_on_target( target );
+    }
+
+    if( p() -> talents.symbiotic_adrenaline.ok() )
+    {
+      p() -> buffs.tip_of_the_spear -> trigger( as<int>( p() -> talents.symbiotic_adrenaline -> effectN( 2 ).base_value() ) );
     }
   }
 };
@@ -6984,11 +7215,16 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
     -> set_default_value_from_effect( 1 );
 
+  debuffs.basilisk_collar = make_buff( *this, "basilisk_collar", p -> find_spell( 459575 ) )
+    -> set_default_value( p -> talents.basilisk_collar -> effectN( 1 ).base_value() )
+    -> set_period( 0_s );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
   dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
-  dots.black_arrow = target->get_dot( "black_arrow", p );
+  dots.black_arrow = target -> get_dot( "black_arrow", p );
+  dots.barbed_shot = target -> get_dot( "barbed_shot", p );
 
   target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -7887,6 +8123,18 @@ void hunter_t::create_buffs()
     make_buff( this, "a_murder_of_crows", find_spell( 459759 ) )
     -> set_default_value_from_effect( 1 );
 
+  buffs.huntmasters_call = 
+    make_buff( this, "huntmasters_call", find_spell( 459731 ) );
+
+  buffs.summon_fenryr = 
+    make_buff( this, "summon_fenryr", find_spell ( 459735 ) )
+    -> set_default_value_from_effect( 2 )
+    -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.summon_hati = 
+    make_buff( this, "summon_hati", find_spell( 459738 ) )
+    -> set_default_value_from_effect( 2 );
+
   // Survival
 
   buffs.bloodseeker =
@@ -8014,15 +8262,16 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.trueshot               = get_gain( "Trueshot" );
+  gains.trueshot                  = get_gain( "Trueshot" );
   gains.legacy_of_the_windrunners = get_gain( "Legacy of the Windrunners" );
 
-  gains.barbed_shot            = get_gain( "Barbed Shot" );
+  gains.barbed_shot               = get_gain( "Barbed Shot" );
+  gains.dire_beast                = get_gain( "Dire Beast" );
 
-  gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
-  gains.coordinated_kill       = get_gain( "Coordinated Kill" );
+  gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
+  gains.coordinated_kill          = get_gain( "Coordinated Kill" );
 
-  gains.dark_empowerment = get_gain( "Dark Empowerment" );
+  gains.dark_empowerment          = get_gain( "Dark Empowerment" );
 }
 
 // hunter_t::init_position ==================================================
@@ -8284,6 +8533,11 @@ void hunter_t::combat_begin()
     make_repeating_event( *sim, 1_s, [ this ] { trigger_bloodseeker_update(); } );
   }
 
+  if ( talents.basilisk_collar.ok() )
+  {
+    make_repeating_event( *sim, 1_s, [ this ] { trigger_basilisk_collar_update( this ); } );
+  }
+
   player_t::combat_begin();
 }
 
@@ -8394,6 +8648,9 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.unerring_vision -> data().effectN( 2 ).has_common_school( s -> action -> school ) )
     m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
+  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.penetrating_shots -> effectN( 2 ).percent() * cache.attack_crit_chance();
+
   return m;
 }
 
@@ -8435,6 +8692,11 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
 
+  if ( !guardian )
+  {
+    m *= 1 + buffs.summon_hati -> check_value();
+  }
+
   return m;
 }
 
@@ -8446,13 +8708,21 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   m *= 1 + get_target_data( target ) -> debuffs.death_chakram -> value();
 
-  if( !guardian )
+  if ( !guardian )
   {
     auto td = get_target_data( target ); 
     auto wi_debuff = td -> debuffs.wild_instincts;
     int stacks = wi_debuff -> stack();
     double amp_per_stack = wi_debuff -> data().effectN( 1 ).percent();
     m *= 1 + stacks * amp_per_stack;
+  }
+
+  if ( talents.basilisk_collar -> ok() )
+  {
+    //2024-07-15 - Guardians only benefit from the first point of Basilisk Collar
+    double bonus = guardian ? talents.basilisk_collar -> effectN( 2 ).percent() : talents.basilisk_collar -> effectN( 1 ).percent();
+    int stacks = get_target_data( target ) -> debuffs.basilisk_collar -> stack();
+    m *= 1 + ( bonus * stacks );
   }
 
   return m;

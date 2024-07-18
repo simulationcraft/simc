@@ -6000,8 +6000,14 @@ struct regrowth_t final : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( t == player )
-      ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
+    if ( t == player && p()->talent.harmonious_constitution.ok() )
+    {
+      auto hc_mul = p()->talent.harmonious_constitution->effectN( 1 ).percent();
+      if ( p()->specialization() == DRUID_FERAL )
+        hc_mul += p()->spec_spell->effectN( 16 ).percent();
+
+      ctm *= 1.0 + hc_mul;
+    }
 
     return ctm;
   }
@@ -13492,29 +13498,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
 
-  // lunar calling + 4pc interaction with thrash is scripted to multiply by 1.05/1.08 to account for thrash doing
-  // arcane damage. instead of a scripted multiplier, we can simply force the effect with the correct value.
-  // NOTE: this is currently bugged as multiplying by 5/8, not 1.05/1.08
-  auto bear_tww1 = sets->set( DRUID_GUARDIAN, TWW1, B4 );
-  if ( action.data().affected_by( talent.lunar_calling->effectN( 4 ) ) &&
-       ( action.data().affected_by( bear_tww1->effectN( 3 ) ) ||
-         action.data().affected_by( bear_tww1->effectN( 4 ) ) ) )
-  {
-    auto val = bear_tww1->effectN( 1 ).percent();
-    action.base_dd_multiplier *= 1.0 + val;
-    sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 100 );
-    action.affecting_list.emplace_back( &bear_tww1->effectN( 3 ), val );
-
-    val = bear_tww1->effectN( 2 ).percent();
-    action.base_td_multiplier *= 1.0 + val;
-    sim->print_debug( "{} base_td_multiplier modified by {}%", *this, val * 100 );
-    action.affecting_list.emplace_back( &bear_tww1->effectN( 4 ), val );
-  }
-  else
-  {
-    action.apply_affecting_aura( bear_tww1 );
-  }
-
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
   action.apply_affecting_aura( talent.germination );
@@ -13697,6 +13680,12 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                  p()->talent.berserk_unchecked_aggression );
   parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+
+  if ( p()->talent.lunar_calling.ok() )
+    parse_effects( p()->sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 3, 4 ) );
+  else
+    parse_effects( p()->sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
+
   parse_effects( p()->buff.guardians_tenacity );
 
   // wrapper to bypass ab:: resoultion for compile time checks

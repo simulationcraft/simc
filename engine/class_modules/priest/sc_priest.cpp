@@ -1297,7 +1297,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   shadow_word_death_self_damage_t( priest_t& p )
     : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
-      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
+      self_damage_coeff( p.talents.shadow_word_death->effectN( 6 ).percent() )
   {
     background = true;
     may_crit   = false;

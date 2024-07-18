@@ -1972,18 +1972,6 @@ struct weapon_enchant_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  void init_finished() override
-  {
-    paladin_spell_t::init_finished();
-
-    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
-    {
-      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
-                  util::slot_type_string( SLOT_MAIN_HAND ), p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(),
-                  name() );
-    }
-  }
-
   bool ready() override
   {
     if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
@@ -2007,6 +1995,21 @@ struct rite_of_sanctification_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_sanctification->execute();
   }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_sanctification->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
+  }
 };
 
 struct rite_of_adjuration_t : public weapon_enchant_t
@@ -2021,6 +2024,21 @@ struct rite_of_adjuration_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_adjuration->execute();
     p()->adjust_health_percent();
+  }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_adjuration->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
   }
 };
 
@@ -2301,7 +2319,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   {
     if ( ( i > 0 && random_after_first ) || target == nullptr )
     {
-      int result = as<int>( rng().real() * sim->target_non_sleeping_list.size() );
+      int result  = as<int>( std::floor( rng().real() * sim->target_non_sleeping_list.size() ) );
       next_target   = sim->target_non_sleeping_list[ result ];
     }
     make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
@@ -2382,29 +2400,22 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
 
 struct sacred_weapon_cb_t : public dbc_proc_callback_t
 {
-  sacred_weapon_proc_damage_t* dmg;
-  sacred_weapon_proc_heal_t* heal;
-
+  paladin_t* p;
   sacred_weapon_cb_t( player_t* player, paladin_t* paladin, const special_effect_t& effect )
     : dbc_proc_callback_t( player, effect )
   {
-    dmg  = new sacred_weapon_proc_damage_t( paladin );
-    heal = new sacred_weapon_proc_heal_t( paladin );
-    dmg->init();
-    heal->init();
+    p = paladin;
   }
 
   void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_enemy() )
     {
-      dmg->set_target( s->target );
-      dmg->schedule_execute();
+      p->active.sacred_weapon_proc_damage->execute_on_target( s->target );
     }
     else
     {
-      heal->set_target( s->target );
-      heal->schedule_execute();
+      p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
     }
   }
 };
@@ -3239,6 +3250,8 @@ void paladin_t::create_actions()
   {
     auto cb = create_sacred_weapon_callback(this, this);
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
+    active.sacred_weapon_proc_damage = new sacred_weapon_proc_damage_t( this );
+    active.sacred_weapon_proc_heal   = new sacred_weapon_proc_heal_t( this );
   }
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {

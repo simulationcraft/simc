@@ -1982,6 +1982,10 @@ class SpellDataGenerator(DataGenerator):
           ( 390287, 0 ),                                # Improved Stormbringer damage spell
           ( 289439, 0 ),                                # Frost Shock Maelstrom generator
           ( 463351, 0 ),                                # Tempest Overload
+          ( 451137, 0 ), ( 450511, 0 ), ( 451031, 0 ),  # Call of the Ancestors spells
+          ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
+          ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
+          ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
         ),
 
         # Mage:
