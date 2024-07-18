@@ -3958,7 +3958,7 @@ struct horseman_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type  = WEAPON_BEAST_2H;
-    owner_coeff.ap_from_ap = 1;
+    owner_coeff.ap_from_ap = 0.85;
     resource_regeneration  = regen_type::DISABLED;
     auto_attack_multiplier = 1.25;
   }
