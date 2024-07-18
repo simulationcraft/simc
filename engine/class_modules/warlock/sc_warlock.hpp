@@ -444,7 +444,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -574,7 +574,6 @@ public:
 
     // Destruction
     gain_t* incinerate_crits;
-    gain_t* incinerate_fnb_crits;
     gain_t* immolate;
     gain_t* immolate_crits;
     gain_t* infernal;

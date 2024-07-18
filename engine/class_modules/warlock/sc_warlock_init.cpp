@@ -390,14 +390,14 @@ namespace warlock
     talents.embers = find_spell( 264364 );
     talents.burning_ember = find_spell( 264365 );
 
+    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = find_spell( 281490 );
 
     talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
-
-    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
@@ -661,7 +661,6 @@ namespace warlock
     gains.immolate = get_gain( "immolate" );
     gains.immolate_crits = get_gain( "immolate_crits" );
     gains.incinerate_crits = get_gain( "incinerate_crits" );
-    gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
   }

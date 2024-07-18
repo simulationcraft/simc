@@ -2589,14 +2589,6 @@ using namespace helpers;
         return m;
       }
 
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( s->result == RESULT_CRIT )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
-      }
-
       double composite_crit_chance() const override
       {
         double c = warlock_spell_t::composite_crit_chance();
