@@ -478,6 +478,7 @@ public:
     gain_t* legacy_of_the_windrunners;
 
     gain_t* barbed_shot;
+    gain_t* dire_beast;
 
     gain_t* terms_of_engagement;
     gain_t* coordinated_kill;
@@ -2086,6 +2087,8 @@ struct dire_critter_t : public hunter_pet_t
     action_t* kill_cleave = nullptr;
   } active;
 
+  const spell_data_t* energize = find_spell( 281036 );
+
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
@@ -2103,6 +2106,7 @@ struct dire_critter_t : public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     o() -> buffs.dire_beast -> trigger( duration );
+    o() -> resource_gain( RESOURCE_FOCUS, energize -> effectN( 2 ).base_value(), o() -> gains.dire_beast );
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
@@ -8258,15 +8262,16 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.trueshot               = get_gain( "Trueshot" );
+  gains.trueshot                  = get_gain( "Trueshot" );
   gains.legacy_of_the_windrunners = get_gain( "Legacy of the Windrunners" );
 
-  gains.barbed_shot            = get_gain( "Barbed Shot" );
+  gains.barbed_shot               = get_gain( "Barbed Shot" );
+  gains.dire_beast                = get_gain( "Dire Beast" );
 
-  gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
-  gains.coordinated_kill       = get_gain( "Coordinated Kill" );
+  gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
+  gains.coordinated_kill          = get_gain( "Coordinated Kill" );
 
-  gains.dark_empowerment = get_gain( "Dark Empowerment" );
+  gains.dark_empowerment          = get_gain( "Dark Empowerment" );
 }
 
 // hunter_t::init_position ==================================================
