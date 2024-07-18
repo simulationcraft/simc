@@ -36,7 +36,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 ),
     random_weapon_target( nullptr ),
-    random_bulwark_target( nullptr )
+    random_bulwark_target( nullptr ),
+    divine_inspiration_next( -1 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -2488,9 +2489,13 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
 {
   auto nextArmament = active.armament[ usedArmament ];
 
+  // Random is not truly random. Starting weapon is semi-random-ish (It's always the opposite from the last and does not reset on combat start)
+  // So we just rng the first one
   if (random)
   {
-    usedArmament = (armament)rng().range( 2 );
+    if ( divine_inspiration_next == -1 )
+      divine_inspiration_next = rng().range( 2 );
+    usedArmament = (armament)divine_inspiration_next;
     nextArmament = active.armament[ usedArmament ];
   }
 
@@ -2565,6 +2570,8 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
   }
   if ( changeArmament )
     next_armament = armament( ( next_armament + 1 ) % NUM_ARMAMENT );
+  if ( random )
+    divine_inspiration_next = (divine_inspiration_next + 1) % NUM_ARMAMENT;
 }
 
 dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source, player_t* target )
@@ -3460,6 +3467,7 @@ void paladin_t::reset()
   lights_deliverance_triggered_during_ready = false;
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
+  divine_inspiration_next = -1;
 }
 
 // paladin_t::init_gains ====================================================
@@ -3940,9 +3948,7 @@ void paladin_t::init_special_effects()
 
       void execute( action_t*, action_state_t* ) override
       {
-        // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
-        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false,
-                                !p->bugs || !( p->next_armament == paladin::armament::HOLY_BULWARK && p->bugs ) );
+        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false, true );
         p->procs.divine_inspiration->occur();
       }
     };

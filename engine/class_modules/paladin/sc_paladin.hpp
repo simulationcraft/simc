@@ -124,7 +124,6 @@ public:
     // Covenant stuff
     action_t* divine_toll;
     action_t* seasons[ NUM_SEASONS ];
-    action_t* armament[ NUM_ARMAMENT ];
     action_t* divine_resonance;
 
     // talent stuff
@@ -147,6 +146,7 @@ public:
     action_t* sacrosanct_crusade_heal;
     action_t* highlords_judgment;
     action_t* sun_sear;
+    action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
   } active;
@@ -761,6 +761,7 @@ public:
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
+  int divine_inspiration_next;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
