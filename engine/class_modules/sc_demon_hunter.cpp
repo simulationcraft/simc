@@ -4584,7 +4584,7 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
 
     // Class Passives
     m *= 1.0 + p()->spec.havoc_demon_hunter->effectN( 8 ).percent();
-    m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 12 ).percent();
+    m *= 1.0 + p()->spec.vengeance_demon_hunter->effectN( 10 ).percent();
 
     return m;
   }
