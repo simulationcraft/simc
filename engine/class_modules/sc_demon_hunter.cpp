@@ -5375,6 +5375,10 @@ struct demons_bite_t : public felblade_trigger_t<demon_hunter_attack_t>
       ea += static_cast<int>( p()->rng().range( p()->talent.havoc.insatiable_hunger->effectN( 3 ).base_value(),
                                                 1 + p()->talent.havoc.insatiable_hunger->effectN( 4 ).base_value() ) );
     }
+    if ( p()->talent.felscarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
+    {
+      ea += as<int>( p()->spec.metamorphosis_buff->effectN( 11 ).base_value() );
+    }
 
     return ea;
   }
@@ -5416,6 +5420,18 @@ struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
   {
     background     = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = base_t::composite_energize_amount( s );
+
+    if ( p()->talent.felscarred.demonsurge->ok() )
+    {
+      ea += as<int>( p()->spec.metamorphosis_buff->effectN( 10 ).base_value() );
+    }
+
+    return ea;
   }
 
   void impact( action_state_t* s ) override
