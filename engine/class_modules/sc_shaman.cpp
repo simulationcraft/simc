@@ -1645,11 +1645,11 @@ public:
 
     affected_by_xs_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) ) ||
                           ab::data().affected_by( player->talent.natures_swiftness->effectN( 3 ) ) ||
-                          ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 1 ) ) ||
-                          ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 3 ) );
+                          ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 1 ) ) ||
+                          ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 3 ) );
     affected_by_xs_cast_time =
       ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) ) ||
-      ab::data().affected_by( player->talent.ancestral_swiftness->effectN( 2 ) );
+      ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 2 ) );
 
     affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
@@ -1999,7 +1999,7 @@ public:
 
     if ( affected_by_xs_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
     {
-      mul *= 1.0 + p()->talent.ancestral_swiftness->effectN( 2 ).percent();
+      mul *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 2 ).percent();
     }
 
     if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
@@ -2042,7 +2042,7 @@ public:
 
     if ( affected_by_xs_cost && p()->buff.ancestral_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
-      c *= 1.0 + p()->talent.ancestral_swiftness->effectN( 1 ).percent();
+      c *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 1 ).percent();
     }
 
 
@@ -7693,7 +7693,7 @@ struct natures_swiftness_t : public shaman_spell_t
 struct ancestral_swiftness_t : public shaman_spell_t
 {
   ancestral_swiftness_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "ancestral_swiftness", player, player->talent.ancestral_swiftness )
+    shaman_spell_t( "ancestral_swiftness", player, player->find_spell( 443454 ) )
   {
     parse_options( options_str );
 
@@ -7710,6 +7710,16 @@ struct ancestral_swiftness_t : public shaman_spell_t
     {
       p()->summon_ancestor();
     }
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.ancestral_swiftness.ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -12012,7 +12022,8 @@ void shaman_t::create_buffs()
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( talent.heed_my_call )
     ->set_trigger_spell( talent.call_of_the_ancestors );
-  buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", talent.ancestral_swiftness );
+  buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", find_spell( 443454 ) )
+    ->set_trigger_spell( talent.ancestral_swiftness );
   buff.thunderstrike_ward = make_buff( this, "thunderstrike_ward", talent.thunderstrike_ward );
 
   //
