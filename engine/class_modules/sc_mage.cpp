@@ -2962,8 +2962,8 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    // TODO: spell data (and dev notes) says 2, currently triggers 4
-    if ( s->chain_target == 0 )
+    // TODO: AO still seems to give 4 splinters, but needs to hit 2 targets now
+    if ( s->chain_target == 0 || ( p()->bugs && s->chain_target == 1 ) )
       p()->trigger_splinter( s->target, as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() ) );
   }
 };
