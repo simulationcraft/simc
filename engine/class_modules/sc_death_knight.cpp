@@ -5806,6 +5806,7 @@ struct melee_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::reset();
 
     first = true;
+    autos_since_last_proc = 0;
   }
 
   timespan_t execute_time() const override
@@ -5851,14 +5852,10 @@ struct melee_t : public death_knight_melee_attack_t
     {
       if ( p()->specialization() == DEATH_KNIGHT_UNHOLY && p()->talent.unholy.sudden_doom.ok() )
       {
-        if ( rng().roll( sd_chance * ( autos_since_last_proc + 1 ) ) )
+        if ( rng().roll( sd_chance * ++autos_since_last_proc ) )
         {
           p()->buffs.sudden_doom->trigger();
           autos_since_last_proc = 0;
-        }
-        else
-        {
-          autos_since_last_proc++;
         }
       }
 
@@ -6291,7 +6288,7 @@ private:
 };
 
 // ==========================================================================
-// Horsemen Summon Actions
+// Rider of the Apocalypse Abilities
 // ==========================================================================
 struct summon_rider_t : public death_knight_spell_t
 {
