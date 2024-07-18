@@ -696,7 +696,7 @@ public:
     spell_data_ptr_t tip_of_the_spear;
 
     spell_data_ptr_t lunge;
-    spell_data_ptr_t quick_shot; // TODO - Reworked
+    spell_data_ptr_t quick_shot;
     spell_data_ptr_t mongoose_bite;
     spell_data_ptr_t flankers_advantage;
 
@@ -6148,6 +6148,7 @@ struct kill_command_t: public hunter_spell_t
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
+      base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
     }
   };
 
@@ -6214,6 +6215,9 @@ struct kill_command_t: public hunter_spell_t
     }
     p() -> buffs.tip_of_the_spear -> trigger();
 
+    if ( rng().roll( quick_shot.chance ) )
+      quick_shot.action->execute_on_target( target );
+
     if ( reset.chance != 0 )
     {
       double chance = reset.chance;
@@ -6234,9 +6238,6 @@ struct kill_command_t: public hunter_spell_t
       {
         reset.proc -> occur();
         cooldown -> reset( true );
-
-        if ( rng().roll( quick_shot.chance ) )
-          quick_shot.action -> execute_on_target( target );
 
         p() -> cooldowns.fury_of_the_eagle -> adjust( - p() -> talents.fury_of_the_eagle -> effectN( 2 ).time_value() );
         p() -> buffs.spearhead -> extend_duration( p(), p() -> talents.deadly_duo -> effectN( 2 ).time_value() );
