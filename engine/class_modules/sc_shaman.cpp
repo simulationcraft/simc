@@ -574,6 +574,7 @@ public:
     buff_t* t30_2pc_ele_driver;
     buff_t* t30_4pc_ele;
     buff_t* t31_4pc_ele;
+    buff_t* tww1_4pc_ele;
 
     // buff_t* t31_4pc_ele;
 
@@ -1560,6 +1561,9 @@ public:
   bool affected_by_ele_mastery_da;
   bool affected_by_ele_mastery_ta;
 
+  bool affected_by_ele_tww1_4pc_cc;
+  bool affected_by_ele_tww1_4pc_cd;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   spell_variant type_ = spell_variant::NORMAL )
     : ab( n, player, s ),
@@ -1598,7 +1602,9 @@ public:
       affected_by_elemental_unity_se_da( false ),
       affected_by_elemental_unity_se_ta( false ),
       affected_by_ele_mastery_da( false ),
-      affected_by_ele_mastery_ta( false )
+      affected_by_ele_mastery_ta( false ),
+      affected_by_ele_tww1_4pc_cc( false ),
+      affected_by_ele_tww1_4pc_cd( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1685,6 +1691,11 @@ public:
 
     affected_by_ele_mastery_da = ab::data().affected_by( player->mastery.elemental_overload->effectN( 4 ) );
     affected_by_ele_mastery_ta = ab::data().affected_by( player->mastery.elemental_overload->effectN( 5 ) );
+
+    affected_by_ele_tww1_4pc_cc = ab::data().affected_by(
+      player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by_ele_tww1_4pc_cd = ab::data().affected_by(
+      player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 2 ) );
   }
 
   std::string full_name() const
@@ -1937,6 +1948,30 @@ public:
          p()->buff.lesser_storm_elemental->check() )
     {
       m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 5 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = ab::composite_crit_chance_multiplier();
+
+    if ( affected_by_ele_tww1_4pc_cc )
+    {
+      m *= 1.0 + p()->buff.tww1_4pc_ele->value();
+    }
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by_ele_tww1_4pc_cd && p()->buff.tww1_4pc_ele->up() )
+    {
+      m *= 1.0 + p()->buff.tww1_4pc_ele->data().effectN( 2 ).percent();
     }
 
     return m;
@@ -11891,6 +11926,11 @@ void shaman_t::create_buffs()
 
   buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
 
+  buff.tww1_4pc_ele = make_buff( this, "maelstrom_surge",
+                                 sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger() )
+    ->set_default_value_from_effect( 1 )
+    ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
+
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
 
@@ -12301,6 +12341,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
 
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
+  action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
 
   // Custom
 
@@ -12473,7 +12514,7 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
 {
   double loss = player_t::resource_loss( resource_type, amount, source, a );
 
-  if ( resource_type == RESOURCE_MAELSTROM )
+  if ( resource_type == RESOURCE_MAELSTROM && loss > 0 )
   {
     trigger_tempest( loss );
 
@@ -12481,6 +12522,8 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
     {
       buff.unlimited_power->trigger();
     }
+
+    buff.tww1_4pc_ele->trigger();
   }
 
   return loss;
