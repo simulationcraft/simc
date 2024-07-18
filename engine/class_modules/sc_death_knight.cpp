@@ -7982,7 +7982,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
 struct death_coil_damage_t final : public death_knight_spell_t
 {
   death_coil_damage_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr )
+    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr ), sd( false )
   {
     background = dual = true;
 
@@ -8025,11 +8025,21 @@ struct death_coil_damage_t final : public death_knight_spell_t
       p()->buffs.visceral_strength->trigger();
     }
 
-    p()->buffs.sudden_doom->decrement();
-
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->trigger_vampiric_strike_proc( target );
+    }
+
+    // Decrement behavior here means we need to snapshot this to get the proper state on impact
+    // Not sure why this is the case. 
+    if ( p()->buffs.sudden_doom->check() )
+    {
+      sd = true;
+      p()->buffs.sudden_doom->decrement();
+    }
+    else
+    {
+      sd = false;
     }
   }
 
@@ -8037,28 +8047,28 @@ struct death_coil_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( p()->talent.unholy.coil_of_devastation.ok() && result_is_hit( state->result ) )
+    if ( p()->talent.unholy.coil_of_devastation.ok() )
     {
       residual_action::trigger( coil_of_devastation, state->target,
                                 state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
 
-    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state->result ) )
+    if ( p()->talent.unholy.death_rot.ok() )
     {
       get_td( state->target )->debuff.death_rot->trigger();
 
-      if ( p()->buffs.sudden_doom->check() )
+      if ( sd )
       {
         get_td( state->target )->debuff.death_rot->trigger();
       }
     }
 
-    if ( p()->talent.unholy.rotten_touch.ok() && p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
+    if ( p()->talent.unholy.rotten_touch.ok() && sd )
     {
       get_td( state->target )->debuff.rotten_touch->trigger();
     }
 
-    if ( p()->buffs.sudden_doom->check() && result_is_hit( state->result ) )
+    if ( sd )
     {
       p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
                                   p()->procs.fw_sudden_doom );
@@ -8067,6 +8077,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
 
 private:
   propagate_const<action_t*> coil_of_devastation;
+  bool sd;
 };
 
 struct death_coil_t final : public death_knight_spell_t
@@ -8390,7 +8401,8 @@ struct epidemic_t final : public death_knight_spell_t
   epidemic_t( death_knight_t* p, util::string_view options_str )
     : death_knight_spell_t( "epidemic", p, p->spec.epidemic ),
       custom_reduced_aoe_targets( 8.0 ),
-      soft_cap_multiplier( 1.0 )
+      soft_cap_multiplier( 1.0 ),
+      sd( false )
   {
     parse_options( options_str );
 
@@ -8438,7 +8450,16 @@ struct epidemic_t final : public death_knight_spell_t
       p()->buffs.visceral_strength->trigger();
     }
 
-    p()->buffs.sudden_doom->decrement();
+    if ( p()->buffs.sudden_doom->check() )
+    {
+      sd = true;
+      p()->buffs.sudden_doom->decrement();
+    }
+    else
+    {
+      sd = false;
+    }
+
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->trigger_vampiric_strike_proc( target );
@@ -8463,7 +8484,7 @@ struct epidemic_t final : public death_knight_spell_t
     {
       get_td( state->target )->debuff.death_rot->trigger();
 
-      if ( p()->buffs.sudden_doom->check() )
+      if ( sd )
       {
         get_td( state->target )->debuff.death_rot->trigger();
       }
@@ -8473,6 +8494,7 @@ struct epidemic_t final : public death_knight_spell_t
 private:
   double custom_reduced_aoe_targets;  // Not in spelldata
   double soft_cap_multiplier;
+  bool sd;
 };
 
 // Festering Strike and Wounds ===============================================
