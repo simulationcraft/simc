@@ -419,6 +419,7 @@ public:
 
     // Survival Tree
     buff_t* tip_of_the_spear;
+    buff_t* tip_of_the_spear_hidden;
     buff_t* bloodseeker;
     buff_t* aspect_of_the_eagle;
     buff_t* terms_of_engagement;
@@ -1013,23 +1014,27 @@ public:
   struct {
     bool serrated_shots = false;
     damage_affected_by unnatural_causes;
+
     // bm
     bool thrill_of_the_hunt = false;
     damage_affected_by bestial_wrath;
     damage_affected_by master_of_beasts;
+
     // mm
     bool bullseye_crit_chance = false;
     damage_affected_by lone_wolf;
     bool precise_shots = false;
     damage_affected_by sniper_training;
     bool t29_mm_4pc = false;
+
     // surv
     damage_affected_by spirit_bond;
     bool coordinated_assault = false;
+    damage_affected_by tip_of_the_spear;
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
     bool t31_sv_2pc_crit_chance = false;
-    bool t31_sv_2pc_crit_damage = false;  
+    bool t31_sv_2pc_crit_damage = false;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1057,13 +1062,14 @@ public:
     affected_by.master_of_beasts      = parse_damage_affecting_aura( this, p -> mastery.master_of_beasts );
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
-    affected_by.coordinated_assault   = check_affected_by( this, p -> find_spell( 361738 ) -> effectN( 2 ) );
+    affected_by.coordinated_assault   = check_affected_by( this, p->find_spell( 361738 )->effectN( 2 ) );
+    affected_by.tip_of_the_spear      = parse_damage_affecting_aura( this, p->find_spell( 260286 ) );
 
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
 
     affected_by.t31_sv_2pc_crit_chance = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 2 ) ); 
-    affected_by.t31_sv_2pc_crit_damage = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) ); 
+    affected_by.t31_sv_2pc_crit_damage = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1205,6 +1211,9 @@ public:
 
     if ( triggers_rapid_reload )
       p() -> trigger_rapid_reload( this, this -> cost() );
+
+    if ( affected_by.tip_of_the_spear.direct )
+      p()->buffs.tip_of_the_spear->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -1245,6 +1254,9 @@ public:
 
       am *= 1 + amount;
     }
+
+    if ( affected_by.tip_of_the_spear.direct && p() -> buffs.tip_of_the_spear->check() )
+      am *= 1 + p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
 
     return am;
   }
@@ -3802,6 +3814,13 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
     }
 
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      p()->buffs.tip_of_the_spear_hidden->decrement();
+    }
+
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -3821,6 +3840,14 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::snapshot_state( s, type );
       debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
+    }
+
+    double action_multiplier() const override
+    {
+      double am = hunter_ranged_attack_t::action_multiplier();
+
+      if ( p()->buffs.tip_of_the_spear_hidden->check() )
+        am *= 1 + p()->talents.tip_of_the_spear->effectN( 1 ).percent();
     }
   };
 
@@ -3854,6 +3881,14 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       {
         p() -> buffs.explosive_venom -> increment();
       }
+    }
+
+    // Move a tip stack over to the hidden buff to be used by the next explosive shot damage action.
+    // Doesn't seem to happen for background casts (Sulfur-Lined Pockets).
+    if ( !background && p()->buffs.tip_of_the_spear->up() )
+    {
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_hidden->trigger();
     }
   }
 
@@ -5426,8 +5461,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       rylakstalkers_strikes.proc -> occur();
     }
 
-    p() -> buffs.tip_of_the_spear -> expire();
-
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
 
@@ -5454,15 +5487,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       if ( amount > 0 )
         residual_action::trigger( spearhead, s -> target, amount );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_melee_attack_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.tip_of_the_spear -> stack_value();
-
-    return am;
   }
 
   bool ready() override
@@ -8150,7 +8174,10 @@ void hunter_t::create_buffs()
 
   buffs.tip_of_the_spear =
     make_buff( this, "tip_of_the_spear", find_spell( 260286 ) )
-      -> set_default_value( talents.tip_of_the_spear -> effectN( 1 ).percent() )
+      -> set_chance( talents.tip_of_the_spear.ok() );
+
+  buffs.tip_of_the_spear_hidden =
+    make_buff( this, "tip_of_the_spear_hidden", find_spell( 460852 ) )
       -> set_chance( talents.tip_of_the_spear.ok() );
 
   buffs.terms_of_engagement =
