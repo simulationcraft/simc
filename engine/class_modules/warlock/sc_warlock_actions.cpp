@@ -2895,10 +2895,11 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_cf->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -3113,10 +3114,11 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_sb->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* state ) const override
