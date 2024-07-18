@@ -374,7 +374,7 @@ public:
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
 
-    player_talent_t blistering_atrophy; // TODO: New
+    player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn

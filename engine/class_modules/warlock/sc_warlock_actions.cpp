@@ -3066,6 +3066,7 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3103,6 +3104,9 @@ using namespace helpers;
 
       if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
+
+      if ( target->health_percentage() <= p()->talents.blistering_atrophy->effectN( 4 ).base_value() )
+        m += p()->talents.blistering_atrophy->effectN( 3 ).percent();
 
       return m;
     }
