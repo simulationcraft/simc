@@ -2262,7 +2262,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 
@@ -2615,7 +2615,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 

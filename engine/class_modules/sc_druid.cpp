@@ -4662,7 +4662,7 @@ struct primal_wrath_t final : public cat_finisher_t
     {
       rip = p->get_secondary_action<rip_t>( "rip_primal", p->find_spell( 1079 ), f );
       rip->dot_duration = timespan_t::from_seconds( m_data->effectN( 2 ).base_value() );
-      rip->dual = rip->background = rip->proc = true;
+      rip->dual = rip->background = true;
       replace_stats( rip );
       rip->base_costs[ RESOURCE_ENERGY ] = 0;
       // mods are parsed on construction so set to false so the rip execute doesn't decrement
@@ -11840,6 +11840,7 @@ void druid_t::init_special_effects()
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.implant->name_cstr();
     driver->spell_id = buff.implant->data().id();
+    driver->proc_flags2_ = PF2_CAST_DAMAGE;
     special_effects.push_back( driver );
 
     auto cb = new implant_cb_t( this, *driver );
