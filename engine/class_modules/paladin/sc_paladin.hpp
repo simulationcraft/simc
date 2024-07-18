@@ -147,6 +147,8 @@ public:
     action_t* sacrosanct_crusade_heal;
     action_t* highlords_judgment;
     action_t* sun_sear;
+    action_t* sacred_weapon_proc_damage;
+    action_t* sacred_weapon_proc_heal;
   } active;
 
   // Buffs

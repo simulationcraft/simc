@@ -2382,29 +2382,22 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
 
 struct sacred_weapon_cb_t : public dbc_proc_callback_t
 {
-  sacred_weapon_proc_damage_t* dmg;
-  sacred_weapon_proc_heal_t* heal;
-
+  paladin_t* p;
   sacred_weapon_cb_t( player_t* player, paladin_t* paladin, const special_effect_t& effect )
     : dbc_proc_callback_t( player, effect )
   {
-    dmg  = new sacred_weapon_proc_damage_t( paladin );
-    heal = new sacred_weapon_proc_heal_t( paladin );
-    dmg->init();
-    heal->init();
+    p = paladin;
   }
 
   void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_enemy() )
     {
-      dmg->set_target( s->target );
-      dmg->schedule_execute();
+      p->active.sacred_weapon_proc_damage->execute_on_target( s->target );
     }
     else
     {
-      heal->set_target( s->target );
-      heal->schedule_execute();
+      p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
     }
   }
 };
@@ -3239,6 +3232,8 @@ void paladin_t::create_actions()
   {
     auto cb = create_sacred_weapon_callback(this, this);
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
+    active.sacred_weapon_proc_damage = new sacred_weapon_proc_damage_t( this );
+    active.sacred_weapon_proc_heal   = new sacred_weapon_proc_heal_t( this );
   }
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
