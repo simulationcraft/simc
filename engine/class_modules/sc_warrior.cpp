@@ -1170,11 +1170,11 @@ public:
     // Damage amps
     parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 1, 2, 3, 9 ) );
     // Reduce TC rage cost by 100%
-    parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
+    parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 5 ) );
     if ( p()->specialization() == WARRIOR_FURY )
     {
       // Add 5 rage gain to TC for Fury
-      parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 5 ) );
+      parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
       // Update various talents
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
       parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
