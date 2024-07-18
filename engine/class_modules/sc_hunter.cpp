@@ -287,6 +287,8 @@ struct hunter_main_pet_t;
 struct animal_companion_t;
 struct dire_critter_t;
 struct shadow_hound_t;
+struct fenryr_t;
+struct hati_t;
 }
 
 namespace events
@@ -335,9 +337,11 @@ public:
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
     spawner::pet_spawner_t<pets::shadow_hound_t, hunter_t> dark_hound;
+    spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
+    spawner::pet_spawner_t<pets::hati_t, hunter_t> hati;
 
     pets_t( hunter_t* p )
-      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p )
+      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p ), fenryr( "fenryr", p ), hati( "hati", p )
     {
     }
   } pets;
@@ -409,6 +413,9 @@ public:
     buff_t* beast_cleave; 
     buff_t* explosive_venom;
     buff_t* a_murder_of_crows;
+    buff_t* huntmasters_call; 
+    buff_t* summon_fenryr;
+    buff_t* summon_hati;  
 
     // Survival Tree
     buff_t* tip_of_the_spear;
@@ -659,15 +666,15 @@ public:
     spell_data_ptr_t savagery;
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t dire_command;
-    spell_data_ptr_t huntmasters_call; // NYI - Every 3 casts of Dire Beast sounds the Horn of Valor, summoning either Hati or Fenryr to battle.
+    spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t dire_frenzy;
 
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
     spell_data_ptr_t explosive_venom;
-    spell_data_ptr_t basilisk_collar; // NYI - Each damage over time effect on a target increases teh damage they receive from your pet's attacks by 5%
-
+    spell_data_ptr_t basilisk_collar;
+    
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t killer_cobra;
     spell_data_ptr_t scent_of_blood;
@@ -1872,6 +1879,7 @@ public:
     dot_t* bloodshed = nullptr;
     dot_t* bloodseeker = nullptr;
     dot_t* laceration = nullptr;
+    dot_t* ravenous_leap = nullptr;
   } dots;
 
   struct debuffs_t
@@ -2056,8 +2064,9 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
       double bonus = spells.bloodshed -> effectN( 2 ).percent();
       if ( td -> debuffs.venomous_bite -> check() )
       {
-        bonus *= 2;
+        bonus *= 1 + o() -> talents.venomous_bite -> effectN( 1 ).percent();
       }
+
       m *= 1 + bonus; 
     }
   }
@@ -2069,7 +2078,7 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
 // Dire Critter
 // ==========================================================================
 
-struct dire_critter_t final : public hunter_pet_t
+struct dire_critter_t : public hunter_pet_t
 {
   struct actives_t
   {
@@ -2097,6 +2106,22 @@ struct dire_critter_t final : public hunter_pet_t
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
+
+    o() -> buffs.huntmasters_call -> trigger();
+    if ( o() -> buffs.huntmasters_call -> at_max_stacks() )
+    {
+      if( rng().roll( 0.5 ) )
+      {
+        o() -> buffs.summon_fenryr -> trigger();
+        o() -> pets.fenryr.spawn( o() -> buffs.summon_fenryr -> buff_duration() );
+      }
+      else
+      {
+        o() -> buffs.summon_hati -> trigger();
+        o() -> pets.hati.spawn( o() -> buffs.summon_hati -> buff_duration() );
+      }
+      o() -> buffs.huntmasters_call -> expire();
+    }
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2142,6 +2167,56 @@ struct shadow_hound_t final : public hunter_pet_t
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+  }
+};
+
+// =========================================================================
+// Fenryr
+// =========================================================================
+
+//TODO - Fenryr and Hati melee attacks are hitting almost 3 times as hard a dire beast melee attacks in-game BUT the damage of the ravenous leap is accurate, figure out why that is the case.
+struct fenryr_t final : public dire_critter_t
+{
+  struct actives_t
+  {
+    action_t* ravenous_leap = nullptr;
+  } active;
+
+  fenryr_t( hunter_t* owner, util::string_view n = "fenryr" )
+    : dire_critter_t( owner, n )
+  {
+  }
+
+  void init_spells() override;
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    hunter_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack->execute();
+
+    active.ravenous_leap -> execute_on_target( target );
+  }
+};
+
+// ==========================================================================
+// Hati
+// ==========================================================================
+
+struct hati_t final : public dire_critter_t
+{
+  hati_t( hunter_t* owner, util::string_view n = "hati" )
+    : dire_critter_t( owner, n )
+  {
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -2773,14 +2848,31 @@ struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attac
   }
 };
 
+// Ravenous Leap (Fenryr) ===================================================
+
+struct ravenous_leap_t : public hunter_pet_action_t<fenryr_t, attack_t>
+{
+  ravenous_leap_t( fenryr_t* p ):
+    hunter_pet_action_t( "ravenous_leap", p, p -> find_spell( 459753 ) )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_action_t::impact( s );
+  }
+};
+
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
   actor_target_data_t( target, p )
 {
-  dots.bloodseeker = target -> get_dot( "kill_command", p );
-  dots.bloodshed   = target -> get_dot( "bloodshed", p );
-  dots.laceration  = target -> get_dot( "laceration", p );
+  dots.bloodseeker    = target -> get_dot( "kill_command", p );
+  dots.bloodshed      = target -> get_dot( "bloodshed", p );
+  dots.laceration     = target -> get_dot( "laceration", p );
+  dots.ravenous_leap  = target -> get_dot( "ravenous_leap", p );
 
   debuffs.venomous_bite = 
     make_buff( *this, "venomous_bite", p -> find_spell( 459668 ) )
@@ -2875,6 +2967,13 @@ void dire_critter_t::init_spells()
     if ( o() -> talents.kill_cleave.ok() )
       active.kill_cleave = new actions::kill_cleave_t( this );
   }
+}
+
+void fenryr_t::init_spells()
+{
+  hunter_pet_t::init_spells();
+
+  active.ravenous_leap = new actions::ravenous_leap_t( this );
 }
 
 // hunter_main_pet_base_t::init_special_effects ==============================
@@ -3047,8 +3146,7 @@ void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
       auto pet_dots = p -> pets.main -> get_target_data( t ) -> dots; 
       new_stacks += pet_dots.bloodshed -> is_ticking(); 
       new_stacks += pet_dots.laceration -> is_ticking(); 
-      //TODO Add Bleed from Fenryr as a dot
-      //new_stacks += pet_dots.fenryr_bleed -> is_ticking(); 
+      new_stacks += pet_dots.ravenous_leap -> is_ticking(); 
 
       new_stacks = std::min( new_stacks, td -> debuffs.basilisk_collar -> max_stack() );
 
@@ -8021,6 +8119,18 @@ void hunter_t::create_buffs()
     make_buff( this, "a_murder_of_crows", find_spell( 459759 ) )
     -> set_default_value_from_effect( 1 );
 
+  buffs.huntmasters_call = 
+    make_buff( this, "huntmasters_call", find_spell( 459731 ) );
+
+  buffs.summon_fenryr = 
+    make_buff( this, "summon_fenryr", find_spell ( 459735 ) )
+    -> set_default_value_from_effect( 2 )
+    -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  buffs.summon_hati = 
+    make_buff( this, "summon_hati", find_spell( 459738 ) )
+    -> set_default_value_from_effect( 2 );
+
   // Survival
 
   buffs.bloodseeker =
@@ -8576,6 +8686,11 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
+
+  if ( !guardian )
+  {
+    m *= 1 + buffs.summon_hati -> check_value();
+  }
 
   return m;
 }
