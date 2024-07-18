@@ -1972,18 +1972,6 @@ struct weapon_enchant_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  void init_finished() override
-  {
-    paladin_spell_t::init_finished();
-
-    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
-    {
-      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
-                  util::slot_type_string( SLOT_MAIN_HAND ), p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(),
-                  name() );
-    }
-  }
-
   bool ready() override
   {
     if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
@@ -2007,6 +1995,21 @@ struct rite_of_sanctification_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_sanctification->execute();
   }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_sanctification->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
+  }
 };
 
 struct rite_of_adjuration_t : public weapon_enchant_t
@@ -2021,6 +2024,21 @@ struct rite_of_adjuration_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_adjuration->execute();
     p()->adjust_health_percent();
+  }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_adjuration->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
   }
 };
 
