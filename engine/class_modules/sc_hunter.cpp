@@ -3848,6 +3848,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
       if ( p()->buffs.tip_of_the_spear_hidden->check() )
         am *= 1 + p()->talents.tip_of_the_spear->effectN( 1 ).percent();
+
+      return am;
     }
   };
 
