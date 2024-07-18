@@ -38,6 +38,8 @@ using namespace helpers;
       bool backdraft = false;
       bool roaring_blaze = false;
       bool ashen_remains = false;
+      bool emberstorm_dd = false;
+      bool emberstorm_td = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -78,6 +80,8 @@ using namespace helpers;
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
+      affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -273,6 +277,9 @@ using namespace helpers;
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
+      if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -288,6 +295,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
 
       return m;
     }
@@ -2619,6 +2629,15 @@ using namespace helpers;
       add_child( fnb_action );
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
     }
 
     void execute() override

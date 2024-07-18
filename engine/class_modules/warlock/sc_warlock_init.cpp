@@ -376,6 +376,12 @@ namespace warlock
 
     talents.blistering_atrophy = find_talent_spell( talent_tree::SPECIALIZATION, "Blistering Atrophy" ); // Should be ID 456939
 
+    talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
+    talents.conflagration_of_chaos_cf = find_spell( 387109 );
+    talents.conflagration_of_chaos_sb = find_spell( 387110 );
+
+    talents.emberstorm = find_talent_spell( talent_tree::SPECIALIZATION, "Emberstorm" ); // Should be ID 454744
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
@@ -386,10 +392,6 @@ namespace warlock
     talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
 
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
-
-    talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
-    talents.conflagration_of_chaos_cf = find_spell( 387109 );
-    talents.conflagration_of_chaos_sb = find_spell( 387110 );
 
     talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
     talents.flashpoint_buff = find_spell( 387263 );

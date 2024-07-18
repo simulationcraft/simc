@@ -378,7 +378,7 @@ public:
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    player_talent_t emberstorm; // TODO: New
+    player_talent_t emberstorm;
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
@@ -440,7 +440,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
