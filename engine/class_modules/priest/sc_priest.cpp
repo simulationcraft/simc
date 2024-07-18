@@ -3149,8 +3149,14 @@ void priest_t::init_resources( bool force )
        options.init_insanity )
   {
     auto divine_star_insanity  = talents.divine_star->effectN( 3 ).resource( RESOURCE_INSANITY );
-    auto halo_insanity         = talents.halo->effectN( 2 ).resource( RESOURCE_INSANITY );
+    auto halo_insanity         = talents.halo->effectN( 4 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
+
+    // Don't let Archon count Halo for pre-pull Insanity purposes
+    if ( talents.archon.power_surge.enabled() )
+    {
+      halo_insanity = 0.0;
+    }
 
     if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
     {
