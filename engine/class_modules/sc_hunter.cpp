@@ -2111,20 +2111,23 @@ struct dire_critter_t : public hunter_pet_t
     if ( main_hand_attack )
       main_hand_attack -> execute();
 
-    o() -> buffs.huntmasters_call -> trigger();
-    if ( o() -> buffs.huntmasters_call -> at_max_stacks() )
+    if ( o() -> talents.huntmasters_call.ok() )
     {
-      if( rng().roll( 0.5 ) )
+      o() -> buffs.huntmasters_call -> trigger();
+      if ( o() -> buffs.huntmasters_call -> at_max_stacks() )
       {
-        o() -> buffs.summon_fenryr -> trigger();
-        o() -> pets.fenryr.spawn( o() -> buffs.summon_fenryr -> buff_duration() );
+        if( rng().roll( 0.5 ) )
+        {
+          o() -> buffs.summon_fenryr -> trigger();
+          o() -> pets.fenryr.spawn( o() -> buffs.summon_fenryr -> buff_duration() );
+        }
+        else
+        {
+          o() -> buffs.summon_hati -> trigger();
+          o() -> pets.hati.spawn( o() -> buffs.summon_hati -> buff_duration() );
+        }
+        o() -> buffs.huntmasters_call -> expire();
       }
-      else
-      {
-        o() -> buffs.summon_hati -> trigger();
-        o() -> pets.hati.spawn( o() -> buffs.summon_hati -> buff_duration() );
-      }
-      o() -> buffs.huntmasters_call -> expire();
     }
   }
 
@@ -2203,6 +2206,7 @@ struct fenryr_t final : public dire_critter_t
 
   void summon( timespan_t duration = 0_ms ) override
   {
+    //Don't run the base summon function as we don't want to trigger the dire beast buff or energize
     hunter_pet_t::summon( duration );
 
     if ( main_hand_attack )
@@ -2225,6 +2229,7 @@ struct hati_t final : public dire_critter_t
 
   void summon( timespan_t duration = 0_ms ) override
   {
+    //Don't run the base summon function as we don't want to trigger the dire beast buff or energize
     hunter_pet_t::summon( duration );
 
     if ( main_hand_attack )
