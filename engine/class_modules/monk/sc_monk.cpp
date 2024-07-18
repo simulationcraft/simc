@@ -2289,9 +2289,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
-    {
       dot_behavior = DOT_CLIP;
-    }
 
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
@@ -2857,6 +2855,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
+    if ( !p()->buff.heart_of_the_jade_serpent->check() )
+      return;
+    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
     p()->buff.heart_of_the_jade_serpent->decrement();
   }
 };
@@ -8274,14 +8275,14 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
                                                        this, "heart_of_the_jade_serpent", find_spell( 456368 ) )
                                        ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
-                                         buff.heart_of_the_jade_serpent_cdr->trigger();
+                                         // buff.heart_of_the_jade_serpent_cdr->trigger();
                                        } );
 
   buff.heart_of_the_jade_serpent_stack_ww =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
-            if ( new_ == buff_->max_stack() )
+            if ( new_ >= buff_->max_stack() )
               buff.heart_of_the_jade_serpent->trigger();
           } )
           ->set_expire_at_max_stack( true );
