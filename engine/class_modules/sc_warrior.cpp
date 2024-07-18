@@ -408,6 +408,7 @@ public:
     gain_t* finishing_blows;
     gain_t* whirlwind;
     gain_t* booming_voice;
+    gain_t* thunder_blast;
     gain_t* thunder_clap;
     gain_t* endless_rage;
     gain_t* instigate;
@@ -2216,6 +2217,11 @@ struct lightning_strike_t : public warrior_attack_t
       ground_current = get_action<ground_current_t>( s, p );
       add_child( ground_current );
     }
+
+    if ( p->talents.mountain_thane.thorims_might->ok() )
+    {
+      energize_amount += p->talents.mountain_thane.thorims_might->effectN( 1 ).resource( RESOURCE_RAGE );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3879,7 +3885,10 @@ struct thunder_blast_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->spec.protection_warrior->ok() )
-      rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
+      rage_gain += p->spec.protection_warrior->effectN( 20 ).resource( RESOURCE_RAGE );
+
+    if ( p->talents.mountain_thane.crashing_thunder->ok() && p->specialization() == WARRIOR_FURY )
+      rage_gain += p->talents.mountain_thane.crashing_thunder->effectN( 4 ).resource( RESOURCE_RAGE );
 
     if ( p->talents.shared.rend.ok() )
     {
@@ -4006,7 +4015,7 @@ struct thunder_blast_t : public warrior_attack_t
       total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
     }
 
-    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap );
+    p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_blast );
 
     if ( p()->talents.mountain_thane.crashing_thunder->ok() )
     {
@@ -4102,7 +4111,10 @@ struct thunder_clap_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->spec.protection_warrior->ok() )
-      rage_gain += p->spec.protection_warrior->effectN( 23 ).resource( RESOURCE_RAGE );
+      rage_gain += p->spec.protection_warrior->effectN( 20 ).resource( RESOURCE_RAGE );
+
+    if ( p->talents.mountain_thane.crashing_thunder->ok() && p->specialization() == WARRIOR_FURY )
+      rage_gain += p->talents.mountain_thane.crashing_thunder->effectN( 4 ).resource( RESOURCE_RAGE );
 
     if ( p->talents.shared.rend.ok() )
     {
@@ -9270,6 +9282,7 @@ void warrior_t::init_gains()
   gain.champions_spear                  = get_gain( "champions_spear" );
   gain.finishing_blows                  = get_gain( "finishing_blows" );
   gain.booming_voice                    = get_gain( "booming_voice" );
+  gain.thunder_blast                    = get_gain( "thunder_blast" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
   gain.instigate                        = get_gain( "instigate" );
