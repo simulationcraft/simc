@@ -217,13 +217,6 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // in-game the buffs are actually 8 distinct spells, so the player can't get more than 8 simultaneously
 constexpr unsigned BARBED_SHOT_BUFFS_MAX = 8;
 
-// different types of Wildfire Infusion bombs
-enum wildfire_infusion_e {
-  WILDFIRE_INFUSION_SHRAPNEL = 0,
-  WILDFIRE_INFUSION_PHEROMONE,
-  WILDFIRE_INFUSION_VOLATILE,
-};
-
 struct maybe_bool {
   enum class value_e : uint8_t {
     None, True, False
@@ -841,7 +834,6 @@ public:
 
   struct {
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
-    wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
     // Focus used for Calling the Shots (260404)
     double focus_used_CTS = 0;
@@ -861,7 +853,6 @@ public:
     std::string summon_pet_str = "duck";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
-    bool separate_wfi_stats = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -5325,46 +5316,6 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   }
 };
 
-// Internal Bleeding (Wildfire Infusion) ===============================================
-
-struct internal_bleeding_t
-{
-  struct action_t final : hunter_ranged_attack_t
-  {
-    action_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 270343 ) )
-    {
-      dual = true;
-    }
-
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double am = hunter_spell_t::composite_ta_multiplier( s );
-
-      auto td = p() -> find_target_data( s -> target ); 
-      if( td )
-      {
-        am *= 1.0 + td -> debuffs.shredded_armor -> value();
-      }
-
-      return am;
-    }    
-  };
-  action_t* action = nullptr;
-
-  internal_bleeding_t( hunter_t* p )
-  {
-    if ( p -> talents.wildfire_infusion.ok() )
-      action = p -> get_background_action<action_t>( "internal_bleeding" );
-  }
-
-  void trigger( const action_state_t* s )
-  {
-    if ( action && action -> td( s -> target ) -> dots.shrapnel_bomb -> is_ticking() )
-      action -> execute_on_target( s -> target );
-  }
-};
-
 // Raptor Strike (Base) ================================================================
 // Shared part between Raptor Strike & Mongoose Bite
 
@@ -5422,7 +5373,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
   };
 
-  internal_bleeding_t internal_bleeding;
   latent_poison_injectors_t* latent_poison_injectors = nullptr;
   spearhead_bleed_t* spearhead = nullptr;
 
@@ -5436,9 +5386,10 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     proc_t* proc;
   } rylakstalkers_strikes;
 
+  double wildfire_infusion_chance = 0;
+
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-    hunter_melee_attack_t( n, p, s ),
-    internal_bleeding( p )
+    hunter_melee_attack_t( n, p, s )
   {
     if ( p -> talents.vipers_venom.ok() )
     {
@@ -5448,6 +5399,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( p -> talents.spearhead.ok() )
       spearhead = p -> get_background_action<spearhead_bleed_t>( "spearhead_bleed" );
+
+    wildfire_infusion_chance = p->talents.wildfire_infusion->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5470,13 +5423,14 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( p() -> buffs.spearhead -> up() )
       p() -> buffs.deadly_duo -> trigger();
+
+    if ( rng().roll( wildfire_infusion_chance ) )
+      p()->cooldowns.kill_command->reset( true );
   }
 
   void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
-
-    internal_bleeding.trigger( s );
 
     if ( latent_poison_injectors )
       latent_poison_injectors -> trigger( s -> target );
@@ -5614,10 +5568,9 @@ struct carve_base_t: public hunter_melee_attack_t
 {
   timespan_t wildfire_bomb_reduction;
   timespan_t wildfire_bomb_reduction_cap;
-  internal_bleeding_t internal_bleeding;
 
   carve_base_t( util::string_view n, hunter_t* p, const spell_data_t* s, timespan_t wfb_reduction ):
-    hunter_melee_attack_t( n, p, s ), internal_bleeding( p )
+    hunter_melee_attack_t( n, p, s )
   {
     if ( p -> talents.frenzy_strikes.ok() )
       wildfire_bomb_reduction = wfb_reduction;
@@ -5632,13 +5585,6 @@ struct carve_base_t: public hunter_melee_attack_t
     p() -> cooldowns.flanking_strike -> adjust( -reduction, true );
 
     p() -> buffs.bestial_barrage -> trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    internal_bleeding.trigger( s );
   }
 
   double action_multiplier() const override
@@ -6193,6 +6139,8 @@ struct kill_command_t: public hunter_spell_t
     proc_t* proc;
   } dire_command;
 
+  timespan_t wildfire_infusion_reduction = 0_s;
+
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
   {
@@ -6212,6 +6160,8 @@ struct kill_command_t: public hunter_spell_t
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
         quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
       }
+
+      wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6303,6 +6253,8 @@ struct kill_command_t: public hunter_spell_t
         p() -> buffs.a_murder_of_crows -> expire();
       }
     }
+
+    p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
   }
 
   double cost_pct_multiplier() const override
@@ -6834,16 +6786,11 @@ struct steel_trap_t: public trap_base_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
-  struct state_data_t {
-    wildfire_infusion_e current_bomb = WILDFIRE_INFUSION_SHRAPNEL;
-  };
-  using state_t = hunter_action_state_t<state_data_t>;
-
-  struct bomb_base_t : public hunter_spell_t
+  struct bomb_damage_t : public hunter_spell_t
   {
-    struct dot_action_t final : public hunter_spell_t
+    struct bomb_dot_t final : public hunter_spell_t
     {
-      dot_action_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+      bomb_dot_t( util::string_view n, hunter_t* p, const spell_data_t* s ) :
         hunter_spell_t( n, p, s )
       {
         dual = true;
@@ -6873,52 +6820,38 @@ struct wildfire_bomb_t: public hunter_spell_t
         return am;
       }
     };
-    dot_action_t* dot_action;
 
-    bomb_base_t( util::string_view n, wildfire_bomb_t* a, const spell_data_t* s, util::string_view dot_n, const spell_data_t* dot_s ):
-      hunter_spell_t( n, a -> p(), s ),
-      dot_action( a -> p() -> get_background_action<dot_action_t>( dot_n, dot_s ) )
+    bomb_dot_t* bomb_dot;
+
+    bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ) : 
+      hunter_spell_t( n, p, p->find_spell( 265157 ) ),
+      bomb_dot( p->get_background_action<bomb_dot_t>( "wildfire_bomb_dot", p->find_spell( 269747 ) ) )
     {
       dual = true;
 
       aoe = -1;
-      reduced_aoe_targets = p() -> talents.wildfire_bomb -> effectN( 2 ).base_value();
+      reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
 
-      dot_action -> reduced_aoe_targets = reduced_aoe_targets;
-      dot_action -> aoe = aoe;
-      dot_action -> radius = radius;
+      bomb_dot->reduced_aoe_targets = reduced_aoe_targets;
+      bomb_dot->aoe                 = aoe;
+      bomb_dot->radius              = radius;
 
-      if ( a -> p() -> talents.wildfire_infusion.ok() && a -> p() -> options.separate_wfi_stats )
-      {
-        add_child( dot_action );
-      }
-      else
-      {
-        a -> add_child( this );
-        a -> add_child( dot_action );
-      }
+      a->add_child( this );
+      a->add_child( bomb_dot );
     }
 
     void execute() override
     {
       hunter_spell_t::execute();
 
-      if ( p() -> talents.wildfire_infusion.ok() && p() -> options.separate_wfi_stats )
-      {
-        // fudge trigger_gcd so gcd() returns a non-zero value and we get proper dpet values
-        const auto trigger_gcd_ = std::exchange( trigger_gcd, p() -> base_gcd );
-        stats -> add_execute( gcd(), target );
-        trigger_gcd = trigger_gcd_;
-      }
-
       if ( num_targets_hit > 0 )
       {
         // Dot applies to all of the same targets hit by the main explosion
-        dot_action -> target = target;
-        dot_action -> target_cache.list = target_cache.list;
-        dot_action -> target_cache.is_valid = true;
-        dot_action -> execute();
+        bomb_dot->target                    = target;
+        bomb_dot->target_cache.list         = target_cache.list;
+        bomb_dot->target_cache.is_valid     = true;
+        bomb_dot->execute();
       }
 
       p() -> buffs.coordinated_assault_empower -> up();
@@ -6960,109 +6893,6 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
-  struct wildfire_bomb_damage_t final : public bomb_base_t
-  {
-    wildfire_bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
-      bomb_base_t( n, a, p -> find_spell( 265157 ), "wildfire_bomb_dot", p -> find_spell( 269747 ) )
-    {}
-  };
-
-  struct shrapnel_bomb_t final : public bomb_base_t
-  {
-    shrapnel_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
-      bomb_base_t( n, a, p -> find_spell( 270338 ), "shrapnel_bomb", p -> find_spell( 270339 ) )
-    {
-      attacks::internal_bleeding_t internal_bleeding( p );
-      if ( p -> options.separate_wfi_stats )
-        add_child( internal_bleeding.action );
-      else
-        a -> add_child( internal_bleeding.action );
-    }
-  };
-
-  struct pheromone_bomb_t final : public bomb_base_t
-  {
-    pheromone_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
-      bomb_base_t( n, a, p -> find_spell( 270329 ), "pheromone_bomb", p -> find_spell( 270332 ) )
-    {}
-  };
-
-  struct volatile_bomb_t final : public bomb_base_t
-  {
-    struct serpent_sting_vb_t final : public attacks::serpent_sting_base_t
-    {
-      serpent_sting_vb_t( util::string_view /*name*/, hunter_t* p ):
-        serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
-      {
-        dual = true;
-        base_costs[ RESOURCE_FOCUS ] = 0;
-
-        aoe = as<int>( p -> talents.wildfire_infusion -> effectN( 2 ).base_value() );
-      }
-
-      size_t available_targets( std::vector< player_t* >& tl ) const override
-      {
-        hunter_ranged_attack_t::available_targets( tl );
-
-        // Don't force primary target to stay at the front.
-        std::partition( tl.begin(), tl.end(), [ this ]( player_t* t ) {
-          return !( this -> td( t ) -> dots.serpent_sting -> is_ticking() );
-          } );
-
-        return tl.size();
-      }
-    };
-
-    struct violent_reaction_t final : public hunter_spell_t
-    {
-      violent_reaction_t( util::string_view n, hunter_t* p ):
-        hunter_spell_t( n, p, p -> find_spell( 260231 ) )
-      {
-        dual = true;
-        aoe = -1;
-      }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double am = hunter_spell_t::composite_da_multiplier( s );
-
-        auto td = p() -> find_target_data( s -> target ); 
-        if( td )
-        {
-          am *= 1.0 + td -> debuffs.shredded_armor -> value();
-        }
-
-        return am;
-      }
-    };
-    violent_reaction_t* violent_reaction;
-    serpent_sting_vb_t* serpent_sting;
-
-    volatile_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
-      bomb_base_t( n, a, p -> find_spell( 271048 ), "volatile_bomb", p -> find_spell( 271049 ) ),
-      violent_reaction( p -> get_background_action<violent_reaction_t>( "violent_reaction" ) )
-    {
-      if ( p -> options.separate_wfi_stats )
-        add_child( violent_reaction );
-      else
-        a -> add_child( violent_reaction );
-
-      serpent_sting = p -> get_background_action<serpent_sting_vb_t>( "serpent_sting_vb" );
-    }
-
-    void execute() override
-    {
-      bomb_base_t::execute();
-
-      if ( td( target ) -> dots.serpent_sting -> is_ticking() )
-        violent_reaction -> execute_on_target( target );
-
-      serpent_sting -> execute_on_target( target );
-    }
-  };
-
-  std::array<bomb_base_t*, 3> bombs;
-
   wildfire_bomb_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> talents.wildfire_bomb )
   {
@@ -7071,30 +6901,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     may_miss = false;
     school = SCHOOL_FIRE; // for report coloring
 
-    if ( p -> talents.wildfire_infusion.ok() )
-    {
-      bombs[ WILDFIRE_INFUSION_SHRAPNEL ] =  p -> get_background_action<shrapnel_bomb_t>( "shrapnel_bomb_impact", this );
-      bombs[ WILDFIRE_INFUSION_PHEROMONE ] = p -> get_background_action<pheromone_bomb_t>( "pheromone_bomb_impact", this );
-      bombs[ WILDFIRE_INFUSION_VOLATILE ] =  p -> get_background_action<volatile_bomb_t>( "volatile_bomb_impact", this );
-    }
-    else
-    {
-      bombs[ WILDFIRE_INFUSION_SHRAPNEL ] = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_impact", this );
-    }
+    impact_action = p->get_background_action<bomb_damage_t>( "wildfire_bomb_damage", this );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
-
-    if ( p() -> talents.wildfire_infusion.ok() )
-    {
-      // assume that we can't get 2 same bombs in a row
-      int slot = rng().range( 2 );
-      if ( slot == p() -> state.next_wi_bomb )
-        slot += 2 - p() -> state.next_wi_bomb;
-      p() -> state.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
-    }
 
     if ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> talents.coordinated_kill -> effectN( 2 ).base_value(), p() -> gains.coordinated_kill, this);
@@ -7106,13 +6918,6 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    hunter_spell_t::impact( s );
-
-    bombs[ debug_cast<state_t*>( s ) -> current_bomb ] -> execute_on_target( s -> target );
-  }
-
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
     double m = hunter_spell_t::recharge_rate_multiplier( cd );
@@ -7121,17 +6926,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       m *= 1 + p() -> talents.coordinated_kill -> effectN( 1 ).percent();
 
     return m;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type type ) override
-  {
-    hunter_spell_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s ) -> current_bomb = p() -> state.next_wi_bomb;
   }
 };
 
@@ -7319,15 +7113,6 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
   else if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
-  }
-  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
-  {
-    if ( splits[ 1 ] == "shrapnel" )
-      return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
-    if ( splits[ 1 ] == "pheromone" )
-      return make_fn_expr( expression_str, [ this ] { return state.next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
-    if ( splits[ 1 ] == "volatile" )
-      return make_fn_expr( expression_str, [ this ] { return state.next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
   }
   else if ( splits.size() == 2 && splits[ 0 ] == "tar_trap" )
   {
@@ -8563,7 +8348,7 @@ void hunter_t::arise()
 
 void hunter_t::combat_begin()
 {
-  if ( talents.bloodseeker.ok() && ( talents.wildfire_infusion.ok() || sim -> player_no_pet_list.size() > 1 ) )
+  if ( talents.bloodseeker.ok() && sim -> player_no_pet_list.size() > 1 )
   {
     make_repeating_event( *sim, 1_s, [ this ] { trigger_bloodseeker_update(); } );
   }
@@ -8902,7 +8687,6 @@ void hunter_t::create_options()
                             0.5_s, 4_s ) );
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
-  add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
 }
 
 // hunter_t::create_profile =================================================
