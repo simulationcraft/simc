@@ -1246,8 +1246,22 @@ public:
       am *= 1 + amount;
     }
 
-    if ( affected_by.tip_of_the_spear.direct && p() -> buffs.tip_of_the_spear->check() )
-      am *= 1 + p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
+    if (affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check())
+    {
+      double tip_bonus = p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
+      if ( p()->talents.flankers_advantage.ok() )
+      {
+        double max_bonus = p()->talents.flankers_advantage->effectN( 6 ).percent() -
+                           p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
+
+        // Seems that the amount of the 15% bonus given is based on the ratio of player crit % out of a cap of 50% from effect 5.
+        double crit_chance =
+            std::min( p()->cache.attack_crit_chance(), p()->talents.flankers_advantage->effectN( 5 ).percent() );
+
+        tip_bonus += max_bonus * crit_chance / p()->talents.flankers_advantage->effectN( 5 ).percent();
+      }
+      am *= 1 + tip_bonus;
+    }
 
     return am;
   }
