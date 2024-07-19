@@ -63,12 +63,10 @@ void warlock_pet_t::create_buffs()
                             ->set_default_value_from_effect( 5 );
 
   // Destruction
-  buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
-                     ->set_period( 500_ms )
-                     ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+  buffs.embers = make_buff( this, "embers", o()->talents.embers )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                       o()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal );
-                     } ); // TODO: Add Embers buff to talent struct
+                       o()->resource_gain( RESOURCE_SOUL_SHARD, o()->talents.burning_ember->effectN( 1 ).base_value() / 10.0, o()->gains.infernal );
+                     } );
 
   // All Specs
 
@@ -1691,12 +1689,17 @@ namespace destruction
 
 infernal_t::infernal_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_INFERNAL, true ), immolation( nullptr )
-{ resource_regeneration = regen_type::DISABLED; }
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  owner_coeff.ap_from_sp = 1.65;
+  owner_coeff.sp_from_sp = 1.65;
+}
 
 struct immolation_tick_t : public warlock_pet_spell_t
 {
   immolation_tick_t( warlock_pet_t* p )
-    : warlock_pet_spell_t( "Immolation", p, p->find_spell( 20153 ) )
+    : warlock_pet_spell_t( "Immolation", p, p->o()->talents.immolation_dmg )
   {
     aoe = -1;
     background = may_crit = true;
@@ -1714,7 +1717,7 @@ void infernal_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  melee_attack = new infernal_melee_t( this, 2.0 );
+  melee_attack = new infernal_melee_t( this, 1.0 );
 }
 
 void infernal_t::create_buffs()
@@ -1723,8 +1726,7 @@ void infernal_t::create_buffs()
 
   auto damage = new immolation_tick_t( this );
 
-  immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
-                   ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+  immolation = make_buff<buff_t>( this, "immolation", o()->talents.immolation_buff )
                    ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
                         damage->execute_on_target( target );
                      } );
@@ -1734,10 +1736,10 @@ void infernal_t::arise()
 {
   warlock_pet_t::arise();
 
-  // 2022-06-28 Testing indicates there is a ~1.6 second delay after spawn before first melee
-  // Embers looks to trigger at around the same time as first melee swing, but Immolation takes another minimum GCD to apply (and has no zero-tick)
+  // 2024-07-18 Testing indicates there is a delay after spawn before first melee
+  // Embers looks to trigger at around the same time as first melee swing, but Immolation takes longer to apply (and has no zero-tick)
   // Additionally, there is some unknown amount of movement adjustment the pet can take, so we model this with a distribution
-  timespan_t delay = rng().gauss<1600,200>();
+  timespan_t delay = rng().gauss<1000,100>();
 
   make_event( *sim, delay, [ this ] {
     buffs.embers->trigger();

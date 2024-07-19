@@ -38,6 +38,8 @@ using namespace helpers;
       bool backdraft = false;
       bool roaring_blaze = false;
       bool ashen_remains = false;
+      bool emberstorm_dd = false;
+      bool emberstorm_td = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -78,6 +80,8 @@ using namespace helpers;
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
+      affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -273,6 +277,9 @@ using namespace helpers;
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
+      if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -288,6 +295,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
 
       return m;
     }
@@ -2579,14 +2589,6 @@ using namespace helpers;
         return m;
       }
 
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( s->result == RESULT_CRIT )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
-      }
-
       double composite_crit_chance() const override
       {
         double c = warlock_spell_t::composite_crit_chance();
@@ -2619,6 +2621,15 @@ using namespace helpers;
       add_child( fnb_action );
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
     }
 
     void execute() override
@@ -2895,10 +2906,11 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_cf->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -3066,6 +3078,7 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3104,15 +3117,19 @@ using namespace helpers;
       if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
 
+      if ( target->health_percentage() <= p()->talents.blistering_atrophy->effectN( 4 ).base_value() )
+        m += p()->talents.blistering_atrophy->effectN( 3 ).percent();
+
       return m;
     }
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_sb->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* state ) const override
@@ -3389,7 +3406,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
       
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
+      p()->warlock_pet_list.infernals.spawn();
     }
   };
 

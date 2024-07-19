@@ -374,14 +374,18 @@ public:
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
 
-    player_talent_t blistering_atrophy; // TODO: New
+    player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    player_talent_t emberstorm; // TODO: New
+    player_talent_t emberstorm;
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
+    const spell_data_t* immolation_buff; // Buff on Infernal pet
+    const spell_data_t* immolation_dmg; // Ticking AoE damage from buff
+    const spell_data_t* embers; // Buff which generates Soul Shards
+    const spell_data_t* burning_ember; // Energize data for Soul Shards
     player_talent_t fire_and_brimstone;
     player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
     const spell_data_t* flashpoint_buff;
@@ -440,7 +444,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -452,7 +456,7 @@ public:
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -570,7 +574,6 @@ public:
 
     // Destruction
     gain_t* incinerate_crits;
-    gain_t* incinerate_fnb_crits;
     gain_t* immolate;
     gain_t* immolate_crits;
     gain_t* infernal;

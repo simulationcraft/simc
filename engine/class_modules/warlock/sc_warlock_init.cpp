@@ -374,32 +374,40 @@ namespace warlock
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
 
-    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
-
-    talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
-    talents.soul_fire_2 = find_spell( 281490 );
-
-    talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
-
-    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
-
-    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
+    talents.blistering_atrophy = find_talent_spell( talent_tree::SPECIALIZATION, "Blistering Atrophy" ); // Should be ID 456939
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
     talents.conflagration_of_chaos_cf = find_spell( 387109 );
     talents.conflagration_of_chaos_sb = find_spell( 387110 );
 
+    talents.emberstorm = find_talent_spell( talent_tree::SPECIALIZATION, "Emberstorm" ); // Should be ID 454744
+
+    talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
+    talents.summon_infernal_main = find_spell( 111685 );
+    talents.infernal_awakening = find_spell( 22703 );
+    talents.immolation_buff = find_spell( 19483 );
+    talents.immolation_dmg = find_spell( 20153 );
+    talents.embers = find_spell( 264364 );
+    talents.burning_ember = find_spell( 264365 );
+
+    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
+
     talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
     talents.flashpoint_buff = find_spell( 387263 );
+
+    talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
+
+    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+
+    talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
+    talents.soul_fire_2 = find_spell( 281490 );
+
+    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
     talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
 
     talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
     talents.eradication_debuff = find_spell( 196414 );
-
-    talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
-    talents.summon_infernal_main = find_spell( 111685 );
-    talents.infernal_awakening = find_spell( 22703 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -438,6 +446,9 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
+
+    // Initialize some default values for pet spawners
+    warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
   }
 
   void warlock_t::init_base_stats()
@@ -583,7 +594,7 @@ namespace warlock
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
+                           ->set_default_value_from_effect( 1 );
 
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
                                  ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
@@ -650,7 +661,6 @@ namespace warlock
     gains.immolate = get_gain( "immolate" );
     gains.immolate_crits = get_gain( "immolate_crits" );
     gains.incinerate_crits = get_gain( "incinerate_crits" );
-    gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
   }
