@@ -415,6 +415,7 @@ public:
     buff_t* tip_of_the_spear_hidden;
     buff_t* sulfur_lined_pockets;
     buff_t* sulfur_lined_pockets_explosive;
+    buff_t* merciless_blows;
     buff_t* bloodseeker;
     buff_t* aspect_of_the_eagle;
     buff_t* terms_of_engagement;
@@ -705,7 +706,7 @@ public:
     spell_data_ptr_t grenade_juggler;
     spell_data_ptr_t flanking_strike;
     spell_data_ptr_t frenzy_strikes;
-    spell_data_ptr_t merciless_blows; // NYI - Casting Butchery makes your next Raptor Strike or Mongoose Bite hit 3 targets.
+    spell_data_ptr_t merciless_blows;
     spell_data_ptr_t vipers_venom; // TODO verify functionality after Serpent Sting was removed
     spell_data_ptr_t bloodseeker;
 
@@ -5463,6 +5464,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( rng().roll( wildfire_infusion_chance ) )
       p()->cooldowns.kill_command->reset( true );
+
+    p()->buffs.merciless_blows->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -5486,6 +5489,14 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     const bool has_eagle = p() -> buffs.aspect_of_the_eagle -> check();
     return ( range > 10 ? has_eagle : !has_eagle ) && hunter_melee_attack_t::ready();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buffs.merciless_blows->up() )
+      return as<int>( p()->buffs.merciless_blows->check_value() );
+
+    return hunter_melee_attack_t::n_targets();
   }
 };
 
@@ -5626,6 +5637,8 @@ struct butchery_t : public hunter_melee_attack_t
 
     if ( p()->talents.frenzy_strikes.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
+
+    p()->buffs.merciless_blows->trigger();
   }
 };
 
@@ -8038,6 +8051,10 @@ void hunter_t::create_buffs()
     make_buff( this, "terms_of_engagement", find_spell( 265898 ) )
       -> set_default_value_from_effect( 1, 1 / 5.0 )
       -> set_affects_regen( true );
+
+  buffs.merciless_blows = make_buff( this, "merciless_blows", find_spell( 459870 ) )
+      ->set_default_value_from_effect( 1 )
+      ->set_chance( talents.merciless_blows.ok() );
 
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", find_spell( 186289 ) )
