@@ -2571,6 +2571,22 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_pet_t, melee_att
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
+  // Beast Cleave is a special case where the damage is calculated based on the main pet's attack, but not with debuffs on the target multiplying the damage.
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_pet_action_t::composite_target_da_multiplier( t );
+    if ( o()->talents.basilisk_collar->ok() )
+    {
+      bool guardian = p()->type == PLAYER_GUARDIAN; 
+      //2024-07-19 - Guardians only benefit from the first point of Basilisk Collar
+      double bonus = guardian ? o()->talents.basilisk_collar->effectN( 2 ).percent() : o()->talents.basilisk_collar->effectN( 1 ).percent();
+      int stacks = o()->get_target_data( t )->debuffs.basilisk_collar->stack();
+      m /= 1 + ( bonus * stacks );
+    }
+
+    return m;
+  }
+
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     hunter_pet_action_t::available_targets( tl );
@@ -2627,6 +2643,23 @@ struct kill_cleave_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
   {
     hunter_pet_action_t::init();
     snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  // Kill Cleave is a special case where the damage is calculated based on the main pet's attack, but not with debuffs on the target multiplying the damage.
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_pet_action_t::composite_target_da_multiplier( t );
+
+    if ( o()->talents.basilisk_collar->ok() )
+    {
+      bool guardian = p()->type == PLAYER_GUARDIAN; 
+      //2024-07-19 - Guardians only benefit from the first point of Basilisk Collar
+      double bonus = guardian ? o()->talents.basilisk_collar->effectN( 2 ).percent() : o()->talents.basilisk_collar->effectN( 1 ).percent();
+      int stacks = o()->get_target_data( t )->debuffs.basilisk_collar->stack();
+      m /= 1 + ( bonus * stacks );
+    }
+
+    return m;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -8539,7 +8572,7 @@ double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   if ( talents.basilisk_collar -> ok() )
   {
-    //2024-07-15 - Guardians only benefit from the first point of Basilisk Collar
+    //2024-07-19 - Guardians only benefit from the first point of Basilisk Collar
     double bonus = guardian ? talents.basilisk_collar -> effectN( 2 ).percent() : talents.basilisk_collar -> effectN( 1 ).percent();
     int stacks = get_target_data( target ) -> debuffs.basilisk_collar -> stack();
     m *= 1 + ( bonus * stacks );
