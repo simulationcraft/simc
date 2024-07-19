@@ -13463,7 +13463,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_default_value( p.talent.frost.everfrost->effectN( 1 ).percent() );
 
   debuff.chill_streak =
-      make_debuff( p.talent.frost.chill_streak.ok(), *this, "chill_streak", p.spell.chill_streak_damage )
+      make_buff_fallback( p.talent.frost.chill_streak.ok(), *this, "chill_streak", p.spell.chill_streak_damage )
           ->set_quiet( true )
           ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
             // Chill streak doesnt bounce if the target dies before the debuff expires
