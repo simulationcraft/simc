@@ -331,9 +331,6 @@ namespace warlock
     talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
     talents.backdraft_buff = find_spell( 117828 );
 
-    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
-    talents.reverse_entropy_buff = find_spell( 266030 );
-
     talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
     talents.rain_of_fire_tick = find_spell( 42223 );
 
@@ -408,6 +405,9 @@ namespace warlock
     talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
     talents.rain_of_chaos_buff = find_spell( 266087 );
     talents.summon_infernal_roc = find_spell( 335236 );
+
+    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
+    talents.reverse_entropy_buff = find_spell( 266030 );
 
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 

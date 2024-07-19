@@ -155,12 +155,6 @@ using namespace helpers;
     {
       spell_t::impact( s );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
       {
         // Havoc debuff has an ICD, so it is safe to attempt a trigger
@@ -182,22 +176,28 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
       }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
+      }
     }
 
     void tick( dot_t* d ) override
     {
       spell_t::tick( d );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
+      }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
       }
     }
 
