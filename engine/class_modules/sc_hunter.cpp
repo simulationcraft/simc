@@ -525,7 +525,6 @@ public:
     spell_data_ptr_t windrunners_guidance;
 
     // Survival
-    spell_data_ptr_t carve;
     spell_data_ptr_t coordinated_kill;
     spell_data_ptr_t birds_of_prey;
     spell_data_ptr_t intense_focus;
@@ -703,8 +702,8 @@ public:
     spell_data_ptr_t bloody_claws;
     spell_data_ptr_t terms_of_engagement;
 
-    spell_data_ptr_t grenade_juggler; // NYI - Wildfire Bomb deals 5% increased damage and has a 25% chance to also cast an Explosive Shot at your target at 100% effectiveness. Explosive Shot reduces the cooldown of Wildfire Bomb by 2 seconds.
-    spell_data_ptr_t flanking_strike; // TODO - Reworked
+    spell_data_ptr_t grenade_juggler;
+    spell_data_ptr_t flanking_strike;
     spell_data_ptr_t frenzy_strikes;
     spell_data_ptr_t merciless_blows; // NYI - Casting Butchery makes your next Raptor Strike or Mongoose Bite hit 3 targets.
     spell_data_ptr_t vipers_venom; // TODO verify functionality after Serpent Sting was removed
@@ -5596,72 +5595,37 @@ struct flanking_strike_t: hunter_melee_attack_t
   }
 };
 
-// Carve (Base) ======================================================================
-// Shared part between Carve & Butchery
+// Butchery ==========================================================================
 
-struct carve_base_t: public hunter_melee_attack_t
+struct butchery_t : public hunter_melee_attack_t
 {
-  timespan_t wildfire_bomb_reduction;
-  timespan_t wildfire_bomb_reduction_cap;
-
-  carve_base_t( util::string_view n, hunter_t* p, const spell_data_t* s, timespan_t wfb_reduction ):
-    hunter_melee_attack_t( n, p, s )
+  struct
   {
-    if ( p -> talents.frenzy_strikes.ok() )
-      wildfire_bomb_reduction = wfb_reduction;
+    timespan_t reduction = 0_s;
+    int cap = 0;
+  } frenzy_strikes;
+
+  butchery_t( hunter_t* p, util::string_view options_str ):
+    hunter_melee_attack_t( "butchery", p, p -> talents.butchery )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    if ( p->talents.frenzy_strikes.ok() )
+    {
+      frenzy_strikes.reduction = data().effectN( 2 ).time_value();
+      frenzy_strikes.cap = as<int>( data().effectN( 3 ).base_value() );
+    }
   }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
 
-    timespan_t reduction = std::min( wildfire_bomb_reduction * num_targets_hit, wildfire_bomb_reduction_cap );
-    p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
-    p() -> cooldowns.flanking_strike -> adjust( -reduction, true );
-
-    p() -> buffs.bestial_barrage -> trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_melee_attack_t::action_multiplier();
-
-    return am;
-  }
-};
-
-// Carve =============================================================================
-
-struct carve_t: public carve_base_t
-{
-  carve_t( hunter_t* p, util::string_view options_str ):
-    carve_base_t( "carve", p, p -> talents.carve, p -> talents.carve -> effectN( 2 ).time_value() )
-  {
-    parse_options( options_str );
-
-    if ( p -> talents.butchery.ok() )
-      background = true;
-
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-
-    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
-  }
-};
-
-// Butchery ==========================================================================
-
-struct butchery_t: public carve_base_t
-{
-  butchery_t( hunter_t* p, util::string_view options_str ):
-    carve_base_t( "butchery", p, p -> talents.butchery, p -> talents.butchery -> effectN( 2 ).time_value() )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
-
-    wildfire_bomb_reduction_cap = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
+    if ( p()->talents.frenzy_strikes.ok() )
+      p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
   }
 };
 
@@ -7258,7 +7222,6 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new       call_of_the_wild_t( this, options_str );
-  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
@@ -7531,7 +7494,6 @@ void hunter_t::init_spells()
   if ( specialization() == HUNTER_SURVIVAL )
   {
     // TODO Delete these
-    talents.carve                             = find_talent_spell( talent_tree::SPECIALIZATION, "Carve", HUNTER_SURVIVAL );
     talents.coordinated_kill                  = find_talent_spell( talent_tree::SPECIALIZATION, "Coordinated Kill", HUNTER_SURVIVAL );
     talents.birds_of_prey                     = find_talent_spell( talent_tree::SPECIALIZATION, "Birds of Prey", HUNTER_SURVIVAL );
     talents.intense_focus                     = find_talent_spell( talent_tree::SPECIALIZATION, "Intense Focus", HUNTER_SURVIVAL );
