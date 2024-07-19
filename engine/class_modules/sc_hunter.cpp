@@ -698,7 +698,7 @@ public:
 
     spell_data_ptr_t wildfire_infusion;
     spell_data_ptr_t improved_wildfire_bomb;
-    spell_data_ptr_t sulfur_lined_pockets; // NYI - Every 3 Quick Shots is replaced with an Explosive Shot at 100% effectiveness.
+    spell_data_ptr_t sulfur_lined_pockets;
     spell_data_ptr_t butchery;
     spell_data_ptr_t bloody_claws;
     spell_data_ptr_t terms_of_engagement;
@@ -6199,6 +6199,7 @@ struct kill_command_t: public hunter_spell_t
   } dire_command;
 
   timespan_t wildfire_infusion_reduction = 0_s;
+  timespan_t bloody_claws_extension = 0_s;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
@@ -6224,6 +6225,7 @@ struct kill_command_t: public hunter_spell_t
       }
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
+      bloody_claws_extension      = p->talents.bloody_claws->effectN( 2 ).time_value();
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6322,6 +6324,7 @@ struct kill_command_t: public hunter_spell_t
     }
 
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
+    p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
   }
 
   double cost_pct_multiplier() const override
