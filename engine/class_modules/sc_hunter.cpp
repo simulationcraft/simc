@@ -1102,6 +1102,7 @@ public:
     ab::apply_affecting_aura( p -> talents.ranger );
     ab::apply_affecting_aura( p -> talents.explosives_expert );
     ab::apply_affecting_aura( p -> talents.symbiotic_adrenaline );
+    ab::apply_affecting_aura( p -> talents.grenade_juggler );
 
     // Set Bonus passives
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
@@ -3876,6 +3877,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     }
   };
 
+  timespan_t grenade_juggler_reduction = 0_s;
+
   explosive_shot_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212431 ) )
   {
@@ -3888,6 +3891,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
     tick_action -> reduced_aoe_targets = data().effectN( 2 ).base_value();
+
+    grenade_juggler_reduction = p->talents.grenade_juggler->effectN( 3 ).time_value();
   }
 
   void execute() override
@@ -3915,6 +3920,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_hidden->trigger();
     }
+
+    p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
@@ -6856,6 +6863,14 @@ struct steel_trap_t: public trap_base_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
+  struct explosive_shot_grenade_juggler_t final : public attacks::explosive_shot_background_t
+  {
+    explosive_shot_grenade_juggler_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
+    {
+      base_dd_multiplier *= p->talents.grenade_juggler->effectN( 5 ).percent();
+    }
+  };
+
   struct bomb_damage_t : public hunter_spell_t
   {
     struct bomb_dot_t final : public hunter_spell_t
@@ -6963,6 +6978,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
+  struct
+  {
+    double chance = 0;
+    explosive_shot_grenade_juggler_t* explosive = nullptr;
+  } grenade_juggler;
+
   wildfire_bomb_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> talents.wildfire_bomb )
   {
@@ -6972,6 +6993,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     school = SCHOOL_FIRE; // for report coloring
 
     impact_action = p->get_background_action<bomb_damage_t>( "wildfire_bomb_damage", this );
+
+    if ( p->talents.grenade_juggler.ok() )
+    {
+      grenade_juggler.chance = p->talents.grenade_juggler->effectN( 2 ).percent();
+      grenade_juggler.explosive = p->get_background_action<explosive_shot_grenade_juggler_t>( "explosive_shot_grenade_juggler" );
+    }
   }
 
   void execute() override
@@ -6986,6 +7013,9 @@ struct wildfire_bomb_t: public hunter_spell_t
       p() -> buffs.light_the_fuse -> expire();
       p() -> cooldowns.wildfire_bomb -> reset( false );
     }
+
+    if ( rng().roll(grenade_juggler.chance) )
+      grenade_juggler.explosive->execute_on_target( target );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
