@@ -716,7 +716,7 @@ public:
     spell_data_ptr_t exposed_flank;
     spell_data_ptr_t tactical_advantage;
     spell_data_ptr_t sic_em;
-    spell_data_ptr_t contagious_reagents; // NYI - Reapplying Serpent Sting to a target also spreads it to up to 2 nearby enemies.
+    spell_data_ptr_t contagious_reagents;
     spell_data_ptr_t outland_venom; // NYI - Each damage over time effect on a target increases the critical strike damage they receive from you by 2%. 
 
     spell_data_ptr_t explosives_expert;
@@ -5430,6 +5430,14 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
       // Viper's Venom is left out of Hydra's Bite target count modification.
       aoe = 0;
+    }
+
+    int n_targets() const override
+    {
+      if ( p()->talents.contagious_reagents.ok() && p()->get_target_data( target )->dots.serpent_sting->is_ticking() )
+        return 1 + as<int>( p()->talents.contagious_reagents->effectN( 1 ).base_value() );
+
+      return serpent_sting_base_t::n_targets();
     }
   };
 
