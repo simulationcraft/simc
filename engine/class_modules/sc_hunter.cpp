@@ -424,6 +424,7 @@ public:
     buff_t* coordinated_assault_empower;
     buff_t* spearhead;
     buff_t* deadly_duo;
+    buff_t* exposed_flank;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -2801,6 +2802,12 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     background = true;
 
     parse_effect_data( o() -> find_spell( 259516 ) -> effectN( 1 ) );
+
+    if ( o()->talents.exposed_flank.ok() )
+    {
+      aoe = as<int>( o()->talents.exposed_flank->effectN( 3 ).base_value() );
+      base_aoe_multiplier = o()->talents.exposed_flank->effectN( 1 ).percent();
+    }
   }
 };
 
@@ -5564,6 +5571,12 @@ struct flanking_strike_t: hunter_melee_attack_t
     {
       background = true;
       dual = true;
+
+      if ( p->talents.exposed_flank.ok() )
+      {
+        aoe = as<int>( p->talents.exposed_flank->effectN( 3 ).base_value() );
+        base_aoe_multiplier = p->talents.exposed_flank->effectN( 1 ).percent();
+      }
     }
   };
   damage_t* damage;
@@ -5599,6 +5612,8 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( auto pet = p() -> pets.main )
       pet -> active.flanking_strike -> execute_on_target( target );
+
+    p()->buffs.exposed_flank->trigger();
   }
 };
 
@@ -6338,6 +6353,14 @@ struct kill_command_t: public hunter_spell_t
     }
 
     return false;
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buffs.exposed_flank->up() )
+      return as<int>( p()->buffs.exposed_flank->check_value() );
+
+    return hunter_spell_t::n_targets();
   }
 
   std::unique_ptr<expr_t> create_expression(util::string_view expression_str) override
@@ -8082,12 +8105,16 @@ void hunter_t::create_buffs()
 
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
-    -> set_default_value_from_effect( 1 );
+      -> set_default_value_from_effect( 1 );
 
   buffs.deadly_duo =
     make_buff( this, "deadly_duo", find_spell( 397568 ) )
       -> set_chance( talents.deadly_duo.ok() )
       -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
+
+  buffs.exposed_flank = make_buff( this, "exposed_flank", find_spell( 459864 ) )
+      ->set_default_value( find_spell( 459864 )->effectN( 1 ).base_value() )
+      ->set_chance( talents.exposed_flank.ok() );
 
   // Pet family buffs
 
