@@ -303,6 +303,7 @@ public:
     // Mountain Thane
     buff_t* thunder_blast;
     buff_t* steadfast_as_the_peaks;
+    buff_t* burst_of_power;
 
     // DF Tier
     buff_t* strike_vulnerabilities;
@@ -414,6 +415,8 @@ public:
     gain_t* instigate;
     gain_t* war_machine_demise;
     gain_t* merciless_assault;
+    gain_t* thorims_might;
+    gain_t* burst_of_power;
 
     // Legendarys, Azerite, and Special Effects
     gain_t* execute_refund;
@@ -830,7 +833,7 @@ public:
     struct mountain_thane_talents_t
     {
       player_talent_t lightning_strikes;
-      player_talent_t crashing_thunder; // NYI
+      player_talent_t crashing_thunder;
       player_talent_t ground_current;
       player_talent_t strength_of_the_mountain;
       player_talent_t thunder_blast;
@@ -1180,6 +1183,7 @@ public:
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
       parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
     }
+    parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
 
 
     // TWW1 Tier
@@ -2205,9 +2209,11 @@ struct ground_current_t : public warrior_attack_t
 struct lightning_strike_t : public warrior_attack_t
 {
   action_t* ground_current;
+  double rage_from_thorims_might;
   lightning_strike_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->spell.lightning_strike ),
-    ground_current( nullptr )
+    ground_current( nullptr ),
+    rage_from_thorims_might( 0 )
   {
     background = true;
     if ( p->talents.mountain_thane.ground_current->ok() )
@@ -2220,7 +2226,7 @@ struct lightning_strike_t : public warrior_attack_t
 
     if ( p->talents.mountain_thane.thorims_might->ok() )
     {
-      energize_amount += p->talents.mountain_thane.thorims_might->effectN( 1 ).resource( RESOURCE_RAGE );
+      rage_from_thorims_might = p->talents.mountain_thane.thorims_might->effectN( 1 ).resource( RESOURCE_RAGE );
     }
   }
 
@@ -2231,6 +2237,18 @@ struct lightning_strike_t : public warrior_attack_t
     if ( ground_current )
     {
       ground_current->execute_on_target( s->target );
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    if ( p()->talents.mountain_thane.burst_of_power->ok() )
+      p()->buff.burst_of_power->trigger();
+
+    if ( p()->talents.mountain_thane.thorims_might->ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_thorims_might, p()->gain.thorims_might );
     }
   }
 };
@@ -2271,6 +2289,7 @@ struct bloodthirst_t : public warrior_attack_t
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
   double rage_from_merciless_assault;
+  double rage_from_burst_of_power;
   action_t* reap_the_storm;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
@@ -2280,6 +2299,7 @@ struct bloodthirst_t : public warrior_attack_t
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_burst_of_power( 0 ),
       reap_the_storm( nullptr )
   {
     parse_options( options_str );
@@ -2312,6 +2332,11 @@ struct bloodthirst_t : public warrior_attack_t
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodthirst", p );
       add_child( reap_the_storm );
     }
+
+    if ( p->talents.mountain_thane.burst_of_power->ok() )
+    {
+      rage_from_burst_of_power = p->talents.mountain_thane.burst_of_power->effectN( 1 ).trigger()->effectN( 3 ).resource( RESOURCE_RAGE );
+    }
   }
 
   // Background version for use with Unhinged
@@ -2321,7 +2346,8 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_burst_of_power( 0 )
   {
     background = true;
 
@@ -2354,6 +2380,11 @@ struct bloodthirst_t : public warrior_attack_t
       s += name;
       reap_the_storm = get_action<reap_the_storm_t>( s, p );
       add_child( reap_the_storm );
+    }
+
+    if ( p->talents.mountain_thane.burst_of_power->ok() )
+    {
+      rage_from_burst_of_power = p->talents.mountain_thane.burst_of_power->effectN( 1 ).trigger()->effectN( 3 ).resource( RESOURCE_RAGE );
     }
   }
 
@@ -2413,6 +2444,15 @@ struct bloodthirst_t : public warrior_attack_t
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
+
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    {
+      p()->buff.burst_of_power->decrement();
+      p()->resource_gain( RESOURCE_RAGE, rage_from_burst_of_power, p()->gain.burst_of_power );
+      // Reset CD after everything resolves
+      make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
+                                        p()->cooldown.bloodthirst->reset( true ); } );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2511,6 +2551,7 @@ struct bloodbath_t : public warrior_attack_t
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
   double rage_from_merciless_assault;
+  double rage_from_burst_of_power;
   action_t* reap_the_storm;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
@@ -2520,6 +2561,7 @@ struct bloodbath_t : public warrior_attack_t
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_burst_of_power( 0 ),
       reap_the_storm( nullptr )
   {
     parse_options( options_str );
@@ -2559,6 +2601,11 @@ struct bloodbath_t : public warrior_attack_t
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodbath", p );
       add_child( reap_the_storm );
     }
+
+    if ( p->talents.mountain_thane.burst_of_power->ok() )
+    {
+      rage_from_burst_of_power = p->talents.mountain_thane.burst_of_power->effectN( 1 ).trigger()->effectN( 3 ).resource( RESOURCE_RAGE );
+    }
   }
 
   // Background version for use with unhinged
@@ -2568,7 +2615,8 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      rage_from_burst_of_power( 0 )
   {
     background = true;
 
@@ -2606,6 +2654,11 @@ struct bloodbath_t : public warrior_attack_t
       s += name;
       reap_the_storm = get_action<reap_the_storm_t>( s, p );
       add_child( reap_the_storm );
+    }
+
+    if ( p->talents.mountain_thane.burst_of_power->ok() )
+    {
+      rage_from_burst_of_power = p->talents.mountain_thane.burst_of_power->effectN( 1 ).trigger()->effectN( 3 ).resource( RESOURCE_RAGE );
     }
   }
 
@@ -2666,6 +2719,14 @@ struct bloodbath_t : public warrior_attack_t
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
+
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    {
+      p()->buff.burst_of_power->decrement();
+      p()->resource_gain( RESOURCE_RAGE, rage_from_burst_of_power, p()->gain.burst_of_power );
+      make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
+                                        p()->cooldown.bloodthirst->reset( true ); } );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4029,9 +4090,9 @@ struct thunder_blast_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4042,6 +4103,8 @@ struct thunder_blast_t : public warrior_attack_t
     {
       lightning_strike->execute();
     }
+
+    p()->buff.thunder_blast->decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -4260,9 +4323,9 @@ struct thunder_clap_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4491,9 +4554,9 @@ struct execute_arms_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -4737,9 +4800,9 @@ struct execute_fury_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -5220,9 +5283,9 @@ struct raging_blow_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -5380,9 +5443,9 @@ struct crushing_blow_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -6108,9 +6171,9 @@ struct revenge_t : public warrior_attack_t
     {
       auto chance = p()->talents.mountain_thane.lightning_strikes->effectN( 1 ).percent();
       if ( p()->buff.avatar->check() )
-        chance *= p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.lightning_strikes->effectN( 2 ).percent();
       if ( p()->talents.mountain_thane.gathering_clouds->ok() )
-        chance *= p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
+        chance *= 1.0 + p()->talents.mountain_thane.gathering_clouds->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
       {
         lightning_strike->execute();
@@ -6551,6 +6614,13 @@ struct shield_slam_t : public warrior_attack_t
 
       p() -> buff.fervid -> expire();
       p() -> buff.fervid_opposition -> trigger();
+    }
+
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    {
+      p()->buff.burst_of_power->decrement();
+      // Reset CD after everything resolves
+      make_event( *p()->sim, [ this ] { p()->cooldown.shield_slam->reset( true ); } );
     }
   }
 
@@ -7672,6 +7742,7 @@ struct ignore_pain_t : public warrior_spell_t
   {
     parse_options( options_str );
     may_crit     = false;
+    use_off_gcd  = true;
     range        = -1;
     target       = player;
     base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 20 : 35);
@@ -8349,7 +8420,7 @@ void warrior_t::init_spells()
   talents.mountain_thane.snap_induction               = find_talent_spell( talent_tree::HERO, "Snap Induction" );
   talents.mountain_thane.gathering_clouds             = find_talent_spell( talent_tree::HERO, "Gathering Clouds" );
   talents.mountain_thane.thorims_might                = find_talent_spell( talent_tree::HERO, "Thorim's Might" );
-  talents.mountain_thane.burst_of_power               = find_talent_spell( talent_tree::HERO, "Burts of Power" );
+  talents.mountain_thane.burst_of_power               = find_talent_spell( talent_tree::HERO, "Burst of Power" );
   talents.mountain_thane.avatar_of_the_storm          = find_talent_spell( talent_tree::HERO, "Avatar of the Storm" );
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
@@ -9195,6 +9266,10 @@ void warrior_t::create_buffs()
   // Mountain Thane
   buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
   buff.steadfast_as_the_peaks = new buffs::steadfast_as_the_peaks_buff_t( *this, "steadfast_as_the_peaks", find_spell( 437152 ) );
+  buff.burst_of_power         = make_buff( this, "burst_of_power", find_spell( 437121 ) )
+                                  ->set_initial_stack( find_spell( 437121 )->max_stacks() )
+                                  ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
+                                  ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
 
   // TWW1 Tier
   buff.overpowering_might = make_buff( this, "overpowering_might", find_spell( 455483 ) );  // Arms 2pc
@@ -9305,6 +9380,8 @@ void warrior_t::init_gains()
   gain.storm_of_steel         = get_gain( "storm_of_steel" );
   gain.execute_refund         = get_gain( "execute_refund" );
   gain.merciless_assault      = get_gain( "merciless_assault" );
+  gain.thorims_might          = get_gain( "thorims_might" );
+  gain.burst_of_power         = get_gain( "burst_of_power" );
 }
 
 // warrior_t::init_position ====================================================
@@ -10154,7 +10231,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
     bool do_not_double_rage = false;
 
     do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
-                                  g == gain.frothing_berserker );
+                                  g == gain.frothing_berserker || g == gain.thorims_might );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
     {
