@@ -26,6 +26,7 @@ struct pet_t : public player_t
   event_t* expiration;
   timespan_t duration;
   int npc_id; // WoW NPC id, can be used to display icons/links for the pet
+  std::string npc_suffix; // Decoration suffix displayed in reports when npc_id > 0
 
   struct owner_coefficients_t
   {
