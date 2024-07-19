@@ -2593,8 +2593,7 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( p()->talents.burn_to_ashes.ok() )
-          m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
         return m;
       }
@@ -2668,8 +2667,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.burn_to_ashes.ok() )
-        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
       return m;
     }
