@@ -712,7 +712,7 @@ public:
     spell_data_ptr_t bloodseeker;
 
     spell_data_ptr_t ranger;
-    spell_data_ptr_t exposed_flank; // NYI - Your Flanking Strike now strikes 2 additional nearby targets at 100% effectiveness, and exposes a weakness in your enemy's defenses, causing your Kill Command to hit 2 additional nearby enemies for 10 seconds. 
+    spell_data_ptr_t exposed_flank;
     spell_data_ptr_t tactical_advantage;
     spell_data_ptr_t sic_em; // NYI - Kill Shot critical strikes reset the cooldown of Kill Command
     spell_data_ptr_t contagious_reagents; // NYI - Reapplying Serpent Sting to a target also spreads it to up to 2 nearby enemies.
@@ -2575,6 +2575,14 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
     am *= 1 + o() -> buffs.exposed_wound -> value(); 
 
     return am;
+  }
+
+  int n_targets() const override
+  {
+    if ( o()->buffs.exposed_flank->up() )
+      return as<int>( o()->buffs.exposed_flank->check_value() );
+
+    return kill_command_base_t::n_targets();
   }
 };
 
@@ -6353,14 +6361,6 @@ struct kill_command_t: public hunter_spell_t
     }
 
     return false;
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buffs.exposed_flank->up() )
-      return as<int>( p()->buffs.exposed_flank->check_value() );
-
-    return hunter_spell_t::n_targets();
   }
 
   std::unique_ptr<expr_t> create_expression(util::string_view expression_str) override
