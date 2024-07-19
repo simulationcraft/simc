@@ -10273,7 +10273,7 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
 
-    if ( p()->talent.unholy.reaping.ok() && data().id() != p()->spell.vampiric_strike->id() &&
+    if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
     {
       m *= 1.0 + p()->talent.unholy.reaping->effectN( 1 ).percent();
