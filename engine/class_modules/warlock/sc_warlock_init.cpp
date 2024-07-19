@@ -431,12 +431,12 @@ namespace warlock
 
     talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
+    talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
+    talents.power_overwhelming_buff = find_spell( 387283 );
+
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
-
-    talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
-    talents.power_overwhelming_buff = find_spell( 387283 );
 
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
@@ -608,9 +608,10 @@ namespace warlock
                                  ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
                                  ->set_reverse( true );
 
+    // 2024-07-19 - Power Overwhelming appears to grant double the listed value per stack
     buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 * 2.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
