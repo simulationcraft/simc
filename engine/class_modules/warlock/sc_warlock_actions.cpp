@@ -41,6 +41,7 @@ using namespace helpers;
       bool emberstorm_dd = false;
       bool emberstorm_td = false;
       bool devastation = false;
+      bool ruin = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -84,6 +85,7 @@ using namespace helpers;
       affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
+      affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -225,6 +227,9 @@ using namespace helpers;
 
       if ( demonology() && affected_by.demonic_brutality )
         m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.ruin )
+        m *= 1.0 + p()->talents.ruin->effectN( 1 ).percent();
 
       return m;
     }
@@ -2878,8 +2883,6 @@ using namespace helpers;
       cooldown->hasted = true;
       cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
-
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3082,7 +3085,6 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
 
@@ -3463,8 +3465,6 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
 
       immolate->background = true;
       immolate->dual = true;
