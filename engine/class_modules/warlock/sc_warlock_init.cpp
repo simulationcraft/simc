@@ -399,6 +399,9 @@ namespace warlock
 
     talents.fiendish_cruelty = find_talent_spell( talent_tree::SPECIALIZATION, "Fiendish Cruelty" ); // Should be ID 456943
 
+    talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
+    talents.eradication_debuff = find_spell( 196414 );
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
@@ -407,9 +410,6 @@ namespace warlock
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
     talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
-
-    talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
-    talents.eradication_debuff = find_spell( 196414 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
