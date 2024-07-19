@@ -391,18 +391,18 @@ public:
     const spell_data_t* flashpoint_buff;
     player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
 
-    player_talent_t fiendish_cruelty; // TODO: New
+    player_talent_t fiendish_cruelty;
     player_talent_t eradication;
     const spell_data_t* eradication_debuff;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
+    player_talent_t rain_of_chaos; // TOCHECK: Confirm RNG behavior (deck of cards) periodically
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
     player_talent_t internal_combustion;
-    player_talent_t demonfire_mastery; // TODO: New
+    player_talent_t demonfire_mastery;
 
     player_talent_t devastation; // TODO: New
     player_talent_t ritual_of_ruin;
@@ -456,7 +456,7 @@ public:
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;

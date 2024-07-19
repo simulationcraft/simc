@@ -155,12 +155,6 @@ using namespace helpers;
     {
       spell_t::impact( s );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
       {
         // Havoc debuff has an ICD, so it is safe to attempt a trigger
@@ -182,22 +176,28 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
       }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
+      }
     }
 
     void tick( dot_t* d ) override
     {
       spell_t::tick( d );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
+      }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
       }
     }
 
@@ -2807,7 +2807,7 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( p()->buffs.crashing_chaos->check() )
-        m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
@@ -2957,7 +2957,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_persistent_multiplier( s );
 
         if ( p()->buffs.crashing_chaos->check() )
-          m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+          m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
         return m;
       }
@@ -3091,6 +3091,10 @@ using namespace helpers;
 
         if ( p()->talents.eradication.ok() )
           td( s->target )->debuffs_eradication->trigger();
+
+        // Fiendish Cruelty checks for state after damage is applied
+        if ( p()->talents.fiendish_cruelty.ok() && s->target->health_percentage() <= p()->talents.fiendish_cruelty->effectN( 2 ).base_value() )
+          make_event( *sim, 0_ms, [ this ] { p()->cooldowns.shadowburn->adjust( timespan_t::from_seconds( -p()->talents.fiendish_cruelty->effectN( 1 ).base_value() ) ); } );
       }
     }
 
@@ -3161,6 +3165,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
 
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
       }
 
       void impact( action_state_t* s ) override
@@ -3194,6 +3200,12 @@ using namespace helpers;
       cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
+
+      if ( p->talents.demonfire_mastery.ok() )
+      {
+        base_tick_time *= 1.0 + p->talents.demonfire_mastery->effectN( 2 ).percent();
+        dot_duration *= 1.0 + p->talents.demonfire_mastery->effectN( 3 ).percent();
+      }
 
       if ( p->talents.raging_demonfire.ok() )
       {
