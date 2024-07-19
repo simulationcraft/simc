@@ -4037,6 +4037,11 @@ struct thunder_blast_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->talents.mountain_thane.flashing_skies->ok() )
+    {
+      lightning_strike->execute();
+    }
   }
 
   void impact( action_state_t* state ) override
