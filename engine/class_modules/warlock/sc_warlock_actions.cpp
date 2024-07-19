@@ -2807,7 +2807,7 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( p()->buffs.crashing_chaos->check() )
-        m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
@@ -2957,7 +2957,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_persistent_multiplier( s );
 
         if ( p()->buffs.crashing_chaos->check() )
-          m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+          m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
         return m;
       }
