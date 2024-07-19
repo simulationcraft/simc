@@ -3145,6 +3145,7 @@ struct spirit_wolf_t : public base_wolf_t
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, owner->raptor_glyph ? "spirit_raptor" : "spirit_wolf" )
   {
     dynamic = true;
+    npc_id = 29264;
   }
 
   attack_t* create_auto_attack() override
@@ -3184,6 +3185,8 @@ struct frost_wolf_t : public elemental_wolf_base_t
   frost_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "frost_raptor" : "frost_wolf" )
   {
     wolf_type = FROST_WOLF;
+    npc_id = 100820;
+    npc_suffix = "Frost";
   }
 };
 
@@ -3192,6 +3195,8 @@ struct fire_wolf_t : public elemental_wolf_base_t
   fire_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "fiery_raptor" : "fiery_wolf" )
   {
     wolf_type = FIRE_WOLF;
+    npc_id = 100820;
+    npc_suffix = "Fire";
   }
 };
 
@@ -3201,6 +3206,8 @@ struct lightning_wolf_t : public elemental_wolf_base_t
     : elemental_wolf_base_t( owner, owner->raptor_glyph ? "lightning_raptor" : "lightning_wolf" )
   {
     wolf_type = LIGHTNING_WOLF;
+    npc_id = 100820;
+    npc_suffix = "Lightning";
   }
 };
 
