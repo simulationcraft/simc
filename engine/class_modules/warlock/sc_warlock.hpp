@@ -396,7 +396,7 @@ public:
     const spell_data_t* eradication_debuff;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
+    player_talent_t rain_of_chaos; // TOCHECK: Confirm RNG behavior (deck of cards) periodically
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     player_talent_t reverse_entropy;

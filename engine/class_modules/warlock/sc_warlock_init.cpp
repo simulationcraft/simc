@@ -405,6 +405,10 @@ namespace warlock
     talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 417234
     talents.crashing_chaos_buff = find_spell( 417282 );
 
+    talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
+    talents.rain_of_chaos_buff = find_spell( 266087 );
+    talents.summon_infernal_roc = find_spell( 335236 );
+
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
@@ -427,10 +431,6 @@ namespace warlock
 
     talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
     talents.burn_to_ashes_buff = find_spell( 387154 );
-
-    talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
-    talents.rain_of_chaos_buff = find_spell( 266087 );
-    talents.summon_infernal_roc = find_spell( 335236 );
 
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
@@ -746,8 +746,7 @@ namespace warlock
 
   void warlock_t::init_rng_destruction()
   {
-    // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
-    // May need rechecking in DF
+    // TOCHECK: Presumed to use deck of cards at 3 out of 20. Long sample test needed to reconfirm in TWW
     rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
   }
 
