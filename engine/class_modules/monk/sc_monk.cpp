@@ -478,7 +478,7 @@ void monk_action_t<Base>::consume_resource()
     if ( cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( cost ) );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_t::base_cost() ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -2858,7 +2858,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     if ( !p()->buff.heart_of_the_jade_serpent->check() )
       return;
     p()->buff.heart_of_the_jade_serpent_cdr->trigger();
-    p()->buff.heart_of_the_jade_serpent->decrement();
+    p()->buff.heart_of_the_jade_serpent->expire();
   }
 };
 
@@ -4581,8 +4581,10 @@ struct celestial_conduit_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
+    may_combo_strike      = true;
+    sef_ability           = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
+    channeled             = true;
+    interrupt_auto_attack = false;
 
     tick_action = damage;
 
@@ -5381,7 +5383,9 @@ struct chi_burst_t : monk_spell_t
 
   bool ready() override
   {
-    if ( p()->specialization() != MONK_WINDWALKER || buff->up() )
+    if ( p()->specialization() != MONK_WINDWALKER )
+      return monk_spell_t::ready();
+    if ( buff && buff->up() )
       return monk_spell_t::ready();
     return false;
   }
