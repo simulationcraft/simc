@@ -404,7 +404,7 @@ public:
     player_talent_t internal_combustion;
     player_talent_t demonfire_mastery;
 
-    player_talent_t devastation; // TODO: New
+    player_talent_t devastation;
     player_talent_t ritual_of_ruin;
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
@@ -453,7 +453,7 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion
