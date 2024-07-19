@@ -707,7 +707,7 @@ public:
     spell_data_ptr_t flanking_strike;
     spell_data_ptr_t frenzy_strikes;
     spell_data_ptr_t merciless_blows;
-    spell_data_ptr_t vipers_venom; // TODO verify functionality after Serpent Sting was removed
+    spell_data_ptr_t vipers_venom;
     spell_data_ptr_t bloodseeker;
 
     spell_data_ptr_t ranger;
@@ -5401,7 +5401,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
     serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
-      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+      serpent_sting_base_t( p, "", p -> find_spell( 259491 ) )
     {
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
@@ -5414,11 +5414,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   latent_poison_injectors_t* latent_poison_injectors = nullptr;
   spearhead_bleed_t* spearhead = nullptr;
 
-  struct {
-    double chance = 0;
-    serpent_sting_vv_t* action;
-  } vipers_venom;
-
+  serpent_sting_vv_t* vipers_venom_serpent_sting;
+  
   struct {
     double chance = 0;
     proc_t* proc;
@@ -5431,8 +5428,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     if ( p -> talents.vipers_venom.ok() )
     {
-      vipers_venom.chance = p -> talents.vipers_venom -> effectN( 1 ).percent();
-      vipers_venom.action = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
+      vipers_venom_serpent_sting = p->get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
     }
 
     if ( p -> talents.spearhead.ok() )
@@ -5445,8 +5441,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( rng().roll( vipers_venom.chance ) )
-      vipers_venom.action -> execute_on_target( target );
+    if ( vipers_venom_serpent_sting )
+      vipers_venom_serpent_sting->execute_on_target( target );
 
     if ( rng().roll( rylakstalkers_strikes.chance ) )
     {
