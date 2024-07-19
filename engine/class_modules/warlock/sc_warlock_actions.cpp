@@ -40,6 +40,7 @@ using namespace helpers;
       bool ashen_remains = false;
       bool emberstorm_dd = false;
       bool emberstorm_td = false;
+      bool devastation = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -82,6 +83,7 @@ using namespace helpers;
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
       affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
+      affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -207,6 +209,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.malediction )
         c += p()->talents.malediction->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.devastation )
+        c += p()->talents.devastation->effectN( 1 ).percent();
 
       return c;
     }

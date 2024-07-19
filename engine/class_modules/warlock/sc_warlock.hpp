@@ -404,7 +404,7 @@ public:
     player_talent_t internal_combustion;
     player_talent_t demonfire_mastery;
 
-    player_talent_t devastation; // TODO: New
+    player_talent_t devastation;
     player_talent_t ritual_of_ruin;
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
