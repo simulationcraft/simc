@@ -413,6 +413,8 @@ public:
     // Survival Tree
     buff_t* tip_of_the_spear;
     buff_t* tip_of_the_spear_hidden;
+    buff_t* sulfur_lined_pockets;
+    buff_t* sulfur_lined_pockets_explosive;
     buff_t* bloodseeker;
     buff_t* aspect_of_the_eagle;
     buff_t* terms_of_engagement;
@@ -3932,7 +3934,6 @@ struct explosive_shot_background_t : public explosive_shot_t
   }
 };
 
-
 // Kill Shot =========================================================================
 
 struct kill_shot_t : hunter_ranged_attack_t
@@ -6152,6 +6153,33 @@ struct kill_command_t: public hunter_spell_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
     }
+
+    void execute() override
+    {
+      arcane_shot_t::execute();
+
+      p()->buffs.sulfur_lined_pockets->trigger();
+      if ( p()->buffs.sulfur_lined_pockets->at_max_stacks() )
+      {
+        p()->buffs.sulfur_lined_pockets_explosive->trigger();
+        p()->buffs.sulfur_lined_pockets->expire();
+      }
+    }
+  };
+
+  struct explosive_shot_qs_t final : public attacks::explosive_shot_background_t
+  {
+    explosive_shot_qs_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
+    {
+      base_dd_multiplier *= p->talents.sulfur_lined_pockets->effectN( 2 ).percent();
+    }
+
+    void execute() override
+    {
+      explosive_shot_background_t::execute();
+
+      p()->buffs.sulfur_lined_pockets_explosive->expire();
+    }
   };
 
   struct {
@@ -6162,6 +6190,7 @@ struct kill_command_t: public hunter_spell_t
   struct {
     double chance = 0;
     arcane_shot_qs_t* action = nullptr;
+    explosive_shot_qs_t* explosive = nullptr;
   } quick_shot;
 
   struct {
@@ -6189,6 +6218,9 @@ struct kill_command_t: public hunter_spell_t
       {
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
         quick_shot.action = p -> get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
+
+        if (p->talents.sulfur_lined_pockets.ok())
+          quick_shot.explosive = p -> get_background_action<explosive_shot_qs_t>( "explosive_shot_quick_shot" );
       }
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
@@ -6222,7 +6254,12 @@ struct kill_command_t: public hunter_spell_t
     p() -> buffs.tip_of_the_spear -> trigger();
 
     if ( rng().roll( quick_shot.chance ) )
-      quick_shot.action->execute_on_target( target );
+    {
+      if ( p()->buffs.sulfur_lined_pockets_explosive->up() )
+        quick_shot.explosive->execute_on_target( target );
+      else
+        quick_shot.action->execute_on_target( target );
+    }
 
     if ( reset.chance != 0 )
     {
@@ -7996,6 +8033,14 @@ void hunter_t::create_buffs()
   buffs.tip_of_the_spear_hidden =
     make_buff( this, "tip_of_the_spear_hidden", find_spell( 460852 ) )
       -> set_chance( talents.tip_of_the_spear.ok() );
+
+  buffs.sulfur_lined_pockets =
+    make_buff( this, "sulfur_lined_pockets", find_spell( 459830 ) )
+      ->set_chance( talents.sulfur_lined_pockets.ok() );
+
+  buffs.sulfur_lined_pockets_explosive =
+    make_buff( this, "sulfur_lined_pockets_explosive", find_spell( 459834 ) )
+      ->set_chance( talents.sulfur_lined_pockets.ok() );
 
   buffs.terms_of_engagement =
     make_buff( this, "terms_of_engagement", find_spell( 265898 ) )
