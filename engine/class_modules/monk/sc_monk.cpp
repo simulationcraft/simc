@@ -164,6 +164,9 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
+  parse_effects(
+      p()->buff.counterstrike,
+      affect_list_t( 1 ).adjust_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -172,11 +175,19 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
+  parse_effects( p()->buff.pressure_point );
+  parse_effects(
+      p()->buff.kicks_of_flowing_momentum,
+      affect_list_t( 1 ).adjust_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
+                 affect_list_t( 2 ).adjust_spell( -p()->passives.glory_of_the_dawn_damage->id(),
+                                                  -p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial,
+                 affect_list_t( 2 ).adjust_spell( -p()->passives.glory_of_the_dawn_damage->id(),
+                                                  -p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -1389,7 +1400,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
     parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
-    parse_effects( p->buff.counterstrike );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
@@ -1625,8 +1635,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     trigger_chiji     = true;
 
     apply_affecting_aura( p->talent.windwalker.rising_star );
-    parse_effects( p->buff.kicks_of_flowing_momentum );
-    parse_effects( p->buff.pressure_point );
   }
 
   void execute() override
@@ -2184,10 +2192,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     ap_type = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
-
-    // kotfm and cs are scripted for SCK, we can add this id to the whitelist instead
-    parse_effects( p->buff.kicks_of_flowing_momentum, affect_list_t( 1 ).adjust_spell( data->id() ) );
-    parse_effects( p->buff.counterstrike, affect_list_t( 1 ).adjust_spell( data->id() ) );
 
     // // dance of chiji is scripted
     if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
@@ -8209,7 +8213,7 @@ void monk_t::create_buffs()
           ->set_trigger_spell( talent.windwalker.ordered_elements );
 
   buff.pressure_point =
-      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 337482 ) )
+      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
           ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -8259,13 +8263,22 @@ void monk_t::create_buffs()
   buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
                                                      this, "flight_of_the_red_crane", find_spell( 457459 ) );
 
+  auto hotjs_cd_fn = [ this ] {
+    cooldown.strike_of_the_windlord->adjust_recharge_multiplier();
+    cooldown.whirling_dragon_punch->adjust_recharge_multiplier();
+    cooldown.fists_of_fury->adjust_recharge_multiplier();
+    cooldown.rising_sun_kick->adjust_recharge_multiplier();
+  };
+
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
+          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
+          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,

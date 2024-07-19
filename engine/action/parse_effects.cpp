@@ -1335,14 +1335,14 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_CAST_TIME:     val_mul = 1.0;
                             str = "cast time";   return &flat_execute_time_effects;
       case P_TICK_TIME:     val_mul = 1.0;
-                            str = "tick time";   return &flat_tick_time_effects; 
+                            str = "tick time";   return &flat_tick_time_effects;
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
       case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
       default:              return nullptr;
     }
   }
-  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY || eff.subtype() == A_MOD_RECHARGE_RATE )
   {
     str = "cooldown";
     adjust_recharge_multiplier_warning();
