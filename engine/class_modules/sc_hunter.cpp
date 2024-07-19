@@ -5582,13 +5582,10 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t::init_finished();
   }
 
-  double energize_cast_regen( const action_state_t* ) const override
-  {
-    return damage -> composite_energize_amount( nullptr );
-  }
-
   void execute() override
   {
+    p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.flanking_strike->effectN( 2 ).base_value() ) );
+
     hunter_melee_attack_t::execute();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
