@@ -2784,11 +2784,22 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
+      base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
+
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
         add_child( internal_combustion );
       }
+    }
+
+    timespan_t execute_time_flat_modifier() const override
+    {
+      timespan_t m = warlock_spell_t::execute_time_flat_modifier();
+
+      m += p()->talents.improved_chaos_bolt->effectN( 2 ).time_value();
+
+      return m;
     }
 
     double cost_pct_multiplier() const override
