@@ -838,8 +838,8 @@ public:
       player_talent_t storm_shield; // NYI
       player_talent_t keep_your_feet_on_the_ground; // NYI
       player_talent_t steadfast_as_the_peaks;
-      player_talent_t flashing_skies; // NYI
-      player_talent_t snap_induction; // NYI
+      player_talent_t flashing_skies;
+      player_talent_t snap_induction;
       player_talent_t gathering_clouds;
       player_talent_t thorims_might;
       player_talent_t burst_of_power; // NYI
