@@ -425,6 +425,7 @@ public:
     buff_t* spearhead;
     buff_t* deadly_duo;
     buff_t* exposed_flank;
+    buff_t* sic_em;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -714,7 +715,7 @@ public:
     spell_data_ptr_t ranger;
     spell_data_ptr_t exposed_flank;
     spell_data_ptr_t tactical_advantage;
-    spell_data_ptr_t sic_em; // NYI - Kill Shot critical strikes reset the cooldown of Kill Command
+    spell_data_ptr_t sic_em;
     spell_data_ptr_t contagious_reagents; // NYI - Reapplying Serpent Sting to a target also spreads it to up to 2 nearby enemies.
     spell_data_ptr_t outland_venom; // NYI - Each damage over time effect on a target increases the critical strike damage they receive from you by 2%. 
 
@@ -4067,6 +4068,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     {
       serpent_sting -> execute_on_target( target );
     }
+
+    p()->buffs.sic_em->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4099,6 +4102,9 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p() -> talents.birds_of_prey.ok() && p() -> buffs.coordinated_assault -> check() )
       return 1 + as<int>( p() -> talents.birds_of_prey -> effectN( 1 ).base_value() );
 
+    if ( p()->buffs.sic_em->up() )
+      return as<int>( p()->buffs.sic_em->check_value() );
+
     return hunter_ranged_attack_t::n_targets();
   }
 
@@ -4108,7 +4114,8 @@ struct kill_shot_t : hunter_ranged_attack_t
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.deathblow -> check()
         || p() -> buffs.hunters_prey -> check()
-        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() ) );
+        || ( p() -> talents.coordinated_kill.ok() && p() -> buffs.coordinated_assault -> check() )
+        || p() -> buffs.sic_em -> check() );
   }
 
   double action_multiplier() const override
@@ -6200,6 +6207,7 @@ struct kill_command_t: public hunter_spell_t
 
   timespan_t wildfire_infusion_reduction = 0_s;
   timespan_t bloody_claws_extension = 0_s;
+  double sic_em_chance = 0;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
@@ -6226,6 +6234,7 @@ struct kill_command_t: public hunter_spell_t
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
       bloody_claws_extension      = p->talents.bloody_claws->effectN( 2 ).time_value();
+      sic_em_chance               = p->talents.sic_em->effectN( 1 ).percent();
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6325,6 +6334,12 @@ struct kill_command_t: public hunter_spell_t
 
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
     p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
+
+    if ( rng().roll( sic_em_chance ) )
+    {
+      p()->buffs.sic_em->trigger();
+      p()->cooldowns.kill_shot->reset( true );
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -8112,9 +8127,15 @@ void hunter_t::create_buffs()
       -> set_chance( talents.deadly_duo.ok() )
       -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
-  buffs.exposed_flank = make_buff( this, "exposed_flank", find_spell( 459864 ) )
+  buffs.exposed_flank = 
+    make_buff( this, "exposed_flank", find_spell( 459864 ) )
       ->set_default_value( find_spell( 459864 )->effectN( 1 ).base_value() )
       ->set_chance( talents.exposed_flank.ok() );
+
+  buffs.sic_em = 
+    make_buff( this, "sic_em", find_spell( 461409 ) )
+      ->set_default_value( find_spell( 461409 )->effectN( 2 ).base_value() )
+      ->set_chance( talents.sic_em.ok() );
 
   // Pet family buffs
 
