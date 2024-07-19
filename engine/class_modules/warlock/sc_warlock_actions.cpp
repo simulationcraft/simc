@@ -3091,6 +3091,10 @@ using namespace helpers;
 
         if ( p()->talents.eradication.ok() )
           td( s->target )->debuffs_eradication->trigger();
+
+        // Fiendish Cruelty checks for state after damage is applied
+        if ( p()->talents.fiendish_cruelty.ok() && s->target->health_percentage() <= p()->talents.fiendish_cruelty->effectN( 2 ).base_value() )
+          make_event( *sim, 0_ms, [ this ] { p()->cooldowns.shadowburn->adjust( timespan_t::from_seconds( -p()->talents.fiendish_cruelty->effectN( 1 ).base_value() ) ); } );
       }
     }
 

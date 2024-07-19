@@ -391,7 +391,7 @@ public:
     const spell_data_t* flashpoint_buff;
     player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
 
-    player_talent_t fiendish_cruelty; // TODO: New
+    player_talent_t fiendish_cruelty;
     player_talent_t eradication;
     const spell_data_t* eradication_debuff;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
