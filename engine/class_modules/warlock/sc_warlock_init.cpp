@@ -411,6 +411,8 @@ namespace warlock
 
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
 
+    talents.demonfire_mastery = find_talent_spell( talent_tree::SPECIALIZATION, "Demonfire Mastery" ); // Should be ID 456946
+
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = find_spell( 281490 );
 

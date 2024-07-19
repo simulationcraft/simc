@@ -402,7 +402,7 @@ public:
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
     player_talent_t internal_combustion;
-    player_talent_t demonfire_mastery; // TODO: New
+    player_talent_t demonfire_mastery;
 
     player_talent_t devastation; // TODO: New
     player_talent_t ritual_of_ruin;

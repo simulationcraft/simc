@@ -3165,6 +3165,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
 
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
       }
 
       void impact( action_state_t* s ) override
@@ -3198,6 +3200,12 @@ using namespace helpers;
       cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
+
+      if ( p->talents.demonfire_mastery.ok() )
+      {
+        base_tick_time *= 1.0 + p->talents.demonfire_mastery->effectN( 2 ).percent();
+        dot_duration *= 1.0 + p->talents.demonfire_mastery->effectN( 3 ).percent();
+      }
 
       if ( p->talents.raging_demonfire.ok() )
       {
