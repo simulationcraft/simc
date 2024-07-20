@@ -2749,8 +2749,13 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
+    if (p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs)
+    {
       p()->buff.rushing_jade_wind->trigger();
+      p()->buff.combo_strikes->expire();
+      p()->buff.hit_combo->expire();
+    }
+      
   }
 };
 
@@ -2808,10 +2813,14 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     {
       p()->trigger_mark_of_the_crane( s );
       if ( p()->bugs )
+      {
         p()->buff.rushing_jade_wind->trigger();
+        p()->buff.combo_strikes->expire();
+        p()->buff.hit_combo->expire();
+      }
     }
 
-    if ( p()->talent.windwalker.gale_force.ok() )
+    if ( p()->talent.windwalker.gale_force.ok() ){}
       get_td( s->target )->debuff.gale_force->trigger();
   }
 };
@@ -2855,7 +2864,12 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack->execute();
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    {
       p()->buff.rushing_jade_wind->trigger();
+      if ( p()->bugs )
+        combo_strikes_trigger();
+    }
+      
 
     p()->buff.tigers_ferocity->trigger();
 
@@ -9744,6 +9758,8 @@ public:
     ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
     ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20", true );
+    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events",
+                 "2024-07-20", true );
 
     // =================================================
 
