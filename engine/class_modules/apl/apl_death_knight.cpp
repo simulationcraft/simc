@@ -415,7 +415,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=cds_san,if=talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=aoe_burst,if=active_enemies>=2&buff.death_and_decay.up" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=2&!buff.death_and_decay.up" );
-  default_->add_action( "run_action_list,name=san_fishing,if=talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up&cooldown.dark_transformation.remains>buff.essence_of_the_blood_queen.remains" );
+  default_->add_action( "run_action_list,name=san_fishing,if=talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.remains<cooldown.dark_transformation.remains+2" );
   default_->add_action( "call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike" );
 
@@ -460,17 +460,17 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
   san_fishing->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<40", "San'layn Fishing" );
-  san_fishing->add_action( "any_dnd,if=!death_and_decay.ticking&!buff.vampiric_strike.react" );
+  san_fishing->add_action( "any_dnd,if=!buff.death_and_decay.up&!buff.vampiric_strike.react" );
   san_fishing->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5" );
   san_fishing->add_action( "death_coil,if=!buff.vampiric_strike.react" );
-  san_fishing->add_action( "festering_strike,if=!buff.vampiric_strike.react&(debuff.festering_wound.stack<4|runic_power<30)" );
-  san_fishing->add_action( "wound_spender,if=buff.vampiric_strike.react" );
+  san_fishing->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react" );
+  san_fishing->add_action( "festering_strike,if=debuff.festering_wound.stack<3-pet.abomination.active" );
 
   san_st->add_action( "wound_spender,if=buff.essence_of_the_blood_queen.remains<3&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd", "Single Target San'layn" );
   san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&buff.essence_of_the_blood_queen.stack>=3&(talent.doomed_bidding|talent.rotten_touch)|rune<2&!buff.runic_corruption.up" );
   san_st->add_action( "soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5" );
-  san_st->add_action( "festering_strike,if=(debuff.festering_wound.stack<4&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=2)" );
-  san_st->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react&cooldown.apocalypse.remains>variable.apoc_timing" );
+  san_st->add_action( "festering_strike,if=(debuff.festering_wound.stack<4&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1-pet.abomination.active)" );
+  san_st->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react&cooldown.apocalypse.remains>variable.apoc_timing" );
   san_st->add_action( "death_coil,if=!variable.pooling_runic_power&debuff.death_rot.remains<gcd|(buff.sudden_doom.react&debuff.festering_wound.stack>=1|rune<2)" );
   san_st->add_action( "wound_spender,if=debuff.festering_wound.stack>4" );
   san_st->add_action( "death_coil,if=!variable.pooling_runic_power" );

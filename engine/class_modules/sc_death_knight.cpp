@@ -679,7 +679,6 @@ public:
   unsigned int
       bone_shield_charges_consumed;  // Counts how many bone shield charges have been consumed for T29 4pc blood
   unsigned int active_riders;        // Number of active Riders of the Apocalypse pets
-  unsigned int vampiric_strike_proc_attempts;  // Number of vampiric strike attempts
 
   std::vector<player_t*> undeath_tl;
 
@@ -1671,7 +1670,6 @@ public:
       festering_wounds_target_count( 0 ),
       bone_shield_charges_consumed( 0 ),
       active_riders( 0 ),
-      vampiric_strike_proc_attempts( 0 ),
       undeath_tl(),
       buffs(),
       runeforge(),
@@ -11968,7 +11966,6 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
 
 void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 {
-  vampiric_strike_proc_attempts++;
   double chance    = talent.sanlayn.vampiric_strike->effectN( 1 ).percent();
   double target_hp = target->health_percentage();
 
@@ -11980,8 +11977,6 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   {
     chance += talent.sanlayn.bloodsoaked_ground->effectN( 2 ).percent();
   }
-
-  chance *= vampiric_strike_proc_attempts;
 
   if ( chance >= 0.9 )
   {
@@ -12001,7 +11996,6 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 
 void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
 {
-  vampiric_strike_proc_attempts = 0;
   if ( is_vampiric )
   {
     active_spells.vampiric_strike_heal->execute();
@@ -13251,7 +13245,7 @@ void death_knight_t::init_spells()
 
   // San'layn Spells
   spell.vampiric_strike                 = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433895 );
-  spell.vampiric_strike_buff            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434674 );
+  spell.vampiric_strike_buff            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433899 );
   spell.essence_of_the_blood_queen_buff = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 433925 );
   spell.gift_of_the_sanlayn_buff        = conditional_spell_lookup( talent.sanlayn.gift_of_the_sanlayn.ok(), 434153 );
   spell.vampiric_strike_heal            = conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok(), 434422 );
@@ -14163,13 +14157,13 @@ void death_knight_t::init_procs()
 
 void death_knight_t::init_finished()
 {
-  parse_player_effects();
-
   for ( auto& b : buff_list )
   {
     if ( b->data().ok() )
       apply_affecting_auras( *b );
   }
+
+  parse_player_effects();
 
   player_t::init_finished();
 
@@ -14310,7 +14304,6 @@ void death_knight_t::reset()
   km_proc_attempts              = 0;
   bone_shield_charges_consumed  = 0;
   active_riders                 = 0;
-  vampiric_strike_proc_attempts = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
