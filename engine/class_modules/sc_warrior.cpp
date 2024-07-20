@@ -845,8 +845,8 @@ public:
       player_talent_t snap_induction;
       player_talent_t gathering_clouds;
       player_talent_t thorims_might;
-      player_talent_t burst_of_power; // NYI
-      player_talent_t avatar_of_the_storm; // NYI
+      player_talent_t burst_of_power;
+      player_talent_t avatar_of_the_storm;
     } mountain_thane;
 
     struct shared_talents_t
@@ -2249,6 +2249,12 @@ struct lightning_strike_t : public warrior_attack_t
     if ( p()->talents.mountain_thane.thorims_might->ok() )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_thorims_might, p()->gain.thorims_might );
+    }
+
+    if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() && !p()->buff.avatar->check() )
+    {
+      if ( rng().roll( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 2 ) ) )
+        p()->buff.avatar->extend_duration_or_trigger( timespan_t::from_seconds( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() ) );
     }
   }
 };
@@ -3942,6 +3948,9 @@ struct thunder_blast_t : public warrior_attack_t
     parse_options( options_str );
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
+
+    // Shared cooldown with thunder clap
+    cooldown = p->cooldown.thunder_clap;
 
     energize_type = action_energize::NONE;
 
@@ -7258,6 +7267,12 @@ struct avatar_t : public warrior_spell_t
     {
       const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 1 ).time_value();
       p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( trigger_duration );
+    }
+
+    if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
+      p()->buff.thunder_blast->trigger( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 1 ).base_value() );
+      p()->cooldown.thunder_clap->reset( true );
     }
   }
 
