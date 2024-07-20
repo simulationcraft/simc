@@ -147,6 +147,7 @@ public:
 
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
+    spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;

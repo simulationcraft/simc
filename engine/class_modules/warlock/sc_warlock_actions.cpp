@@ -3271,44 +3271,8 @@ using namespace helpers;
     }
   };
 
-  struct chaos_tear_t : public warlock_spell_t
-  {
-    struct rift_chaos_bolt_t : public warlock_spell_t
-    {
-      rift_chaos_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
-      {
-        background = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-
-      double composite_crit_chance() const override
-      { return 1.0; }
-
-      double calculate_direct_amount( action_state_t* s ) const override
-      {
-        warlock_spell_t::calculate_direct_amount( s );
-
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-        return s->result_total;
-      }
-    };
-
-    chaos_tear_t( warlock_t* p )
-      : warlock_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
-    {
-      background = true;
-      
-      impact_action = new rift_chaos_bolt_t( p );
-    }
-  };
-
   struct dimensional_rift_t : public warlock_spell_t
   {
-    chaos_tear_t* chaos_tear;
-
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
@@ -3316,10 +3280,6 @@ using namespace helpers;
 
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
-
-      chaos_tear = new chaos_tear_t( p );
-
-      add_child( chaos_tear );
     }
 
     void execute() override
@@ -3337,7 +3297,7 @@ using namespace helpers;
         p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
         break;
       case 2:
-        chaos_tear->execute_on_target( target );
+        p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
         break;
       default:
         break;
