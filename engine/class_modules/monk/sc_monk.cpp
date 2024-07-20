@@ -2432,7 +2432,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.momentum_boost.ok() )
-      am *= 1 + ( ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 ) *
+      am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
                   p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
 
     return am;
@@ -8185,7 +8185,7 @@ void monk_t::create_buffs()
   buff.momentum_boost_damage =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
                           talent.windwalker.momentum_boost->effectN( 1 ).trigger() )
-          ->set_trigger_spell( talent.windwalker.momentum_boost );
+              ->set_default_value_from_effect( 1 );
 
   buff.momentum_boost_speed =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
@@ -8197,7 +8197,6 @@ void monk_t::create_buffs()
 
   buff.pressure_point =
       make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
-          ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.storm_earth_and_fire =
