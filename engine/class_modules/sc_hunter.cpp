@@ -302,14 +302,14 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* shredded_armor;
     buff_t* wild_instincts;
     buff_t* basilisk_collar;
+    buff_t* outland_venom;
   } debuffs;
 
   struct dots_t
   {
     dot_t* serpent_sting;
     dot_t* a_murder_of_crows;
-    dot_t* pheromone_bomb;
-    dot_t* shrapnel_bomb;
+    dot_t* wildfire_bomb;
     dot_t* black_arrow;
     dot_t* barbed_shot;
   } dots;
@@ -717,7 +717,8 @@ public:
     spell_data_ptr_t tactical_advantage;
     spell_data_ptr_t sic_em;
     spell_data_ptr_t contagious_reagents;
-    spell_data_ptr_t outland_venom; // NYI - Each damage over time effect on a target increases the critical strike damage they receive from you by 2%. 
+    spell_data_ptr_t outland_venom;
+    spell_data_ptr_t outland_venom_debuff;
 
     spell_data_ptr_t explosives_expert;
     spell_data_ptr_t sweeping_spear;
@@ -985,7 +986,9 @@ public:
   }
 
   void trigger_bloodseeker_update();
-  void trigger_basilisk_collar_update( hunter_t* p );
+  int ticking_dots( hunter_td_t* td );
+  void trigger_basilisk_collar_update();
+  void trigger_outland_venom_update();
   void trigger_t30_sv_4p( action_t* action, double cost );
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
@@ -3185,7 +3188,27 @@ void hunter_t::trigger_bloodseeker_update()
   }
 }
 
-void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
+int hunter_t::ticking_dots( hunter_td_t* td )
+{
+  int dots = 0;
+
+  auto hunter_dots = td->dots;
+  dots += hunter_dots.a_murder_of_crows->is_ticking();
+  dots += hunter_dots.barbed_shot->is_ticking();
+  dots += hunter_dots.black_arrow->is_ticking();
+  dots += hunter_dots.serpent_sting->is_ticking();
+  dots += hunter_dots.wildfire_bomb->is_ticking();
+
+  auto pet_dots = pets.main->get_target_data( td->target )->dots;
+  dots += pet_dots.bloodshed->is_ticking();
+  dots += pet_dots.laceration->is_ticking();
+  dots += pet_dots.ravenous_leap->is_ticking();
+  dots += pet_dots.bloodseeker->is_ticking();
+
+  return dots;
+}
+
+void hunter_t::trigger_basilisk_collar_update()
 {
   if ( !talents.basilisk_collar.ok() )
     return;
@@ -3194,20 +3217,9 @@ void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
   {
     if ( t -> is_enemy() )
     {
-      auto td = p -> get_target_data( t );
+      auto td = get_target_data( t );
       int current = td -> debuffs.basilisk_collar -> check(); 
-      int new_stacks = 0;
-      
-      auto hunter_dots = td -> dots;
-      new_stacks += hunter_dots.a_murder_of_crows -> is_ticking(); 
-      new_stacks += hunter_dots.barbed_shot -> is_ticking();
-      new_stacks += hunter_dots.black_arrow -> is_ticking(); 
-      new_stacks += hunter_dots.serpent_sting -> is_ticking(); 
-
-      auto pet_dots = p -> pets.main -> get_target_data( t ) -> dots; 
-      new_stacks += pet_dots.bloodshed -> is_ticking(); 
-      new_stacks += pet_dots.laceration -> is_ticking(); 
-      new_stacks += pet_dots.ravenous_leap -> is_ticking(); 
+      int new_stacks = ticking_dots( td );
 
       new_stacks = std::min( new_stacks, td -> debuffs.basilisk_collar -> max_stack() );
 
@@ -3219,6 +3231,29 @@ void hunter_t::trigger_basilisk_collar_update( hunter_t* p )
       {
         td -> debuffs.basilisk_collar -> decrement( current - new_stacks ); 
       }
+    }
+  }
+}
+
+void hunter_t::trigger_outland_venom_update()
+{
+  if ( !talents.outland_venom.ok() )
+    return;
+
+  for ( player_t* t : sim->target_non_sleeping_list )
+  {
+    if ( t->is_enemy() )
+    {
+      auto td        = get_target_data( t );
+      int current    = td->debuffs.outland_venom->check();
+      int new_stacks = ticking_dots( td );
+
+      new_stacks = std::min( new_stacks, td->debuffs.outland_venom->max_stack() );
+
+      if ( current < new_stacks )
+        td->debuffs.outland_venom->trigger( new_stacks - current );
+      else if ( current > new_stacks )
+        td->debuffs.outland_venom->decrement( current - new_stacks );
     }
   }
 }
@@ -6284,9 +6319,6 @@ struct kill_command_t: public hunter_spell_t
     {
       double chance = reset.chance;
 
-      if ( td( target ) -> dots.pheromone_bomb -> is_ticking() )
-        chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
-
       chance += p() -> talents.bloody_claws -> effectN( 1 ).percent()
         * p() -> buffs.mongoose_fury -> check();
 
@@ -7161,10 +7193,13 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     -> set_default_value( p -> talents.basilisk_collar -> effectN( 1 ).base_value() )
     -> set_period( 0_s );
 
+  debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
+    -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
+    -> set_period( 0_s );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
-  dots.pheromone_bomb = target -> get_dot( "pheromone_bomb", p );
-  dots.shrapnel_bomb = target -> get_dot( "shrapnel_bomb", p );
+  dots.wildfire_bomb = target -> get_dot( "wildfire_bomb_dot", p );
   dots.black_arrow = target -> get_dot( "black_arrow", p );
   dots.barbed_shot = target -> get_dot( "barbed_shot", p );
 
@@ -7592,6 +7627,7 @@ void hunter_t::init_spells()
     talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
     talents.contagious_reagents               = find_talent_spell( talent_tree::SPECIALIZATION, "Contagious Reagents", HUNTER_SURVIVAL );
     talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
+    talents.outland_venom_debuff              = find_spell( 459941 );
 
     talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
     talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
@@ -8491,8 +8527,12 @@ void hunter_t::combat_begin()
 
   if ( talents.basilisk_collar.ok() )
   {
-    make_repeating_event( *sim, 1_s, [ this ] { trigger_basilisk_collar_update( this ); } );
+    make_repeating_event( *sim, 1_s, [ this ] { trigger_basilisk_collar_update(); } );
   }
+
+  if ( talents.outland_venom.ok() )
+    make_repeating_event( *sim, talents.outland_venom_debuff->effectN( 2 ).period(),
+                          [ this ] { trigger_outland_venom_update(); } );
 
   player_t::combat_begin();
 }
@@ -8584,7 +8624,9 @@ double hunter_t::composite_player_target_crit_chance( player_t* target ) const
 {
   double crit = player_t::composite_player_target_crit_chance( target );
 
-  crit += get_target_data( target ) -> debuffs.stampede -> check_value();
+  auto td = get_target_data( target );
+  crit += td->debuffs.stampede->check_value();
+  crit += td->debuffs.outland_venom->check_stack_value();
 
   return crit;
 }
