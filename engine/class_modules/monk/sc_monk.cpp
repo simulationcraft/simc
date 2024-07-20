@@ -176,9 +176,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.pressure_point );
-  parse_effects(
-      p()->buff.kicks_of_flowing_momentum,
-      affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.kicks_of_flowing_momentum,
+                 affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
 
@@ -593,9 +592,8 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * 
-            p()->composite_melee_attack_power() * 
-            p()->composite_damage_versatility();
+        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() *
+                              p()->composite_melee_attack_power() * p()->composite_damage_versatility();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
@@ -606,12 +604,9 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
       if ( p()->buff.gale_force->check() && p()->rng().roll( p()->buff.gale_force->default_chance ) )
       {
-        double gf_damage = s->result_amount;
-
-        gf_damage *= p()->buff.gale_force->data().effectN( 1 ).percent();
-        p()->active_actions.gale_force->target = p()->target;
-        p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = gf_damage;
-        p()->active_actions.gale_force->execute();
+        double amount = s->result_amount * p()->buff.gale_force->data().effectN( 1 ).percent();
+        p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = amount;
+        p()->active_actions.gale_force->execute_on_target( s->target );
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
@@ -2808,7 +2803,7 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
-    if (p()->talent.windwalker.rushing_jade_wind.ok())
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
     {
       p()->trigger_mark_of_the_crane( s );
       if ( p()->bugs )
@@ -4875,10 +4870,9 @@ struct jadefire_stomp_t : public monk_spell_t
 
 struct gale_force_t : public monk_spell_t
 {
-  gale_force_t( monk_t *p )
-    : monk_spell_t( p, "gale_force", p->talent.windwalker.gale_force_damage )
+  gale_force_t( monk_t *p ) : monk_spell_t( p, "gale_force", p->talent.windwalker.gale_force_damage )
   {
-    background = true;
+    background  = true;
     base_dd_min = base_dd_max = 1;
   }
 };
@@ -8229,7 +8223,7 @@ void monk_t::create_buffs()
   buff.momentum_boost_damage =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
                           talent.windwalker.momentum_boost->effectN( 1 ).trigger() )
-              ->set_default_value_from_effect( 1 );
+          ->set_default_value_from_effect( 1 );
 
   buff.momentum_boost_speed =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )

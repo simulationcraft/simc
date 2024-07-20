@@ -105,44 +105,52 @@ struct pet_action_base_t : public BASE
   {
     super_t::impact( s );
 
-    if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-      o()->trigger_empowered_tiger_lightning( s );
+    if ( s->result_type != result_amount_type::DMG_DIRECT && s->result_type != result_amount_type::DMG_OVER_TIME )
+      return;
 
-    if ( !super_t::result_is_miss( s->result ) && s->result_amount > 0 )
+    o()->trigger_empowered_tiger_lightning( s );
+
+    if ( super_t::result_is_miss( s->result ) || s->result_amount <= 0.0 )
+      return;
+
+    if ( o()->buff.gale_force->check() && o()->rng().roll( o()->buff.gale_force->default_chance ) )
     {
-      if ( o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
-      {
-        if ( s->action->school == SCHOOL_SHADOWFLAME )
-        {
-          double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
-          double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
-          double increase      = std::fmin( current_value + result,
-                                            o()->max_health() );  // accumulator is capped at the player's current max hp
-          o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-          o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-        }
+      double amount = s->result_amount * o()->buff.gale_force->data().effectN( 1 ).percent();
+      o()->active_actions.gale_force->base_dd_min = o()->active_actions.gale_force->base_dd_max = amount;
+      o()->active_actions.gale_force->execute_on_target( s->target );
+    }
 
-        switch ( s->action->id )
+    if ( !o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+      return;
+
+    if ( s->action->school == SCHOOL_SHADOWFLAME )
+    {
+      double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
+      double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+      double increase      = std::fmin( current_value + result,
+                                        o()->max_health() );  // accumulator is capped at the player's current max hp
+      o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+      o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+    }
+
+    switch ( s->action->id )
+    {
+      // Blacklist
+      case 425299:  // charred dreams
+      case 325217:  // bonedust brew
+        break;
+      default:
+        // This value is not presented in any spell data and was found via logs.
+        if ( o()->rng().roll( 0.5 ) )
         {
-          // Blacklist
-          case 425299:  // charred dreams
-          case 325217:  // bonedust brew
-            break;
-          default:
-            // This value is not presented in any spell data and was found via logs.
-            if ( o()->rng().roll( 0.5 ) )
-            {
-              double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-              o()->active_actions.charred_dreams_dmg_4p->target = s->target;
-              o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                  o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-              o()->active_actions.charred_dreams_dmg_4p->execute();
-              o()->sim->print_debug(
-                  "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}", s->action->id,
-                  s->result_amount, amt );
-            }
+          double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+          o()->active_actions.charred_dreams_dmg_4p->target = s->target;
+          o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+              o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+          o()->active_actions.charred_dreams_dmg_4p->execute();
+          o()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
+                                 s->action->id, s->result_amount, amt );
         }
-      }
     }
   }
 
