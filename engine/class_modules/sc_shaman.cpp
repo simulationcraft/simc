@@ -13932,7 +13932,7 @@ shaman_t::pets_t::pets_t( shaman_t* s ) :
     } ),
 
     earth_elemental( "earth_elemental", s, []( shaman_t* s ) {
-      return new pet::storm_elemental_t( s,
+      return new pet::earth_elemental_t( s,
         s->talent.primal_elementalist.ok() ? elemental::PRIMAL_EARTH : elemental::GREATER_EARTH,
         elemental_variant::GREATER );
     } ),
