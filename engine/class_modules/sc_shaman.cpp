@@ -6358,12 +6358,6 @@ struct lava_burst_t : public shaman_spell_t
 
     std::swap( snapshot_flags, impact_flags );
 
-    // Elemental and Restoration gain a second Lava Burst charge via Echo of the Elements
-    if ( p()->talent.echo_of_the_elements->ok() )
-    {
-      cooldown->charges = as<int>( data().charges() ) +
-        as<int>( p()->talent.echo_of_the_elements->effectN( 1 ).base_value() );
-    }
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -12326,6 +12320,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.lightning_bolt_2 );
 
   // Talents
+  action.apply_affecting_aura( talent.echo_of_the_elements );
   action.apply_affecting_aura( talent.elemental_assault );
   action.apply_affecting_aura( talent.elemental_fury );
   action.apply_affecting_aura( talent.improved_lightning_bolt );
