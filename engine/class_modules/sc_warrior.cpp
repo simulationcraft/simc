@@ -6743,7 +6743,7 @@ struct storm_bolt_t : public warrior_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     if ( p->talents.mountain_thane.storm_bolts->ok() )
-      aoe = 1 + p->talents.mountain_thane.storm_bolts->effectN( 1 ).base_value();
+      aoe = 1 + as<int>( p->talents.mountain_thane.storm_bolts->effectN( 1 ).base_value() );
   }
 
   bool ready() override
@@ -7275,7 +7275,7 @@ struct avatar_t : public warrior_spell_t
 
     if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() )
     {
-      p()->buff.thunder_blast->trigger( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 1 ).base_value() );
+      p()->buff.thunder_blast->trigger( as<int> ( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 1 ).base_value() ) );
       p()->cooldown.thunder_clap->reset( true );
     }
   }
