@@ -385,7 +385,6 @@ void unholy( player_t* p )
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* san_fishing = p->get_action_priority_list( "san_fishing" );
-  action_priority_list_t* san_fishinb = p->get_action_priority_list( "san_fishinb" );
   action_priority_list_t* san_st = p->get_action_priority_list( "san_st" );
   action_priority_list_t* san_trinkets = p->get_action_priority_list( "san_trinkets" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
@@ -470,9 +469,7 @@ void unholy( player_t* p )
 
   san_fishing->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<40", "San'layn Fishing" );
   san_fishing->add_action( "any_dnd,if=!buff.death_and_decay.up&!buff.vampiric_strike.react" );
-
-  san_fishinb->add_action( "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding" );
-
+  san_fishing->add_action( "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding" );
   san_fishing->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5" );
   san_fishing->add_action( "death_coil,if=!buff.vampiric_strike.react" );
   san_fishing->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react" );
