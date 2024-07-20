@@ -1831,6 +1831,54 @@ action_t* shadowy_tear_t::create_action( util::string_view name, util::string_vi
   return warlock_pet_t::create_action( name, options_str );
 }
 
+unstable_tear_t::unstable_tear_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{ action_list_str = "chaos_barrage"; }
+
+struct chaos_barrage_tick_t : public warlock_pet_spell_t
+{
+  chaos_barrage_tick_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Barrage (tick)", p, p->o()->talents.chaos_barrage_tick )
+  { background = dual = true; }
+};
+
+struct chaos_barrage_t : public warlock_pet_spell_t
+{
+  chaos_barrage_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Barrage", p, p->o()->talents.chaos_barrage )
+  { tick_action = new chaos_barrage_tick_t( p ); }
+
+  bool ready() override
+  {
+    if ( debug_cast<unstable_tear_t*>( p() )->barrages <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast<unstable_tear_t*>( p() )->barrages--;
+  }
+};
+
+void unstable_tear_t::arise()
+{
+  warlock_pet_t::arise();
+
+  barrages = 1;
+}
+
+action_t* unstable_tear_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "chaos_barrage" )
+    return new chaos_barrage_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
 /// Dimensional Rifts End
 
 }  // namespace destruction

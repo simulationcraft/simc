@@ -3271,39 +3271,6 @@ using namespace helpers;
     }
   };
 
-  struct unstable_tear_t : public warlock_spell_t
-  {
-    struct chaos_barrage_tick_t : public warlock_spell_t
-    {
-      chaos_barrage_tick_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
-      {
-        background = dual = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct chaos_barrage_t : public warlock_spell_t
-    {
-      chaos_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
-      {
-        background = true;
-
-        tick_action = new chaos_barrage_tick_t( p );
-      }
-    };
-
-    unstable_tear_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
-    {
-      background = true;
-
-      impact_action = new chaos_barrage_t( p );
-    }
-  };
-
   struct chaos_tear_t : public warlock_spell_t
   {
     struct rift_chaos_bolt_t : public warlock_spell_t
@@ -3340,7 +3307,6 @@ using namespace helpers;
 
   struct dimensional_rift_t : public warlock_spell_t
   {
-    unstable_tear_t* unstable_tear;
     chaos_tear_t* chaos_tear;
 
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
@@ -3351,10 +3317,8 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
 
-      unstable_tear = new unstable_tear_t( p );
       chaos_tear = new chaos_tear_t( p );
 
-      add_child( unstable_tear );
       add_child( chaos_tear );
     }
 
@@ -3370,7 +3334,7 @@ using namespace helpers;
         p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
         break;
       case 1:
-        unstable_tear->execute_on_target( target );
+        p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
         break;
       case 2:
         chaos_tear->execute_on_target( target );

@@ -478,6 +478,15 @@ struct shadowy_tear_t : public warlock_pet_t
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
+
+struct unstable_tear_t : public warlock_pet_t
+{
+  int barrages;
+
+  unstable_tear_t( warlock_t*, util::string_view = "Unstable Tear" );
+  void arise() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+};
 }  // namespace destruction
 
 namespace affliction

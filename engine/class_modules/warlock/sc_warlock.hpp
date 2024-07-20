@@ -146,6 +146,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
 
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
+    spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
