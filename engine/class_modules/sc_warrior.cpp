@@ -2253,7 +2253,7 @@ struct lightning_strike_t : public warrior_attack_t
 
     if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() && !p()->buff.avatar->check() )
     {
-      if ( rng().roll( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 2 ) ) )
+      if ( rng().roll( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 2 ).percent() ) )
         p()->buff.avatar->extend_duration_or_trigger( timespan_t::from_seconds( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() ) );
     }
   }
