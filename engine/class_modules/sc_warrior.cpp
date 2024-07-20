@@ -511,15 +511,18 @@ public:
   {
     // Class Aura
     const spell_data_t* warrior;
+    const spell_data_t* warrior_2;
 
     // Arms Spells
     const spell_data_t* arms_warrior;
+    const spell_data_t* arms_warrior_2;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* sweeping_strikes;
     const spell_data_t* deep_wounds_ARMS;
 
     // Fury Spells
     const spell_data_t* fury_warrior;
+    const spell_data_t* fury_warrior_2;
     const spell_data_t* enrage;
     const spell_data_t* execute;
     const spell_data_t* whirlwind;
@@ -529,6 +532,7 @@ public:
 
     // Protection Spells
     const spell_data_t* protection_warrior;
+    const spell_data_t* protection_warrior_2;
     const spell_data_t* devastate;
     const spell_data_t* riposte;
     const spell_data_t* vanguard;
@@ -8097,10 +8101,12 @@ void warrior_t::init_spells()
 
   // Class Passives
   spec.warrior                  = find_spell( 137047 );
+  spec.warrior_2                = find_spell( 462116 );
 
   // Arms Spells
   mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
+  spec.arms_warrior_2           = find_spell( 462115 ); // Trinket aura
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
@@ -8114,6 +8120,7 @@ void warrior_t::init_spells()
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
   spec.fury_warrior             = find_specialization_spell( "Fury Warrior" );
+  spec.fury_warrior_2           = find_spell( 462117 );  // Trinket aura
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.execute                  = find_specialization_spell( "Execute" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
@@ -8128,6 +8135,7 @@ void warrior_t::init_spells()
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
   spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );
+  spec.protection_warrior_2     = find_spell( 462119 );  // Trinket aura
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.vanguard                 = find_specialization_spell( "Vanguard" );
@@ -9791,7 +9799,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( buff.defensive_stance->check() )
   {
-    m *= 1.0 + talents.warrior.defensive_stance->effectN( 2 ).percent() + spec.protection_warrior->effectN( 21 ).percent();
+    m *= 1.0 + talents.warrior.defensive_stance->effectN( 2 ).percent() + spec.protection_warrior->effectN( 18 ).percent();
   }
 
   return m;
@@ -10416,7 +10424,7 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
   {
     if ( buff.defensive_stance->up() )
     {
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent() + spec.protection_warrior->effectN( 20 ).percent();
+      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent() + spec.protection_warrior->effectN( 17 ).percent();
     }
 
     if ( buff.defensive_stance->up() && talents.protection.fight_through_the_flames->ok() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
