@@ -12021,7 +12021,7 @@ void shaman_t::create_buffs()
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
-                            ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
+                            ->set_default_value( talent.magma_chamber->effectN( 1 ).base_value() * ( 1 / 1000.0) );
 
   buff.power_of_the_maelstrom =
       make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )
