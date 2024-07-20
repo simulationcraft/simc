@@ -4537,7 +4537,7 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->buff.sudden_death->up() )
     {
-      p()->buff.sudden_death->expire();
+      p()->buff.sudden_death->decrement();
       if ( p()->talents.slayer.imminent_demise->ok() )
       {
         p()->buff.imminent_demise->trigger();
@@ -4792,7 +4792,7 @@ struct execute_fury_t : public warrior_attack_t
     p()->buff.meat_cleaver->decrement();
     if ( p() -> buff.sudden_death -> up() )
     {
-      p()->buff.sudden_death->expire();
+      p()->buff.sudden_death->decrement();
       if ( p()->talents.slayer.imminent_demise->ok() )
       {
         p()->buff.imminent_demise->trigger();
