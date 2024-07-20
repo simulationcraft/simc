@@ -305,6 +305,9 @@ public:
     buff_t* warblades_hunger;
     buff_t* thrill_of_the_fight_attack_speed;
     buff_t* thrill_of_the_fight_damage;
+    buff_t* art_of_the_glaive_first;
+    buff_t* art_of_the_glaive_second_rending_strike;
+    buff_t* art_of_the_glaive_second_glaive_flurry;
 
     // Fel-scarred
     buff_t* monster_rising;
@@ -1705,6 +1708,34 @@ public:
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
     ab::parse_effects( p()->buff.thrill_of_the_fight_damage );
+    // Art of the Glaive empowered ability buffs GO
+    std::vector<int> art_of_the_glaive_affected_list = {};
+    auto art_of_the_glaive = [ &art_of_the_glaive_affected_list, this ]( int idx, buff_t* buff ) {
+      auto in_whitelist = [ &art_of_the_glaive_affected_list, this ]() {
+        return std::find( art_of_the_glaive_affected_list.begin(), art_of_the_glaive_affected_list.end(), ab::id ) !=
+               art_of_the_glaive_affected_list.end();
+      };
+
+      if ( const auto& effect = p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( idx );
+           effect.ok() && in_whitelist() )
+        add_parse_entry( ab::da_multiplier_effects ).set_buff( buff ).set_value( effect.percent() ).set_eff( &effect );
+    };
+    std::vector<int> art_of_the_glaive_glaive_flurry_affected_list  = { 199552, 200685, 391374, 391378, 210153,
+                                                                        210155, 393054, 393055, 228478 };
+    std::vector<int> art_of_the_glaive_rending_strike_affected_list = { 199547, 222031, 201428, 227518,
+                                                                        203782, 225919, 225921 };
+    // First empowered
+    art_of_the_glaive_affected_list = art_of_the_glaive_glaive_flurry_affected_list;
+    art_of_the_glaive_affected_list.insert( art_of_the_glaive_affected_list.end(),
+                                            art_of_the_glaive_rending_strike_affected_list.begin(),
+                                            art_of_the_glaive_rending_strike_affected_list.end() );
+    art_of_the_glaive( 3, p()->buff.art_of_the_glaive_first );
+    // Second empowered
+    art_of_the_glaive_affected_list = art_of_the_glaive_glaive_flurry_affected_list;
+    art_of_the_glaive( 4, p()->buff.art_of_the_glaive_second_glaive_flurry );
+    art_of_the_glaive_affected_list = art_of_the_glaive_rending_strike_affected_list;
+    art_of_the_glaive( 4, p()->buff.art_of_the_glaive_second_rending_strike );
+    // End Art of the Glaive bullshittery
 
     // Fel-scarred
     ab::parse_effects( p()->buff.enduring_torment );
@@ -2126,6 +2157,16 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.glaive_flurry->expire();
+      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
+      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+        BASE::p()->buff.art_of_the_glaive_first->expire();
+        BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
+        BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
+        if ( !second_ability )
+        {
+          BASE::p()->buff.art_of_the_glaive_second_rending_strike->trigger();
+        }
+      } );
     }
     else if ( ABILITY == art_of_the_glaive_ability::RENDING_STRIKE &&
               BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && BASE::p()->buff.rending_strike->up() )
@@ -2139,6 +2180,16 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.rending_strike->expire();
+      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
+      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+        BASE::p()->buff.art_of_the_glaive_first->expire();
+        BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
+        BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
+        if ( !second_ability )
+        {
+          BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->trigger();
+        }
+      } );
     }
 
     if ( second_ability )
@@ -6064,6 +6115,7 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
 
     p()->buff.glaive_flurry->trigger();
     p()->buff.rending_strike->trigger();
+    p()->buff.art_of_the_glaive_first->trigger();
   }
 
   bool ready() override
@@ -7204,6 +7256,14 @@ void demon_hunter_t::create_buffs()
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.thrill_of_the_fight_damage =
       make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
+  buff.art_of_the_glaive_first = make_buff( this, "art_of_the_glaive_first", talent.aldrachi_reaver.art_of_the_glaive )
+                                     ->set_duration( buff.glaive_flurry->buff_duration() );
+  buff.art_of_the_glaive_second_glaive_flurry =
+      make_buff( this, "art_of_the_glaive_second_glaive_flurry", talent.aldrachi_reaver.art_of_the_glaive )
+          ->set_duration( buff.glaive_flurry->buff_duration() );
+  buff.art_of_the_glaive_second_rending_strike =
+      make_buff( this, "art_of_the_glaive_second_rending_strike", talent.aldrachi_reaver.art_of_the_glaive )
+          ->set_duration( buff.glaive_flurry->buff_duration() );
 
   // Fel-scarred ============================================================
 
