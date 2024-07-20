@@ -3066,13 +3066,10 @@ struct moonkin_form_buff_t final : public druid_buff_t
   }
 };
 
-// Berserk (Bear) Buff ======================================================
-template <bool INC>
-struct berserk_bear_buff_t final : public druid_buff_t
+// Berserk / Incarnation (Bear) Buff ========================================
+struct berserk_bear_buff_base_t : public druid_buff_t
 {
-  double inc_mul;
-
-  berserk_bear_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  berserk_bear_buff_base_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
   {
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
@@ -3082,11 +3079,6 @@ struct berserk_bear_buff_t final : public druid_buff_t
       set_default_value_from_effect_type( A_HASTE_ALL );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     }
-
-    if constexpr ( !INC )
-      set_name_reporting( "berserk" );
-    else
-      inc_mul = 1.0 + find_effect( p->spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent();
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -3106,9 +3098,6 @@ struct berserk_bear_buff_t final : public druid_buff_t
     // only growl needs to be adjusted as mangle & thrash are in dynamic_cooldown_list
     if ( p()->talent.berserk_ravage.ok() )
       p()->cooldown.growl->adjust_recharge_multiplier();
-
-    if constexpr ( INC )
-      p()->adjust_health_pct( inc_mul, true );
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -3117,9 +3106,38 @@ struct berserk_bear_buff_t final : public druid_buff_t
 
     if ( p()->talent.berserk_ravage.ok() )
       p()->cooldown.growl->adjust_recharge_multiplier();
+  }
+};
 
-    if constexpr ( INC )
-      p()->adjust_health_pct( inc_mul, false );
+struct berserk_bear_buff_t final : public berserk_bear_buff_base_t
+{
+  berserk_bear_buff_t( druid_t* p ) : berserk_bear_buff_base_t( p, "berserk_bear", p->spec.berserk_bear )
+  {
+    set_name_reporting( "berserk" );
+  }
+};
+
+struct incarnation_bear_buff_t final : public berserk_bear_buff_base_t
+{
+  double inc_mul;
+
+  incarnation_bear_buff_t( druid_t* p )
+    : berserk_bear_buff_base_t( p, "incarnation_guardian_of_ursoc", p->spec.incarnation_bear ),
+      inc_mul( 1.0 + find_effect( p->spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() )
+  {}
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    berserk_bear_buff_base_t::start( s, v, d );
+
+    p()->adjust_health_pct( inc_mul, true );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    berserk_bear_buff_base_t::expire_override( s, d );
+
+    p()->adjust_health_pct( inc_mul, false );
   }
 };
 
@@ -10595,11 +10613,11 @@ void druid_t::create_buffs()
                                            talent.after_the_wildfire->effectN( 1 ).trigger() )
                               ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
-  buff.berserk_bear = make_fallback<berserk_bear_buff_t<false>>( talent.berserk_ravage.ok(),
-    this, "berserk_bear", spec.berserk_bear );
+  buff.berserk_bear =
+    make_fallback<berserk_bear_buff_t>( talent.berserk_ravage.ok(), this, "berserk_bear" );
 
-  buff.incarnation_bear = make_fallback<berserk_bear_buff_t<true>>( talent.incarnation_bear.ok(),
-    this, "incarnation_guardian_of_ursoc", spec.incarnation_bear );
+  buff.incarnation_bear =
+    make_fallback<incarnation_bear_buff_t>( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc" );
 
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
