@@ -49,7 +49,7 @@ enum class feral_spirit_cast : unsigned
 {
   NORMAL = 0U,
   TIER28,
-  TIER31,
+  TIER31, // .. and Dragonflight Season 4
   ROLLING_THUNDER
 };
 
@@ -7266,6 +7266,11 @@ struct feral_spirit_spell_t : public shaman_spell_t
       p()->cooldown.primordial_wave->adjust( -1.0 *
         player->sets->set( SHAMAN_ENHANCEMENT, T31, B4 )->effectN( 1 ).time_value() * n_summons );
     }
+    else if ( player->sets->has_set_bonus( SHAMAN_ENHANCEMENT, DF4, B4 ) )
+    {
+      p()->cooldown.primordial_wave->adjust( -1.0 *
+        player->sets->set( SHAMAN_ENHANCEMENT, DF4, B4 )->effectN( 1 ).time_value() * n_summons );
+    }
 
     if ( type == feral_spirit_cast::TIER31 || type == feral_spirit_cast::ROLLING_THUNDER )
     {
@@ -10186,7 +10191,8 @@ void shaman_t::create_actions()
     action.feral_spirit_t28 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER28 );
   }
 
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) ||
+       sets->has_set_bonus( SHAMAN_ENHANCEMENT, DF4, B2 ) )
   {
     action.feral_spirit_t31 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER31 );
   }
