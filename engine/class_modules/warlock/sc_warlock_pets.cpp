@@ -1778,6 +1778,61 @@ void blasphemy_t::init_base_stats()
 
 /// Blasphemy End
 
+/// Dimensional Rifts Begin
+
+shadowy_tear_t::shadowy_tear_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{ action_list_str = "Shadow Barrage"; }
+
+struct rift_shadow_bolt_t : public warlock_pet_spell_t
+{
+  rift_shadow_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Shadow Bolt", p, p->o()->talents.rift_shadow_bolt )
+  { background = dual = true; }
+};
+
+struct shadow_barrage_t : public warlock_pet_spell_t
+{
+  shadow_barrage_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Shadow Barrage", p, p->o()->talents.shadow_barrage )
+  { tick_action = new rift_shadow_bolt_t( p ); }
+
+  bool ready() override
+  {
+    if ( debug_cast<shadowy_tear_t*>( p() )->barrages <=0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast<shadowy_tear_t*>( p() )->barrages--;
+  }
+
+  double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
+  { return 1.0; }
+};
+
+void shadowy_tear_t::arise()
+{
+  warlock_pet_t::arise();
+
+  barrages = 1;
+}
+
+action_t* shadowy_tear_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "shadow_barrage" )
+    return new shadow_barrage_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Dimensional Rifts End
+
 }  // namespace destruction
 
 namespace affliction

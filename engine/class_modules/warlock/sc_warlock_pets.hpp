@@ -469,6 +469,15 @@ struct blasphemy_t : public infernal_t
   action_t* blasphemous_existence;
   void init_base_stats() override;
 };
+
+struct shadowy_tear_t : public warlock_pet_t
+{
+  int barrages;
+
+  shadowy_tear_t( warlock_t*, util::string_view = "Shadowy Tear" );
+  void arise() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+};
 }  // namespace destruction
 
 namespace affliction

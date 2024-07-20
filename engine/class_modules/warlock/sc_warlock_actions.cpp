@@ -3271,43 +3271,6 @@ using namespace helpers;
     }
   };
 
-  struct shadowy_tear_t : public warlock_spell_t
-  {
-    struct rift_shadow_bolt_t : public warlock_spell_t
-    {
-      rift_shadow_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
-      {
-        background = dual = true;
-
-        // TOCHECK: In the past, this double-dipped on both direct and periodic spell auras
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct shadow_barrage_t : public warlock_spell_t
-    {
-      shadow_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
-      {
-        background = true;
-
-        tick_action = new rift_shadow_bolt_t( p );
-      }
-
-      double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
-      { return 1.0; }
-    };
-
-    shadowy_tear_t( warlock_t* p )
-      : warlock_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
-    {
-      background = true;
-
-      impact_action = new shadow_barrage_t( p );
-    }
-  };
-
   struct unstable_tear_t : public warlock_spell_t
   {
     struct chaos_barrage_tick_t : public warlock_spell_t
@@ -3377,7 +3340,6 @@ using namespace helpers;
 
   struct dimensional_rift_t : public warlock_spell_t
   {
-    shadowy_tear_t* shadowy_tear;
     unstable_tear_t* unstable_tear;
     chaos_tear_t* chaos_tear;
 
@@ -3389,11 +3351,9 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
 
-      shadowy_tear = new shadowy_tear_t( p );
       unstable_tear = new unstable_tear_t( p );
       chaos_tear = new chaos_tear_t( p );
 
-      add_child( shadowy_tear );
       add_child( unstable_tear );
       add_child( chaos_tear );
     }
@@ -3407,7 +3367,7 @@ using namespace helpers;
       switch ( rift )
       {
       case 0:
-        shadowy_tear->execute_on_target( target );
+        p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
         break;
       case 1:
         unstable_tear->execute_on_target( target );
