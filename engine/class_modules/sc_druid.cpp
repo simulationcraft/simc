@@ -3066,6 +3066,63 @@ struct moonkin_form_buff_t final : public druid_buff_t
   }
 };
 
+// Berserk (Bear) Buff ======================================================
+template <bool INC>
+struct berserk_bear_buff_t final : public druid_buff_t
+{
+  double inc_mul;
+
+  berserk_bear_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_cooldown( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
+    if ( p->talent.berserk_unchecked_aggression.ok() )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+
+    if constexpr ( !INC )
+      set_name_reporting( "berserk" );
+    else
+      inc_mul = 1.0 + find_effect( p->spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent();
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    if ( p()->talent.berserk_persistence.ok() )
+      p()->cooldown.frenzied_regeneration->reset( true, p()->cooldown.frenzied_regeneration->charges );
+
+    if ( p()->talent.berserk_ravage.ok() )
+    {
+      p()->cooldown.growl->reset( true );
+      p()->cooldown.mangle->reset( true );
+      p()->cooldown.thrash_bear->reset( true );
+    }
+
+    base_t::start( s, v, d );
+
+    // only growl needs to be adjusted as mangle & thrash are in dynamic_cooldown_list
+    if ( p()->talent.berserk_ravage.ok() )
+      p()->cooldown.growl->adjust_recharge_multiplier();
+
+    if constexpr ( INC )
+      p()->adjust_health_pct( inc_mul, true );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    if ( p()->talent.berserk_ravage.ok() )
+      p()->cooldown.growl->adjust_recharge_multiplier();
+
+    if constexpr ( INC )
+      p()->adjust_health_pct( inc_mul, false );
+  }
+};
+
 // Bloodtalons Tracking Buff ================================================
 struct bt_dummy_buff_t final : public druid_buff_t
 {
@@ -10538,41 +10595,11 @@ void druid_t::create_buffs()
                                            talent.after_the_wildfire->effectN( 1 ).trigger() )
                               ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
-  auto berserk_cd_fn = [ this ] {
-    cooldown.growl->adjust_recharge_multiplier();
-    cooldown.mangle->adjust_recharge_multiplier();
-    cooldown.thrash_bear->adjust_recharge_multiplier();
-    cooldown.frenzied_regeneration->adjust_recharge_multiplier();
-  };
+  buff.berserk_bear = make_fallback<berserk_bear_buff_t<false>>( talent.berserk_ravage.ok(),
+    this, "berserk_bear", spec.berserk_bear );
 
-  buff.berserk_bear =
-    make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
-      ->set_name_reporting( "berserk" )
-      ->set_stack_change_callback( [ berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
-
-  buff.incarnation_bear =
-    make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )
-      ->set_stack_change_callback(
-        [ this,
-          berserk_cd_fn,
-          mul = 1.0 + find_effect( spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() ]
-        ( buff_t*, int old_, int new_ ) {
-          berserk_cd_fn();
-          if ( !old_ )
-            adjust_health_pct( mul, true );
-          else if ( !new_ )
-            adjust_health_pct( mul, false );
-        } );
-
-  buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
-  buff.b_inc_bear->set_cooldown( 0_ms )
-    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-
-  if ( talent.berserk_unchecked_aggression.ok() )
-  {
-    buff.b_inc_bear->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
+  buff.incarnation_bear = make_fallback<berserk_bear_buff_t<true>>( talent.incarnation_bear.ok(),
+    this, "incarnation_guardian_of_ursoc", spec.incarnation_bear );
 
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
