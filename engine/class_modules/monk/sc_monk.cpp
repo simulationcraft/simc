@@ -2820,7 +2820,7 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       }
     }
 
-    if ( p()->talent.windwalker.gale_force.ok() ){}
+    if ( p()->talent.windwalker.gale_force.ok() )
       get_td( s->target )->debuff.gale_force->trigger();
   }
 };
