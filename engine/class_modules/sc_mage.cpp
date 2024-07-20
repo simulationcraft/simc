@@ -8727,6 +8727,17 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     } );
   }
 
+  // Let action.frostbolt/fireball refer to frostfire_bolt
+  if ( talents.frostfire_bolt.ok() && splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "action" ) )
+  {
+    // TODO: update this once blizz finalizes which spell replaces which
+    if ( util::str_compare_ci( splits[ 1 ], "fireball" ) || util::str_compare_ci( splits[ 1 ], "frostbolt" ) )
+    {
+      if ( auto a = find_action( "frostfire_bolt" ) )
+        return a->create_expression( splits[ 2 ] );
+    }
+  }
+
   return player_t::create_expression( name );
 }
 
