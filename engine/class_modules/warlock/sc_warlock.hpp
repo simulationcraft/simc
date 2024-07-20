@@ -145,6 +145,10 @@ public:
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
 
+    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
+    spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
+    spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
@@ -412,7 +416,7 @@ public:
 
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t improved_chaos_bolt; // TODO: New
+    player_talent_t improved_chaos_bolt;
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
@@ -444,7 +448,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -453,10 +457,10 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;

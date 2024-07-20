@@ -1778,6 +1778,201 @@ void blasphemy_t::init_base_stats()
 
 /// Blasphemy End
 
+/// Dimensional Rifts Begin
+
+shadowy_tear_t::shadowy_tear_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  action_list_str = "Shadow Barrage";
+}
+
+struct rift_shadow_bolt_t : public warlock_pet_spell_t
+{
+  rift_shadow_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Shadow Bolt", p, p->o()->talents.rift_shadow_bolt )
+  { background = dual = true; }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->o()->talents.ruin->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+struct shadow_barrage_t : public warlock_pet_spell_t
+{
+  shadow_barrage_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Shadow Barrage", p, p->o()->talents.shadow_barrage )
+  { tick_action = new rift_shadow_bolt_t( p ); }
+
+  bool ready() override
+  {
+    if ( debug_cast<shadowy_tear_t*>( p() )->barrages <=0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast<shadowy_tear_t*>( p() )->barrages--;
+  }
+
+  double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
+  { return 1.0; }
+};
+
+void shadowy_tear_t::arise()
+{
+  warlock_pet_t::arise();
+
+  barrages = 1;
+}
+
+action_t* shadowy_tear_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "shadow_barrage" )
+    return new shadow_barrage_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+unstable_tear_t::unstable_tear_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  action_list_str = "chaos_barrage";
+}
+
+struct chaos_barrage_tick_t : public warlock_pet_spell_t
+{
+  chaos_barrage_tick_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Barrage (tick)", p, p->o()->talents.chaos_barrage_tick )
+  { background = dual = true; }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->o()->talents.ruin->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+struct chaos_barrage_t : public warlock_pet_spell_t
+{
+  chaos_barrage_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Barrage", p, p->o()->talents.chaos_barrage )
+  { tick_action = new chaos_barrage_tick_t( p ); }
+
+  bool ready() override
+  {
+    if ( debug_cast<unstable_tear_t*>( p() )->barrages <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast<unstable_tear_t*>( p() )->barrages--;
+  }
+};
+
+void unstable_tear_t::arise()
+{
+  warlock_pet_t::arise();
+
+  barrages = 1;
+}
+
+action_t* unstable_tear_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "chaos_barrage" )
+    return new chaos_barrage_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+chaos_tear_t::chaos_tear_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  action_list_str = "chaos_bolt";
+}
+
+struct rift_chaos_bolt_t : public warlock_pet_spell_t
+{
+  rift_chaos_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.rift_chaos_bolt )
+  { }
+
+  double composite_crit_chance() const override
+  { return 1.0; }
+
+  bool ready() override
+  {
+    if ( debug_cast<chaos_tear_t*>( p() )->bolts <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    debug_cast<chaos_tear_t*>( p() )->bolts--;
+  }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    warlock_pet_spell_t::calculate_direct_amount( s );
+
+    s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
+
+    return s->result_total;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->o()->talents.ruin->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+void chaos_tear_t::arise()
+{
+  warlock_pet_t::arise();
+
+  bolts = 1;
+}
+
+action_t* chaos_tear_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "chaos_bolt" )
+    return new rift_chaos_bolt_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Dimensional Rifts End
+
 }  // namespace destruction
 
 namespace affliction

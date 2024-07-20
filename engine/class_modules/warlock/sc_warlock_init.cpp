@@ -424,17 +424,19 @@ namespace warlock
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = find_spell( 281490 );
 
-    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
+    talents.improved_chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Bolt" ); // Should be ID 456951
 
-    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
+    talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
+    talents.burn_to_ashes_buff = find_spell( 387154 );
+
+    talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
 
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
 
-    talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
+    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
-    talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
-    talents.burn_to_ashes_buff = find_spell( 387154 );
+    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
@@ -606,9 +608,10 @@ namespace warlock
                                  ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
                                  ->set_reverse( true );
 
+    // 2024-07-19 - Power Overwhelming appears to grant double the listed value per stack
     buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 * 2.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )

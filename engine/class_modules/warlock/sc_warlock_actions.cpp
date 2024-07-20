@@ -2593,8 +2593,7 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( p()->talents.burn_to_ashes.ok() )
-          m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
         return m;
       }
@@ -2668,8 +2667,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.burn_to_ashes.ok() )
-        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
       return m;
     }
@@ -2784,11 +2782,22 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
+      base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
+
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
         add_child( internal_combustion );
       }
+    }
+
+    timespan_t execute_time_flat_modifier() const override
+    {
+      timespan_t m = warlock_spell_t::execute_time_flat_modifier();
+
+      m += p()->talents.improved_chaos_bolt->effectN( 2 ).time_value();
+
+      return m;
     }
 
     double cost_pct_multiplier() const override
@@ -3262,116 +3271,8 @@ using namespace helpers;
     }
   };
 
-  struct shadowy_tear_t : public warlock_spell_t
-  {
-    struct rift_shadow_bolt_t : public warlock_spell_t
-    {
-      rift_shadow_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
-      {
-        background = dual = true;
-
-        // TOCHECK: In the past, this double-dipped on both direct and periodic spell auras
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct shadow_barrage_t : public warlock_spell_t
-    {
-      shadow_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
-      {
-        background = true;
-
-        tick_action = new rift_shadow_bolt_t( p );
-      }
-
-      double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
-      { return 1.0; }
-    };
-
-    shadowy_tear_t( warlock_t* p )
-      : warlock_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
-    {
-      background = true;
-
-      impact_action = new shadow_barrage_t( p );
-    }
-  };
-
-  struct unstable_tear_t : public warlock_spell_t
-  {
-    struct chaos_barrage_tick_t : public warlock_spell_t
-    {
-      chaos_barrage_tick_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
-      {
-        background = dual = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct chaos_barrage_t : public warlock_spell_t
-    {
-      chaos_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
-      {
-        background = true;
-
-        tick_action = new chaos_barrage_tick_t( p );
-      }
-    };
-
-    unstable_tear_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
-    {
-      background = true;
-
-      impact_action = new chaos_barrage_t( p );
-    }
-  };
-
-  struct chaos_tear_t : public warlock_spell_t
-  {
-    struct rift_chaos_bolt_t : public warlock_spell_t
-    {
-      rift_chaos_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
-      {
-        background = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-
-      double composite_crit_chance() const override
-      { return 1.0; }
-
-      double calculate_direct_amount( action_state_t* s ) const override
-      {
-        warlock_spell_t::calculate_direct_amount( s );
-
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-        return s->result_total;
-      }
-    };
-
-    chaos_tear_t( warlock_t* p )
-      : warlock_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
-    {
-      background = true;
-      
-      impact_action = new rift_chaos_bolt_t( p );
-    }
-  };
-
   struct dimensional_rift_t : public warlock_spell_t
   {
-    shadowy_tear_t* shadowy_tear;
-    unstable_tear_t* unstable_tear;
-    chaos_tear_t* chaos_tear;
-
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
@@ -3379,14 +3280,6 @@ using namespace helpers;
 
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
-
-      shadowy_tear = new shadowy_tear_t( p );
-      unstable_tear = new unstable_tear_t( p );
-      chaos_tear = new chaos_tear_t( p );
-
-      add_child( shadowy_tear );
-      add_child( unstable_tear );
-      add_child( chaos_tear );
     }
 
     void execute() override
@@ -3398,13 +3291,13 @@ using namespace helpers;
       switch ( rift )
       {
       case 0:
-        shadowy_tear->execute_on_target( target );
+        p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
         break;
       case 1:
-        unstable_tear->execute_on_target( target );
+        p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
         break;
       case 2:
-        chaos_tear->execute_on_target( target );
+        p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
         break;
       default:
         break;
