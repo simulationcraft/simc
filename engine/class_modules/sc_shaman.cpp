@@ -4205,7 +4205,7 @@ struct earthen_rage_driver_t : public spell_t
   earthen_rage_driver_t( shaman_t* p ) : spell_t( "earthen_rage", p, p -> find_spell( 170377 ) )
   {
     may_miss = may_crit = callbacks = proc = tick_may_crit = tick_zero = false;
-    background = quiet = dual = dynamic_tick_action = true;
+    background = dual = dynamic_tick_action = true;
 
     tick_action = new earthen_rage_spell_t( p );
   }
