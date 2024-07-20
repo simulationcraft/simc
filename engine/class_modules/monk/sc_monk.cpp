@@ -176,9 +176,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.pressure_point );
-  parse_effects(
-      p()->buff.kicks_of_flowing_momentum,
-      affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.kicks_of_flowing_momentum,
+                 affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
 
@@ -593,14 +592,22 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold =
-            p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
+        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() *
+                              p()->composite_melee_attack_power() * p()->composite_damage_versatility();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
           p()->flurry_strikes_damage -= ap_threshold;
           p()->buff.flurry_charge->trigger();
         }
+      }
+
+      if ( get_td( s->target )->debuff.gale_force->check() &&
+           p()->rng().roll( get_td( s->target )->debuff.gale_force->default_chance ) )
+      {
+        double amount = s->result_amount * get_td( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
+        p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = amount;
+        p()->active_actions.gale_force->execute_on_target( s->target );
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
@@ -2737,6 +2744,19 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     return am;
   }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if (p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs)
+    {
+      p()->buff.rushing_jade_wind->trigger();
+      p()->buff.combo_strikes->expire();
+      p()->buff.hit_combo->expire();
+    }
+      
+  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2790,7 +2810,18 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     }
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    {
       p()->trigger_mark_of_the_crane( s );
+      if ( p()->bugs )
+      {
+        p()->buff.rushing_jade_wind->trigger();
+        p()->buff.combo_strikes->expire();
+        p()->buff.hit_combo->expire();
+      }
+    }
+
+    if ( p()->talent.windwalker.gale_force.ok() )
+      get_td( s->target )->debuff.gale_force->trigger();
   }
 };
 
@@ -2833,7 +2864,12 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack->execute();
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    {
       p()->buff.rushing_jade_wind->trigger();
+      if ( p()->bugs )
+        combo_strikes_trigger();
+    }
+      
 
     p()->buff.tigers_ferocity->trigger();
 
@@ -4842,6 +4878,19 @@ struct jadefire_stomp_t : public monk_spell_t
     get_td( s->target )->debuff.jadefire_brand->trigger();
   }
 };
+
+// ==========================================================================
+// Gale Force
+// ==========================================================================
+
+struct gale_force_t : public monk_spell_t
+{
+  gale_force_t( monk_t *p ) : monk_spell_t( p, "gale_force", p->talent.windwalker.gale_force_damage )
+  {
+    background  = true;
+    base_dd_min = base_dd_max = 1;
+  }
+};
 }  // namespace spells
 
 namespace heals
@@ -6507,6 +6556,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
+  debuff.gale_force = make_buff( *this, "gale_force", p->find_spell( 451582 ) )
+      ->set_trigger_spell( p->talent.windwalker.gale_force );
+
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
@@ -7407,7 +7459,8 @@ void monk_t::init_spells()
     talent.windwalker.rising_star       = _ST( "Rising Star" );
     talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
     talent.windwalker.dual_threat       = _ST( "Dual Threat" );
-    talent.windwalker.gale_force        = _ST( "Gale Force" );
+    talent.windwalker.gale_force        = _STID( 451580 );
+    talent.windwalker.gale_force_damage = find_spell( 451585 );
     // Row 9
     talent.windwalker.last_emperors_capacitor  = _ST( "Last Emperor's Capacitor" );
     talent.windwalker.whirling_dragon_punch    = _ST( "Whirling Dragon Punch" );
@@ -7659,6 +7712,7 @@ void monk_t::init_spells()
     active_actions.fury_of_xuen_summon       = new actions::fury_of_xuen_summon_t( this );
     active_actions.fury_of_xuen_empowered_tiger_lightning =
         new actions::fury_of_xuen_empowered_tiger_lightning_t( this );
+    active_actions.gale_force = new actions::gale_force_t( this );
   }
 
   // Passive Action Spells
@@ -8185,7 +8239,7 @@ void monk_t::create_buffs()
   buff.momentum_boost_damage =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
                           talent.windwalker.momentum_boost->effectN( 1 ).trigger() )
-              ->set_default_value_from_effect( 1 );
+          ->set_default_value_from_effect( 1 );
 
   buff.momentum_boost_speed =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
@@ -9703,6 +9757,9 @@ public:
     ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
     ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
+    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20", true );
+    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events",
+                 "2024-07-20", true );
 
     // =================================================
 
