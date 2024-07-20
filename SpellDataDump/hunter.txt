@@ -22580,6 +22580,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Building up to an Explosive Shot...
 
+Name             : Sulfur-Lined Pockets (id=459834) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 180 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Do Not Display Duration (170)
+Effects          :
+#1 (id=1166930)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Your next Arcane Shot is replaced with an Explosive Shot.
+
 Name             : Grenade Juggler (id=459843) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter

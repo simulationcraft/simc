@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55665
-static const std::array<spelltext_data_t, 26227> __spelltext_data { {
+static const std::array<spelltext_data_t, 26228> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25988,6 +25988,7 @@ static const std::array<spelltext_data_t, 26227> __spelltext_data { {
   { 459809, "Crackling Jade Lightning now chains to $s1 additional targets and its channel time is reduced by $s2%.", 0, 0 },
   { 459828, "Every $459830u Quick Shots is replaced with an Explosive Shot at $s2% effectiveness.", 0, 0 },
   { 459830, 0, "Building up to an Explosive Shot...", 0 },
+  { 459834, 0, "Your next Arcane Shot is replaced with an Explosive Shot.", 0 },
   { 459839, "After you cast Strike of the Windlord, the global cooldown of your next $s2 Tiger Palms is reduced by $459841s1%.\r\n\r\nYour damaging spells and abilities have a chance to grant $s1 stack of Darting Hurricane.", 0, 0 },
   { 459841, "$@spelldesc459839", 0, 0 },
   { 459843, "Wildfire Bomb deals $s1% increased damage and has a $s2% chance to also cast an Explosive Shot at your target at $s5% effectiveness.\r\n\r\nExplosive Shot reduces the cooldown of Wildfire Bomb by ${$s3/1000} sec.", 0, 0 },
