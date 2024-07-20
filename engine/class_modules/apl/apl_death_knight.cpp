@@ -382,8 +382,10 @@ void unholy( player_t* p )
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* cds_san = p->get_action_priority_list( "cds_san" );
   action_priority_list_t* cds_shared = p->get_action_priority_list( "cds_shared" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* san_fishing = p->get_action_priority_list( "san_fishing" );
+  action_priority_list_t* san_fishinb = p->get_action_priority_list( "san_fishinb" );
   action_priority_list_t* san_st = p->get_action_priority_list( "san_st" );
   action_priority_list_t* san_trinkets = p->get_action_priority_list( "san_trinkets" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
@@ -413,42 +415,49 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=cds_shared" );
   default_->add_action( "call_action_list,name=cds,if=!talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=cds_san,if=talent.vampiric_strike" );
-  default_->add_action( "call_action_list,name=aoe_burst,if=active_enemies>=2&buff.death_and_decay.up" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=2&!buff.death_and_decay.up" );
+  default_->add_action( "call_action_list,name=cleave,if=active_enemies<4&active_enemies>=2" );
+  default_->add_action( "call_action_list,name=aoe_burst,if=active_enemies>=4&buff.death_and_decay.up" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4&!buff.death_and_decay.up" );
   default_->add_action( "run_action_list,name=san_fishing,if=talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.remains<cooldown.dark_transformation.remains+2" );
   default_->add_action( "call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike" );
 
-  aoe->add_action( "any_dnd,if=(!talent.bursting_sores|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5)", "AOE" );
-  aoe->add_action( "epidemic,if=buff.sudden_doom.react&talent.doomed_bidding&talent.menacing_magus" );
-  aoe->add_action( "festering_strike,if=debuff.festering_wound.stack<4&(buff.festering_scythe.react|cooldown.apocalypse.remains<variable.apoc_timing)" );
-  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>variable.apoc_timing" );
+  aoe->add_action( "any_dnd,if=!buff.death_and_decay.up&(!talent.bursting_sores|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5)", "AOE" );
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power" );
+  aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<4&(buff.festering_scythe.react|cooldown.apocalypse.remains<gcd&debuff.festering_wound.stack=0)" );
+  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>gcd" );
   aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<4" );
 
-  aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30|buff.festermight.stack=20|buff.sudden_doom.react&talent.doomed_bidding&talent.menacing_magus)", "AoE Burst" );
+  aoe_burst->add_action( "defile,if=!defile.ticking", "AoE Burst" );
+  aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power&(active_enemies>=6&!talent.bursting_sores|talent.bursting_sores&death_knight.fwounded_targets!=active_enemies&death_knight.fwounded_targets<6|!talent.bursting_sores&runic_power.deficit<30|buff.sudden_doom.react)" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1" );
-  aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power|fight_remains<10" );
-  aoe_burst->add_action( "festering_strike,if=debuff.festering_wound.stack<4&buff.festering_scythe.react" );
+  aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power" );
+  aoe_burst->add_action( "festering_strike,if=buff.festering_scythe.react" );
   aoe_burst->add_action( "wound_spender" );
 
-  cds->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&(talent.apocalypse&cooldown.apocalypse.remains<8|!talent.apocalypse)", "Non-San'layn Cooldowns" );
-  cds->add_action( "unholy_assault,if=(variable.st_planning|variable.adds_remain)&(cooldown.apocalypse.remains<gcd*2|!talent.apocalypse)" );
+  cds->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&(cooldown.apocalypse.remains<8|!talent.apocalypse|active_enemies>=1)", "Non-San'layn Cooldowns" );
+  cds->add_action( "unholy_assault,if=(variable.st_planning|variable.adds_remain)&(cooldown.apocalypse.remains<gcd*2|!talent.apocalypse|active_enemies>=2&buff.dark_transformation.up)" );
   cds->add_action( "apocalypse,if=(variable.st_planning|variable.adds_remain)" );
   cds->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains,if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>15%((3*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((3*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))" );
   cds->add_action( "abomination_limb,if=(variable.st_planning|variable.adds_remain)&(active_enemies>=2|!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2)" );
 
-  cds_san->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)", "San'layn Cooldowns" );
+  cds_san->add_action( "dark_transformation,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(talent.apocalypse&(pet.apoc_ghoul.active|active_enemies>=2)|!talent.apocalypse)", "San'layn Cooldowns" );
   cds_san->add_action( "unholy_assault,if=(variable.st_planning|variable.adds_remain)&(buff.dark_transformation.up&buff.dark_transformation.remains<12)" );
-  cds_san->add_action( "apocalypse,if=(variable.st_planning|variable.adds_remain)&debuff.festering_wound.stack>=3" );
+  cds_san->add_action( "apocalypse,if=(variable.st_planning|variable.adds_remain)&(debuff.festering_wound.stack>=3|active_enemies>=2)" );
   cds_san->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains,if=(pet.abomination.remains<15&dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>15%((3*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((3*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))" );
-  cds_san->add_action( "abomination_limb,if=(variable.st_planning|variable.adds_remain)&(active_enemies>=2|!buff.dark_transformation.up&!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2)" );
+  cds_san->add_action( "abomination_limb,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(active_enemies>=2|!buff.dark_transformation.up&!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2)" );
 
-  cds_shared->add_action( "potion,if=(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)|fight_remains<=30", "Shared Cooldowns" );
-  cds_shared->add_action( "invoke_external_buff,name=power_infusion,if=(variable.st_planning|variable.adds_remain)&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&(talent.raise_abomination&pet.abomination.active&pet.abomination.remains<18|!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains<=18)|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff_power_infusion.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> is up, as well as <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or with <a href='https://www.wowhead.com/spell=63560/dark-transformation'>Dark Transformation</a> if <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> are not talented" );
-  cds_shared->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead)|fight_remains<35" );
-  cds_shared->add_action( "raise_abomination,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<gcd*2|!talent.commander_of_the_dead)|fight_remains<30" );
-  cds_shared->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead)" );
+  cds_shared->add_action( "potion,if=active_enemies>=1&(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30|pet.abomination.active&pet.abomination.remains<=30)|fight_remains<=30", "Shared Cooldowns" );
+  cds_shared->add_action( "invoke_external_buff,name=power_infusion,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&(talent.raise_abomination&pet.abomination.active&pet.abomination.remains<18|!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains<=18)|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff_power_infusion.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> is up, as well as <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or with <a href='https://www.wowhead.com/spell=63560/dark-transformation'>Dark Transformation</a> if <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> are not talented" );
+  cds_shared->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<35" );
+  cds_shared->add_action( "raise_abomination,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<gcd*2|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<30" );
+  cds_shared->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)" );
+
+  cleave->add_action( "any_dnd,if=!buff.death_and_decay.up", "Cleave" );
+  cleave->add_action( "death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil" );
+  cleave->add_action( "festering_strike,if=!variable.pop_wounds&debuff.festering_wound.stack<4|buff.festering_scythe.react" );
+  cleave->add_action( "wound_spender,if=variable.pop_wounds" );
+  cleave->add_action( "epidemic,if=!variable.pooling_runic_power" );
 
   racials->add_action( "arcane_torrent,if=runic_power<20&rune<2", "Racials" );
   racials->add_action( "blood_fury,if=(buff.blood_fury.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration+3" );
@@ -461,6 +470,9 @@ void unholy( player_t* p )
 
   san_fishing->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<40", "San'layn Fishing" );
   san_fishing->add_action( "any_dnd,if=!buff.death_and_decay.up&!buff.vampiric_strike.react" );
+
+  san_fishinb->add_action( "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding" );
+
   san_fishing->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5" );
   san_fishing->add_action( "death_coil,if=!buff.vampiric_strike.react" );
   san_fishing->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react" );
@@ -497,7 +509,7 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15" );
 
   variables->add_action( "variable,name=apoc_timing,op=setif,value=7,value_else=3,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<=4&cooldown.unholy_assault.remains>10", "Variables" );
-  variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>4)|fight_remains<5&debuff.festering_wound.stack>=1" );
+  variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>=4-pet.abomination.active)|fight_remains<5&debuff.festering_wound.stack>=1" );
   variables->add_action( "variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=talent.vile_contagion&cooldown.vile_contagion.remains<3&runic_power<60&!variable.st_planning" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   variables->add_action( "variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
