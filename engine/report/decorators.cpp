@@ -334,13 +334,14 @@ class npc_decorator_t : public decorator_data_t
   const sim_t* m_sim;
   const std::string m_name;
   const int m_npc_id;
+  const std::string m_npc_suffix;
 
 public:
-  npc_decorator_t( const sim_t* obj, util::string_view name, int npc_id )
-    : m_sim( obj ), m_name( name ), m_npc_id( npc_id )
+  npc_decorator_t( const sim_t* obj, util::string_view name, int npc_id, util::string_view npc_suffix )
+    : m_sim( obj ), m_name( name ), m_npc_id( npc_id ), m_npc_suffix( npc_suffix )
   {}
 
-  npc_decorator_t( const pet_t& pet ) : npc_decorator_t( pet.sim, pet.name_str, pet.npc_id )
+  npc_decorator_t( const pet_t& pet ) : npc_decorator_t( pet.sim, pet.name_str, pet.npc_id, pet.npc_suffix )
   {}
 
   void base_url( fmt::memory_buffer& buf ) const override
@@ -366,7 +367,16 @@ public:
 
   std::string token() const override
   {
-    return util::encode_html( util::tokenize_fn( m_name ) );
+    // If suffix is included, put it in a an immediate suffix so decorate() will put it after the
+    // name in parentheses. Note, suffix isn't tokenized.
+    if ( !m_npc_suffix.empty() && can_decorate() )
+    {
+      return util::encode_html( fmt::format( "{}{}", util::tokenize_fn( m_name ), m_npc_suffix ) );
+    }
+    else
+    {
+      return util::encode_html( util::tokenize_fn( m_name ) );
+    }
   }
 };
 

@@ -38,6 +38,10 @@ using namespace helpers;
       bool backdraft = false;
       bool roaring_blaze = false;
       bool ashen_remains = false;
+      bool emberstorm_dd = false;
+      bool emberstorm_td = false;
+      bool devastation = false;
+      bool ruin = false;
       bool chaos_incarnate = false;
     } affected_by;
 
@@ -78,6 +82,10 @@ using namespace helpers;
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
+      affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
+      affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
+      affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -151,12 +159,6 @@ using namespace helpers;
     {
       spell_t::impact( s );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
       {
         // Havoc debuff has an ICD, so it is safe to attempt a trigger
@@ -178,22 +180,28 @@ using namespace helpers;
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
       }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
+      }
     }
 
     void tick( dot_t* d ) override
     {
       spell_t::tick( d );
 
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
-
       if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
+      }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
       }
     }
 
@@ -203,6 +211,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.malediction )
         c += p()->talents.malediction->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.devastation )
+        c += p()->talents.devastation->effectN( 1 ).percent();
 
       return c;
     }
@@ -216,6 +227,9 @@ using namespace helpers;
 
       if ( demonology() && affected_by.demonic_brutality )
         m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.ruin )
+        m *= 1.0 + p()->talents.ruin->effectN( 1 ).percent();
 
       return m;
     }
@@ -273,6 +287,9 @@ using namespace helpers;
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
+      if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -288,6 +305,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
 
       return m;
     }
@@ -2573,18 +2593,9 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( p()->talents.burn_to_ashes.ok() )
-          m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
         return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( s->result == RESULT_CRIT )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
       }
 
       double composite_crit_chance() const override
@@ -2621,6 +2632,15 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
+    }
+
     void execute() override
     {
       warlock_spell_t::execute();
@@ -2647,8 +2667,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.burn_to_ashes.ok() )
-        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
       return m;
     }
@@ -2763,11 +2782,22 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
+      base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
+
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
         add_child( internal_combustion );
       }
+    }
+
+    timespan_t execute_time_flat_modifier() const override
+    {
+      timespan_t m = warlock_spell_t::execute_time_flat_modifier();
+
+      m += p()->talents.improved_chaos_bolt->effectN( 2 ).time_value();
+
+      return m;
     }
 
     double cost_pct_multiplier() const override
@@ -2796,7 +2826,7 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( p()->buffs.crashing_chaos->check() )
-        m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
@@ -2862,8 +2892,6 @@ using namespace helpers;
       cooldown->hasted = true;
       cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
-
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -2895,10 +2923,11 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_cf->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -2945,7 +2974,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_persistent_multiplier( s );
 
         if ( p()->buffs.crashing_chaos->check() )
-          m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+          m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
         return m;
       }
@@ -3065,7 +3094,7 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3078,6 +3107,10 @@ using namespace helpers;
 
         if ( p()->talents.eradication.ok() )
           td( s->target )->debuffs_eradication->trigger();
+
+        // Fiendish Cruelty checks for state after damage is applied
+        if ( p()->talents.fiendish_cruelty.ok() && s->target->health_percentage() <= p()->talents.fiendish_cruelty->effectN( 2 ).base_value() )
+          make_event( *sim, 0_ms, [ this ] { p()->cooldowns.shadowburn->adjust( timespan_t::from_seconds( -p()->talents.fiendish_cruelty->effectN( 1 ).base_value() ) ); } );
       }
     }
 
@@ -3104,15 +3137,19 @@ using namespace helpers;
       if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
 
+      if ( target->health_percentage() <= p()->talents.blistering_atrophy->effectN( 4 ).base_value() )
+        m += p()->talents.blistering_atrophy->effectN( 3 ).percent();
+
       return m;
     }
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_sb->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* state ) const override
@@ -3144,6 +3181,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
 
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
       }
 
       void impact( action_state_t* s ) override
@@ -3177,6 +3216,12 @@ using namespace helpers;
       cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
+
+      if ( p->talents.demonfire_mastery.ok() )
+      {
+        base_tick_time *= 1.0 + p->talents.demonfire_mastery->effectN( 2 ).percent();
+        dot_duration *= 1.0 + p->talents.demonfire_mastery->effectN( 3 ).percent();
+      }
 
       if ( p->talents.raging_demonfire.ok() )
       {
@@ -3226,116 +3271,8 @@ using namespace helpers;
     }
   };
 
-  struct shadowy_tear_t : public warlock_spell_t
-  {
-    struct rift_shadow_bolt_t : public warlock_spell_t
-    {
-      rift_shadow_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
-      {
-        background = dual = true;
-
-        // TOCHECK: In the past, this double-dipped on both direct and periodic spell auras
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct shadow_barrage_t : public warlock_spell_t
-    {
-      shadow_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
-      {
-        background = true;
-
-        tick_action = new rift_shadow_bolt_t( p );
-      }
-
-      double last_tick_factor( const dot_t*, timespan_t, timespan_t ) const override
-      { return 1.0; }
-    };
-
-    shadowy_tear_t( warlock_t* p )
-      : warlock_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
-    {
-      background = true;
-
-      impact_action = new shadow_barrage_t( p );
-    }
-  };
-
-  struct unstable_tear_t : public warlock_spell_t
-  {
-    struct chaos_barrage_tick_t : public warlock_spell_t
-    {
-      chaos_barrage_tick_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
-      {
-        background = dual = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct chaos_barrage_t : public warlock_spell_t
-    {
-      chaos_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
-      {
-        background = true;
-
-        tick_action = new chaos_barrage_tick_t( p );
-      }
-    };
-
-    unstable_tear_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
-    {
-      background = true;
-
-      impact_action = new chaos_barrage_t( p );
-    }
-  };
-
-  struct chaos_tear_t : public warlock_spell_t
-  {
-    struct rift_chaos_bolt_t : public warlock_spell_t
-    {
-      rift_chaos_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
-      {
-        background = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-
-      double composite_crit_chance() const override
-      { return 1.0; }
-
-      double calculate_direct_amount( action_state_t* s ) const override
-      {
-        warlock_spell_t::calculate_direct_amount( s );
-
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-        return s->result_total;
-      }
-    };
-
-    chaos_tear_t( warlock_t* p )
-      : warlock_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
-    {
-      background = true;
-      
-      impact_action = new rift_chaos_bolt_t( p );
-    }
-  };
-
   struct dimensional_rift_t : public warlock_spell_t
   {
-    shadowy_tear_t* shadowy_tear;
-    unstable_tear_t* unstable_tear;
-    chaos_tear_t* chaos_tear;
-
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
@@ -3343,14 +3280,6 @@ using namespace helpers;
 
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
-
-      shadowy_tear = new shadowy_tear_t( p );
-      unstable_tear = new unstable_tear_t( p );
-      chaos_tear = new chaos_tear_t( p );
-
-      add_child( shadowy_tear );
-      add_child( unstable_tear );
-      add_child( chaos_tear );
     }
 
     void execute() override
@@ -3362,13 +3291,13 @@ using namespace helpers;
       switch ( rift )
       {
       case 0:
-        shadowy_tear->execute_on_target( target );
+        p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
         break;
       case 1:
-        unstable_tear->execute_on_target( target );
+        p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
         break;
       case 2:
-        chaos_tear->execute_on_target( target );
+        p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
         break;
       default:
         break;
@@ -3389,7 +3318,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
       
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
+      p()->warlock_pet_list.infernals.spawn();
     }
   };
 
@@ -3429,8 +3358,6 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
 
       immolate->background = true;
       immolate->dual = true;

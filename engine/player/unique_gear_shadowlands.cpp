@@ -4796,7 +4796,7 @@ void dark_rangers_quiver( special_effect_t& effect )
   }
 
   effect.custom_buff = buff;
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST_GENERIC | PF2_CAST_DAMAGE;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -5003,7 +5003,7 @@ void maw_rattle( special_effect_t& /* effect */ )
 
 void norgannons_sagacity( special_effect_t& effect )
 {
-  effect.proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.proc_flags2_ |= PF2_ALL_CAST;
 
   auto movement = make_buff( effect.player, "norgannons_sagacity", effect.player->find_spell( 339445 ) );
   effect.player->buffs.norgannons_sagacity = movement;

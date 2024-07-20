@@ -752,7 +752,7 @@ covenant_ability_cast_cb_t* get_covenant_callback( player_t* p )
     auto eff          = new special_effect_t( p );
     eff->name_str     = "covenant_cast_callback";
     eff->proc_flags_  = PF_ALL_DAMAGE;
-    eff->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    eff->proc_flags2_ = PF2_ALL_CAST;
     p->special_effects.push_back( eff );
     p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
   }

@@ -1462,7 +1462,7 @@ void irideus_fragment( special_effect_t& effect )
   // TODO: determine what exactly the flags are. At bare minimum reduced per cast. Certain other non-cast procs will
   // also reduce. Maybe require individually tailoring per module a la Bron
   reduce->proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  reduce->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  reduce->proc_flags2_ = PF2_ALL_CAST;
   effect.player->special_effects.push_back( reduce );
 
   auto cb = new dbc_proc_callback_t( effect.player, *reduce );

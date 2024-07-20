@@ -331,9 +331,6 @@ namespace warlock
     talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
     talents.backdraft_buff = find_spell( 117828 );
 
-    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
-    talents.reverse_entropy_buff = find_spell( 266030 );
-
     talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
     talents.rain_of_fire_tick = find_spell( 42223 );
 
@@ -374,53 +371,72 @@ namespace warlock
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
 
-    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
-
-    talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
-    talents.soul_fire_2 = find_spell( 281490 );
-
-    talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
-
-    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
-
-    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
+    talents.blistering_atrophy = find_talent_spell( talent_tree::SPECIALIZATION, "Blistering Atrophy" ); // Should be ID 456939
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
     talents.conflagration_of_chaos_cf = find_spell( 387109 );
     talents.conflagration_of_chaos_sb = find_spell( 387110 );
 
-    talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
-    talents.flashpoint_buff = find_spell( 387263 );
-
-    talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
-
-    talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
-    talents.eradication_debuff = find_spell( 196414 );
+    talents.emberstorm = find_talent_spell( talent_tree::SPECIALIZATION, "Emberstorm" ); // Should be ID 454744
 
     talents.summon_infernal = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Infernal" ); // Should be ID 1122
     talents.summon_infernal_main = find_spell( 111685 );
     talents.infernal_awakening = find_spell( 22703 );
+    talents.immolation_buff = find_spell( 19483 );
+    talents.immolation_dmg = find_spell( 20153 );
+    talents.embers = find_spell( 264364 );
+    talents.burning_ember = find_spell( 264365 );
 
-    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
+    talents.fire_and_brimstone = find_talent_spell( talent_tree::SPECIALIZATION, "Fire and Brimstone" ); // Should be ID 196408
+
+    talents.flashpoint = find_talent_spell( talent_tree::SPECIALIZATION, "Flashpoint" ); // Should be 387259
+    talents.flashpoint_buff = find_spell( 387263 );
+
+    talents.raging_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Raging Demonfire" ); // Should be ID 387166
+
+    talents.fiendish_cruelty = find_talent_spell( talent_tree::SPECIALIZATION, "Fiendish Cruelty" ); // Should be ID 456943
+
+    talents.eradication = find_talent_spell( talent_tree::SPECIALIZATION, "Eradication" ); // Should be ID 196412
+    talents.eradication_debuff = find_spell( 196414 );
+
+    talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 417234
+    talents.crashing_chaos_buff = find_spell( 417282 );
+
+    talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
+    talents.rain_of_chaos_buff = find_spell( 266087 );
+    talents.summon_infernal_roc = find_spell( 335236 );
+
+    talents.reverse_entropy = find_talent_spell( talent_tree::SPECIALIZATION, "Reverse Entropy" ); // Should be ID 205148
+    talents.reverse_entropy_buff = find_spell( 266030 );
+
+    talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+
+    talents.demonfire_mastery = find_talent_spell( talent_tree::SPECIALIZATION, "Demonfire Mastery" ); // Should be ID 456946
+
+    talents.devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Devastation" ); // Should be ID 454735
 
     talents.ritual_of_ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ritual of Ruin" ); // Should be ID 387156
     talents.impending_ruin_buff = find_spell( 387158 );
     talents.ritual_of_ruin_buff = find_spell( 387157 );
 
-    talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
-    talents.crashing_chaos_buff = find_spell( 417282 );
+    talents.ruin = find_talent_spell( talent_tree::SPECIALIZATION, "Ruin" ); // Should be ID 387103
 
-    talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
-    talents.power_overwhelming_buff = find_spell( 387283 );
+    talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
+    talents.soul_fire_2 = find_spell( 281490 );
 
-    talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
+    talents.improved_chaos_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Bolt" ); // Should be ID 456951
 
     talents.burn_to_ashes = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ashes" ); // Should be ID 387153
     talents.burn_to_ashes_buff = find_spell( 387154 );
 
-    talents.rain_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Chaos" ); // Should be ID 266086
-    talents.rain_of_chaos_buff = find_spell( 266087 );
-    talents.summon_infernal_roc = find_spell( 335236 );
+    talents.master_ritualist = find_talent_spell( talent_tree::SPECIALIZATION, "Master Ritualist" ); // Should be ID 387165
+
+    talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
+    talents.power_overwhelming_buff = find_spell( 387283 );
+
+    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
+
+    talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 387176
 
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
@@ -438,6 +454,9 @@ namespace warlock
     talents.summon_blasphemy = find_spell( 387160 );
 
     // Additional Tier Set spell data
+
+    // Initialize some default values for pet spawners
+    warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
   }
 
   void warlock_t::init_base_stats()
@@ -583,15 +602,16 @@ namespace warlock
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
+                           ->set_default_value_from_effect( 1 );
 
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
                                  ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
                                  ->set_reverse( true );
 
+    // 2024-07-19 - Power Overwhelming appears to grant double the listed value per stack
     buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 * 2.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )
@@ -650,7 +670,6 @@ namespace warlock
     gains.immolate = get_gain( "immolate" );
     gains.immolate_crits = get_gain( "immolate_crits" );
     gains.incinerate_crits = get_gain( "incinerate_crits" );
-    gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
   }
@@ -734,8 +753,7 @@ namespace warlock
 
   void warlock_t::init_rng_destruction()
   {
-    // TOCHECK: 15% chance is what is listed in spell data but during SL this was presumed to use deck of cards at 3 out of 20
-    // May need rechecking in DF
+    // TOCHECK: Presumed to use deck of cards at 3 out of 20. Long sample test needed to reconfirm in TWW
     rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
   }
 

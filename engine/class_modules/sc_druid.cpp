@@ -11840,6 +11840,7 @@ void druid_t::init_special_effects()
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.implant->name_cstr();
     driver->spell_id = buff.implant->data().id();
+    driver->proc_flags2_ = PF2_CAST_DAMAGE;
     special_effects.push_back( driver );
 
     auto cb = new implant_cb_t( this, *driver );
@@ -13606,9 +13607,9 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->mastery.astral_invocation,
                  // arcane passive mastery (eff#1) and nature passive mastery (eff#3) apply to orbital strike &
                  // goldrinn's fang (label 2391) via hidden script
-                 affect_list_t( 1, 3 ).adjust_label( 2391 ),
+                 affect_list_t( 1, 3 ).add_label( 2391 ),
                  // nature passive mastery (eff#3) applies to dream burst (433850) via hidden script
-                 affect_list_t( 3 ).adjust_spell( 433850 ) );
+                 affect_list_t( 3 ).add_spell( 433850 ) );
 
   // talent data for balance of all things only modifies effect#1 of the buff, and is missing modification to effect#3
   // which is done via hidden script. hack around this by overriding the value instead of normally parsing the talent.
@@ -13624,7 +13625,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT,
                  // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) via hidden script
-                 affect_list_t( 1 ).adjust_label( 2391 ) );
+                 affect_list_t( 1 ).add_label( 2391 ) );
 
   // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
   // instead of data value
@@ -13632,7 +13633,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
                  // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
                  // via hidden script
-                 affect_list_t( 1 ).adjust_label( 2391 ).adjust_spell( 433850 ) );
+                 affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ) );
 
   auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
   if ( p()->talent.astral_insight.ok() )
@@ -13738,7 +13739,7 @@ void druid_action_t<Base>::parse_target_effects()
   parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                         p()->spec.sunfire_dmg, p()->mastery.astral_invocation,
                         // nature dot mastery (eff#4) applies to dream burst (433850) via hidden script
-                        affect_list_t( 4 ).adjust_spell( 433850 ) );
+                        affect_list_t( 4 ).add_spell( 433850 ) );
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
                         p()->spec.stellar_amplification );

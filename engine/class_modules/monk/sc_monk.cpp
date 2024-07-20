@@ -164,6 +164,9 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
+  parse_effects(
+      p()->buff.counterstrike,
+      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -172,11 +175,21 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
+  parse_effects( p()->buff.pressure_point );
+  parse_effects(
+      p()->buff.kicks_of_flowing_momentum,
+      affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
+                 affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
+                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
+                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial,
+                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
+                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -478,7 +491,7 @@ void monk_action_t<Base>::consume_resource()
     if ( cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( cost ) );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_t::base_cost() ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -788,17 +801,6 @@ double monk_spell_t::composite_persistent_multiplier( const action_state_t *stat
   return pm;
 }
 
-double monk_spell_t::action_multiplier() const
-{
-  double am = base_t::action_multiplier();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-  return am;
-}
-
 monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_action_t<heal_t>( name, player, spell_data )
 {
@@ -836,10 +838,6 @@ double monk_heal_t::action_multiplier() const
       break;
 
     case MONK_WINDWALKER:
-
-      // Storm, Earth, and Fire
-      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
       break;
 
@@ -883,10 +881,6 @@ double monk_melee_attack_t::action_multiplier() const
 
   if ( ww_mastery && p()->buff.combo_strikes->check() )
     am *= 1 + p()->cache.mastery_value();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
   if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
     am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
@@ -1389,7 +1383,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
     parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
-    parse_effects( p->buff.counterstrike );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
@@ -1551,11 +1544,11 @@ struct press_the_advantage_t : base_action_t
       base_action_t::dual        = true;
 
       base_action_t::parse_effects( player->buff.counterstrike,
-                                    affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
                                     player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
       // effect must still be rolled in execute so it triggers brew cdr
       base_action_t::parse_effects(
-          player->buff.blackout_combo, affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+          player->buff.blackout_combo, affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
           player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
     }
 
@@ -1625,8 +1618,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     trigger_chiji     = true;
 
     apply_affecting_aura( p->talent.windwalker.rising_star );
-    parse_effects( p->buff.kicks_of_flowing_momentum );
-    parse_effects( p->buff.pressure_point );
   }
 
   void execute() override
@@ -2185,10 +2176,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
-    // kotfm and cs are scripted for SCK, we can add this id to the whitelist instead
-    parse_effects( p->buff.kicks_of_flowing_momentum, affect_list_t( 1 ).adjust_spell( data->id() ) );
-    parse_effects( p->buff.counterstrike, affect_list_t( 1 ).adjust_spell( data->id() ) );
-
     // // dance of chiji is scripted
     if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
@@ -2262,7 +2249,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 
@@ -2289,9 +2276,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
-    {
       dot_behavior = DOT_CLIP;
-    }
 
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
@@ -2615,7 +2600,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 
@@ -2857,7 +2842,10 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
-    p()->buff.heart_of_the_jade_serpent->decrement();
+    if ( !p()->buff.heart_of_the_jade_serpent->check() )
+      return;
+    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+    p()->buff.heart_of_the_jade_serpent->expire();
   }
 };
 
@@ -4541,7 +4529,7 @@ struct celestial_conduit_t : public monk_spell_t
 
       if ( state->n_targets > 0 )
         cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( (double)state->n_targets,
+                     std::min( as<double>( state->n_targets ),
                                p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
 
       return cam;
@@ -4580,8 +4568,10 @@ struct celestial_conduit_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
+    may_combo_strike      = true;
+    sef_ability           = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
+    channeled             = true;
+    interrupt_auto_attack = false;
 
     tick_action = damage;
 
@@ -5380,7 +5370,9 @@ struct chi_burst_t : monk_spell_t
 
   bool ready() override
   {
-    if ( p()->specialization() != MONK_WINDWALKER || buff->up() )
+    if ( p()->specialization() != MONK_WINDWALKER )
+      return monk_spell_t::ready();
+    if ( buff && buff->up() )
       return monk_spell_t::ready();
     return false;
   }
@@ -8204,7 +8196,7 @@ void monk_t::create_buffs()
           ->set_trigger_spell( talent.windwalker.ordered_elements );
 
   buff.pressure_point =
-      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 337482 ) )
+      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
           ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -8254,13 +8246,22 @@ void monk_t::create_buffs()
   buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
                                                      this, "flight_of_the_red_crane", find_spell( 457459 ) );
 
+  auto hotjs_cd_fn = [ this ] {
+    cooldown.strike_of_the_windlord->adjust_recharge_multiplier();
+    cooldown.whirling_dragon_punch->adjust_recharge_multiplier();
+    cooldown.fists_of_fury->adjust_recharge_multiplier();
+    cooldown.rising_sun_kick->adjust_recharge_multiplier();
+  };
+
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
+          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
+          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8272,16 +8273,13 @@ void monk_t::create_buffs()
           ->set_expire_at_max_stack( true );
 
   buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
-                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) )
-                                       ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
-                                         buff.heart_of_the_jade_serpent_cdr->trigger();
-                                       } );
+                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) );
 
   buff.heart_of_the_jade_serpent_stack_ww =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
-            if ( new_ == buff_->max_stack() )
+            if ( new_ >= buff_->max_stack() )
               buff.heart_of_the_jade_serpent->trigger();
           } )
           ->set_expire_at_max_stack( true );
@@ -9009,14 +9007,13 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
 
 bool monk_t::affected_by_sef( spell_data_t data ) const
 {
-  // Storm, Earth, and Fire (monk_spell_t)
-  bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
-
-  // Chi Explosion IS affected by SEF but needs to be overriden here manually
-  if ( data.id() == 337342 )
-    affected = true;
-
-  return affected;
+  auto filter = [ & ]( std::vector<size_t> indices ) {
+    return std::any_of( indices.begin(), indices.end(), [ & ]( size_t index ) {
+      return data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( index ) );
+    } );
+  };
+  // Chi Explosion must be added manually.
+  return filter( { 1, 2, 7, 8 } ) || data.id() == 337342;
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================

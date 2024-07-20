@@ -2962,8 +2962,8 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    // TODO: spell data (and dev notes) says 2, currently triggers 4
-    if ( s->chain_target == 0 )
+    // TODO: AO still seems to give 4 splinters, but needs to hit 2 targets now
+    if ( s->chain_target == 0 || ( p()->bugs && s->chain_target == 1 ) )
       p()->trigger_splinter( s->target, as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() ) );
   }
 };
@@ -7756,7 +7756,12 @@ void mage_t::create_buffs()
                                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                       ->set_chance( talents.arcane_tempo.ok() );
   // TODO: currently only increases base intellect
-  buffs.big_brained               = make_buff( this, "big_brained", find_spell( 461531 ) )
+  buffs.big_brained               = bugs
+                                  ? make_buff<stat_buff_t>( this, "big_brained", find_spell( 461531 ) )
+                                      ->add_stat( STAT_INTELLECT, find_spell( 461531 )->effectN( 1 ).percent() * base.stats.attribute[ ATTR_INTELLECT ] )
+                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                      ->set_chance( talents.big_brained.ok() )
+                                  : make_buff( this, "big_brained", find_spell( 461531 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )

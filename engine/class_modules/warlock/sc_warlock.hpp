@@ -145,6 +145,10 @@ public:
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
 
+    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
+    spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
+    spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
@@ -374,33 +378,37 @@ public:
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
 
-    player_talent_t blistering_atrophy; // TODO: New
+    player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
     const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
     const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
-    player_talent_t emberstorm; // TODO: New
+    player_talent_t emberstorm;
     player_talent_t summon_infernal;
     const spell_data_t* summon_infernal_main; // Data for main infernal summoning
     const spell_data_t* infernal_awakening; // AoE on impact is attributed to the Warlock
+    const spell_data_t* immolation_buff; // Buff on Infernal pet
+    const spell_data_t* immolation_dmg; // Ticking AoE damage from buff
+    const spell_data_t* embers; // Buff which generates Soul Shards
+    const spell_data_t* burning_ember; // Energize data for Soul Shards
     player_talent_t fire_and_brimstone;
     player_talent_t flashpoint; // Stacking haste buff from Immolate ticks on high-health targets
     const spell_data_t* flashpoint_buff;
     player_talent_t raging_demonfire; // Additional Demonfire bolts and bolts extend Immolate
 
-    player_talent_t fiendish_cruelty; // TODO: New
+    player_talent_t fiendish_cruelty;
     player_talent_t eradication;
     const spell_data_t* eradication_debuff;
     player_talent_t crashing_chaos; // Summon Infernal increases the damage of next 8 Chaos Bolt or Rain of Fire casts
     const spell_data_t* crashing_chaos_buff;
-    player_talent_t rain_of_chaos; // TOCHECK: Ensure behavior is unchanged from SL
+    player_talent_t rain_of_chaos; // TOCHECK: Confirm RNG behavior (deck of cards) periodically
     const spell_data_t* rain_of_chaos_buff;
     const spell_data_t* summon_infernal_roc; // Contains Rain of Chaos infernal duration
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
     player_talent_t internal_combustion;
-    player_talent_t demonfire_mastery; // TODO: New
+    player_talent_t demonfire_mastery;
 
-    player_talent_t devastation; // TODO: New
+    player_talent_t devastation;
     player_talent_t ritual_of_ruin;
     const spell_data_t* impending_ruin_buff; // Stacking buff, triggers Ritual of Ruin buff at max
     const spell_data_t* ritual_of_ruin_buff;
@@ -408,7 +416,7 @@ public:
 
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t improved_chaos_bolt; // TODO: New
+    player_talent_t improved_chaos_bolt;
     player_talent_t burn_to_ashes; // Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates
     const spell_data_t* burn_to_ashes_buff;
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
@@ -440,7 +448,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -449,10 +457,10 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire
+    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -570,7 +578,6 @@ public:
 
     // Destruction
     gain_t* incinerate_crits;
-    gain_t* incinerate_fnb_crits;
     gain_t* immolate;
     gain_t* immolate_crits;
     gain_t* infernal;
