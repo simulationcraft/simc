@@ -5535,8 +5535,14 @@ struct felblade_t : public demon_hunter_attack_t
     }
   };
 
+  unsigned max_fragments_consumed;
+
   felblade_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "felblade", p, p->talent.demon_hunter.felblade, options_str )
+    : demon_hunter_attack_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
+      max_fragments_consumed( p->specialization() == DEMON_HUNTER_HAVOC &&
+                                      p->talent.aldrachi_reaver.warblades_hunger->ok()
+                                  ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
+                                  : 0 )
   {
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
@@ -5551,6 +5557,11 @@ struct felblade_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
     p()->set_out_of_range( timespan_t::zero() );  // Cancel all other movement
+    if ( max_fragments_consumed > 0 )
+    {
+      event_t::cancel( p()->soul_fragment_pick_up );
+      p()->consume_soul_fragments( soul_fragment::ANY, false, max_fragments_consumed );
+    }
   }
 };
 
