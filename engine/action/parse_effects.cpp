@@ -1342,11 +1342,18 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       default:              return nullptr;
     }
   }
-  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY || eff.subtype() == A_MOD_RECHARGE_RATE )
+  else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
   {
     str = "cooldown";
     adjust_recharge_multiplier_warning();
     return &recharge_multiplier_effects;
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY ||
+            eff.subtype() == A_MOD_RECHARGE_RATE )
+  {
+    str = "recharge rate";
+    adjust_recharge_multiplier_warning();
+    return &recharge_rate_effects;
   }
 
   return nullptr;
@@ -1548,6 +1555,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", timespan_fn );
     print_parsed_type( os, &VEC::tick_time_effects, "Percent Tick Time" );
     print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
+    print_parsed_type( os, &VEC::recharge_rate_effects, "Recharge Rate" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
     print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
@@ -1572,6 +1580,7 @@ size_t parse_action_base_t::total_effects_count()
          tick_time_effects.size() +
          flat_tick_time_effects.size() +
          recharge_multiplier_effects.size() +
+         recharge_rate_effects.size() +
          cost_effects.size() +
          flat_cost_effects.size() +
          crit_chance_effects.size() +
@@ -1624,6 +1633,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( tick_time_effects );
   initialize_buff_list_on_vector( flat_tick_time_effects );
   initialize_buff_list_on_vector( recharge_multiplier_effects );
+  initialize_buff_list_on_vector( recharge_rate_effects );
   initialize_buff_list_on_vector( cost_effects );
   initialize_buff_list_on_vector( flat_cost_effects );
   initialize_buff_list_on_vector( crit_chance_effects );

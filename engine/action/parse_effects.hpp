@@ -773,6 +773,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> tick_time_effects;
   std::vector<player_effect_t> flat_tick_time_effects;
   std::vector<player_effect_t> recharge_multiplier_effects;
+  std::vector<player_effect_t> recharge_rate_effects;
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
@@ -1033,6 +1034,16 @@ public:
 
     for ( const auto& i : recharge_multiplier_effects )
       rm *= 1.0 + get_effect_value( i );
+
+    return rm;
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    auto rm = BASE::recharge_rate_multiplier( cd );
+
+    for ( const auto& i : recharge_rate_effects )
+      rm /= 1.0 + get_effect_value( i );
 
     return rm;
   }

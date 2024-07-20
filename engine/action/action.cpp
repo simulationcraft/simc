@@ -5648,7 +5648,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         value_ = 1;
         break;
 
-      case A_MOD_RECHARGE_TIME:
+      case A_MOD_RECHARGE_TIME_CATEGORY:
         if ( cooldown->action == this )
         {
           if ( data().charge_cooldown() <= 0_ms )
@@ -5667,7 +5667,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
-      case A_MOD_RECHARGE_MULTIPLIER:
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         if ( data().charge_cooldown() > 0_ms )
         {
           base_recharge_multiplier *= 1 + effect.percent();

@@ -1910,11 +1910,11 @@ public:
   template <typename... Ts>
   void parse_cd_effects( std::vector<cooldown_t*>& v, buff_t* buff, Ts&&... mods )
   {
-    size_t old = ab::recharge_multiplier_effects.size();
+    size_t old = ab::recharge_rate_effects.size();
 
     parse_effects( buff, std::forward<Ts>( mods )... );
 
-    if ( ab::recharge_multiplier_effects.size() > old )
+    if ( ab::recharge_rate_effects.size() > old )
     {
       v.push_back( ab::cooldown );
       v.push_back( ab::internal_cooldown );

@@ -1005,8 +1005,8 @@ util::span<const effect_subtype_t> dbc::effect_category_subtypes()
   static constexpr effect_subtype_t subtypes[] = {
     A_MODIFY_CATEGORY_COOLDOWN,
     A_MOD_MAX_CHARGES,
-    A_MOD_RECHARGE_TIME,
-    A_MOD_RECHARGE_MULTIPLIER,
+    A_MOD_RECHARGE_TIME_CATEGORY,
+    A_MOD_RECHARGE_TIME_PCT_CATEGORY,
     A_HASTED_CATEGORY,
     A_MOD_RECHARGE_RATE_CATEGORY,
   };

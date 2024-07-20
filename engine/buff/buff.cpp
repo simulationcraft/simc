@@ -1662,7 +1662,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown set to hasted", *this );
         break;
 
-      case A_MOD_RECHARGE_TIME:
+      case A_MOD_RECHARGE_TIME_CATEGORY:
         if ( cooldown->duration > timespan_t::zero() )
         {
           set_cooldown( cooldown->duration += effect.time_value() );
@@ -1670,7 +1670,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
-      case A_MOD_RECHARGE_MULTIPLIER:
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         // TODO: Should buffs support a base_recharge_multiplier?
         //base_recharge_multiplier *= 1 + effect.percent();
         //if ( base_recharge_multiplier <= 0 )
