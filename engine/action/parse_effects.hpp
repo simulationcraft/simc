@@ -176,14 +176,12 @@ struct effect_mask_t
 /*
  * Modifies whitelists of effects.
  * affect_list_t( ints... ): selects effects to modify
- * positive int enables family/label/spell.
- * negative int disables family/label/spell.
- * adjust_family( ints... );
- * adjust_label( ints... );
- * adjust_spell( ints... );
+ * add/remove_family( ints... ): add/remove by family flag
+ * add/remove_label( ints... ): add/remove by label id
+ * add/remove_spell( ints... ): add/remove by spell id
  *
- * affect_list_t( 1, 3 ).adjust_spell( 1, -2 );
- * modifies effect 1 and 3 whitelist. adds spell id 1, removes spell id 2
+ * affect_list_t( 1, 3 ).add_spell( 1, 2 ).remove_spell( 3 );
+ * modifies effect 1 and 3 whitelist. adds spell id 1 & 2, removes spell id 3
  */
 struct affect_list_t
 {
@@ -199,26 +197,47 @@ struct affect_list_t
   template <typename... Ts>
   affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
-  affect_list_t& adjust_family( int8_t f )
+  affect_list_t& add_family( int8_t f )
   { family.push_back( f ); return *this; }
 
-  template <typename... Ts>
-  affect_list_t& adjust_family( int8_t f, Ts... fs )
-  { adjust_family( f ); return adjust_family( fs... ); }
+  affect_list_t& remove_family( int8_t f )
+  { family.push_back( -f ); return *this; }
 
-  affect_list_t& adjust_label( int16_t l )
+  template <typename... Ts>
+  affect_list_t& add_family( int8_t f, Ts... fs )
+  { add_family( f ); return add_family( fs... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_family( int8_t f, Ts... fs )
+  { remove_family( f ); return remove_family( fs... ); }
+
+  affect_list_t& add_label( int16_t l )
   { label.push_back( l ); return *this; }
 
-  template <typename... Ts>
-  affect_list_t& adjust_label( int16_t l, Ts... ls )
-  { adjust_label( l ); return adjust_label( ls... ); }
+  affect_list_t& remove_label( int16_t l )
+  { label.push_back( -l ); return *this; }
 
-  affect_list_t& adjust_spell( int32_t s )
+  template <typename... Ts>
+  affect_list_t& add_label( int16_t l, Ts... ls )
+  { add_label( l ); return add_label( ls... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_label( int16_t l, Ts... ls )
+  { remove_label( l ); return remove_label( ls... ); }
+
+  affect_list_t& add_spell( int32_t s )
   { spell.push_back( s ); return *this; }
 
+  affect_list_t& remove_spell( int32_t s )
+  { spell.push_back( -s ); return *this; }
+
   template <typename... Ts>
-  affect_list_t& adjust_spell( int32_t s, Ts... ss )
-  { adjust_spell( s ); return adjust_spell( ss... ); }
+  affect_list_t& add_spell( int32_t s, Ts... ss )
+  { add_spell( s ); return add_spell( ss... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_spell( int32_t s, Ts... ss )
+  { remove_spell( s ); return remove_spell( ss... ); }
 };
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects

@@ -166,7 +166,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.blackout_combo );
   parse_effects(
       p()->buff.counterstrike,
-      affect_list_t( 1 ).adjust_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -178,18 +178,18 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.pressure_point );
   parse_effects(
       p()->buff.kicks_of_flowing_momentum,
-      affect_list_t( 1 ).adjust_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+      affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
-                 affect_list_t( 1, 2 ).adjust_spell( p()->passives.chi_explosion->id() ) );
+                 affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 affect_list_t( 2 ).adjust_spell( -p()->passives.glory_of_the_dawn_damage->id(),
-                                                  -p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
+                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial,
-                 affect_list_t( 2 ).adjust_spell( -p()->passives.glory_of_the_dawn_damage->id(),
-                                                  -p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
+                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -1544,11 +1544,11 @@ struct press_the_advantage_t : base_action_t
       base_action_t::dual        = true;
 
       base_action_t::parse_effects( player->buff.counterstrike,
-                                    affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
                                     player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
       // effect must still be rolled in execute so it triggers brew cdr
       base_action_t::parse_effects(
-          player->buff.blackout_combo, affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+          player->buff.blackout_combo, affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
           player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
     }
 
