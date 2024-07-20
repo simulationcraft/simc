@@ -517,6 +517,7 @@ public:
     propagate_const<action_t *> flurry_of_xuen;
     propagate_const<action_t *> fury_of_xuen_summon;
     propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
+    propagate_const<action_t *> gale_force;
 
     // Tier 31
     propagate_const<action_t *> charred_dreams_dmg_2p;
@@ -690,6 +691,7 @@ public:
     propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> fury_of_xuen_stacks;
     propagate_const<buff_t *> fury_of_xuen;
+    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
@@ -1216,6 +1218,7 @@ public:
       player_talent_t invokers_delight;
       player_talent_t dual_threat;
       player_talent_t gale_force;
+      const spell_data_t *gale_force_damage;
       // Row 9
       player_talent_t last_emperors_capacitor;
       player_talent_t whirling_dragon_punch;

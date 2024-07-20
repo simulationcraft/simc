@@ -593,14 +593,25 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold =
-            p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
+        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * 
+            p()->composite_melee_attack_power() * 
+            p()->composite_damage_versatility();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
           p()->flurry_strikes_damage -= ap_threshold;
           p()->buff.flurry_charge->trigger();
         }
+      }
+
+      if ( p()->buff.gale_force->check() && p()->rng().roll( p()->buff.gale_force->default_chance ) )
+      {
+        double gf_damage = s->result_amount;
+
+        gf_damage *= p()->buff.gale_force->data().effectN( 1 ).percent();
+        p()->active_actions.gale_force->target = p()->target;
+        p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = gf_damage;
+        p()->active_actions.gale_force->execute();
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
@@ -2737,6 +2748,14 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     return am;
   }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
+      p()->buff.rushing_jade_wind->trigger();
+  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2789,8 +2808,12 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    if (p()->talent.windwalker.rushing_jade_wind.ok())
+    {
       p()->trigger_mark_of_the_crane( s );
+      if ( p()->bugs )
+        p()->buff.rushing_jade_wind->trigger();
+    }
   }
 };
 
@@ -2841,6 +2864,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
+
+    if ( p()->talent.windwalker.gale_force.ok() )
+      p()->buff.gale_force->trigger();
 
     if ( !p()->buff.heart_of_the_jade_serpent->check() )
       return;
@@ -4840,6 +4866,20 @@ struct jadefire_stomp_t : public monk_spell_t
       ww_damage->execute_on_target( s->target );
 
     get_td( s->target )->debuff.jadefire_brand->trigger();
+  }
+};
+
+// ==========================================================================
+// Gale Force
+// ==========================================================================
+
+struct gale_force_t : public monk_spell_t
+{
+  gale_force_t( monk_t *p )
+    : monk_spell_t( p, "gale_force", p->talent.windwalker.gale_force_damage )
+  {
+    background = true;
+    base_dd_min = base_dd_max = 1;
   }
 };
 }  // namespace spells
@@ -7407,7 +7447,8 @@ void monk_t::init_spells()
     talent.windwalker.rising_star       = _ST( "Rising Star" );
     talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
     talent.windwalker.dual_threat       = _ST( "Dual Threat" );
-    talent.windwalker.gale_force        = _ST( "Gale Force" );
+    talent.windwalker.gale_force        = _STID( 451580 );
+    talent.windwalker.gale_force_damage = find_spell( 451585 );
     // Row 9
     talent.windwalker.last_emperors_capacitor  = _ST( "Last Emperor's Capacitor" );
     talent.windwalker.whirling_dragon_punch    = _ST( "Whirling Dragon Punch" );
@@ -7659,6 +7700,7 @@ void monk_t::init_spells()
     active_actions.fury_of_xuen_summon       = new actions::fury_of_xuen_summon_t( this );
     active_actions.fury_of_xuen_empowered_tiger_lightning =
         new actions::fury_of_xuen_empowered_tiger_lightning_t( this );
+    active_actions.gale_force = new actions::gale_force_t( this );
   }
 
   // Passive Action Spells
@@ -8157,6 +8199,8 @@ void monk_t::create_buffs()
 
   buff.fury_of_xuen = make_buff_fallback<buffs::fury_of_xuen_t>( talent.windwalker.fury_of_xuen->ok(), this,
                                                                  "fury_of_xuen", passives.fury_of_xuen );
+
+  buff.gale_force = make_buff_fallback( talent.windwalker.gale_force->ok(), this, "gale_force", find_spell( 451582 ) );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )
