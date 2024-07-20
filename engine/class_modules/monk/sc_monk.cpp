@@ -179,6 +179,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects(
       p()->buff.kicks_of_flowing_momentum,
       affect_list_t( 1 ).adjust_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
+                 affect_list_t( 1, 2 ).adjust_spell( p()->passives.chi_explosion->id() ) );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
@@ -799,17 +801,6 @@ double monk_spell_t::composite_persistent_multiplier( const action_state_t *stat
   return pm;
 }
 
-double monk_spell_t::action_multiplier() const
-{
-  double am = base_t::action_multiplier();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-  return am;
-}
-
 monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_action_t<heal_t>( name, player, spell_data )
 {
@@ -847,10 +838,6 @@ double monk_heal_t::action_multiplier() const
       break;
 
     case MONK_WINDWALKER:
-
-      // Storm, Earth, and Fire
-      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
       break;
 
@@ -894,10 +881,6 @@ double monk_melee_attack_t::action_multiplier() const
 
   if ( ww_mastery && p()->buff.combo_strikes->check() )
     am *= 1 + p()->cache.mastery_value();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
   if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
     am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
@@ -4546,7 +4529,7 @@ struct celestial_conduit_t : public monk_spell_t
 
       if ( state->n_targets > 0 )
         cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
-                     std::min( (double)state->n_targets,
+                     std::min( as<double>( state->n_targets ),
                                p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
 
       return cam;
@@ -9024,14 +9007,13 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
 
 bool monk_t::affected_by_sef( spell_data_t data ) const
 {
-  // Storm, Earth, and Fire (monk_spell_t)
-  bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
-
-  // Chi Explosion IS affected by SEF but needs to be overriden here manually
-  if ( data.id() == 337342 )
-    affected = true;
-
-  return affected;
+  auto filter = [ & ]( std::vector<size_t> indices ) {
+    return std::any_of( indices.begin(), indices.end(), [ & ]( size_t index ) {
+      return data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( index ) );
+    } );
+  };
+  // Chi Explosion must be added manually.
+  return filter( { 1, 2, 7, 8 } ) || data.id() == 337342;
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
