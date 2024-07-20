@@ -1711,8 +1711,8 @@ public:
     // Art of the Glaive empowered ability buffs GO
     std::vector<int> art_of_the_glaive_affected_list = {};
     auto art_of_the_glaive = [ &art_of_the_glaive_affected_list, this ]( int idx, buff_t* buff ) {
-      auto in_whitelist = [ &art_of_the_glaive_affected_list, &id = ab::id ]() {
-        return std::find( art_of_the_glaive_affected_list.begin(), art_of_the_glaive_affected_list.end(), id ) !=
+      auto in_whitelist = [ &art_of_the_glaive_affected_list, this ]() {
+        return std::find( art_of_the_glaive_affected_list.begin(), art_of_the_glaive_affected_list.end(), ab::id ) !=
                art_of_the_glaive_affected_list.end();
       };
 
