@@ -602,9 +602,10 @@ void monk_action_t<Base>::impact( action_state_t *s )
         }
       }
 
-      if ( p()->buff.gale_force->check() && p()->rng().roll( p()->buff.gale_force->default_chance ) )
+      if ( get_td( s->target )->debuff.gale_force->check() &&
+           p()->rng().roll( get_td( s->target )->debuff.gale_force->default_chance ) )
       {
-        double amount = s->result_amount * p()->buff.gale_force->data().effectN( 1 ).percent();
+        double amount = s->result_amount * get_td( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
         p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = amount;
         p()->active_actions.gale_force->execute_on_target( s->target );
       }
@@ -2809,6 +2810,9 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       if ( p()->bugs )
         p()->buff.rushing_jade_wind->trigger();
     }
+
+    if ( p()->talent.windwalker.gale_force.ok() )
+      get_td( s->target )->debuff.gale_force->trigger();
   }
 };
 
@@ -2859,9 +2863,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
-
-    if ( p()->talent.windwalker.gale_force.ok() )
-      p()->buff.gale_force->trigger();
 
     if ( !p()->buff.heart_of_the_jade_serpent->check() )
       return;
@@ -6541,6 +6542,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
+  debuff.gale_force = make_buff( *this, "gale_force", p->find_spell( 451582 ) )
+      ->set_trigger_spell( p->talent.windwalker.gale_force );
+
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
@@ -8193,8 +8197,6 @@ void monk_t::create_buffs()
 
   buff.fury_of_xuen = make_buff_fallback<buffs::fury_of_xuen_t>( talent.windwalker.fury_of_xuen->ok(), this,
                                                                  "fury_of_xuen", passives.fury_of_xuen );
-
-  buff.gale_force = make_buff_fallback( talent.windwalker.gale_force->ok(), this, "gale_force", find_spell( 451582 ) );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )

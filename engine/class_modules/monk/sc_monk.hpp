@@ -410,6 +410,7 @@ public:
     // Windwalker
     propagate_const<buff_t *> acclamation;
     propagate_const<buff_t *> flying_serpent_kick;
+    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> empowered_tiger_lightning;
     propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
     propagate_const<buff_t *> mark_of_the_crane;
@@ -691,7 +692,6 @@ public:
     propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> fury_of_xuen_stacks;
     propagate_const<buff_t *> fury_of_xuen;
-    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;

@@ -113,9 +113,11 @@ struct pet_action_base_t : public BASE
     if ( super_t::result_is_miss( s->result ) || s->result_amount <= 0.0 )
       return;
 
-    if ( o()->buff.gale_force->check() && o()->rng().roll( o()->buff.gale_force->default_chance ) )
+    if ( o()->get_target_data( s->target )->debuff.gale_force->check() &&
+         o()->rng().roll( o()->get_target_data( s->target )->debuff.gale_force->default_chance ) )
     {
-      double amount = s->result_amount * o()->buff.gale_force->data().effectN( 1 ).percent();
+      double amount =
+          s->result_amount * o()->get_target_data( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
       o()->active_actions.gale_force->base_dd_min = o()->active_actions.gale_force->base_dd_max = amount;
       o()->active_actions.gale_force->execute_on_target( s->target );
     }
