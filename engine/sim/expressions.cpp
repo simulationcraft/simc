@@ -1401,9 +1401,6 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
       throw std::invalid_argument( fmt::format( "Unable to convert '{}' into RPN.", expr_str ) );
     }
 
-    if ( action->sim->debug )
-      expression::print_tokens( tokens, action->sim );
-
     if ( auto e = build_expression_tree( action, tokens, optimize ) )
       return e;
 
