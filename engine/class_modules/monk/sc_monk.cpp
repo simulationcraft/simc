@@ -8197,6 +8197,7 @@ void monk_t::create_buffs()
 
   buff.pressure_point =
       make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
+          ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.storm_earth_and_fire =
