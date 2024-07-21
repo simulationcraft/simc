@@ -1142,36 +1142,59 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_crackling_jade_lightning_t : public sef_spell_t
   {
+    struct sef_crackling_jade_lightning_aoe_t : public sef_spell_t
+    {
+      sef_crackling_jade_lightning_aoe_t( storm_earth_and_fire_pet_t *player )
+        : sef_spell_t( "crackling_jade_lightning_sef_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
+      {
+        dual = background = true;
+      }
+
+      double cost_per_tick( resource_e ) const override
+      {
+        return 0.0;
+      }
+    };
+
+    sef_crackling_jade_lightning_aoe_t *aoe_dot;
+
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning )
+      : sef_spell_t( "crackling_jade_lightning_sef", player, player->o()->baseline.monk.crackling_jade_lightning ),
+        aoe_dot( new sef_crackling_jade_lightning_aoe_t( player ) )
     {
-      tick_may_crit = true;
-      channeled = tick_zero = true;
-      hasted_ticks          = false;
       interrupt_auto_attack = true;
-      dot_duration          = data().duration();
-    }
+      channeled             = true;
 
-    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
-    // Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      auto base = base_tick_time.base;
-
-      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
+      add_child( aoe_dot );
     }
 
     double cost_per_tick( resource_e ) const override
     {
       return 0;
+    }
+
+    void execute() override
+    {
+      sef_spell_t::execute();
+
+      if ( p()->o()->talent.windwalker.power_of_the_thunder_king->ok() )
+      {
+        const auto &tl = target_list();
+        double count   = 0;
+
+        for ( auto &t : tl )
+        {
+          // Don't apply AoE version to primary target
+          if ( t == target )
+            continue;
+
+          if ( count < p()->o()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
+          {
+            aoe_dot->execute_on_target( t );
+            count++;
+          }
+        }
+      }
     }
   };
 
