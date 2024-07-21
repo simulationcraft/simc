@@ -3431,6 +3431,8 @@ using namespace helpers;
       immolate->execute_on_target( target );
 
       p()->buffs.backdraft->decrement();
+
+      p()->buffs.decimation->decrement();
     }
 
     double composite_crit_chance() const override
