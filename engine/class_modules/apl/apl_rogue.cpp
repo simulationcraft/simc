@@ -177,7 +177,7 @@ void outlaw( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand" );
+  precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "stealth,precombat_seconds=2" );
   precombat->add_action( "cancel_buff,name=stealth,if=talent.double_jeopardy", "Cancel Stealth to activate Double Jeopardy" );
   precombat->add_action( "roll_the_bones,precombat_seconds=2" );
@@ -221,8 +221,9 @@ void outlaw( player_t* p )
   cds->add_action( "roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)", "Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish ready" );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=3+buff.buried_treasure.up&(rtb_buffs.min_remains<2|buff.broadside.up)", "Use Keep it Rolling with at least 3 buffs that are not Buried Treasure. If Broadside is not active, then wait until just before the lowest buff expires." );
   cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend" );
-  cds->add_action( "use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Manic Grieftorch and Beacon to the Beyond should not be used during stealth and have higher priority than stealth cooldowns" );
+  cds->add_action( "use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Trinkets that should not be used during stealth and have higher priority than entering stealth" );
   cds->add_action( "use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5" );
+  cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22" );
   cds->add_action( "killing_spree,if=variable.finish_condition&!stealthed.all", "Killing Spree has higher priority than stealth cooldowns" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all&(!talent.crackshot|cooldown.between_the_eyes.ready)", "Crackshot builds use stealth cooldowns if Between the Eyes is ready" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=150|fight_remains<charges*6)" );

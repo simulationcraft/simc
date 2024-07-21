@@ -5,7 +5,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand
+actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
 # Cancel Stealth to activate Double Jeopardy
 actions.precombat+=/cancel_buff,name=stealth,if=talent.double_jeopardy
@@ -75,9 +75,10 @@ actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_re
 # Use Keep it Rolling with at least 3 buffs that are not Buried Treasure. If Broadside is not active, then wait until just before the lowest buff expires.
 actions.cds+=/keep_it_rolling,if=rtb_buffs>=3+buff.buried_treasure.up&(rtb_buffs.min_remains<2|buff.broadside.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
-# Manic Grieftorch and Beacon to the Beyond should not be used during stealth and have higher priority than stealth cooldowns
+# Trinkets that should not be used during stealth and have higher priority than entering stealth
 actions.cds+=/use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
 actions.cds+=/use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
+actions.cds+=/use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22
 # Killing Spree has higher priority than stealth cooldowns
 actions.cds+=/killing_spree,if=variable.finish_condition&!stealthed.all
 # Crackshot builds use stealth cooldowns if Between the Eyes is ready
