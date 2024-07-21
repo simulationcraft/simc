@@ -5176,18 +5176,13 @@ struct expel_harm_t : monk_heal_t
     monk_heal_t::impact( s );
 
     double result = s->result_total;
-    sim->print_debug( "ZXC RB:{}", result );
     if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
-      sim->print_debug( "ZXC CONSUMING ORBS" );
       p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
-      sim->print_debug( "ZXC V:{}", p()->buff.expel_harm_accumulator->check_value() );
       p()->buff.expel_harm_accumulator->expire();
     }
     result *= data().effectN( 2 ).percent();
-    sim->print_debug( "ZXC M:{}", data().effectN( 2 ).percent() );
-    sim->print_debug( "ZXC R:{}", result );
 
     damage->base_dd_min = damage->base_dd_max = result;
     damage->execute();
