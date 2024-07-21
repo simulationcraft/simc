@@ -421,7 +421,6 @@ public:
     buff_t* terms_of_engagement;
     buff_t* mongoose_fury;
     buff_t* coordinated_assault;
-    buff_t* deadly_duo;
     buff_t* exposed_flank;
     buff_t* sic_em;
     buff_t* relentless_primal_ferocity;
@@ -1036,6 +1035,7 @@ public:
     damage_affected_by tip_of_the_spear;
     damage_affected_by tip_of_the_spear_hidden;
     bool spearhead_crit_chance = false;
+    bool spearhead_crit_damage = false;
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
     bool t31_sv_2pc_crit_chance = false;
@@ -1071,6 +1071,7 @@ public:
     affected_by.tip_of_the_spear      = parse_damage_affecting_aura( this, p->find_spell( 260286 ) );
     affected_by.tip_of_the_spear_hidden = parse_damage_affecting_aura( this, p->find_spell( 460852 ) );
     affected_by.spearhead_crit_chance = check_affected_by( this, p->talents.spearhead_attack->effectN( 2 ) );
+    affected_by.spearhead_crit_damage = check_affected_by( this, p->talents.spearhead_attack->effectN( 3 ) );
 
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
@@ -1117,6 +1118,7 @@ public:
     ab::apply_affecting_aura( p -> talents.explosives_expert );
     ab::apply_affecting_aura( p -> talents.symbiotic_adrenaline );
     ab::apply_affecting_aura( p -> talents.grenade_juggler );
+    ab::apply_affecting_aura( p -> talents.deadly_duo );
 
     // Set Bonus passives
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
@@ -1364,6 +1366,18 @@ public:
       c += p()->talents.spearhead_attack->effectN( 2 ).percent();
 
     return c;
+  }
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
+  {
+    double cm = ab::composite_target_crit_damage_bonus_multiplier( target );
+
+    if ( affected_by.spearhead_crit_damage && p()->talents.deadly_duo.ok() && p()->pets.main && p()->pets.main->get_target_data( target )->dots.spearhead->is_ticking() )
+    {
+      cm *= 1.0 + p()->talents.deadly_duo->effectN( 2 ).percent();
+    }
+
+    return cm;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -2601,8 +2615,6 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
   double action_multiplier() const override
   {
     double am = kill_command_base_t::action_multiplier();
-
-    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
 
     am *= 1 + o() -> buffs.exposed_wound -> value(); 
 
@@ -6227,9 +6239,6 @@ struct kill_command_t: public hunter_spell_t
       chance += p() -> talents.bloody_claws -> effectN( 1 ).percent()
         * p() -> buffs.mongoose_fury -> check();
 
-      if ( p() -> buffs.deadly_duo -> check() )
-        chance += p() -> buffs.deadly_duo -> check() * p() -> talents.deadly_duo -> effectN( 3 ).percent();
-
       chance += p()->buffs.coordinated_assault->check_value();
 
       if ( rng().roll( chance ) )
@@ -6257,7 +6266,6 @@ struct kill_command_t: public hunter_spell_t
       p() -> cooldowns.barbed_shot -> reset( true );
 
     p() -> buffs.lethal_command -> expire();
-    p() -> buffs.deadly_duo -> expire();
     p() -> buffs.exposed_wound -> expire();
 
     if ( p() -> tier_set.t30_bm_4pc.ok() )
@@ -8060,11 +8068,6 @@ void hunter_t::create_buffs()
       ->set_duration( talents.coordinated_assault->duration() )
       ->set_chance( talents.relentless_primal_ferocity.ok() )
       ->set_quiet( true );
-
-  buffs.deadly_duo =
-    make_buff( this, "deadly_duo", find_spell( 397568 ) )
-      -> set_chance( talents.deadly_duo.ok() )
-      -> set_default_value( talents.deadly_duo -> effectN( 1 ).percent() );
 
   buffs.exposed_flank = 
     make_buff( this, "exposed_flank", find_spell( 459864 ) )
