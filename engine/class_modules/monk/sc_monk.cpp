@@ -450,13 +450,22 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
+  auto cost = base_t::cost();
+
   if ( current_resource() == RESOURCE_ENERGY )
   {
-    if ( base_t::cost() > 0 )
+    if ( cost > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        p()->flurry_strikes_energy += as<int>( base_t::cost() );
+        // Tiger Palm counts the full 60 energy base cost
+        if ( base_t::id == p()->baseline.monk.tiger_palm->id() )
+          p()->flurry_strikes_energy += as<int>( base_t::base_cost() );
+        // Crackling Jade Lightning is whatever the current cost
+        else if ( base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
+          // this needs to be rounded to the nearest whole number
+          p()->flurry_strikes_energy += as<int>( std::round( cost ) );
+        // Detox, Paralysis and Vivify do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
           p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
@@ -466,7 +475,7 @@ void monk_action_t<Base>::consume_resource()
 
       if ( p()->talent.shado_pan.efficient_training.ok() )
       {
-        p()->efficient_training_energy += as<int>( base_t::cost() );
+        p()->efficient_training_energy += as<int>( cost );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
           timespan_t cdr =
@@ -485,12 +494,12 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    auto cost = base_t::cost();
+    cost = base_t::base_cost();
 
     if ( cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_t::base_cost() ) );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( cost ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -505,21 +514,21 @@ void monk_action_t<Base>::consume_resource()
           p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
         }
       }
-    }
 
-    if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
-    {
-      if ( p()->buff.storm_earth_and_fire->up() )
+      if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
       {
-        auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-        time_extend *= cost;
+        if ( p()->buff.storm_earth_and_fire->up() )
+        {
+          auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
+          time_extend *= cost;
 
-        p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
+          p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
-        p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-        p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+        }
+        p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
       }
-      p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
     }
 
     p()->buff.the_emperors_capacitor->trigger();
