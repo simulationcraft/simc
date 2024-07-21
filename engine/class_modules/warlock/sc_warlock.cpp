@@ -193,6 +193,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
@@ -818,7 +819,6 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     infernals( "infernal", w ),
-    blasphemy( "blasphemy", w ),
     darkglares( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
@@ -828,7 +828,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     doomguards( "Doomguard", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
-    chaos_rifts( "chaos_tear", w )
+    chaos_rifts( "chaos_tear", w ),
+    overfiends( "overfiend", w )
 { }
 }  // namespace warlock
 

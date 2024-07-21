@@ -56,7 +56,8 @@ using namespace helpers;
       bool shadow_invocation = false;
 
       // Destruction
-
+      bool decimation = false;
+      bool dimension_ripper = true;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -86,6 +87,8 @@ using namespace helpers;
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
       affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
+
+      triggers.decimation = p->talents.decimation.ok();
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -186,6 +189,42 @@ using namespace helpers;
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
       }
+
+      if ( destruction() && triggers.decimation && s->result == RESULT_CRIT && rng().roll( 0.10 ) )
+      {
+        p()->buffs.decimation->trigger();
+        p()->cooldowns.soul_fire->reset( true );
+        p()->procs.decimation->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && rng().roll( 0.05 ) )
+      {
+        if ( p()->talents.dimensional_rift.ok() )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+        }
+        else
+        {
+          int rift = rng().range( 3 );
+
+          switch ( rift )
+          {
+          case 0:
+            p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+            break;
+          case 1:
+            p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+            break;
+          case 2:
+            p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+            break;
+          default:
+            break;
+          }
+        }
+
+        p()->procs.dimension_ripper->occur();
+      }
     }
 
     void tick( dot_t* d ) override
@@ -259,13 +298,10 @@ using namespace helpers;
 
       if ( destruction() && affected_by.chaotic_energies )
       {
-        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+        double min_percentage = affected_by.chaos_incarnate ? p()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+        double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
-        if ( affected_by.chaos_incarnate )
-          chaotic_energies_rng = destro_mastery_value;
-
-        m *= 1.0 + chaotic_energies_rng + destro_mastery_value;
+        m *= 1.0 + chaotic_energies_rng * p()->cache.mastery_value();
       }
       
       return m;
@@ -2559,6 +2595,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
         affected_by.ashen_remains = true;
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); // TOCHECK: Does this apply in-game correctly?
@@ -2627,6 +2665,8 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = true;
 
+      triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
       add_child( fnb_action );
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
@@ -2647,9 +2687,6 @@ using namespace helpers;
       
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
-
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
 
       p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
@@ -2725,6 +2762,8 @@ using namespace helpers;
 
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+
+      triggers.decimation = false;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -2735,7 +2774,11 @@ using namespace helpers;
   {
     internal_combustion_t( warlock_t* p )
       : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    { background = dual = true; }
+    {
+      background = dual = true;
+
+      triggers.decimation = false;
+    }
 
     void init() override
     {
@@ -2854,7 +2897,10 @@ using namespace helpers;
         p()->buffs.backdraft->decrement();
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -2916,9 +2962,6 @@ using namespace helpers;
 
       if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
-
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
 
     double composite_crit_chance() const override
@@ -2959,6 +3002,8 @@ using namespace helpers;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+
+        triggers.decimation = false;
       }
       
       void impact( action_state_t* s ) override
@@ -3025,7 +3070,10 @@ using namespace helpers;
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -3312,6 +3360,8 @@ using namespace helpers;
     {
       background = dual = true;
       aoe = -1;
+
+      triggers.decimation = false;
     }
 
     void execute() override
@@ -3365,6 +3415,15 @@ using namespace helpers;
       immolate->base_dd_multiplier = 0.0;
     }
 
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->buffs.decimation->check_value();
+
+      return m;
+    }
+
     void execute() override
     {
       warlock_spell_t::execute();
@@ -3382,44 +3441,6 @@ using namespace helpers;
         c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
       return c;
-    }
-  };
-
-  struct avatar_of_destruction_t : public warlock_spell_t
-  {
-    struct infernal_awakening_proc_t : public warlock_spell_t
-    {
-      infernal_awakening_proc_t( warlock_t* p )
-        : warlock_spell_t( "Infernal Awakening (Blasphemy)", p, p->talents.infernal_awakening )
-      {
-        background = dual = true;
-        aoe = -1;
-      }
-    };
-
-    infernal_awakening_proc_t* infernal_awakening;
-
-    avatar_of_destruction_t( warlock_t* p )
-      : warlock_spell_t( "Avatar of Destruction", p, p->talents.summon_blasphemy )
-    {
-      background = dual = true;
-      infernal_awakening = new infernal_awakening_proc_t( p );
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( p()->warlock_pet_list.blasphemy.active_pet() )
-      {
-        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-      }
-      else
-      {
-        p()->warlock_pet_list.blasphemy.spawn( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        infernal_awakening->execute_on_target( target );
-      }
     }
   };
 
@@ -3685,9 +3706,7 @@ using namespace helpers;
   }
 
   void warlock_t::create_destruction_proc_actions()
-  {
-    proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
-  }
+  { }
 
   void warlock_t::init_special_effects()
   {

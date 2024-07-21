@@ -1755,30 +1755,33 @@ void infernal_t::arise()
 
 /// Infernal End
 
-/// Blasphemy Begin
-blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
-  : infernal_t( owner, name )
-{ }
+/// Dimensional Rifts Begin
 
-struct blasphemous_existence_t : public warlock_pet_spell_t
+struct dimensional_cinder_t : public warlock_pet_spell_t
 {
-  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Blasphemous Existence", p, p->find_spell( 367819 ) )
+  dimensional_cinder_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Dimensional Cinder", p, p->o()->talents.dimensional_cinder )
   {
+    background = dual = true;
+    may_crit = false;
     aoe = -1;
-    background = true;
+
+    base_dd_min = base_dd_max = 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m /= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 4 ).percent();
+
+    m /= 1.0 + p()->o()->racials.command->effectN( 2 ).percent();
+
+    m *= p()->o()->talents.unstable_rifts->effectN( 1 ).percent();
+
+    return m;
   }
 };
-
-void blasphemy_t::init_base_stats()
-{
-  infernal_t::init_base_stats();
-
-  blasphemous_existence = new blasphemous_existence_t( this );
-}
-
-/// Blasphemy End
-
-/// Dimensional Rifts Begin
 
 shadowy_tear_t::shadowy_tear_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
@@ -1802,13 +1805,29 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<shadowy_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
+  }
 };
 
 struct shadow_barrage_t : public warlock_pet_spell_t
 {
   shadow_barrage_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Shadow Barrage", p, p->o()->talents.shadow_barrage )
-  { tick_action = new rift_shadow_bolt_t( p ); }
+  {
+    tick_action = new rift_shadow_bolt_t( p );
+
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<shadowy_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<shadowy_tear_t*>( p )->cinder );
+    }
+  }
 
   bool ready() override
   {
@@ -1866,13 +1885,29 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<unstable_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
+  }
 };
 
 struct chaos_barrage_t : public warlock_pet_spell_t
 {
   chaos_barrage_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Barrage", p, p->o()->talents.chaos_barrage )
-  { tick_action = new chaos_barrage_tick_t( p ); }
+  {
+    tick_action = new chaos_barrage_tick_t( p );
+
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<unstable_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<unstable_tear_t*>( p )->cinder );
+    }
+  }
 
   bool ready() override
   {
@@ -1917,7 +1952,13 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
 {
   rift_chaos_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.rift_chaos_bolt )
-  { }
+  {
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<chaos_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<chaos_tear_t*>( p )->cinder );
+    }
+  }
 
   double composite_crit_chance() const override
   { return 1.0; }
@@ -1935,6 +1976,14 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t::execute();
 
     debug_cast<chaos_tear_t*>( p() )->bolts--;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<chaos_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -1972,6 +2021,70 @@ action_t* chaos_tear_t::create_action( util::string_view name, util::string_view
 }
 
 /// Dimensional Rifts End
+
+/// Overfiend Begin
+
+overfiend_t::overfiend_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  action_list_str = "chaos_bolt";
+}
+
+struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
+{
+  overfiend_chaos_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.overfiend_cb )
+  {
+    spell_power_mod.direct = p->o()->warlock_base.chaos_bolt->effectN( 1 ).sp_coeff();
+
+    base_dd_multiplier *= p->o()->talents.avatar_of_destruction->effectN( 1 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  { return 1.0; }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    warlock_pet_spell_t::calculate_direct_amount( s );
+
+    s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
+
+    return s->result_total;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->o()->talents.ruin->effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    double min_percentage = p()->o()->talents.chaos_incarnate.ok() ? p()->o()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+    double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
+
+    m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
+
+    return m;
+  }
+};
+
+action_t* overfiend_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "chaos_bolt" )
+    return new overfiend_chaos_bolt_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Overfiend End
 
 }  // namespace destruction
 
