@@ -2175,7 +2175,6 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
-        BASE::td( BASE::target )->debuffs.reavers_mark->expire();
         BASE::td( BASE::target )->debuffs.reavers_mark->trigger( second_ability ? 2 : 1 );
       }
 
@@ -6925,7 +6924,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   // TODO: make this conditional on hero spec
   debuffs.reavers_mark = make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
                              ->set_default_value_from_effect( 1 )
-                             ->set_max_stack( 2 );
+                             ->set_max_stack( 2 )
+                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
