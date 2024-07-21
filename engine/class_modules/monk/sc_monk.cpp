@@ -3687,21 +3687,13 @@ struct crackling_jade_lightning_t : public monk_spell_t
       dual = background = true;
       ww_mastery        = true;
 
-      parse_effects( p->talent.windwalker.power_of_the_thunder_king, 0B001U );
+      parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+      parse_effects( p->buff.the_emperors_capacitor );
     }
 
     double cost_per_tick( resource_e ) const override
     {
       return 0.0;
-    }
-
-    double composite_persistent_multiplier( const action_state_t *action_state ) const override
-    {
-      double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-      pm *= 1 + p()->buff.the_emperors_capacitor->check_stack_value();
-
-      return pm;
     }
   };
 
@@ -3711,42 +3703,21 @@ struct crackling_jade_lightning_t : public monk_spell_t
     : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning ),
       aoe_dot( new crackling_jade_lightning_aoe_t( p ) )
   {
-    sef_ability      = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
-    may_combo_strike = true;
-    ww_mastery       = true;
+    sef_ability           = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
+    may_combo_strike      = true;
+    ww_mastery            = true;
+    interrupt_auto_attack = true;
+    channeled             = true;
 
     parse_options( options_str );
 
-    channeled = tick_zero = true;
-    dot_duration                          = data().duration();
-    interrupt_auto_attack                 = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
 
-    parse_effects( p->talent.windwalker.power_of_the_thunder_king, 0B001U );
+    parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( p->buff.the_emperors_capacitor );
 
     add_child( aoe_dot );
-  }
-
-  double cost_per_tick( resource_e resource ) const override
-  {
-    double c = monk_spell_t::cost_per_tick( resource );
-
-    if ( resource == RESOURCE_ENERGY )
-      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
-                 p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() );
-
-    return c;
-  }
-
-  double composite_persistent_multiplier( const action_state_t *action_state ) const override
-  {
-    double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-    pm *= 1 + p()->buff.the_emperors_capacitor->check_stack_value();
-
-    return pm;
   }
 
   void execute() override
@@ -3779,6 +3750,18 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     p()->buff.the_emperors_capacitor->expire();
 
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    {
+      const auto &tl = target_list();
+      double count   = 0;
+
+      for ( auto &t : tl )
+      {
+        get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
+      }
+    }
     // Reset swing timer
     if ( player->main_hand_attack )
     {
@@ -6659,12 +6642,15 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                          ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
                                          ->set_default_value_from_effect( 1 );
 
-  dot.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
-  dot.enveloping_mist   = target->get_dot( "enveloping_mist", p );
-  dot.renewing_mist     = target->get_dot( "renewing_mist", p );
-  dot.soothing_mist     = target->get_dot( "soothing_mist", p );
-  dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
-  dot.aspect_of_harmony = target->get_dot( "aspect_of_harmony_damage", p );
+  dot.breath_of_fire                   = target->get_dot( "breath_of_fire_dot", p );
+  dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
+  dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
+  dot.crackling_jade_lightning_sef_aoe = target->get_dot( "crackling_jade_lightning_sef_aoe", p );
+  dot.enveloping_mist                  = target->get_dot( "enveloping_mist", p );
+  dot.renewing_mist                    = target->get_dot( "renewing_mist", p );
+  dot.soothing_mist                    = target->get_dot( "soothing_mist", p );
+  dot.touch_of_karma                   = target->get_dot( "touch_of_karma", p );
+  dot.aspect_of_harmony                = target->get_dot( "aspect_of_harmony_damage", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )

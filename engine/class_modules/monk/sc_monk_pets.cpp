@@ -1145,7 +1145,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     struct sef_crackling_jade_lightning_aoe_t : public sef_spell_t
     {
       sef_crackling_jade_lightning_aoe_t( storm_earth_and_fire_pet_t *player )
-        : sef_spell_t( "crackling_jade_lightning_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
+        : sef_spell_t( "crackling_jade_lightning_sef_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
       {
         dual = background = true;
       }
@@ -1159,12 +1159,11 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_crackling_jade_lightning_aoe_t *aoe_dot;
 
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning ),
+      : sef_spell_t( "crackling_jade_lightning_sef", player, player->o()->baseline.monk.crackling_jade_lightning ),
         aoe_dot( new sef_crackling_jade_lightning_aoe_t( player ) )
     {
-      channeled = tick_zero = true;
       interrupt_auto_attack = true;
-      dot_duration          = data().duration();
+      channeled             = true;
 
       add_child( aoe_dot );
     }
