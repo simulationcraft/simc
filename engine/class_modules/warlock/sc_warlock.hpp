@@ -450,6 +450,21 @@ public:
   {
     // Diabolist
     player_talent_t diabolic_ritual;
+    const spell_data_t* ritual_overlord; // Diabolic Ritual: X buffs
+    const spell_data_t* ritual_mother;
+    const spell_data_t* ritual_pit_lord;
+    const spell_data_t* art_overlord; // Demonic Art: X buffs
+    const spell_data_t* art_mother;
+    const spell_data_t* art_pit_lord;
+    const spell_data_t* summon_overlord;
+    const spell_data_t* summon_mother;
+    const spell_data_t* summon_pit_lord;
+    const spell_data_t* wicked_cleave; // Overlord
+    const spell_data_t* chaos_salvo; // Mother of Chaos
+    const spell_data_t* chaos_salvo_missile;
+    const spell_data_t* chaos_salvo_dmg;
+    const spell_data_t* felseeker; // Pit Lord
+    const spell_data_t* felseeker_dmg;
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
@@ -726,6 +741,13 @@ public:
   void init_gains_destruction();
   void init_rng_destruction();
   void init_procs_destruction();
+
+  action_t* create_action_diabolist( util::string_view, util::string_view );
+  void create_buffs_diabolist();
+  void init_spells_diabolist();
+  void init_gains_diabolist();
+  void init_rng_diabolist();
+  void init_procs_diabolist();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
