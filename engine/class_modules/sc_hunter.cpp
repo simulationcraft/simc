@@ -5461,10 +5461,11 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       serpent_sting_base_t( p, "", p -> find_spell( 259491 ) )
     {
       dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
 
-      // Viper's Venom is left out of Hydra's Bite target count modification.
-      aoe = 0;
+    timespan_t travel_time() const override
+    {
+      return 0_s;
     }
 
     int n_targets() const override
@@ -5524,14 +5525,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     p()->buffs.merciless_blows->expire();
   }
 
-  void schedule_travel( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::schedule_travel( s );
-
-    if ( vipers_venom_serpent_sting )
-      vipers_venom_serpent_sting->execute_on_target( target );
-  }
-
   void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
@@ -5547,6 +5540,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       if ( amount > 0 )
         residual_action::trigger( spearhead, s -> target, amount );
     }
+
+    if ( vipers_venom_serpent_sting )
+      vipers_venom_serpent_sting->execute_on_target( s->target );
   }
 
   bool ready() override
