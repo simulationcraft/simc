@@ -3546,6 +3546,9 @@ using namespace helpers;
         return destro_action;
     }
 
+    if ( action_t* diabolist_action = create_action_diabolist( action_name, options_str ) )
+      return diabolist_action;
+
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
 
@@ -3683,6 +3686,11 @@ using namespace helpers;
     if ( action_name == "dimensional_rift" )
       return new dimensional_rift_t( this, options_str );
 
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_diabolist( util::string_view action_name, util::string_view options_str )
+  {
     return nullptr;
   }
 

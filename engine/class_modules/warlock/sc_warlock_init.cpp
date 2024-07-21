@@ -74,6 +74,8 @@ namespace warlock
 
     talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
     talents.soulburn_buff = find_spell( 387626 );
+
+    warlock_t::init_spells_diabolist();
   }
 
   void warlock_t::init_spells_affliction()
@@ -468,6 +470,26 @@ namespace warlock
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
   }
 
+  void warlock_t::init_spells_diabolist()
+  {
+    hero.diabolic_ritual = find_talent_spell( talent_tree::HERO, "Diabolic Ritual" ); // Should be ID 428514
+    hero.ritual_overlord = find_spell( 431944 );
+    hero.ritual_mother = find_spell( 432815 );
+    hero.ritual_pit_lord = find_spell( 432816 );
+    hero.art_overlord = find_spell( 428524 );
+    hero.art_mother = find_spell( 432794 );
+    hero.art_pit_lord = find_spell( 432795 );
+    hero.summon_overlord = find_spell( 428571 );
+    hero.summon_mother = find_spell( 428565 );
+    hero.summon_pit_lord = find_spell( 434400 );
+    hero.wicked_cleave = find_spell( 432120 );
+    hero.chaos_salvo = find_spell( 432569 );
+    hero.chaos_salvo_missile = find_spell( 432592 );
+    hero.chaos_salvo_dmg = find_spell( 432596 );
+    hero.felseeker = find_spell( 438973 );
+    hero.felseeker_dmg = find_spell( 434404 );
+  }
+
   void warlock_t::init_base_stats()
   {
     if ( base.distance < 1.0 )
@@ -530,6 +552,8 @@ namespace warlock
     buffs.rolling_havoc = make_buff( this, "rolling_havoc", talents.rolling_havoc_buff )
                               ->set_default_value( talents.rolling_havoc->effectN( 1 ).percent() )
                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    create_buffs_diabolist();
   }
 
   void warlock_t::create_buffs_affliction()
@@ -636,6 +660,10 @@ namespace warlock
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
   }
 
+  void warlock_t::create_buffs_diabolist()
+  {
+  }
+
   void warlock_t::create_pets()
   {
     for ( auto& pet : pet_name_list )
@@ -668,6 +696,8 @@ namespace warlock
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_gains_destruction();
 
+    init_gains_diabolist();
+
     gains.soul_conduit = get_gain( "soul_conduit" );
   }
 
@@ -693,6 +723,10 @@ namespace warlock
     gains.summon_overfiend = get_gain( "summon_overfiend" );
   }
 
+  void warlock_t::init_gains_diabolist()
+  {
+  }
+
   void warlock_t::init_procs()
   {
     player_t::init_procs();
@@ -703,6 +737,8 @@ namespace warlock
       init_procs_demonology();
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_procs_destruction();
+
+    init_procs_diabolist();
 
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
@@ -752,6 +788,10 @@ namespace warlock
     procs.dimension_ripper = get_proc( "dimension_ripper" );
   }
 
+  void warlock_t::init_procs_diabolist()
+  {
+  }
+
   void warlock_t::init_rng()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -760,6 +800,8 @@ namespace warlock
       init_rng_demonology();
     if ( specialization() == WARLOCK_DESTRUCTION )
       init_rng_destruction();
+
+    init_rng_diabolist();
 
     player_t::init_rng();
   }
@@ -776,6 +818,10 @@ namespace warlock
   {
     // TOCHECK: Presumed to use deck of cards at 3 out of 20. Long sample test needed to reconfirm in TWW
     rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+  }
+
+  void warlock_t::init_rng_diabolist()
+  {
   }
 
   void warlock_t::init_resources( bool force )
