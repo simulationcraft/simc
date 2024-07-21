@@ -7713,6 +7713,10 @@ struct dark_transformation_t final : public death_knight_spell_t
     {
       add_child( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) );
     }
+    if ( p->talent.unholy.unholy_pact.ok() )
+    {
+      add_child( get_action<unholy_pact_damage_t>( "unholy_pact_damage", p ) );
+    }
   }
 
   void execute() override
