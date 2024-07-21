@@ -466,6 +466,7 @@ struct infernal_t : public warlock_pet_t
 struct shadowy_tear_t : public warlock_pet_t
 {
   int barrages;
+  action_t* cinder;
 
   shadowy_tear_t( warlock_t*, util::string_view = "Shadowy Tear" );
   void arise() override;
@@ -475,6 +476,7 @@ struct shadowy_tear_t : public warlock_pet_t
 struct unstable_tear_t : public warlock_pet_t
 {
   int barrages;
+  action_t* cinder;
 
   unstable_tear_t( warlock_t*, util::string_view = "Unstable Tear" );
   void arise() override;
@@ -484,6 +486,7 @@ struct unstable_tear_t : public warlock_pet_t
 struct chaos_tear_t : public warlock_pet_t
 {
   int bolts;
+  action_t* cinder;
 
   chaos_tear_t( warlock_t*, util::string_view = "Chaos Tear" );
   void arise() override;

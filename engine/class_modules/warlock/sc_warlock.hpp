@@ -442,7 +442,8 @@ public:
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
     player_talent_t dimension_ripper;
-    player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
+    player_talent_t unstable_rifts;
+    const spell_data_t* dimensional_cinder;
   } talents;
 
   struct hero_talents_t

@@ -458,6 +458,9 @@ namespace warlock
 
     talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
 
+    talents.unstable_rifts = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Rifts" ); // Should be ID 457064
+    talents.dimensional_cinder = find_spell( 460805 );
+
     // Additional Tier Set spell data
 
     // Initialize some default values for pet spawners

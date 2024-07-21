@@ -1757,6 +1757,32 @@ void infernal_t::arise()
 
 /// Dimensional Rifts Begin
 
+struct dimensional_cinder_t : public warlock_pet_spell_t
+{
+  dimensional_cinder_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Dimensional Cinder", p, p->o()->talents.dimensional_cinder )
+  {
+    background = dual = true;
+    may_crit = false;
+    aoe = -1;
+
+    base_dd_min = base_dd_max = 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m /= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 4 ).percent();
+
+    m /= 1.0 + p()->o()->racials.command->effectN( 2 ).percent();
+
+    m *= p()->o()->talents.unstable_rifts->effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
 shadowy_tear_t::shadowy_tear_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
 {
@@ -1779,13 +1805,29 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<shadowy_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
+  }
 };
 
 struct shadow_barrage_t : public warlock_pet_spell_t
 {
   shadow_barrage_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Shadow Barrage", p, p->o()->talents.shadow_barrage )
-  { tick_action = new rift_shadow_bolt_t( p ); }
+  {
+    tick_action = new rift_shadow_bolt_t( p );
+
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<shadowy_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<shadowy_tear_t*>( p )->cinder );
+    }
+  }
 
   bool ready() override
   {
@@ -1843,13 +1885,29 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<unstable_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
+  }
 };
 
 struct chaos_barrage_t : public warlock_pet_spell_t
 {
   chaos_barrage_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Barrage", p, p->o()->talents.chaos_barrage )
-  { tick_action = new chaos_barrage_tick_t( p ); }
+  {
+    tick_action = new chaos_barrage_tick_t( p );
+
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<unstable_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<unstable_tear_t*>( p )->cinder );
+    }
+  }
 
   bool ready() override
   {
@@ -1894,7 +1952,13 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
 {
   rift_chaos_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.rift_chaos_bolt )
-  { }
+  {
+    if ( p->o()->talents.unstable_rifts.ok() )
+    {
+      debug_cast<chaos_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
+      add_child( debug_cast<chaos_tear_t*>( p )->cinder );
+    }
+  }
 
   double composite_crit_chance() const override
   { return 1.0; }
@@ -1912,6 +1976,14 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t::execute();
 
     debug_cast<chaos_tear_t*>( p() )->bolts--;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.unstable_rifts.ok() )
+      debug_cast<chaos_tear_t*>( p() )->cinder->execute_on_target( s->target, s->result_amount );
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
