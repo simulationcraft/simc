@@ -426,6 +426,7 @@ public:
     buff_t* exposed_flank;
     buff_t* sic_em;
     buff_t* relentless_primal_ferocity;
+    buff_t* bombardier;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -452,6 +453,7 @@ public:
   {
     cooldown_t* kill_command;
     cooldown_t* kill_shot;
+    cooldown_t* explosive_shot;
 
     cooldown_t* rapid_fire;
     cooldown_t* aimed_shot;
@@ -732,7 +734,8 @@ public:
     spell_data_ptr_t symbiotic_adrenaline;
     spell_data_ptr_t relentless_primal_ferocity;
     spell_data_ptr_t relentless_primal_ferocity_buff;
-    spell_data_ptr_t bombardier; // TODO - Reworked
+    spell_data_ptr_t bombardier;
+    spell_data_ptr_t bombardier_buff;
     spell_data_ptr_t deadly_duo;
 
     // Dark Ranger
@@ -871,6 +874,7 @@ public:
   {
     cooldowns.kill_command          = get_cooldown( "kill_command" );
     cooldowns.kill_shot             = get_cooldown( "kill_shot" );
+    cooldowns.explosive_shot        = get_cooldown( "explosive_shot" );
 
     cooldowns.aimed_shot            = get_cooldown( "aimed_shot" );
     cooldowns.rapid_fire            = get_cooldown( "rapid_fire" );
@@ -3960,11 +3964,32 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     }
 
     p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
+    p()->buffs.bombardier->decrement();
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   {
     return dot -> time_to_next_tick() + triggered_duration;
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = hunter_ranged_attack_t::cost_pct_multiplier();
+
+    if ( p()->buffs.bombardier->check() )
+      c *= 1 + p()->talents.bombardier_buff->effectN( 1 ).percent();
+
+    return c;
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    timespan_t d = hunter_ranged_attack_t::cooldown_duration();
+
+    if ( p()->buffs.bombardier->check() )
+      d *= 1 + p()->talents.bombardier_buff->effectN( 2 ).percent();
+
+    return d;
   }
 };
 
@@ -5882,10 +5907,11 @@ struct coordinated_assault_t: public hunter_melee_attack_t
       pet -> active.coordinated_assault -> execute_on_target( target );
     }
 
-    if( p() -> talents.symbiotic_adrenaline.ok() )
-    {
+    if ( p() -> talents.symbiotic_adrenaline.ok() )
       p() -> buffs.tip_of_the_spear -> trigger( as<int>( p() -> talents.symbiotic_adrenaline -> effectN( 2 ).base_value() ) );
-    }
+    
+    if ( p()->talents.bombardier.ok() )
+      p()->cooldowns.wildfire_bomb->reset( false, as<int>( p()->talents.bombardier->effectN( 3 ).base_value() ) );
   }
 };
 
@@ -7562,6 +7588,7 @@ void hunter_t::init_spells()
     talents.relentless_primal_ferocity        = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Primal Ferocity", HUNTER_SURVIVAL );
     talents.relentless_primal_ferocity_buff   = find_spell( 459962 );
     talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
+    talents.bombardier_buff                   = find_spell( 459859 );
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
   }
 
@@ -8069,12 +8096,19 @@ void hunter_t::create_buffs()
       ->set_default_value( talents.coordinated_assault->effectN( 1 ).percent() )
       ->set_cooldown( 0_ms );
 
+  if ( talents.bombardier.ok() )
+    buffs.coordinated_assault->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      if ( cur == 0 )
+        buffs.bombardier->trigger();
+    } );
+
   buffs.relentless_primal_ferocity =
     make_buff( this, "relentless_primal_ferocity", talents.relentless_primal_ferocity_buff )
       ->set_default_value_from_effect( 1 )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       ->set_duration( talents.coordinated_assault->duration() )
-      ->set_chance( talents.relentless_primal_ferocity.ok() );
+      ->set_chance( talents.relentless_primal_ferocity.ok() )
+      ->set_quiet( true );
 
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
@@ -8094,6 +8128,14 @@ void hunter_t::create_buffs()
     make_buff( this, "sic_em", find_spell( 461409 ) )
       ->set_default_value( find_spell( 461409 )->effectN( 2 ).base_value() )
       ->set_chance( talents.sic_em.ok() );
+
+  buffs.bombardier = 
+    make_buff( this, "bombardier", talents.bombardier_buff )
+      ->set_reverse( true )
+      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+        if ( old == 0 || cur == 0 )
+          cooldowns.explosive_shot->adjust_recharge_multiplier();
+      } );
 
   // Pet family buffs
 
