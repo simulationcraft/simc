@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.55665
-static const std::array<spelltext_data_t, 26228> __spelltext_data { {
+// Spell text, wow build 11.0.2.55763
+static const std::array<spelltext_data_t, 26230> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23116,6 +23116,7 @@ static const std::array<spelltext_data_t, 26228> __spelltext_data { {
   { 434273, "$@spelldesc434260", 0, 0 },
   { 434300, "$?c1[Mass Disintegrate][Mass Eruption] marks your primary target for destruction for the next $434473d.\r\n\r\nYou and your allies have a chance to trigger a Bombardment when attacking marked targets, dealing $<dmg> Volcanic damage split amongst all nearby enemies.", 0, "Black" },
   { 434400, "$@spelldesc428514", 0, 0 },
+  { 434404, "Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.", 0, 0 },
   { 434422, "$@spelldesc433895", 0, 0 },
   { 434424, "$@spelldesc428517", "Damage taken from you and your pets is increased by $s1%.", 0 },
   { 434473, "$@spelldesc434300", "Damage taken has a chance to summon air support from the Dracthyr.", 0 },
@@ -23348,6 +23349,7 @@ static const std::array<spelltext_data_t, 26228> __spelltext_data { {
   { 438753, "Blow the horn, emboldening you and your party members, increasing Mastery by $s1 split between allies for $d.", "Mastery increased by $w1.", 0 },
   { 438787, "Create a piece of Draconic Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 438822, "$@spelldesc105174", 0, 0 },
+  { 438973, "Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.", 0, 0 },
   { 439051, "Create a soulbound Mythic+ Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 4.", 0, 0 },
   { 439143, "$@spelldesc437161", 0, 0 },
   { 439228, "Synthesize a soulbound Awakened Class Chest item appropriate for your class.", 0, 0 },
@@ -26230,11 +26232,11 @@ static const std::array<spelltext_data_t, 26228> __spelltext_data { {
   { 463865, "$@spelldesc200071", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.55665
+// spelltext hotfix entries, wow build 11.0.2.55763
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.2.55665
+// Spell description variables, wow build 11.0.2.55763
 static const std::array<spelldesc_vars_data_t, 572> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26810,7 +26812,7 @@ static const std::array<spelldesc_vars_data_t, 572> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3195*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.55665
+// spelldesc_vars hotfix entries, wow build 11.0.2.55763
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

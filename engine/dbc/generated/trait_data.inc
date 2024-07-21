@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 11.0.2.55665
+// Player trait definitions, wow build 11.0.2.55763
 static const std::array<trait_data_t, 3187> __trait_data_data { {
   { 0,  1, 117387,  94790, 1,  0, 122399, 391090,      0,      0, -1, -1,  -1,                              "Mind Melt", {  258,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 0,  2, 117672,  95075, 1,  0, 122684, 391090,      0,      0, -1, -1,  -1,                              "Mind Melt", {  258,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -3189,7 +3189,7 @@ static const std::array<trait_data_t, 3187> __trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,      0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 }, 37, 3 },
 } };
 
-// Player trait definition effect entries, wow build 11.0.2.55665
+// Player trait definition effect entries, wow build 11.0.2.55763
 static const std::array<trait_definition_effect_entry_t, 396> __trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
@@ -3991,7 +3991,7 @@ static const std::array<uint16_t, 3187> __trait_spell_id_index { {
    1632,  1689,  1692,
 } };
 
-// Hero trees, wow build 11.0.2.55665
+// Hero trees, wow build 11.0.2.55763
 static const std::array<std::pair<unsigned, std::string>, 39> __trait_sub_tree_data { {
   { 18, "Voidweaver" },
   { 19, "Archon" },
