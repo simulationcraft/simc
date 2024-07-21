@@ -458,7 +458,7 @@ void monk_action_t<Base>::consume_resource()
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        // Tiger Palm counts the full 60 energy base cost
+        // Tiger Palm counts the full energy base cost
         if ( base_t::id == p()->baseline.monk.tiger_palm->id() )
           p()->flurry_strikes_energy += as<int>( base_t::base_cost() );
         // Crackling Jade Lightning is whatever the current cost
