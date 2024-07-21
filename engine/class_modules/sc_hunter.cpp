@@ -823,6 +823,7 @@ public:
     spell_data_ptr_t master_of_beasts;
     spell_data_ptr_t sniper_training;
     spell_data_ptr_t spirit_bond;
+    spell_data_ptr_t spirit_bond_buff;
   } mastery;
 
   struct {
@@ -1252,7 +1253,13 @@ public:
       am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.direct ).mastery_value();
 
     if ( affected_by.spirit_bond.direct )
-      am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+    {
+      double bonus = p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+      // TODO implement range
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+      
+      am *= 1 + bonus;
+    }
 
     if ( affected_by.coordinated_assault.direct && p()->buffs.coordinated_assault->check() )
       am *= 1 + p()->talents.coordinated_assault->effectN( affected_by.coordinated_assault.direct ).percent();
@@ -1308,7 +1315,13 @@ public:
       am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.tick ).mastery_value();
 
     if ( affected_by.spirit_bond.tick )
-      am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+      {
+      double bonus = p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+      // TODO implement range
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 3 ).percent();
+      
+      am *= 1 + bonus;
+    }
 
     if ( affected_by.t29_sv_4pc_dmg.tick && p() -> buffs.bestial_barrage -> check() )
       am *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( affected_by.t29_sv_4pc_dmg.tick ).percent();
@@ -2364,7 +2377,13 @@ public:
     double am = ab::composite_da_multiplier( s );
 
     if ( affected_by.spirit_bond.direct )
-      am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+    {
+      double bonus = ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+      // TODO implement range
+      bonus *= 1 + ab::o()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+
+      am *= 1 + bonus;
+    }
 
     return am;
   }
@@ -2374,7 +2393,13 @@ public:
     double am = ab::composite_ta_multiplier( s );
 
     if ( affected_by.spirit_bond.tick )
-      am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+    {
+      double bonus = ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+      // TODO implement range
+      bonus *= 1 + ab::o()->mastery.spirit_bond_buff->effectN( 3 ).percent();
+
+      am *= 1 + bonus;
+    }
 
     return am;
   }
@@ -7641,6 +7666,7 @@ void hunter_t::init_spells()
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
   mastery.spirit_bond          = find_mastery_spell( HUNTER_SURVIVAL );
+  mastery.spirit_bond_buff     = find_spell( 459722 );
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
