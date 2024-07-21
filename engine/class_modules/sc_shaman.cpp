@@ -12357,7 +12357,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   if ( action.data().affected_by_all( talent.elemental_fury->effectN( 1 ) ) )
   {
     print_debug( talent.elemental_fury->effectN( 1 ) );
-    action.crit_bonus_multiplier = talent.elemental_fury->effectN( 1 ).percent() +
+    action.crit_bonus_multiplier = 1.0 + talent.elemental_fury->effectN( 1 ).percent() +
                                    talent.primordial_fury->effectN( 1 ).percent();
     sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
       talent.elemental_fury->effectN( 1 ).base_value() + talent.primordial_fury->effectN( 1 ).base_value() );
@@ -12366,7 +12366,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   if ( action.data().affected_by_all( talent.elemental_fury->effectN( 2 ) ) )
   {
     print_debug( talent.elemental_fury->effectN( 2 ) );
-    action.crit_bonus_multiplier = talent.elemental_fury->effectN( 2 ).percent() +
+    action.crit_bonus_multiplier = 1.0 + talent.elemental_fury->effectN( 2 ).percent() +
                                    talent.primordial_fury->effectN( 2 ).percent();
     sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
       talent.elemental_fury->effectN( 2 ).base_value() + talent.primordial_fury->effectN( 2 ).base_value() );
