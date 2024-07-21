@@ -425,6 +425,7 @@ public:
     buff_t* deadly_duo;
     buff_t* exposed_flank;
     buff_t* sic_em;
+    buff_t* relentless_primal_ferocity;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -729,7 +730,8 @@ public:
 
     spell_data_ptr_t ruthless_marauder;
     spell_data_ptr_t symbiotic_adrenaline;
-    spell_data_ptr_t relentless_primal_ferocity; // NYI - Coordinated Assault sends you and your pet into a state of primal power. For the duration of Coordinated Assault, Kill Command generates 1 additional stack of Tip of the Spear, you gain 10% haste, and Tip of the Spear's damage bonus is increased by 50%.
+    spell_data_ptr_t relentless_primal_ferocity;
+    spell_data_ptr_t relentless_primal_ferocity_buff;
     spell_data_ptr_t bombardier; // TODO - Reworked
     spell_data_ptr_t deadly_duo;
 
@@ -1028,6 +1030,7 @@ public:
     damage_affected_by spirit_bond;
     damage_affected_by coordinated_assault;
     damage_affected_by tip_of_the_spear;
+    damage_affected_by tip_of_the_spear_hidden;
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
     bool t31_sv_2pc_crit_chance = false;
@@ -1061,6 +1064,7 @@ public:
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     affected_by.tip_of_the_spear      = parse_damage_affecting_aura( this, p->find_spell( 260286 ) );
+    affected_by.tip_of_the_spear_hidden = parse_damage_affecting_aura( this, p->find_spell( 460852 ) );
 
     affected_by.t29_sv_4pc_cost       = check_affected_by( this, p -> tier_set.t29_sv_4pc_buff -> effectN( 1 ) );
     affected_by.t29_sv_4pc_dmg        = parse_damage_affecting_aura( this, p -> tier_set.t29_sv_4pc_buff );
@@ -1212,6 +1216,9 @@ public:
 
     if ( affected_by.tip_of_the_spear.direct )
       p()->buffs.tip_of_the_spear->decrement();
+
+    if ( affected_by.tip_of_the_spear_hidden.direct )
+      p()->buffs.tip_of_the_spear_hidden->decrement();
   }
 
   void impact( action_state_t* s ) override
@@ -1253,13 +1260,16 @@ public:
       am *= 1 + amount;
     }
 
-    if (affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check())
+    if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() ||
+         affected_by.tip_of_the_spear_hidden.direct && p()->buffs.tip_of_the_spear_hidden->check() )
     {
-      double tip_bonus = p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
+      uint8_t affected_by_tip = std::max( affected_by.tip_of_the_spear.direct, affected_by.tip_of_the_spear_hidden.direct );
+
+      double tip_bonus = p()->talents.tip_of_the_spear->effectN( affected_by_tip ).percent();
       if ( p()->talents.flankers_advantage.ok() )
       {
         double max_bonus = p()->talents.flankers_advantage->effectN( 6 ).percent() -
-                           p()->talents.tip_of_the_spear->effectN( affected_by.tip_of_the_spear.direct ).percent();
+                           p()->talents.tip_of_the_spear->effectN( affected_by_tip ).percent();
 
         // Seems that the amount of the 15% bonus given is based on the ratio of player crit % out of a cap of 50% from effect 5.
         double crit_chance =
@@ -1267,6 +1277,10 @@ public:
 
         tip_bonus += max_bonus * crit_chance / p()->talents.flankers_advantage->effectN( 5 ).percent();
       }
+
+      if ( p()->buffs.relentless_primal_ferocity->check() )
+        tip_bonus += p()->talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
+
       am *= 1 + tip_bonus;
     }
 
@@ -3879,13 +3893,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
     }
 
-    void execute() override
-    {
-      hunter_ranged_attack_t::execute();
-
-      p()->buffs.tip_of_the_spear_hidden->decrement();
-    }
-
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -3905,16 +3912,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::snapshot_state( s, type );
       debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
-    }
-
-    double action_multiplier() const override
-    {
-      double am = hunter_ranged_attack_t::action_multiplier();
-
-      if ( p()->buffs.tip_of_the_spear_hidden->check() )
-        am *= 1 + p()->talents.tip_of_the_spear->effectN( 1 ).percent();
-
-      return am;
     }
   };
 
@@ -5877,7 +5874,8 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
 
-    p() -> buffs.coordinated_assault -> trigger();
+    p()->buffs.coordinated_assault->trigger();
+    p()->buffs.relentless_primal_ferocity->trigger();
 
     if ( auto pet = p() -> pets.main )
     {
@@ -6248,7 +6246,10 @@ struct kill_command_t: public hunter_spell_t
     {
       p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
     }
-    p() -> buffs.tip_of_the_spear -> trigger();
+    p()->buffs.tip_of_the_spear->trigger(
+        1 + ( p()->buffs.relentless_primal_ferocity->check()
+                  ? as<int>( p()->talents.relentless_primal_ferocity_buff->effectN( 4 ).base_value() )
+                  : 0 ) );
 
     if ( rng().roll( quick_shot.chance ) )
     {
@@ -7559,6 +7560,7 @@ void hunter_t::init_spells()
     talents.ruthless_marauder                 = find_talent_spell( talent_tree::SPECIALIZATION, "Ruthless Marauder", HUNTER_SURVIVAL );
     talents.symbiotic_adrenaline              = find_talent_spell( talent_tree::SPECIALIZATION, "Symbiotic Adrenaline", HUNTER_SURVIVAL );
     talents.relentless_primal_ferocity        = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Primal Ferocity", HUNTER_SURVIVAL );
+    talents.relentless_primal_ferocity_buff   = find_spell( 459962 );
     talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
   }
@@ -8066,6 +8068,13 @@ void hunter_t::create_buffs()
     make_buff( this, "coordinated_assault", talents.coordinated_assault )
       ->set_default_value( talents.coordinated_assault->effectN( 1 ).percent() )
       ->set_cooldown( 0_ms );
+
+  buffs.relentless_primal_ferocity =
+    make_buff( this, "relentless_primal_ferocity", talents.relentless_primal_ferocity_buff )
+      ->set_default_value_from_effect( 1 )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->set_duration( talents.coordinated_assault->duration() )
+      ->set_chance( talents.relentless_primal_ferocity.ok() );
 
   buffs.spearhead =
     make_buff( this, "spearhead", talents.spearhead )
