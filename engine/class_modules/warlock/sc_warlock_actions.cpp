@@ -56,7 +56,7 @@ using namespace helpers;
       bool shadow_invocation = false;
 
       // Destruction
-
+      bool decimation = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -86,6 +86,8 @@ using namespace helpers;
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
       affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
+
+      triggers.decimation = p->talents.decimation.ok();
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -185,6 +187,13 @@ using namespace helpers;
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
+      }
+
+      if ( destruction() && triggers.decimation && s->result == RESULT_CRIT && rng().roll( 0.10 ) )
+      {
+        p()->buffs.decimation->trigger();
+        p()->cooldowns.soul_fire->reset( true );
+        p()->procs.decimation->occur();
       }
     }
 
@@ -2648,9 +2657,6 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
-
       p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
     }
@@ -2725,6 +2731,8 @@ using namespace helpers;
 
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+
+      triggers.decimation = false;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -2735,7 +2743,11 @@ using namespace helpers;
   {
     internal_combustion_t( warlock_t* p )
       : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    { background = dual = true; }
+    {
+      background = dual = true;
+
+      triggers.decimation = false;
+    }
 
     void init() override
     {
@@ -2916,9 +2928,6 @@ using namespace helpers;
 
       if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
-
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
 
     double composite_crit_chance() const override
@@ -2959,6 +2968,8 @@ using namespace helpers;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+
+        triggers.decimation = false;
       }
       
       void impact( action_state_t* s ) override
@@ -3312,6 +3323,8 @@ using namespace helpers;
     {
       background = dual = true;
       aoe = -1;
+
+      triggers.decimation = false;
     }
 
     void execute() override
@@ -3363,6 +3376,15 @@ using namespace helpers;
       immolate->dual = true;
       immolate->base_costs[ RESOURCE_MANA ] = 0;
       immolate->base_dd_multiplier = 0.0;
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->buffs.decimation->check_value();
+
+      return m;
     }
 
     void execute() override

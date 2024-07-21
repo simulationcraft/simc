@@ -433,7 +433,8 @@ public:
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
 
-    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown TODO: New proc behavior?
+    player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
+    const spell_data_t* decimation_buff;
     player_talent_t chaos_incarnate; // Maximum mastery value for some spells
     player_talent_t avatar_of_destruction; // TODO: Behavior changed
     const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
@@ -560,6 +561,7 @@ public:
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
     propagate_const<buff_t*> burn_to_ashes;
+    propagate_const<buff_t*> decimation;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -621,6 +623,7 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
+    proc_t* decimation;
   } procs;
 
   int initial_soul_shards;
