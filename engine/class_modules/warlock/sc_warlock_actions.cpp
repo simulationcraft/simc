@@ -1537,7 +1537,7 @@ using namespace helpers;
           }
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.25 ) )
         {
           p()->procs.shadow_bolt_volley->occur();
           volley->execute_on_target( d->target );
