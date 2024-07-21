@@ -435,7 +435,7 @@ public:
 
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
-    player_talent_t chaos_incarnate; // Maximum mastery value for some spells
+    player_talent_t chaos_incarnate; // Greater mastery value for some spells
     player_talent_t avatar_of_destruction; // TODO: Behavior changed
     const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
     player_talent_t dimension_ripper; // TODO: New
@@ -458,7 +458,7 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire

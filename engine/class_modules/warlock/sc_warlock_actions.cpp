@@ -268,13 +268,10 @@ using namespace helpers;
 
       if ( destruction() && affected_by.chaotic_energies )
       {
-        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+        double min_percentage = affected_by.chaos_incarnate ? p()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+        double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
-        if ( affected_by.chaos_incarnate )
-          chaotic_energies_rng = destro_mastery_value;
-
-        m *= 1.0 + chaotic_energies_rng + destro_mastery_value;
+        m *= 1.0 + chaotic_energies_rng * p()->cache.mastery_value();
       }
       
       return m;
