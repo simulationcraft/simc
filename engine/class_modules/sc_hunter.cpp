@@ -1032,8 +1032,8 @@ public:
     // surv
     damage_affected_by spirit_bond;
     damage_affected_by coordinated_assault;
-    damage_affected_by tip_of_the_spear;
-    damage_affected_by tip_of_the_spear_hidden;
+    bool tip_of_the_spear = false;
+    bool tip_of_the_spear_hidden = false;
     bool spearhead_crit_chance = false;
     bool spearhead_crit_damage = false;
     bool t29_sv_4pc_cost = false;
@@ -1068,8 +1068,9 @@ public:
 
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
     affected_by.coordinated_assault   = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
-    affected_by.tip_of_the_spear      = parse_damage_affecting_aura( this, p->find_spell( 260286 ) );
-    affected_by.tip_of_the_spear_hidden = parse_damage_affecting_aura( this, p->find_spell( 460852 ) );
+    // Handles everything except Flanking Strike (effect 2 of 260286)
+    affected_by.tip_of_the_spear        = check_affected_by( this, p->find_spell( 260286 )->effectN( 1 ) );
+    affected_by.tip_of_the_spear_hidden = check_affected_by( this, p->find_spell( 460852 )->effectN( 1 ) );
     affected_by.spearhead_crit_chance = check_affected_by( this, p->talents.spearhead_attack->effectN( 2 ) );
     affected_by.spearhead_crit_damage = check_affected_by( this, p->talents.spearhead_attack->effectN( 3 ) );
 
@@ -1222,10 +1223,10 @@ public:
     if ( triggers_rapid_reload )
       p() -> trigger_rapid_reload( this, this -> cost() );
 
-    if ( affected_by.tip_of_the_spear.direct )
+    if ( affected_by.tip_of_the_spear )
       p()->buffs.tip_of_the_spear->decrement();
 
-    if ( affected_by.tip_of_the_spear_hidden.direct )
+    if ( affected_by.tip_of_the_spear_hidden )
       p()->buffs.tip_of_the_spear_hidden->decrement();
   }
 
@@ -1268,16 +1269,14 @@ public:
       am *= 1 + amount;
     }
 
-    if ( affected_by.tip_of_the_spear.direct && p()->buffs.tip_of_the_spear->check() ||
-         affected_by.tip_of_the_spear_hidden.direct && p()->buffs.tip_of_the_spear_hidden->check() )
+    if ( affected_by.tip_of_the_spear && p()->buffs.tip_of_the_spear->check() ||
+         affected_by.tip_of_the_spear_hidden && p()->buffs.tip_of_the_spear_hidden->check() )
     {
-      uint8_t affected_by_tip = std::max( affected_by.tip_of_the_spear.direct, affected_by.tip_of_the_spear_hidden.direct );
-
-      double tip_bonus = p()->talents.tip_of_the_spear->effectN( affected_by_tip ).percent();
+      double tip_bonus = p()->talents.tip_of_the_spear->effectN( 1 ).percent();
       if ( p()->talents.flankers_advantage.ok() )
       {
         double max_bonus = p()->talents.flankers_advantage->effectN( 6 ).percent() -
-                           p()->talents.tip_of_the_spear->effectN( affected_by_tip ).percent();
+                           p()->talents.tip_of_the_spear->effectN( 1 ).percent();
 
         // Seems that the amount of the 15% bonus given is based on the ratio of player crit % out of a cap of 50% from effect 5.
         double crit_chance =
@@ -3587,6 +3586,13 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     {
       p() -> buffs.deathblow -> trigger(); 
     }
+
+    p()->buffs.sulfur_lined_pockets->trigger();
+    if ( p()->buffs.sulfur_lined_pockets->at_max_stacks() )
+    {
+      p()->buffs.sulfur_lined_pockets_explosive->trigger();
+      p()->buffs.sulfur_lined_pockets->expire();
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -5397,10 +5403,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   {
     auto_attack_base_t::impact( s );
 
-    if( p() -> talents.lunge.ok() )
-    {
-      p() -> cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( p() -> talents.lunge -> effectN( 3 ).base_value() ) );
-    }
+    p()->cooldowns.wildfire_bomb->adjust( -p()->talents.lunge->effectN( 2 ).time_value() );
   }
 };
 
@@ -5600,7 +5603,29 @@ struct flanking_strike_t: hunter_melee_attack_t
         base_aoe_multiplier = p->talents.exposed_flank->effectN( 1 ).percent();
       }
     }
+
+    double action_multiplier() const override
+    {
+      double am = hunter_melee_attack_t::action_multiplier();
+
+      double tip_bonus = p()->talents.tip_of_the_spear->effectN( 2 ).percent();
+      
+      if ( p()->buffs.relentless_primal_ferocity->check() )
+        tip_bonus += p()->talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
+
+      am *= 1 + tip_bonus;
+
+      return am;
+    }
+
+    void execute() override
+    {
+      hunter_melee_attack_t::execute();
+      
+      p()->buffs.tip_of_the_spear->decrement();
+    }
   };
+
   damage_t* damage;
 
   flanking_strike_t( hunter_t* p, util::string_view options_str ):
@@ -6116,18 +6141,9 @@ struct kill_command_t: public hunter_spell_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
-    }
 
-    void execute() override
-    {
-      arcane_shot_t::execute();
-
-      p()->buffs.sulfur_lined_pockets->trigger();
-      if ( p()->buffs.sulfur_lined_pockets->at_max_stacks() )
-      {
-        p()->buffs.sulfur_lined_pockets_explosive->trigger();
-        p()->buffs.sulfur_lined_pockets->expire();
-      }
+      // Don't consume a stack or buff the damage.
+      affected_by.tip_of_the_spear = false;
     }
   };
 
@@ -6219,6 +6235,7 @@ struct kill_command_t: public hunter_spell_t
     {
       p() -> pets.dire_beast.active_pets().back() -> active.kill_command -> execute_on_target( target );
     }
+
     p()->buffs.tip_of_the_spear->trigger(
         1 + ( p()->buffs.relentless_primal_ferocity->check()
                   ? as<int>( p()->talents.relentless_primal_ferocity_buff->effectN( 4 ).base_value() )
