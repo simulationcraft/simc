@@ -5055,6 +5055,45 @@ struct decomposition_damage_t final : public death_knight_spell_t
   }
 };
 
+// Shattering Bone ==========================================================
+
+struct shattering_bone_t final : public death_knight_spell_t
+{
+  shattering_bone_t( util::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->spell.shattering_bone_damage )
+  {
+    background = true;
+    aoe        = -1;
+    base_multiplier *= 1.0 + p->talent.blood.shattering_bone->effectN( 2 ).percent();
+    boneshield_charges_consumed = 1.0;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    if ( p()->in_death_and_decay() )
+    {
+      m *= p()->talent.blood.shattering_bone->effectN( 1 ).base_value();
+    }
+
+    m *= boneshield_charges_consumed;
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Reset charges consumed to default
+    boneshield_charges_consumed = 1.0;
+  }
+
+public:
+  double boneshield_charges_consumed;
+};
+
 // ==========================================================================
 // Death Knight Buffs
 // ==========================================================================
@@ -7274,8 +7313,20 @@ struct bonestorm_t final : public death_knight_spell_t
     // or in Spelldata.
     int charges = std::min( p()->buffs.bone_shield->check(), 10 );
     p()->buffs.bone_shield->decrement( charges );
+
     if( p() -> talent.blood.ossified_vitriol -> ok() )
       p()->buffs.ossified_vitriol->trigger( charges );
+
+    if ( p()->talent.blood.insatiable_blade->ok() )
+      p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
+
+    if ( charges > 0 && p()->talent.blood.shattering_bone.ok() )
+    {
+      // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
+      debug_cast<shattering_bone_t*>( p()->active_spells.shattering_bone )->boneshield_charges_consumed = charges;
+      p()->active_spells.shattering_bone->execute_on_target( target );
+    }
+
     p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
     return base_tick_time * charges;
   }
@@ -9114,7 +9165,8 @@ struct leeching_strike_t final : public death_knight_heal_t
     background = true;
     may_crit = callbacks = false;
     target               = p;
-    base_pct_heal        = data().effectN( 1 ).percent();
+    // As of July 20 2024, heals for 2.5% of health, represented as 0.25 in spelldata
+    base_pct_heal        = data().effectN( 1 ).base_value() / 10;
   }
 };
 
@@ -10492,45 +10544,6 @@ private:
   double vampiric_strike_cost;
 };
 
-// Shattering Bone ==========================================================
-
-struct shattering_bone_t final : public death_knight_spell_t
-{
-  shattering_bone_t( util::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spell.shattering_bone_damage )
-  {
-    background = true;
-    aoe        = -1;
-    base_multiplier *= 1.0 + p->talent.blood.shattering_bone->effectN( 2 ).percent();
-    boneshield_charges_consumed = 1.0;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    if ( p()->in_death_and_decay() )
-    {
-      m *= p()->talent.blood.shattering_bone->effectN( 1 ).base_value();
-    }
-
-    m *= boneshield_charges_consumed;
-
-    return m;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    // Reset charges consumed to default
-    boneshield_charges_consumed = 1.0;
-  }
-
-public:
-  double boneshield_charges_consumed;
-};
-
 // Soul Reaper ==============================================================
 
 struct soul_reaper_execute_t : public death_knight_spell_t
@@ -10702,10 +10715,12 @@ struct tombstone_t final : public death_knight_spell_t
     p()->resource_gain( RESOURCE_RUNIC_POWER, power, p()->gains.tombstone, this );
     p()->buffs.tombstone->trigger( 1, shield * p()->resources.max[ RESOURCE_HEALTH ] );
     p()->buffs.bone_shield->decrement( charges );
+
     if( p() -> talent.blood.ossified_vitriol -> ok() )
       p()->buffs.ossified_vitriol->trigger( charges );
-    p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                               charges );
+
+    if ( p()->talent.blood.insatiable_blade->ok() )
+      p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
 
     if ( p()->talent.blood.blood_tap.ok() )
     {
@@ -12755,7 +12770,7 @@ void death_knight_t::init_base_stats()
   base.leech += talent.blood_scent->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight->effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
+  resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight->effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
 
   if ( talent.blood.ossuary.ok() )
     resources.base[ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary->effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
