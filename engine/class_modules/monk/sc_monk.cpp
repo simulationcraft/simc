@@ -2749,13 +2749,12 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if (p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs)
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
     {
       p()->buff.rushing_jade_wind->trigger();
       p()->buff.combo_strikes->expire();
       p()->buff.hit_combo->expire();
     }
-      
   }
 };
 
@@ -2869,7 +2868,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       if ( p()->bugs )
         combo_strikes_trigger();
     }
-      
 
     p()->buff.tigers_ferocity->trigger();
 
@@ -6475,6 +6473,7 @@ aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::purified_spiri
 {
   base_action_t::aoe              = -1;
   base_action_t::split_aoe_damage = true;
+  base_action_t::dot_behavior     = DOT_CLIP;
 }
 
 template <class base_action_t>
@@ -6487,8 +6486,12 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = spender->pool;
-  base_action_t::execute();
+  base_action_t::base_td = spender->pool / 4.0;
+  base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}", spender->pool,
+                                   spender->pool / 4.0 );
+  spender->pool = 0.0;
+  if ( base_action_t::base_td > 0.0 )
+    base_action_t::execute();
 }
 
 template <class base_action_t>
@@ -6556,8 +6559,8 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
-  debuff.gale_force = make_buff( *this, "gale_force", p->find_spell( 451582 ) )
-      ->set_trigger_spell( p->talent.windwalker.gale_force );
+  debuff.gale_force =
+      make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
@@ -8865,8 +8868,6 @@ void monk_t::init_special_effects()
       callbacks.register_callback_execute_function( spell_data->id(), trigger_cb );
     };
     register_cb( talent.master_of_harmony.aspect_of_harmony_driver );
-    register_cb( talent.master_of_harmony.aspect_of_harmony_damage );
-    register_cb( talent.master_of_harmony.aspect_of_harmony_heal );
   }
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
@@ -9757,9 +9758,10 @@ public:
     ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
     ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20", true );
-    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events",
-                 "2024-07-20", true );
+    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
+                 true );
+    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
+                 true );
 
     // =================================================
 
