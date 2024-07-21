@@ -1755,29 +1755,6 @@ void infernal_t::arise()
 
 /// Infernal End
 
-/// Blasphemy Begin
-blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
-  : infernal_t( owner, name )
-{ }
-
-struct blasphemous_existence_t : public warlock_pet_spell_t
-{
-  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "Blasphemous Existence", p, p->find_spell( 367819 ) )
-  {
-    aoe = -1;
-    background = true;
-  }
-};
-
-void blasphemy_t::init_base_stats()
-{
-  infernal_t::init_base_stats();
-
-  blasphemous_existence = new blasphemous_existence_t( this );
-}
-
-/// Blasphemy End
-
 /// Dimensional Rifts Begin
 
 shadowy_tear_t::shadowy_tear_t( warlock_t* owner, util::string_view name )
@@ -1972,6 +1949,70 @@ action_t* chaos_tear_t::create_action( util::string_view name, util::string_view
 }
 
 /// Dimensional Rifts End
+
+/// Overfiend Begin
+
+overfiend_t::overfiend_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK, true )
+{
+  resource_regeneration = regen_type::DISABLED;
+
+  action_list_str = "chaos_bolt";
+}
+
+struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
+{
+  overfiend_chaos_bolt_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.overfiend_cb )
+  {
+    spell_power_mod.direct = p->o()->warlock_base.chaos_bolt->effectN( 1 ).sp_coeff();
+
+    base_dd_multiplier *= p->o()->talents.avatar_of_destruction->effectN( 1 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  { return 1.0; }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    warlock_pet_spell_t::calculate_direct_amount( s );
+
+    s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
+
+    return s->result_total;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->o()->talents.ruin->effectN( 1 ).percent();
+
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    double min_percentage = p()->o()->talents.chaos_incarnate.ok() ? p()->o()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+    double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
+
+    m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
+
+    return m;
+  }
+};
+
+action_t* overfiend_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "chaos_bolt" )
+    return new overfiend_chaos_bolt_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Overfiend End
 
 }  // namespace destruction
 

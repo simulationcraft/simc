@@ -2863,7 +2863,10 @@ using namespace helpers;
         p()->buffs.backdraft->decrement();
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -3033,7 +3036,10 @@ using namespace helpers;
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -3404,44 +3410,6 @@ using namespace helpers;
     }
   };
 
-  struct avatar_of_destruction_t : public warlock_spell_t
-  {
-    struct infernal_awakening_proc_t : public warlock_spell_t
-    {
-      infernal_awakening_proc_t( warlock_t* p )
-        : warlock_spell_t( "Infernal Awakening (Blasphemy)", p, p->talents.infernal_awakening )
-      {
-        background = dual = true;
-        aoe = -1;
-      }
-    };
-
-    infernal_awakening_proc_t* infernal_awakening;
-
-    avatar_of_destruction_t( warlock_t* p )
-      : warlock_spell_t( "Avatar of Destruction", p, p->talents.summon_blasphemy )
-    {
-      background = dual = true;
-      infernal_awakening = new infernal_awakening_proc_t( p );
-    }
-
-    void execute() override
-    {
-      warlock_spell_t::execute();
-
-      if ( p()->warlock_pet_list.blasphemy.active_pet() )
-      {
-        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-      }
-      else
-      {
-        p()->warlock_pet_list.blasphemy.spawn( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        infernal_awakening->execute_on_target( target );
-      }
-    }
-  };
-
   // Destruction Actions End
   // Helper Functions Begin
 
@@ -3704,9 +3672,7 @@ using namespace helpers;
   }
 
   void warlock_t::create_destruction_proc_actions()
-  {
-    proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
-  }
+  { }
 
   void warlock_t::init_special_effects()
   {

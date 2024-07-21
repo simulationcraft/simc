@@ -134,7 +134,6 @@ public:
     warlock_pet_t* active;
 
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
@@ -148,6 +147,8 @@ public:
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
+
+    spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -436,8 +437,10 @@ public:
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
     player_talent_t chaos_incarnate; // Greater mastery value for some spells
-    player_talent_t avatar_of_destruction; // TODO: Behavior changed
-    const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
+    player_talent_t avatar_of_destruction; // TOCHECK: Is Overfiend benefitting from owner's Mastery?
+    const spell_data_t* summon_overfiend;
+    const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
+    const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
     player_talent_t dimension_ripper; // TODO: New
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
   } talents;
@@ -562,6 +565,7 @@ public:
     propagate_const<buff_t*> power_overwhelming;
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
+    propagate_const<buff_t*> summon_overfiend;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -584,6 +588,7 @@ public:
     gain_t* immolate_crits;
     gain_t* infernal;
     gain_t* shadowburn_refund;
+    gain_t* summon_overfiend;
   } gains;
 
   // Procs

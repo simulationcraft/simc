@@ -818,7 +818,6 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     infernals( "infernal", w ),
-    blasphemy( "blasphemy", w ),
     darkglares( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
@@ -828,7 +827,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     doomguards( "Doomguard", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
-    chaos_rifts( "chaos_tear", w )
+    chaos_rifts( "chaos_tear", w ),
+    overfiends( "overfiend", w )
 { }
 }  // namespace warlock
 

@@ -463,13 +463,6 @@ struct infernal_t : public warlock_pet_t
   void arise() override;
 };
 
-struct blasphemy_t : public infernal_t
-{
-  blasphemy_t( warlock_t*, util::string_view = "blasphemy" );
-  action_t* blasphemous_existence;
-  void init_base_stats() override;
-};
-
 struct shadowy_tear_t : public warlock_pet_t
 {
   int barrages;
@@ -494,6 +487,12 @@ struct chaos_tear_t : public warlock_pet_t
 
   chaos_tear_t( warlock_t*, util::string_view = "Chaos Tear" );
   void arise() override;
+  action_t* create_action( util::string_view, util::string_view ) override;
+};
+
+struct overfiend_t : public warlock_pet_t
+{
+  overfiend_t( warlock_t*, util::string_view = "Overfiend" );
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 }  // namespace destruction

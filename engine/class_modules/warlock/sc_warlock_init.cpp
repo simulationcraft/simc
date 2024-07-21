@@ -451,13 +451,16 @@ namespace warlock
 
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
-    talents.avatar_of_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar of Destruction" ); // Should be ID 387159
-    talents.summon_blasphemy = find_spell( 387160 );
+    talents.avatar_of_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar of Destruction" ); // Should be ID 456975
+    talents.summon_overfiend = find_spell( 434587 );
+    talents.overfiend_buff = find_spell( 457578 );
+    talents.overfiend_cb = find_spell( 434589 );
 
     // Additional Tier Set spell data
 
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
+    warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
   }
 
   void warlock_t::init_base_stats()
@@ -620,6 +623,12 @@ namespace warlock
 
     buffs.decimation = make_buff( this, "decimation", talents.decimation_buff )
                            ->set_default_value_from_effect( 1 );
+
+    buffs.summon_overfiend = make_buff( this, "summon_overfiend", talents.overfiend_buff )
+                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                                 ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
+                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
+                                   { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
   }
 
   void warlock_t::create_pets()
@@ -676,6 +685,7 @@ namespace warlock
     gains.incinerate_crits = get_gain( "incinerate_crits" );
     gains.infernal = get_gain( "infernal" );
     gains.shadowburn_refund = get_gain( "shadowburn_refund" );
+    gains.summon_overfiend = get_gain( "summon_overfiend" );
   }
 
   void warlock_t::init_procs()
