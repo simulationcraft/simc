@@ -2149,6 +2149,8 @@ class SpellDataGenerator(DataGenerator):
           ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
           ( 423874, 0 ),    # T31 - Flame Rift
           ( 427285, 0 ),    # T31 - Dimensional Cinder
+          ( 438973, 0 ),    # Diabolist - Felseeker
+          ( 434404, 0 ),    # Diabolist - Felseeker
         ),
 
         # Monk:
