@@ -57,6 +57,7 @@ using namespace helpers;
 
       // Destruction
       bool decimation = false;
+      bool dimension_ripper = true;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -194,6 +195,35 @@ using namespace helpers;
         p()->buffs.decimation->trigger();
         p()->cooldowns.soul_fire->reset( true );
         p()->procs.decimation->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && rng().roll( 0.05 ) )
+      {
+        if ( p()->talents.dimensional_rift.ok() )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+        }
+        else
+        {
+          int rift = rng().range( 3 );
+
+          switch ( rift )
+          {
+          case 0:
+            p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+            break;
+          case 1:
+            p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+            break;
+          case 2:
+            p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+            break;
+          default:
+            break;
+          }
+        }
+
+        p()->procs.dimension_ripper->occur();
       }
     }
 
@@ -2565,6 +2595,8 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
         affected_by.ashen_remains = true;
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); // TOCHECK: Does this apply in-game correctly?
@@ -2632,6 +2664,8 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
       affected_by.ashen_remains = true;
+
+      triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
       add_child( fnb_action );
 

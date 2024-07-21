@@ -193,6 +193,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;

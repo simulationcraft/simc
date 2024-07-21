@@ -456,6 +456,8 @@ namespace warlock
     talents.overfiend_buff = find_spell( 457578 );
     talents.overfiend_cb = find_spell( 434589 );
 
+    talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
+
     // Additional Tier Set spell data
 
     // Initialize some default values for pet spawners
@@ -744,6 +746,7 @@ namespace warlock
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.decimation = get_proc( "decimation" );
+    procs.dimension_ripper = get_proc( "dimension_ripper" );
   }
 
   void warlock_t::init_rng()

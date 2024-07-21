@@ -441,7 +441,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t dimension_ripper; // TODO: New
+    player_talent_t dimension_ripper;
     player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
   } talents;
 
@@ -452,7 +452,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers, Dimension Ripper
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -502,7 +502,6 @@ public:
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* doom_proc;
     action_t* rain_of_fire_tick;
-    action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
 
   struct tier_sets_t
@@ -520,6 +519,7 @@ public:
     propagate_const<cooldown_t*> haunt;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_fire;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
   } cooldowns;
 
@@ -629,6 +629,7 @@ public:
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
+    proc_t* dimension_ripper;
   } procs;
 
   int initial_soul_shards;
