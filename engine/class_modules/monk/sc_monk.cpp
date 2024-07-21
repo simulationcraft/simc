@@ -3608,7 +3608,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
     for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
     {
       if ( key == p()->talent.brewmaster.purifying_brew->id() )
-        cooldown->reset( true, -1 );
+        cooldown->reset( true, 2 );
       if ( key == p()->talent.brewmaster.celestial_brew->id() )
         cooldown->reset( true, 1 );
     }
@@ -5152,7 +5152,8 @@ struct expel_harm_t : monk_heal_t
     double am = monk_heal_t::action_multiplier();
     if ( !p()->talent.monk.strength_of_spirit->ok() )
       return am;
-    am *= 1.0 + ( 1.0 - p()->health_percentage() ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
+    am *=
+        1.0 + ( 1.0 - p()->health_percentage() / 100.0 ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
     return am;
   }
 
@@ -5175,13 +5176,18 @@ struct expel_harm_t : monk_heal_t
     monk_heal_t::impact( s );
 
     double result = s->result_total;
+    sim->print_debug( "ZXC RB:{}", result );
     if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
+      sim->print_debug( "ZXC CONSUMING ORBS" );
       p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
+      sim->print_debug( "ZXC V:{}", p()->buff.expel_harm_accumulator->check_value() );
       p()->buff.expel_harm_accumulator->expire();
     }
     result *= data().effectN( 2 ).percent();
+    sim->print_debug( "ZXC M:{}", data().effectN( 2 ).percent() );
+    sim->print_debug( "ZXC R:{}", result );
 
     damage->base_dd_min = damage->base_dd_max = result;
     damage->execute();
@@ -5770,7 +5776,7 @@ double gift_of_the_ox_t::orb_t::action_multiplier() const
 {
   double am = monk_heal_t::action_multiplier();
   if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
-    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) *
+    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 ) ) *
                     p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
   return am;
 }
