@@ -891,6 +891,8 @@ using namespace helpers;
       background = true;
       proc = true;
 
+      triggers.decimation = false;
+
       base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 2 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 2 ).percent();
     }
@@ -2763,7 +2765,7 @@ using namespace helpers;
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
 
-      triggers.decimation = false;
+      triggers.decimation = !dual;
     }
 
     dot_t* get_dot( player_t* t ) override
