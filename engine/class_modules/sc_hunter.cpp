@@ -587,6 +587,7 @@ public:
     spell_data_ptr_t rapid_fire;
     spell_data_ptr_t multishot_mm;
     spell_data_ptr_t precise_shots;
+    spell_data_ptr_t precise_shots_buff;
 
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t streamline;
@@ -1027,6 +1028,7 @@ public:
     bool bullseye_crit_chance = false;
     damage_affected_by lone_wolf;
     bool precise_shots = false;
+    bool precise_shots_cost = false;
     damage_affected_by sniper_training;
     bool t29_mm_4pc = false;
 
@@ -1523,7 +1525,8 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
                           hunter_action_t( n, p, s )
   {
     affected_by.precise_shots = p -> talents.precise_shots.ok() &&
-      parse_damage_affecting_aura( this, p -> find_spell( 260242 ) ).direct;
+      parse_damage_affecting_aura( this, p -> talents.precise_shots_buff ).direct;
+    affected_by.precise_shots_cost = check_affected_by( this, p->talents.precise_shots_buff->effectN( 6 ) ); 
   }
 
   bool usable_moving() const override
@@ -1545,6 +1548,16 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       am *= 1 + p() -> buffs.precise_shots -> check_value();
 
     return am;
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = hunter_action_t::cost_pct_multiplier();
+
+    if ( affected_by.precise_shots_cost && p()->buffs.precise_shots->check() )
+      c *= 1 + p()->talents.precise_shots_buff->effectN( 6 ).percent();
+
+    return c;
   }
 };
 
@@ -5050,7 +5063,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( serpentstalkers_trickery )
       serpentstalkers_trickery -> execute_on_target( target );
 
-    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
+    p() -> buffs.precise_shots -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> proc_chance() );
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
@@ -7418,6 +7431,7 @@ void hunter_t::init_spells()
     talents.rapid_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Fire", HUNTER_MARKSMANSHIP );
     talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
     talents.precise_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shots", HUNTER_MARKSMANSHIP );
+    talents.precise_shots_buff                = find_spell( 260242 );
 
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
@@ -7829,8 +7843,9 @@ void hunter_t::create_buffs()
       -> set_chance( talents.bombardment.ok() );
 
   buffs.precise_shots =
-    make_buff( this, "precise_shots", find_spell( 260242 ) )
+    make_buff( this, "precise_shots", talents.precise_shots_buff )
       -> set_default_value( talents.precise_shots -> effectN( 1 ).percent() )
+      -> set_reverse( true )
       -> set_chance( talents.precise_shots.ok() );
 
   buffs.streamline =
