@@ -166,7 +166,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.blackout_combo );
   parse_effects(
       p()->buff.counterstrike,
-      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
+      CONSUME_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -1398,7 +1399,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
-    parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
+    if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ & ] { return face_palm; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
@@ -1432,15 +1437,15 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_tiger_palm->occur();
-    p()->buff.blackout_combo->expire();
 
     if ( p()->buff.counterstrike->up() )
       p()->proc.counterstrike_tp->occur();
-    p()->buff.counterstrike->expire();
 
     //------------
 
     monk_melee_attack_t::execute();
+
+    p()->buff.blackout_combo->expire();
 
     if ( result_is_miss( execute_state->result ) )
       return;
@@ -1552,7 +1557,8 @@ struct press_the_advantage_t : base_action_t
 
     damage_t( monk_t *player, std::string_view name )
       : base_action_t( player, {}, name ),
-        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() )
+        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() ),
+        face_palm( false )
     {
       base_action_t::proc        = true;
       base_action_t::trigger_gcd = 0_s;
@@ -1562,23 +1568,32 @@ struct press_the_advantage_t : base_action_t
       base_action_t::parse_effects( player->buff.counterstrike,
                                     affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
                                     player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
+      base_action_t::parse_effects( player->buff.blackout_combo,
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
+                                    player->buff.blackout_combo->data().effectN( 1 ).percent() * mod );
+
       // effect must still be rolled in execute so it triggers brew cdr
-      base_action_t::parse_effects(
-          player->buff.blackout_combo, affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
-          player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
+      if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+        add_parse_entry( base_action_t::da_multiplier_effects )
+            .set_func( [ & ] { return face_palm; } )
+            .set_value( ( effect.percent() - 1.0 ) * mod )
+            .set_eff( &effect );
     }
 
     void execute() override
     {
       base_action_t::p()->buff.press_the_advantage->expire();
 
-      face_palm = base_action_t::rng().roll( base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
-      base_action_t::execute();
-
-      if ( face_palm )
+      if ( ( face_palm = base_action_t::rng().roll(
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+      {
+        base_action_t::p()->proc.face_palm->occur();
         base_action_t::p()->baseline.brewmaster.brews->adjust(
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-      base_action_t::p()->buff.counterstrike->expire();
+      }
+
+      base_action_t::execute();
+
       base_action_t::p()->buff.blackout_combo->expire();
 
       if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
@@ -2397,10 +2412,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     p()->buff.kicks_of_flowing_momentum->decrement();
 
     if ( p()->buff.counterstrike->up() )
-    {
       p()->proc.counterstrike_sck->occur();
-      p()->buff.counterstrike->expire();
-    }
   }
 };
 
@@ -3719,7 +3731,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     parse_options( options_str );
 
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd  = timespan_t::from_millis( 750 );
+    min_gcd = timespan_t::from_millis( 750 );
 
     parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
     parse_effects( p->buff.the_emperors_capacitor );
@@ -5625,7 +5637,6 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
       p()->proc.blackout_combo_celestial_brew->occur();
     }
-    p()->buff.blackout_combo->expire();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
     {
@@ -5637,6 +5648,7 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     p()->buff.aspect_of_harmony->trigger_spend();
     brew_t<monk_absorb_t>::execute();
 
+    p()->buff.blackout_combo->expire();
     p()->buff.purified_chi->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
