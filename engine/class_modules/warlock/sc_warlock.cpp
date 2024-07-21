@@ -53,7 +53,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                        {
                          p.proc_actions.doom_proc->execute_on_target( b->player );
 
-                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( 0.3 ) )
+                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( 0.4 ) )
                          {
                            p.warlock_pet_list.doomguards.spawn( 1u );
                            p.procs.pact_of_the_eredruin->occur();
