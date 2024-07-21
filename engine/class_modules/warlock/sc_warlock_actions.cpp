@@ -57,7 +57,7 @@ using namespace helpers;
 
       // Destruction
       bool decimation = false;
-      bool dimension_ripper = true;
+      bool dimension_ripper = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
