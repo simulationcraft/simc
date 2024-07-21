@@ -3685,6 +3685,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
       : monk_spell_t( p, "crackling_jade_lightning_aoe", p->baseline.monk.crackling_jade_lightning )
     {
       dual = background = true;
+      ww_mastery        = true;
 
       parse_effects( p->talent.windwalker.power_of_the_thunder_king, 0B001U );
     }
@@ -3712,10 +3713,11 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     sef_ability      = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike = true;
+    ww_mastery       = true;
 
     parse_options( options_str );
 
-    channeled = tick_zero = tick_may_crit = true;
+    channeled = tick_zero = true;
     dot_duration                          = data().duration();
     interrupt_auto_attack                 = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
