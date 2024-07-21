@@ -392,6 +392,9 @@ public:
   struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
+    propagate_const<dot_t *> crackling_jade_lightning_aoe;
+    propagate_const<dot_t *> crackling_jade_lightning_sef;
+    propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
     propagate_const<dot_t *> enveloping_mist;
     propagate_const<dot_t *> renewing_mist;
     propagate_const<dot_t *> soothing_mist;

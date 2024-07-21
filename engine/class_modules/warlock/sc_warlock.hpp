@@ -134,7 +134,6 @@ public:
     warlock_pet_t* active;
 
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
-    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t> blasphemy;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
 
@@ -148,6 +147,8 @@ public:
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
+
+    spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -433,12 +434,16 @@ public:
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
 
-    player_talent_t decimation; // Incinerate and Conflagrate casts reduce Soul Fire cooldown TODO: New proc behavior?
-    player_talent_t chaos_incarnate; // Maximum mastery value for some spells
-    player_talent_t avatar_of_destruction; // TODO: Behavior changed
-    const spell_data_t* summon_blasphemy; // TODO: Deprecated in favor of Overfiend. Remove
-    player_talent_t dimension_ripper; // TODO: New
-    player_talent_t unstable_rifts; // TODO: Newish, possibly DF tier set behavior
+    player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
+    const spell_data_t* decimation_buff;
+    player_talent_t chaos_incarnate; // Greater mastery value for some spells
+    player_talent_t avatar_of_destruction; // TOCHECK: Is Overfiend benefitting from owner's Mastery?
+    const spell_data_t* summon_overfiend;
+    const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
+    const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
+    player_talent_t dimension_ripper;
+    player_talent_t unstable_rifts;
+    const spell_data_t* dimensional_cinder;
   } talents;
 
   struct hero_talents_t
@@ -448,7 +453,7 @@ public:
 
     player_talent_t cloven_souls;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers
+    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers, Dimension Ripper
 
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
@@ -457,7 +462,7 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
@@ -498,7 +503,6 @@ public:
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* doom_proc;
     action_t* rain_of_fire_tick;
-    action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
   } proc_actions;
 
   struct tier_sets_t
@@ -516,6 +520,7 @@ public:
     propagate_const<cooldown_t*> haunt;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_fire;
+    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
   } cooldowns;
 
@@ -560,6 +565,8 @@ public:
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> power_overwhelming;
     propagate_const<buff_t*> burn_to_ashes;
+    propagate_const<buff_t*> decimation;
+    propagate_const<buff_t*> summon_overfiend;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -582,6 +589,7 @@ public:
     gain_t* immolate_crits;
     gain_t* infernal;
     gain_t* shadowburn_refund;
+    gain_t* summon_overfiend;
   } gains;
 
   // Procs
@@ -621,6 +629,8 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
+    proc_t* decimation;
+    proc_t* dimension_ripper;
   } procs;
 
   int initial_soul_shards;

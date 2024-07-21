@@ -450,13 +450,22 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
+  auto cost = base_t::cost();
+
   if ( current_resource() == RESOURCE_ENERGY )
   {
-    if ( base_t::cost() > 0 )
+    if ( cost > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        p()->flurry_strikes_energy += as<int>( base_t::cost() );
+        // Tiger Palm counts the full energy base cost
+        if ( base_t::id == p()->baseline.monk.tiger_palm->id() )
+          p()->flurry_strikes_energy += as<int>( base_t::base_cost() );
+        // Crackling Jade Lightning is whatever the current cost
+        else if ( base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
+          // this needs to be rounded to the nearest whole number
+          p()->flurry_strikes_energy += as<int>( std::round( cost ) );
+        // Detox, Paralysis and Vivify do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
           p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
@@ -466,7 +475,7 @@ void monk_action_t<Base>::consume_resource()
 
       if ( p()->talent.shado_pan.efficient_training.ok() )
       {
-        p()->efficient_training_energy += as<int>( base_t::cost() );
+        p()->efficient_training_energy += as<int>( cost );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
           timespan_t cdr =
@@ -485,12 +494,12 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    auto cost = base_t::cost();
+    cost = base_t::base_cost();
 
     if ( cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_t::base_cost() ) );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( cost ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -505,21 +514,21 @@ void monk_action_t<Base>::consume_resource()
           p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
         }
       }
-    }
 
-    if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
-    {
-      if ( p()->buff.storm_earth_and_fire->up() )
+      if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
       {
-        auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-        time_extend *= cost;
+        if ( p()->buff.storm_earth_and_fire->up() )
+        {
+          auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
+          time_extend *= cost;
 
-        p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
+          p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
-        p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-        p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+        }
+        p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
       }
-      p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
     }
 
     p()->buff.the_emperors_capacitor->trigger();
@@ -2749,13 +2758,12 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if (p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs)
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
     {
       p()->buff.rushing_jade_wind->trigger();
       p()->buff.combo_strikes->expire();
       p()->buff.hit_combo->expire();
     }
-      
   }
 };
 
@@ -2869,7 +2877,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       if ( p()->bugs )
         combo_strikes_trigger();
     }
-      
 
     p()->buff.tigers_ferocity->trigger();
 
@@ -3610,7 +3617,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
     for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
     {
       if ( key == p()->talent.brewmaster.purifying_brew->id() )
-        cooldown->reset( true, -1 );
+        cooldown->reset( true, 2 );
       if ( key == p()->talent.brewmaster.celestial_brew->id() )
         cooldown->reset( true, 1 );
     }
@@ -3676,50 +3683,72 @@ struct chi_torpedo_t : public monk_spell_t
 // ==========================================================================
 // Crackling Jade Lightning
 // ==========================================================================
-// Power of the Thunder King TODO: Either
-// a) Copy Warlock's Soul Rot implementation for Drain Soul.
-// b)  channel do 0 damage and use a fake tick_action to do a single instance
-// of aoe damage on each tick, and on the tick_action override
-// action_t::amount_type() to return result_amount_type::DMG_OVER_TIME
 
 struct crackling_jade_lightning_t : public monk_spell_t
 {
-  crackling_jade_lightning_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning )
+  struct crackling_jade_lightning_aoe_t : public monk_spell_t
   {
-    sef_ability      = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
-    may_combo_strike = true;
+    crackling_jade_lightning_aoe_t( monk_t *p )
+      : monk_spell_t( p, "crackling_jade_lightning_aoe", p->baseline.monk.crackling_jade_lightning )
+    {
+      dual = background = true;
+      ww_mastery        = true;
+
+      parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+      parse_effects( p->buff.the_emperors_capacitor );
+    }
+
+    double cost_per_tick( resource_e ) const override
+    {
+      return 0.0;
+    }
+  };
+
+  crackling_jade_lightning_aoe_t *aoe_dot;
+
+  crackling_jade_lightning_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning ),
+      aoe_dot( new crackling_jade_lightning_aoe_t( p ) )
+  {
+    sef_ability           = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
+    may_combo_strike      = true;
+    ww_mastery            = true;
+    interrupt_auto_attack = true;
+    channeled             = true;
 
     parse_options( options_str );
 
-    channeled = tick_zero = tick_may_crit = true;
-    dot_duration                          = data().duration();
-    interrupt_auto_attack                 = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
 
-    // parse_effects( p->talent.windwalker.power_of_the_thunder_king );
+    parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( p->buff.the_emperors_capacitor );
+
+    add_child( aoe_dot );
   }
 
-  double cost_per_tick( resource_e resource ) const override
+  void execute() override
   {
-    double c = monk_spell_t::cost_per_tick( resource );
+    monk_spell_t::execute();
 
-    if ( resource == RESOURCE_ENERGY )
-      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
-                 p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() );
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    {
+      const auto &tl = target_list();
+      double count   = 0;
 
-    return c;
-  }
+      for ( auto &t : tl )
+      {
+        // Don't apply AoE version to primary target
+        if ( t == target )
+          continue;
 
-  double composite_persistent_multiplier( const action_state_t *action_state ) const override
-  {
-    double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-    pm *= 1 + p()->buff.the_emperors_capacitor->check_stack_value();
-
-    return pm;
+        if ( count < p()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
+        {
+          aoe_dot->execute_on_target( t );
+          count++;
+        }
+      }
+    }
   }
 
   void last_tick( dot_t *dot ) override
@@ -3728,6 +3757,18 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     p()->buff.the_emperors_capacitor->expire();
 
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    {
+      const auto &tl = target_list();
+      double count   = 0;
+
+      for ( auto &t : tl )
+      {
+        get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
+      }
+    }
     // Reset swing timer
     if ( player->main_hand_attack )
     {
@@ -5154,7 +5195,8 @@ struct expel_harm_t : monk_heal_t
     double am = monk_heal_t::action_multiplier();
     if ( !p()->talent.monk.strength_of_spirit->ok() )
       return am;
-    am *= 1.0 + ( 1.0 - p()->health_percentage() ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
+    am *=
+        1.0 + ( 1.0 - p()->health_percentage() / 100.0 ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
     return am;
   }
 
@@ -5772,7 +5814,7 @@ double gift_of_the_ox_t::orb_t::action_multiplier() const
 {
   double am = monk_heal_t::action_multiplier();
   if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
-    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) *
+    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 ) ) *
                     p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
   return am;
 }
@@ -6475,6 +6517,7 @@ aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::purified_spiri
 {
   base_action_t::aoe              = -1;
   base_action_t::split_aoe_damage = true;
+  base_action_t::dot_behavior     = DOT_CLIP;
 }
 
 template <class base_action_t>
@@ -6487,8 +6530,12 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = spender->pool;
-  base_action_t::execute();
+  base_action_t::base_td = spender->pool / 4.0;
+  base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}", spender->pool,
+                                   spender->pool / 4.0 );
+  spender->pool = 0.0;
+  if ( base_action_t::base_td > 0.0 )
+    base_action_t::execute();
 }
 
 template <class base_action_t>
@@ -6556,8 +6603,8 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
-  debuff.gale_force = make_buff( *this, "gale_force", p->find_spell( 451582 ) )
-      ->set_trigger_spell( p->talent.windwalker.gale_force );
+  debuff.gale_force =
+      make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
@@ -6608,12 +6655,15 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                          ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
                                          ->set_default_value_from_effect( 1 );
 
-  dot.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
-  dot.enveloping_mist   = target->get_dot( "enveloping_mist", p );
-  dot.renewing_mist     = target->get_dot( "renewing_mist", p );
-  dot.soothing_mist     = target->get_dot( "soothing_mist", p );
-  dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
-  dot.aspect_of_harmony = target->get_dot( "aspect_of_harmony_damage", p );
+  dot.breath_of_fire                   = target->get_dot( "breath_of_fire_dot", p );
+  dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
+  dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
+  dot.crackling_jade_lightning_sef_aoe = target->get_dot( "crackling_jade_lightning_sef_aoe", p );
+  dot.enveloping_mist                  = target->get_dot( "enveloping_mist", p );
+  dot.renewing_mist                    = target->get_dot( "renewing_mist", p );
+  dot.soothing_mist                    = target->get_dot( "soothing_mist", p );
+  dot.touch_of_karma                   = target->get_dot( "touch_of_karma", p );
+  dot.aspect_of_harmony                = target->get_dot( "aspect_of_harmony_damage", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
@@ -8865,8 +8915,6 @@ void monk_t::init_special_effects()
       callbacks.register_callback_execute_function( spell_data->id(), trigger_cb );
     };
     register_cb( talent.master_of_harmony.aspect_of_harmony_driver );
-    register_cb( talent.master_of_harmony.aspect_of_harmony_damage );
-    register_cb( talent.master_of_harmony.aspect_of_harmony_heal );
   }
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
@@ -9757,9 +9805,10 @@ public:
     ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
     ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20", true );
-    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events",
-                 "2024-07-20", true );
+    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
+                 true );
+    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
+                 true );
 
     // =================================================
 
