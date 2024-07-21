@@ -5492,9 +5492,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t( n, p, s )
   {
     if ( p -> talents.vipers_venom.ok() )
-    {
       vipers_venom_serpent_sting = p->get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
-    }
 
     if ( p -> talents.spearhead.ok() )
       spearhead = p -> get_background_action<spearhead_bleed_t>( "spearhead_bleed" );
@@ -5505,9 +5503,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   void execute() override
   {
     hunter_melee_attack_t::execute();
-
-    if ( vipers_venom_serpent_sting )
-      vipers_venom_serpent_sting->execute_on_target( target );
 
     if ( rng().roll( rylakstalkers_strikes.chance ) )
     {
@@ -5527,6 +5522,14 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p()->cooldowns.kill_command->reset( true );
 
     p()->buffs.merciless_blows->expire();
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::schedule_travel( s );
+
+    if ( vipers_venom_serpent_sting )
+      vipers_venom_serpent_sting->execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
