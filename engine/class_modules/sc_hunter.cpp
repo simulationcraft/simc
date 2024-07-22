@@ -4635,8 +4635,13 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
 
     if ( lotw.count )
-      for ( int i = 0; i < lotw.count; i++ )
+    {
+      int count = lotw.count;
+      if ( p()->buffs.trueshot->check() )
+        count += as<int>( p()->talents.readiness->effectN( 3 ).base_value() );
+      for ( int i = 0; i < count; i++ )
         lotw.wind_arrow->execute_on_target( target );
+    }
   }
 
   double execute_time_pct_multiplier() const override
@@ -6291,6 +6296,9 @@ struct trueshot_t: public hunter_spell_t
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
     p() -> buffs.trueshot -> expire();
     p() -> buffs.trueshot -> trigger();
+
+    if ( p()->talents.readiness.ok() )
+      p()->buffs.wailing_arrow_override->trigger();
   }
 };
 
