@@ -585,6 +585,7 @@ public:
     spell_data_ptr_t aimed_shot;
 
     spell_data_ptr_t rapid_fire;
+    spell_data_ptr_t rapid_fire_tick;
     spell_data_ptr_t multishot_mm;
     spell_data_ptr_t precise_shots;
     spell_data_ptr_t precise_shots_buff;
@@ -613,7 +614,8 @@ public:
     spell_data_ptr_t chimaera_shot;
 
     spell_data_ptr_t killer_accuracy;
-    spell_data_ptr_t rapid_fire_barrage; // NYI - Barrage now instead shoots Rapid Fires at your target and up to 4 nearby enemies at 30% effectiveness, but its cooldown is increased by 40 sec.
+    spell_data_ptr_t rapid_fire_barrage;
+    spell_data_ptr_t rapid_fire_barrage_override;
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t lone_wolf;
     spell_data_ptr_t bullseye;
@@ -1106,6 +1108,7 @@ public:
     ab::apply_affecting_aura( p -> talents.night_hunter );
     ab::apply_affecting_aura( p -> talents.small_game_hunter );
     ab::apply_affecting_aura( p -> talents.fan_the_hammer );
+    ab::apply_affecting_aura( p -> talents.rapid_fire_barrage );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
@@ -3525,23 +3528,28 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
 struct barrage_t: public hunter_spell_t
 {
-  struct damage_t final : public hunter_ranged_attack_t
+  struct barrage_damage_t final : public hunter_ranged_attack_t
   {
-    damage_t( util::string_view n, hunter_t* p ):
+    barrage_damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 1 ).base_value();
     }
+  };
 
-    void impact( action_state_t* s ) override
+  struct rapid_fire_barrage_damage_t final : public hunter_ranged_attack_t
+  {
+    rapid_fire_barrage_damage_t( util::string_view n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p->talents.rapid_fire_tick )
     {
-      hunter_ranged_attack_t::impact( s );
+      aoe = 1 + as<int>( p->talents.rapid_fire_barrage_override->effectN( 3 ).base_value() );
+      base_multiplier *= p->talents.rapid_fire_barrage->effectN( 4 ).percent();
     }
   };
 
   barrage_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "barrage", p, p -> talents.barrage )
+    hunter_spell_t( "barrage", p, p->talents.rapid_fire_barrage.ok() ? p -> talents.rapid_fire_barrage_override : p -> talents.barrage )
   {
     parse_options( options_str );
 
@@ -3552,13 +3560,12 @@ struct barrage_t: public hunter_spell_t
     // 28/10/2023 TODO: barrage is the only ability not counting toward rapid reload
     triggers_rapid_reload = false;
 
-    tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
-    starved_proc = p -> get_proc( "starved: barrage" );
-  }
+    if ( p->talents.rapid_fire_barrage.ok() )
+      tick_action = p->get_background_action<rapid_fire_barrage_damage_t>( "rapid_fire_barrage_damage" );
+    else
+      tick_action = p->get_background_action<barrage_damage_t>( "barrage_damage" );
 
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    hunter_spell_t::schedule_execute( state );
+    starved_proc = p -> get_proc( "starved: barrage" );
   }
 
   void execute() override
@@ -4938,7 +4945,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
       dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
 
@@ -5194,7 +5200,7 @@ struct rapid_fire_t: public hunter_spell_t
     const int trick_shots_targets;
 
     damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 257045 ) ),
+      hunter_ranged_attack_t( n, p, p -> talents.rapid_fire_tick ),
       trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 3 ).base_value()
         + p -> talents.light_ammo -> effectN( 2 ).base_value()
         + p -> talents.heavy_ammo -> effectN( 2 ).base_value() ) )
@@ -7429,6 +7435,7 @@ void hunter_t::init_spells()
     talents.aimed_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Aimed Shot", HUNTER_MARKSMANSHIP );
 
     talents.rapid_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Fire", HUNTER_MARKSMANSHIP );
+    talents.rapid_fire_tick                   = find_spell( 257045 );
     talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
     talents.precise_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shots", HUNTER_MARKSMANSHIP );
     talents.precise_shots_buff                = find_spell( 260242 );
@@ -7459,6 +7466,7 @@ void hunter_t::init_spells()
   
     talents.killer_accuracy                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Accuracy", HUNTER_MARKSMANSHIP );
     talents.rapid_fire_barrage                = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Fire Barrage", HUNTER_MARKSMANSHIP );
+    talents.rapid_fire_barrage_override       = find_spell( 459796 );
     talents.in_the_rhythm                     = find_talent_spell( talent_tree::SPECIALIZATION, "In the Rhythm", HUNTER_MARKSMANSHIP );
     talents.lone_wolf                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lone Wolf", HUNTER_MARKSMANSHIP );
     talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
