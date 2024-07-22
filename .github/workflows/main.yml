@@ -210,7 +210,8 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             druid_balance, druid_feral, druid_guardian,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
-            demonhunter_vengeance, demonhunter_havoc, priest_shadow
+            demonhunter_vengeance, demonhunter_havoc, priest_shadow, 
+            hunter_beastmastery, hunter_marksmanship, hunter_survival,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
