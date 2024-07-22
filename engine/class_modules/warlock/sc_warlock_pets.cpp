@@ -2129,5 +2129,167 @@ action_t* darkglare_t::create_action( util::string_view name, util::string_view 
 /// Darkglare End
 
 }  // namespace affliction
+
+namespace diabolist
+{
+  overlord_t::overlord_t( warlock_t* owner, util::string_view name )
+    : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+  {
+    resource_regeneration = regen_type::DISABLED;
+
+    owner_coeff.ap_from_sp = 1.0;
+
+    action_list_str = "wicked_cleave";
+  }
+
+  struct wicked_cleave_t : public warlock_pet_spell_t
+  {
+    wicked_cleave_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Wicked Cleave", p, p->o()->hero.wicked_cleave )
+    { aoe = -1; }
+
+    bool ready() override
+    {
+      if ( debug_cast<overlord_t*>( p() )->cleaves <= 0 )
+        return false;
+
+      return warlock_pet_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_pet_spell_t::execute();
+
+      debug_cast<overlord_t*>( p() )->cleaves--;
+    }
+  };
+
+  void overlord_t::arise()
+  {
+    warlock_pet_t::arise();
+
+    cleaves = 1;
+  }
+
+  action_t* overlord_t::create_action( util::string_view name, util::string_view options_str )
+  {
+    if ( name == "wicked_cleave" )
+      return new wicked_cleave_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+
+  mother_of_chaos_t::mother_of_chaos_t( warlock_t* owner, util::string_view name )
+    : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+  {
+    resource_regeneration = regen_type::DISABLED;
+
+    action_list_str = "chaos_salvo";
+  }
+
+  struct chaos_salvo_tick_t : public warlock_pet_spell_t
+  {
+    chaos_salvo_tick_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Chaos Salvo (tick)", p, p->o()->hero.chaos_salvo_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+
+      travel_speed = p->o()->hero.chaos_salvo_missile->missile_speed();
+    }
+  };
+
+  struct chaos_salvo_t : public warlock_pet_spell_t
+  {
+    chaos_salvo_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
+    { tick_action = new chaos_salvo_tick_t( p ); }
+
+    bool ready() override
+    {
+      if ( debug_cast<mother_of_chaos_t*>( p() )->salvos <= 0 )
+        return false;
+
+      return warlock_pet_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_pet_spell_t::execute();
+
+      debug_cast<mother_of_chaos_t*>( p() )->salvos--;
+    }
+  };
+
+  void mother_of_chaos_t::arise()
+  {
+    warlock_pet_t::arise();
+
+    salvos = 1;
+  }
+
+  action_t* mother_of_chaos_t::create_action( util::string_view name, util::string_view options_str )
+  {
+    if ( name == "chaos_salvo" )
+      return new chaos_salvo_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+
+  pit_lord_t::pit_lord_t( warlock_t* owner, util::string_view name )
+    : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+  {
+    resource_regeneration = regen_type::DISABLED;
+
+    action_list_str = "felseeker";
+  }
+
+  struct felseeker_tick_t : public warlock_pet_spell_t
+  {
+    felseeker_tick_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Felseeker (tick)", p, p->o()->hero.felseeker_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
+  struct felseeker_t : public warlock_pet_spell_t
+  {
+    felseeker_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Felseeker", p, p->o()->hero.felseeker )
+    { tick_action = new felseeker_tick_t( p ); }
+
+    bool ready() override
+    {
+      if ( debug_cast<pit_lord_t*>( p() )->felseekers <= 0 )
+        return false;
+
+      return warlock_pet_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_pet_spell_t::execute();
+
+      debug_cast<pit_lord_t*>( p() )->felseekers--;
+    }
+  };
+
+  void pit_lord_t::arise()
+  {
+    warlock_pet_t::arise();
+
+    felseekers = 1;
+  }
+
+  action_t* pit_lord_t::create_action( util::string_view name, util::string_view options_str )
+  {
+    if ( name == "felseeker" )
+      return new felseeker_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+}
 }  // namespace pets
 }  // namespace warlock

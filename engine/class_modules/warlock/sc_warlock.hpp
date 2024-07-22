@@ -88,6 +88,7 @@ public:
   double corruption_accumulator;
   double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
+  int diabolic_ritual;
 
   unsigned active_pets;
 
@@ -123,7 +124,7 @@ public:
     const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
     const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
-    const spell_data_t* chaos_bolt; // TODO: Move from talent section
+    const spell_data_t* chaos_bolt;
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
     const spell_data_t* destruction_warlock; // Spec aura
   } warlock_base;
@@ -149,6 +150,10 @@ public:
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
 
     spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
+
+    spawner::pet_spawner_t<pets::diabolist::overlord_t, warlock_t> overlords;
+    spawner::pet_spawner_t<pets::diabolist::mother_of_chaos_t, warlock_t> mothers;
+    spawner::pet_spawner_t<pets::diabolist::pit_lord_t, warlock_t> pit_lords;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -424,7 +429,7 @@ public:
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
-    player_talent_t dimensional_rift; // TODO: Review behavior with loss of tier set
+    player_talent_t dimensional_rift;
     const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
     const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
     const spell_data_t* rift_shadow_bolt; // Separate ID from Warlock's Shadow Bolt
@@ -477,7 +482,7 @@ public:
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate
+    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate, Diabolic Ritual
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
@@ -582,6 +587,14 @@ public:
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
+
+    // Diabolist Buffs
+    propagate_const<buff_t*> ritual_overlord;
+    propagate_const<buff_t*> ritual_mother;
+    propagate_const<buff_t*> ritual_pit_lord;
+    propagate_const<buff_t*> art_overlord;
+    propagate_const<buff_t*> art_mother;
+    propagate_const<buff_t*> art_pit_lord;
   } buffs;
 
   // Gains - Many are automatically handled

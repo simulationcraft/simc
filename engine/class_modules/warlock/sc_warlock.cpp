@@ -176,6 +176,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     shadow_invocation_proc_chance( 0.0 ),
+    diabolic_ritual( 0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -829,7 +830,10 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),
-    overfiends( "overfiend", w )
+    overfiends( "overfiend", w ),
+    overlords( "overlord", w ),
+    mothers( "mother_of_chaos", w ),
+    pit_lords( "pit_lord", w )
 { }
 }  // namespace warlock
 
