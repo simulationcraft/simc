@@ -3728,7 +3728,7 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> talents.windrunners_guidance -> effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->talents.wailing_arrow.ok() && p()->buffs.wailing_arrow_override->check() )
+    if ( p()->talents.wailing_arrow.ok() )
     {
       p()->buffs.wailing_arrow_counter->trigger();
       if ( p()->buffs.wailing_arrow_counter->at_max_stacks() )
@@ -4930,7 +4930,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     {
       lotw.count = as<int>( p->talents.legacy_of_the_windrunners->effectN( 1 ).base_value() );
       lotw.wind_arrow = p->get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
-      add_child( lotw.wind_arrow );
     }
 
     if ( p -> tier_set.t29_mm_2pc.ok() )
@@ -5320,9 +5319,6 @@ struct rapid_fire_t: public hunter_spell_t
     channeled = reset_auto_attack = true;
 
     base_num_ticks += p -> talents.fan_the_hammer.ok() ? as<int>( p -> talents.fan_the_hammer -> effectN( 2 ).base_value() ) : 0;
-
-    if ( p->talents.legacy_of_the_windrunners.ok() )
-      add_child( damage->lotw.wind_arrow );
   }
 
   void init() override
