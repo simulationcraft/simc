@@ -8367,8 +8367,6 @@ stat_e hunter_t::convert_hybrid_stat( stat_e s ) const
   case STAT_AGI_INT:
   case STAT_STR_AGI:
     return STAT_AGILITY;
-    // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm
-    // This should probably never come up since rogues can't equip plate, but....
   case STAT_STR_INT:
     return STAT_NONE;
   case STAT_SPIRIT:
