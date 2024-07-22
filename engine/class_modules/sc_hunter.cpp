@@ -3504,8 +3504,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
-      background = p -> talents.chimaera_shot.ok();
+    if ( p->specialization() == HUNTER_MARKSMANSHIP && p->talents.chimaera_shot.ok() )
+      background = true;
   }
 
   void execute() override
@@ -5155,7 +5155,8 @@ struct mongoose_bite_base_t: melee_focus_spender_t
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( fmt::format( "bite_at_{}_fury", i ) );
 
-    background = !p -> talents.mongoose_bite.ok();
+    if( !p->talents.mongoose_bite.ok() )
+      background = true;
   }
 
   void execute() override
@@ -5317,7 +5318,8 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    background = p -> talents.mongoose_bite.ok();
+    if ( p->talents.mongoose_bite.ok() )
+      background = true;
   }
 };
 
