@@ -11351,6 +11351,15 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
+  if ( true_level <= 70 )
+  {
+    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+      sim->error( "Dragonflight Tier Sets are no longer supported for Druids." );
+
+    sim->error( "{} does not yet have a complete Action Prioirty List (APL).",
+                util::specialization_string( specialization() ) );
+  }
+
   if ( specialization() == DRUID_BALANCE )
   {
     switch ( style )
@@ -11364,6 +11373,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
         return false;
     }
   }
+
   if ( specialization() == DRUID_GUARDIAN )
   {
     switch ( style )
@@ -11378,6 +11388,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
       return true;
     }
   }
+
   return true;
 }
 
