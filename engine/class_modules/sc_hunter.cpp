@@ -299,6 +299,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* wild_instincts;
     buff_t* basilisk_collar;
     buff_t* outland_venom;
+    buff_t* kill_zone;
   } debuffs;
 
   struct dots_t
@@ -578,6 +579,7 @@ public:
     spell_data_ptr_t bullseye;
     spell_data_ptr_t hydras_bite;
     spell_data_ptr_t volley;
+    spell_data_ptr_t volley_buff;
 
     spell_data_ptr_t legacy_of_the_windrunners;
     spell_data_ptr_t trueshot;
@@ -592,7 +594,8 @@ public:
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t small_game_hunter;
-    spell_data_ptr_t kill_zone; // NYI - Your spells and attacks deal 8% increased damage and ingore line of sight against any target in your volley.
+    spell_data_ptr_t kill_zone;
+    spell_data_ptr_t kill_zone_debuff;
 
     spell_data_ptr_t readiness;
     spell_data_ptr_t unerring_vision;
@@ -1569,15 +1572,21 @@ struct hunter_pet_t: public pet_t
   {
     double m = pet_t::composite_player_target_multiplier( target, school );
 
+    auto td = o()->get_target_data( target );
+    bool guardian = type == PLAYER_GUARDIAN;
+
     if ( o()->talents.basilisk_collar->ok() )
-    {
-      bool guardian = type == PLAYER_GUARDIAN; 
+    {   
       //2024-07-19 - Guardians only benefit from the first point of Basilisk Collar
       double bonus = guardian ? o()->talents.basilisk_collar->effectN( 2 ).percent() : o()->talents.basilisk_collar->effectN( 1 ).percent();
-      int stacks = o()->get_target_data( target )->debuffs.basilisk_collar->stack();
+      int stacks = td->debuffs.basilisk_collar->stack();
       m *= 1 + ( bonus * stacks );
     }
 
+    // TODO should this go in composite_player_target_pet_damage_multiplier (non-hunter pets)
+    if ( td->debuffs.kill_zone->check() && o()->talents.kill_zone_debuff->effectN( 2 ).has_common_school( school ) )
+      m *= 1 + o()->talents.kill_zone_debuff->effectN( guardian ? 4 : 3 ).percent();
+    
     return m;
   }
 
@@ -6292,6 +6301,7 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
+    timespan_t period = 0_s;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -6303,6 +6313,9 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
+
+      if ( p->talents.kill_zone )
+        period = p->talents.volley_buff->effectN( 2 ).period();
     }
 
     void execute() override
@@ -6319,13 +6332,21 @@ struct volley_t : public hunter_spell_t
         p() -> buffs.salvo -> expire();
       }
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      if ( period > 0_s )
+        p()->get_target_data( s->target )->debuffs.kill_zone->trigger( period );
+    }
   };
 
   damage_t* damage;
   timespan_t tick_duration;
 
   volley_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "volley", p, p -> find_spell( 260243 ) ),
+    hunter_spell_t( "volley", p, p -> talents.volley_buff ),
     damage( p -> get_background_action<damage_t>( "volley_damage" ) )
   {
     parse_options( options_str );
@@ -6346,8 +6367,8 @@ struct volley_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.volley -> trigger( tick_duration);
-    p() -> buffs.trick_shots -> trigger( data().duration() );
+    p() -> buffs.volley -> trigger( tick_duration );
+    p() -> buffs.trick_shots -> trigger( tick_duration );
 
     if ( p() -> state.current_volley )
     {
@@ -6688,6 +6709,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
     -> set_period( 0_s );
 
+  debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.wildfire_bomb = target -> get_dot( "wildfire_bomb_dot", p );
@@ -6969,6 +6992,7 @@ void hunter_t::init_spells()
     talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
     talents.hydras_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Hydra's Bite", HUNTER_MARKSMANSHIP );
     talents.volley                            = find_talent_spell( talent_tree::SPECIALIZATION, "Volley", HUNTER_MARKSMANSHIP );
+    talents.volley_buff                       = find_spell( 260243 );
 
     talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
@@ -6983,6 +7007,7 @@ void hunter_t::init_spells()
     talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
     talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
+    talents.kill_zone_debuff                  = find_spell( 393480 );
 
     talents.readiness                         = find_talent_spell( talent_tree::SPECIALIZATION, "Readiness", HUNTER_MARKSMANSHIP );
     talents.unerring_vision                   = find_talent_spell( talent_tree::SPECIALIZATION, "Unerring Vision", HUNTER_MARKSMANSHIP );
@@ -7347,7 +7372,7 @@ void hunter_t::create_buffs()
       -> set_max_stack( std::max( as<int>( talents.bullseye -> effectN( 2 ).base_value() ), 1 ) )
       -> set_chance( talents.bullseye.ok() );
 
-  buffs.volley = make_buff( this, "volley", find_spell( 260243 ) )
+  buffs.volley = make_buff( this, "volley", talents.volley_buff )
       -> set_cooldown( 0_ms )
       -> set_period( 0_ms ) // disable ticks as an optimization
       -> set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -8106,6 +8131,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 double hunter_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double d = player_t::composite_player_target_multiplier( target, school );
+
+  auto td = get_target_data( target );
+  if ( td->debuffs.kill_zone->check() && talents.kill_zone_debuff->effectN( 2 ).has_common_school( school ) )
+    d *= 1 + talents.kill_zone_debuff->effectN( 2 ).percent();
 
   return d;
 }
