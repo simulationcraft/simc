@@ -592,7 +592,7 @@ public:
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t small_game_hunter;
-    spell_data_ptr_t kill_zone; // NYI - Your spells and attacks deal 8% increased damage and ingore line of sight against any target in your volley. 
+    spell_data_ptr_t kill_zone; // NYI - Your spells and attacks deal 8% increased damage and ingore line of sight against any target in your volley.
 
     spell_data_ptr_t readiness;
     spell_data_ptr_t unerring_vision;
@@ -4445,7 +4445,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
-  const int trick_shots_targets;
   bool lock_and_loaded = false;
   struct {
     double chance = 0;
@@ -4463,10 +4462,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   serpent_sting_hb_t* hydras_bite = nullptr;
 
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
-    hunter_ranged_attack_t( n, p, s ),
-    trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
-      + p -> talents.light_ammo -> effectN( 1 ).base_value()
-      + p -> talents.heavy_ammo -> effectN( 1 ).base_value() ) )
+    hunter_ranged_attack_t( n, p, s )
   {
     radius = 8;
     base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 4 ).percent()
@@ -4638,13 +4634,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     return m;
   }
 
-  int n_targets() const override
-  {
-    if ( p() -> buffs.trick_shots -> check() )
-      return 1 + trick_shots_targets;
-    return hunter_ranged_attack_t::n_targets();
-  }
-
   bool usable_moving() const override
   {
     return false;
@@ -4653,10 +4642,22 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
 struct aimed_shot_t : public aimed_shot_base_t
 {
-  aimed_shot_t( hunter_t* p, util::string_view options_str )
-    : aimed_shot_base_t( "aimed_shot", p, p->talents.aimed_shot )
+  const int trick_shots_targets;
+
+  aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
+    aimed_shot_base_t( "aimed_shot", p, p->talents.aimed_shot ),
+    trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
+      + p -> talents.light_ammo -> effectN( 1 ).base_value()
+      + p -> talents.heavy_ammo -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buffs.trick_shots->check() )
+      return 1 + trick_shots_targets;
+    return hunter_ranged_attack_t::n_targets();
   }
 
   bool ready() override
