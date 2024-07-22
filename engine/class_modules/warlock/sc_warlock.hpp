@@ -123,7 +123,7 @@ public:
     const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
     const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
-    const spell_data_t* chaos_bolt; // TODO: Move from talent section
+    const spell_data_t* chaos_bolt;
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
     const spell_data_t* destruction_warlock; // Spec aura
   } warlock_base;
@@ -149,6 +149,10 @@ public:
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
 
     spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
+
+    spawner::pet_spawner_t<pets::diabolist::overlord_t, warlock_t> overlords;
+    spawner::pet_spawner_t<pets::diabolist::mother_of_chaos_t, warlock_t> mothers;
+    spawner::pet_spawner_t<pets::diabolist::pit_lord_t, warlock_t> pit_lords;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -424,7 +428,7 @@ public:
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
-    player_talent_t dimensional_rift; // TODO: Review behavior with loss of tier set
+    player_talent_t dimensional_rift;
     const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
     const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
     const spell_data_t* rift_shadow_bolt; // Separate ID from Warlock's Shadow Bolt

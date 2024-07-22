@@ -829,7 +829,10 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),
-    overfiends( "overfiend", w )
+    overfiends( "overfiend", w ),
+    overlords( "overlord", w ),
+    mothers( "mother_of_chaos", w ),
+    pit_lords( "pit_lord", w )
 { }
 }  // namespace warlock
 

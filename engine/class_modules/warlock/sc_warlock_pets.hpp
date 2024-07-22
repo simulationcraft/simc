@@ -508,6 +508,36 @@ struct darkglare_t : public warlock_pet_t
   action_t* create_action( util::string_view , util::string_view ) override;
 };
 }  // namespace affliction
+
+namespace diabolist
+{
+  struct overlord_t : public warlock_pet_t
+  {
+    int cleaves;
+
+    overlord_t( warlock_t*, util::string_view = "overlord" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
+
+  struct mother_of_chaos_t : public warlock_pet_t
+  {
+    int salvos;
+
+    mother_of_chaos_t( warlock_t*, util::string_view = "mother_of_chaos" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
+
+  struct pit_lord_t : public warlock_pet_t
+  {
+    int felseekers;
+
+    pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
+}  // namespace diabolist
 }  // namespace pets
 }  // namespace warlock
 
