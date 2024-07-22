@@ -8134,7 +8134,7 @@ void mage_t::init_items()
 
   auto s = specialization();
   for ( auto b : { B2, B4 } )
-    if ( sets->has_set_bonus( s, DF4, b ) ) sets->enable_set_bonus( s, s == MAGE_FIRE ? T30 : T31, b );
+    if ( sets->has_set_bonus( s, DF4, b ) ) sets->enable_set_bonus( s, s == MAGE_FROST ? T31 : T29, b );
 }
 
 void mage_t::init_finished()
