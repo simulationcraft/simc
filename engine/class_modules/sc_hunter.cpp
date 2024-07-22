@@ -1054,6 +1054,7 @@ public:
     ab::apply_affecting_aura( p -> talents.small_game_hunter );
     ab::apply_affecting_aura( p -> talents.fan_the_hammer );
     ab::apply_affecting_aura( p -> talents.rapid_fire_barrage );
+    ab::apply_affecting_aura( p -> talents.eagletalons_true_focus );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
@@ -3497,13 +3498,11 @@ struct residual_bleed_base_t : public residual_action::residual_periodic_action_
 
 // Arcane Shot ========================================================================
 
-struct arcane_shot_t: public hunter_ranged_attack_t
+struct arcane_shot_base_t: public hunter_ranged_attack_t
 {
-  arcane_shot_t( hunter_t* p, util::string_view options_str ) :
+  arcane_shot_base_t( hunter_t* p ) :
     hunter_ranged_attack_t( "arcane_shot", p, p -> specs.arcane_shot )
   {
-    parse_options( options_str );
-
     if ( p->specialization() == HUNTER_MARKSMANSHIP && p->talents.chimaera_shot.ok() )
       background = true;
   }
@@ -3530,22 +3529,46 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double c = hunter_ranged_attack_t::cost_pct_multiplier();
-
-    if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
-
-    return c;
-  }
-
   void impact( action_state_t* state ) override
   {
     hunter_ranged_attack_t::impact( state );
 
     if ( state -> result == RESULT_CRIT )
       p() -> buffs.find_the_mark -> trigger();
+  }
+};
+
+struct arcane_shot_t : public arcane_shot_base_t
+{
+  struct arcane_shot_etf_t : public arcane_shot_base_t
+  {
+    arcane_shot_etf_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( p )
+    {
+      background = dual = true;
+      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
+  arcane_shot_etf_t* arcane_shot_etf = nullptr;
+
+  arcane_shot_t( hunter_t* p, util::string_view options_str ) : arcane_shot_base_t( p )
+  {
+    parse_options( options_str );
+
+    if ( p->talents.eagletalons_true_focus.ok() )
+    {
+      arcane_shot_etf = p->get_background_action<arcane_shot_etf_t>( "arcane_shot_etf" );
+      add_child( arcane_shot_etf );
+    }
+  }
+
+  void execute() override
+  {
+    arcane_shot_base_t::execute();
+
+    if ( arcane_shot_etf && p()->buffs.eagletalons_true_focus->up() )
+      arcane_shot_etf->execute_on_target( target );
   }
 };
 
@@ -4299,7 +4322,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
 // Chimaera Shot ======================================================================
 
-struct chimaera_shot_t: public hunter_ranged_attack_t
+struct chimaera_shot_base_t: public hunter_ranged_attack_t
 {
   struct impact_t final : public hunter_ranged_attack_t
   {
@@ -4327,13 +4350,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   impact_t* nature;
   impact_t* frost;
 
-  chimaera_shot_t( hunter_t* p, util::string_view options_str ):
+  chimaera_shot_base_t( hunter_t* p ):
     hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
     nature( p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> find_spell( 344120 ) ) ),
     frost( p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> find_spell( 344121 ) ) )
   {
-    parse_options( options_str );
-
     aoe = 2;
     radius = 5;
 
@@ -4359,16 +4380,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double c = hunter_ranged_attack_t::cost_pct_multiplier();
-
-    if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
-
-    return c;
-  }
-
   void schedule_travel( action_state_t* s ) override
   {
     impact_t* damage = ( s -> chain_target == 0 ) ? nature : frost;
@@ -4379,6 +4390,40 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   // Don't bother, the results will be discarded anyway.
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
   double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
+};
+
+struct chimaera_shot_t : public chimaera_shot_base_t
+{
+  struct chimaera_shot_etf_t : public chimaera_shot_base_t
+  {
+    chimaera_shot_etf_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( p )
+    {
+      background = dual = true;
+      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
+  chimaera_shot_etf_t* chimaera_shot_etf = nullptr;
+
+  chimaera_shot_t( hunter_t* p, util::string_view options_str ) : chimaera_shot_base_t( p )
+  {
+    parse_options( options_str );
+
+    if ( p->talents.eagletalons_true_focus.ok() )
+    {
+      chimaera_shot_etf = p->get_background_action<chimaera_shot_etf_t>( "chimaera_shot_etf" );
+      add_child( chimaera_shot_etf );
+    }
+  }
+
+  void execute() override
+  {
+    chimaera_shot_base_t::execute();
+
+    if ( chimaera_shot_etf && p()->buffs.eagletalons_true_focus->up() )
+      chimaera_shot_etf->execute_on_target( target );
+  }
 };
 
 // Bursting Shot ======================================================================
@@ -4929,15 +4974,13 @@ struct rapid_fire_t: public hunter_spell_t
 
 // Multi Shot =================================================================
 
-struct multishot_mm_t: public hunter_ranged_attack_t
+struct multishot_mm_base_t: public hunter_ranged_attack_t
 {
   explosive_shot_background_t* explosive = nullptr;
 
-  multishot_mm_t( hunter_t* p, util::string_view options_str ):
+  multishot_mm_base_t( hunter_t* p ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_mm )
   {
-    parse_options( options_str );
-
     aoe = -1;
     reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
 
@@ -4976,16 +5019,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     }
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double c = hunter_ranged_attack_t::cost_pct_multiplier();
-
-    if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
-
-    return c;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
@@ -5008,6 +5041,40 @@ struct multishot_mm_t: public hunter_ranged_attack_t
       p()->actions.shadow_surge->execute_on_target( state->target );
       p()->cooldowns.shadow_surge->start();
     }
+  }
+};
+
+struct multishot_mm_t : public multishot_mm_base_t
+{
+  struct multishot_mm_etf_t : public multishot_mm_base_t
+  {
+    multishot_mm_etf_t( util::string_view n, hunter_t* p ) : multishot_mm_base_t( p )
+    {
+      background = dual = true;
+      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
+  multishot_mm_etf_t* multishot_mm_etf = nullptr;
+
+  multishot_mm_t( hunter_t* p, util::string_view options_str ) : multishot_mm_base_t( p )
+  {
+    parse_options( options_str );
+
+    if ( p->talents.eagletalons_true_focus.ok() )
+    {
+      multishot_mm_etf = p->get_background_action<multishot_mm_etf_t>( "multishot_etf" );
+      add_child( multishot_mm_etf );
+    }
+  }
+
+  void execute() override
+  {
+    multishot_mm_base_t::execute();
+
+    if ( multishot_mm_etf && p()->buffs.eagletalons_true_focus->up() )
+      multishot_mm_etf->execute_on_target( target );
   }
 };
 
