@@ -393,7 +393,9 @@ public:
     buff_t* salvo;
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
-    buff_t* windrunners_guidance; 
+    buff_t* windrunners_guidance;
+    buff_t* wailing_arrow_counter;
+    buff_t* wailing_arrow_override;
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -627,7 +629,11 @@ public:
     spell_data_ptr_t focused_aim;
 
     spell_data_ptr_t razor_fragments;
-    spell_data_ptr_t wailing_arrow; // NYI - After summoning 20 wind arrows, your next aimed shot becomes a wailing arrow
+    spell_data_ptr_t wailing_arrow;
+    spell_data_ptr_t wailing_arrow_counter_buff;
+    spell_data_ptr_t wailing_arrow_override_buff;
+    spell_data_ptr_t wailing_arrow_override;
+
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t small_game_hunter;
@@ -816,9 +822,6 @@ public:
     spell_data_ptr_t arcane_shot;
     spell_data_ptr_t steady_shot;
     spell_data_ptr_t flare;
-
-    // Marksmanship/Beast Mastery Tree
-    spell_data_ptr_t wailing_arrow; // TODO delete when Wailing Arrow talent implemented
   } specs;
 
   struct mastery_spells_t
@@ -857,7 +860,7 @@ public:
     unsigned windrunners_guidance_counter = 0;
     event_t* current_volley = nullptr;
     // Focus used for T31 MM 4pc buff Rapid Reload (431156)
-    double focus_used_rapid_reload = 0; 
+    double focus_used_rapid_reload = 0;
   } state;
 
   struct options_t {
@@ -3714,7 +3717,7 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if( p() -> talents.windrunners_guidance.ok() )
+    if ( p() -> talents.windrunners_guidance.ok() )
     {
       p() -> state.windrunners_guidance_counter += 1;
       if( p() -> state.windrunners_guidance_counter >= windrunners_guidance.trigger_threshold )
@@ -3723,6 +3726,16 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
         p() -> buffs.windrunners_guidance -> trigger();
       }
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> talents.windrunners_guidance -> effectN( 1 ).base_value() ) );
+    }
+
+    if ( p()->talents.wailing_arrow.ok() && p()->buffs.wailing_arrow_override->check() )
+    {
+      p()->buffs.wailing_arrow_counter->trigger();
+      if ( p()->buffs.wailing_arrow_counter->at_max_stacks() )
+      {
+        p()->buffs.wailing_arrow_override->trigger();
+        p()->buffs.wailing_arrow_counter->expire();
+      }
     }
   }
 
@@ -3753,89 +3766,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       p() -> buffs.find_the_mark -> expire();
     }
   }
-};
-
-// Wailing Arrow =====================================================================
-
-struct wailing_arrow_t: public hunter_ranged_attack_t
-{
-  struct {
-    int primary_arrows = 0;
-    int secondary_arrows = 0;
-    wind_arrow_t* wind_arrow = nullptr;
-  } windrunners_barrage;
-
-  struct damage_t final : hunter_ranged_attack_t
-  {
-    int wind_arrows = 0;
-    wind_arrow_t* wind_arrow = nullptr;
-
-    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int arrows ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) ), wind_arrows( arrows ), wind_arrow( wind_arrow )
-    {
-      aoe = -1;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      base_aoe_multiplier = data().effectN( 2 ).ap_coeff() / attack_power_mod.direct;
-
-      dual = true;
-    }
-
-    void execute() override
-    {
-      hunter_ranged_attack_t::execute();
-
-      if ( wind_arrow && execute_state && execute_state -> chain_target > 0)
-      {
-        int arrows = wind_arrows;
-        int target = 1;
-        std::vector<player_t*>& tl = target_list();
-        while ( arrows-- > 0 )
-        {
-          wind_arrow -> execute_on_target( tl[ target++ ] );
-          if ( target > execute_state -> chain_target )
-            target = 1;
-        }
-      }
-    }
-  };
-
-  wailing_arrow_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "wailing_arrow", p,
-      p -> specs.wailing_arrow.ok() || p -> talents.wailing_arrow.ok() ? p -> find_spell( 355589 ) : spell_data_t::not_found() )
-  {
-    parse_options( options_str );
-
-    if ( p -> talents.windrunners_barrage.ok() )
-    {
-      windrunners_barrage.primary_arrows = as<int>( p -> talents.windrunners_barrage -> effectN( 1 ).base_value() );
-      windrunners_barrage.secondary_arrows = as<int>( p -> talents.windrunners_barrage -> effectN( 2 ).base_value() );
-      windrunners_barrage.wind_arrow = p -> get_background_action<wind_arrow_t>( "windrunners_barrage" );
-      add_child(windrunners_barrage.wind_arrow);
-    }
-
-    impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage", windrunners_barrage.wind_arrow, windrunners_barrage.secondary_arrows );
-    impact_action -> stats = stats;
-    stats -> action_list.push_back( impact_action );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( windrunners_barrage.wind_arrow )
-    {
-      for ( int i = 0; i < windrunners_barrage.primary_arrows; i++ )
-        windrunners_barrage.wind_arrow -> execute_on_target( target );
-    }
-
-    if ( p() -> talents.readiness.ok() ) {
-      p() -> cooldowns.rapid_fire -> reset( false );
-      p() -> cooldowns.aimed_shot -> reset( p() -> talents.readiness -> effectN( 2 ).base_value() );
-    }
-  }
-
-  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
-  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 };
 
 // Serpent Sting =====================================================================
@@ -4899,7 +4829,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 // Aimed Shot =========================================================================
 
-struct aimed_shot_t : public hunter_ranged_attack_t
+struct aimed_shot_base_t : public hunter_ranged_attack_t
 {
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
@@ -4967,14 +4897,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   serpent_sting_sst_t* serpentstalkers_trickery = nullptr;
   serpent_sting_hb_t* hydras_bite = nullptr;
 
-  aimed_shot_t( hunter_t* p, util::string_view options_str ) :
-    hunter_ranged_attack_t( "aimed_shot", p, p -> talents.aimed_shot ),
+  aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
+    hunter_ranged_attack_t( n, p, s ),
     trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
       + p -> talents.light_ammo -> effectN( 1 ).base_value()
       + p -> talents.heavy_ammo -> effectN( 1 ).base_value() ) )
   {
-    parse_options( options_str );
-
     radius = 8;
     base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 4 ).percent()
       + p -> talents.heavy_ammo -> effectN( 3 ).percent();
@@ -5163,6 +5091,116 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   }
 };
 
+struct aimed_shot_t : public aimed_shot_base_t
+{
+  aimed_shot_t( hunter_t* p, util::string_view options_str )
+    : aimed_shot_base_t( "aimed_shot", p, p->talents.aimed_shot )
+  {
+    parse_options( options_str );
+  }
+
+  bool ready() override
+  {
+    return !p()->buffs.wailing_arrow_override->check() && aimed_shot_base_t::ready();
+  }
+};
+
+// Wailing Arrow =====================================================================
+
+struct wailing_arrow_t : public aimed_shot_base_t
+{
+  struct
+  {
+    int primary_arrows       = 0;
+    int secondary_arrows     = 0;
+    wind_arrow_t* wind_arrow = nullptr;
+  } windrunners_barrage;
+
+  struct damage_t final : hunter_ranged_attack_t
+  {
+    int wind_arrows          = 0;
+    wind_arrow_t* wind_arrow = nullptr;
+
+    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int arrows )
+      : hunter_ranged_attack_t( n, p, p->find_spell( 392058 ) ), wind_arrows( arrows ), wind_arrow( wind_arrow )
+    {
+      aoe                     = -1;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+      base_aoe_multiplier     = data().effectN( 2 ).ap_coeff() / attack_power_mod.direct;
+
+      dual = true;
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      if ( wind_arrow && execute_state && execute_state->chain_target > 0 )
+      {
+        int arrows                 = wind_arrows;
+        int target                 = 1;
+        std::vector<player_t*>& tl = target_list();
+        while ( arrows-- > 0 )
+        {
+          wind_arrow->execute_on_target( tl[ target++ ] );
+          if ( target > execute_state->chain_target )
+            target = 1;
+        }
+      }
+    }
+  };
+
+  wailing_arrow_t( hunter_t* p, util::string_view options_str )
+    : aimed_shot_base_t( "wailing_arrow", p, p->talents.wailing_arrow_override )
+  {
+    parse_options( options_str );
+
+    if ( p->talents.windrunners_barrage.ok() )
+    {
+      windrunners_barrage.primary_arrows   = as<int>( p->talents.windrunners_barrage->effectN( 1 ).base_value() );
+      windrunners_barrage.secondary_arrows = as<int>( p->talents.windrunners_barrage->effectN( 2 ).base_value() );
+      windrunners_barrage.wind_arrow       = p->get_background_action<wind_arrow_t>( "windrunners_barrage" );
+      add_child( windrunners_barrage.wind_arrow );
+    }
+
+    impact_action        = p->get_background_action<damage_t>( "wailing_arrow_damage", windrunners_barrage.wind_arrow,
+                                                        windrunners_barrage.secondary_arrows );
+    impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( windrunners_barrage.wind_arrow )
+    {
+      for ( int i = 0; i < windrunners_barrage.primary_arrows; i++ )
+        windrunners_barrage.wind_arrow->execute_on_target( target );
+    }
+
+    if ( p()->talents.readiness.ok() )
+    {
+      p()->cooldowns.rapid_fire->reset( false );
+      p()->cooldowns.aimed_shot->reset( p()->talents.readiness->effectN( 2 ).base_value() );
+    }
+  }
+
+  bool ready() override
+  {
+    return p()->buffs.wailing_arrow_override->check() && aimed_shot_base_t::ready();
+  }
+
+  result_e calculate_result( action_state_t* ) const override
+  {
+    return RESULT_NONE;
+  }
+  double calculate_direct_amount( action_state_t* ) const override
+  {
+    return 0.0;
+  }
+};
+  
 // Steady Shot ========================================================================
 
 struct steady_shot_t: public hunter_ranged_attack_t
@@ -7505,6 +7543,9 @@ void hunter_t::init_spells()
 
     talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
     talents.wailing_arrow                     = find_talent_spell( talent_tree::SPECIALIZATION, "Wailing Arrow", HUNTER_MARKSMANSHIP );
+    talents.wailing_arrow_counter_buff        = find_spell( 459805 );
+    talents.wailing_arrow_override_buff       = find_spell( 459808 );
+    talents.wailing_arrow_override            = find_spell( 392060 );
     talents.eagletalons_true_focus            = find_talent_spell( talent_tree::SPECIALIZATION, "Eagletalon's True Focus", HUNTER_MARKSMANSHIP );
     talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
@@ -7727,9 +7768,6 @@ void hunter_t::init_spells()
   specs.arcane_shot          = find_class_spell( "Arcane Shot" );
   specs.steady_shot          = find_class_spell( "Steady Shot" );
   specs.flare                = find_class_spell( "Flare" );
-
-  // Rae'shalare, Death's Whisper spell
-  specs.wailing_arrow        = find_item_by_name( "raeshalare_deaths_whisper" ) ? find_spell( 355589 ) : spell_data_t::not_found();
 
   // Tier Sets
   tier_set.t29_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
@@ -7993,6 +8031,15 @@ void hunter_t::create_buffs()
   buffs.windrunners_guidance = 
     make_buff( this, "windrunners_guidance", find_spell( 424571 ) )
       -> set_default_value( talents.windrunners_guidance -> effectN( 3 ).base_value() );
+  
+  buffs.wailing_arrow_counter = 
+    make_buff( this, "wailing_arrow", talents.wailing_arrow_counter_buff )
+      ->set_chance( talents.wailing_arrow.ok() );
+
+  buffs.wailing_arrow_override = 
+    make_buff( this, "wailing_arrow_override", talents.wailing_arrow_override_buff )
+      ->set_quiet( true )
+      ->set_chance( talents.wailing_arrow.ok() );
 
   // Beast Mastery Tree
   const spell_data_t* barbed_shot = find_spell( 246152 );
