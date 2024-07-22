@@ -295,8 +295,6 @@ struct hunter_td_t: public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* latent_poison;
-    buff_t* latent_poison_injectors;
     buff_t* shredded_armor;
     buff_t* wild_instincts;
     buff_t* basilisk_collar;
@@ -792,7 +790,6 @@ public:
   struct {
     action_t* master_marksman = nullptr;
     action_t* barbed_shot = nullptr;
-    action_t* latent_poison = nullptr;
     action_t* dire_command = nullptr; 
     action_t* windrunners_guidance_background = nullptr;
     action_t* volley_t31 = nullptr;
@@ -958,7 +955,6 @@ public:
   void trigger_outland_venom_update();
   void trigger_t30_sv_4p( action_t* action, double cost );
   void trigger_calling_the_shots( action_t* action, double cost );
-  void trigger_latent_poison( const action_state_t* s );
   void consume_trick_shots();
   void trigger_rapid_reload( action_t* action, double cost );
 };
@@ -3302,24 +3298,6 @@ void hunter_t::consume_trick_shots()
   buffs.trick_shots -> decrement();
 }
 
-void hunter_t::trigger_latent_poison( const action_state_t* s )
-{
-  if ( !actions.latent_poison )
-    return;
-
-  auto td = find_target_data( s -> target );
-  if ( !td )
-    return;
-
-  auto debuff = td -> debuffs.latent_poison;
-  if ( ! debuff -> check() )
-    return;
-
-  actions.latent_poison -> execute_on_target( s -> target );
-
-  debuff -> expire();
-}
-
 void hunter_t::trigger_rapid_reload( action_t* action, double cost )
 {
   if ( !tier_set.t31_mm_4pc.ok() )
@@ -3970,26 +3948,6 @@ struct kill_shot_t : hunter_ranged_attack_t
   }
 };
 
-// Latent Poison ==================================================
-
-struct latent_poison_t final : hunter_spell_t
-{
-  latent_poison_t( hunter_t* p ):
-    hunter_spell_t( "latent_poison", p, p -> find_spell( 378016 ) )
-  {
-    background = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = hunter_spell_t::composite_da_multiplier( s );
-
-    m *= td( target ) -> debuffs.latent_poison -> check();
-
-    return m;
-  }
-};
-
 // Master Marksman ====================================================================
 
 struct master_marksman_t : residual_bleed_base_t
@@ -4324,13 +4282,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     p() -> buffs.lethal_command -> trigger();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    p() -> trigger_latent_poison( s );
-  }
-
   void tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::tick( d );
@@ -4658,9 +4609,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    // 10-10-22 TODO: only main target hit is triggering Latent Poison and MM 2pc
+    // 10-10-22 TODO: only main target hit is triggering MM 2pc
     if ( s -> chain_target == 0 ) {
-      p() -> trigger_latent_poison( s );
 
       if ( hit_the_mark )
       {
@@ -5110,34 +5060,6 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct latent_poison_injectors_t final : hunter_spell_t
-  {
-    latent_poison_injectors_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> find_spell( 336904 ) )
-    {
-    }
-
-    void trigger( player_t* target )
-    {
-      auto debuff = td( target ) -> debuffs.latent_poison_injectors;
-      if ( ! debuff -> check() )
-        return;
-
-      execute_on_target( target );
-
-      debuff -> expire();
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = hunter_spell_t::composite_da_multiplier( s );
-
-      m *= td( target ) -> debuffs.latent_poison_injectors -> check();
-
-      return m;
-    }
-  };
-
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
     serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
@@ -5160,9 +5082,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
   };
 
-  latent_poison_injectors_t* latent_poison_injectors = nullptr;
-
-  serpent_sting_vv_t* vipers_venom_serpent_sting;
+  serpent_sting_vv_t* vipers_venom_serpent_sting = nullptr;
   
   struct {
     double chance = 0;
@@ -5201,11 +5121,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
-
-    if ( latent_poison_injectors )
-      latent_poison_injectors -> trigger( s -> target );
-
-    p() -> trigger_latent_poison( s );
 
     if ( vipers_venom_serpent_sting )
       vipers_venom_serpent_sting->execute_on_target( s->target );
