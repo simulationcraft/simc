@@ -5455,10 +5455,10 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
-    may_combo_strike = true;
     add_child( damage );
     add_child( heal );
-    gcd_type = gcd_haste_type::NONE;
+    may_combo_strike = true;
+    gcd_type         = gcd_haste_type::NONE;
   }
 
   bool ready() override
@@ -7122,9 +7122,13 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
     {
       case FIGHT_STYLE_PATCHWERK:
       case FIGHT_STYLE_CASTING_PATCHWERK:
+        return true;
       case FIGHT_STYLE_DUNGEON_ROUTE:
       case FIGHT_STYLE_DUNGEON_SLICE:
+      {
+        sim->error( "Action Priority Lists (APL) for Dungeon Route and Dungeon Slice are not final." );
         return true;
+      }
       default:
         return false;
     }
