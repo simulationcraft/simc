@@ -451,11 +451,11 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
-  auto cost = base_t::cost();
+  auto final_cost = base_t::cost();
 
   if ( current_resource() == RESOURCE_ENERGY )
   {
-    if ( cost > 0 )
+    if ( final_cost > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
@@ -465,7 +465,7 @@ void monk_action_t<Base>::consume_resource()
         // Crackling Jade Lightning is whatever the current cost
         else if ( base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
           // this needs to be rounded to the nearest whole number
-          p()->flurry_strikes_energy += as<int>( std::round( cost ) );
+          p()->flurry_strikes_energy += as<int>( std::round( final_cost ) );
         // Detox, Paralysis and Vivify do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
@@ -476,7 +476,7 @@ void monk_action_t<Base>::consume_resource()
 
       if ( p()->talent.shado_pan.efficient_training.ok() )
       {
-        p()->efficient_training_energy += as<int>( cost );
+        p()->efficient_training_energy += as<int>( final_cost );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
           timespan_t cdr =
@@ -495,16 +495,16 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    cost = base_t::base_cost();
+    auto base_cost = base_t::base_cost();
 
-    if ( cost )
+    if ( base_cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( cost ) );
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_cost ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
-        p()->spiritual_focus_count += cost;
+        p()->spiritual_focus_count += base_cost;
 
         if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
         {
@@ -521,7 +521,7 @@ void monk_action_t<Base>::consume_resource()
         if ( p()->buff.storm_earth_and_fire->up() )
         {
           auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-          time_extend *= cost;
+          time_extend *= base_cost;
 
           p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
@@ -1673,7 +1673,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     // Brewmaster RSK also applies the WoO debuff.
     if ( p()->buff.weapons_of_order->up() )
-      for ( auto &target : target_list() )
+      for ( const auto &target : target_list() )
         get_td( target )->debuff.weapons_of_order->trigger();
   }
 
@@ -2996,9 +2996,7 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( first )
-      first = false;
-
+    first = false;
     monk_melee_attack_t::execute();
   }
 
@@ -3442,14 +3440,6 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     cast_during_sck       = player->specialization() != MONK_WINDWALKER;
     may_miss = may_block = may_dodge = may_parry = false;
   }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
-  }
 };
 
 // ==========================================================================
@@ -3467,14 +3457,6 @@ struct leg_sweep_t : public monk_melee_attack_t
     cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
 
     radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -3746,7 +3728,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
     {
       const auto &tl = target_list();
-      double count   = 0;
+      int count      = 0;
 
       for ( auto &t : tl )
       {
@@ -3772,9 +3754,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
     {
       const auto &tl = target_list();
-      double count   = 0;
-
-      for ( auto &t : tl )
+      for ( const auto &t : tl )
       {
         get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
         get_td( t )->dot.crackling_jade_lightning_sef->cancel();
@@ -4392,11 +4372,6 @@ struct strength_of_the_black_ox_t : public monk_spell_t
           .set_func( [ p ]() { return p->buff.unity_within->check(); } )
           .set_value( effect.percent() )
           .set_eff( &effect );
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
   }
 };
 
@@ -5388,7 +5363,7 @@ struct chi_wave_t : public monk_spell_t
       TBase::execute();
     }
 
-    void impact( action_state_t *state )
+    void impact( action_state_t *state ) override
     {
       TBase::impact( state );
       other_cb( ++count );
@@ -5997,7 +5972,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
       reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
 
       // Merge action statistics if RJW exists as an active ability
-      if ( action_t *action = p->find_action( "rushing_jade_wind" ); action )
+      if ( const action_t *action = p->find_action( "rushing_jade_wind" ); action )
         stats = action->stats;
     }
   };
@@ -7968,7 +7943,7 @@ void monk_t::create_buffs()
         { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew", "tranquil_spirit_eh",
           "tranquil_spirit_goto" },
         [ this ]() { return specialization() == MONK_BREWMASTER; },
-        [ this ]( school_e, result_amount_type, action_state_t *state ) {
+        [ this ]( school_e, result_amount_type, const action_state_t *state ) {
           if ( state->action->id == baseline.brewmaster.stagger_self_damage->id() )
             return false;
           return true;
@@ -8771,9 +8746,9 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
       if ( !state->target->is_sleeping() )
       {
         // Dynamically find and execute proc tracking
-        auto proc = p->find_proc( effect.trigger()->_name );
-        if ( proc )
-          proc->occur();
+        auto effect_proc = p->find_proc( effect.trigger()->_name );
+        if ( effect_proc )
+          effect_proc->occur();
       }
 
       dbc_proc_callback_t::execute( a, state );
@@ -8918,15 +8893,13 @@ void monk_t::init_special_effects()
   // ======================================
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
   {
-    auto register_cb = [ this ]( const spell_data_t *spell_data ) {
-      auto filter_cb  = []( monk_t *, action_state_t  *) { return true; };
-      auto trigger_cb = [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-        buff.aspect_of_harmony->trigger( state );
-      };
-      create_proc_callback( spell_data, filter_cb );
-      callbacks.register_callback_execute_function( spell_data->id(), trigger_cb );
-    };
-    register_cb( talent.master_of_harmony.aspect_of_harmony_driver );
+    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver,
+                          []( monk_t *, action_state_t * ) { return true; } );
+    callbacks.register_callback_execute_function(
+        talent.master_of_harmony.aspect_of_harmony_driver->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          buff.aspect_of_harmony->trigger( state );
+        } );
   }
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
@@ -9073,7 +9046,7 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
 
   // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
   // the debuff remaining duration
-  range::sort( l, [ this ]( player_t *l, player_t *r ) {
+  range::sort( l, [ this ]( const player_t *l, const player_t *r ) {
     auto td_left  = find_target_data( l );
     auto td_right = find_target_data( r );
     bool lcs      = td_left ? td_left->debuff.mark_of_the_crane->check() : false;
@@ -9494,7 +9467,7 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t *s )
 {
-  auto target_data = get_target_data( s->action->player );
+  monk_td_t *target_td = get_target_data( s->action->player );
 
   // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
   if ( buff.dampen_harm->up() )
@@ -9515,7 +9488,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + buff.diffuse_magic->value();  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( target_data->dot.breath_of_fire->is_ticking() )
+  if ( target_td->dot.breath_of_fire->is_ticking() )
     s->result_amount *=
         1.0 + active_actions.breath_of_fire->data().effectN( 2 ).percent() + buff.celestial_flames->value() / 100.0;
 
@@ -9803,7 +9776,7 @@ public:
     // Description: Self-explanatory
     // Date: Self-explanatory
     // Match: True if sim matches in-game behavior
-    auto ReportIssue = [ this ]( std::string desc, std::string date, bool match = false ) {
+    auto ReportIssue = [ this ]( std::string_view desc, std::string_view date, bool match = false ) {
       monk_bug *new_issue = new monk_bug;
       new_issue->desc     = desc;
       new_issue->date     = date;
