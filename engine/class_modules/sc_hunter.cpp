@@ -4671,37 +4671,14 @@ struct wailing_arrow_t : public aimed_shot_base_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
-    int wind_arrows          = 0;
-    wind_arrow_t* wind_arrow = nullptr;
-
-    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int arrows )
-      : hunter_ranged_attack_t( n, p, p->find_spell( 392058 ) ), wind_arrows( arrows ), wind_arrow( wind_arrow )
+    damage_t( util::string_view n, hunter_t* p )
+      : hunter_ranged_attack_t( n, p, p->find_spell( 392058 ) )
     {
       aoe                     = -1;
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       base_aoe_multiplier     = data().effectN( 2 ).ap_coeff() / attack_power_mod.direct;
 
       dual = true;
-    }
-
-    void execute() override
-    {
-      hunter_ranged_attack_t::execute();
-
-      if ( wind_arrow && execute_state && execute_state->chain_target > 0 )
-      {
-        int arrows                 = wind_arrows;
-        int target                 = 1;
-        std::vector<player_t*>& tl = target_list();
-        while ( arrows-- > 0 )
-        {
-          wind_arrow->execute_on_target( tl[ target++ ] );
-          if ( target > execute_state->chain_target )
-            target = 1;
-        }
-      }
-
-      p()->buffs.wailing_arrow_override->expire();
     }
   };
 
@@ -4710,6 +4687,7 @@ struct wailing_arrow_t : public aimed_shot_base_t
   {
     parse_options( options_str );
 
+    impact_action = p->get_background_action<damage_t>( "wailing_arrow_damage" );
     impact_action->stats = stats;
     stats->action_list.push_back( impact_action );
   }
@@ -4723,6 +4701,8 @@ struct wailing_arrow_t : public aimed_shot_base_t
       p()->cooldowns.rapid_fire->reset( false );
       p()->cooldowns.aimed_shot->reset( p()->talents.readiness->effectN( 2 ).base_value() );
     }
+
+    p()->buffs.wailing_arrow_override->expire();
   }
 
   bool ready() override
