@@ -156,6 +156,8 @@ using namespace helpers;
         {
           timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() );
           // 2024-07-21 - It is probably a bug that the switch from Demonic Art to the next Ritual is using the base shard cost
+          // 2024-07-21 - For Demonology, it's possible on beta to start the next ritual with a non-HoG cast before proccing the demon
+          // This would require a rewrite of all this code, so hopefully that's a bug that is fixed before release and not intended
 
           switch( p()->diabolic_ritual )
           {
