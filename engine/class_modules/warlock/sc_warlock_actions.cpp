@@ -462,6 +462,9 @@ using namespace helpers;
 
     bool destruction() const
     { return p()->specialization() == WARLOCK_DESTRUCTION; }
+
+    bool diabolist() const
+    { return p()->hero.diabolic_ritual.ok(); }
   };
 
   // Shared Class Actions Begin

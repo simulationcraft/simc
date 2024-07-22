@@ -586,6 +586,14 @@ public:
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
+
+    // Diabolist Buffs
+    propagate_const<buff_t*> ritual_overlord;
+    propagate_const<buff_t*> ritual_mother;
+    propagate_const<buff_t*> ritual_pit_lord;
+    propagate_const<buff_t*> art_overlord;
+    propagate_const<buff_t*> art_mother;
+    propagate_const<buff_t*> art_pit_lord;
   } buffs;
 
   // Gains - Many are automatically handled
