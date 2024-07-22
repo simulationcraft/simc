@@ -394,7 +394,7 @@ void survival( player_t* p )
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
-  cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
+  cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains,if=!talent.mongoose_bite" );
 
   st->add_action( "wildfire_bomb,if=talent.spearhead&cooldown.spearhead.remains<2*gcd&full_recharge_time<gcd|talent.bombardier&(cooldown.coordinated_assault.remains<gcd&cooldown.fury_of_the_eagle.remains|buff.coordinated_assault.up&buff.coordinated_assault.remains<2*gcd)|full_recharge_time<gcd|prev.fury_of_the_eagle&set_bonus.tier31_2pc|buff.contained_explosion.remains|cooldown.fury_of_the_eagle.remains<gcd&full_recharge_time<gcd&set_bonus.tier31_2pc|(cooldown.fury_of_the_eagle.remains<gcd&talent.ruthless_marauder&set_bonus.tier31_2pc)&!raid_event.adds.exists" );
   st->add_action( "mongoose_bite,if=prev.fury_of_the_eagle" );
@@ -405,7 +405,7 @@ void survival( player_t* p )
   st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
   st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
-  st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
+  st->add_action( "raptor_strike,if=!talent.mongoose_bite&active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1" );
@@ -471,7 +471,7 @@ void survival_ptr( player_t* p )
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
-  cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
+  cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains,if=!talent.mongoose_bite" );
 
   st->add_action( "wildfire_bomb,if=talent.spearhead&cooldown.spearhead.remains<2*gcd&full_recharge_time<gcd|talent.bombardier&(cooldown.coordinated_assault.remains<gcd&cooldown.fury_of_the_eagle.remains|buff.coordinated_assault.up&buff.coordinated_assault.remains<2*gcd)|full_recharge_time<gcd|prev.fury_of_the_eagle&set_bonus.tier31_2pc|buff.contained_explosion.remains|cooldown.fury_of_the_eagle.remains<gcd&full_recharge_time<gcd&set_bonus.tier31_2pc|(cooldown.fury_of_the_eagle.remains<gcd&talent.ruthless_marauder&set_bonus.tier31_2pc)&!raid_event.adds.exists" );
   st->add_action( "mongoose_bite,if=prev.fury_of_the_eagle" );
@@ -482,7 +482,7 @@ void survival_ptr( player_t* p )
   st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
   st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
-  st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
+  st->add_action( "raptor_strike,if=!talent.mongoose_bite&active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd&!talent.mongoose_bite" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1" );
