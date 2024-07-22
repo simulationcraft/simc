@@ -5455,6 +5455,7 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
+    may_combo_strike = true;
     add_child( damage );
     add_child( heal );
     gcd_type = gcd_haste_type::NONE;
