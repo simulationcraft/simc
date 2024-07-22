@@ -2137,6 +2137,8 @@ namespace diabolist
   {
     resource_regeneration = regen_type::DISABLED;
 
+    owner_coeff.ap_from_sp = 1.0;
+
     action_list_str = "wicked_cleave";
   }
 
@@ -2190,6 +2192,7 @@ namespace diabolist
     chaos_salvo_tick_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Chaos Salvo (tick)", p, p->o()->hero.chaos_salvo_dmg )
     {
+      background = dual = true;
       aoe = -1;
 
       travel_speed = p->o()->hero.chaos_salvo_missile->missile_speed();
@@ -2245,7 +2248,10 @@ namespace diabolist
   {
     felseeker_tick_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Felseeker (tick)", p, p->o()->hero.felseeker_dmg )
-    { aoe = -1; }
+    {
+      background = dual = true;
+      aoe = -1;
+    }
   };
 
   struct felseeker_t : public warlock_pet_spell_t

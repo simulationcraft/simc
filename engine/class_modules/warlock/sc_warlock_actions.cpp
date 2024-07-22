@@ -58,6 +58,9 @@ using namespace helpers;
       // Destruction
       bool decimation = false;
       bool dimension_ripper = false;
+
+      // Diabolist
+      bool diabolic_ritual = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -147,6 +150,69 @@ using namespace helpers;
 
         if ( p()->talents.power_overwhelming.ok() && base_shards > 0 )
           p()->buffs.power_overwhelming->trigger( base_shards );
+
+        if ( diabolist() && triggers.diabolic_ritual )
+        {
+          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() );
+          // 2024-07-21 - It is probably a bug that the switch from Demonic Art to the next Ritual is using the base shard cost
+
+          switch( p()->diabolic_ritual )
+          {
+            case 0:
+              if ( p()->buffs.ritual_overlord->check() )
+              {
+                p()->buffs.ritual_overlord->extend_duration( p(), adjustment * shards_used );
+              }
+              else if ( p()->buffs.art_overlord->check() )
+              {
+                p()->buffs.art_overlord->decrement();
+                p()->buffs.ritual_mother->trigger();
+                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment * base_shards ); } );
+              }
+              else
+              {
+                p()->buffs.ritual_overlord->trigger();
+                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment * shards_used ); } );
+              }
+              break;
+            case 1:
+              if ( p()->buffs.ritual_mother->check() )
+              {
+                p()->buffs.ritual_mother->extend_duration( p(), adjustment * shards_used );
+              }
+              else if ( p()->buffs.art_mother->check() )
+              {
+                p()->buffs.art_mother->decrement();
+                p()->buffs.ritual_pit_lord->trigger();
+                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * base_shards ); } );
+              }
+              else
+              {
+                p()->buffs.ritual_mother->trigger();
+                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment * shards_used ); } );
+              }
+              break;
+            case 2:
+              if ( p()->buffs.ritual_pit_lord->check() )
+              {
+                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * shards_used );
+              }
+              else if ( p()->buffs.art_pit_lord->check() )
+              {
+                p()->buffs.art_pit_lord->decrement();
+                p()->buffs.ritual_overlord->trigger();
+                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment * base_shards ); } );
+              }
+              else
+              {
+                p()->buffs.ritual_pit_lord->trigger();
+                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * shards_used ); } );
+              }
+              break;
+            default:
+              break;
+          }
+        }
       }
     }
 
@@ -2830,6 +2896,8 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
+      triggers.diabolic_ritual = true;
+
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
       if ( p->talents.internal_combustion.ok() )
@@ -3038,6 +3106,8 @@ using namespace helpers;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
 
+      triggers.diabolic_ritual = true;
+
       base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
       if ( !p->proc_actions.rain_of_fire_tick )
@@ -3146,6 +3216,8 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+
+      triggers.diabolic_ritual = true;
 
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
