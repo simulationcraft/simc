@@ -5147,6 +5147,8 @@ struct wailing_arrow_t : public aimed_shot_base_t
             target = 1;
         }
       }
+
+      p()->buffs.wailing_arrow_override->expire();
     }
   };
 
