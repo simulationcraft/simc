@@ -2515,7 +2515,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
     {
       p()->buff.fury_of_xuen_stacks->expire();
-      p()->buff.fury_of_xuen->expire();
+      p()->buff.fury_of_xuen->trigger();
       p()->active_actions.fury_of_xuen_summon->execute();
     }
 
@@ -3724,7 +3724,8 @@ struct crackling_jade_lightning_t : public monk_spell_t
     parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
     parse_effects( p->buff.the_emperors_capacitor );
 
-    add_child( aoe_dot );
+    if ( p->talent.windwalker.power_of_the_thunder_king->ok() )
+      add_child( aoe_dot );
   }
 
   void execute() override
