@@ -211,7 +211,7 @@ jobs:
             druid_balance, druid_feral, druid_guardian,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
             demonhunter_vengeance, demonhunter_havoc, priest_shadow, 
-            hunter_beastmastery, hunter_marksmanship, hunter_survival,
+            hunter_beast_mastery, hunter_marksmanship, hunter_survival,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
@@ -244,7 +244,7 @@ jobs:
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
           echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
-          echo "SPEC_STR=${MATRIX_SPEC##*_}" >> "$GITHUB_ENV"
+          echo "SPEC_STR=${MATRIX_SPEC#*_}" >> "$GITHUB_ENV"
 
       - name: "Log Debug"
         if: always()
