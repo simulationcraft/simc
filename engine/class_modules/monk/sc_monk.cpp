@@ -9809,7 +9809,6 @@ public:
     ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
-    ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
     ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
                  true );
