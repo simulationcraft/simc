@@ -1584,7 +1584,7 @@ struct hunter_pet_t: public pet_t
     }
 
     // TODO should this go in composite_player_target_pet_damage_multiplier (non-hunter pets)
-    if ( td->debuffs.kill_zone->check() && o()->talents.kill_zone_debuff->effectN( 2 ).has_common_school( school ) )
+    if ( td->debuffs.kill_zone->check() )
       m *= 1 + o()->talents.kill_zone_debuff->effectN( guardian ? 4 : 3 ).percent();
     
     return m;
