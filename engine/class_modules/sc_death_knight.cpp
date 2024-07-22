@@ -4892,8 +4892,10 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
     if ( p()->mastery.blood_shield->ok() )
       amount *= p()->cache.mastery_value();
 
-    if ( p()->buffs.vampiric_blood->up() )
-      amount *= 1.0 + p()->talent.blood.vampiric_blood->effectN( 3 ).percent();
+    // https://www.wowhead.com/news/upcoming-tank-tuning-in-the-war-within-nerfs-to-self-sustain-and-survivability-345239
+    // Per above wowhead post, vamp blood no longer affects blood shield
+    // if ( p()->buffs.vampiric_blood->up() )
+    //   amount *= 1.0 + p()->talent.blood.vampiric_blood->effectN( 3 ).percent();
 
     amount *= 1.0 + p()->talent.blood.iron_heart->effectN( 2 ).percent();
 
@@ -4901,9 +4903,9 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 
     auto final_amount = amount + current_value;
 
-    // Blood Shield caps at max health
-    if ( final_amount > player->resources.max[ RESOURCE_HEALTH ] )
-      final_amount = player->resources.max[ RESOURCE_HEALTH ];
+    // Blood Shield caps at 50% max health
+    if ( final_amount > ( player->resources.max[ RESOURCE_HEALTH ] / 2 ) )
+      final_amount = player->resources.max[ RESOURCE_HEALTH ] / 2;
 
     sim->print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={} from action={} (id={})",
                       player->name(), current_value, amount, final_amount, name(), this->data().id() );
