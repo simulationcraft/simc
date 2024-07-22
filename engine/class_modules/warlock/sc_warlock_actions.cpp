@@ -61,6 +61,7 @@ using namespace helpers;
 
       // Diabolist
       bool diabolic_ritual = false;
+      bool demonic_art = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -165,6 +166,9 @@ using namespace helpers;
               }
               else if ( p()->buffs.art_overlord->check() )
               {
+                if ( !triggers.demonic_art )
+                  break;
+
                 p()->buffs.art_overlord->decrement();
                 p()->buffs.ritual_mother->trigger();
                 make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment * base_shards ); } );
@@ -182,6 +186,9 @@ using namespace helpers;
               }
               else if ( p()->buffs.art_mother->check() )
               {
+                if ( !triggers.demonic_art )
+                  break;
+
                 p()->buffs.art_mother->decrement();
                 p()->buffs.ritual_pit_lord->trigger();
                 make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * base_shards ); } );
@@ -199,6 +206,9 @@ using namespace helpers;
               }
               else if ( p()->buffs.art_pit_lord->check() )
               {
+                if ( !triggers.demonic_art )
+                  break;
+
                 p()->buffs.art_pit_lord->decrement();
                 p()->buffs.ritual_overlord->trigger();
                 make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment * base_shards ); } );
@@ -1945,7 +1955,11 @@ using namespace helpers;
     hand_of_guldan_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
-    { add_child( impact_spell ); }
+    {
+      triggers.diabolic_ritual = triggers.demonic_art = true;
+
+      add_child( impact_spell );
+    }
 
     timespan_t travel_time() const override
     { return 0_ms; }
@@ -2245,6 +2259,7 @@ using namespace helpers;
     {
       may_crit = false;
       affected_by.soul_conduit_base_cost = true;
+      triggers.diabolic_ritual = true;
     }
 
     double cost_pct_multiplier() const override
@@ -2564,7 +2579,11 @@ using namespace helpers;
   {
     grimoire_felguard_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard, options_str )
-    { harmful = may_crit = false; }
+    {
+      harmful = may_crit = false;
+
+      triggers.diabolic_ritual = true;
+    }
 
     void execute() override
     {
@@ -2579,7 +2598,11 @@ using namespace helpers;
   {
     summon_vilefiend_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend, options_str )
-    { harmful = may_crit = false; }
+    {
+      harmful = may_crit = false;
+
+      triggers.diabolic_ritual = true;
+    }
 
     void execute() override
     {
@@ -2896,7 +2919,7 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = triggers.demonic_art = true;
 
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
@@ -3106,7 +3129,7 @@ using namespace helpers;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = triggers.demonic_art = true;
 
       base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
@@ -3217,7 +3240,7 @@ using namespace helpers;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = triggers.demonic_art = true;
 
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
