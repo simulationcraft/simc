@@ -363,24 +363,22 @@ void survival( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.coordinated_assault&!talent.spearhead" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&!talent.spearhead" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>2" );
   default_->add_action( "arcane_torrent" );
 
-  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
-  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
-  cds->add_action( "fireblood,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
+  cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "lights_judgment" );
   cds->add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
-  cds->add_action( "berserking,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault|time_to_die<13" );
+  cds->add_action( "berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault|time_to_die<13" );
   cds->add_action( "muzzle" );
-  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1" );
-  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up" );
-  cds->add_action( "use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey" );
@@ -397,7 +395,6 @@ void survival( player_t* p )
   cleave->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
-  cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
@@ -407,16 +404,16 @@ void survival( player_t* p )
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=!talent.fury_of_the_eagle|talent.spearhead" );
   st->add_action( "fury_of_the_eagle,interrupt_if=(cooldown.wildfire_bomb.full_recharge_time<gcd&talent.ruthless_marauder|!talent.ruthless_marauder),if=(!raid_event.adds.exists&set_bonus.tier31_2pc|raid_event.adds.exists&raid_event.adds.in>40&set_bonus.tier31_2pc)" );
   st->add_action( "spearhead,if=focus+action.kill_command.cast_regen>focus.max-10" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(buff.deadly_duo.stack>2|talent.flankers_advantage&buff.deadly_duo.stack>1|buff.spearhead.remains&dot.pheromone_bomb.remains)" );
-  st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd|buff.spearhead.remains" );
-  st->add_action( "kill_shot,if=!buff.coordinated_assault.up&!buff.spearhead.up" );
+  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(buff.deadly_duo.stack>2|talent.flankers_advantage&buff.deadly_duo.stack>1)" );
+  st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
+  st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
+  st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
@@ -447,24 +444,22 @@ void survival_ptr( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.coordinated_assault&!talent.spearhead" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&!talent.spearhead" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>2" );
   default_->add_action( "arcane_torrent" );
 
-  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
-  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
-  cds->add_action( "fireblood,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
+  cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "lights_judgment" );
   cds->add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
-  cds->add_action( "berserking,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault|time_to_die<13" );
+  cds->add_action( "berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault|time_to_die<13" );
   cds->add_action( "muzzle" );
-  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault" );
   cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1" );
-  cds->add_action( "use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up" );
-  cds->add_action( "use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "kill_shot,if=buff.coordinated_assault_empower.up&talent.birds_of_prey" );
@@ -481,7 +476,6 @@ void survival_ptr( player_t* p )
   cleave->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   cleave->add_action( "spearhead" );
-  cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains,if=buff.spearhead.remains" );
   cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
   cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains" );
 
@@ -491,16 +485,16 @@ void survival_ptr( player_t* p )
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=!talent.fury_of_the_eagle|talent.spearhead" );
   st->add_action( "fury_of_the_eagle,interrupt_if=(cooldown.wildfire_bomb.full_recharge_time<gcd&talent.ruthless_marauder|!talent.ruthless_marauder),if=(!raid_event.adds.exists&set_bonus.tier31_2pc|raid_event.adds.exists&raid_event.adds.in>40&set_bonus.tier31_2pc)" );
   st->add_action( "spearhead,if=focus+action.kill_command.cast_regen>focus.max-10" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(buff.deadly_duo.stack>2|talent.flankers_advantage&buff.deadly_duo.stack>1|buff.spearhead.remains&dot.pheromone_bomb.remains)" );
-  st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd|buff.spearhead.remains" );
-  st->add_action( "kill_shot,if=!buff.coordinated_assault.up&!buff.spearhead.up" );
+  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(buff.deadly_duo.stack>2|talent.flankers_advantage&buff.deadly_duo.stack>1)" );
+  st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
+  st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
   st->add_action( "raptor_strike,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
   st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
   st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
   st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1|next_wi_bomb.pheromone&cooldown.wildfire_bomb.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd&set_bonus.tier31_2pc" );
   st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(!buff.spearhead.remains&cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
+  st->add_action( "coordinated_assault,if=(!talent.coordinated_kill&target.health.pct<20&(cooldown.spearhead.remains|!talent.spearhead)|talent.coordinated_kill&(cooldown.spearhead.remains|!talent.spearhead))&(!raid_event.adds.exists|raid_event.adds.in>90)" );
   st->add_action( "wildfire_bomb,if=next_wi_bomb.pheromone&focus<variable.mb_rs_cost&set_bonus.tier31_2pc" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
   st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
