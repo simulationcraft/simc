@@ -456,6 +456,7 @@ public:
     cooldown_t* rapid_fire;
     cooldown_t* aimed_shot;
     cooldown_t* trueshot;
+    cooldown_t* legacy_of_the_windrunners;
 
     cooldown_t* barbed_shot;
     cooldown_t* bestial_wrath;
@@ -474,7 +475,6 @@ public:
   struct gains_t
   {
     gain_t* trueshot;
-    gain_t* legacy_of_the_windrunners;
 
     gain_t* barbed_shot;
     gain_t* dire_beast;
@@ -622,7 +622,7 @@ public:
     spell_data_ptr_t hydras_bite;
     spell_data_ptr_t volley;
 
-    spell_data_ptr_t legacy_of_the_windrunners; // TODO - Reworked
+    spell_data_ptr_t legacy_of_the_windrunners;
     spell_data_ptr_t trueshot;
     spell_data_ptr_t focused_aim;
 
@@ -854,7 +854,6 @@ public:
     // Last KC target used for T30 Survival 4pc (410167)
     player_t* last_kc_target;
     unsigned bombardment_counter = 0;
-    unsigned lotw_counter = 0;
     unsigned windrunners_guidance_counter = 0;
     event_t* current_volley = nullptr;
     // Focus used for T31 MM 4pc buff Rapid Reload (431156)
@@ -882,6 +881,7 @@ public:
     cooldowns.aimed_shot            = get_cooldown( "aimed_shot" );
     cooldowns.rapid_fire            = get_cooldown( "rapid_fire" );
     cooldowns.trueshot              = get_cooldown( "trueshot" );
+    cooldowns.legacy_of_the_windrunners = get_cooldown( "legacy_of_the_windrunners" );
 
     cooldowns.barbed_shot           = get_cooldown( "barbed_shot" );
     cooldowns.bestial_wrath         = get_cooldown( "bestial_wrath" );
@@ -3681,11 +3681,6 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     double high, low;
   } careful_aim;
   hit_the_mark_t* hit_the_mark;
-  struct {
-    unsigned trigger_threshold;
-    unsigned aimed_recharges;
-    double focus_gain;
-  } lotw;
 
   struct {
     unsigned trigger_threshold;
@@ -3712,23 +3707,12 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
     }
 
-    lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
-    lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
-    lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
-
     windrunners_guidance.trigger_threshold = as<int>( p -> talents.windrunners_guidance -> effectN( 2 ).base_value() );
   }
 
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    if ( ++p() -> state.lotw_counter == lotw.trigger_threshold )
-    {
-      p() -> state.lotw_counter = 0;
-      p() -> cooldowns.aimed_shot -> reset( true, lotw.aimed_recharges );
-      p() -> resource_gain( RESOURCE_FOCUS, lotw.focus_gain, p() -> gains.legacy_of_the_windrunners, this );
-    }
 
     if( p() -> talents.windrunners_guidance.ok() )
     {
@@ -4972,11 +4956,13 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     double chance = 0;
     proc_t* proc;
   } surging_shots;
-  struct {
+  
+  struct
+  {
     int count = 0;
-    double chance = 0;
-    wind_arrow_t* action = nullptr;
-  } legacy_of_the_windrunners;
+    wind_arrow_t* wind_arrow = nullptr;
+  } lotw;
+
   hit_the_mark_t* hit_the_mark = nullptr;
   serpent_sting_sst_t* serpentstalkers_trickery = nullptr;
   serpent_sting_hb_t* hydras_bite = nullptr;
@@ -5014,10 +5000,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
     if ( p -> talents.legacy_of_the_windrunners.ok() )
     {
-      legacy_of_the_windrunners.count = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value() );
-      legacy_of_the_windrunners.chance = 1.0;
-      legacy_of_the_windrunners.action = p -> get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
-      add_child( legacy_of_the_windrunners.action );
+      lotw.count = as<int>( p->talents.legacy_of_the_windrunners->effectN( 1 ).base_value() );
+      lotw.wind_arrow = p->get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
+      add_child( lotw.wind_arrow );
     }
 
     if ( p -> tier_set.t29_mm_2pc.ok() )
@@ -5107,11 +5092,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       p() -> cooldowns.rapid_fire -> reset( true );
     }
 
-    if ( rng().roll( legacy_of_the_windrunners.chance ) )
-    {
-      for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
-        legacy_of_the_windrunners.action -> execute_on_target( target );
-    }
+    if ( lotw.count )
+      for ( int i = 0; i < lotw.count; i++ )
+        lotw.wind_arrow->execute_on_target( target );
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
@@ -5220,6 +5203,12 @@ struct rapid_fire_t: public hunter_spell_t
   {
     const int trick_shots_targets;
 
+    struct
+    {
+      double chance = 0;
+      wind_arrow_t* wind_arrow = nullptr;
+    } lotw;    
+
     damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.rapid_fire_tick ),
       trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 3 ).base_value()
@@ -5234,6 +5223,12 @@ struct rapid_fire_t: public hunter_spell_t
 
       // energize
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
+
+      if ( p->talents.legacy_of_the_windrunners.ok() )
+      {
+        lotw.chance = p->talents.legacy_of_the_windrunners->proc_chance();
+        lotw.wind_arrow = p->get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
+      }
     }
 
     int n_targets() const override
@@ -5258,6 +5253,17 @@ struct rapid_fire_t: public hunter_spell_t
       if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
         p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
     }
+
+    void impact( action_state_t* state ) override
+    {
+      hunter_ranged_attack_t::impact( state );
+
+      if ( lotw.wind_arrow && p()->cooldowns.legacy_of_the_windrunners->up() && rng().roll( lotw.chance ) )
+      {
+        lotw.wind_arrow->execute_on_target( state->target );
+        p()->cooldowns.legacy_of_the_windrunners->start();
+      }
+    }
   };
 
   damage_t* damage;
@@ -5274,6 +5280,9 @@ struct rapid_fire_t: public hunter_spell_t
     channeled = reset_auto_attack = true;
 
     base_num_ticks += p -> talents.fan_the_hammer.ok() ? as<int>( p -> talents.fan_the_hammer -> effectN( 2 ).base_value() ) : 0;
+
+    if ( p->talents.legacy_of_the_windrunners.ok() )
+      add_child( damage->lotw.wind_arrow );
   }
 
   void init() override
@@ -7243,11 +7252,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "lotw_count" )
-  {
-    return make_fn_expr( expression_str, [ this ] { return state.lotw_counter; } );
-  }
-  else if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
+  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
   }
@@ -7756,6 +7761,7 @@ void hunter_t::init_spells()
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
   cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
+  cooldowns.legacy_of_the_windrunners->duration = talents.legacy_of_the_windrunners->internal_cooldown();
 }
 
 // hunter_t::init_items =====================================================
@@ -8248,7 +8254,6 @@ void hunter_t::init_gains()
   player_t::init_gains();
 
   gains.trueshot                  = get_gain( "Trueshot" );
-  gains.legacy_of_the_windrunners = get_gain( "Legacy of the Windrunners" );
 
   gains.barbed_shot               = get_gain( "Barbed Shot" );
   gains.dire_beast                = get_gain( "Dire Beast" );
