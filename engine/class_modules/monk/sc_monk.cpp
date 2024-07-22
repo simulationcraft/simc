@@ -3789,7 +3789,8 @@ struct breath_of_fire_dot_t : public monk_spell_t
 {
   bool blackout_combo;
 
-  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
+  breath_of_fire_dot_t( monk_t *p )
+    : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot ), blackout_combo( false )
   {
     background    = true;
     tick_may_crit = may_crit = true;
@@ -4034,7 +4035,8 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
       p()->buff.ox_stance->trigger( stacks );
       p()->buff.aspect_of_harmony->trigger_flat(
           stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
-          ( 1.0 + p()->composite_damage_versatility() ) );
+          ( 1.0 + p()->composite_damage_versatility() ) *
+          p()->composite_total_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) );
       p()->buff.recent_purifies->trigger( stacks );
     }
 
@@ -5879,17 +5881,6 @@ void shuffle_t::trigger( timespan_t duration )
 }
 
 // ===============================================================================
-// Elixir of Determination
-// ===============================================================================
-
-struct flow_of_chi_t : hp_triggered_buff_t<monk_t, monk_buff_t>
-{
-  flow_of_chi_t( monk_t *player ) : hp_triggered_buff_t( player, player->talent.monk.flow_of_chi )
-  {
-  }
-};
-
-// ===============================================================================
 // Fortifying Brew Buff
 // ===============================================================================
 struct fortifying_brew_t : public monk_buff_t
@@ -6322,7 +6313,7 @@ struct blackout_reinforcement_t : public monk_buff_t
 // ===============================================================================
 
 aspect_of_harmony_t::aspect_of_harmony_t( monk_t *player )
-  : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr )
+  : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr ), fallback( false )
 {
   if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
@@ -6353,6 +6344,8 @@ void aspect_of_harmony_t::trigger_flat( double amount )
   if ( fallback || spender->check() )
     return;
 
+  accumulator->sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", amount, accumulator->current_value,
+                                 accumulator->current_value + amount );
   accumulator->current_value += amount;
 }
 
@@ -6411,6 +6404,8 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
     multiplier *= 1.0 + effect.percent();
 
   double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
+  sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", state->result_amount * multiplier, check_value(),
+                    check_value() + state->result_amount * multiplier );
   monk_buff_t::trigger( -1, amount );
 }
 
@@ -6449,12 +6444,14 @@ void aspect_of_harmony_t::spender_t::reset()
 {
   monk_buff_t::reset();
   pool = 0.0;
+  sim->print_debug( "Aspect of Harmony =P: 0" );
 }
 
 bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance, timespan_t duration )
 {
   pool = accumulator->check_value();
   accumulator->expire();
+  sim->print_debug( "Aspect of Harmony +P: {}", pool );
   return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
@@ -6464,13 +6461,15 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     return;
 
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
-  double amount     = std::min( state->result_amount * multiplier, pool );
-  if ( amount == pool )
+  double amount     = std::min( state->result_amount * multiplier, current_value );
+  if ( amount >= current_value )
   {
+    sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value, current_value - amount );
+    pool = current_value;
     expire();
     return;
   }
-  pool -= amount;
+  current_value -= amount;
 
   const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
                            p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
@@ -6485,15 +6484,21 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     case result_amount_type::DMG_DIRECT:
     case result_amount_type::DMG_OVER_TIME:
       if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
+      {
+        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
         residual_action::trigger( damage, state->target, amount );
-      return;
+      }
+      break;
     case result_amount_type::HEAL_DIRECT:
     case result_amount_type::HEAL_OVER_TIME:
       if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
+      {
+        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
         residual_action::trigger( heal, state->target, amount );
-      return;
+      }
+      break;
     default:
-      return;
+      break;
   }
 }
 
@@ -8543,8 +8548,6 @@ void monk_t::create_buffs()
 
   movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch );
   movement.whirling_dragon_punch->set_distance( 1 );
-
-  buff.flow_of_chi = new buffs::flow_of_chi_t( this );
 }
 
 // monk_t::init_gains =======================================================
