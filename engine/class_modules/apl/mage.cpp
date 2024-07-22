@@ -270,7 +270,7 @@ void frost( player_t* p )
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* st = p->get_action_priority_list( "st" );
 
-  precombat->add_action( "flask", "Executed before combat begins. Accepts non-harmful actions only.# Executed before combat begins. Accepts non-harmful actions only." );
+  precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
