@@ -610,7 +610,7 @@ public:
     spell_data_ptr_t deathblow;
     spell_data_ptr_t night_hunter;
     spell_data_ptr_t tactical_reload;
-    spell_data_ptr_t serpentstalkers_trickery; //Verify functionality with removal of serpent sting
+    spell_data_ptr_t serpentstalkers_trickery;
     spell_data_ptr_t chimaera_shot;
 
     spell_data_ptr_t killer_accuracy;
@@ -3864,9 +3864,6 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     affected_by.serrated_shots = true;
-
-    if ( p -> talents.hydras_bite.ok() )
-      aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -3907,25 +3904,6 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
       m *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
 
     return m;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    hunter_ranged_attack_t::available_targets( tl );
-
-    if ( is_aoe() && tl.size() > 1 )
-    {
-      // 04-07-2018: HB smart targeting simply prefers targets without serpent
-      // sting (instead of the ones with the lowest remaining duration)
-      // simply move targets without ss to the front of the list
-      auto start = tl.begin();
-      std::partition( *start == target ? std::next( start ) : start, tl.end(),
-        [ this ]( player_t* t ) {
-          return !( this -> td( t ) -> dots.serpent_sting -> is_ticking() );
-        } );
-    }
-
-    return tl.size();
   }
 };
 
@@ -4948,6 +4926,42 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     }
   };
 
+  struct serpent_sting_hb_t final : public serpent_sting_base_t
+  {
+    serpent_sting_hb_t( util::string_view /*name*/, hunter_t* p ):
+      serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
+    {
+      dual = true;
+      aoe = as<int>( p->talents.hydras_bite->effectN( 3 ).base_value() );
+    }
+
+    timespan_t travel_time() const override
+    {
+      return 0_s;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      serpent_sting_base_t::available_targets( tl );
+
+      // Spread to other targets.
+      range::erase_remove( tl, target );
+
+      // TODO check if still smart targeting
+      //if ( is_aoe() && tl.size() > 1 )
+      //{
+      //  // 04-07-2018: HB smart targeting simply prefers targets without serpent
+      //  // sting (instead of the ones with the lowest remaining duration)
+      //  // simply move targets without ss to the front of the list
+      //  auto start = tl.begin();
+      //  std::partition( *start == target ? std::next( start ) : start, tl.end(),
+      //                  [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
+      //}
+
+      return tl.size();
+    }
+  };
+
   struct {
     double multiplier = 0;
     double high, low;
@@ -4965,6 +4979,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
   } legacy_of_the_windrunners;
   hit_the_mark_t* hit_the_mark = nullptr;
   serpent_sting_sst_t* serpentstalkers_trickery = nullptr;
+  serpent_sting_hb_t* hydras_bite = nullptr;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
     hunter_ranged_attack_t( "aimed_shot", p, p -> talents.aimed_shot ),
@@ -5010,6 +5025,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
       add_child( hit_the_mark );
     }
+
+    if ( p->talents.hydras_bite.ok() )
+      hydras_bite = p->get_background_action<serpent_sting_hb_t>( "serpent_sting_hb" );
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -5130,6 +5148,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
           residual_action::trigger( hit_the_mark, s -> target, amount );
         p() -> buffs.find_the_mark -> expire();
       }
+
+      if ( hydras_bite && p()->get_target_data( s->target )->dots.serpent_sting->is_ticking() )
+        hydras_bite->execute_on_target( s->target );
     }
   }
 
