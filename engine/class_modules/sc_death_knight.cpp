@@ -2940,7 +2940,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     gnaw_cd                = get_cooldown( "gnaw" );
     gnaw_cd->duration      = owner->pet_spell.gnaw->cooldown();
-    owner_coeff.ap_from_ap = 0.6351048;
+    owner_coeff.ap_from_ap = 0.6318;
     if ( owner->talent.unholy.raise_dead.ok() && !owner->talent.sacrificial_pact.ok() )
     {
       dynamic = false;
