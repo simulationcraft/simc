@@ -2136,9 +2136,10 @@ struct dire_critter_t : public hunter_pet_t
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
     hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
-    // 11-10-22 Dire Beast - Damage increased by 400%.
-    // 13-10-22 Dire Beast damage increased by 50%.
-    owner_coeff.ap_from_ap = 0.9;
+    // 11-10-22 Dire Beast - Damage increased by 400%. (15% -> 60%)
+    // 13-10-22 Dire Beast damage increased by 50%. (60% -> 90%)
+    // 22-7-24 Dire Beast damage increased by 10% (90% -> 100%)
+    owner_coeff.ap_from_ap = 1;
     
     resource_regeneration = regen_type::DISABLED;
   }
@@ -4477,19 +4478,13 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     {
       serpent_sting_base_t::available_targets( tl );
 
-      // Spread to other targets.
-      range::erase_remove( tl, target );
-
-      // TODO check if still smart targeting
-      //if ( is_aoe() && tl.size() > 1 )
-      //{
-      //  // 04-07-2018: HB smart targeting simply prefers targets without serpent
-      //  // sting (instead of the ones with the lowest remaining duration)
-      //  // simply move targets without ss to the front of the list
-      //  auto start = tl.begin();
-      //  std::partition( *start == target ? std::next( start ) : start, tl.end(),
-      //                  [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
-      //}
+      if ( is_aoe() && tl.size() > 1 )
+      {
+        // 22-07-24: same targeting as before; first hit is always on the cast target regardless of ticking state
+        auto start = tl.begin();
+        std::partition( *start == target ? std::next( start ) : start, tl.end(),
+                        [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
+      }
 
       return tl.size();
     }
