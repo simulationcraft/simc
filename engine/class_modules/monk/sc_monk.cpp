@@ -5212,7 +5212,8 @@ struct expel_harm_t : monk_heal_t
     monk_heal_t::impact( s );
 
     double result = s->result_total;
-    if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
+    if ( p()->buff.gift_of_the_ox && p()->buff.gift_of_the_ox->up() &&
+         p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
       p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
@@ -8109,8 +8110,8 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>(
-      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+  if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
+    buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
 
   buff.expel_harm_accumulator =
       make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
@@ -9531,7 +9532,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
   // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
   // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
-  if ( s->action->id != baseline.brewmaster.stagger_self_damage->id() )
+  if ( buff.gift_of_the_ox && s->action->id != baseline.brewmaster.stagger_self_damage->id() )
     buff.gift_of_the_ox->trigger_from_damage( s->result_amount );
 
   base_t::target_mitigation( school, dt, s );

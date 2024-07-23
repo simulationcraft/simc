@@ -369,7 +369,7 @@ struct stagger_t : base_actor_t
 
     // TODO: Move this so it can be opted out of without grossness
     this->mixin_reports.push_back(
-        std::make_unique<stagger_impl::stagger_report_t<derived_actor_t>>( static_cast<derived_actor_t *>( this ) ) );
+        std::make_unique<stagger_impl::stagger_report_t<stagger_t<base_actor_t, derived_actor_t>>>( this ) );
   }
 };
 
@@ -857,7 +857,7 @@ void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stre
        // << "\t\t\t\t\t\t\t\t\t<th>Ticks</th>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
-    auto stagger_print = [ absorbed_mean, &os ]( const level_t<derived_actor_t> *level ) {
+    auto stagger_print = [ absorbed_mean, &os ]( const auto *level ) {
       os << "\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"1\">" << level->name() << "</td>\n"
          << "\t\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"1\">" << level->absorbed->mean() << "</td>\n"
@@ -871,7 +871,7 @@ void stagger_report_t<derived_actor_t>::html_customsection( report::sc_html_stre
          << "\t\t\t\t\t\t\t\t</tr>\n";
     };
 
-    for ( const level_t<derived_actor_t> *level : stagger_effect->levels )
+    for ( const auto *level : stagger_effect->levels )
     {
       stagger_print( level );
     }

@@ -1513,42 +1513,6 @@ public:
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
 
-template <class Buff>
-Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
-{
-  /*
-   * TODO: Come up with another solution.
-   *  This is very likely UB, but seems to work at least ok-ish.
-   *  Future me shall replace this with a less dangerous solution.
-   */
-  return static_cast<Buff *>(
-      buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
-}
-
-template <typename Buff, typename Player, typename... Args>
-Buff *make_buff_fallback( bool true_buff, Player &&player, std::string_view name, Args &&...args )
-{
-  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-  static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
-                     std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
-                 "Player must be derived from player_t or actor_pair_t" );
-
-  if ( true_buff )
-  {
-    if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
-      return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
-    else
-      return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
-  }
-  else
-  {
-    if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
-      return make_fallback<Buff>( player.target, name, player.source );
-    else
-      return make_fallback<Buff>( player, name, player );
-  }
-}
-
 struct sef_despawn_cb_t
 {
   monk_t *monk;
