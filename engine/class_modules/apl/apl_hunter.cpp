@@ -367,21 +367,20 @@ void survival( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
-  precombat->add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>2" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "arcane_torrent" );
   default_->add_action( "bag_of_tricks" );
 
@@ -400,20 +399,9 @@ void survival( player_t* p )
   cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  st->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
-  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
-  st->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  st->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
-  st->add_action( "kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em" );
-  st->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
-  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
-  st->add_action( "mongoose_bite" );
-  st->add_action( "raptor_strike" );
-
   cleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
-  cleave->add_action( "fury_of_the_eagle" );
   cleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  cleave->add_action( "fury_of_the_eagle" );
   cleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   cleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
   cleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
@@ -425,6 +413,18 @@ void survival( player_t* p )
   cleave->add_action( "kill_shot" );
   cleave->add_action( "mongoose_bite" );
   cleave->add_action( "raptor_strike" );
+
+  st->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
+  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  st->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
+  st->add_action( "fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc" );
+  st->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
+  st->add_action( "kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em" );
+  st->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
+  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  st->add_action( "mongoose_bite" );
+  st->add_action( "raptor_strike" );
 }
 //survival_apl_end
 
@@ -440,68 +440,58 @@ void survival_ptr( player_t* p )
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
-  precombat->add_action( "variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&!talent.spearhead" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>2" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<3" );
   default_->add_action( "arcane_torrent" );
+  default_->add_action( "bag_of_tricks" );
 
-  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
-  cds->add_action( "harpoon,if=talent.terms_of_engagement.enabled&focus<focus.max" );
-  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
-  cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault" );
+  cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "harpoon,if=prev.kill_command" );
+  cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "lights_judgment" );
-  cds->add_action( "bag_of_tricks,if=cooldown.kill_command.full_recharge_time>gcd" );
-  cds->add_action( "berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault|time_to_die<13" );
+  cds->add_action( "berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault|time_to_die<13" );
   cds->add_action( "muzzle" );
-  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault" );
-  cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1" );
+  cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=cooldown.coordinated_assault.remains<2*gcd" );
+  cds->add_action( "use_item,name=manic_grieftorch,if=cooldown.coordinated_assault.remains<2*gcd" );
+  cds->add_action( "use_item,name=beacon_to_the_beyond,if=cooldown.coordinated_assault.remains<2*gcd" );
+  cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  cleave->add_action( "wildfire_bomb" );
-  cleave->add_action( "coordinated_assault,if=(cooldown.fury_of_the_eagle.remains|!talent.fury_of_the_eagle)" );
-  cleave->add_action( "explosive_shot" );
-  cleave->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame" );
-  cleave->add_action( "fury_of_the_eagle,if=cooldown.butchery.full_recharge_time>cast_time&raid_event.adds.exists|!talent.butchery" );
-  cleave->add_action( "butchery,if=raid_event.adds.exists" );
-  cleave->add_action( "butchery,if=(full_recharge_time<gcd|dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd|raid_event.adds.remains<10))&!raid_event.adds.exists" );
-  cleave->add_action( "fury_of_the_eagle,if=!raid_event.adds.exists" );
-  cleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd" );
-  cleave->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  cleave->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
-  cleave->add_action( "spearhead" );
-  cleave->add_action( "mongoose_bite,target_if=min:dot.serpent_sting.remains" );
-  cleave->add_action( "raptor_strike,target_if=min:dot.serpent_sting.remains,if=!talent.mongoose_bite" );
+  cleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
+  cleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  cleave->add_action( "fury_of_the_eagle" );
+  cleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
+  cleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
+  cleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
+  cleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  cleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  cleave->add_action( "mongoose_bite,if=buff.merciless_blows.up" );
+  cleave->add_action( "raptor_strike,if=buff.merciless_blows.up" );
+  cleave->add_action( "butchery" );
+  cleave->add_action( "kill_shot" );
+  cleave->add_action( "mongoose_bite" );
+  cleave->add_action( "raptor_strike" );
 
-  st->add_action( "wildfire_bomb,if=talent.spearhead&cooldown.spearhead.remains<2*gcd&full_recharge_time<gcd|talent.bombardier&(cooldown.coordinated_assault.remains<gcd&cooldown.fury_of_the_eagle.remains|buff.coordinated_assault.up&buff.coordinated_assault.remains<2*gcd)|full_recharge_time<gcd|prev.fury_of_the_eagle&set_bonus.tier31_2pc|buff.contained_explosion.remains|cooldown.fury_of_the_eagle.remains<gcd&full_recharge_time<gcd&set_bonus.tier31_2pc|(cooldown.fury_of_the_eagle.remains<gcd&talent.ruthless_marauder&set_bonus.tier31_2pc)&!raid_event.adds.exists" );
-  st->add_action( "mongoose_bite,if=prev.fury_of_the_eagle" );
-  st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=!talent.fury_of_the_eagle|talent.spearhead" );
-  st->add_action( "fury_of_the_eagle,interrupt_if=(cooldown.wildfire_bomb.full_recharge_time<gcd&talent.ruthless_marauder|!talent.ruthless_marauder),if=(!raid_event.adds.exists&set_bonus.tier31_2pc|raid_event.adds.exists&raid_event.adds.in>40&set_bonus.tier31_2pc)" );
-  st->add_action( "spearhead,if=focus+action.kill_command.cast_regen>focus.max-10" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max" );
-  st->add_action( "mongoose_bite,if=active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd|buff.mongoose_fury.up&buff.mongoose_fury.remains<gcd" );
-  st->add_action( "kill_shot,if=!buff.coordinated_assault.up" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&dot.pheromone_bomb.remains&talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains>gcd" );
-  st->add_action( "raptor_strike,if=!talent.mongoose_bite&active_enemies=1&target.time_to_die<focus%(variable.mb_rs_cost-cast_regen)*gcd" );
-  st->add_action( "fury_of_the_eagle,if=equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.up&buff.seething_rage.remains<3*gcd&(!raid_event.adds.exists|active_enemies>1)|raid_event.adds.exists&raid_event.adds.in>40&buff.seething_rage.up&buff.seething_rage.remains<3*gcd" );
-  st->add_action( "use_item,name=djaruun_pillar_of_the_elder_flame,if=talent.coordinated_assault|talent.fury_of_the_eagle&cooldown.fury_of_the_eagle.remains<5" );
-  st->add_action( "mongoose_bite,if=talent.alpha_predator&buff.mongoose_fury.up&buff.mongoose_fury.remains<focus%(variable.mb_rs_cost-cast_regen)*gcd|equipped.djaruun_pillar_of_the_elder_flame&buff.seething_rage.remains&active_enemies=1" );
-  st->add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
-  st->add_action( "coordinated_assault,if=target.health.pct<20&(cooldown.spearhead.remains|!talent.spearhead)&(!raid_event.adds.exists|raid_event.adds.in>90)" );
-  st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<gcd&focus+cast_regen<focus.max&(cooldown.flanking_strike.remains|!talent.flanking_strike)" );
-  st->add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
-  st->add_action( "wildfire_bomb,if=raid_event.adds.in>cooldown.wildfire_bomb.full_recharge_time-(cooldown.wildfire_bomb.full_recharge_time%3.5)&(!dot.wildfire_bomb.ticking&focus+cast_regen<focus.max|active_enemies>1)" );
-  st->add_action( "explosive_shot,if=talent.ranger&(!raid_event.adds.exists|raid_event.adds.in>28)" );
-  st->add_action( "fury_of_the_eagle,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
-  st->add_action( "mongoose_bite" );
+  st->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
+  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  st->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
+  st->add_action( "fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc" );
+  st->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
+  st->add_action( "kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em" );
+  st->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
   st->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
-  st->add_action( "coordinated_assault,if=time_to_die>140" );
+  st->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  st->add_action( "mongoose_bite" );
+  st->add_action( "raptor_strike" );
 }
 //survival_ptr_apl_end
 
