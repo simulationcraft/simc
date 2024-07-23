@@ -1941,7 +1941,7 @@ public:
   double composite_energize_amount( const action_state_t* s ) const override
   {
     if ( energize )
-      return energize->resource();
+      return energize->resource( this, s );
     else
       return ab::composite_energize_amount( s );
   }
@@ -3544,7 +3544,9 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
       // technically requires cat form, but as currently the only way to cast cp generators outside of form is via
       // convoke, and convoke doesn't trigger as it is a proc, we are fine for now
       energize->add_parse_entry()
-        .set_func( [ this ] { return !proc && attack_critical; } )
+        .set_func( []( const action_t* a, const action_state_t* ) {
+          return a ? !a->proc && debug_cast<const cp_generator_t*>( a )->attack_critical : false;
+        } )
         .set_flat( true )
         .set_value( eff.resource() )
         .set_eff( &eff );
@@ -3554,7 +3556,9 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
     {
       energize->add_parse_entry()
         .set_buff( p->buff.berserk_cat )
-        .set_func( [ this ] { return !proc; } )
+        .set_func( []( const action_t* a, const action_state_t* ) {
+          return a ? !a->proc : false;
+        } )
         .set_flat( true )
         .set_value( eff.base_value() )
         .set_eff( &eff );
@@ -4794,7 +4798,9 @@ struct shred_t final : public use_fluid_form_t<DRUID_FERAL,
       {
         energize->add_parse_entry()
           .set_value( eff.base_value() )
-          .set_func( [ this ] { return stealthed_any(); } )
+          .set_func( []( const action_t* a, const action_state_t* ) {
+            return a ? debug_cast<const shred_t*>( a )->stealthed_any() : false;
+          } )
           .set_flat( true )
           .set_eff( &eff );
       }

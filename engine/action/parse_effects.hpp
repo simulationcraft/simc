@@ -115,7 +115,7 @@ struct target_effect_t
 struct modify_effect_t
 {
   buff_t* buff = nullptr;
-  std::function<bool()> func = nullptr;
+  std::function<bool( const action_t*, const action_state_t* )> func = nullptr;
   double value = 0.0;
   bool use_stacks = true;
   bool flat = false;
@@ -124,7 +124,7 @@ struct modify_effect_t
   modify_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
 
-  modify_effect_t& set_func( std::function<bool()> f )
+  modify_effect_t& set_func( std::function<bool( const action_t*, const action_state_t* )> f )
   { func = std::move( f ); return *this; }
 
   modify_effect_t& set_value( double v )
@@ -329,7 +329,9 @@ struct parse_base_t
     {
       tmp.list.push_back( mod );
     }
-    else if constexpr ( std::is_convertible_v<T, std::function<bool()>> && is_detected_v<detect_func, U> )
+    else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
+                          std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
+                        is_detected_v<detect_func, U> )
     {
       tmp.data.func = std::move( mod );
     }
@@ -403,19 +405,19 @@ struct modified_spelleffect_t
   modified_spelleffect_t() : _eff( spelleffect_data_t::nil() ), value( 0.0 ) {}
 
   // return base value after modifiers
-  double base_value() const;
+  double base_value( const action_t* = nullptr, const action_state_t* = nullptr ) const;
 
-  double percent() const
-  { return base_value() * 0.01; }
+  double percent( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return base_value( a, s ) * 0.01; }
 
-  double resource( resource_e r ) const
-  { return base_value() * _eff.resource_multiplier( r ); }
+  double resource( resource_e r, const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return base_value( a, s ) * _eff.resource_multiplier( r ); }
 
-  double resource() const
-  { return resource( _eff.resource_gain_type() ); }
+  double resource( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return resource( _eff.resource_gain_type(), a, s ); }
 
-  timespan_t time_value() const
-  { return timespan_t::from_millis( base_value() ); }
+  timespan_t time_value( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return timespan_t::from_millis( base_value( a, s ) ); }
 
   operator const spelleffect_data_t&() const
   { return _eff; }

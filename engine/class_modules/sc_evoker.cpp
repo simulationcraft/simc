@@ -3046,7 +3046,9 @@ public:
     {
       p->spec.ebon_might = std::make_unique<modified_spell_data_t>( data() );
       p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) )
-        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
+        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ]( const action_t*, const action_state_t* ) {
+          return p->close_as_clutchmates;
+        } );
     }
   }
 

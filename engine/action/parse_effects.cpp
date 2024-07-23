@@ -159,7 +159,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
 template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, bool&, const spell_data_t*, size_t,
                                                                       const spell_data_t* );
 
-double modified_spelleffect_t::base_value() const
+double modified_spelleffect_t::base_value( const action_t* action, const action_state_t* state ) const
 {
   auto return_value = value;
 
@@ -167,7 +167,7 @@ double modified_spelleffect_t::base_value() const
   {
     double eff_val = i.value;
 
-    if ( i.func && !i.func() )
+    if ( i.func && !i.func( action, state ) )
       continue;  // continue to next effect if conditional effect function is false
 
     if ( i.buff )
