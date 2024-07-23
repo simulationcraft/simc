@@ -971,6 +971,7 @@ private:
 public:
 
   bool track_cd_waste;
+  maybe_bool decrements_tip_of_the_spear;
   maybe_bool triggers_calling_the_shots;
   maybe_bool triggers_t30_sv_4p; 
   maybe_bool triggers_rapid_reload;
@@ -1146,6 +1147,27 @@ public:
 
     if ( triggers_rapid_reload )
       ab::sim -> print_debug( "{} action {} set to proc Rapid Reload", ab::player -> name(), ab::name() );
+
+    if ( p() -> talents.tip_of_the_spear.ok() )
+    {
+      if ( decrements_tip_of_the_spear.is_none() )
+      {
+        decrements_tip_of_the_spear = !ab::channeled && !ab::background && !ab::proc && ab::base_cost() > 0;
+      }
+    }
+    else
+    {
+      decrements_tip_of_the_spear = false;
+    }
+
+    if ( decrements_tip_of_the_spear )
+    {
+      ab::sim -> print_debug( "{} action {} set to decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
+    }
+    else
+    {
+      ab::sim -> print_debug( "{} action {} set to NOT decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
+    }
   }
 
   timespan_t gcd() const override
@@ -1177,10 +1199,11 @@ public:
     if ( triggers_rapid_reload )
       p() -> trigger_rapid_reload( this, this -> cost() );
 
-    if ( affected_by.tip_of_the_spear )
+    //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
+    if ( affected_by.tip_of_the_spear && decrements_tip_of_the_spear )
       p()->buffs.tip_of_the_spear->decrement();
 
-    if ( affected_by.tip_of_the_spear_hidden )
+    if ( affected_by.tip_of_the_spear_hidden && decrements_tip_of_the_spear )
       p()->buffs.tip_of_the_spear_hidden->decrement();
   }
 
@@ -5542,6 +5565,17 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     {
       p() -> buffs.contained_explosion -> trigger();
       p() -> buffs.light_the_fuse -> trigger();
+    }
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    hunter_melee_attack_t::last_tick( dot );
+
+    if ( p()->talents.tip_of_the_spear.ok() )
+    {
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_hidden->decrement();
     }
   }
 };
