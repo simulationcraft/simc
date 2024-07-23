@@ -43,6 +43,9 @@ using namespace helpers;
       bool devastation = false;
       bool ruin = false;
       bool chaos_incarnate = false;
+
+      // Diabolist
+      bool touch_of_rancora = false;
     } affected_by;
 
     struct triggers_t
@@ -274,11 +277,12 @@ using namespace helpers;
         p()->procs.dimension_ripper->occur();
       }
 
-      if ( diabolist() && triggers.demonic_art )
+      if ( diabolist() && triggers.demonic_art && s->chain_target == 0 )
       {
-        p()->buffs.art_overlord->decrement();
-        p()->buffs.art_mother->decrement();
-        p()->buffs.art_pit_lord->decrement();
+        // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
       }
     }
 
@@ -362,6 +366,25 @@ using namespace helpers;
       return m;
     }
 
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = spell_t::composite_persistent_multiplier( s );
+
+      if ( diabolist() && affected_by.touch_of_rancora )
+      {
+        if ( p()->buffs.art_overlord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+        if ( p()->buffs.art_mother->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+        if ( p()->buffs.art_pit_lord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = spell_t::composite_da_multiplier( s );
@@ -409,6 +432,18 @@ using namespace helpers;
 
       if ( destruction() && affected_by.backdraft && p()->buffs.backdraft->check() )
         m *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      if ( diabolist() && affected_by.touch_of_rancora )
+      {
+        if ( p()->buffs.art_overlord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+
+        if ( p()->buffs.art_mother->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+
+        if ( p()->buffs.art_pit_lord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+      }
 
       return m;
     }
@@ -1880,6 +1915,8 @@ using namespace helpers;
       {
         aoe = -1;
         dual = true;
+
+        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
         
         triggers.shadow_invocation = true;
         triggers.demonic_art = true;
@@ -1936,6 +1973,8 @@ using namespace helpers;
       : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
     {
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+
       triggers.diabolic_ritual = true;
 
       add_child( impact_spell );
@@ -2898,6 +2937,7 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = true;
 
@@ -3076,6 +3116,7 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
 
@@ -3108,6 +3149,8 @@ using namespace helpers;
       base_tick_time = 1_s;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
+
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = true;
 
@@ -3219,6 +3262,7 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = true;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = true;
 

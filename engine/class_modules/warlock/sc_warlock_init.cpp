@@ -492,6 +492,8 @@ namespace warlock
     hero.cloven_souls = find_talent_spell( talent_tree::HERO, "Cloven Souls" ); // Should be ID 428517
     hero.cloven_soul_debuff = find_spell( 434424 );
 
+    hero.touch_of_rancora = find_talent_spell( talent_tree::HERO, "Touch of Rancora" ); // Should be ID 429893
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
