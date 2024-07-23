@@ -11801,13 +11801,29 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
-        // raze (400254) triggers moonless night despite being an aoe spell
-        // moonfire damage (164812) does not trigger
-        if ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 || a->id == 400254 ) && a->id != 164812 &&
-             p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+        if ( !s->result_amount || !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+          return;
+
+        // raze (400254) & ravage (441605) trigger moonless night despite being an aoe spell
+        // moonfire (164812) & sunfire (164815) do not trigger
+        switch ( a->id )
         {
-          druid_cb_t::trigger( a, s );
+          case 164812:  // moonfire
+          case 164815:  // sunfire
+            return;     // end
+
+          case 400254:  // raze
+          case 441605:  // ravage
+            break;      // continue
+
+          default:
+            if ( a->aoe < 0 || a->aoe > 1 )
+              return;   // end
+            else
+              break;    // continue
         }
+
+        druid_cb_t::trigger( a, s );
       }
 
       void execute( action_t*, action_state_t* s ) override
