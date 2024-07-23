@@ -132,8 +132,6 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* numbing_blast;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
-
-    buff_t* charring_embers;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -340,6 +338,7 @@ public:
 
 
     // Fire
+    buff_t* calefaction;
     buff_t* combustion;
     buff_t* feel_the_burn;
     buff_t* fevered_incantation;
@@ -404,12 +403,8 @@ public:
     // Set Bonuses
     buff_t* arcane_overload;
     buff_t* bursting_energy;
-    buff_t* forethought;
-    buff_t* arcane_battery;
-    buff_t* arcane_artillery;
     buff_t* intuition;
 
-    buff_t* calefaction;
     buff_t* flames_fury;
     buff_t* searing_rage;
     buff_t* tier31_4pc;
@@ -1487,8 +1482,6 @@ struct mage_spell_t : public spell_t
     bool unleashed_inferno = false;
 
     bool arcane_overload = true;
-    bool charring_embers = true;
-    bool forethought = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1644,9 +1637,6 @@ public:
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
 
-    if ( affected_by.forethought )
-      m *= 1.0 + p()->buffs.forethought->check_stack_value();
-
     if ( affected_by.touch_of_ice )
       m *= 1.0 + p()->buffs.touch_of_ice->check_value();
 
@@ -1685,8 +1675,6 @@ public:
         m *= 1.0 + td->debuffs.nether_munitions->check_value();
       if ( affected_by.numbing_blast )
         m *= 1.0 + td->debuffs.numbing_blast->check_value();
-      if ( affected_by.charring_embers )
-        m *= 1.0 + td->debuffs.charring_embers->check_value();
     }
 
     return m;
@@ -1927,11 +1915,7 @@ public:
   void trigger_calefaction( player_t* target )
   {
     if ( !p()->talents.phoenix_reborn.ok() )
-    {
-      auto td = p()->find_target_data( target );
-      if ( !td || !td->debuffs.charring_embers->check() )
-        return;
-    }
+      return;
 
     p()->buffs.calefaction->trigger();
     if ( p()->buffs.calefaction->at_max_stacks() )
@@ -2044,16 +2028,10 @@ struct arcane_mage_spell_t : public mage_spell_t
         if ( cr == p()->buffs.clearcasting )
         {
           p()->buffs.nether_precision->trigger();
+          // Technically, the buff disappears immediately when it reaches 4 stacks
+          // and the Attunement buff is applied with a delay. Here, we just use
+          // 4 stacks of the buff to track the delay.
           p()->buffs.aether_attunement_counter->trigger();
-
-          // TODO: Currently doesn't work on beta; figure out how the set bonus and
-          // Aether interact if they ever fix it.
-
-          //p()->buffs.forethought->trigger();
-          // Technically, the buff disappears immediately when it reaches 3 stacks
-          // and the Artillery buff is applied with a delay. Here, we just use
-          // 3 stacks of the buff to track the delay.
-          //p()->buffs.arcane_battery->trigger();
         }
         break;
       }
@@ -3293,12 +3271,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.aether_attunement_counter->expire();
       p()->buffs.aether_attunement->trigger();
     }
-
-    if ( !background && p()->buffs.arcane_battery->at_max_stacks() )
-    {
-      p()->buffs.arcane_battery->expire();
-      p()->buffs.arcane_artillery->trigger();
-    }
   }
 
   double composite_crit_chance() const override
@@ -3405,9 +3377,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
 
     const auto& aa = p->buffs.aether_attunement->data();
     base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
-    // TODO: set bonus is currently broken on beta, figure out how these interact together
-    //const auto& aa = p->buffs.arcane_artillery->data();
-    //base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
   }
 
   action_state_t* new_state() override
@@ -3423,10 +3392,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     return p()->buffs.aether_attunement->check()
       ? as<int>( p()->buffs.aether_attunement->data().effectN( 2 ).base_value() )
       : arcane_mage_spell_t::n_targets();
-    // TODO: figure out how these two interact together if they ever fix the set bonus
-    //return p()->buffs.arcane_artillery->check()
-    //  ? as<int>( p()->buffs.arcane_artillery->data().effectN( 2 ).base_value() )
-    //  : arcane_mage_spell_t::n_targets();
   }
 
   void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
@@ -3473,7 +3438,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.aether_attunement->check_value();
-    am *= 1.0 + p()->buffs.arcane_artillery->check_value();
 
     return am;
   }
@@ -3539,18 +3503,11 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
   {
     p()->buffs.clearcasting_channel->expire();
     p()->buffs.aether_attunement->expire();
-    p()->buffs.arcane_artillery->expire();
 
     if ( p()->buffs.aether_attunement_counter->at_max_stacks() )
     {
       p()->buffs.aether_attunement_counter->expire();
       p()->buffs.aether_attunement->trigger();
-    }
-
-    if ( p()->buffs.arcane_battery->at_max_stacks() )
-    {
-      p()->buffs.arcane_battery->expire();
-      p()->buffs.arcane_artillery->trigger();
     }
   }
 
@@ -5769,7 +5726,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      get_td( s->target )->debuffs.charring_embers->trigger();
       p()->buffs.feel_the_burn->trigger();
 
       if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
@@ -7023,11 +6979,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_chance( mage->talents.glacial_assault.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
   debuffs.winters_chill          = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
-
-  // Set Bonuses
-  debuffs.charring_embers = make_buff( *this, "charring_embers", mage->find_spell( 408665 ) )
-                              ->set_chance( mage->sets->has_set_bonus( MAGE_FIRE, T30, B2 ) )
-                              ->set_default_value_from_effect( 1 );
 }
 
 mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
@@ -7810,6 +7761,8 @@ void mage_t::create_buffs()
 
 
   // Fire
+  buffs.calefaction              = make_buff( this, "calefaction", find_spell( 408673 ) )
+                                     ->set_chance( talents.phoenix_reborn.ok() );
   buffs.combustion               = make_buff<buffs::combustion_t>( this );
   buffs.feel_the_burn            = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
                                      ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
@@ -7957,25 +7910,16 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
-  buffs.arcane_overload  = make_buff( this, "arcane_overload", find_spell( 409022 ) )
-                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
-                             ->set_affects_regen( true );
-  buffs.bursting_energy  = make_buff( this, "bursting_energy", find_spell( 395006 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
-  buffs.forethought      = make_buff( this, "forethought", find_spell( 424293 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B2 ) );
-  buffs.arcane_battery   = make_buff( this, "arcane_battery", find_spell( 424334 ) )
-                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T31, B4 ) );
-  buffs.arcane_artillery = make_buff( this, "arcane_artillery", find_spell( 424331 ) )
-                             ->set_default_value_from_effect( 1 );
-  buffs.intuition        = make_buff( this, "intuition", find_spell( 455681 ) )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
+  buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+                            ->set_affects_regen( true );
+  buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
+  buffs.intuition       = make_buff( this, "intuition", find_spell( 455681 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
-  buffs.calefaction  = make_buff( this, "calefaction", find_spell( 408673 ) )
-                         ->set_chance( talents.phoenix_reborn.ok() || sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
   buffs.flames_fury  = make_buff( this, "flames_fury", find_spell( 409964 ) )
                          ->set_default_value_from_effect( 1 );
   buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
