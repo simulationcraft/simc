@@ -11,7 +11,9 @@ std::string potion( const player_t *p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 60 )
         return "elemental_potion_of_ultimate_power_3";
       else if ( p->true_level > 50 )
         return "phantom_fire";
@@ -21,7 +23,9 @@ std::string potion( const player_t *p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 60 )
         return "elemental_potion_of_ultimate_power_3";
       else if ( p->true_level > 50 )
         return "potion_of_spectral_intellect";
@@ -31,7 +35,9 @@ std::string potion( const player_t *p )
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "elemental_potion_of_ultimate_power_3";
+      else if ( p->true_level > 60 )
         return "elemental_potion_of_ultimate_power_3";
       else if ( p->true_level > 50 )
         return "potion_of_spectral_agility";
@@ -51,7 +57,9 @@ std::string flask( const player_t *p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "iced_phial_of_corrupting_rage_3";
+      else if ( p->true_level > 60 )
         return "iced_phial_of_corrupting_rage_3";
       else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
@@ -61,7 +69,9 @@ std::string flask( const player_t *p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "phial_of_elemental_chaos_3";
+      else if ( p->true_level > 60 )
         return "phial_of_elemental_chaos_3";
       else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
@@ -71,7 +81,9 @@ std::string flask( const player_t *p )
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "iced_phial_of_corrupting_rage_3";
+      else if ( p->true_level > 60 )
         return "iced_phial_of_corrupting_rage_3";
       else if ( p->true_level > 50 )
         return "spectral_flask_of_power";
@@ -91,7 +103,9 @@ std::string food( const player_t *p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "fated_fortune_cookie";
+      else if ( p->true_level > 60 )
         return "fated_fortune_cookie";
       else if ( p->true_level > 50 )
         return "spinefin_souffle_and_fries";
@@ -101,7 +115,9 @@ std::string food( const player_t *p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "roast_duck_delight";
+      else if ( p->true_level > 60 )
         return "roast_duck_delight";
       else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
@@ -111,8 +127,10 @@ std::string food( const player_t *p )
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 60 )
-        return "fated_fortune_cookie";
+      if ( p->true_level > 70 )
+        return "aromatic_seafood_platter";
+      else if ( p->true_level > 60 )
+        return "aromatic_seafood_platter";
       else if ( p->true_level > 50 )
         return "feast_of_gluttonous_hedonism";
       else if ( p->true_level > 45 )
@@ -128,7 +146,9 @@ std::string food( const player_t *p )
 
 std::string rune( const player_t *p )
 {
-  if ( p->true_level > 60 )
+  if ( p->true_level > 70 )
+    return "draconic";
+  else if ( p->true_level > 60 )
     return "draconic";
   else if ( p->true_level > 50 )
     return "veiled";
@@ -144,7 +164,9 @@ std::string temporary_enchant( const player_t *p )
   switch ( p->specialization() )
   {
     case MONK_BREWMASTER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
+      else if ( p->true_level > 60 )
         return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
       else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
@@ -152,7 +174,9 @@ std::string temporary_enchant( const player_t *p )
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 60 )
+      if ( p->true_level > 70 )
+        return "main_hand:howling_rune_3";
+      else if ( p->true_level > 60 )
         return "main_hand:howling_rune_3";
       else if ( p->true_level > 50 )
         return "main_hand:shadowcore_oil";
@@ -160,8 +184,10 @@ std::string temporary_enchant( const player_t *p )
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( p->true_level > 60 )
-        return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
+      if ( p->true_level > 70 )
+        return "main_hand:howling_rune_3/off_hand:howling_rune_3";
+      else if ( p->true_level > 60 )
+        return "main_hand:howling_rune_3/off_hand:howling_rune_3";
       else if ( p->true_level > 50 )
         return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
       else
@@ -452,56 +478,20 @@ void windwalker( player_t *p )
   //============================================================================
   auto _WW_ON_USE = []( const item_t &item ) {
     //-------------------------------------------
-    // Serenity item map
-    //-------------------------------------------
-    const static std::unordered_map<std::string, std::string> serenity_trinkets{
-        // name_str -> APL
-        { "algethar_puzzle_box",
-          ",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|"
-          "fight_remains<25" },
-        { "erupting_spear_fragment", ",if=buff.serenity.up|(buff.invokers_delight.up&!talent.serenity)" },
-        { "manic_grieftorch",
-          ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.serenity.up&!pet.xuen_the_white_"
-          "tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>"
-          "30&cooldown.serenity.remains|fight_remains<5" },
-        { "beacon_to_the_beyond",
-          ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.serenity.up&!pet.xuen_the_white_"
-          "tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>"
-          "30&cooldown.serenity.remains|fight_remains<10" },
-        { "djaruun_pillar_of_the_elder_flame",
-          ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
-        { "dragonfire_bomb_dispenser",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
-          "cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains|fight_remains<10" },
-        { "irideus_fragment",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&(buff."
-          "invokers_delight.up|cooldown.invoke_xuen_the_white_tiger.remains>45&fight_remains>180)&buff.serenity.up|"
-          "fight_remains<20" },
-
-        // Defaults:
-        { "ITEM_STAT_BUFF",
-          ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up|fight_remains<"
-          "25" },
-        { "ITEM_DMG_BUFF",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
-          "cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains" },
-    };
-
-    //-------------------------------------------
     // SEF item map
     //-------------------------------------------
     const static std::unordered_map<std::string, std::string> sef_trinkets{
         // name_str -> APL
         { "algethar_puzzle_box",
-          ",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_"
+          ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_"
           "and_fire.up|fight_remains<25" },
-        { "erupting_spear_fragment", ",if=buff.serenity.up|(buff.invokers_delight.up&!talent.serenity)" },
+        { "erupting_spear_fragment", ",if=buff.storm_earth_and_fire.up" },
         { "manic_grieftorch",
-          ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
+          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
           "the_white_tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger."
           "remains>30|fight_remains<5" },
         { "beacon_to_the_beyond",
-          ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
+          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
           "the_white_tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger."
           "remains>30|fight_remains<10" },
         { "djaruun_pillar_of_the_elder_flame",
@@ -572,126 +562,40 @@ void windwalker( player_t *p )
 
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  pre->add_action(
-      "variable,name=sync_serenity,default=0,value=1,if=(equipped.neltharions_call_to_dominance|equipped.ashes_of_the_"
-      "embersoul|equipped.mirror_of_fractured_tomorrows|equipped.witherbarks_branch|equipped.irideus_fragment)&!(fight_"
-      "style.dungeonslice|fight_style.dungeonroute)|equipped.neltharions_call_to_dominance&equipped.ashes_of_the_"
-      "embersoul" );
-
-  pre->add_action( "summon_white_tiger_statue" );
-  pre->add_action( "expel_harm,if=chi<chi.max" );
-  pre->add_action( "chi_burst,if=!talent.jadefire_stomp" );
-  pre->add_action( "chi_wave" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
   action_priority_list_t *def              = p->get_action_priority_list( "default" );
-  action_priority_list_t *opener           = p->get_action_priority_list( "opener" );
-  action_priority_list_t *bdb_setup        = p->get_action_priority_list( "bdb_setup" );
   action_priority_list_t *trinkets         = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t *cd_sef           = p->get_action_priority_list( "cd_sef" );
-  action_priority_list_t *cd_serenity      = p->get_action_priority_list( "cd_serenity" );
-  action_priority_list_t *serenity_aoelust = p->get_action_priority_list( "serenity_aoelust" );
-  action_priority_list_t *serenity_lust    = p->get_action_priority_list( "serenity_lust" );
-  action_priority_list_t *serenity_aoe     = p->get_action_priority_list( "serenity_aoe" );
-  action_priority_list_t *serenity_4t      = p->get_action_priority_list( "serenity_4t" );
-  action_priority_list_t *serenity_3t      = p->get_action_priority_list( "serenity_3t" );
-  action_priority_list_t *serenity_2t      = p->get_action_priority_list( "serenity_2t" );
-  action_priority_list_t *serenity_st      = p->get_action_priority_list( "serenity_st" );
+  action_priority_list_t *cooldowns          = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t *default_aoe      = p->get_action_priority_list( "default_aoe" );
-  action_priority_list_t *default_4t       = p->get_action_priority_list( "default_4t" );
-  action_priority_list_t *default_3t       = p->get_action_priority_list( "default_3t" );
-  action_priority_list_t *default_2t       = p->get_action_priority_list( "default_2t" );
   action_priority_list_t *default_st       = p->get_action_priority_list( "default_st" );
-  action_priority_list_t *fallthru         = p->get_action_priority_list( "fallthru" );
 
   def->add_action( "auto_attack" );
   def->add_action( "roll,if=movement.distance>5", "Move to target" );
   def->add_action( "chi_torpedo,if=movement.distance>5" );
   def->add_action( "flying_serpent_kick,if=movement.distance>5" );
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
-  def->add_action(
-      "variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger."
-      "duration>fight_remains" );
-  def->add_action(
-      "variable,name=hold_tp_rsk,op=set,value=cooldown.rising_sun_kick.remains<1&"
-      "(set_bonus.tier30_2pc|active_enemies<5)" );
-  def->add_action(
-      "variable,name=hold_tp_bdb,op=set,value=cooldown.bonedust_brew.remains<1&"
-      "active_enemies=1" );
 
   // Potion
   if ( p->sim->allow_potions )
   {
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       def->add_action(
-          "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up&pet.xuen_the_white_tiger.active|fight_remains<=30",
+          "potion,if=buff.storm_earth_and_fire.up&pet.xuen_the_white_tiger.active|fight_remains<=30",
           "Potion" );
     else
-      def->add_action( "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&fight_remains<=30", "Potion" );
+      def->add_action( "potion,if=buff.storm_earth_and_fire.up|fight_remains<=30", "Potion" );
   }
 
-  // Build Chi at the start of combat
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active&!talent.serenity",
-                     "Build Chi at the start of combat" );
-  else
-    def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!talent.serenity",
-                     "Build Chi at the start of combat" );
   // Use Trinkets
   def->add_action( "call_action_list,name=trinkets", "Use Trinkets" );
-  // Prioritize jadefire Stomp if playing with jadefire Harmony
-  def->add_action(
-      "jadefire_stomp,target_if=min:debuff.jadefire_brand_damage.remains,if=combo_strike&talent.jadefire_harmony&"
-      "debuff.jadefire_brand_damage.remains<1",
-      "Prioritize jadefire Stomp if playing with jadefire Harmony" );
-  // BDB in ST
-  def->add_action(
-      "bonedust_brew,if=active_enemies=1&(pet.xuen_the_white_tiger.active|cooldown."
-      "xuen_the_white_tiger.remains)" );
-  // Spend excess energy
-  def->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!buff.serenity."
-      "up&energy>50&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!"
-      "talent.invoke_xuen_the_white_tiger&!talent.serenity|(time>5|pet.xuen_the_"
-      "white_tiger.active))&!variable.hold_tp_rsk&(active_enemies>1|!talent.bonedust_brew|talent.bonedust_brew&active_"
-      "enemies=1&cooldown.bonedust_brew.remains)",
-      "TP to not waste energy" );
-  def->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!buff.serenity."
-      "up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_"
-      "xuen_the_white_tiger&!talent.serenity|(time>5|pet.xuen_the_white_tiger."
-      "active))&!variable.hold_tp_rsk&(active_enemies>1|!talent.bonedust_brew|talent.bonedust_brew&active_enemies=1&"
-      "cooldown.bonedust_brew.remains)",
-      "TP if not overcapping Chi or TotM" );
-  // Use Chi Burst to reset jadefire Stomp
-  def->add_action(
-      "chi_burst,if=talent.jadefire_stomp&cooldown.jadefire_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>"
-      "=2&active_enemies>=2)&!talent.jadefire_harmony",
-      "Use Chi Burst to reset jadefire Stomp" );
+
   // Use Cooldowns
-  def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Use Cooldowns" );
-  def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
-  // Serenity priority
-  def->add_action(
-      "call_action_list,name=serenity_aoelust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff."
-      "power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies>4",
-      "Serenity Priority" );
-  def->add_action(
-      "call_action_list,name=serenity_lust,if=buff.serenity.up&((buff.bloodlust.up&(buff.invokers_delight.up|buff."
-      "power_infusion.up))|buff.invokers_delight.up&buff.power_infusion.up)&active_enemies<4" );
-  def->add_action( "call_action_list,name=serenity_aoe,if=buff.serenity.up&active_enemies>4" );
-  def->add_action( "call_action_list,name=serenity_4t,if=buff.serenity.up&active_enemies=4" );
-  def->add_action( "call_action_list,name=serenity_3t,if=buff.serenity.up&active_enemies=3" );
-  def->add_action( "call_action_list,name=serenity_2t,if=buff.serenity.up&active_enemies=2" );
-  def->add_action( "call_action_list,name=serenity_st,if=buff.serenity.up&active_enemies=1" );
+  def->add_action( "call_action_list,name=cooldowns,if=talent.storm_earth_and_fire", "Use Cooldowns" );
+  
   // Default priority
-  def->add_action( "call_action_list,name=default_aoe,if=active_enemies>4", "Default Priority" );
-  def->add_action( "call_action_list,name=default_4t,if=active_enemies=4" );
-  def->add_action( "call_action_list,name=default_3t,if=active_enemies=3" );
-  def->add_action( "call_action_list,name=default_2t,if=active_enemies=2" );
-  def->add_action( "call_action_list,name=default_st,if=active_enemies=1" );
-  def->add_action( "summon_white_tiger_statue" );
-  def->add_action( "call_action_list,name=fallthru" );
+  def->add_action( "call_action_list,name=default_aoe,if=active_enemies>=3", "Default Priority" );
+  def->add_action( "call_action_list,name=default_st,if=active_enemies<3" );
 
   // Trinkets
   for ( const auto &item : p->items )
@@ -700,973 +604,99 @@ void windwalker( player_t *p )
       trinkets->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
   }
 
-  // Storm, Earth and Fire Cooldowns
-  cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
+  // Cooldowns
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
                       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a "
                       "href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White "
                       "Tiger</a> is active." );
-  cd_sef->add_action(
-      "invoke_xuen_the_white_tiger,target_if=max:target.health,if=(target.time_to_die>35&fight_style.dungeonroute|"
-      "target.time_to_die>14&!fight_style.dungeonroute)&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!"
-      "trinket.1.is.witherbarks_branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket."
-      "1.is.ashes_of_the_embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_"
-      "the_embersoul|trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)" );
-  cd_sef->add_action(
-      "invoke_xuen_the_white_tiger,if=fight_remains<60"
-      "&!cooldown.serenity.remains&active_enemies<3|fight_remains<25" );
-  cd_sef->add_action(
-      "storm_earth_and_fire,if=(pet.xuen_the_white_tiger.active|target.time_to_die>15&cooldown.storm_earth_and_fire."
-      "full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains)" );
-  cd_sef->add_action(
-      "bonedust_brew,if=cooldown.invoke_xuen_the_white_tiger.remains>45&(!buff.bonedust_brew.up&buff.storm_earth_and_"
-      "fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&"
-      "fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10|(active_"
-      "enemies>=4&spinning_crane_kick.mod,if=ier>=2)|(pet.xuen_the_white_tiger.active&spinning_crane_kick.max&active_"
-      "enemies>=4|fight_remains<15|cooldown.invoke_xuen_the_white_tiger.remains>45"
-      "|cooldown.invoke_xuen_the_white_tiger.remains>45&target.time_to_die>"
-      "10)" );
-  cd_sef->add_action(
-      "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&talent.bonedust_brew&cooldown.bonedust_brew.remains<="
-      "2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet."
-      "xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_"
-      "white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|"
-      "cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
-  cd_sef->add_action(
-      "storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_and_fire.charges=2&cooldown.invoke_xuen_the_"
-      "white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&"
-      "cooldown.whirling_dragon_punch.remains<=12" );
-  cd_sef->add_action(
-      "touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&!buff.serenity.up&(combo_strike&target."
-      "health<health)|(buff.hidden_masters_forbidden_touch.remains<2)|(buff.hidden_masters_forbidden_touch.remains>"
-      "target.time_to_die)" );
-  cd_sef->add_action(
-      "touch_of_death,cycle_targets=1,if=fight_style.dungeonroute&combo_strike&(target.time_to_die>60|debuff.bonedust_"
-      "brew_debuff.up|fight_remains<10)" );
-  cd_sef->add_action( "touch_of_death,cycle_targets=1,if=!fight_style.dungeonroute&combo_strike" );
+  cooldowns->add_action( "invoke_xuen_the_white_tiger,if=(active_enemies>2|debuff.acclamation.up)&(prev.tiger_palm|energy<60&!talent.inner_peace|energy<55&talent.inner_peace|chi>3)" );
+  cooldowns->add_action( "storm_earth_and_fire,if=(buff.invokers_delight.up|target.time_to_die>15&cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&cooldown.strike_of_the_windlord.remains<2)|fight_remains<=30|buff.bloodlust.up&cooldown.invoke_xuen_the_white_tiger.remains" );
+  cooldowns->add_action( "touch_of_karma" );
 
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    cd_sef->add_action(
-        "touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable."
-        "hold_xuen|fight_remains<16" );
-  else
-    cd_sef->add_action( "touch_of_karma,if=fight_remains>159|variable.hold_xuen" );
-
-  // Storm, Earth and Fire Racials
+  // Racials
   for ( const auto &racial_action : racial_actions )
   {
     if ( racial_action != "arcane_torrent" )
     {
       if ( racial_action == "ancestral_call" )
-        cd_sef->add_action( racial_action +
+        cooldowns->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
       else if ( racial_action == "blood_fury" )
-        cd_sef->add_action( racial_action +
+        cooldowns->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
       else if ( racial_action == "fireblood" )
-        cd_sef->add_action( racial_action +
+        cooldowns->add_action( racial_action +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10" );
       else if ( racial_action == "berserking" )
-        cd_sef->add_action( racial_action +
-                            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
+        cooldowns->add_action( racial_action +
+                            ",if=cooldown.invoke_xuen_the_white_tiger.remains>60|variable.hold_xuen|fight_remains<15" );
       else if ( racial_action == "bag_of_tricks" )
-        cd_sef->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "lights_judgment" )
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "haymaker" )
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "rocket_barrage" )
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "azerite_surge" )
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
       else
-        cd_sef->add_action( racial_action );
+        def->add_action( racial_action );
     }
   }
 
-  // Serenity Cooldowns
-  cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
-                           "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while "
-                           "<a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, "
-                           "the White Tiger</a> is active." );
-  cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=buff.bloodlust.up|fight_remains<25" );
-  cd_serenity->add_action(
-      "invoke_xuen_the_white_tiger,if=(target.time_to_die>16|(fight_style.dungeonslice|fight_style.dungeonroute)&"
-      "cooldown.serenity.remains<2)&fight_remains>120&(!trinket.1.is.ashes_of_the_embersoul&!trinket.1.is.witherbarks_"
-      "branch&!trinket.2.is.ashes_of_the_embersoul&!trinket.2.is.witherbarks_branch|(trinket.1.is.ashes_of_the_"
-      "embersoul|trinket.1.is.witherbarks_branch)&!trinket.1.cooldown.remains|(trinket.2.is.ashes_of_the_embersoul|"
-      "trinket.2.is.witherbarks_branch)&!trinket.2.cooldown.remains)&target.time_to_die>14" );
-  cd_serenity->add_action(
-      "invoke_xuen_the_white_tiger,if=target.time_to_die>16&fight_remains<60"
-      "&!cooldown.serenity.remains&active_enemies<3" );
-  cd_serenity->add_action(
-      "bonedust_brew,if=buff.invokers_delight.up|!buff.bonedust_brew.up&cooldown.xuen_the_white_tiger.remains&!pet."
-      "xuen_the_white_tiger.active|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10|fight_remains<10" );
-  cd_serenity->add_action(
-      "serenity,if=variable.sync_serenity&(buff.invokers_delight.up|variable.hold_xuen&(talent.drinking_horn_cover&"
-      "fight_remains>110|!talent.drinking_horn_cover&fight_remains>105))|!talent.invoke_xuen_the_white_tiger|fight_"
-      "remains<15" );
-  cd_serenity->add_action(
-      "serenity,if=!variable.sync_serenity&(buff.invokers_delight.up|cooldown.invoke_xuen_the_white_tiger.remains>"
-      "fight_remains|fight_remains>(cooldown.invoke_xuen_the_white_tiger.remains+10)&fight_remains>90)" );
-  cd_serenity->add_action(
-      "touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&!buff.serenity.up&(combo_strike&target."
-      "health<health)|(buff.hidden_masters_forbidden_touch.remains<2)|(buff.hidden_masters_forbidden_touch.remains>"
-      "target.time_to_die)" );
-  cd_serenity->add_action(
-      "touch_of_death,cycle_targets=1,if=fight_style.dungeonroute&combo_strike&(target.time_to_die>60|debuff.bonedust_"
-      "brew_debuff.up|fight_remains<10)&!buff.serenity.up" );
-  cd_serenity->add_action(
-      "touch_of_death,cycle_targets=1,if=!fight_style.dungeonroute&combo_strike&!buff.serenity.up" );
-
-  cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<10" );
-
-  // Serenity Racials
-  for ( const auto &racial_action : racial_actions )
-  {
-    if ( racial_action == "ancestral_call" )
-      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
-    else if ( racial_action == "blood_fury" )
-      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
-    else if ( racial_action == "fireblood" )
-      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
-    else if ( racial_action == "berserking" )
-      cd_serenity->add_action( racial_action + ",if=!buff.serenity.up|fight_remains<20" );
-    else if ( racial_action == "bag_of_tricks" )
-      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
-    else if ( racial_action != "arcane_torrent" )
-      cd_serenity->add_action( racial_action );
-  }
-
-  // Opener
-  opener->add_action( "summon_white_tiger_statue", "Opener" );
-  opener->add_action( "expel_harm,if=talent.chi_burst.enabled&chi.max-chi>=3" );
-  opener->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  opener->add_action( "expel_harm,if=talent.chi_burst.enabled&chi=3" );
-  opener->add_action( "chi_wave,if=chi.max-chi=2" );
-  opener->add_action( "expel_harm" );
-  opener->add_action( "chi_burst,if=chi>1&chi.max-chi>=2" );
-
-  // Bonedust Brew Setup
-  bdb_setup->add_action( "strike_of_the_windlord,if=talent.thunderfist&active_enemies>3", "Bonedust Brew Setup" );
-  bdb_setup->add_action( "bonedust_brew,if=spinning_crane_kick.max&chi>=4" );
-  bdb_setup->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi.max-chi>=2&buff.storm_earth_and_fire.up" );
-  bdb_setup->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&!talent.whirling_dragon_punch&!spinning_crane_kick.max" );
-  bdb_setup->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&chi>=5&talent.whirling_dragon_punch" );
-  bdb_setup->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&active_enemies>=2&talent.whirling_dragon_punch" );
-
-  // Serenity AoE Lust Priority
-  serenity_aoelust->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<1", "Serenity AoE Lust" );
-  serenity_aoelust->add_action( "strike_of_the_windlord,if=set_bonus.tier31_4pc&talent.thunderfist" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&set_bonus.tier31_2pc" );
-  serenity_aoelust->add_action(
-      "fists_of_fury,if=talent.jade_ignition,interrupt_if=buff.chi_"
-      "energy.stack=30" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&set_bonus.tier31_2pc&buff.bonedust_brew.up&active_enemies>4" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&!buff.blackout_reinforcement.up" );
-  serenity_aoelust->add_action(
-      "fists_of_fury,if=buff.invokers_delight.up&set_bonus.tier31_2pc&("
-      "active_enemies>5&buff.transfer_the_power.stack>5|active_enemies>6|active_enemies>4&!talent.crane_vortex&buff."
-      "transfer_the_power.stack>5),interrupt=1" );
-  serenity_aoelust->add_action(
-      "fists_of_fury,if=!set_bonus.tier30_2pc&!buff.invokers_delight.up&"
-      "set_bonus.tier31_2pc&(!buff.bonedust_brew.up|active_enemies>10)&(buff.transfer_the_power.stack=10&!talent.crane_"
-      "vortex|active_enemies>5&talent.crane_vortex&buff.transfer_the_power.stack=10|active_enemies>14|active_enemies>"
-      "12&!talent.crane_vortex),interrupt=1" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&!spinning_crane_kick.max&talent.shadowboxing_treads" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_"
-      "monastery.remains<1" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&!buff.blackout_reinforcement.up" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=active_enemies<6&combo_strike&set_bonus.tier31_2pc" );
-  serenity_aoelust->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  serenity_aoelust->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=set_bonus.tier30_2pc" );
-  serenity_aoelust->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_"
-      "dominance.up&active_enemies<10" );
-  serenity_aoelust->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  serenity_aoelust->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_aoelust->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
-  serenity_aoelust->add_action( "fists_of_fury_cancel" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max" );
-  serenity_aoelust->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "active_enemies=5" );
-  serenity_aoelust->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_aoelust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
-  serenity_aoelust->add_action( "strike_of_the_windlord" );
-  serenity_aoelust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike" );
-  serenity_aoelust->add_action( "whirling_dragon_punch" );
-  serenity_aoelust->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_aoelust->add_action( "blackout_kick,if=combo_strike" );
-  serenity_aoelust->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-
-  // Serenity Lust Priority
-  serenity_lust->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<1", "Serenity Lust" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.serenity.remains<1.5&"
-      "combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
-  serenity_lust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_"
-      "monastery.remains<1" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc&active_enemies>2" );
-  serenity_lust->add_action(
-      "rising_sun_kick,if=combo_strike&buff.kicks_of_flowing_momentum.up&"
-      "active_enemies=1" );
-  serenity_lust->add_action(
-      "fists_of_fury,if=set_bonus."
-      "tier29_4pc&active_enemies=1,interrupt=1" );
-  serenity_lust->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_lust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.blackout_reinforcement.up&active_enemies>2" );
-  serenity_lust->add_action(
-      "rising_sun_kick,if=combo_strike&(active_enemies<3|!set_bonus."
-      "tier31_2pc)" );
-  serenity_lust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.blackout_reinforcement.up&prev.fists_of_fury&talent."
-      "shadowboxing_treads&set_bonus.tier31_2pc&!talent.dance_of_chiji" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&prev.fists_of_fury&set_bonus."
-      "tier31_2pc" );
-  serenity_lust->add_action(
-      "fists_of_fury,if=buff.invokers_delight.up&(active_enemies<3|!set_"
-      "bonus.tier31_2pc),interrupt=1" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max&!buff.blackout_reinforcement.up&active_enemies>2&set_bonus.tier31_2pc" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max&buff.blackout_reinforcement.up&active_enemies>2&prev.blackout_kick&set_bonus.tier31_2pc" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max&buff.bonedust_brew.up&active_enemies>2&set_bonus.tier31_2pc" );
-  serenity_lust->add_action( "fists_of_fury_cancel,if=active_enemies<3|!set_bonus.tier31_2pc" );
-
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&buff.bonedust_brew.up&set_bonus.tier31_2pc" );
-  serenity_lust->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up" );
-  serenity_lust->add_action( "blackout_kick,if=combo_strike" );
-  serenity_lust->add_action( "whirling_dragon_punch" );
-  serenity_lust->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-  serenity_lust->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike" );
-
-  // Serenity >4 Target Priority
-  serenity_aoe->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<1", "Serenity >4 Targets" );
-  serenity_aoe->add_action( "strike_of_the_windlord,if=set_bonus.tier31_4pc&talent.thunderfist" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&set_bonus.tier31_2pc" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&set_bonus.tier31_2pc&buff.bonedust_brew.up&active_enemies>4" );
-  serenity_aoe->add_action(
-      "fists_of_fury,if=talent.jade_ignition,interrupt_if=buff.chi_"
-      "energy.stack=30" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&!buff.blackout_reinforcement.up" );
-  serenity_aoe->add_action(
-      "fists_of_fury,if=buff.invokers_delight.up&set_bonus.tier31_2pc&(!"
-      "buff.bonedust_brew.up|active_enemies>10)&(buff.transfer_the_power.stack=10&!talent.crane_vortex|active_enemies>"
-      "5&talent.crane_vortex&buff.transfer_the_power.stack=10|active_enemies>14|active_enemies>12&!talent.crane_vortex)"
-      ",interrupt=1" );
-  serenity_aoe->add_action(
-      "fists_of_fury_cancel,if=!set_bonus.tier30_2pc&set_bonus.tier31_"
-      "2pc&(!buff.bonedust_brew.up|active_enemies>10)&(buff.transfer_the_power.stack=10&!talent.crane_vortex|active_"
-      "enemies>5&talent.crane_vortex&buff.transfer_the_power.stack=10|active_enemies>14|active_enemies>12&!talent."
-      "crane_vortex)&!buff.bonedust_brew.up|buff.fury_of_xuen_stacks.stack>90" );
-  serenity_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&!spinning_crane_kick.max&talent.shadowboxing_treads" );
-  serenity_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_"
-      "monastery.remains<1" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&buff.blackout_reinforcement.up&prev.blackout_kick&buff.dance_of_chiji.up" );
-  serenity_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&buff.blackout_reinforcement.up&prev.blackout_kick" );
-  serenity_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  serenity_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  serenity_aoe->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_"
-      "dominance.up&active_enemies<10" );
-  serenity_aoe->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  serenity_aoe->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
-  serenity_aoe->add_action( "fists_of_fury_cancel" );
-  serenity_aoe->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up" );
-  serenity_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=active_enemies<6&combo_strike&set_bonus.tier30_2pc" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max" );
-  serenity_aoe->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "active_enemies=5" );
-  serenity_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&active_enemies>=3&combo_strike" );
-  serenity_aoe->add_action( "strike_of_the_windlord" );
-  serenity_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike" );
-  serenity_aoe->add_action( "whirling_dragon_punch" );
-  serenity_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_aoe->add_action( "blackout_kick,if=combo_strike" );
-  serenity_aoe->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-
-  // Serenity 4 Target Priority
-  serenity_4t->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<1", "Serenity 4 Targets" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.serenity.remains<1.5&"
-      "combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_2pc" );
-  serenity_4t->add_action( "strike_of_the_windlord,if=set_bonus.tier31_4pc&talent.thunderfist" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_4t->add_action(
-      "fists_of_fury_cancel,if=!set_bonus.tier30_2pc&buff.fury_of_xuen_"
-      "stacks.stack>90" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&set_bonus.tier31_2pc&!buff.blackout_reinforcement.up" );
-  serenity_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_"
-      "monastery.remains<1" );
-  serenity_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&!buff.blackout_reinforcement.up&talent.crane_vortex" );
-  serenity_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&!talent.bonedust_brew" );
-  serenity_4t->add_action(
-      "fists_of_fury,if=buff.invokers_delight.up&set_bonus.tier31_2pc&"
-      "buff.transfer_the_power.stack>5&!talent.crane_vortex&buff.bloodlust.up,interrupt=1" );
-  serenity_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  serenity_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&set_bonus.tier31_2pc&combo_"
-      "strike&!buff.blackout_reinforcement.up" );
-  serenity_4t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_"
-      "dominance.up" );
-  serenity_4t->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  serenity_4t->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
-  serenity_4t->add_action( "fists_of_fury_cancel" );
-  serenity_4t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  serenity_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up" );
-  serenity_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&set_bonus.tier30_2pc" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max" );
-  serenity_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike" );
-  serenity_4t->add_action( "strike_of_the_windlord" );
-  serenity_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up" );
-  serenity_4t->add_action( "whirling_dragon_punch" );
-  serenity_4t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_4t->add_action( "blackout_kick,if=combo_strike" );
-  serenity_4t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-
-  // Serenity 3 Target Priority
-  serenity_3t->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<1", "Serenity 3 Targets" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=set_bonus.tier31_2pc&combo_strike&buff.blackout_reinforcement.up" );
-  serenity_3t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&spinning_crane_kick.max&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_3t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_"
-      "dominance.up" );
-  serenity_3t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.blackout_reinforcement.up" );
-  serenity_3t->add_action(
-      "fists_of_fury,if=buff.invokers_delight.up&!set_bonus.tier31_2pc,"
-      "interrupt=1" );
-  serenity_3t->add_action(
-      "fists_of_fury_cancel,if=!set_bonus.tier31_2pc|buff.fury_of_xuen_"
-      "stacks.stack>90" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&spinning_crane_"
-      "kick.max&buff.blackout_reinforcement.up&set_bonus.tier31_2pc&prev.blackout_kick&talent.crane_vortex" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&!buff.pressure_point.up" );
-  serenity_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up" );
-  serenity_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  serenity_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  serenity_3t->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  serenity_3t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&spinning_crane_kick.max&!buff.blackout_reinforcement.up" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&set_bonus.tier30_2pc" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=2" );
-  serenity_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike" );
-  serenity_3t->add_action( "strike_of_the_windlord" );
-  serenity_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike" );
-  serenity_3t->add_action( "whirling_dragon_punch" );
-  serenity_3t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  serenity_3t->add_action( "blackout_kick,if=combo_strike" );
-  serenity_3t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-
-  // Serenity 2 Target Priority
-  serenity_2t->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2", "Serenity 2 Targets" );
-  serenity_2t->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
-  serenity_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_"
-      "monastery.remains<1" );
-  serenity_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&prev.fists_of_fury&set_bonus.tier31_2pc" );
-  serenity_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up" );
-  serenity_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  serenity_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  serenity_2t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_"
-      "dominance.up" );
-  serenity_2t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.blackout_reinforcement.up" );
-  serenity_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_2t->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
-  serenity_2t->add_action( "fists_of_fury_cancel" );
-  serenity_2t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&set_bonus.tier30_2pc" );
-  serenity_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.teachings_of_the_monastery.stack=2" );
-  serenity_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=cooldown.fists_of_fury.remains>5&talent.shadowboxing_treads&buff.teachings_of_"
-      "the_monastery.stack=1&combo_strike" );
-  serenity_2t->add_action( "whirling_dragon_punch" );
-  serenity_2t->add_action( "blackout_kick,if=combo_strike" );
-  serenity_2t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=talent.teachings_of_the_monastery&buff.teachings_"
-      "of_the_monastery.stack<3" );
-
-  // Serenity 1 Target Priority
-  serenity_st->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2", "Serenity 1 Target" );
-  serenity_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.serenity.remains<1.5&"
-      "combo_strike&!buff.blackout_reinforcement.remains&set_bonus.tier31_4pc" );
-  serenity_st->add_action( "tiger_palm,if=combo_strike" );
-  serenity_st->add_action(
-      "blackout_kick,if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<"
-      "1" );
-  serenity_st->add_action( "strike_of_the_windlord,if=talent.thunderfist&set_bonus.tier31_4pc" );
-  serenity_st->add_action( "rising_sun_kick,if=combo_strike" );
-  serenity_st->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<2" );
-  serenity_st->add_action( "strike_of_the_windlord,if=talent.thunderfist&buff.call_to_dominance.up" );
-  serenity_st->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  serenity_st->add_action(
-      "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&prev.rising_sun_kick&"
-      "set_bonus.tier31_2pc" );
-  serenity_st->add_action(
-      "blackout_kick,if=combo_strike&set_bonus.tier31_2pc&buff.blackout_reinforcement.up&prev.rising_sun_kick" );
-  serenity_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&prev.fists_of_fury&set_bonus.tier31_2pc" );
-  serenity_st->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&buff.blackout_reinforcement.up&prev.fists_of_fury&set_bonus.tier31_"
-      "2pc" );
-  serenity_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&set_bonus.tier31_2pc&prev.fists_of_fury" );
-  serenity_st->add_action( "fists_of_fury,if=buff.invokers_delight.up,interrupt=1" );
-  serenity_st->add_action( "fists_of_fury_cancel" );
-  serenity_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&!buff.blackout_"
-      "reinforcement.up&set_bonus.tier31_2pc" );
-  serenity_st->add_action( "strike_of_the_windlord" );
-  serenity_st->add_action( "blackout_kick,if=combo_strike&set_bonus.tier30_2pc" );
-  serenity_st->add_action( "blackout_kick,if=combo_strike" );
-  serenity_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
-  serenity_st->add_action( "whirling_dragon_punch" );
-  serenity_st->add_action( "tiger_palm,if=talent.teachings_of_the_monastery&buff.teachings_of_the_monastery.stack<3" );
-
-  // >4 Target priority
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&spinning_crane_kick.max&!buff.blackout_reinforcement.up",
-      ">4 Targets" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&!talent.hit_combo&spinning_"
-      "crane_kick.max&buff.bonedust_brew.up" );
-  default_aoe->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  default_aoe->add_action( "whirling_dragon_punch,if=active_enemies>8" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_"
-      "strike&spinning_crane_kick.max" );
-  default_aoe->add_action( "fists_of_fury" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up" );
-  default_aoe->add_action( "whirling_dragon_punch,if=active_enemies>=5" );
-  default_aoe->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.pressure_point.up&set_bonus.tier30_2pc" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=talent.whirling_dragon_punch&cooldown.whirling_dragon_punch.remains<3&"
-      "cooldown.fists_of_fury.remains>3&!buff.kicks_of_flowing_momentum.up" );
-  default_aoe->add_action(
-      "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!"
-      "cooldown.fists_of_fury.remains" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&cooldown.fists_"
-      "of_fury.remains<5&buff.chi_energy.stack>10" );
-  default_aoe->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-  default_aoe->add_action( "chi_burst,if=chi<5&energy<50" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&(cooldown."
-      "fists_of_fury.remains>3|chi>2)&spinning_crane_kick.max&buff.bloodlust.up&!buff.blackout_reinforcement.up" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&(cooldown."
-      "fists_of_fury.remains>3|chi>2)&spinning_crane_kick.max&buff.invokers_delight.up&!buff.blackout_reinforcement."
-      "up" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&set_bonus.tier30_2pc&!buff.bonedust_"
-      "brew.up&active_enemies<15&!talent.crane_vortex" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&set_bonus.tier30_2pc&!buff.bonedust_"
-      "brew.up&active_enemies<8" );
-  default_aoe->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&(cooldown."
-      "fists_of_fury.remains>3|chi>4)&spinning_crane_kick.max" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3" );
+  // >=3 Target priority
+  default_aoe->add_action( "tiger_palm,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_burst)|buff.storm_earth_and_fire.remains>3&cooldown.fists_of_fury.remains<3&chi<2",
+      ">=3 Targets" );
+  default_aoe->add_action( "touch_of_death" );
+  default_aoe->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike" );
+  default_aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.remains<2&buff.storm_earth_and_fire.up&talent.ordered_elements" );
+  default_aoe->add_action( "celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord.remains" );
+  default_aoe->add_action( "chi_burst,if=combo_strike" );
+  default_aoe->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2|buff.dance_of_chiji.up&combo_strike&buff.storm_earth_and_fire.up" );
+  default_aoe->add_action( "whirling_dragon_punch" );
   default_aoe->add_action( "strike_of_the_windlord" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&!spinning_crane_kick.max" );
-  default_aoe->add_action( "chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2" );
-
-  // 4 Target priority
-  default_4t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi<2&(cooldown.fists_of_fury.remains<1|cooldown.strike_of_the_windlord.remains<1)&buff.teachings_of_the_"
-      "monastery.stack<3",
-      "4 Targets" );
-  default_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&spinning_crane_kick.max&!buff.blackout_reinforcement.up" );
-  default_4t->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
-  default_4t->add_action( "fists_of_fury" );
-  default_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc" );
-  default_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up" );
-  default_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_"
-      "strike&spinning_crane_kick.max" );
-  default_4t->add_action( "whirling_dragon_punch" );
-  default_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=!buff.bonedust_brew.up&buff.pressure_point.up&cooldown.fists_of_fury."
-      "remains>5" );
-  default_4t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  default_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  default_4t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  default_4t->add_action(
-      "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!"
-      "cooldown.fists_of_fury.remains" );
-  default_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&cooldown.fists_"
-      "of_fury.remains>3&buff.chi_energy.stack>10" );
-  default_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&set_bonus.tier30_2pc" );
-  default_4t->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-  default_4t->add_action( "chi_burst,if=chi<5&energy<50" );
-  default_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&(cooldown."
-      "fists_of_fury.remains>3|chi>4)&spinning_crane_kick.max" );
-  default_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3" );
-  default_4t->add_action( "strike_of_the_windlord" );
-  default_4t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&(cooldown."
-      "fists_of_fury.remains>3|chi>4)" );
-  default_4t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike" );
-
-  // 3 Target priority
-  default_3t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi<2&(cooldown.rising_sun_kick.remains<1|cooldown.fists_of_fury.remains<1|cooldown.strike_of_the_windlord."
-      "remains<1)&buff.teachings_of_the_monastery.stack<3",
-      "3 Targets" );
-  default_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  default_3t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&set_bonus.tier31_"
-      "4pc" );
-  default_3t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&(cooldown.invoke_"
-      "xuen_the_white_tiger.remains>20|fight_remains<5)" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up" );
-  default_3t->add_action( "fists_of_fury" );
-  default_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc" );
-  default_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_"
-      "strike" );
-  default_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=!buff.bonedust_brew.up&buff.pressure_point.up" );
-  default_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  default_3t->add_action(
-      "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!"
-      "cooldown.fists_of_fury.remains" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=2" );
-  default_3t->add_action( "strike_of_the_windlord" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads|cooldown.rising_"
-      "sun_kick.remains>1)" );
-  default_3t->add_action( "whirling_dragon_punch" );
-  default_3t->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-  default_3t->add_action( "chi_burst,if=chi<5&energy<50" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3" );
-  default_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&cooldown.fists_"
-      "of_fury.remains<3&buff.chi_energy.stack>15" );
-  default_3t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=cooldown.fists_of_fury.remains>4&chi>3" );
-  default_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&cooldown."
-      "rising_sun_kick.remains&cooldown.fists_of_fury.remains&chi>4&((talent.storm_earth_and_fire&!talent.bonedust_"
-      "brew)|(talent.serenity))" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&cooldown.fists_of_fury.remains" );
-  default_3t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  default_3t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&talent.shadowboxing_treads&!spinning_crane_kick.max" );
-  default_3t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&(combo_strike&chi>5&talent."
-      "storm_earth_and_fire|combo_strike&chi>4&talent.serenity)" );
-
-  // 2 Target priority
-  default_2t->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi<2&(cooldown.rising_sun_kick.remains<1|cooldown.fists_of_fury.remains<1|cooldown.strike_of_the_windlord."
-      "remains<1)&buff.teachings_of_the_monastery.stack<3",
-      "2 Targets" );
-  default_2t->add_action(
-      "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!"
-      "cooldown.fists_of_fury.remains" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads" );
-  default_2t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&set_bonus.tier31_"
-      "4pc" );
-  default_2t->add_action(
-      "strike_of_the_windlord,if=talent.thunderfist&(cooldown.invoke_"
-      "xuen_the_white_tiger.remains>20|fight_remains<5)" );
-  default_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up&set_bonus.tier31_2pc" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=talent.shadowboxing_treads&combo_strike&buff.blackout_reinforcement.up" );
-  default_2t->add_action( "fists_of_fury,if=!set_bonus.tier30_2pc" );
-  default_2t->add_action( "fists_of_fury" );
-  default_2t->add_action( "rising_sun_kick,if=!cooldown.fists_of_fury.remains" );
-  default_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=set_bonus.tier30_2pc" );
-  default_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up" );
-  default_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!buff.blackout_reinforcement.up" );
-  default_2t->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=2" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.pressure_point.remains&chi>2&prev.rising_sun_kick" );
-  default_2t->add_action( "chi_burst,if=chi<5&energy<50" );
-  default_2t->add_action( "strike_of_the_windlord" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads|cooldown.rising_"
-      "sun_kick.remains>1)" );
-  default_2t->add_action( "whirling_dragon_punch" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=buff.teachings_of_the_monastery.stack=3" );
-  default_2t->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*(target.time_to_die+"
-      "debuff.,if=!talent.shadowboxing_treads&cooldown.fists_of_fury.remains>4&talent."
-      "xuens_battlegear" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&(!"
-      "buff.bonedust_brew.up|spinning_crane_kick.mod,if=ier<1.5)" );
-  default_2t->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  default_2t->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_"
-      "strike&spinning_crane_kick.mod,if=ier>=2.7" );
-  default_2t->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains" );
-  default_2t->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike" );
-  default_2t->add_action( "jadefire_stomp,if=combo_strike" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8&talent.shadowboxing_treads" );
+  default_aoe->add_action( "fists_of_fury,target_if=max:debuff.acclamation.stack" );
+  default_aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.xuens_battlegear|cooldown.whirling_dragon_punch.remains<3" );
+  default_aoe->add_action( "spinning_crane_kick,if=combo_strike" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!talent.knowledge_of_the_broken_temple&buff.teachings_of_the_monastery.stack=4&talent.shadowboxing_treads" );
+  default_aoe->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike&talent.power_of_the_thunder_king" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&talent.shadowboxing_treads" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
+  default_aoe->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike" );
+  default_aoe->add_action( "jadefire_stomp" );
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1" );
 
   // 1 Target priority
-  default_st->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi<2&(cooldown.rising_sun_kick.remains<1|cooldown.fists_of_fury.remains<1|cooldown.strike_of_the_windlord."
-      "remains<1)&buff.teachings_of_the_monastery.stack<3",
-      "1 Target" );
-  default_st->add_action(
-      "expel_harm,if=chi=1&(!cooldown.rising_sun_kick.remains|!cooldown.strike_of_the_windlord.remains)|chi=2&!"
-      "cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains" );
-  default_st->add_action(
-      "strike_of_the_windlord,if=buff.domineering_arrogance.up&talent.thunderfist&talent.serenity&cooldown.invoke_xuen_"
-      "the_white_tiger.remains>20|fight_remains<5|talent.thunderfist&!buff."
-      "domineering_arrogance.up|talent.thunderfist&!talent.serenity" );
-  default_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&set_bonus.tier31_2pc&!buff.blackout_reinforcement.up" );
-  default_st->add_action( "rising_sun_kick,if=!cooldown.fists_of_fury.remains" );
-  default_st->add_action(
-      "fists_of_fury,if=!buff.pressure_point.up&(debuff.jadefire_brand_damage."
-      "remains>2|cooldown.jadefire_stomp.remains)" );
-  default_st->add_action( "jadefire_stomp,if=debuff.jadefire_brand_damage.remains<3" );
-  default_st->add_action( "rising_sun_kick,if=buff.pressure_point.up" );
-  default_st->add_action( "blackout_kick,if=buff.pressure_point.remains&chi>2&prev.rising_sun_kick" );
-  default_st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack=3" );
-  default_st->add_action(
-      "blackout_kick,if=buff.blackout_reinforcement.up&cooldown.rising_sun_kick.remains&combo_strike&buff.dance_of_"
-      "chiji.up" );
-  default_st->add_action( "rising_sun_kick" );
-  default_st->add_action( "blackout_kick,if=buff.blackout_reinforcement.up&combo_strike" );
-  default_st->add_action( "fists_of_fury" );
-  default_st->add_action( "whirling_dragon_punch,if=!buff.pressure_point.up" );
-  default_st->add_action( "chi_burst,if=buff.bloodlust.up&chi<5" );
-  default_st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack=2" );
-  default_st->add_action( "chi_burst,if=chi<5&energy<50" );
-  default_st->add_action( "strike_of_the_windlord,if=fight_remains<5" );
-  default_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.dance_of_"
-      "chiji.up&!set_bonus.tier31_2pc" );
-  default_st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.up&cooldown.rising_sun_kick.remains>1" );
-  default_st->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&buff.bonedust_brew.up&combo_"
-      "strike&spinning_crane_kick.mod,if=ier>=2.7" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_burst)" , "<3 Targets" );
+  default_st->add_action( "touch_of_death" );
+  default_st->add_action( "celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord.remains" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm|buff.storm_earth_and_fire.up&talent.ordered_elements" );
+  default_st->add_action( "strike_of_the_windlord,if=talent.gale_force&buff.invokers_delight.up" );
+  default_st->add_action( "fists_of_fury,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8" );
   default_st->add_action( "whirling_dragon_punch" );
-  default_st->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
-  default_st->add_action( "blackout_kick,if=combo_strike" );
-
-  // Fallthru
-  fallthru->add_action(
-      "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown."
-      "rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent."
-      "serenity|fight_remains<5)",
-      "Fallthru" );
-  fallthru->add_action( "jadefire_stomp,if=combo_strike" );
-  fallthru->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&"
-      "chi.max-chi>=(2+buff.power_strikes.up)" );
-  fallthru->add_action( "expel_harm,if=chi.max-chi>=1&active_enemies>2" );
-  fallthru->add_action(
-      "chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
-  fallthru->add_action( "chi_wave" );
-  fallthru->add_action( "expel_harm,if=chi.max-chi>=1" );
-  fallthru->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains-spinning_crane_kick.max*target.time_to_die"
-      ",if=combo_strike&active_enemies>=5" );
-  fallthru->add_action(
-      "spinning_crane_kick,target_if=max:target.time_to_die,if=target.time_to_die>duration&combo_strike&buff.chi_"
-      "energy.stack>30-5*active_enemies&buff.storm_earth_and_fire.down&(cooldown.rising_sun_kick.remains>2&cooldown."
-      "fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown."
-      "rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_"
-      "energy.stack>10&fight_remains<7" );
-  fallthru->add_action( "arcane_torrent,if=chi.max-chi>=1" );
-  fallthru->add_action( "flying_serpent_kick,interrupt=1" );
-  fallthru->add_action( "tiger_palm" );
+  default_st->add_action( "strike_of_the_windlord,if=time>5" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack" );
+  default_st->add_action( "fists_of_fury,if=buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements.remains<=gcd.max" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up&talent.energy_burst" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&(!buff.ordered_elements.up|energy.time_to_max<=gcd.max*3)" );
+  default_st->add_action( "jadefire_stomp,if=talent.Singularly_Focused_Jade|talent.jadefire_harmony" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack" );
+  default_st->add_action( "blackout_kick,if=combo_strike&buff.blackout_reinforcement.up" );
+  default_st->add_action( "chi_burst,if=!buff.ordered_elements.up" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_proc.up&chi.deficit>=1&talent.energy_burst)" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(buff.ordered_elements.up|energy.time_to_max>=gcd.max*3&talent.sequenced_strikes&talent.energy_burst|!talent.sequenced_strikes|!talent.energy_burst|buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<=gcd.max*3)" );
+  default_st->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
+  default_st->add_action( "jadefire_stomp" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1" );
+  default_st->add_action( "chi_burst" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo" );
 }
 
 void no_spec( player_t *p )
