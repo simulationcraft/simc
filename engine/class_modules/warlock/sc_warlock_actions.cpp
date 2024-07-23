@@ -155,9 +155,6 @@ using namespace helpers;
         if ( diabolist() && triggers.diabolic_ritual )
         {
           timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() );
-          // 2024-07-21 - It is probably a bug that the switch from Demonic Art to the next Ritual is using the base shard cost
-          // 2024-07-21 - For Demonology, it's possible on beta to start the next ritual with a non-HoG cast before proccing the demon
-          // This would require a rewrite of all this code, so hopefully that's a bug that is fixed before release and not intended
 
           switch( p()->diabolic_ritual )
           {
@@ -165,15 +162,6 @@ using namespace helpers;
               if ( p()->buffs.ritual_overlord->check() )
               {
                 p()->buffs.ritual_overlord->extend_duration( p(), adjustment * shards_used );
-              }
-              else if ( p()->buffs.art_overlord->check() )
-              {
-                if ( !triggers.demonic_art )
-                  break;
-
-                p()->buffs.art_overlord->decrement();
-                p()->buffs.ritual_mother->trigger();
-                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment * base_shards ); } );
               }
               else
               {
@@ -186,15 +174,6 @@ using namespace helpers;
               {
                 p()->buffs.ritual_mother->extend_duration( p(), adjustment * shards_used );
               }
-              else if ( p()->buffs.art_mother->check() )
-              {
-                if ( !triggers.demonic_art )
-                  break;
-
-                p()->buffs.art_mother->decrement();
-                p()->buffs.ritual_pit_lord->trigger();
-                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * base_shards ); } );
-              }
               else
               {
                 p()->buffs.ritual_mother->trigger();
@@ -205,15 +184,6 @@ using namespace helpers;
               if ( p()->buffs.ritual_pit_lord->check() )
               {
                 p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * shards_used );
-              }
-              else if ( p()->buffs.art_pit_lord->check() )
-              {
-                if ( !triggers.demonic_art )
-                  break;
-
-                p()->buffs.art_pit_lord->decrement();
-                p()->buffs.ritual_overlord->trigger();
-                make_event( sim, 1_ms, [ this, base_shards, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment * base_shards ); } );
               }
               else
               {
@@ -302,6 +272,13 @@ using namespace helpers;
         }
 
         p()->procs.dimension_ripper->occur();
+      }
+
+      if ( diabolist() && triggers.demonic_art )
+      {
+        p()->buffs.art_overlord->decrement();
+        p()->buffs.art_mother->decrement();
+        p()->buffs.art_pit_lord->decrement();
       }
     }
 
