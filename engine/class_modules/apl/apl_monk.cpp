@@ -697,6 +697,7 @@ void windwalker( player_t *p )
   default_st->add_action( "chi_burst" );
   default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo" );
   default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo" );
+}
 
 void no_spec( player_t *p )
 {
