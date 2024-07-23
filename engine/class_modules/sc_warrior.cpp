@@ -3896,6 +3896,7 @@ struct thunderous_roar_t : public warrior_attack_t
   {
     parse_options( options_str );
     aoe       = -1;
+    reduced_aoe_targets = 8; // Not in spelldata
     may_dodge = may_parry = may_block = false;
 
     thunderous_roar_dot   = new thunderous_roar_dot_t( p );
@@ -5545,16 +5546,40 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
+    reduced_aoe_targets = 8; // Not in spelldata
   }
 };
 
 struct odyns_fury_main_hand_t : public warrior_attack_t
 {
+  int num_targets;
   odyns_fury_main_hand_t( warrior_t* p, util::string_view name, const spell_data_t* spell )
-    : warrior_attack_t( name, p, spell )
+    : warrior_attack_t( name, p, spell ),
+    num_targets( 0 )
   {
     background = true;
     aoe        = -1;
+    reduced_aoe_targets = 8; // Not in spelldata
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double ta = warrior_attack_t::composite_ta_multiplier( state );
+
+    if ( num_targets > reduced_aoe_targets )
+    {
+      ta *= std::sqrt( reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, num_targets ) );
+    }
+
+    return ta;
+  }
+
+  void execute() override
+  {
+    // sqrt is snapshot on execute for the number of targets hit
+    num_targets = sim->target_non_sleeping_list.size();
+
+    warrior_attack_t::execute();
   }
 };
 
