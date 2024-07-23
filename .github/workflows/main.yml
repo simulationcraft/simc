@@ -213,6 +213,7 @@ jobs:
             demonhunter_vengeance, demonhunter_havoc, priest_shadow, 
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             monk_windwalker,
+            mage_arcane, mage_fire, mage_frost,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
