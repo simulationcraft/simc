@@ -765,6 +765,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> amplify_damage;
     propagate_const<buff_t*> unholy_commander;
+    propagate_const<buff_t*> ghoulish_infusion;
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -1419,6 +1420,7 @@ public:
     const spell_data_t* festering_scythe_stacking_buff;
     // Tier Sets
     const spell_data_t* unholy_commander;
+    const spell_data_t* ghoulish_infusion;
 
     // Rider of the Apocalypse non-talent spells
     const spell_data_t* a_feast_of_souls_buff;
@@ -1492,6 +1494,8 @@ public:
     const spell_data_t* ruptured_viscera;
     // Ghoulish Frenzy
     const spell_data_t* ghoulish_frenzy;
+    // Vile Infusion
+    const spell_data_t* vile_infusion;
     // DRW Spells
     const spell_data_t* drw_heart_strike;
     const spell_data_t* drw_heart_strike_rp_gen;
@@ -2901,6 +2905,37 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
+  struct ghoul_melee_t final : public auto_attack_melee_t<ghoul_pet_t>
+  {
+    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "auto_attack" )
+      : auto_attack_melee_t<ghoul_pet_t>( p, name )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) )
+        {
+          double chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 1 ).percent();
+
+          if ( pet()->vile_infusion->check() )
+          {
+            chance = dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B4 )->effectN( 2 ).percent();
+          }
+
+          if ( dk()->rng().roll( chance ) )
+          {
+            dk()->buffs.ghoulish_infusion->trigger();
+          }
+        }
+      }
+    }
+  };
+
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
   {
     gnaw_cd                = get_cooldown( "gnaw" );
@@ -2910,6 +2945,11 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       dynamic = false;
     }
+  }
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new ghoul_melee_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2922,6 +2962,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
       if ( ghoulish_frenzy->check() )
         m *= 1.0 + ghoulish_frenzy->value();
+
+      if ( vile_infusion->check() )
+        m *= 1.0 + vile_infusion->value();
     }
 
     return m;
@@ -2933,6 +2976,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( ghoulish_frenzy->check() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy->data().effectN( 2 ).percent() );
+
+    if ( vile_infusion->check() )
+      haste *= 1.0 / ( 1.0 + vile_infusion->data().effectN( 2 ).percent() );
 
     return haste;
   }
@@ -2988,6 +3034,13 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->set_duration( 0_s )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+
+    vile_infusion = make_buff( this, "vile_infusion", dk()->pet_spell.vile_infusion )
+                        ->set_duration( dk()->pet_spell.vile_infusion->duration() )
+                        ->set_default_value_from_effect( 1 )
+                        ->set_cooldown( dk()->sets->set( DEATH_KNIGHT_UNHOLY, T29, B2 )->internal_cooldown() )
+                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                        ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   }
 
 private:
@@ -2996,6 +3049,7 @@ private:
 public:
   gain_t* dark_transformation_gain;
   buff_t* ghoulish_frenzy;
+  buff_t* vile_infusion;
 };
 
 // ==========================================================================
@@ -11455,6 +11509,14 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   {
     buffs.festermight->trigger( n_wounds );
   }
+
+  if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
+  {
+    if ( pets.ghoul_pet.active_pet() != nullptr )
+    {
+      pets.ghoul_pet.active_pet()->vile_infusion->trigger();
+    }
+  }
 }
 
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
@@ -11713,6 +11775,14 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
         if ( dk->talent.unholy.festermight.ok() )
         {
           dk->buffs.festermight->trigger();
+        }
+
+        if ( dk->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
+        {
+          if ( dk->pets.ghoul_pet.active_pet() != nullptr )
+          {
+            dk->pets.ghoul_pet.active_pet()->vile_infusion->trigger();
+          }
         }
       }
 
@@ -12745,7 +12815,7 @@ void death_knight_t::init_items()
       tier_to_enable = T30;
       break;
     case DEATH_KNIGHT_UNHOLY:
-      tier_to_enable = T31;
+      tier_to_enable = T29;
       break;
     default:
       return;
@@ -13249,7 +13319,8 @@ void death_knight_t::init_spells()
   spell.festering_scythe_buff          = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
   spell.festering_scythe_stacking_buff = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 459238 );
   // Set Bonuses
-  spell.unholy_commander = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
+  spell.unholy_commander  = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
+  spell.ghoulish_infusion = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ), 394899 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -13324,6 +13395,8 @@ void death_knight_t::init_spells()
   pet_spell.ruptured_viscera = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390220 );
   // Ghoulish Frenzy
   pet_spell.ghoulish_frenzy = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377589 );
+  // Vile Infusion
+  pet_spell.vile_infusion = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ), 394863 );
   // DRW Spells
   pet_spell.drw_heart_strike =
       conditional_spell_lookup( talent.blood.heart_strike.ok() && talent.blood.dancing_rune_weapon.ok(), 228645 );
@@ -14075,6 +14148,10 @@ void death_knight_t::create_buffs()
   buffs.amplify_damage = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T31, B4 ), this, "amplify_damage",
                                         pet_spell.amplify_damage )
                              ->set_default_value( pet_spell.amplify_damage->effectN( 1 ).percent() );
+
+  buffs.ghoulish_infusion = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ), this, "ghoulish_infusion", spell.ghoulish_infusion )
+    ->set_duration( spell.ghoulish_infusion->duration() )
+    ->set_default_value_from_effect( 2 );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -14736,6 +14813,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
   parse_effects( p()->mastery.dreadblade );
   parse_effects( p()->buffs.amplify_damage );
+  parse_effects( p()->buffs.ghoulish_infusion );
 
   // Rider of the Apocalypse
   parse_effects( p()->buffs.mograines_might );
@@ -14852,6 +14930,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.festermight, talent.unholy.festermight );
     parse_effects( buffs.unholy_commander );
     parse_effects( buffs.amplify_damage );
+    parse_effects( buffs.ghoulish_infusion );
     parse_effects( sets->set( DEATH_KNIGHT_UNHOLY, TWW1, B2 ) );
     parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), spell.unholy_aura_debuff,
                           talent.unholy.unholy_aura );
