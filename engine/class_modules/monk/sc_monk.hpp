@@ -852,6 +852,7 @@ public:
     {
       const spell_data_t *mastery;
       const spell_data_t *aura;
+      const spell_data_t *aura_2;
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
@@ -875,6 +876,7 @@ public:
       const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *aura_3;
       const spell_data_t *expel_harm_rank_2;
     } mistweaver;
 
@@ -882,6 +884,7 @@ public:
     {
       const spell_data_t *mastery;
       const spell_data_t *aura;
+      const spell_data_t *aura_2;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
       const spell_data_t *combo_breaker;

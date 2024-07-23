@@ -125,13 +125,16 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Brewmaster
   apply_affecting_aura( p()->baseline.brewmaster.aura );
+  apply_affecting_aura( p()->baseline.brewmaster.aura_2 );
 
   // Mistweaver
   apply_affecting_aura( p()->baseline.mistweaver.aura );
   apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
+  apply_affecting_aura( p()->baseline.mistweaver.aura_3 );
 
   // Windwalker
   apply_affecting_aura( p()->baseline.windwalker.aura );
+  apply_affecting_aura( p()->baseline.windwalker.aura_2 );
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
 
   // Conduit of the Celestials
@@ -6745,15 +6748,18 @@ void monk_t::parse_player_effects()
 
   // brewmaster player auras
   parse_effects( baseline.brewmaster.aura );
+  parse_effects( baseline.brewmaster.aura_2 );
   parse_effects( baseline.brewmaster.brewmasters_balance );
   parse_effects( baseline.brewmaster.celestial_fortune );
 
   // mistweaver player auras
   parse_effects( baseline.mistweaver.aura );
   parse_effects( baseline.mistweaver.aura_2 );
+  parse_effects( baseline.mistweaver.aura_3 );
 
   // windwalker player auras
   parse_effects( baseline.windwalker.aura );
+  parse_effects( baseline.windwalker.aura_2 );
 
   // class talent auras
   parse_effects( talent.monk.grace_of_the_crane );
@@ -6773,12 +6779,16 @@ void monk_t::parse_player_effects()
   parse_effects( buff.invokers_delight, baseline.windwalker.aura );
   parse_effects( buff.memory_of_the_monastery );
   parse_effects( buff.momentum_boost_speed );
+  parse_effects( buff.dual_threat );
+  parse_effects( buff.ferociousness, USE_CURRENT );
 
   if ( talent.windwalker.jadefire_harmony->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg, 0b001U );
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
+  // parse_effects( buff.against_all_odds );
+  parse_effects( buff.veterans_eye );
 
   // Conduit of the Celestials
   parse_effects( buff.flight_of_the_red_crane );
@@ -7196,6 +7206,7 @@ void monk_t::init_spells()
     current_spec                                   = MONK_BREWMASTER;
     baseline.brewmaster.mastery                    = find_mastery_spell( MONK_BREWMASTER );
     baseline.brewmaster.aura                       = find_specialization_spell( "Brewmaster Monk" );
+    baseline.brewmaster.aura_2                     = find_specialization_spell( 462087 );
     baseline.brewmaster.brewmasters_balance        = find_specialization_spell( "Brewmaster's Balance" );
     baseline.brewmaster.celestial_fortune          = find_specialization_spell( "Celestial Fortune" );
     baseline.brewmaster.celestial_fortune_heal     = find_spell( 216521 );  // TODO: Can you be more specific?
@@ -7219,6 +7230,7 @@ void monk_t::init_spells()
     baseline.mistweaver.mastery           = find_mastery_spell( MONK_MISTWEAVER );
     baseline.mistweaver.aura              = find_specialization_spell( "Mistweaver Monk" );
     baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
+    baseline.mistweaver.aura_3            = find_specialization_spell( 462090 );
     baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   }
 
@@ -7227,6 +7239,7 @@ void monk_t::init_spells()
     current_spec                                  = MONK_WINDWALKER;
     baseline.windwalker.mastery                   = find_mastery_spell( MONK_WINDWALKER );
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
+    baseline.windwalker.aura_2                    = find_specialization_spell( 462091 );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
     baseline.windwalker.combo_breaker             = find_specialization_spell( "Combo Breaker" );
@@ -7252,10 +7265,12 @@ void monk_t::init_spells()
     talent.monk.disable           = _CT( "Disable" );
     talent.monk.fast_feet         = _CT( "Fast Feet" );
     // Row 3
-    talent.monk.bounding_agility = _CT( "Bounding Agility" );
-    talent.monk.winds_reach      = _CT( "Wind's Reach" );
-    talent.monk.detox            = _CT( "Detox" );           // Brewmaster and Windwalker
-    talent.monk.improved_detox   = _CT( "Improved Detox" );  // Mistweaver only
+    talent.monk.grace_of_the_crane = _CT( "Grace of the Crane" );
+    talent.monk.bounding_agility   = _CT( "Bounding Agility" );
+    talent.monk.calming_presence   = _CT( "Calming Presence" );
+    talent.monk.winds_reach        = _CT( "Wind's Reach" );
+    talent.monk.detox              = _CT( "Detox" );           // Brewmaster and Windwalker
+    talent.monk.improved_detox     = _CT( "Improved Detox" );  // Mistweaver only
     // Row 4
     talent.monk.vivacious_vivification = _CT( "Vivacious Vivification" );
     talent.monk.jade_walk              = _CT( "Jade Walk" );
@@ -7280,6 +7295,7 @@ void monk_t::init_spells()
     // Row 6
     talent.monk.quick_footed            = _CT( "Quick Footed" );
     talent.monk.hasty_provocation       = _CT( "Hasty Provocation" );
+    talent.monk.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
     talent.monk.ring_of_peace           = _CT( "Ring of Peace" );
     talent.monk.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
     talent.monk.spirits_essence         = _CT( "Spirit's Essence" );
@@ -7306,9 +7322,11 @@ void monk_t::init_spells()
     talent.monk.ironshell_brew             = _CT( "Ironshell Brew" );
     talent.monk.celestial_determination    = _CT( "Celestial Determination" );
     // Row 9
-    talent.monk.healing_winds = _CT( "Healing Winds" );
-    talent.monk.windwalking   = _CT( "Windwalking" );
-    talent.monk.bounce_back   = _CT( "Bounce Back" );
+    talent.monk.chi_proficiency   = _CT( "Chi Proficiency" );
+    talent.monk.healing_winds     = _CT( "Healing Winds" );
+    talent.monk.windwalking       = _CT( "Windwalking" );
+    talent.monk.bounce_back       = _CT( "Bounce Back" );
+    talent.monk.martial_instincts = _CT( "Martial Instincts" );
     // Row 10
     talent.monk.lighter_than_air    = _CT( "Lighter Than Air" );
     talent.monk.flow_of_chi         = _CT( "Flow of Chi" );
@@ -8221,9 +8239,10 @@ void monk_t::create_buffs()
           ->modify_initial_stack( as<int>( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() ) )
           ->set_default_value_from_effect( 1 );
 
-  buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
-                         ->set_trigger_spell( talent.windwalker.dual_threat )
-                         ->set_default_value_from_effect( 1 );
+  buff.dual_threat =
+      make_buff_fallback( talent.windwalker.dual_threat->ok(), this, "dual_threat", find_spell( 451833 ) )
+          ->set_trigger_spell( talent.windwalker.dual_threat )
+          ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff_fallback( talent.windwalker.jadefire_harmony->ok(), this, "jadefire_brand_heal",
                                             talent.windwalker.jadefire_brand_heal )
@@ -8234,19 +8253,14 @@ void monk_t::create_buffs()
                            ->set_quiet( true )
                            ->set_default_value_from_effect( 1 )
                            ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
-                             double old_value    = self->current_value;
+                             double previous     = self->current_value;
                              self->current_value = self->default_value;
-
                              if ( ( pets.xuen.n_active_pets() + pets.fury_of_xuen_tiger.n_active_pets() ) > 0 )
                                self->current_value *= 1 + self->data().effectN( 2 ).percent();
-
-                             if ( old_value != self->current_value )
-                               self->invalidate_cache();
+                             if ( previous != self->current_value )
+                               invalidate_cache( CACHE_CRIT_CHANCE );
                            } )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                           ->set_cooldown( timespan_t::zero() )
-                           ->set_duration( timespan_t::zero() )
-                           ->set_period( timespan_t::from_seconds( 1 ) )
+                           ->set_period( 1_s )
                            ->set_freeze_stacks( true )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
 
@@ -8469,11 +8483,7 @@ void monk_t::create_buffs()
 
   buff.veterans_eye =
       make_buff_fallback( talent.shado_pan.veterans_eye->ok(), this, "veterans_eye", find_spell( 451085 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->add_invalidate( CACHE_ATTACK_HASTE )
-          ->add_invalidate( CACHE_HASTE )
-          ->add_invalidate( CACHE_SPELL_HASTE );
+          ->set_default_value_from_effect( 1 );
 
   buff.vigilant_watch =
       make_buff_fallback( talent.shado_pan.vigilant_watch->ok(), this, "vigilant_watch", find_spell( 451233 ) )
@@ -8506,8 +8516,7 @@ void monk_t::create_buffs()
   buff.wisdom_of_the_wall_mastery = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
-                                        ->set_default_value_from_effect( 1 )
-                                        ->add_invalidate( CACHE_MASTERY );
+                                        ->set_default_value_from_effect( 1 );
 
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum = make_buff_fallback<buffs::kicks_of_flowing_momentum_t>(
