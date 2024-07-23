@@ -8069,7 +8069,9 @@ public:
     }
 
     // TODO: Determine proc chance / model
-    if ( p()->talent.searing_flames->ok() && rng().roll( 1.0 ) )
+    // First single target test showed a 25% chance. I didn't find it in 
+    // spelldata.
+    if ( p()->talent.searing_flames->ok() && rng().roll( 0.25 ) )
     {
       p()->trigger_maelstrom_gain( p()->talent.searing_flames->effectN( 1 ).base_value(), p()->gain.searing_flames );
       p()->proc.searing_flames->occur();
