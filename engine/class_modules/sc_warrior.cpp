@@ -569,7 +569,6 @@ public:
       player_talent_t heroic_leap;
       player_talent_t intimidating_shout;
       player_talent_t thunder_clap;
-      player_talent_t furious_blows;
 
       player_talent_t wrecking_throw;
       player_talent_t shattering_throw;
@@ -945,7 +944,6 @@ public:
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  double composite_melee_auto_attack_speed() const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_base_armor_multiplier() const override;
@@ -960,7 +958,6 @@ public:
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
-  // double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_rating() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
@@ -1135,7 +1132,6 @@ public:
     // Fury
     parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
     parse_effects( p()->buff.ashen_juggernaut );
-    parse_effects( p()->buff.battering_ram );
     parse_effects( p()->buff.berserker_stance );
     parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
     parse_effects( p()->buff.dancing_blades );
@@ -1150,6 +1146,7 @@ public:
     parse_effects( p()->buff.merciless_assault );
 
     // Protection
+    parse_effects( p()->buff.battering_ram );
     parse_effects( p()->buff.juggernaut_prot );
     parse_effects( p()->buff.seismic_reverberation_revenge );
     parse_effects( p()->buff.vanguards_determination );
@@ -9071,13 +9068,9 @@ void warrior_t::create_buffs()
       ->set_trigger_spell( talents.warrior.wild_strikes );
 
   buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
-      ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
-      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC);
 
-  buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) )
-      ->set_default_value( find_spell( 394313 )->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) );
 
   buff.berserker_rage = make_buff( this, "berserker_rage", spell.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
@@ -9859,24 +9852,6 @@ double warrior_t::composite_player_target_crit_chance( player_t* target ) const
   return c;
 }
 
-// warrior_t::composite_attack_speed ===========================================
-
-double warrior_t::composite_melee_auto_attack_speed() const
-{
-  double s = parse_player_effects_t::composite_melee_auto_attack_speed();
-
-  if ( talents.warrior.furious_blows->ok() )
-  {
-    s *= 1.0 / ( 1.0 + talents.warrior.furious_blows->effectN( 1 ).percent() );
-  }
-
-  s *= 1.0 / ( 1.0 + buff.dancing_blades->check_value() );
-
-  s *= 1.0 / ( 1.0 + buff.battering_ram->check_value() );
-
-  return s;
-}
-
 // warrior_t::composite_mastery =============================================
 
 double warrior_t::composite_mastery() const
@@ -10150,16 +10125,6 @@ double warrior_t::composite_crit_block() const
 
   return b;
 }
-
-// warrior_t::composite_melee_auto_attack_speed ==================================
-/*
-double warrior_t::composite_melee_auto_attack_speed() const
-{
-  double s = parse_player_effects_t::composite_melee_auto_attack_speed();
-
-  return s;
-}
-*/
 
 // warrior_t::composite_melee_crit_chance =========================================
 
@@ -10517,6 +10482,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_FURY )
   {
     parse_effects( spec.fury_warrior );
+    parse_effects( buff.dancing_blades );
     parse_effects( buff.frenzy );
     parse_effects( talents.fury.swift_strikes, effect_mask_t( false ).enable( 1 ) );
 
@@ -10526,6 +10492,7 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( spec.protection_warrior );
+    parse_effects( buff.battering_ram );
     parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
     parse_effects( buff.into_the_fray );
   }
