@@ -4545,7 +4545,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     if ( p -> tier_set.t29_mm_2pc.ok() )
     {
       hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
-      add_child( hit_the_mark );
     }
 
     if ( p->talents.hydras_bite.ok() )
