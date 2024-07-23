@@ -9,7 +9,6 @@
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
-actions.precombat+=/variable,name=mb_rs_cost,op=setif,value=action.mongoose_bite.cost,value_else=action.raptor_strike.cost,condition=talent.mongoose_bite
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -18,8 +17,8 @@ actions.precombat+=/use_item,name=algethar_puzzle_box
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=cleave,if=active_enemies>2
+actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/arcane_torrent
 actions+=/bag_of_tricks
 
@@ -39,8 +38,8 @@ actions.cds+=/use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhe
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 actions.cleave=spearhead,if=cooldown.coordinated_assault.remains
-actions.cleave+=/fury_of_the_eagle
 actions.cleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
+actions.cleave+=/fury_of_the_eagle
 actions.cleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
 actions.cleave+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
 actions.cleave+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
@@ -56,6 +55,7 @@ actions.cleave+=/raptor_strike
 actions.st=spearhead,if=cooldown.coordinated_assault.remains
 actions.st+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
 actions.st+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
+actions.st+=/fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc
 actions.st+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
 actions.st+=/kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em
 actions.st+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
