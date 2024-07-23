@@ -65,6 +65,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_pyrogenics;
   propagate_const<buff_t*> debuffs_conflagrate;
 
+  // Diabolist
+  propagate_const<buff_t*> debuffs_cloven_soul;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -472,6 +475,7 @@ public:
     const spell_data_t* felseeker_dmg;
 
     player_talent_t cloven_souls;
+    const spell_data_t* cloven_soul_debuff;
     player_talent_t touch_of_rancora;
     player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers, Dimension Ripper
 

@@ -2162,6 +2162,14 @@ namespace diabolist
 
       debug_cast<overlord_t*>( p() )->cleaves--;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_pet_spell_t::impact( s );
+
+      if ( p()->o()->hero.cloven_souls.ok() )
+        owner_td( s->target )->debuffs_cloven_soul->trigger();
+    }
   };
 
   void overlord_t::arise()
@@ -2203,7 +2211,10 @@ namespace diabolist
   {
     chaos_salvo_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
-    { tick_action = new chaos_salvo_tick_t( p ); }
+    {
+      base_costs_per_tick[ RESOURCE_ENERGY ] = 0.0;
+
+      tick_action = new chaos_salvo_tick_t( p ); }
 
     bool ready() override
     {
@@ -2251,6 +2262,7 @@ namespace diabolist
     {
       background = dual = true;
       aoe = -1;
+      base_costs[ RESOURCE_ENERGY ] = 0.0;
     }
   };
 

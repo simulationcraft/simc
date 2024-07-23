@@ -1882,6 +1882,7 @@ using namespace helpers;
         dual = true;
         
         triggers.shadow_invocation = true;
+        triggers.demonic_art = true;
 
         if ( p->talents.umbral_blaze.ok() )
         {
@@ -1935,7 +1936,7 @@ using namespace helpers;
       : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
     {
-      triggers.diabolic_ritual = triggers.demonic_art = true;
+      triggers.diabolic_ritual = true;
 
       add_child( impact_spell );
     }
