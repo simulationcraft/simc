@@ -1629,8 +1629,7 @@ public:
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
 
-    // TODO: in game, it currently doesn't increase damage of any spells
-    if ( !p()->bugs && affected_by.deaths_chill )
+    if ( affected_by.deaths_chill )
       m *= 1.0 + p()->buffs.deaths_chill->check_stack_value();
 
     if ( affected_by.frigid_empowerment )
