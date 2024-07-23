@@ -670,51 +670,51 @@ namespace warlock
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
+                                    {
                                       make_event( sim, 0_ms, [ this ] { buffs.art_overlord->trigger(); } );
+                                      diabolic_ritual = 1;
+                                    }
                                   } );
 
     buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                 {
                                   if ( cur == 0 )
+                                  {
                                     make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
+                                    diabolic_ritual = 2;
+                                  }
                                 } );
 
     buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
+                                    {
                                       make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
+                                      diabolic_ritual = 0;
+                                    }
                                   } );
 
     buffs.art_overlord = make_buff( this, "demonic_art_overlord", hero.art_overlord )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
                                  if ( cur == 0 )
-                                 {
                                    warlock_pet_list.overlords.spawn();
-                                   diabolic_ritual = 1;
-                                 }
                                } );
 
     buffs.art_mother = make_buff( this, "demonic_art_mother_of_chaos", hero.art_mother )
                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                              {
                                if ( cur == 0 )
-                               {
                                  warlock_pet_list.mothers.spawn();
-                                 diabolic_ritual = 2;
-                               }
                              } );
 
     buffs.art_pit_lord = make_buff( this, "demonic_art_pit_lord", hero.art_pit_lord )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
                                  if ( cur == 0 )
-                                 {
                                    warlock_pet_list.pit_lords.spawn();
-                                   diabolic_ritual = 0;
-                                 }
                                } );
   }
 
