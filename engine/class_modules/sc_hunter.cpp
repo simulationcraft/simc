@@ -1028,6 +1028,7 @@ public:
     affected_by.coordinated_assault   = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     // Handles everything except Flanking Strike (effect 2 of 260286)
     affected_by.tip_of_the_spear        = check_affected_by( this, p->find_spell( 260286 )->effectN( 1 ) );
+    // For most cases decrement if it is a damaging action marked as affected.
     affected_by.tip_of_the_spear_decrement = affected_by.tip_of_the_spear && ab::attack_power_mod.direct > 0;
     affected_by.tip_of_the_spear_hidden = check_affected_by( this, p->find_spell( 460852 )->effectN( 1 ) );
     affected_by.spearhead_crit_chance = check_affected_by( this, p->talents.spearhead_attack->effectN( 2 ) );
@@ -1179,7 +1180,6 @@ public:
     if ( triggers_rapid_reload )
       p() -> trigger_rapid_reload( this, this -> cost() );
 
-    //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
     if ( affected_by.tip_of_the_spear_decrement )
       p()->buffs.tip_of_the_spear->decrement();
 
@@ -5484,7 +5484,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
 
-      // decrement on last_tick
+      // Fury of the Eagle ticks should not decrement Tip of the Spear on execute, but rather on the last tick.
       affected_by.tip_of_the_spear_decrement = false;
     }
 
@@ -5828,6 +5828,7 @@ struct kill_command_t: public hunter_spell_t
 
       // Don't consume a stack or buff the damage.
       affected_by.tip_of_the_spear = false;
+      affected_by.tip_of_the_spear_decrement = false;
     }
   };
 
