@@ -971,7 +971,6 @@ private:
 public:
 
   bool track_cd_waste;
-  maybe_bool decrements_tip_of_the_spear;
   maybe_bool triggers_calling_the_shots;
   maybe_bool triggers_t30_sv_4p; 
   maybe_bool triggers_rapid_reload;
@@ -996,6 +995,7 @@ public:
     damage_affected_by spirit_bond;
     damage_affected_by coordinated_assault;
     bool tip_of_the_spear = false;
+    bool tip_of_the_spear_decrement = false;
     bool tip_of_the_spear_hidden = false;
     bool spearhead_crit_chance = false;
     bool spearhead_crit_damage = false;
@@ -1028,6 +1028,7 @@ public:
     affected_by.coordinated_assault   = parse_damage_affecting_aura( this, p->talents.coordinated_assault );
     // Handles everything except Flanking Strike (effect 2 of 260286)
     affected_by.tip_of_the_spear        = check_affected_by( this, p->find_spell( 260286 )->effectN( 1 ) );
+    affected_by.tip_of_the_spear_decrement = affected_by.tip_of_the_spear && ab::attack_power_mod.direct > 0;
     affected_by.tip_of_the_spear_hidden = check_affected_by( this, p->find_spell( 460852 )->effectN( 1 ) );
     affected_by.spearhead_crit_chance = check_affected_by( this, p->talents.spearhead_attack->effectN( 2 ) );
     affected_by.spearhead_crit_damage = check_affected_by( this, p->talents.spearhead_attack->effectN( 3 ) );
@@ -1147,27 +1148,6 @@ public:
 
     if ( triggers_rapid_reload )
       ab::sim -> print_debug( "{} action {} set to proc Rapid Reload", ab::player -> name(), ab::name() );
-
-    if ( p() -> talents.tip_of_the_spear.ok() )
-    {
-      if ( decrements_tip_of_the_spear.is_none() )
-      {
-        decrements_tip_of_the_spear = !ab::channeled && !ab::background && !ab::proc && ab::base_cost() > 0;
-      }
-    }
-    else
-    {
-      decrements_tip_of_the_spear = false;
-    }
-
-    if ( decrements_tip_of_the_spear )
-    {
-      ab::sim -> print_debug( "{} action {} set to decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
-    }
-    else
-    {
-      ab::sim -> print_debug( "{} action {} set to NOT decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
-    }
   }
 
   timespan_t gcd() const override
@@ -1200,10 +1180,10 @@ public:
       p() -> trigger_rapid_reload( this, this -> cost() );
 
     //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
-    if ( affected_by.tip_of_the_spear && decrements_tip_of_the_spear )
+    if ( affected_by.tip_of_the_spear_decrement )
       p()->buffs.tip_of_the_spear->decrement();
 
-    if ( affected_by.tip_of_the_spear_hidden && decrements_tip_of_the_spear )
+    if ( affected_by.tip_of_the_spear_hidden )
       p()->buffs.tip_of_the_spear_hidden->decrement();
   }
 
@@ -5503,6 +5483,9 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
+
+      // decrement on last_tick
+      affected_by.tip_of_the_spear_decrement = false;
     }
 
     double composite_target_crit_chance( player_t* target ) const override
@@ -5575,7 +5558,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     if ( p()->talents.tip_of_the_spear.ok() )
     {
       p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_hidden->decrement();
     }
   }
 };
