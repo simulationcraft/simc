@@ -971,7 +971,6 @@ private:
 public:
 
   bool track_cd_waste;
-  maybe_bool decrements_tip_of_the_spear;
   maybe_bool triggers_calling_the_shots;
   maybe_bool triggers_t30_sv_4p; 
   maybe_bool triggers_rapid_reload;
@@ -1147,27 +1146,6 @@ public:
 
     if ( triggers_rapid_reload )
       ab::sim -> print_debug( "{} action {} set to proc Rapid Reload", ab::player -> name(), ab::name() );
-
-    if ( p() -> talents.tip_of_the_spear.ok() )
-    {
-      if ( decrements_tip_of_the_spear.is_none() )
-      {
-        decrements_tip_of_the_spear = !ab::channeled && !ab::background && !ab::proc && ab::base_cost() > 0;
-      }
-    }
-    else
-    {
-      decrements_tip_of_the_spear = false;
-    }
-
-    if ( decrements_tip_of_the_spear )
-    {
-      ab::sim -> print_debug( "{} action {} set to decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
-    }
-    else
-    {
-      ab::sim -> print_debug( "{} action {} set to NOT decrement Tip of the Spear on execute", ab::player -> name(), ab::name() );
-    }
   }
 
   timespan_t gcd() const override
@@ -1199,11 +1177,10 @@ public:
     if ( triggers_rapid_reload )
       p() -> trigger_rapid_reload( this, this -> cost() );
 
-    //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
-    if ( affected_by.tip_of_the_spear && decrements_tip_of_the_spear )
+    if ( affected_by.tip_of_the_spear )
       p()->buffs.tip_of_the_spear->decrement();
 
-    if ( affected_by.tip_of_the_spear_hidden && decrements_tip_of_the_spear )
+    if ( affected_by.tip_of_the_spear_hidden )
       p()->buffs.tip_of_the_spear_hidden->decrement();
   }
 
@@ -5497,12 +5474,43 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
 
+      //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
+      affected_by.tip_of_the_spear = false;
+
       // TODO 2-12-22 Ruthless Marauder also adds to crit rate.
       if ( p -> bugs )
         crit_chance_bonus += p -> talents.ruthless_marauder -> effectN( 1 ).percent();
 
       if ( p -> talents.ruthless_marauder )
         ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_melee_attack_t::composite_da_multiplier( s );
+  
+      if( p()->buffs.tip_of_the_spear->check() )
+      {
+        double tip_bonus = p()->talents.tip_of_the_spear->effectN( 1 ).percent();
+        if ( p()->talents.flankers_advantage.ok() )
+        {
+          double max_bonus = p()->talents.flankers_advantage->effectN( 6 ).percent() -
+                             p()->talents.tip_of_the_spear->effectN( 1 ).percent();
+  
+          // Seems that the amount of the 15% bonus given is based on the ratio of player crit % out of a cap of 50% from effect 5.
+          double crit_chance =
+              std::min( p()->cache.attack_crit_chance(), p()->talents.flankers_advantage->effectN( 5 ).percent() );
+  
+          tip_bonus += max_bonus * crit_chance / p()->talents.flankers_advantage->effectN( 5 ).percent();
+        }
+  
+        if ( p()->buffs.relentless_primal_ferocity->check() )
+          tip_bonus += p()->talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
+  
+        m *= 1 + tip_bonus;
+      }
+  
+      return m;
     }
 
     double composite_target_crit_chance( player_t* target ) const override
@@ -5537,6 +5545,9 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
     channeled = true;
     tick_zero = true;
+
+    //Channelled spells like Fury of the Eagle should not decrement Tip of the Spear on execute, but rather on the last tick.
+    affected_by.tip_of_the_spear = false;
 
     add_child( fote_tick );
   }
@@ -5575,7 +5586,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     if ( p()->talents.tip_of_the_spear.ok() )
     {
       p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_hidden->decrement();
     }
   }
 };
