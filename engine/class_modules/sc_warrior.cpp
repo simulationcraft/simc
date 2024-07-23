@@ -946,7 +946,6 @@ public:
   double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_auto_attack_speed() const override;
-  double composite_melee_haste() const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_base_armor_multiplier() const override;
@@ -9067,10 +9066,9 @@ void warrior_t::create_buffs()
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
       -> set_default_value_from_effect( 1 );
 
-  buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes )
-      ->set_default_value( talents.warrior.wild_strikes->effectN( 2 ).base_value() / 100.0 )
-      ->set_duration( find_spell( 392778 )->duration() )
-      ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+  buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes->effectN( 2 ).trigger() )
+      ->set_cooldown( talents.warrior.wild_strikes->internal_cooldown() )
+      ->set_trigger_spell( talents.warrior.wild_strikes );
 
   buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
       ->set_default_value( find_spell( 391688 )->effectN( 1 ).base_value() / 100.0 )
@@ -9124,9 +9122,7 @@ void warrior_t::create_buffs()
      ->set_duration( find_spell( 184362 )->duration() )
      ->apply_affecting_aura( talents.fury.powerful_enrage );
 
-  buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
-                           ->set_default_value( find_spell( 335082 )->effectN( 1 ).percent() )
-                           ->add_invalidate( CACHE_ATTACK_HASTE );
+  buff.frenzy = make_buff( this, "frenzy", find_spell(335082) );
 
   buff.heroic_leap_movement   = make_buff( this, "heroic_leap_movement" );
   buff.charge_movement        = make_buff( this, "charge_movement" );
@@ -9874,38 +9870,11 @@ double warrior_t::composite_melee_auto_attack_speed() const
     s *= 1.0 / ( 1.0 + talents.warrior.furious_blows->effectN( 1 ).percent() );
   }
 
-  s *= 1.0 / ( 1.0 + buff.wild_strikes->check_value() );
-
   s *= 1.0 / ( 1.0 + buff.dancing_blades->check_value() );
 
   s *= 1.0 / ( 1.0 + buff.battering_ram->check_value() );
 
   return s;
-}
-
-// warrior_t::composite_melee_haste ===========================================
-
-double warrior_t::composite_melee_haste() const
-{
-  double a = parse_player_effects_t::composite_melee_haste();
-
-  if ( talents.fury.frenzied_enrage->ok() )
-  {
-    a *= 1.0 / ( 1.0 + buff.enrage->check_value() );
-  }
-  a *= 1.0 / ( 1.0 + buff.frenzy->check_stack_value() );
-
-  a *= 1.0 / ( 1.0 + buff.into_the_fray->check_stack_value() );
-
-  a *= 1.0 / ( 1.0 + buff.in_for_the_kill->check_value() );
-
-  a *= 1.0 / ( 1.0 + talents.warrior.wild_strikes->effectN( 1 ).percent() );
-
-  a *= 1.0 / ( 1.0 + talents.fury.swift_strikes->effectN( 1 ).percent() );
-
-  a *= 1.0 / ( 1.0 + talents.protection.enduring_alacrity->effectN( 2 ).percent());
-
-  return a;
 }
 
 // warrior_t::composite_mastery =============================================
@@ -9993,7 +9962,6 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
-    m *= 1.0 + talents.protection.enduring_alacrity -> effectN( 1 ).percent();
     m *= 1.0 + talents.warrior.endurance_training -> effectN( 1 ).percent();
   }
 
@@ -10538,18 +10506,28 @@ void warrior_t::copy_from( player_t* source )
 void warrior_t::parse_player_effects()
 {
   parse_effects( spec.warrior );
+  parse_effects( talents.warrior.wild_strikes );
+  parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
 
   if ( specialization() == WARRIOR_ARMS )
   {
     parse_effects( spec.arms_warrior );
+    parse_effects( buff.in_for_the_kill, USE_CURRENT );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
     parse_effects( spec.fury_warrior );
+    parse_effects( buff.frenzy );
+    parse_effects( talents.fury.swift_strikes, effect_mask_t( false ).enable( 1 ) );
+
+    if ( talents.fury.frenzied_enrage->ok() )
+      parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( spec.protection_warrior );
+    parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
+    parse_effects( buff.into_the_fray );
   }
 
   // Colossus
