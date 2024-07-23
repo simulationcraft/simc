@@ -8540,8 +8540,8 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Tier 31 Set Bonus
-  buff.blackout_reinforcement =
-      new buffs::blackout_reinforcement_t( this, "blackout_reinforcement", find_spell( 424454 ) );
+  buff.blackout_reinforcement = make_buff_fallback<buffs::blackout_reinforcement_t>(
+      sets->set( MONK_WINDWALKER, T31, B4 )->ok(), this, "blackout_reinforcement", find_spell( 424454 ) );
 
   // stagger = new stagger_t( this );
 
