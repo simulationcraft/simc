@@ -1205,7 +1205,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( p()->talents.malign_omen.ok() )
+      if ( p()->talents.malign_omen.ok() && p()->buffs.malign_omen->check() )
         p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
 
       p()->buffs.tormented_crescendo->decrement();
