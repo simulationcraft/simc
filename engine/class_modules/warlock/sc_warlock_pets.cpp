@@ -2162,6 +2162,14 @@ namespace diabolist
 
       debug_cast<overlord_t*>( p() )->cleaves--;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_pet_spell_t::impact( s );
+
+      if ( p()->o()->hero.cloven_souls.ok() )
+        owner_td( s->target )->debuffs_cloven_soul->trigger();
+    }
   };
 
   void overlord_t::arise()

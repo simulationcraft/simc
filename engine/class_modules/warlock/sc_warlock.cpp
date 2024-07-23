@@ -98,6 +98,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
 
+  // Diabolist
+  debuffs_cloven_soul = make_buff( *this, "cloven_soul", p.hero.cloven_soul_debuff );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -250,6 +253,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
+  if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
+    m *= 1.0 + hero.cloven_soul_debuff->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -334,6 +340,9 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
+
+  if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
+    m *= 1.0 + hero.cloven_soul_debuff->effectN( guardian ? 3 : 2 ).percent();
 
   return m;
 }

@@ -489,6 +489,9 @@ namespace warlock
     hero.felseeker = find_spell( 438973 );
     hero.felseeker_dmg = find_spell( 434404 );
 
+    hero.cloven_souls = find_talent_spell( talent_tree::HERO, "Cloven Souls" ); // Should be ID 428517
+    hero.cloven_soul_debuff = find_spell( 434424 );
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
