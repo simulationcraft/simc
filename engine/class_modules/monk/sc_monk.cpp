@@ -2480,6 +2480,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
+  action_t *jadefire_fists;
+
   fists_of_fury_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( p, "fists_of_fury", p->talent.windwalker.fists_of_fury )
   {
@@ -2504,6 +2506,17 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     tick_action        = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
     tick_action->stats = stats;
+  }
+
+  void init_finished() override
+  {
+    monk_melee_attack_t::init_finished();
+    jadefire_fists = player->find_action( "jadefire_fists" );
+    if ( p()->talent.windwalker.jadefire_fists->ok() && jadefire_fists )
+    {
+      jadefire_fists->stats = stats;
+      add_child( jadefire_fists );
+    }
   }
 
   bool usable_moving() const override
@@ -2558,6 +2571,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
     }
+
+    if ( p()->talent.windwalker.jadefire_fists->ok() )
+      jadefire_fists->execute();
   }
 };
 
@@ -4836,9 +4852,11 @@ struct jadefire_stomp_t : public monk_spell_t
   jadefire_stomp_heal_t *heal;
   jadefire_stomp_ww_damage_t *ww_damage;
   jadefire_stomp_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "jadefire_stomp", p->shared.jadefire_stomp )
+    : monk_spell_t( p, p->shared.jadefire_stomp->ok() ? 
+        "jadefire_stomp" : "jadefire_fists", p->find_spell( 388193 ) )
   {
-    parse_options( options_str );
+    if ( p->shared.jadefire_stomp->ok() )
+      parse_options( options_str );
     may_combo_strike = true;
     cast_during_sck  = player->specialization() != MONK_WINDWALKER;
     gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
@@ -4855,6 +4873,14 @@ struct jadefire_stomp_t : public monk_spell_t
       ww_damage = new jadefire_stomp_ww_damage_t( p );
 
       add_child( ww_damage );
+
+      if ( p->talent.windwalker.jadefire_fists->ok() )
+      {
+        dual = background = true;
+        cooldown->duration = timespan_t::from_seconds( 
+            p->talent.windwalker.jadefire_fists->effectN( 1 ).base_value() );
+        cooldown->hasted   = false;
+      }
     }
 
     add_child( damage );
@@ -4884,6 +4910,14 @@ struct jadefire_stomp_t : public monk_spell_t
     }
 
     return target_cache.list;
+  }
+
+  bool ready() override
+  {
+    if ( p()->shared.jadefire_stomp->ok() || p()->talent.windwalker.jadefire_fists->ok() )
+      return monk_spell_t::ready();
+
+    return false;
   }
 
   void execute() override
