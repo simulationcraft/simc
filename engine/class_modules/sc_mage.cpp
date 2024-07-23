@@ -346,6 +346,7 @@ public:
     buff_t* firefall;
     buff_t* firefall_ready;
     buff_t* flame_accelerant;
+    buff_t* flames_fury;
     buff_t* frenetic_speed;
     buff_t* fury_of_the_sun_king;
     buff_t* heat_shimmer;
@@ -405,7 +406,6 @@ public:
     buff_t* bursting_energy;
     buff_t* intuition;
 
-    buff_t* flames_fury;
     buff_t* searing_rage;
     buff_t* tier31_4pc;
 
@@ -7788,6 +7788,8 @@ void mage_t::create_buffs()
                                      ->set_default_value_from_effect( 2 )
                                      ->set_chance( talents.flame_accelerant.ok() )
                                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.flames_fury              = make_buff( this, "flames_fury", find_spell( 409964 ) )
+                                     ->set_default_value_from_effect( 1 );
   buffs.frenetic_speed           = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_RUN_SPEED )
@@ -7920,8 +7922,6 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
-  buffs.flames_fury  = make_buff( this, "flames_fury", find_spell( 409964 ) )
-                         ->set_default_value_from_effect( 1 );
   buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
                          ->set_default_value_from_effect( 1 )
                          ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B2 ) );
