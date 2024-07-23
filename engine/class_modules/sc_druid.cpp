@@ -625,6 +625,7 @@ public:
 
     // Hero talents
     action_t* bloodseeker_vines;
+    action_t* bloodseeker_vines_implant;
     action_t* boundless_moonlight_heal;
     action_t* bursting_growth;
     action_t* dream_burst;
@@ -4125,13 +4126,13 @@ struct bloodseeker_vines_t final : public cat_attack_t
   timespan_t orig_dur;
   double twin_pct;
 
-  bloodseeker_vines_t( druid_t* p )
-    : cat_attack_t( "bloodseeker_vines", p, p->spec.bloodseeker_vines ),
-      twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
+  bloodseeker_vines_t( druid_t* p, std::string_view n )
+    : cat_attack_t( n, p, p->spec.bloodseeker_vines ), twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
   {
     dot_max_stack = 1;
     dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
+    dot_name = "bloodseeker_vines";
     orig_dur = dot_duration;
   }
 
@@ -4698,13 +4699,23 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
   {
     base_t::impact( s );
 
-    if ( tear && result_is_hit( s->result ) )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( tear )
     {
       auto tick_amount = calculate_tick_amount( s, 1.0 );
       auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
 
       tear->base_td = dot_total;
       tear->execute_on_target( s->target );
+    }
+
+    // rip is scripted to consume implant
+    if ( p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
+    {
+      p()->active.bloodseeker_vines_implant->execute_on_target( s->target );
+      p()->buff.implant->expire();
     }
   }
 
@@ -4756,6 +4767,16 @@ struct primal_wrath_t final : public cat_finisher_t
           .set_eff( &eff );
       }
     }
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    // target order is randomized, can be important for rip application ordering
+    auto& tl = cat_finisher_t::target_list();
+
+    rng().shuffle( tl.begin(), tl.end() );
+
+    return tl;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -11120,7 +11141,24 @@ void druid_t::create_actions()
   }
 
   if ( talent.thriving_growth.ok() )
-    active.bloodseeker_vines = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines" );
+  {
+    auto vines = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines" );
+
+    if ( talent.implant.ok() )
+    {
+      auto m_data = get_modified_spell( talent.implant )
+        ->parse_effects( talent.resilient_flourishing );
+
+      auto implant = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines_implant" );
+      implant->name_str_reporting = "bloodseeker_vines";
+      implant->dot_duration = m_data->effectN( specialization() == DRUID_FERAL ? 1 : 2 ).time_value();
+      active.bloodseeker_vines_implant = implant;
+
+      vines->replace_stats( implant );
+    }
+
+    active.bloodseeker_vines = vines;
+  }
 
   if ( talent.treants_of_the_moon.ok() )
   {
@@ -11882,19 +11920,11 @@ void druid_t::init_special_effects()
     } );
   }
 
-  if ( talent.implant.ok() && active.bloodseeker_vines )
+  if ( talent.implant.ok() && active.bloodseeker_vines_implant )
   {
     struct implant_cb_t final : public druid_cb_t
     {
-      timespan_t dur;
-
-      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
-      {
-        auto m_data = p->get_modified_spell( p->talent.implant )
-          ->parse_effects( p->talent.resilient_flourishing );
-
-        dur = m_data->effectN( p->specialization() == DRUID_FERAL ? 1 : 2 ).time_value();
-      }
+      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
       // TODO: whitelist aoe spells as necessary if they can trigger
       void trigger( action_t* a, action_state_t* s ) override
@@ -11905,12 +11935,7 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        auto orig_dur = p()->active.bloodseeker_vines->dot_duration;
-
-        p()->active.bloodseeker_vines->dot_duration = dur;
-        p()->active.bloodseeker_vines->execute_on_target( target( s, p()->active.bloodseeker_vines ) );
-        p()->active.bloodseeker_vines->dot_duration = orig_dur;
-
+        p()->active.bloodseeker_vines_implant->execute_on_target( target( s, p()->active.bloodseeker_vines_implant ) );
         p()->buff.implant->expire( a );
       }
     };
