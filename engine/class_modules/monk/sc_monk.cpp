@@ -612,7 +612,7 @@ void monk_action_t<Base>::impact( action_state_t *s )
         }
       }
 
-      if ( get_td( s->target )->debuff.gale_force->check() &&
+      if ( s->action->id != 451585 && get_td( s->target )->debuff.gale_force->check() &&
            p()->rng().roll( get_td( s->target )->debuff.gale_force->default_chance ) )
       {
         double amount = s->result_amount * get_td( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
