@@ -6361,7 +6361,6 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
-    timespan_t period = 0_s;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -6373,9 +6372,6 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
-
-      if ( p->talents.kill_zone )
-        period = p->talents.volley_buff->effectN( 2 ).period();
     }
 
     void execute() override
@@ -6397,8 +6393,8 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::impact( s );
 
-      if ( period > 0_s )
-        p()->get_target_data( s->target )->debuffs.kill_zone->trigger( period );
+      if ( p()->talents.kill_zone.ok() )
+        p()->get_target_data( s->target )->debuffs.kill_zone->trigger();
     }
   };
 
@@ -6448,8 +6444,18 @@ struct volley_t : public hunter_spell_t
                 p() -> state.current_volley = event;
                 break;
               case ground_aoe_params_t::EVENT_STOPPED:
-                p() -> state.current_volley = nullptr;
+              {
+                p()->state.current_volley = nullptr;
+                if ( p()->talents.kill_zone.ok() )
+                  // Scheduled after next Volley tick.
+                  make_event( *sim, 0_ms, [ this ]() { 
+                    for ( player_t* t : sim->target_non_sleeping_list )
+                      if ( t->is_enemy() )
+                        p()->get_target_data( t )->debuffs.kill_zone->expire();
+                  } );
+                  
                 break;
+              }
               default:
                 break;
             }
