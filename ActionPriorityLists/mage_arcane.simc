@@ -91,5 +91,5 @@ actions.rotation_default+=/arcane_blast,if=buff.nether_precision.stack=2|(buff.n
 # Conserve mana above 70% when Evocation is further than your next Touch
 actions.rotation_default+=/arcane_barrage,if=buff.arcane_surge.down&(mana.pct<70&cooldown.arcane_surge.remains>45&cooldown.touch_of_the_magi.remains>6)|(mana.deficit>(mana.max-action.arcane_blast.cost))|cooldown.touch_of_the_magi.ready|(cooldown.shifting_power.ready&cooldown.arcane_orb.ready)
 # Blast for filler if you're not in execute or you already have some charges from another effect
-actions.rotation_default+=/arcane_blast,if=((target.health.pct>35&talent.arcane_bombardment)|!variable.alt_rotation)&(!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down))
+actions.rotation_default+=/arcane_blast,if=!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down)
 actions.rotation_default+=/arcane_barrage
