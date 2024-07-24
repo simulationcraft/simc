@@ -590,6 +590,7 @@ public:
     spell_data_ptr_t wailing_arrow_counter_buff;
     spell_data_ptr_t wailing_arrow_override_buff;
     spell_data_ptr_t wailing_arrow_override;
+    spell_data_ptr_t wailing_arrow_damage;
 
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t calling_the_shots;
@@ -4493,18 +4494,21 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
   };
 
+  const int trick_shots_targets;
+
   struct {
     double multiplier = 0;
     double high, low;
   } careful_aim;
+
   bool lock_and_loaded = false;
+  
   struct {
     double chance = 0;
     proc_t* proc;
   } surging_shots;
   
-  struct
-  {
+  struct {
     int count = 0;
     wind_arrow_t* wind_arrow = nullptr;
   } lotw;
@@ -4514,7 +4518,10 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   serpent_sting_hb_t* hydras_bite = nullptr;
 
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
-    hunter_ranged_attack_t( n, p, s )
+    hunter_ranged_attack_t( n, p, s ),
+    trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
+      + p -> talents.light_ammo -> effectN( 1 ).base_value()
+      + p -> talents.heavy_ammo -> effectN( 1 ).base_value() ) )
   {
     radius = 8;
     base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 4 ).percent()
@@ -4641,6 +4648,13 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
   }
 
+  int n_targets() const override
+  {
+    if ( p()->buffs.trick_shots->check() )
+      return 1 + trick_shots_targets;
+    return hunter_ranged_attack_t::n_targets();
+  }
+
   double execute_time_pct_multiplier() const override
   {
     if ( p() -> buffs.lock_and_load -> check() )
@@ -4698,22 +4712,10 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
 struct aimed_shot_t : public aimed_shot_base_t
 {
-  const int trick_shots_targets;
-
   aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
-    aimed_shot_base_t( "aimed_shot", p, p->talents.aimed_shot ),
-    trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
-      + p -> talents.light_ammo -> effectN( 1 ).base_value()
-      + p -> talents.heavy_ammo -> effectN( 1 ).base_value() ) )
+    aimed_shot_base_t( "aimed_shot", p, p->talents.aimed_shot )
   {
     parse_options( options_str );
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buffs.trick_shots->check() )
-      return 1 + trick_shots_targets;
-    return hunter_ranged_attack_t::n_targets();
   }
 
   bool ready() override
@@ -4726,32 +4728,59 @@ struct aimed_shot_t : public aimed_shot_base_t
 
 struct wailing_arrow_t : public aimed_shot_base_t
 {
-  struct damage_t final : hunter_ranged_attack_t
+  struct splash_damage_t final : hunter_ranged_attack_t
   {
-    damage_t( util::string_view n, hunter_t* p )
-      : hunter_ranged_attack_t( n, p, p->find_spell( 392058 ) )
+    splash_damage_t( util::string_view n, hunter_t* p )
+      : hunter_ranged_attack_t( n, p, p->talents.wailing_arrow_damage )
     {
-      aoe                     = -1;
+      aoe = -1;
+      attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+      dual = true;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      hunter_ranged_attack_t::available_targets( tl );
+
+      // Cannot hit the original target.
+      range::erase_remove( tl, target );
+
+      return tl.size();
+    }
+  };
+
+  struct primary_damage_t final : hunter_ranged_attack_t
+  {
+    primary_damage_t( util::string_view n, hunter_t* p )
+      : hunter_ranged_attack_t( n, p, p->talents.wailing_arrow_damage )
+    {
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      base_aoe_multiplier     = data().effectN( 2 ).ap_coeff() / attack_power_mod.direct;
 
       dual = true;
     }
   };
+
+  primary_damage_t* primary_damage;
+  splash_damage_t* splash_damage;
 
   wailing_arrow_t( hunter_t* p, util::string_view options_str )
     : aimed_shot_base_t( "wailing_arrow", p, p->talents.wailing_arrow_override )
   {
     parse_options( options_str );
 
-    impact_action = p->get_background_action<damage_t>( "wailing_arrow_damage" );
-    impact_action->stats = stats;
-    stats->action_list.push_back( impact_action );
+    primary_damage = p->get_background_action<primary_damage_t>( "wailing_arrow_primary" );
+    primary_damage->stats = stats;
+    primary_damage->base_aoe_multiplier = base_aoe_multiplier;
+
+    splash_damage = p->get_background_action<splash_damage_t>( "wailing_arrow_splash" );
+    add_child( splash_damage );
+
+    stats->action_list.push_back( primary_damage );
   }
 
   void execute() override
   {
-    hunter_ranged_attack_t::execute();
+    aimed_shot_base_t::execute();
 
     if ( p()->talents.readiness.ok() )
     {
@@ -4760,6 +4789,18 @@ struct wailing_arrow_t : public aimed_shot_base_t
     }
 
     p()->buffs.wailing_arrow_override->expire();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    aimed_shot_base_t::impact( state );
+
+    if ( state->chain_target == 0 )
+    {
+      primary_damage->aoe = state->n_targets;
+      primary_damage->execute_on_target( state->target );
+      splash_damage->execute_on_target( state->target );
+    }
   }
 
   bool ready() override
@@ -4776,7 +4817,7 @@ struct wailing_arrow_t : public aimed_shot_base_t
     return 0.0;
   }
 };
-  
+
 // Steady Shot ========================================================================
 
 struct steady_shot_t: public hunter_ranged_attack_t
@@ -6320,7 +6361,6 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     attacks::explosive_shot_background_t* explosive = nullptr;
-    timespan_t period = 0_s;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -6332,9 +6372,6 @@ struct volley_t : public hunter_spell_t
         explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
-
-      if ( p->talents.kill_zone )
-        period = p->talents.volley_buff->effectN( 2 ).period();
     }
 
     void execute() override
@@ -6356,8 +6393,8 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::impact( s );
 
-      if ( period > 0_s )
-        p()->get_target_data( s->target )->debuffs.kill_zone->trigger( period );
+      if ( p()->talents.kill_zone.ok() )
+        p()->get_target_data( s->target )->debuffs.kill_zone->trigger();
     }
   };
 
@@ -6407,8 +6444,18 @@ struct volley_t : public hunter_spell_t
                 p() -> state.current_volley = event;
                 break;
               case ground_aoe_params_t::EVENT_STOPPED:
-                p() -> state.current_volley = nullptr;
+              {
+                p()->state.current_volley = nullptr;
+                if ( p()->talents.kill_zone.ok() )
+                  // Scheduled after next Volley tick.
+                  make_event( *sim, 0_ms, [ this ]() { 
+                    for ( player_t* t : sim->target_non_sleeping_list )
+                      if ( t->is_enemy() )
+                        p()->get_target_data( t )->debuffs.kill_zone->expire();
+                  } );
+                  
                 break;
+              }
               default:
                 break;
             }
@@ -7022,6 +7069,7 @@ void hunter_t::init_spells()
     talents.wailing_arrow_counter_buff        = find_spell( 459805 );
     talents.wailing_arrow_override_buff       = find_spell( 459808 );
     talents.wailing_arrow_override            = find_spell( 392060 );
+    talents.wailing_arrow_damage              = find_spell( 392058 );
     talents.eagletalons_true_focus            = find_talent_spell( talent_tree::SPECIALIZATION, "Eagletalon's True Focus", HUNTER_MARKSMANSHIP );
     talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
