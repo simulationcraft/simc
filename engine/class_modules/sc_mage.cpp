@@ -1502,18 +1502,16 @@ struct mage_spell_t : public spell_t
   struct triggers_t
   {
     bool chill = false;
+    bool clearcasting = false;
     bool from_the_ashes = false;
     bool ignite = false;
     bool overflowing_energy = false;
     bool touch_of_the_magi = true;
 
+    target_trigger_type_e calefaction = TT_NONE;
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
     target_trigger_type_e unleashed_inferno = TT_NONE;
-
-    target_trigger_type_e calefaction = TT_NONE;
-
-    trigger_override_e clearcasting = TO_DEFAULT;
   } triggers;
 
 public:
@@ -1797,9 +1795,9 @@ public:
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
 
-    bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || ( triggers.clearcasting == TO_DEFAULT && harmful && !background );
-    if ( p()->spec.clearcasting->ok() && can_trigger_cc )
+    if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
+      // TODO: implement the hidden BLP
       double chance = p()->spec.clearcasting->effectN( 2 ).percent();
       chance += p()->talents.illuminated_thoughts->effectN( 1 ).percent();
       // Arcane Blast gets an additional 5% chance. Not mentioned in the spell data (or even the description).
@@ -2900,6 +2898,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     may_miss = false;
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
+    triggers.clearcasting = type == ao_type::NORMAL;
 
     std::string_view bolt_name;
     switch ( type )
@@ -2957,7 +2956,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     parse_options( options_str );
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     affected_by.arcane_debilitation = true;
-    triggers.overflowing_energy = true;
+    triggers.overflowing_energy = triggers.clearcasting = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     intuition_charges = as<int>( p->find_spell( 455683 )->effectN( 1 ).base_value() );
 
@@ -3080,7 +3079,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     affected_by.arcane_debilitation = true;
-    triggers.overflowing_energy = true;
+    triggers.overflowing_energy = triggers.clearcasting = true;
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
@@ -3224,6 +3223,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
+    triggers.clearcasting = type != ae_type::ENERGY_RECON;
 
     if ( type == ae_type::NORMAL )
     {
@@ -3455,6 +3455,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     may_miss = false;
     // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
+    triggers.clearcasting = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
 
@@ -3598,7 +3599,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
-    triggers.clearcasting = TO_NEVER;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
   }
 
@@ -4672,7 +4672,6 @@ struct frost_nova_t final : public mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.time_manipulation = true;
-    triggers.clearcasting = TO_NEVER; // TODO: Double check if this is the case
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
@@ -6081,6 +6080,7 @@ struct supernova_t final : public mage_spell_t
     parse_options( options_str );
     aoe = -1;
     affected_by.savant = true;
+    triggers.clearcasting = true;
 
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
@@ -6147,6 +6147,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->talents.touch_of_the_magi )
   {
     parse_options( options_str );
+    triggers.clearcasting = true;
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
@@ -6277,6 +6278,7 @@ struct shifting_power_t final : public mage_spell_t
     parse_options( options_str );
     channeled = affected_by.ice_floes = true;
     affected_by.shifting_power = false;
+    triggers.clearcasting = true;
     tick_action = get_action<shifting_power_pulse_t>( "shifting_power_pulse", p );
   }
 
