@@ -2628,7 +2628,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       proc_moe->occur();
     }
 
-    if ( exec_type == spell_variant::NORMAL )
+    if ( exec_type == spell_variant::NORMAL && !background) //TODO: Make this proc on impact
     {
       p()->trigger_fusion_of_elements( execute_state );
     }
