@@ -125,7 +125,7 @@ void arcane( player_t* p )
   rotation_default->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&((buff.nether_precision.stack=1&((buff.clearcasting.up|action.arcane_orb.charges>0)&time-action.arcane_blast.last_used<0.015))|(cooldown.touch_of_the_magi.ready&(buff.nether_precision.up|!talent.magis_spark))))|(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|buff.intuition.up", "Always queue Barrage on the second Nether Precision stack, ensure you have nether precision before doing this to start Touch window, maintain Tempo and use 4pc as soon as possible" );
   rotation_default->add_action( "arcane_blast,if=buff.nether_precision.stack=2|(buff.nether_precision.stack=1&!prev_gcd.1.arcane_blast)" );
   rotation_default->add_action( "arcane_barrage,if=buff.arcane_surge.down&(mana.pct<70&cooldown.arcane_surge.remains>45&cooldown.touch_of_the_magi.remains>6)|(mana.deficit>(mana.max-action.arcane_blast.cost))|cooldown.touch_of_the_magi.ready|(cooldown.shifting_power.ready&cooldown.arcane_orb.ready)", "Conserve mana above 70% when Evocation is further than your next Touch" );
-  rotation_default->add_action( "arcane_blast,if=((target.health.pct>35&talent.arcane_bombardment)|!variable.alt_rotation)&(!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down))", "Blast for filler if you're not in execute or you already have some charges from another effect" );
+  rotation_default->add_action( "arcane_blast,if=!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down)", "Blast for filler if you're not in execute or you already have some charges from another effect" );
   rotation_default->add_action( "arcane_barrage" );
 }
 //arcane_apl_end
