@@ -235,18 +235,17 @@ void marksmanship( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26" );
   cds->add_action( "salvo,if=active_enemies>2|cooldown.volley.remains<10" );
 
-  st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&(buff.steady_focus.remains<8|buff.steady_focus.down&!buff.trueshot.up)" );
-  st->add_action( "rapid_fire,if=buff.trick_shots.remains<execute_time" );
+  st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
   st->add_action( "kill_shot,if=buff.razor_fragments.up" );
-  st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
-  st->add_action( "explosive_shot" );
   st->add_action( "rapid_fire,if=talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time" );
-  st->add_action( "kill_shot,if=!buff.trueshot.up" );
+  st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
+  st->add_action( "explosive_shot,if=active_enemies>1" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up|active_enemies>1", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)|(buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Overwrite freely if it can cleave." );
   st->add_action( "kill_shot" );
+  st->add_action( "explosive_shot" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up" );
   st->add_action( "barrage,if=talent.rapid_fire_barrage" );
@@ -317,18 +316,17 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26" );
   cds->add_action( "salvo,if=active_enemies>2|cooldown.volley.remains<10" );
 
-  st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&(buff.steady_focus.remains<8|buff.steady_focus.down&!buff.trueshot.up)" );
-  st->add_action( "rapid_fire,if=buff.trick_shots.remains<execute_time" );
+  st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
   st->add_action( "kill_shot,if=buff.razor_fragments.up" );
-  st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
-  st->add_action( "explosive_shot" );
   st->add_action( "rapid_fire,if=talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time" );
-  st->add_action( "kill_shot,if=!buff.trueshot.up" );
+  st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
+  st->add_action( "explosive_shot,if=active_enemies>1" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up|active_enemies>1", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );
   st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)|(buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Overwrite freely if it can cleave." );
   st->add_action( "kill_shot" );
+  st->add_action( "explosive_shot" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up" );
   st->add_action( "barrage,if=talent.rapid_fire_barrage" );
