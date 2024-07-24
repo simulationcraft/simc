@@ -1800,11 +1800,11 @@ public:
     bool can_trigger_cc = triggers.clearcasting == TO_ALWAYS || ( triggers.clearcasting == TO_DEFAULT && harmful && !background );
     if ( p()->spec.clearcasting->ok() && can_trigger_cc )
     {
-      // Best guess at how this is gonna work, assuming the bugs are fixed.
-      // TODO: Currently it looks like CC is 16% instead of the stated 8% (on ab/abar at least)
-      // Use override to sim the bugged behavior for now
       double chance = p()->spec.clearcasting->effectN( 2 ).percent();
-      chance *= 1.0 + p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      chance += p()->talents.illuminated_thoughts->effectN( 1 ).percent();
+      // Arcane Blast gets an additional 5% chance. Not mentioned in the spell data (or even the description).
+      if ( id == 30451 )
+        chance += 0.05;
       p()->trigger_clearcasting( chance );
     }
 
