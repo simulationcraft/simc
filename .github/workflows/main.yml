@@ -254,12 +254,16 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "HTML JSON"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
