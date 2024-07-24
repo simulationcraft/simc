@@ -157,6 +157,7 @@ struct abomination_pet_t;
 
 namespace runeforge
 {
+void hysteria( special_effect_t& );
 void apocalypse( special_effect_t& );
 void fallen_crusader( special_effect_t& );
 void razorice( special_effect_t& );
@@ -701,6 +702,7 @@ public:
     propagate_const<buff_t*> death_and_decay;
 
     // Runeforges
+    propagate_const<buff_t*> rune_of_hysteria;
     propagate_const<buff_t*> stoneskin_gargoyle;
     propagate_const<buff_t*> unholy_strength;  // runeforge of the fallen crusader
 
@@ -792,6 +794,7 @@ public:
 
   struct runeforge_t
   {
+    bool rune_of_hysteria;
     bool rune_of_apocalypse;
     // Razorice has one for each weapon because they don't proc from the same abilities
     bool rune_of_razorice_mh, rune_of_razorice_oh;
@@ -913,6 +916,7 @@ public:
   struct gains_t
   {
     // Shared
+    propagate_const<gain_t*> rune_of_hysteria;
     propagate_const<gain_t*> antimagic_shell;  // RP from magic damage absorbed
     gain_t* rune;                              // Rune regeneration
     propagate_const<gain_t*> coldthirst;
@@ -1317,6 +1321,7 @@ public:
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* anti_magic_zone_buff;
     const spell_data_t* frost_shield_buff;
+    const spell_data_t* rune_of_hysteria_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1754,6 +1759,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void invalidate_cache( cache_e ) override;
+  double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void copy_from( player_t* source ) override;
   void merge( player_t& other ) override;
@@ -11227,7 +11233,48 @@ void runeforge::unending_thirst( special_effect_t& effect )
   debug_cast<death_knight_t*>( effect.player )->runeforge.rune_of_unending_thirst = true;
 }
 
+void runeforge::hysteria( special_effect_t& effect )
+{
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.player );
+
+  if ( !p->runeforge.rune_of_hysteria )
+  {
+    p->runeforge.rune_of_hysteria = true;
+  }
+
+  // The RP cap increase stacks
+  p->resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) *
+                                               ( 1.0 + p->talent.unholy_bond->effectN( 2 ).percent() );
+
+  // The buff doesn't stack and doesn't have an increased effect
+  // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
+  effect.custom_buff = p->buffs.rune_of_hysteria;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Resource Manipulation ====================================================
+
+double death_knight_t::resource_gain( resource_e resource_type, double amount, gain_t* g, action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource_type, amount, g, action );
+
+  if ( runeforge.rune_of_hysteria && resource_type == RESOURCE_RUNIC_POWER )
+  {
+    // Unholy Bond is implemented in the buff, so no need to boost it here.
+    double bonus_rp = amount * buffs.rune_of_hysteria->value();
+    actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
+  }
+
+  return actual_amount;
+}
+
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
   double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
@@ -12529,6 +12576,10 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::strin
   if ( util::str_compare_ci( runeforge_name, "unending_thirst" ) )
     return expr_t::create_constant( "unending_thirst_runeforge_expression", runeforge.rune_of_unending_thirst );
 
+  // Hysteria
+  if ( util::str_compare_ci( runeforge_name, "hysteria" ) )
+    return expr_t::create_constant( "hysteria_runeforge_expression", runeforge.rune_of_hysteria );
+
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
   if ( !warning )
@@ -13211,6 +13262,7 @@ void death_knight_t::init_spells()
   spell.blood_draw_cooldown     = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
   spell.razorice_debuff         = find_spell( 51714 );
   spell.razorice_damage         = find_spell( 50401 );
+  spell.rune_of_hysteria_buff   = find_spell( 326918 );
 
   // Diseases
   spell.blood_plague =
@@ -13733,6 +13785,10 @@ void death_knight_t::create_buffs()
       make_fallback<runic_corruption_buff_t>( talent.soul_reaper.ok() || specialization() == DEATH_KNIGHT_UNHOLY, this,
                                               "runic_corruption", spell.runic_corruption );
 
+  buffs.rune_of_hysteria = make_buff( this, "rune_of_hysteria", spell.rune_of_hysteria_buff )
+                               ->set_default_value_from_effect( 1 )
+                               ->apply_affecting_aura( talent.unholy_bond );
+
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen = make_fallback<antimagic_shell_buff_horseman_t>(
       talent.rider.horsemens_aid.ok(), this, "antimagic_shell_horsemen", pet_spell.rider_ams );
@@ -14165,6 +14221,7 @@ void death_knight_t::init_gains()
   gains.rune                     = get_gain( "Rune Regeneration" );
   gains.start_of_combat_overflow = get_gain( "Start of Combat Overflow" );
   gains.coldthirst               = get_gain( "Coldthirst" );
+  gains.rune_of_hysteria         = get_gain( "Rune of Hysteria" );
 
   // Blood
   gains.bonestorm        = get_gain( "Bonestorm" );
@@ -15169,6 +15226,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
+    unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
 
   /*
