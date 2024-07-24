@@ -3185,12 +3185,10 @@ struct bt_dummy_buff_t final : public druid_buff_t
 // Brambles =================================================================
 struct brambles_buff_t final : public druid_absorb_buff_t
 {
-  action_t*& damage;
   double coeff;
 
   brambles_buff_t( druid_t* p )
     : base_t( p, "brambles", p->talent.brambles ),
-      damage( p->active.brambles_reflect ),
       coeff( find_effect( this, A_SCHOOL_ABSORB ).ap_coeff() )
   {
     set_quiet( true );
@@ -3208,9 +3206,7 @@ struct brambles_buff_t final : public druid_absorb_buff_t
     sim->print_debug( "{} {} absorbs {}", *player, *this, amount );
 
     if ( s && s->action->player && s->action->player != player )
-    {
-      damage->execute_on_target( s->action->player, amount );
-    }
+      p()->active.brambles_reflect->execute_on_target( s->action->player, amount );
 
     return amount;
   }
@@ -3590,6 +3586,20 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
 
       if ( berserk_frenzy_mul && p()->buff.b_inc_cat->check() )
         residual_action::trigger( p()->active.frenzied_assault, s->target, s->result_amount * berserk_frenzy_mul );
+    }
+  }
+
+  void gain_energize_resource( resource_e rt, double a, gain_t* g ) override
+  {
+    base_t::gain_energize_resource( rt, a, g );
+
+    // TODO: coiled to spring procs when you end up at 5 CP from a crit while not in berserk
+    if ( p()->bugs && attack_critical &&
+         rt == RESOURCE_COMBO_POINT && p()->resources.current[ RESOURCE_COMBO_POINT ] == 5 &&
+         p()->talent.coiled_to_spring.ok() && !p()->buff.coiled_to_spring->check() &&
+         !p()->buff.b_inc_cat->check() )
+    {
+      p()->buff.coiled_to_spring->trigger();
     }
   }
 };
@@ -7002,7 +7012,7 @@ struct fury_of_elune_t final : public druid_spell_t
 
   ground_aoe_params_t params;
   const spell_data_t* tick_spell;
-  buff_t* energize;
+  buff_t* energize_buff;
   action_t* damage = nullptr;
   action_t* boundless = nullptr;
   timespan_t tick_period;
@@ -7010,8 +7020,8 @@ struct fury_of_elune_t final : public druid_spell_t
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
                    const spell_data_t* sd = nullptr, buff_t* b = nullptr ),
     tick_spell( sd ? sd : p->find_spell( 211545 ) ),
-    energize( b ? b : p->buff.fury_of_elune ),
-    tick_period( find_effect( energize, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER ).period() )
+    energize_buff( b ? b : p->buff.fury_of_elune ),
+    tick_period( find_effect( energize_buff, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER ).period() )
   {
     track_cd_waste = true;
 
@@ -7047,7 +7057,7 @@ struct fury_of_elune_t final : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    energize->trigger( params.duration() );
+    energize_buff->trigger( params.duration() );
 
     params.start_time( timespan_t::min() )  // reset start time
       .target( target );
@@ -12082,14 +12092,15 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t* a )
 {
   auto actual = player_t::resource_gain( r, amount, g, a );
-  auto over = amount - actual;
-
   if ( r == RESOURCE_COMBO_POINT )
   {
+    auto over = amount - actual;
+
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
     {
       auto avail =
         std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
+
       if ( avail > 0 )
         g->overflow[ r ] -= avail;
 
