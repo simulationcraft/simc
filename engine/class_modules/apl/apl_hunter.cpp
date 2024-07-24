@@ -391,18 +391,18 @@ void survival( player_t* p )
   cds->add_action( "berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault|time_to_die<13" );
   cds->add_action( "muzzle" );
   cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
-  cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=cooldown.coordinated_assault.remains<2*gcd" );
-  cds->add_action( "use_item,name=manic_grieftorch,if=cooldown.coordinated_assault.remains<2*gcd" );
-  cds->add_action( "use_item,name=beacon_to_the_beyond,if=cooldown.coordinated_assault.remains<2*gcd" );
+  cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1" );
+  cds->add_action( "use_item,name=manic_grieftorch" );
+  cds->add_action( "use_item,name=beacon_to_the_beyond" );
   cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   cleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
   cleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
-  cleave->add_action( "fury_of_the_eagle" );
   cleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   cleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
   cleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
+  cleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   cleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   cleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
   cleave->add_action( "mongoose_bite,if=buff.merciless_blows.up" );
