@@ -2762,7 +2762,7 @@ static std::string generate_traits_hash( player_t* player )
     const trait_data_t* trait = nullptr;
     unsigned rank = 0;
     unsigned index = 0;
-    bool is_choice = node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3;
+    bool is_choice = node.size() > 0 ? node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3 : false;
 
     for ( size_t i = 0; i < node.size(); i++ )
     {
