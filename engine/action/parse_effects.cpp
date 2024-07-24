@@ -1300,14 +1300,6 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 
   auto& data = pack.data;
 
-  auto adjust_recharge_multiplier_warning = [ this, &data ] {
-    if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
-    {
-      _action->sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
-                           "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *_action );
-    }
-  };
-
   if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
     switch ( eff.misc_value1() )
@@ -1321,8 +1313,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
       case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
       case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
-      case P_COOLDOWN:      adjust_recharge_multiplier_warning();
-                            str = "cooldown";               return &recharge_multiplier_effects;
+      case P_COOLDOWN:      str = "cooldown";               return &recharge_multiplier_effects;
       default:              return nullptr;
     }
   }
@@ -1345,14 +1336,12 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
   {
     str = "cooldown";
-    adjust_recharge_multiplier_warning();
     return &recharge_multiplier_effects;
   }
   else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY ||
             eff.subtype() == A_MOD_RECHARGE_RATE )
   {
     str = "recharge rate";
-    adjust_recharge_multiplier_warning();
     return &recharge_rate_effects;
   }
 
