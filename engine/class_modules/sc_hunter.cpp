@@ -4755,6 +4755,7 @@ struct wailing_arrow_t : public aimed_shot_base_t
       : hunter_ranged_attack_t( n, p, p->talents.wailing_arrow_damage )
     {
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+
       dual = true;
     }
   };
@@ -4769,6 +4770,7 @@ struct wailing_arrow_t : public aimed_shot_base_t
 
     primary_damage = p->get_background_action<primary_damage_t>( "wailing_arrow_primary" );
     primary_damage->stats = stats;
+    primary_damage->base_aoe_multiplier = base_aoe_multiplier;
 
     splash_damage = p->get_background_action<splash_damage_t>( "wailing_arrow_splash" );
     add_child( splash_damage );
@@ -4793,9 +4795,12 @@ struct wailing_arrow_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( state );
 
-    primary_damage->execute_on_target( state->target );
     if ( state->chain_target == 0 )
+    {
+      primary_damage->aoe = state->n_targets;
+      primary_damage->execute_on_target( state->target );
       splash_damage->execute_on_target( state->target );
+    }
   }
 
   bool ready() override
