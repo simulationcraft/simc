@@ -6166,7 +6166,8 @@ struct bestial_wrath_t: public hunter_spell_t
     parse_options( options_str );
 
     //Specifically set to true for 10.1 class trinket 
-    harmful = true;
+    if( !is_precombat )
+      harmful = true;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
