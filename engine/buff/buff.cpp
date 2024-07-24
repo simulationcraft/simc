@@ -1375,7 +1375,18 @@ buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& c
 {
   if ( !is_fallback )
   {
-    stack_change_callback = cb;
+    stack_change_callback.clear();
+    stack_change_callback.push_back( cb );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::add_stack_change_callback( const buff_stack_change_callback_t& cb )
+{
+  if ( !is_fallback )
+  {
+    stack_change_callback.push_back( cb );
   }
 
   return this;
@@ -2139,8 +2150,8 @@ void buff_t::decrement( int stacks, double value )
 
       last_stack_change = sim->current_time();
 
-      if ( stack_change_callback )
-        stack_change_callback( this, old_stack, current_stack );
+      for ( const auto& cb : stack_change_callback )
+        cb( this, old_stack, current_stack );
     }
   }
 }
@@ -2537,8 +2548,8 @@ void buff_t::bump( int stacks, double value )
 
     last_stack_change = sim->current_time();
 
-    if ( stack_change_callback )
-      stack_change_callback( this, old_stack, current_stack );
+    for ( const auto& cb : stack_change_callback )
+      cb( this, old_stack, current_stack );
   }
 
   if ( expire_at_max_stack && at_max_stacks() )
@@ -2723,10 +2734,8 @@ void buff_t::expire( timespan_t delay )
     invalidate_cache();
   adjust_haste();
 
-  if ( stack_change_callback )
-  {
-    stack_change_callback( this, old_stack, current_stack );
-  }
+  for ( const auto& cb : stack_change_callback )
+    cb( this, old_stack, current_stack );
 
   if ( player )
     player->trigger_ready();
@@ -3376,8 +3385,8 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
       last_stack_change = sim->current_time();
 
-      if ( stack_change_callback )
-        stack_change_callback( this, old_stack, current_stack );
+      for ( const auto& cb : stack_change_callback )
+        cb( this, old_stack, current_stack );
     }
 
     if ( player )
