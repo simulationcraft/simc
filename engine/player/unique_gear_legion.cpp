@@ -1650,11 +1650,11 @@ void item::acrid_catalyst_injector( special_effect_t& effect )
 
   dbc_proc_callback_t* cb = new injector_proc_cb_t( effect, { crit, haste, mastery }, all );
 
-  all -> stack_change_callback = [ cb ] ( buff_t*, int prev, int /*cur*/ )
+  all -> set_stack_change_callback( [ cb ] ( buff_t*, int prev, int /*cur*/ )
   {
     if ( prev == 0 ) cb -> deactivate();
     if ( prev == 1 ) cb -> activate();
-  };
+  } );
 }
 
 // Vitality Resonator ======================================================

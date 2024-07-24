@@ -113,7 +113,7 @@ public:
   buff_refresh_behavior refresh_behavior;
   buff_refresh_duration_callback_t refresh_duration_callback;
   buff_stack_behavior stack_behavior;
-  buff_stack_change_callback_t stack_change_callback;
+  std::vector<buff_stack_change_callback_t> stack_change_callback;
   buff_expire_callback_t expire_callback;
   bool allow_precombat;
 
@@ -406,6 +406,7 @@ public:
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
+  buff_t* add_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* set_expire_callback( const buff_expire_callback_t& cb );
   buff_t* set_reverse_stack_count( int count );
   buff_t* set_stack_behavior( buff_stack_behavior b );
