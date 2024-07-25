@@ -1195,6 +1195,7 @@ public:
   void trigger_elemental_assault( const action_state_t* state );
   void trigger_tempest_strikes( const action_state_t* state );
   void trigger_stormflurry( const action_state_t* state );
+  void trigger_primordial_wave_damage( shaman_spell_t* spell );
 
   // TWW Triggers
   template <typename T>
@@ -6504,7 +6505,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( exec_type == spell_variant::NORMAL && p()->buff.t31_4pc_ele->up() && p()->action.lava_burst_mc )
     {
       p()->buff.t31_4pc_ele->decrement();
-      p()->action.lava_burst_pw->set_target( execute_state->target );
+      p()->action.lava_burst_mc->set_target( execute_state->target );
       if ( !p()->action.lava_burst_mc->target_list().empty() )
       {
         p()->action.lava_burst_mc->schedule_execute();
@@ -6512,22 +6513,7 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     // Trigger primordial wave if there's targets to trigger it on
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && exec_type == spell_variant::NORMAL &&
-         p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
-    {
-      p()->buff.primordial_wave->decrement();
-      p()->action.lava_burst_pw->set_target( execute_state->target );
-      if ( !p()->action.lava_burst_pw->target_list().empty() )
-      {
-        p()->action.lava_burst_pw->schedule_execute();
-      }
-      p()->trigger_splintered_elements( p()->action.lava_burst_pw );
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
-      {
-        auto max_stacks = p()->buff.t31_4pc_ele->max_stack();
-        p()->buff.t31_4pc_ele->trigger( max_stacks );
-      }
-    }
+    p()->trigger_primordial_wave_damage( this );
 
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -6737,16 +6723,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
-         exec_type == spell_variant::NORMAL && p()->buff.primordial_wave->up() )
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      p()->action.lightning_bolt_pw->set_target( target );
-      if ( !p()->action.lightning_bolt_pw->target_list().empty() )
-      {
-        p()->action.lightning_bolt_pw->execute();
-      }
-      p()->trigger_splintered_elements( p()->action.lightning_bolt_pw );
-      p()->buff.primordial_wave->expire();
+      p()->trigger_primordial_wave_damage( this );
     }
 
     shaman_spell_t::execute();
@@ -9632,6 +9611,15 @@ struct tempest_t : public shaman_spell_t
   {
     p()->buff.tempest->expire();
 
+    // PW needs to execute before the primary spell executes so we can retain proper
+    // Maelstrom Weapon stacks for the AoE Lightning Bolt
+    /*
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->trigger_primordial_wave_damage( this );
+    }
+    */
+
     shaman_spell_t::execute();
 
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
@@ -11643,6 +11631,45 @@ void shaman_t::trigger_stormflurry( const action_state_t* state )
 
   make_event<stormstrike_t::stormflurry_event_t>( *sim, static_cast<stormstrike_base_t*>( a ),
                                                  state->target, delay );
+}
+
+void shaman_t::trigger_primordial_wave_damage( shaman_spell_t* spell )
+{
+  if ( !talent.primordial_wave.ok() )
+  {
+    return;
+  }
+
+  if ( spell->exec_type != spell_variant::NORMAL || !buff.primordial_wave->up() )
+  {
+    return;
+  }
+
+  action_t* damage_spell = nullptr;
+
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    damage_spell = debug_cast<shaman_spell_t*>( action.lightning_bolt_pw );
+  }
+  else if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    damage_spell = debug_cast<shaman_spell_t*>( action.lava_burst_pw );
+
+    if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
+    {
+      auto max_stacks = buff.t31_4pc_ele->max_stack();
+      buff.t31_4pc_ele->trigger( max_stacks );
+    }
+  }
+
+  damage_spell->set_target( spell->target );
+  if ( !damage_spell->target_list().empty() )
+  {
+    damage_spell->execute();
+  }
+  trigger_splintered_elements( damage_spell );
+
+  buff.primordial_wave->expire();
 }
 
 template <typename T>
