@@ -297,6 +297,7 @@ private:
   propagate_const<action_t *> damage;            // spender damage periodic action
   propagate_const<action_t *> heal;              // spender heal periodic action
   propagate_const<action_t *> purified_spirit;   // purified spirit damage / heal
+  propagate_const<buff_t *> path_of_resurgence;  // path of resurgence buff
 
   bool fallback;
 
@@ -336,8 +337,6 @@ private:
   };
 
 public:
-  propagate_const<buff_t *> path_of_resurgence;  // path of resurgence buff
-
   aspect_of_harmony_t();
   void construct_buffs( monk_t *player );
   void construct_actions( monk_t *player );
@@ -345,6 +344,7 @@ public:
   void trigger( action_state_t *state );
   void trigger_flat( double amount );
   void trigger_spend();
+  void trigger_path_of_resurgence();
 
   bool heal_ticking();
 };

@@ -5397,7 +5397,7 @@ struct chi_wave_t : public monk_spell_t
   {
     if ( !p()->buff.chi_wave->up() )
       return;
-    p()->buff.aspect_of_harmony.path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     p()->buff.chi_wave->expire();
     monk_spell_t::execute();
 
@@ -5461,7 +5461,7 @@ struct chi_burst_t : monk_spell_t
 
   void execute() override
   {
-    p()->buff.aspect_of_harmony.path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     monk_spell_t::execute();
     if ( buff )
       buff->expire();
@@ -6319,8 +6319,8 @@ aspect_of_harmony_t::aspect_of_harmony_t()
     damage( nullptr ),
     heal( nullptr ),
     purified_spirit( nullptr ),
-    fallback( false ),
-    path_of_resurgence( nullptr )
+    path_of_resurgence( nullptr ),
+    fallback( false )
 {
 }
 
@@ -6335,10 +6335,10 @@ void aspect_of_harmony_t::construct_buffs( monk_t *player )
   accumulator = new accumulator_t( player, this );
   spender     = new spender_t( player, this );
 
-  // path_of_resurgence =
-  //     make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), this, "path_of_resurgence",
-  //                         player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
-  //         ->apply_affecting_aura( player->talent.monk.chi_wave );
+  path_of_resurgence =
+      make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
+                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
+          ->apply_affecting_aura( player->talent.monk.chi_wave );
 }
 
 void aspect_of_harmony_t::construct_actions( monk_t *player )
@@ -6389,6 +6389,14 @@ void aspect_of_harmony_t::trigger_spend()
     return;
 
   spender->trigger();
+}
+
+void aspect_of_harmony_t::trigger_path_of_resurgence()
+{
+  if ( fallback )
+    return;
+
+  path_of_resurgence->trigger();
 }
 
 bool aspect_of_harmony_t::heal_ticking()
@@ -8455,12 +8463,7 @@ void monk_t::create_buffs()
             active_actions.courage_of_the_white_tiger->execute();
           } );
 
-  // Master of Harmony
   buff.aspect_of_harmony.construct_buffs( this );
-  buff.aspect_of_harmony.path_of_resurgence =
-      make_buff_fallback( talent.master_of_harmony.path_of_resurgence->ok(), this, "path_of_resurgence",
-                          talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
-          ->apply_affecting_aura( talent.monk.chi_wave );
 
   buff.balanced_stratagem_magic =
       make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic",
