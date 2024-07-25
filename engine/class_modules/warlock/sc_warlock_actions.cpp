@@ -124,13 +124,13 @@ using namespace helpers;
 
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
-        int shards_used = as<int>( cost() );
+        int shards_used = as<int>( last_resource_cost );
         int base_shards = as<int>( base_cost() ); // Power Overwhelming is ignoring any cost changes
 
         if ( p()->talents.soul_conduit.ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
-          make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
+          make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : shards_used ) );
         }
 
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
