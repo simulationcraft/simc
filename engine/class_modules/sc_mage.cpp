@@ -6406,7 +6406,9 @@ struct controlled_instincts_t final : public spell_t
     spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 444487 : 444720 ) )
   {
     background = true;
-    aoe = -1;
+    // Only hits 5 targets despite max_targets being 6
+    aoe -= 1;
+    // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
     reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
     base_dd_min = base_dd_max = 1.0;
   }
