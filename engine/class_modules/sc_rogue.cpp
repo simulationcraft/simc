@@ -1166,6 +1166,7 @@ public:
     proc_t* count_the_odds_ambush;
     proc_t* count_the_odds_ss;
     proc_t* count_the_odds_dispatch;
+    proc_t* count_the_odds_coup_de_grace;
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
@@ -7616,6 +7617,12 @@ struct coup_de_grace_t : public rogue_attack_t
       }
     }
 
+    bool procs_main_gauche() const override
+    { return true; }
+
+    bool procs_blade_flurry() const override
+    { return true; }
+
     bool procs_nimble_flurry() const override
     { return true; }
   };
@@ -7676,6 +7683,15 @@ struct coup_de_grace_t : public rogue_attack_t
         p()->buffs.finality_eviscerate->trigger();
     }
 
+    if ( p()->talent.outlaw.summarily_dispatched->ok() )
+    {
+      int cp = cast_state( execute_state )->get_combo_points();
+      if ( cp >= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).base_value() )
+      {
+        p()->buffs.summarily_dispatched->trigger();
+      }
+    }
+
     // Extra Flawless Form stacks are currently granted prior to the impact, so self-affecting
     if ( p()->get_target_data( execute_state->target )->debuffs.fazed->check() )
     {
@@ -7687,11 +7703,16 @@ struct coup_de_grace_t : public rogue_attack_t
     attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
     attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
 
-    // ALPHA TOCHECK -- Doesn't trigger CttC currently
-    if ( !p()->bugs )
+    if ( !is_secondary_action() )
     {
-      trigger_cut_to_the_chase( execute_state );
+      trigger_restless_blades( execute_state );
+      if ( !p()->bugs )
+      {
+        trigger_cut_to_the_chase( execute_state ); // ALPHA TOCHECK -- Doesn't trigger CttC currently
+      }
     }
+
+    trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
   }
@@ -7706,6 +7727,9 @@ struct coup_de_grace_t : public rogue_attack_t
 
   bool has_amount_result() const override
   { return true; }
+
+  bool consumes_echoing_reprimand() const override
+  { return false; }
 };
 
 // TWW1 Set Bonus ===========================================================
@@ -11917,6 +11941,7 @@ void rogue_t::init_procs()
   procs.count_the_odds_ambush                 = get_proc( "Count the Odds (Ambush)" );
   procs.count_the_odds_ss                     = get_proc( "Count the Odds (Sinister Strike)" );
   procs.count_the_odds_dispatch               = get_proc( "Count the Odds (Dispatch)" );
+  procs.count_the_odds_coup_de_grace          = get_proc( "Count the Odds (Coup de Grace)" );
   procs.count_the_odds_capped                 = get_proc( "Count the Odds Capped" );
   procs.roll_the_bones_wasted                 = get_proc( "Roll the Bones Wasted" );
   procs.t31_buff_extended                     = get_proc( "(T31) Roll the Bones Buff Extended" );
