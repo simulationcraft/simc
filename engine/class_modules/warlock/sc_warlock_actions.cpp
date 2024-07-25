@@ -3578,6 +3578,8 @@ using namespace helpers;
     infernal_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
     {
+      energize_type = action_energize::ON_CAST;
+
       affected_by.havoc = true;
     }
 
