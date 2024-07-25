@@ -72,8 +72,9 @@ struct player_effect_t
 
   std::string value_type_name( uint8_t ) const;
 
-  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
-                          std::function<std::string( double )> ) const;
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
+                          const std::function<std::string( uint32_t )>&,
+                          const std::function<std::string( double )>& ) const;
 };
 
 // effects dependent on target state
@@ -108,8 +109,9 @@ struct target_effect_t
 
   std::string value_type_name( uint8_t ) const;
 
-  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
-                          std::function<std::string( double )> ) const;
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
+                          const std::function<std::string( uint32_t )>&,
+                          const std::function<std::string( double )>& ) const;
 };
 
 struct modify_effect_t
@@ -744,8 +746,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
   template <typename U>
   void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
-                          std::function<std::string( uint32_t )> note_fn = nullptr,
-                          std::function<std::string( double )> val_str_fn = nullptr )
+                          const std::function<std::string( uint32_t )>& note_fn = nullptr,
+                          const std::function<std::string( double )>& val_str_fn = nullptr )
   {
     auto c = entries.size();
     if ( !c )
@@ -824,7 +826,8 @@ public:
 
   template <typename W = parse_action_base_t, typename V>
   void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
-                          std::function<std::string( double )> val_str_fn = nullptr )
+                          const std::function<std::string( uint32_t )>& note_fn = nullptr,
+                          const std::function<std::string( double )>& val_str_fn = nullptr )
   {
     auto _this = dynamic_cast<W*>( _action );
     assert( _this );
@@ -851,7 +854,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      entries[ i ].print_parsed_line( os, *_action->sim, false, nullptr, val_str_fn );
+      entries[ i ].print_parsed_line( os, *_action->sim, false, note_fn, val_str_fn );
     }
   }
 };
