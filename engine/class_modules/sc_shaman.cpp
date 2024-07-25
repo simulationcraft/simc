@@ -8684,6 +8684,7 @@ struct shaman_totem_pet_t : public pet_t
   totem_pulse_action_t<T>* pulse_action;
   event_t* pulse_event;
   timespan_t pulse_amplitude;
+  bool pulse_on_expire;
 
   // Summon related functionality
   std::string pet_name;
@@ -8694,6 +8695,7 @@ struct shaman_totem_pet_t : public pet_t
       pulse_action( nullptr ),
       pulse_event( nullptr ),
       pulse_amplitude( timespan_t::zero() ),
+      pulse_on_expire( true ),
       summon_pet( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
@@ -8981,19 +8983,22 @@ void shaman_totem_pet_t<T>::summon( timespan_t duration )
 template <typename T>
 void shaman_totem_pet_t<T>::dismiss( bool expired )
 {
-  // Disable last (partial) tick on dismiss, as it seems not to happen in game atm
-  if ( pulse_action && pulse_event && expiration && expiration->remains() == timespan_t::zero() )
+  if ( pulse_action && pulse_event && expired && pulse_on_expire )
   {
-    if ( pulse_event->remains() > timespan_t::zero() )
-      pulse_action->pulse_multiplier =
-          pulse_event->remains() / debug_cast<totem_pulse_event_t<T>*>( pulse_event )->real_amplitude;
+    auto e = debug_cast<totem_pulse_event_t<T>*>( pulse_event );
+    if ( pulse_event->remains() > timespan_t::zero() && pulse_event->remains() != e->real_amplitude )
+    {
+      pulse_action->pulse_multiplier = ( e->real_amplitude - pulse_event->remains() ) / e->real_amplitude;
+    }
     pulse_action->execute();
   }
 
   event_t::cancel( pulse_event );
 
   if ( summon_pet )
+  {
     summon_pet->dismiss();
+  }
 
   pet_t::dismiss( expired );
 }
