@@ -21908,6 +21908,34 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc153626
 
+Name             : Arcane Echo (id=464515) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Internal Cooldown: 0.2 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Attributes       : .......x ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Limit N (165)
+Effects          :
+#1 (id=1175799)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to all nearby enemies. Deals reduced damage beyond $s1 targets.
+
 Name             : Living Bomb (id=464884) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
