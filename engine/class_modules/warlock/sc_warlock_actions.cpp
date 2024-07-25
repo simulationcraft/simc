@@ -69,7 +69,8 @@ using namespace helpers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : spell_t( token, p, s ),
-      affected_by()
+      affected_by(),
+      triggers()
     {
       may_crit = true;
       tick_may_crit = true;
@@ -3351,6 +3352,8 @@ using namespace helpers;
         travel_speed = p->talents.channel_demonfire_travel->missile_speed();
 
         affected_by.chaotic_energies = true;
+
+        triggers.decimation = false;
 
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
