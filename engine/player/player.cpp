@@ -3001,7 +3001,8 @@ static void enable_all_talents( player_t* player )
         continue;
 
       if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
-           range::contains( trait->id_spec, player->specialization() ) )
+           range::contains( trait->id_spec, player->specialization() ) ||
+           trait_data_t::is_hero_trait_available( trait, player->type, player->specialization(), player->is_ptr() ) )
       {
         auto _tree = static_cast<talent_tree>( trait->tree_index );
 

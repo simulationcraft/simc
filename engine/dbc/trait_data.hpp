@@ -5,12 +5,10 @@
 #ifndef SC_TRAIT_DATA_HPP
 #define SC_TRAIT_DATA_HPP
 
-#include "util/span.hpp"
-#include "util/string_view.hpp"
-
 #include "client_data.hpp"
 #include "sc_enums.hpp"
 #include "specialization.hpp"
+#include "util/span.hpp"
 
 #include <vector>
 
@@ -37,15 +35,17 @@ struct trait_data_t
 
   // static functions
   static const trait_data_t* find( unsigned trait_node_entry_id, bool ptr = false );
-  static const trait_data_t* find( talent_tree tree, util::string_view name, unsigned class_id, specialization_e spec,
+  static const trait_data_t* find( talent_tree tree, std::string_view name, unsigned class_id, specialization_e spec,
                                    bool ptr = false );
-  static const trait_data_t* find_tokenized( talent_tree tree, util::string_view name, unsigned class_id,
+  static const trait_data_t* find_tokenized( talent_tree tree, std::string_view name, unsigned class_id,
                                              specialization_e spec, bool ptr = false );
   static std::vector<const trait_data_t*> find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id = 0,
                                                          specialization_e spec = SPEC_NONE, bool ptr = false );
   static const trait_data_t* find_by_trait_definition( unsigned trait_definition_id, bool ptr = false );
   static const std::string_view get_hero_tree_name( unsigned id_sub_tree, bool ptr = false );
   static unsigned get_hero_tree_id( std::string_view name, bool ptr = false );
+  static bool is_hero_trait_available( const trait_data_t* trait, player_e type, specialization_e spec,
+                                       bool ptr = false );
   static bool is_granted( const trait_data_t* trait, player_e type, specialization_e spec, bool ptr = false );
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
