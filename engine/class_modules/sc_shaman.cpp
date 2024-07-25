@@ -9345,7 +9345,7 @@ struct searing_totem_pulse_t : public spell_totem_action_t
   searing_totem_pulse_t( spell_totem_pet_t* totem )
     : spell_totem_action_t( "searing_bolt", totem, totem->find_spell( 3606 ) )
   {
-    hasted_pulse = true;
+    //hasted_pulse = true;
   }
 
   void init() override
