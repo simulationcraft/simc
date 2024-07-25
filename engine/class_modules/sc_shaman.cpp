@@ -9630,6 +9630,8 @@ struct tempest_t : public shaman_spell_t
 
   void execute() override
   {
+    p()->buff.tempest->expire();
+
     shaman_spell_t::execute();
 
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
@@ -9641,8 +9643,6 @@ struct tempest_t : public shaman_spell_t
       p()->generate_maelstrom_weapon( execute_state->action,
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
-
-    p()->buff.tempest->expire();
 
     if ( p()->talent.storm_swell.ok() && execute_state->n_targets == 1 )
     {
