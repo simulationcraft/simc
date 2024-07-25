@@ -7636,12 +7636,14 @@ void hunter_t::create_buffs()
 
   buffs.summon_fenryr = 
     make_buff( this, "summon_fenryr", find_spell ( 459735 ) )
+    -> modify_duration( talents.dire_frenzy -> effectN( 1 ).time_value() )
     -> set_default_value_from_effect( 2 )
     -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.summon_hati = 
     make_buff( this, "summon_hati", find_spell( 459738 ) )
-    -> set_default_value_from_effect( 2 );
+      -> modify_duration( talents.dire_frenzy -> effectN( 1 ).time_value() )
+      -> set_default_value_from_effect( 2 );
 
   // Survival
 
