@@ -5702,9 +5702,6 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( !is_secondary_action() && p()->talent.deathstalker.corrupt_the_blood->ok() && result_is_hit( execute_state->result ) )
-      td( execute_state->target )->debuffs.corrupt_the_blood->expire(); // remove and reset existing corrupt the blood stacks
-
     trigger_scent_of_blood();
     trigger_hand_of_fate( execute_state );
 
@@ -5741,6 +5738,12 @@ struct rupture_t : public rogue_attack_t
       p()->active.internal_bleeding->trigger_secondary_action( state->target,
                                                                cast_state( state )->get_combo_points( p()->bugs ) );
     }
+
+    // 2024-07-25 -- Rupture and Deathmark Rupture trigger one stack on cast
+    if ( p()->active.deathstalker.corrupt_the_blood )
+    {
+      p()->active.deathstalker.corrupt_the_blood->execute_on_target( state->target );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5762,7 +5765,8 @@ struct rupture_t : public rogue_attack_t
       poisoned_edges_damage->trigger_residual_action( d->state, multiplier );
     }
 
-    if ( p()->active.deathstalker.corrupt_the_blood )
+    // 2024-07-25 -- Currently does not stack from Deathmark ticks
+    if ( !is_secondary_action() && p()->active.deathstalker.corrupt_the_blood )
     {
       p()->active.deathstalker.corrupt_the_blood->execute_on_target( d->target );
     }
@@ -5774,8 +5778,6 @@ struct rupture_t : public rogue_attack_t
 
     // Delay to allow the demise to reset() and update get_active_dots() count
     make_event( *p()->sim, [this] { trigger_scent_of_blood(); } );
-    
-    td( d->target )->debuffs.corrupt_the_blood->expire();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
