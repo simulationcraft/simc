@@ -1778,6 +1778,7 @@
       { "data_type": "i", "field": "id_spec_set" },
       { "data_type": "i", "field": "id_trait_node_group", "ref": "TraitNodeGroup" },
       { "data_type": "i", "field": "id_trait_node", "ref": "TraitNode" },
+      { "data_type": "i", "field": "unk_9" },
       { "data_type": "i", "field": "id_trait_currency" },
       { "data_type": "i", "field": "req_points" },
       { "data_type": "i", "field": "flags" },
