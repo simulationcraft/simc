@@ -494,6 +494,10 @@ namespace warlock
 
     hero.touch_of_rancora = find_talent_spell( talent_tree::HERO, "Touch of Rancora" ); // Should be ID 429893
 
+    hero.secrets_of_the_coven = find_talent_spell( talent_tree::HERO, "Secrets of the Coven" ); // Should be ID 428518
+    hero.infernal_bolt = find_spell( 434506 );
+    hero.infernal_bolt_buff = find_spell( 433891 );
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
@@ -687,6 +691,10 @@ namespace warlock
                                   if ( cur == 0 )
                                   {
                                     make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
+                                    
+                                    if ( hero.secrets_of_the_coven.ok() )
+                                      buffs.infernal_bolt->trigger();
+
                                     diabolic_ritual = 2;
                                   }
                                 } );
@@ -721,6 +729,8 @@ namespace warlock
                                  if ( cur == 0 )
                                    warlock_pet_list.pit_lords.spawn();
                                } );
+
+    buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
   }
 
   void warlock_t::create_pets()

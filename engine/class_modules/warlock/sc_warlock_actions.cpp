@@ -874,6 +874,14 @@ using namespace helpers;
       }
     }
 
+    bool ready() override
+    {
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     double execute_time_pct_multiplier() const override
     {
       double m = warlock_spell_t::execute_time_pct_multiplier();
@@ -2786,6 +2794,14 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
+    bool ready() override
+    {
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     double execute_time_pct_multiplier() const override
     {
       double m = warlock_spell_t::execute_time_pct_multiplier();
@@ -3574,6 +3590,79 @@ using namespace helpers;
   };
 
   // Destruction Actions End
+  // Diabolist Actions Begin
+  
+  struct infernal_bolt_t : public warlock_spell_t
+  {
+    infernal_bolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
+    {
+      energize_type = action_energize::ON_CAST;
+
+      affected_by.havoc = true;
+      affected_by.ashen_remains = true;
+
+      if ( demonology() )
+      {
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
+      }
+
+      if ( destruction() )
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+    }
+
+    bool ready() override
+    {
+      if ( !p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.rune_of_shadows->effectN( 2 ).percent();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.demonic_calling.ok() )
+        p()->buffs.demonic_calling->trigger();
+
+      p()->buffs.burn_to_ashes->decrement();
+      p()->buffs.infernal_bolt->decrement();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = warlock_spell_t::composite_crit_chance();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+      return m;
+    }
+  };
+
+  // Diabolist Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
@@ -3825,6 +3914,9 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_diabolist( util::string_view action_name, util::string_view options_str )
   {
+    if ( action_name == "infernal_bolt" )
+      return new infernal_bolt_t( this, options_str );
+
     return nullptr;
   }
 
