@@ -6389,15 +6389,6 @@ struct volatile_magic_t final : public spell_t
     aoe = -1;
     reduced_aoe_targets = p->talents.volatile_magic->effectN( 2 ).base_value();
   }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    spell_t::available_targets( tl );
-
-    range::erase_remove( tl, target );
-
-    return tl.size();
-  }
 };
 
 struct controlled_instincts_t final : public spell_t
@@ -6475,6 +6466,7 @@ struct embedded_splinter_t final : public mage_spell_t
   {
     mage_spell_t::last_tick( d );
     int stack = d->current_stack();
+    assert( stack > 0 );
 
     range::erase_remove( p()->embedded_splinters, d );
 
@@ -6482,10 +6474,22 @@ struct embedded_splinter_t final : public mage_spell_t
     sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
     assert( p()->state.embedded_splinters >= 0 );
 
-    if ( p()->action.volatile_magic && !sim->event_mgr.canceled )
+    auto vm = p()->action.volatile_magic;
+    if ( vm && !sim->event_mgr.canceled )
     {
-      for ( int i = 0; i < stack; i++ )
-        p()->action.volatile_magic->execute_on_target( d->target );
+      double old_aoe_mult = vm->base_aoe_multiplier;
+      double old_mult = vm->base_multiplier;
+
+      // TODO: Only does increased damage to one (seemingly random) target
+      // Maybe add random target selection?
+      if ( p()->bugs )
+        vm->base_aoe_multiplier /= stack;
+      vm->base_multiplier *= stack;
+
+      vm->execute_on_target( d->target );
+
+      vm->base_aoe_multiplier = old_aoe_mult;
+      vm->base_multiplier = old_mult;
     }
   }
 };
