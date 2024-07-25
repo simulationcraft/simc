@@ -1343,6 +1343,23 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     str = "recharge rate";
     return &recharge_rate_effects;
   }
+  else if ( eff.subtype() == A_MODIFY_SCHOOL )
+  {
+    auto school = dbc::get_school_type( eff.misc_value1() );
+    if ( pack.data.buff )
+    {
+      pack.data.buff->add_stack_change_callback( [ a = _action, school ]( buff_t*, int old_, int new_ ) {
+        if ( !old_ )
+          a->set_school_override( school );
+        else if ( !new_ )
+          a->clear_school_override();
+      } );
+    }
+    pack.data.type |= parse_flag_e::ALLOW_ZERO;
+    flat = true;
+    str = fmt::format( "spell school|{}", util::school_type_string( school ) );
+    return &spell_school_effects;
+  }
 
   return nullptr;
 }
@@ -1350,6 +1367,13 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
                                          std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
 {
+  auto splits = util::string_split<std::string_view>( type_str, "|" );
+  auto tok1 = splits[ 0 ];
+  auto tok2 = std::string( val_str );
+
+  if ( splits.size() > 1 )
+    tok2 = splits[ 1 ];
+
   if ( data.buff )
   {
     std::string stack_str;
@@ -1369,23 +1393,22 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
     }
 
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, stack_str, data.buff->name(), data.buff->data().id(),
-                               i );
+                               _action->id, tok1, tok2, stack_str, data.buff->name(), data.buff->data().id(), i );
   }
   else if ( mastery && !data.func )
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
   else if ( data.func )
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
-                               _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->name(), _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
   else
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
 }
 
@@ -1574,6 +1597,7 @@ size_t parse_action_base_t::total_effects_count()
          crit_chance_effects.size() +
          crit_chance_multiplier_effects.size() +
          crit_damage_effects.size() +
+         spell_school_effects.size() +
          target_multiplier_effects.size() +
          target_crit_chance_effects.size() +
          target_crit_damage_effects.size();
@@ -1627,6 +1651,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( crit_chance_effects );
   initialize_buff_list_on_vector( crit_chance_multiplier_effects );
   initialize_buff_list_on_vector( crit_damage_effects );
+  initialize_buff_list_on_vector( spell_school_effects );
 }
 
 void parse_action_base_t::consume_buff_list()

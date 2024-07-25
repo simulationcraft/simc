@@ -4481,37 +4481,6 @@ public:
   }
 };
 
-// Custom School Change Buff struct
-struct school_change_buff_t : public death_knight_buff_base_t<buff_t>
-{
-  school_change_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_base_t( p, name, spell )
-  {
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    death_knight_buff_base_t::start( stacks, value, duration );
-    for ( auto& action : actions )
-    {
-      action->set_school_override( dbc::get_school_type( school ) );
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    death_knight_buff_base_t::expire_override( expiration_stacks, remaining_duration );
-    for ( auto& action : actions )
-    {
-      action->clear_school_override();
-    }
-  }
-
-public:
-  std::vector<action_t*> actions;
-  uint32_t school;
-};
-
 // ==========================================================================
 // Death Knight Actions
 // ==========================================================================
@@ -4591,20 +4560,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         this->not_a_proc = true;
       }
     }
-  }
-
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<player_effect_t>& pack,
-                                                   double& val_mul, std::string& str, bool& flat, bool force ) override
-  {
-    if ( eff.subtype() == A_MODIFY_SCHOOL && ( action_base_t::data().affected_by_all( eff ) || force ) )
-    {
-      str                                                         = "school change";
-      pack.data.type                                              = parse_flag_e::ALLOW_ZERO;
-      debug_cast<school_change_buff_t*>( pack.data.buff )->school = eff.misc_value1();
-      debug_cast<school_change_buff_t*>( pack.data.buff )->actions.push_back( this );
-      return &school_change_effects;
-    }
-    return action_base_t::get_effect_vector( eff, pack, val_mul, str, flat, force );
   }
 
   std::string full_name() const
@@ -13813,13 +13768,12 @@ void death_knight_t::create_buffs()
   buffs.grim_reaper =
       make_fallback( talent.deathbringer.grim_reaper.ok(), this, "grim_reaper", spell.grim_reaper )->set_quiet( true );
 
-  buffs.bind_in_darkness = make_fallback<school_change_buff_t>( talent.deathbringer.bind_in_darkness.ok(), this,
-                                                                "bind_in_darkness", spell.bind_in_darkness_buff )
-                               ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
+  buffs.bind_in_darkness =
+      make_fallback( talent.deathbringer.bind_in_darkness.ok(), this, "bind_in_darkness", spell.bind_in_darkness_buff )
+          ->set_trigger_spell( talent.deathbringer.bind_in_darkness );
 
-  buffs.dark_talons_shadowfrost =
-      make_fallback<school_change_buff_t>( talent.deathbringer.dark_talons.ok(), this, "dark_talons_shadowfrost",
-                                           spell.dark_talons_shadowfrost_buff )
+  buffs.dark_talons_shadowfrost = make_fallback(
+      talent.deathbringer.dark_talons.ok(), this, "dark_talons_shadowfrost", spell.dark_talons_shadowfrost_buff )
           ->set_quiet( true );
 
   buffs.dark_talons_icy_talons =

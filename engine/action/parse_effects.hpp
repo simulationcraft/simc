@@ -781,6 +781,7 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> crit_chance_effects;
   std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
+  std::vector<player_effect_t> spell_school_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
   std::vector<target_effect_t> target_crit_damage_effects;
