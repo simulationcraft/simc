@@ -5351,7 +5351,7 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
   static unsigned explosion_spell_id( bool excess, bool primary )
   {
     if ( excess )
-      return 438674;
+      return primary ? 438674 : 464884;
     else
       return primary ? 44461 : 453251;
   }
@@ -5360,11 +5360,17 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( explosion_spell_id( excess_, primary_ ) ) ),
     excess( excess_ )
   {
-    aoe = -1;
+    // Use parsed max_targets value if available.
+    if ( aoe == 0 )
+      aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
     base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
+    // TODO: the +100% damage effect from Excess Fire should only apply to Frost
+    // They also have a new label effect in Frost spec aura that currently does nothing, keep an eye out on that
+    if ( p->bugs || p->specialization() == MAGE_FROST )
+      base_dd_multiplier *= 1.0 + p->talents.excess_fire->effectN( 3 ).percent();
   }
 
   void init() override
@@ -5430,12 +5436,9 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     max_spread_targets()
   {
     background = true;
-
-    if ( !excess && p->talents.lit_fuse.ok() )
-    {
-      max_spread_targets = as<size_t>( p->talents.lit_fuse->effectN( 3 ).base_value() );
-      max_spread_targets += as<size_t>( p->talents.blast_zone->effectN( 4 ).base_value() );
-    }
+    // Data comes from talents.lit_fuse but needs to be available even when the talent isn't taken
+    max_spread_targets = as<size_t>( p->find_spell( 450716 )->effectN( 3 ).base_value() );
+    max_spread_targets += as<size_t>( p->talents.blast_zone->effectN( 4 ).base_value() );
 
     explosion = get_action<living_bomb_explosion_t>( spell_name( true, excess, primary ), p, excess, primary );
     if ( primary )
@@ -5462,38 +5465,23 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
     if ( primary )
     {
-      std::vector<player_t*> targets = explosion->target_list(); // make a copy
-      if ( !excess )
+      // We're gonna be manipulating the vector, so make a copy
+      std::vector<player_t*> targets = explosion->target_list();
+      // TODO: Living Bomb can currently spread to the original target, but only
+      // if another target is nearby
+      if ( !p()->bugs || targets.size() == 1 )
+        range::erase_remove( targets, target );
+      rng().shuffle( targets.begin(), targets.end() );
+
+      size_t spread = std::min( max_spread_targets, targets.size() );
+      for ( size_t i = 0; i < spread; i++ )
+        dot_spread->execute_on_target( targets[ i ] );
+
+      if ( p()->talents.convection.ok() && spread == 0 )
+        dot_spread->execute_on_target( target );
+
+      if ( excess )
       {
-        bool was_spread = false;
-        rng().shuffle( targets.begin(), targets.end() );
-        size_t i = 0;
-        for ( auto t : targets )
-        {
-          if ( i >= max_spread_targets )
-            break;
-
-          if ( t == target )
-            continue;
-
-          dot_spread->execute_on_target( t );
-          was_spread = true;
-          i++;
-        }
-
-        if ( p()->talents.convection.ok() && !was_spread )
-          dot_spread->execute_on_target( target );
-      }
-      else
-      {
-        for ( auto t : targets )
-        {
-          if ( t == target )
-            continue;
-
-          dot_spread->execute_on_target( t );
-        }
-
         p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
         p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
       }
