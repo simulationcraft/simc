@@ -6437,6 +6437,7 @@ struct embedded_splinter_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 443740 : 444735 ) )
   {
     background = true;
+    dot_max_stack += as<int>( p->talents.splinterstorm->effectN( 3 ).base_value() );
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t duration ) const override
