@@ -7686,13 +7686,13 @@ void mage_t::create_buffs()
                                       ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                       ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                         {
-                                          int count = 1;
-                                          // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
-                                          if ( buffs.arcane_surge->check() )
-                                            count += as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
-                                          // TODO: in game, the bolts are slightly delayed, this generally shouldn't matter
-                                          for ( int i = 0; i < count; i++ )
-                                            action.arcane_assault->execute_on_target( target );
+                                          action.arcane_assault->execute_on_target( target );
+                                          if ( talents.energized_familiar.ok() && buffs.arcane_surge->check() )
+                                          {
+                                            // TODO: talent says it does 4 instead of 1, but seems to just be +4 in game
+                                            int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
+                                            make_repeating_event( *sim, 75_ms, [ this ] { action.arcane_assault->execute_on_target( target ); }, count );
+                                          }
                                           // TODO: the bolts also have a chance to generate extra mana, but it doesn't work in game
                                           // and spell data has no information about proc rate
                                         } )
