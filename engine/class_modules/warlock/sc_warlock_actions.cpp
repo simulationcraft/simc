@@ -873,6 +873,14 @@ using namespace helpers;
       }
     }
 
+    bool ready() override
+    {
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     double execute_time_pct_multiplier() const override
     {
       double m = warlock_spell_t::execute_time_pct_multiplier();
@@ -2783,6 +2791,14 @@ using namespace helpers;
       add_child( fnb_action );
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+    }
+
+    bool ready() override
+    {
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
     }
 
     double execute_time_pct_multiplier() const override
