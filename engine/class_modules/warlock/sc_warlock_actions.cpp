@@ -2530,6 +2530,9 @@ using namespace helpers;
     {
       harmful = true; // Set to true because of 10.1 class trinket
       may_crit = false;
+      resource_current = RESOURCE_SOUL_SHARD; // For Cruelty of Kerxan proccing
+
+      triggers.diabolic_ritual = p->hero.cruelty_of_kerxan.ok();
     }
 
     void execute() override
@@ -2599,6 +2602,15 @@ using namespace helpers;
           if ( t->is_active() )
             t->buffs.reign_of_tyranny->trigger( demon_counter );
         }
+      }
+
+      if ( p()->hero.cruelty_of_kerxan.ok() )
+      {
+        timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
+
+        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
+        p()->buffs.ritual_mother->extend_duration( p(), reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
       }
     }
   };
