@@ -502,6 +502,8 @@ namespace warlock
 
     hero.infernal_machine = find_talent_spell( talent_tree::HERO, "Infernal Machine" ); // Should be ID 429917
 
+    hero.flames_of_xoroth = find_talent_spell( talent_tree::HERO, "Flames of Xoroth" ); // Should be ID 429657
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );

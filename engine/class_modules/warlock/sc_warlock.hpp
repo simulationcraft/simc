@@ -484,7 +484,7 @@ public:
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
 
-    player_talent_t flames_of_xoroth;
+    player_talent_t flames_of_xoroth; // TODO: 2024-07-25 Flames of Xoroth spell data has unexpected labels for effects 3 and 4, may be causing unintended values in game
     player_talent_t abyssal_dominion;
     player_talent_t gloom_of_nathreza;
 
