@@ -404,6 +404,9 @@ public:
   /// Maximum number of DoT stacks.
   int dot_max_stack;
 
+  /// Whether or not the dot damage ignores number of stacks.
+  bool dot_ignore_stack;
+
   /// Cost of using the ability.
   std::array<parsed_value_t<double>, RESOURCE_MAX> base_costs;
   

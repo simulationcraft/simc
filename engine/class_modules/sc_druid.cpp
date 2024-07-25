@@ -3902,13 +3902,6 @@ struct adaptive_swarm_t final : public cat_attack_t
       else if ( BASE::sim->log )
         BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
     }
-
-    double calculate_tick_amount( action_state_t* s, double m ) const override
-    {
-      auto stack = BASE::find_dot( s->target )->current_stack();
-
-      return BASE::calculate_tick_amount( s, m / stack );
-    }
   };
 
   using damage_swarm_t = adaptive_swarm_base_t<cat_attack_t, druid_heal_t>;

@@ -416,6 +416,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     dot_duration(),
     hasted_dot_duration(),
     dot_max_stack( 1 ),
+    dot_ignore_stack(),
     base_costs(),
     secondary_costs(),
     base_costs_per_tick(),
@@ -754,6 +755,8 @@ void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect
   }
 
   radius = spelleffect_data.radius_max();
+
+  dot_ignore_stack = spelleffect_data.flags( spelleffect_attribute::EX_SUPPRESS_STACKING );
 }
 
 void action_t::parse_effect_period( const spelleffect_data_t& spelleffect_data )
@@ -1968,7 +1971,9 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( d->state->composite_crit_chance() ) )
       d->state->result = RESULT_CRIT;
 
-    d->state->result_amount = calculate_tick_amount( d->state, d->get_tick_factor() * d->current_stack() );
+    auto stack = dot_ignore_stack ? 1 : d->current_stack();
+
+    d->state->result_amount = calculate_tick_amount( d->state, d->get_tick_factor() * stack );
 
     assess_damage( amount_type( d->state, true ), d->state );
 
