@@ -113,6 +113,7 @@ actions.finish=between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.rema
 actions.finish+=/between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&(raid_event.adds.remains>8|raid_event.adds.in<raid_event.adds.remains|!raid_event.adds.up)
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
 actions.finish+=/cold_blood
+actions.finish+=/coup_de_grace
 actions.finish+=/dispatch
 
 # Stealth
