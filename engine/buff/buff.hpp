@@ -83,6 +83,7 @@ public:
   size_t default_value_effect_idx;
   double default_value_effect_multiplier;
   unsigned schools;
+  gcd_haste_type gcd_type;
 
   /**
    * Is buff manually activated or not (eg. a proc).
@@ -143,7 +144,6 @@ protected:
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
   std::vector<cache_e> invalidate_list;
-  gcd_haste_type gcd_type;
 
   // report data
 public:

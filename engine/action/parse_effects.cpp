@@ -8,6 +8,7 @@
 #include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "report/decorators.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
 
 std::string player_effect_t::value_type_name( uint8_t t ) const
@@ -1297,8 +1298,6 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 
   if ( !force && !_action->data().affected_by_all( eff ) )
     return nullptr;
-
-  auto& data = pack.data;
 
   if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {

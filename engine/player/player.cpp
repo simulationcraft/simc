@@ -3815,16 +3815,24 @@ void player_t::init_assessors()
 
 void player_t::init_finished()
 {
+  // Add dynamic cooldowns first before action_t::init_finished so actions can adjust their behavior accordingly if
+  // necessary.
+  range::for_each( cooldown_list, [ this ]( cooldown_t* c ) {
+    if ( c->hasted )
+    {
+      dynamic_cooldown_list.push_back( c );
+    }
+  } );
 
-  for (auto action : action_list)
+  for ( auto action : action_list )
   {
     try
     {
-      action_init_finished(*action);
+      action_init_finished( *action );
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
     }
   }
 
@@ -3834,12 +3842,11 @@ void player_t::init_finished()
     {
       action->init_finished();
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
     }
   }
-
 
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
@@ -3857,20 +3864,13 @@ void player_t::init_finished()
 
   range::sort( resource_thresholds );
 
-  range::for_each( cooldown_list, [this]( cooldown_t* c ) {
-    if ( c->hasted )
-    {
-      dynamic_cooldown_list.push_back( c );
-    }
-  } );
-
   // Sort outbound assessors
   assessor_out_damage.sort();
 
   // Print items to debug log
   if ( sim->debug )
   {
-    range::for_each( items, [this]( const item_t& item ) {
+    range::for_each( items, [ this ]( const item_t& item ) {
       if ( item.active() )
       {
         sim->print_debug( "{}", item );
@@ -3880,7 +3880,9 @@ void player_t::init_finished()
 
   if ( !precombat_state_map.empty() )
   {
-    sim->error( "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and and may produce incorrect or misleading results." );
+    sim->error(
+      "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and may "
+      "produce incorrect or misleading results." );
 
     struct buff_state_t
     {
@@ -3890,8 +3892,8 @@ void player_t::init_finished()
     };
 
     std::unordered_map<buff_t*, buff_state_t> precombat_buff_state;
-    auto update_buff_state = [ this, &precombat_buff_state ] ( std::string_view buff_name, std::string_view type, std::string_view value )
-    {
+    auto update_buff_state = [ this, &precombat_buff_state ]( std::string_view buff_name, std::string_view type,
+                                                              std::string_view value ) {
       buff_t* buff = buff_t::find( this, buff_name );
       if ( !buff )
       {
@@ -3906,7 +3908,8 @@ void player_t::init_finished()
       else if ( type == "remains" )
         precombat_buff_state[ buff ].duration = timespan_t::from_seconds( util::to_double( value ) );
       else
-        throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
+        throw std::invalid_argument(
+            fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
     };
 
     for ( const auto& v : precombat_state_map )
@@ -3926,7 +3929,8 @@ void player_t::init_finished()
       {
         if ( splits.size() != 3 )
         {
-          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
+          throw std::invalid_argument(
+              fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
         }
 
         update_buff_state( name, splits[ 2 ], v.second );
@@ -3935,7 +3939,8 @@ void player_t::init_finished()
       {
         if ( splits.size() != 2 )
         {
-          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
+          throw std::invalid_argument(
+              fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
         }
 
         auto cd = find_cooldown( name );
@@ -3950,11 +3955,12 @@ void player_t::init_finished()
       }
       else
       {
-        throw std::invalid_argument( fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
+        throw std::invalid_argument(
+            fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
       }
     }
 
-    for ( const auto& [buff, buff_state] : precombat_buff_state )
+    for ( const auto& [ buff, buff_state ] : precombat_buff_state )
     {
       add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
     }
@@ -3968,35 +3974,18 @@ void player_t::init_finished()
       stat_pct_buff_type stat_pct;
       switch ( convert_hybrid_stat( c.stat ) )
       {
-        case STAT_CRIT_RATING:
-          stat_pct = STAT_PCT_BUFF_CRIT;
-          break;
-        case STAT_HASTE_RATING:
-          stat_pct = STAT_PCT_BUFF_HASTE;
-          break;
-        case STAT_VERSATILITY_RATING:
-          stat_pct = STAT_PCT_BUFF_VERSATILITY;
-          break;
-        case STAT_MASTERY_RATING:
-          stat_pct = STAT_PCT_BUFF_MASTERY;
-          break;
-        case STAT_STRENGTH:
-          stat_pct = STAT_PCT_BUFF_STRENGTH;
-          break;
-        case STAT_AGILITY:
-          stat_pct = STAT_PCT_BUFF_AGILITY;
-          break;
-        case STAT_STAMINA:
-          stat_pct = STAT_PCT_BUFF_STAMINA;
-          break;
-        case STAT_INTELLECT:
-          stat_pct = STAT_PCT_BUFF_INTELLECT;
-          break;
-        case STAT_SPIRIT:
-          stat_pct = STAT_PCT_BUFF_SPIRIT;
-          break;
+        case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
+        case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
+        case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
+        case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
+        case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
+        case STAT_INTELLECT:          stat_pct = STAT_PCT_BUFF_INTELLECT; break;
+        case STAT_SPIRIT:             stat_pct = STAT_PCT_BUFF_SPIRIT; break;
         default:
-          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
+          throw std::invalid_argument(
+            fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
       }
 
       custom_buff = make_buff( this, buff_name )

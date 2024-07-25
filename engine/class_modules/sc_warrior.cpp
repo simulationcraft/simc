@@ -9051,8 +9051,6 @@ void warrior_t::create_buffs()
       ->apply_affecting_aura( talents.arms.spiteful_serenity )
       -> set_stack_change_callback(
         [ this ]( buff_t*, int old_, int new_ ) {
-          cooldown.thunder_clap -> adjust_recharge_multiplier();
-          //
           if ( talents.warrior.blademasters_torment->ok() )
           {
             if ( old_ == 0 )  // Gained Avatar

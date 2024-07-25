@@ -859,17 +859,60 @@ template <typename BASE>
 struct parse_action_effects_t : public BASE, public parse_action_base_t
 {
 private:
-  using base_t = parse_action_effects_t<BASE>;
+  std::vector<buff_t*> _cd_buffs;  // buffs that affect the cooldown of this action
 
 public:
   parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_action_base_t( player, this )
   {}
 
+  void initialize_cooldown_buffs()
+  {
+    if ( !BASE::cooldown )
+      return;
+
+    bool dynamic = range::contains( BASE::player->dynamic_cooldown_list, BASE::cooldown );
+
+    auto vec = recharge_multiplier_effects;  // make a copy
+    vec.insert( vec.end(), recharge_rate_effects.begin(), recharge_rate_effects.end() );
+
+    for ( const auto& i : vec )
+    {
+      if ( i.buff && ( i.buff->gcd_type == gcd_haste_type::NONE || !dynamic ) &&
+           !range::contains( _cd_buffs, i.buff ) )
+      {
+        BASE::sim->print_debug( "action-effects: cooldown {} recharge multiplier adjusted by buff {} ({})",
+                                BASE::cooldown->name(), i.buff->name(), i.buff->data().id() );
+
+        if ( BASE::internal_cooldown->charges )
+        {
+          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            BASE::cooldown->adjust_recharge_multiplier();
+            BASE::internal_cooldown->adjust_recharge_multiplier();
+          } );
+        }
+        else
+        {
+          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            BASE::cooldown->adjust_recharge_multiplier();
+          } );
+        }
+
+        // actions do not necessarily have unique cooldowns, so we need to go through every action and check to see if
+        // the cooldown matches, then add the buff to _cd_buffs so that we don't add duplicate stack_change_callbacks.
+        for ( auto a : BASE::player->action_list )
+          if ( a->cooldown == BASE::cooldown )
+            if ( auto tmp = dynamic_cast<parse_action_effects_t<BASE>*>( a ) )
+              tmp->_cd_buffs.push_back( i.buff );
+      }
+    }
+  }
+
   void init_finished() override
   {
     BASE::init_finished();
     initialize_buff_list();
+    initialize_cooldown_buffs();
   }
 
   void execute() override

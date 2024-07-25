@@ -8362,22 +8362,13 @@ void monk_t::create_buffs()
   buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
                                                      this, "flight_of_the_red_crane", find_spell( 457459 ) );
 
-  auto hotjs_cd_fn = [ this ] {
-    cooldown.strike_of_the_windlord->adjust_recharge_multiplier();
-    cooldown.whirling_dragon_punch->adjust_recharge_multiplier();
-    cooldown.fists_of_fury->adjust_recharge_multiplier();
-    cooldown.rising_sun_kick->adjust_recharge_multiplier();
-  };
-
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
-          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
-          ->set_stack_change_callback( [ hotjs_cd_fn ]( buff_t *, int, int ) { hotjs_cd_fn(); } );
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,

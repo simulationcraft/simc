@@ -3095,18 +3095,6 @@ struct berserk_bear_buff_base_t : public druid_buff_t
     }
 
     base_t::start( s, v, d );
-
-    // only growl needs to be adjusted as mangle & thrash are in dynamic_cooldown_list
-    if ( p()->talent.berserk_ravage.ok() )
-      p()->cooldown.growl->adjust_recharge_multiplier();
-  }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    base_t::expire_override( s, d );
-
-    if ( p()->talent.berserk_ravage.ok() )
-      p()->cooldown.growl->adjust_recharge_multiplier();
   }
 };
 

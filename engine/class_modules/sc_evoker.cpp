@@ -1319,30 +1319,6 @@ struct time_skip_t : public buff_t
     }
   }
 };
-
-struct temporal_burst_t : public buff_t
-{
-  std::vector<cooldown_t*> affected_cooldowns;
-
-  temporal_burst_t( evoker_t* p )
-    : buff_t( p, "temporal_burst", p->talent.chronowarden.temporal_burst_buff ), affected_cooldowns()
-  {
-    set_cooldown( 0_ms );
-    
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    set_default_value_from_effect( 2 );
-
-    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int /* new_ */ ) { update_cooldowns(); } );
-  }
-
-  void update_cooldowns()
-  {
-    for ( auto c : affected_cooldowns )
-    {
-      c->adjust_recharge_multiplier();
-    }
-  }
-};
 }  // namespace buffs
 
 // Base Classes =============================================================
@@ -1842,8 +1818,7 @@ public:
 
     if ( p()->talent.chronowarden.temporal_burst.enabled() )
     {
-      auto& vec = static_cast<buffs::temporal_burst_t*>( p()->buff.temporal_burst.get() )->affected_cooldowns;
-      parse_cd_effects( vec, p()->buff.temporal_burst );
+      parse_effects( p()->buff.temporal_burst );
     }
 
     if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
@@ -7388,15 +7363,6 @@ void evoker_t::init_finished()
       }
     } );
   }
-
-  if ( talent.chronowarden.temporal_burst.ok() )
-  {
-    auto temporal_burst = static_cast<buffs::temporal_burst_t*>( buff.temporal_burst.get() );
-    auto& vec            = temporal_burst->affected_cooldowns;
-
-    std::sort( vec.begin(), vec.end() );
-    vec.erase( std::unique( vec.begin(), vec.end() ), vec.end() );
-  }
 }
 
 role_e evoker_t::primary_role() const
@@ -8072,7 +8038,11 @@ void evoker_t::create_buffs()
                      ->set_default_value_from_effect( 1 )
                      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.temporal_burst = make_buff_fallback<temporal_burst_t>( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst" );
+  buff.temporal_burst =
+      MBF( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst", talent.chronowarden.temporal_burst_buff )
+          ->set_cooldown( 0_ms )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_default_value_from_effect( 2 );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )
