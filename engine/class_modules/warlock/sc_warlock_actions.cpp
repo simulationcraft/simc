@@ -3571,6 +3571,33 @@ using namespace helpers;
   };
 
   // Destruction Actions End
+  // Diabolist Actions Begin
+  
+  struct infernal_bolt_t : public warlock_spell_t
+  {
+    infernal_bolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
+    {
+      affected_by.havoc = true;
+    }
+
+    bool ready() override
+    {
+      if ( !p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.infernal_bolt->decrement();
+    }
+  };
+
+  // Diabolist Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
@@ -3822,6 +3849,9 @@ using namespace helpers;
 
   action_t* warlock_t::create_action_diabolist( util::string_view action_name, util::string_view options_str )
   {
+    if ( action_name == "infernal_bolt" )
+      return new infernal_bolt_t( this, options_str );
+
     return nullptr;
   }
 
