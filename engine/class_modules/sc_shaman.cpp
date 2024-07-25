@@ -9632,6 +9632,8 @@ struct tempest_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
+
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ENHANCEMENT &&
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
