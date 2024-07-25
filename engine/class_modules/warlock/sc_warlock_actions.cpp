@@ -158,41 +158,47 @@ using namespace helpers;
 
         if ( diabolist() && triggers.diabolic_ritual )
         {
-          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() );
+          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+
+          if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
+            adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
+
+          if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
+            adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
           switch( p()->diabolic_ritual )
           {
             case 0:
               if ( p()->buffs.ritual_overlord->check() )
               {
-                p()->buffs.ritual_overlord->extend_duration( p(), adjustment * shards_used );
+                p()->buffs.ritual_overlord->extend_duration( p(), adjustment );
               }
               else
               {
                 p()->buffs.ritual_overlord->trigger();
-                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment * shards_used ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment ); } );
               }
               break;
             case 1:
               if ( p()->buffs.ritual_mother->check() )
               {
-                p()->buffs.ritual_mother->extend_duration( p(), adjustment * shards_used );
+                p()->buffs.ritual_mother->extend_duration( p(), adjustment );
               }
               else
               {
                 p()->buffs.ritual_mother->trigger();
-                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment * shards_used ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment ); } );
               }
               break;
             case 2:
               if ( p()->buffs.ritual_pit_lord->check() )
               {
-                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * shards_used );
+                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment );
               }
               else
               {
                 p()->buffs.ritual_pit_lord->trigger();
-                make_event( sim, 1_ms, [ this, shards_used, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment * shards_used ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment ); } );
               }
               break;
             default:
