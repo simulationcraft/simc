@@ -1,4 +1,4 @@
-// Embellishment data, wow build 11.0.2.55763
+// Embellishment data, wow build 11.0.2.55789
 static const std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
@@ -24,7 +24,7 @@ static const std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Writhing Armor Banding", 11109, 183927 },
   { "Darkmoon Sigil: Radiance", 11299, 184082 },
   { "Darkmoon Sigil: Ascension", 11300, 187512 },
-  { "Darkmoon Sigil: Symbiosis", 11299, 184082 },
+  { "Darkmoon Sigil: Symbiosis", 11302, 187511 },
   { "Darkmoon Sigil: Vivacity", 11301, 187510 },
   { "Pouch of Pocket Grenades", 11209, 186418 },
   { "Concealed Chaos Module", 11210, 186441 },

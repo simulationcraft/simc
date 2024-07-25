@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 11.0.2.55763
+// Permanent item enchants, wow build 11.0.2.55789
 static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -31,7 +31,7 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 7373,  3, 19, 0x20000000, 0x000019d7, "algari_ingenuity"                  },
   { 7374,  1, 19, 0x20000000, 0x00000628, "algari_perception"                 },
   { 7375,  2, 19, 0x20000000, 0x00000628, "algari_perception"                 },
-  { 7379,  3, 19, 0x20000000, 0x00000628, "algari_perception"                 },
+  { 7376,  3, 19, 0x20000000, 0x00000628, "algari_perception"                 },
   { 7377,  1, 19, 0x20000000, 0x000019d7, "algari_resourcefulness"            },
   { 7378,  2, 19, 0x20000000, 0x000019d7, "algari_resourcefulness"            },
   { 7379,  3, 19, 0x20000000, 0x000019d7, "algari_resourcefulness"            },
