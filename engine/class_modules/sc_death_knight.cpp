@@ -14193,10 +14193,12 @@ void death_knight_t::create_buffs()
   buffs.festering_scythe =
       make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe", spell.festering_scythe_buff );
 
-  buffs.festering_scythe_stacks =
-      make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_stacks",
-                     spell.festering_scythe_stacking_buff )
-          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.festering_scythe->trigger(); } );
+  buffs.festering_scythe_stacks = make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_stacks",
+                                                 spell.festering_scythe_stacking_buff )
+                                      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t remains ) {
+                                        if ( remains > 0_ms )
+                                          buffs.festering_scythe->trigger();
+                                      } );
 
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
                                           "unholy_commander", spell.unholy_commander );

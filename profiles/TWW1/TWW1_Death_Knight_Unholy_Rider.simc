@@ -171,16 +171,16 @@ legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=fierce_armor_ki
 feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_3
 finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
 finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
-trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/3131
+trinket1=treacherous_transmitter,id=221023,bonus_id=1540
 trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
 main_hand=wild_hammer,id=56131,ilevel=639,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=637.67
-# gear_strength=35095
+# gear_strength=31488
 # gear_stamina=234518
 # gear_crit_rating=3017
-# gear_haste_rating=21359
+# gear_haste_rating=22804
 # gear_mastery_rating=14441
 # gear_armor=55772
 # set_bonus=thewarwithin_season_1_2pc=1
