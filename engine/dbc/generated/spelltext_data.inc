@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55789
-static const std::array<spelltext_data_t, 26259> __spelltext_data { {
+static const std::array<spelltext_data_t, 26258> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23127,7 +23127,6 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
-  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -24810,7 +24809,7 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 452499, "$@spelldesc452402", 0, 0 },
   { 452514, "$@spelldesc443378", "The aid of the earthen surrounds you, exploding with its ire to inflict $443378w10 Nature damage every $t1 sec.", 0 },
   { 452518, "$@spelldesc443378", "Deal $443378w10 Nature damage split between nearby enemies.", 0 },
-  { 452536, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $456479s1%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", 0, 0 },
+  { 452536, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by ${$456479s1+$452923s1}%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", 0, 0 },
   { 452538, "$@spelldesc452536", 0, 0 },
   { 452542, "$@spelldesc452536", 0, 0 },
   { 452544, "$@spelldesc452536", 0, 0 },
@@ -25511,12 +25510,12 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 457063, "Shroud of Concealment duration increased by ${$s1/1000} sec.", 0, 0 },
   { 457064, "Bolts from Dimensional Rift now deal $s1% of damage dealt to nearby enemies as Fire damage.", 0, 0 },
   { 457066, "Rupture deals an additional $457133s2 Plague damage each time it deals damage, stacking up to $457133u times. Rupture duration increased by ${$s1/1000} sec.", 0, 0 },
-  { 457067, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% for $457115d.", 0, 0 },
+  { 457067, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% and critical strike damage by $457115s2% for $457115d.", 0, 0 },
   { 457068, "$?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.", 0, 0 },
   { 457072, 0, "Pet damage is increased by $s1%.", 0 },
   { 457110, "$@spelldesc448392", 0, 0 },
   { 457114, "Backdraft increases the damage of your next Chaos Bolt by $s1% and increases the critical strike chance of your next Incinerate or Soul Fire by $s2%.", 0, 0 },
-  { 457115, "$@spelldesc457067", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1%.", 0 },
+  { 457115, "$@spelldesc457067", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%.", 0 },
   { 457116, 0, "The damage of your next Aimed Shot is increased by $s1%.", 0 },
   { 457129, "$@spelldesc457052", "Marked by $@auracaster, suffering additional Plague damage from their abilities.", 0 },
   { 457133, "$@spelldesc457066", "$@auracaster's Rupture corrupts your blood, dealing $s2 Plague damage.", 0 },
@@ -26262,7 +26261,10 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55789
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  452536,  0, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $456479s1%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by ${$456479s1+$452923s1}%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%." },
+  {  457067,  0, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% for $457115d.", "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% and critical strike damage by $457115s2% for $457115d." },
+  {  457115,  1, "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1%.", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%." },
 } };
 
 // Spell description variables, wow build 11.0.2.55789
