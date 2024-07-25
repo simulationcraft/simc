@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55789
-static const std::array<spelltext_data_t, 26258> __spelltext_data { {
+static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26225,6 +26225,7 @@ static const std::array<spelltext_data_t, 26258> __spelltext_data { {
   { 464202, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
   { 464203, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
   { 464204, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
+  { 464515, "Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to all nearby enemies. Deals reduced damage beyond $s1 targets.", 0, 0 },
   { 464541, "$@spelldesc453572", "Versatility increased by $w1.", 0 },
   { 464545, "$@spelldesc453572", 0, 0 },
   { 464546, "$@spelldesc453572", "Versatility increased by $w1.", 0 },
