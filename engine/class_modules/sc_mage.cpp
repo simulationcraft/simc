@@ -5284,7 +5284,8 @@ struct fire_blast_t final : public fire_mage_spell_t
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
     cooldown->duration -= 1000 * p->talents.fervent_flickering->effectN( 2 ).time_value();
     cooldown->hasted = true;
-    lit_fuse_targets = as<size_t>( p->talents.lit_fuse->effectN( 2 ).base_value() );
+    // Data comes from talents.lit_fuse but needs to be available even when the talent isn't taken
+    lit_fuse_targets = as<size_t>( p->find_spell( 450716 )->effectN( 2 ).base_value() );
     lit_fuse_targets += as<size_t>( p->talents.blast_zone->effectN( 3 ).base_value() );
 
     if ( p->talents.fire_blast.ok() )
@@ -7104,7 +7105,7 @@ void mage_t::create_actions()
   if ( talents.arcane_echo.ok() )
     action.arcane_echo = get_action<arcane_echo_t>( "arcane_echo", this );
 
-  if ( talents.lit_fuse.ok() || talents.deep_impact.ok() )
+  if ( talents.lit_fuse.ok() || talents.explosivo.ok() || talents.deep_impact.ok() )
     action.living_bomb = get_action<living_bomb_dot_t>( "living_bomb", this );
 
   if ( talents.glacial_assault.ok() )
@@ -7794,8 +7795,7 @@ void mage_t::create_buffs()
                                      ->set_default_value_from_effect( 2 )
                                      ->set_trigger_spell( talents.hyperthermia );
   buffs.lit_fuse                 = make_buff( this, "lit_fuse", find_spell( 453207 ) )
-                                     // Lit Fuse can be applied by Explosivo, but it does nothing without the talent.
-                                     ->set_chance( talents.lit_fuse.ok() );
+                                     ->set_chance( talents.lit_fuse.ok() || talents.explosivo.ok() );
   buffs.majesty_of_the_phoenix   = make_buff( this, "majesty_of_the_phoenix", find_spell( 453329 ) )
                                      ->set_chance( talents.majesty_of_the_phoenix.ok() );
   buffs.pyrotechnics             = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
