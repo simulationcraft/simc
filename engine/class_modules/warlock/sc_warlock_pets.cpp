@@ -500,6 +500,9 @@ struct felguard_melee_t : public warlock_pet_melee_t
       if ( p()->o()->talents.antoran_armaments.ok() )
         m /= 1.0 + p()->buffs.antoran_armaments->check_value();
 
+      if ( p()->o()->hero.flames_of_xoroth.ok() )
+        m /= 1.0 + p()->o()->hero.flames_of_xoroth->effectN( 3 ).percent();
+
       return m;
     }
 

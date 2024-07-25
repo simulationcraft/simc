@@ -307,6 +307,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   }
 
+  if ( hero.flames_of_xoroth.ok() && !guardian )
+    m *= 1.0 + hero.flames_of_xoroth->effectN( 3 ).percent();
+
   return m;
 }
 

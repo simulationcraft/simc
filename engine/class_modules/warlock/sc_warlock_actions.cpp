@@ -46,6 +46,8 @@ using namespace helpers;
 
       // Diabolist
       bool touch_of_rancora = false;
+      bool flames_of_xoroth_dd = false;
+      bool flames_of_xoroth_td = false;
     } affected_by;
 
     struct triggers_t
@@ -95,6 +97,9 @@ using namespace helpers;
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
       affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
+
+      affected_by.flames_of_xoroth_dd = data().affected_by( p->hero.flames_of_xoroth->effectN( 1 ) );
+      affected_by.flames_of_xoroth_td = data().affected_by( p->hero.flames_of_xoroth->effectN( 2 ) );
 
       triggers.decimation = p->talents.decimation.ok();
     }
@@ -411,6 +416,9 @@ using namespace helpers;
       if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
         m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
 
+      if ( diabolist() && affected_by.flames_of_xoroth_dd && p()->hero.flames_of_xoroth.ok() )
+        m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -429,6 +437,9 @@ using namespace helpers;
 
       if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
         m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
+
+      if ( diabolist() && affected_by.flames_of_xoroth_td && p()->hero.flames_of_xoroth.ok() )
+        m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 2 ).percent();
 
       return m;
     }
