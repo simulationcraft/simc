@@ -6513,7 +6513,10 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     // Trigger primordial wave if there's targets to trigger it on
-    p()->trigger_primordial_wave_damage( this );
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      p()->trigger_primordial_wave_damage( this );
+    }
 
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -9618,12 +9621,10 @@ struct tempest_t : public shaman_spell_t
 
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
-    /*
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->trigger_primordial_wave_damage( this );
     }
-    */
 
     shaman_spell_t::execute();
 
