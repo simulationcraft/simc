@@ -559,8 +559,8 @@ public:
     buff_t* stormkeeper;
     buff_t* surge_of_power;
     buff_t* wind_gust;  // Storm Elemental passive 263806
-    buff_t* fusion_of_elements_1;
-    buff_t* fusion_of_elements_2;
+    buff_t* fusion_of_elements_nature;
+    buff_t* fusion_of_elements_fire;
     buff_t* storm_frenzy;
     buff_t* lesser_fire_elemental;
     buff_t* lesser_storm_elemental;
@@ -7166,8 +7166,8 @@ struct icefury_t : public shaman_spell_t
 
     p()->buff.icefury_dmg->trigger( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() );
 
-    p()->buff.fusion_of_elements_1->trigger();
-    p()->buff.fusion_of_elements_2->trigger();
+    p()->buff.fusion_of_elements_nature->trigger();
+    p()->buff.fusion_of_elements_fire->trigger();
 
     p()->buff.icefury_cast->decrement();
   }
@@ -11755,19 +11755,19 @@ void shaman_t::trigger_fusion_of_elements( const action_state_t* state )
 
   bool consumed = false;
 
-  if ( buff.fusion_of_elements_1->up() && dbc::is_school( state->action->school, SCHOOL_NATURE ) )
+  if ( buff.fusion_of_elements_nature->up() && dbc::is_school( state->action->school, SCHOOL_NATURE ) )
   {
-    buff.fusion_of_elements_1->expire();
+    buff.fusion_of_elements_nature->expire();
     consumed = true;
   }
 
-  if ( buff.fusion_of_elements_2->up() && dbc::is_school( state->action->school, SCHOOL_FIRE ) )
+  if ( buff.fusion_of_elements_fire->up() && dbc::is_school( state->action->school, SCHOOL_FIRE ) )
   {
-    buff.fusion_of_elements_2->expire();
+    buff.fusion_of_elements_fire->expire();
     consumed = true;
   }
 
-  if ( consumed && !buff.fusion_of_elements_1->check() && !buff.fusion_of_elements_2->check() )
+  if ( consumed && !buff.fusion_of_elements_nature->check() && !buff.fusion_of_elements_fire->check() )
   {
     action.elemental_blast_foe->execute_on_target( state->target );
   }
@@ -12055,10 +12055,10 @@ void shaman_t::create_buffs()
                           ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
   buff.splintered_elements = new splintered_elements_buff_t( this );
 
-  buff.fusion_of_elements_1 = make_buff( this, "fusion_of_elements_1",
+  buff.fusion_of_elements_nature = make_buff( this, "fusion_of_elements_nature",
                                          talent.fusion_of_elements->effectN( 1 ).trigger() )
                                 ->set_trigger_spell( talent.fusion_of_elements );
-  buff.fusion_of_elements_2 = make_buff( this, "fusion_of_elements_2",
+  buff.fusion_of_elements_fire = make_buff( this, "fusion_of_elements_fire",
                                          talent.fusion_of_elements->effectN( 2 ).trigger() )
                                 ->set_trigger_spell( talent.fusion_of_elements );
   buff.storm_frenzy = make_buff( this, "storm_frenzy", talent.storm_frenzy->effectN( 1 ).trigger() )
