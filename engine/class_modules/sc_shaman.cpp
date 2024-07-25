@@ -644,12 +644,12 @@ public:
     unsigned dre_forced_failures = 2U;
 
     // Icefury Deck-of-Cards RNG parametrization
-    unsigned icefury_positive = 3U;
-    unsigned icefury_total = 25U;
+    unsigned icefury_positive = 0U;
+    unsigned icefury_total = 0U;
 
     // Ancient Fellowship Deck-of-Cards RNG parametrization
-    unsigned ancient_fellowship_positive = 6U;
-    unsigned ancient_fellowship_total = 30U;
+    unsigned ancient_fellowship_positive = 0U;
+    unsigned ancient_fellowship_total = 0U;
 
     // Thunderstrike Ward Uniform RNG proc chance
     // TODO: Proper RNG
@@ -10262,11 +10262,11 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
   add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
 
-  add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 1U, 100U ) );
-  add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 1U, 100U ) );
+  add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 0U, 100U ) );
+  add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 0U, 100U ) );
 
-  add_option( opt_uint( "shaman.ancient_fellowship_positive", options.ancient_fellowship_positive, 1U, 100U ) );
-  add_option( opt_uint( "shaman.ancient_fellowship_total", options.ancient_fellowship_total, 1U, 100U ) );
+  add_option( opt_uint( "shaman.ancient_fellowship_positive", options.ancient_fellowship_positive, 0U, 100U ) );
+  add_option( opt_uint( "shaman.ancient_fellowship_total", options.ancient_fellowship_total, 0U, 100U ) );
 
   add_option( opt_float( "shaman.thunderstrike_ward_proc_chance", options.thunderstrike_ward_proc_chance,
                          0.0, 1.0 ) );
@@ -12330,7 +12330,25 @@ void shaman_t::init_rng()
 
   rng_obj.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
+
+  if ( options.ancient_fellowship_positive == 0 ) {
+    options.ancient_fellowship_positive = talent.ancient_fellowship->effectN( 3 ).base_value();
+  }
+
+  if ( options.ancient_fellowship_total == 0 ) {
+    options.ancient_fellowship_total = talent.ancient_fellowship->effectN( 2 ).base_value();
+  }
+
   rng_obj.ancient_fellowship = get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
+
+  if ( options.icefury_positive == 0 ) {
+    options.icefury_positive = talent.icefury->effectN( 1 ).base_value();
+  }
+
+  if ( options.icefury_total == 0 ) {
+    options.icefury_total = talent.icefury->effectN( 2 ).base_value();
+  }
+
   rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
 }
 
