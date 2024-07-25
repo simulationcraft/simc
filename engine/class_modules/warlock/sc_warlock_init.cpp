@@ -498,6 +498,8 @@ namespace warlock
     hero.infernal_bolt = find_spell( 434506 );
     hero.infernal_bolt_buff = find_spell( 433891 );
 
+    hero.cruelty_of_kerxan = find_talent_spell( talent_tree::HERO, "Cruelty of Kerxan" ); // Should be ID 429902
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
