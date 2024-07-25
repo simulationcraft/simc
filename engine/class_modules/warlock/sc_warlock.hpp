@@ -477,7 +477,7 @@ public:
     player_talent_t cloven_souls;
     const spell_data_t* cloven_soul_debuff;
     player_talent_t touch_of_rancora;
-    player_talent_t secrets_of_the_coven; // TODO: Sargerei Technique, Dark Virtuosity, Nightfall, Imp. Shadow Bolt, Sacrificed Souls, Rune of Shadows, Demonic Calling?, Backdraft, Roaring Blaze, Indiscriminate Flames, Emberstorm, Fire and Brimstone?, Burn to Ashes, Diabolic Embers, Dimension Ripper
+    player_talent_t secrets_of_the_coven; // TODO: Dimension Ripper?
     const spell_data_t* infernal_bolt;
     const spell_data_t* infernal_bolt_buff;
 

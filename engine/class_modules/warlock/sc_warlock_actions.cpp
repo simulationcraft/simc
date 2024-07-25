@@ -3581,6 +3581,16 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
 
       affected_by.havoc = true;
+      affected_by.ashen_remains = true;
+
+      if ( demonology() )
+      {
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
+      }
+
+      if ( destruction() )
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
     bool ready() override
@@ -3591,11 +3601,45 @@ using namespace helpers;
       return warlock_spell_t::ready();
     }
 
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.rune_of_shadows->effectN( 2 ).percent();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
+    }
+
     void execute() override
     {
       warlock_spell_t::execute();
 
+      if ( p()->talents.demonic_calling.ok() )
+        p()->buffs.demonic_calling->trigger();
+
+      p()->buffs.burn_to_ashes->decrement();
       p()->buffs.infernal_bolt->decrement();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = warlock_spell_t::composite_crit_chance();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+      return m;
     }
   };
 
