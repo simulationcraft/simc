@@ -2238,7 +2238,6 @@ struct shadow_hound_t final : public hunter_pet_t
 // Fenryr
 // =========================================================================
 
-//TODO - Fenryr and Hati melee attacks are hitting almost 3 times as hard a dire beast melee attacks in-game BUT the damage of the ravenous leap is accurate, figure out why that is the case.
 struct fenryr_t final : public dire_critter_t
 {
   struct actives_t
@@ -2882,8 +2881,7 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
     if ( !( pet == p() || animal_companion == p() ) )
       return;
 
-    //TODO - 2024-07-16 - Stomp only triggers laceration on primary target
-    if( p() -> active.laceration && s -> result == RESULT_CRIT and s -> chain_target < 1 )
+    if( p() -> active.laceration && s -> result == RESULT_CRIT )
     {
       double amount = s -> result_amount * bleed_amount; 
       residual_action::trigger( p() -> active.laceration, s -> target, amount );
