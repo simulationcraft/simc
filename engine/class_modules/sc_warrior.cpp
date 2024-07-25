@@ -380,6 +380,7 @@ public:
     cooldown_t* reap_the_storm_icd;
     cooldown_t* demolish;
     cooldown_t* t31_fury_4pc_icd;
+    cooldown_t* burst_of_power_icd;
   } cooldown;
 
   // Gains
@@ -2451,8 +2452,9 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
-    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
     {
+      p()->cooldown.burst_of_power_icd->start();
       p()->buff.burst_of_power->decrement();
       p()->resource_gain( RESOURCE_RAGE, rage_from_burst_of_power, p()->gain.burst_of_power );
       // Reset CD after everything resolves
@@ -2726,8 +2728,9 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
-    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
     {
+      p()->cooldown.burst_of_power_icd->start();
       p()->buff.burst_of_power->decrement();
       p()->resource_gain( RESOURCE_RAGE, rage_from_burst_of_power, p()->gain.burst_of_power );
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
@@ -6650,8 +6653,9 @@ struct shield_slam_t : public warrior_attack_t
       p() -> buff.fervid_opposition -> trigger();
     }
 
-    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() )
+    if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
     {
+      p()->cooldown.burst_of_power_icd->start();
       p()->buff.burst_of_power->decrement();
       // Reset CD after everything resolves
       make_event( *p()->sim, [ this ] { p()->cooldown.shield_slam->reset( true ); } );
@@ -8593,6 +8597,8 @@ void warrior_t::init_spells()
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
   cooldown.reap_the_storm_icd -> duration   = talents.slayer.reap_the_storm->internal_cooldown();
   cooldown.demolish                         = get_cooldown( "demolish" );
+  cooldown.burst_of_power_icd               = get_cooldown( "burst_of_power" );
+  cooldown.burst_of_power_icd -> duration = find_spell( 437121 )->internal_cooldown();
 }
 
 // warrior_t::init_items ===============================================
