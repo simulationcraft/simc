@@ -415,6 +415,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* arcane_echo;
     cooldown_t* blast_wave;
     cooldown_t* combustion;
     cooldown_t* comet_storm;
@@ -1867,8 +1868,11 @@ public:
 
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
-        if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo )
+        if ( p()->talents.arcane_echo.ok() && this != p()->action.arcane_echo && p()->cooldowns.arcane_echo->up() )
+        {
           make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
+          p()->cooldowns.arcane_echo->start();
+        }
       }
     }
   }
@@ -7001,6 +7005,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   talents()
 {
   // Cooldowns
+  cooldowns.arcane_echo        = get_cooldown( "arcane_echo_icd"    );
   cooldowns.blast_wave         = get_cooldown( "blast_wave"         );
   cooldowns.combustion         = get_cooldown( "combustion"         );
   cooldowns.comet_storm        = get_cooldown( "comet_storm"        );
@@ -7634,6 +7639,9 @@ void mage_t::init_spells()
   spec.ignite    = find_mastery_spell( MAGE_FIRE );
   spec.icicles   = find_mastery_spell( MAGE_FROST );
   spec.icicles_2 = find_specialization_spell( "Mastery: Icicles", "Rank 2" );
+
+  // Misc
+  cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
 }
 
 void mage_t::init_base_stats()
