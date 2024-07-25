@@ -2778,7 +2778,7 @@ struct icicle_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->bugs ? data().effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
     }
   }
 
@@ -3896,6 +3896,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     triggers.chill = !p->talents.freezing_cold.ok();
     affected_by.time_manipulation = p->talents.freezing_cold.ok() && !p->talents.coldest_snap.ok();
     affected_by.shifting_power = !p->talents.coldest_snap.ok();
+    base_multiplier *= 1.0 + p->spec.frost_mage->effectN( 10 ).percent();
     cooldown->duration += p->talents.coldest_snap->effectN( 1 ).time_value();
     // Since impact needs to know how many targets were actually hit, we
     // delay all impact events by 1 ms so that they occur after execute is done.
@@ -5018,7 +5019,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->bugs ? p->find_spell( 228598 )->effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
     }
 
     if ( p->talents.hailstones.ok() )
