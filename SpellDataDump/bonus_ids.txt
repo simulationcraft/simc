@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55763 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55789 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -3609,7 +3609,7 @@ bonus_id={ 6408 }, stats={ 100% RunSpeed [0.3000] }
 bonus_id={ 6409 }, stats={ 100% Leech [0.3000] }
 bonus_id={ 6410 }, stats={ 100% Avoidance [0.3000] }
 bonus_id={ 6411 }, stats={ 100% unknown [0.3000] }
-bonus_id={ 6416 }, ilevel={ 1 @plvl 1 - 327 @plvl 70 }
+bonus_id={ 6416 }, ilevel={ 5 @plvl 1 - 551 @plvl 80 }
 bonus_id={ 6423 }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6424 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 82 @plvl 50 }
 bonus_id={ 6425 }, desc={ Warforged }, ilevel={ 5 @plvl 1 - 90 @plvl 50 }
@@ -6297,7 +6297,7 @@ bonus_id={ 11297 }, base_ilevel={ 545 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
 bonus_id={ 11300 }, effects={ Ascendance (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
-bonus_id={ 11302 }, effects={ Symbiosis (id=463610, index=0, type=equip) }
+bonus_id={ 11302 }, effects={ Symbiosis (id=463232, index=0, type=equip) }
 bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
 bonus_id={ 11304 }, effects={ Duskthread Lining (id=457677, index=0, type=equip) }
 bonus_id={ 11306 }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }
@@ -6923,3 +6923,15 @@ bonus_id={ 11938 }, ilevel_adjust={ -898 }
 bonus_id={ 11939 }, ilevel_adjust={ -899 }
 bonus_id={ 11940 }, ilevel_adjust={ -900 }
 bonus_id={ 11941 }, effects={ Griftah's All-Purpose Embellishing Powder (id=463429, index=0, type=equip) }
+bonus_id={ 11999 }, quality={ epic }
+bonus_id={ 12001 }, quality={ epic }
+bonus_id={ 12002 }, quality={ epic }
+bonus_id={ 12003 }, quality={ epic }
+bonus_id={ 12004 }, quality={ epic }
+bonus_id={ 12005 }, quality={ epic }
+bonus_id={ 12006 }, quality={ epic }
+bonus_id={ 12007 }, quality={ epic }
+bonus_id={ 12008 }, desc={ Rank 1/4 }, effects={ Adding (id=464659, index=0, type=use) }
+bonus_id={ 12009 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=464725, index=0, type=use) }
+bonus_id={ 12010 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=464726, index=0, type=use) }
+bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=464727, index=0, type=use) }
