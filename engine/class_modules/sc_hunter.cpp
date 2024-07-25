@@ -2461,12 +2461,6 @@ public:
 
 struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
 {
-  struct {
-    double percent = 0;
-    double multiplier = 1;
-    benefit_t* benefit = nullptr;
-  } killer_instinct;
-
   kill_command_db_t( dire_critter_t* p ) :
     kill_command_base_t( p, p -> find_spell( 426703 ) )
   {
