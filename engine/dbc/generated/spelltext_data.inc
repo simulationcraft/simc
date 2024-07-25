@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55789
-static const std::array<spelltext_data_t, 26259> __spelltext_data { {
+static const std::array<spelltext_data_t, 26258> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23127,7 +23127,6 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
-  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -24810,7 +24809,7 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 452499, "$@spelldesc452402", 0, 0 },
   { 452514, "$@spelldesc443378", "The aid of the earthen surrounds you, exploding with its ire to inflict $443378w10 Nature damage every $t1 sec.", 0 },
   { 452518, "$@spelldesc443378", "Deal $443378w10 Nature damage split between nearby enemies.", 0 },
-  { 452536, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $456479s1%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", 0, 0 },
+  { 452536, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by ${$456479s1+$452923s1}%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", 0, 0 },
   { 452538, "$@spelldesc452536", 0, 0 },
   { 452542, "$@spelldesc452536", 0, 0 },
   { 452544, "$@spelldesc452536", 0, 0 },
@@ -26262,7 +26261,8 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55789
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  452536,  0, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $456479s1%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by ${$456479s1+$452923s1}%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%." },
 } };
 
 // Spell description variables, wow build 11.0.2.55789
