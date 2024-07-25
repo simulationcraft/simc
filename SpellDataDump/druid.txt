@@ -16227,7 +16227,8 @@ Effects          :
 #1 (id=986803)   : Apply Aura (6) | Unknown(285)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 400734 | Target: Self (1)
 #2 (id=986804)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (200 -> 300)
 Description      : Every $s2 Rage you spend causes a burst of restorative energy, healing allies within $371982A1 yds for $371982s1.
 Tooltip          : You will trigger a burst of restorative energy after spending $w1 more Rage.
 
@@ -16399,13 +16400,15 @@ Effects          :
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #4 (id=1041487)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (200 -> 130)
 #5 (id=1041740)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+Hotfixed         : Base Value (200 -> 130)
 Description      : Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.
 Tooltip          : Your next Regrowth heals for an additional $s4% and is free, instant, and castable in all forms.
 

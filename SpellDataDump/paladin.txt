@@ -3244,9 +3244,11 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (150 -> 160)
 #2 (id=1036754)  : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Self (1)
+Hotfixed         : Base Value (150 -> 160)
 #3 (id=1161066)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -6160,7 +6162,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=309902)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 #2 (id=1038464)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Avenger's Shield also shields you for $209388d, absorbing $s1% as much damage as it dealt, up to $s2% of your maximum health.
@@ -9006,7 +9009,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=800017)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 300)
 Description      : When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health.
 
 Name             : Hand of the Protector (id=315924) [Spell Family (10), Passive] 
