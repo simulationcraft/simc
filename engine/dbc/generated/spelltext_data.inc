@@ -25510,12 +25510,12 @@ static const std::array<spelltext_data_t, 26258> __spelltext_data { {
   { 457063, "Shroud of Concealment duration increased by ${$s1/1000} sec.", 0, 0 },
   { 457064, "Bolts from Dimensional Rift now deal $s1% of damage dealt to nearby enemies as Fire damage.", 0, 0 },
   { 457066, "Rupture deals an additional $457133s2 Plague damage each time it deals damage, stacking up to $457133u times. Rupture duration increased by ${$s1/1000} sec.", 0, 0 },
-  { 457067, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% for $457115d.", 0, 0 },
+  { 457067, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% and critical strike damage by $457115s2% for $457115d.", 0, 0 },
   { 457068, "$?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.", 0, 0 },
   { 457072, 0, "Pet damage is increased by $s1%.", 0 },
   { 457110, "$@spelldesc448392", 0, 0 },
   { 457114, "Backdraft increases the damage of your next Chaos Bolt by $s1% and increases the critical strike chance of your next Incinerate or Soul Fire by $s2%.", 0, 0 },
-  { 457115, "$@spelldesc457067", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1%.", 0 },
+  { 457115, "$@spelldesc457067", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%.", 0 },
   { 457116, 0, "The damage of your next Aimed Shot is increased by $s1%.", 0 },
   { 457129, "$@spelldesc457052", "Marked by $@auracaster, suffering additional Plague damage from their abilities.", 0 },
   { 457133, "$@spelldesc457066", "$@auracaster's Rupture corrupts your blood, dealing $s2 Plague damage.", 0 },
@@ -26261,8 +26261,10 @@ static const std::array<spelltext_data_t, 26258> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55789
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
   {  452536,  0, "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by $456479s1%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%.", "Flip a Fatebound Coin each time a finishing move consumes $s1 or more combo points. Heads increases the damage of your attacks by ${$456479s1+$452923s1}%, lasting $452923d or until you flip Tails. Tails deals $452538s1 Cosmic damage to your target.\r\n\r\nFor each time the same face is flipped in a row, Heads increases damage by an additional $452923s1% and Tails increases its damage by $452917s1%." },
+  {  457067,  0, "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% for $457115d.", "If you have critically struck with $?s51723[Fan of Knives]$?s197835[Shuriken Storm], increase the critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] by $457115s1% and critical strike damage by $457115s2% for $457115d." },
+  {  457115,  1, "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1%.", "Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%." },
 } };
 
 // Spell description variables, wow build 11.0.2.55789
