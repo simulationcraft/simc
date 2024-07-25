@@ -647,6 +647,10 @@ public:
     unsigned icefury_positive = 3U;
     unsigned icefury_total = 25U;
 
+    // Ancient Fellowship Deck-of-Cards RNG parametrization
+    unsigned ancient_fellowship_positive = 6U;
+    unsigned ancient_fellowship_total = 30U;
+
     // Thunderstrike Ward Uniform RNG proc chance
     // TODO: Proper RNG
     double thunderstrike_ward_proc_chance = 0.1;
@@ -1049,6 +1053,7 @@ public:
     real_ppm_t* lively_totems;
 
     shuffled_rng_t* icefury;
+    shuffled_rng_t* ancient_fellowship;
   } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
@@ -3714,9 +3719,9 @@ struct ancestor_t : public shaman_pet_t
 
     shaman_pet_t::dismiss( expiration );
 
-    if ( expiration && o()->talent.ancient_fellowship.ok() )
+    if ( expiration && o()->talent.ancient_fellowship.ok() && o()->rng_obj.ancient_fellowship->trigger() )
     {
-      o()->summon_ancestor( o()->talent.ancient_fellowship->effectN( 1 ).percent() );
+      o()->summon_ancestor();
     }
   }
 };
@@ -10264,6 +10269,9 @@ void shaman_t::create_options()
   add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 1U, 100U ) );
   add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 1U, 100U ) );
 
+  add_option( opt_uint( "shaman.ancient_fellowship_positive", options.ancient_fellowship_positive, 1U, 100U ) );
+  add_option( opt_uint( "shaman.ancient_fellowship_total", options.ancient_fellowship_total, 1U, 100U ) );
+
   add_option( opt_float( "shaman.thunderstrike_ward_proc_chance", options.thunderstrike_ward_proc_chance,
                          0.0, 1.0 ) );
 }
@@ -12287,6 +12295,7 @@ void shaman_t::init_rng()
 
   rng_obj.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
+  rng_obj.ancient_fellowship = get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
   rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
 }
 
