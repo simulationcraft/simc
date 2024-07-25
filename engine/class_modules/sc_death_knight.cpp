@@ -4494,7 +4494,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
 
   gain_t* gain;
   bool hasted_gcd;
-  std::vector<player_effect_t> school_change_effects;
   double rp_per_tick;
 
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -4595,16 +4594,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void parse_target_effects( Ts&&... args )
   {
     action_base_t::parse_target_effects( std::forward<Ts>( args )... );
-  }
-
-  size_t total_effects_count() override
-  {
-    return action_base_t::total_effects_count() + school_change_effects.size();
-  }
-
-  void print_parsed_custom_type( report::sc_html_stream& os ) override
-  {
-    action_base_t::template print_parsed_type<base_t>( os, &base_t::school_change_effects, "School Change" );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override

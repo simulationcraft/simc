@@ -1569,6 +1569,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::recharge_rate_effects, "Recharge Rate" );
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
+    print_parsed_type( os, &VEC::spell_school_effects, "Spell School" ); // TODO: add school to notes?
     print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
     print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
     print_parsed_type( os, &VEC::target_crit_damage_effects, "Crit Damage on Debuff" );
