@@ -653,7 +653,7 @@ namespace warlock
     // 2024-07-19 - Power Overwhelming appears to grant double the listed value per stack
     buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 * 2.0 )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff )

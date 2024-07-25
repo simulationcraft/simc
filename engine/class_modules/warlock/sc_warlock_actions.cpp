@@ -126,7 +126,7 @@ using namespace helpers;
         int shards_used = as<int>( cost() );
         int base_shards = as<int>( base_cost() ); // Power Overwhelming is ignoring any cost changes
 
-        if ( p()->talents.soul_conduit->ok() )
+        if ( p()->talents.soul_conduit.ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
           make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
@@ -3587,7 +3587,16 @@ using namespace helpers;
 
   void sc_event_t::execute()
   {
-    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+    double soul_conduit_rng = 0.0;
+
+    if ( pl->specialization() == WARLOCK_AFFLICTION )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+
+    if ( pl->specialization() == WARLOCK_DEMONOLOGY )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 2 ).percent();
+
+    if ( pl->specialization() == WARLOCK_DESTRUCTION )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 3 ).percent();
 
     for ( int i = 0; i < shards_used; i++ )
     {
