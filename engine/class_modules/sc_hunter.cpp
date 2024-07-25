@@ -1581,7 +1581,6 @@ struct hunter_pet_t: public pet_t
 
     if ( o()->talents.basilisk_collar->ok() )
     {   
-      //2024-07-19 - Guardians only benefit from the first point of Basilisk Collar
       double bonus = guardian ? o()->talents.basilisk_collar->effectN( 2 ).percent() : o()->talents.basilisk_collar->effectN( 1 ).percent();
       int stacks = td->debuffs.basilisk_collar->stack();
       m *= 1 + ( bonus * stacks );
