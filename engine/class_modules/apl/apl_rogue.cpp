@@ -245,6 +245,7 @@ void outlaw( player_t* p )
   finish->add_action( "between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&(raid_event.adds.remains>8|raid_event.adds.in<raid_event.adds.remains|!raid_event.adds.up)", "Crackshot builds use Between the Eyes outside of Stealth if we will not enter a Stealth window before the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
   finish->add_action( "cold_blood" );
+  finish->add_action( "coup_de_grace" );
   finish->add_action( "dispatch" );
 
   stealth->add_action( "blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd", "Stealth" );
@@ -348,6 +349,7 @@ void subtlety( player_t* p )
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable", "Multidotting targets that will live long enough, refresh during pandemic." );
   finish->add_action( "rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
   finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=3" );
+  finish->add_action( "coup_de_grace" );
   finish->add_action( "eviscerate" );
 
   stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.double_dance", "Stealth Cooldowns  Helper Variable for Shadow Dance." );
