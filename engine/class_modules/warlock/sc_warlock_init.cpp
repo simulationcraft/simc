@@ -510,6 +510,13 @@ namespace warlock
 
     hero.gloom_of_nathreza = find_talent_spell( talent_tree::HERO, "Gloom of Nathreza" ); // Should be ID 429899
 
+    hero.ruination = find_talent_spell( talent_tree::HERO, "Ruination" ); // Should be ID 428522
+    hero.ruination_buff = find_spell( 433885 );
+    hero.ruination_cast = find_spell( 434635 );
+    hero.ruination_impact = find_spell( 434636 );
+    hero.diabolic_imp = find_spell( 438822 );
+    hero.diabolic_bolt = find_spell( 438823 );
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
@@ -718,6 +725,10 @@ namespace warlock
                                     if ( cur == 0 )
                                     {
                                       make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
+
+                                      if ( hero.ruination.ok() )
+                                        buffs.ruination->trigger();
+
                                       diabolic_ritual = 0;
                                     }
                                   } );
@@ -746,6 +757,8 @@ namespace warlock
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
     buffs.abyssal_dominion = make_buff( this, "Abyssal Dominion", hero.abyssal_dominion_buff );
+
+    buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
   }
 
   void warlock_t::create_pets()

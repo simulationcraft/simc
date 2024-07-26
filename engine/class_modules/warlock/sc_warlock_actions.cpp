@@ -2014,6 +2014,9 @@ using namespace helpers;
 
     bool ready() override
     {
+      if ( diabolist() && p()->buffs.ruination->check() )
+        return false;
+
       if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
         return false;
 
@@ -3710,6 +3713,62 @@ using namespace helpers;
     }
   };
 
+  struct ruination_t : public warlock_spell_t
+  {
+    struct ruination_impact_t : public warlock_spell_t
+    {
+      ruination_impact_t( warlock_t* p )
+        : warlock_spell_t( "Ruination (Impact)", p, p->hero.ruination_impact )
+      {
+        background = dual = true;
+        aoe = -1;
+        reduced_aoe_targets = p->hero.ruination_cast->effectN( 2 ).base_value();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( result_is_hit( s->result ) && s->target == target )
+        {
+          if ( demonology() )
+          {
+            for ( int i = 1; i <= as<int>( p()->hero.ruination_buff->effectN( 2 ).base_value() ); i++ )
+            {
+              auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
+              p()->wild_imp_spawns.push_back( ev );
+            }
+          }
+
+          if ( destruction() )
+          {
+          }
+        }
+      }
+    };
+
+    ruination_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
+    {
+      impact_action = new ruination_impact_t( p );
+    }
+
+    bool ready() override
+    {
+      if ( !p()->buffs.ruination->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.ruination->decrement();
+    }
+  };
+
   // Diabolist Actions End
   // Helper Functions Begin
 
@@ -3964,6 +4023,9 @@ using namespace helpers;
   {
     if ( action_name == "infernal_bolt" )
       return new infernal_bolt_t( this, options_str );
+
+    if ( action_name == "ruination" )
+      return new ruination_t( this, options_str );
 
     return nullptr;
   }

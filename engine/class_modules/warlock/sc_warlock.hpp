@@ -493,6 +493,11 @@ public:
     player_talent_t gloom_of_nathreza;
 
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate, Diabolic Ritual
+    const spell_data_t* ruination_buff;
+    const spell_data_t* ruination_cast;
+    const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented
+    const spell_data_t* diabolic_imp;
+    const spell_data_t* diabolic_bolt;
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
@@ -607,6 +612,7 @@ public:
     propagate_const<buff_t*> art_pit_lord;
     propagate_const<buff_t*> infernal_bolt;
     propagate_const<buff_t*> abyssal_dominion;
+    propagate_const<buff_t*> ruination;
   } buffs;
 
   // Gains - Many are automatically handled
