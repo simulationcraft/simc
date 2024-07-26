@@ -3035,6 +3035,14 @@ using namespace helpers;
       return m;
     }
 
+    bool ready() override
+    {
+      if ( p()->hero.ruination.ok() && p()->buffs.ruination->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
@@ -3723,6 +3731,9 @@ using namespace helpers;
         background = dual = true;
         aoe = -1;
         reduced_aoe_targets = p->hero.ruination_cast->effectN( 2 ).base_value();
+
+        affected_by.chaotic_energies = true;
+        affected_by.backdraft = true;
       }
 
       void impact( action_state_t* s ) override
@@ -3742,6 +3753,7 @@ using namespace helpers;
 
           if ( destruction() )
           {
+            p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
           }
         }
       }
@@ -3751,6 +3763,7 @@ using namespace helpers;
       : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
     {
       impact_action = new ruination_impact_t( p );
+      add_child( impact_action );
     }
 
     bool ready() override

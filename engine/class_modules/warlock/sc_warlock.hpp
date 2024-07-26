@@ -160,6 +160,8 @@ public:
 
     spawner::pet_spawner_t<pets::diabolist::infernal_fragment_t, warlock_t> fragments;
 
+    spawner::pet_spawner_t<pets::diabolist::diabolic_imp_t, warlock_t> diabolic_imps;
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
@@ -492,7 +494,7 @@ public:
     const spell_data_t* infernal_fragmentation; // TODO: Re-check damage of Infernal Fragments
     player_talent_t gloom_of_nathreza;
 
-    player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate, Diabolic Ritual
+    player_talent_t ruination; // TODO: Check damage and buff values closer to release, affected_by lists may be on cast spell not damage in data and could be changed later by Blizzard
     const spell_data_t* ruination_buff;
     const spell_data_t* ruination_cast;
     const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented

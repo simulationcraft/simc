@@ -2343,6 +2343,55 @@ namespace diabolist
   }
 
   /// Infernal Fragment End
+
+  /// Diabolic Imp Begin
+
+  diabolic_imp_t::diabolic_imp_t( warlock_t* owner, util::string_view name )
+    : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+  {
+    resource_regeneration = regen_type::DISABLED;
+
+    action_list_str = "diabolic_bolt";
+  }
+
+  struct diabolic_bolt_t : public warlock_pet_spell_t
+  {
+    diabolic_bolt_t( warlock_pet_t* p )
+      : warlock_pet_spell_t( "Diabolic Bolt", p, p->o()->hero.diabolic_bolt )
+    { base_costs[ RESOURCE_ENERGY ] = 0.0; }
+
+    bool ready() override
+    {
+      if ( debug_cast<diabolic_imp_t*>( p() )->bolts <= 0 )
+        return false;
+
+      return warlock_pet_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_pet_spell_t::execute();
+
+      debug_cast<diabolic_imp_t*>( p() )->bolts--;
+    }
+  };
+
+  void diabolic_imp_t::arise()
+  {
+    warlock_pet_t::arise();
+
+    bolts = 5;
+  }
+
+  action_t* diabolic_imp_t::create_action( util::string_view name, util::string_view options_str )
+  {
+    if ( name == "diabolic_bolt" )
+      return new diabolic_bolt_t( this );
+
+    return warlock_pet_t::create_action( name, options_str );
+  }
+
+  /// Diabolic Imp End
 }  // namespace diabolist
 }  // namespace pets
 }  // namespace warlock
