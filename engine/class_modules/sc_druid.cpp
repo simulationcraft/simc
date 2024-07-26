@@ -2763,6 +2763,19 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
                                                       "Snapshots (Direct)" );
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    // tiger's fury can have different persistent multipliers for DMG_DIRECT vs DMG_OVER_TIME
+    // because the state is released after impact, there is no downstream concerns
+    if ( snapshots.tigers_fury && s->result_type != result_amount_type::DMG_OVER_TIME )
+    {
+      s->result_type = result_amount_type::DMG_OVER_TIME;
+      s->persistent_multiplier = composite_persistent_multiplier( s );
+    }
+
+    base_t::trigger_dot( s );
+  }
+
   void tick( dot_t* d ) override
   {
     base_t::tick( d );
