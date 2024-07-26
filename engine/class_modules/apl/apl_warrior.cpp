@@ -41,8 +41,6 @@ void fury( player_t* p )
   default_->add_action( "pummel,if=target.debuff.casting.react" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=variables" );
-  default_->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
-  default_->add_action( "bladestorm,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
   default_->add_action( "lights_judgment,if=buff.recklessness.down" );
   default_->add_action( "berserking,if=buff.recklessness.up" );
   default_->add_action( "blood_fury" );
@@ -75,11 +73,13 @@ void fury( player_t* p )
   multi_target->add_action( "execute" );
   multi_target->add_action( "whirlwind" );
 
-  single_target->add_action( "recklessness" );
-  single_target->add_action( "avatar,if=!talent.titans_torment|(talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(!set_bonus.tier31_4pc|(!buff.avatar.up&(cooldown.odyns_fury.remains&set_bonus.tier31_4pc))))" );
+  single_target->add_action( "ravager,if=cooldown.recklessness.remains<gcd|buff.recklessness.up" );
+  single_target->add_action( "recklessness,if=!talent.anger_management|(talent.anger_management&cooldown.avatar.ready|cooldown.avatar.remains<gcd|cooldown.avatar.remains>30)" );
+  single_target->add_action( "avatar,if=!talent.titans_torment|(talent.titans_torment&(buff.enrage.up|talent.titanic_rage))" );
   single_target->add_action( "champions_spear,if=buff.enrage.up&((buff.furious_bloodthirst.up&talent.titans_torment)|!talent.titans_torment|target.time_to_die<20|active_enemies>1|!set_bonus.tier31_2pc)&raid_event.adds.in>15" );
   single_target->add_action( "whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up" );
   single_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
+  single_target->add_action( "bladestorm,if=buff.enrage.up&(buff.avatar.up|buff.recklessness.up&talent.anger_management)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
