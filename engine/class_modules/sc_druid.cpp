@@ -3694,7 +3694,8 @@ public:
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
     }
 
-    p()->buff.tigers_tenacity->trigger( this );
+    if ( p()->buff.tigers_tenacity->check() && p()->buff.tigers_tenacity->can_expire( this ) )
+      p()->buff.tigers_tenacity->decrement();
   }
 };
 
