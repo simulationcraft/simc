@@ -2108,9 +2108,10 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
-      p()->stagger[ "Stagger" ]->purify_flat(
-          s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
-          "staggering_strikes" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat(
+              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+              "staggering_strikes" );
 
     // Martial Mixture triggers from each BoK impact
     if ( p()->talent.windwalker.martial_mixture->ok() )
@@ -3278,8 +3279,9 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->baseline.brewmaster.stagger->ok() )
     {
-      p()->stagger[ "Stagger" ]->purify_flat(
-          amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(), "touch_of_death" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
+                         "touch_of_death" );
     }
   }
 };
@@ -4016,7 +4018,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   bool ready() override
   {
-    if ( p()->stagger[ "Stagger" ]->is_ticking() )
+    if ( p()->find_stagger( "Stagger" )->is_ticking() )
       return monk_spell_t::ready();
     return false;
   }
@@ -4028,7 +4030,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
 
-    auto stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
+    auto stacks = as<unsigned>( p()->find_stagger( "Stagger" )->level_index() );
     if ( stacks > 0 )
     {
       p()->buff.purified_chi->trigger( stacks );
@@ -4042,7 +4044,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
     double purify_percent = data().effectN( 1 ).percent();
     purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
-    double cleared = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
+    double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -4055,7 +4057,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     if ( p()->buff.blackout_combo->up() )
     {
       timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->stagger[ "Stagger" ]->delay_tick( delay );
+      p()->find_stagger( "Stagger" )->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
     }
     p()->buff.blackout_combo->expire();
@@ -5199,7 +5201,7 @@ struct expel_harm_t : monk_heal_t
     if ( !p()->talent.brewmaster.tranquil_spirit->ok() )
       return;
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
     p()->proc.tranquil_spirit_expel_harm->occur();
   }
 
@@ -5817,7 +5819,7 @@ void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
   if ( p()->talent.brewmaster.tranquil_spirit->ok() )
   {
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_goto" );
     p()->proc.tranquil_spirit_goto->occur();
   }
 
@@ -5877,8 +5879,8 @@ void shuffle_t::trigger( timespan_t duration )
   timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
   int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
   if ( count > 0 )
-    p().stagger[ "Stagger" ]->purify_percent(
-        as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
+    p().find_stagger( "Stagger" )
+        ->purify_percent( as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
   accumulator -= threshold * count;
 }
 
@@ -7936,7 +7938,7 @@ void monk_t::init_items()
 
 struct self_damage_override : stagger_impl::self_damage_t<monk_t>
 {
-  self_damage_override( monk_t *player, stagger_impl::stagger_t<monk_t> *stagger_effect )
+  self_damage_override( monk_t *player, stagger_impl::stagger_effect_t<monk_t> *stagger_effect )
     : stagger_impl::self_damage_t<monk_t>( player, stagger_effect )
   {
     dot_duration = player->find_spell( 124273 )->duration();
@@ -7975,7 +7977,7 @@ struct training_of_niuzao_buff : actions::monk_buff_t
   bool trigger( int /* stacks */ = -1, double /* value */ = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
-    double v = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
+    double v = p().find_stagger( "Stagger" )->level_index() * data().effectN( 1 ).base_value();
     return actions::monk_buff_t::trigger( 1, v, chance, duration );
   }
 };
