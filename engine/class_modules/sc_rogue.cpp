@@ -7725,6 +7725,9 @@ struct coup_de_grace_t : public rogue_attack_t
     return false;
   }
 
+  bool procs_main_gauche() const override
+  { return true; }
+
   bool has_amount_result() const override
   { return true; }
 
@@ -8976,7 +8979,7 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !p()->mastery.main_gauche->ok() )
     return;
 
-  if ( state->result_total <= 0 )
+  if ( !ab::has_amount_result() )
     return;
 
   if ( !ab::result_is_hit( state->result ) )
