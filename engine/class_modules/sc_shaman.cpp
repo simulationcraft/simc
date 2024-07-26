@@ -1236,6 +1236,7 @@ public:
   void init_uptimes() override;
   void init_assessors() override;
   void init_rng() override;
+  void init_items() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
@@ -7247,11 +7248,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
       p()->cooldown.primordial_wave->adjust( -1.0 *
         player->sets->set( SHAMAN_ENHANCEMENT, T31, B4 )->effectN( 1 ).time_value() * n_summons );
     }
-    else if ( player->sets->has_set_bonus( SHAMAN_ENHANCEMENT, DF4, B4 ) )
-    {
-      p()->cooldown.primordial_wave->adjust( -1.0 *
-        player->sets->set( SHAMAN_ENHANCEMENT, DF4, B4 )->effectN( 1 ).time_value() * n_summons );
-    }
 
     if ( type == feral_spirit_cast::TIER31 || type == feral_spirit_cast::ROLLING_THUNDER )
     {
@@ -10188,8 +10184,7 @@ void shaman_t::create_actions()
     action.feral_spirit_t28 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER28 );
   }
 
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) ||
-       sets->has_set_bonus( SHAMAN_ENHANCEMENT, DF4, B2 ) )
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 ) )
   {
     action.feral_spirit_t31 = new feral_spirit_spell_t( this, "", feral_spirit_cast::TIER31 );
   }
@@ -12332,6 +12327,23 @@ void shaman_t::init_rng()
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
   rng_obj.ancient_fellowship = get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
   rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
+}
+
+// shaman_t::init_items =====================================================
+
+void shaman_t::init_items()
+{
+  player_t::init_items();
+
+  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+  {
+    sets->enable_set_bonus( specialization(), T31 , B2 );
+  }
+
+  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
+  {
+    sets->enable_set_bonus( specialization(), T31 , B4 );
+  }
 }
 
 // shaman_t::apply_affecting_auras ==========================================
