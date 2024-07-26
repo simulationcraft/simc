@@ -2152,6 +2152,7 @@ class SpellDataGenerator(DataGenerator):
           ( 427285, 0 ),    # T31 - Dimensional Cinder
           ( 438973, 0 ),    # Diabolist - Felseeker
           ( 434404, 0 ),    # Diabolist - Felseeker
+          ( 438823, 0 ),    # Diabolic Bolt (pet spell)
         ),
 
         # Monk:
