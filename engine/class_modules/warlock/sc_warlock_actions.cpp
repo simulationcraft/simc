@@ -1945,7 +1945,7 @@ using namespace helpers;
         affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
         
         triggers.shadow_invocation = true;
-        triggers.demonic_art = true;
+        triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
         if ( p->talents.umbral_blaze.ok() )
         {
@@ -2001,7 +2001,7 @@ using namespace helpers;
     {
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
 
       add_child( impact_spell );
     }
@@ -2304,7 +2304,7 @@ using namespace helpers;
     {
       may_crit = false;
       affected_by.soul_conduit_base_cost = true;
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     double cost_pct_multiplier() const override
@@ -2642,7 +2642,7 @@ using namespace helpers;
     {
       harmful = may_crit = false;
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     void execute() override
@@ -2661,7 +2661,7 @@ using namespace helpers;
     {
       harmful = may_crit = false;
 
-      triggers.diabolic_ritual = true;
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     void execute() override
@@ -2988,7 +2988,7 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = triggers.demonic_art = true;
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
@@ -3201,7 +3201,7 @@ using namespace helpers;
 
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = triggers.demonic_art = true;
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
       base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
@@ -3313,7 +3313,7 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = triggers.demonic_art = true;
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
