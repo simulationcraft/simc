@@ -497,6 +497,7 @@ public:
     const spell_data_t* ruination_cast;
     const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented
     const spell_data_t* diabolic_imp;
+    const spell_data_t* diabolic_bolt;
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire

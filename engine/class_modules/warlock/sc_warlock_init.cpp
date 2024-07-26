@@ -515,6 +515,7 @@ namespace warlock
     hero.ruination_cast = find_spell( 434635 );
     hero.ruination_impact = find_spell( 434636 );
     hero.diabolic_imp = find_spell( 438822 );
+    hero.diabolic_bolt = find_spell( 438823 );
 
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
