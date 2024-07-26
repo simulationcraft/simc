@@ -2430,14 +2430,14 @@ public:
     return cm;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = ab::composite_target_multiplier( t );
+    double am = ab::composite_da_multiplier( s );
 
     if ( killer_instinct.percent )
     {
-      const bool active = t -> health_percentage() < killer_instinct.percent;
-      killer_instinct.benefit -> update( active );
+      const bool active = s->target->health_percentage() < killer_instinct.percent;
+      killer_instinct.benefit->update( active );
       if ( active )
         am *= killer_instinct.multiplier;
     }
