@@ -4024,6 +4024,9 @@ using namespace helpers;
     if ( action_name == "infernal_bolt" )
       return new infernal_bolt_t( this, options_str );
 
+    if ( action_name == "ruination" )
+      return new ruination_t( this, options_str );
+
     return nullptr;
   }
 
