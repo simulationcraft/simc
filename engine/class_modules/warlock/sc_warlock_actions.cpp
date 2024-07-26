@@ -554,7 +554,7 @@ using namespace helpers;
 
       if ( destruction() && affected_by.havoc )
       {
-        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + p()->hero.gloom_of_nathreza->effectN( 2 ).percent();
         p()->havoc_spells.push_back( this );
       }
 
@@ -1962,6 +1962,9 @@ using namespace helpers;
         double m = warlock_spell_t::action_multiplier();
 
         m *= shards_used;
+
+        if ( p()->hero.gloom_of_nathreza.ok() )
+          m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
 
         return m;
       }

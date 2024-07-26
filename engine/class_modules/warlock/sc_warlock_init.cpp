@@ -508,6 +508,8 @@ namespace warlock
     hero.abyssal_dominion_buff = find_spell( 456323 );
     hero.infernal_fragmentation = find_spell( 456310 );
 
+    hero.gloom_of_nathreza = find_talent_spell( talent_tree::HERO, "Gloom of Nathreza" ); // Should be ID 429899
+
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
