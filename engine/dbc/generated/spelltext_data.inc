@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55789
-static const std::array<spelltext_data_t, 26259> __spelltext_data { {
+static const std::array<spelltext_data_t, 26260> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23345,6 +23345,7 @@ static const std::array<spelltext_data_t, 26259> __spelltext_data { {
   { 438753, "Blow the horn, emboldening you and your party members, increasing Mastery by $s1 split between allies for $d.", "Mastery increased by $w1.", 0 },
   { 438787, "Create a piece of Draconic Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 438822, "$@spelldesc105174", 0, 0 },
+  { 438823, "Deals $s1 Fire damage to a target.", 0, "Basic Attack" },
   { 438973, "Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.", 0, 0 },
   { 439051, "Create a soulbound Mythic+ Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 4.", 0, 0 },
   { 439143, "$@spelldesc437161", 0, 0 },
