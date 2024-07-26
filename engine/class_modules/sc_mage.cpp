@@ -6553,9 +6553,14 @@ struct splinter_t final : public mage_spell_t
 
     if ( splinterstorm && p()->specialization() == MAGE_FROST )
     {
-      timespan_t delay = timespan_t::from_seconds( travel_delay );
-      delay += 100_ms; // Add some leeway to account for different travel speeds
-      make_event( *sim, delay, [ this, t = target ]
+      // Update remaining_winters_chill exactly when the remaining
+      // travel time matches that of Flurry.
+      double distance = player->get_player_distance( *target );
+      if ( execute_state && execute_state->target )
+        distance += execute_state->target->height;
+      timespan_t delay = travel_time();
+      delay -= timespan_t::from_seconds( std::max( distance, 0.0 ) / 50.0 );
+      make_event( *sim, std::max( delay, 0_ms ), [ this, t = target ]
       {
         int wc = 2;
         // TODO: Only consider spells that impact after the splinter does
