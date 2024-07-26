@@ -287,18 +287,24 @@ struct gift_of_the_ox_t : actions::monk_buff_t
 struct aspect_of_harmony_t
 {
 private:
+  template <class base_action_t>
+  friend struct purified_spirit_t;
+
   struct accumulator_t;
   struct spender_t;
-  propagate_const<accumulator_t *> accumulator;
-  propagate_const<spender_t *> spender;
+  propagate_const<accumulator_t *> accumulator;  // accumulator buff
+  propagate_const<spender_t *> spender;          // spender buff
+  propagate_const<action_t *> damage;            // spender damage periodic action
+  propagate_const<action_t *> heal;              // spender heal periodic action
+  propagate_const<action_t *> purified_spirit;   // purified spirit damage / heal
+  propagate_const<buff_t *> path_of_resurgence;  // path of resurgence buff
 
   bool fallback;
 
   struct accumulator_t : actions::monk_buff_t
   {
-    propagate_const<buff_t *> spender;
-
-    accumulator_t( monk_t *player );
+    aspect_of_harmony_t *aspect_of_harmony;
+    accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
   };
 
@@ -307,9 +313,9 @@ private:
     template <class base_action_t>
     struct purified_spirit_t : base_action_t
     {
-      propagate_const<spender_t *> spender;
+      aspect_of_harmony_t *aspect_of_harmony;
 
-      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender );
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, aspect_of_harmony_t *aspect_of_harmony );
       void init() override;
       void execute() override;
     };
@@ -320,14 +326,10 @@ private:
       tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
     };
 
-    propagate_const<action_t *> damage;
-    propagate_const<action_t *> heal;
-    propagate_const<action_t *> purified_spirit;
-    propagate_const<buff_t *> accumulator;
-
+    aspect_of_harmony_t *aspect_of_harmony;
     double pool;
 
-    spender_t( monk_t *player );
+    spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void reset() override;
     bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
                   timespan_t duration = timespan_t::min() ) override;
@@ -335,13 +337,16 @@ private:
   };
 
 public:
-  propagate_const<buff_t *> path_of_resurgence;
-  propagate_const<dot_t *> heal;
+  aspect_of_harmony_t();
+  void construct_buffs( monk_t *player );
+  void construct_actions( monk_t *player );
 
-  aspect_of_harmony_t( monk_t *player );
   void trigger( action_state_t *state );
   void trigger_flat( double amount );
   void trigger_spend();
+  void trigger_path_of_resurgence();
+
+  bool heal_ticking();
 };
 }  // namespace buffs
 
@@ -698,7 +703,7 @@ public:
     propagate_const<buff_t *> unity_within;
 
     // Master of Harmony
-    buffs::aspect_of_harmony_t *aspect_of_harmony;
+    buffs::aspect_of_harmony_t aspect_of_harmony;
     propagate_const<buff_t *> balanced_stratagem_physical;
     propagate_const<buff_t *> balanced_stratagem_magic;
 
@@ -868,7 +873,7 @@ public:
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
 
-      actions::brews_t *brews;
+      actions::brews_t brews;
     } brewmaster;
 
     struct
@@ -1439,6 +1444,7 @@ public:
   void init_scaling() override;
   void init_items() override;
   void create_buffs() override;
+  void create_actions() override;
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
@@ -1512,42 +1518,6 @@ public:
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
-
-template <class Buff>
-Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
-{
-  /*
-   * TODO: Come up with another solution.
-   *  This is very likely UB, but seems to work at least ok-ish.
-   *  Future me shall replace this with a less dangerous solution.
-   */
-  return static_cast<Buff *>(
-      buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
-}
-
-template <typename Buff, typename Player, typename... Args>
-Buff *make_buff_fallback( bool true_buff, Player &&player, std::string_view name, Args &&...args )
-{
-  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-  static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
-                     std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
-                 "Player must be derived from player_t or actor_pair_t" );
-
-  if ( true_buff )
-  {
-    if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
-      return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
-    else
-      return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
-  }
-  else
-  {
-    if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
-      return make_fallback<Buff>( player.target, name, player.source );
-    else
-      return make_fallback<Buff>( player, name, player );
-  }
-}
 
 struct sef_despawn_cb_t
 {

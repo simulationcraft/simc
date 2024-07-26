@@ -56,7 +56,7 @@ jobs:
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
+              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
 
       - name: Build
         env:
@@ -67,7 +67,7 @@ jobs:
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
-          
+
       - uses: actions/cache@v4
         with:
           path: |
@@ -210,9 +210,10 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             druid_balance, druid_feral, druid_guardian,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
-            demonhunter_vengeance, demonhunter_havoc, priest_shadow, 
+            demonhunter_vengeance, demonhunter_havoc,
+            priest_shadow,
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
-            # monk_windwalker,
+            monk_windwalker,
             mage_arcane, mage_fire, mage_frost,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
@@ -242,7 +243,7 @@ jobs:
 
       - name: Setup
         id: setup
-        env: 
+        env:
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
           echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
@@ -471,7 +472,7 @@ jobs:
         include:
           - compiler: clang++-15
             os: ubuntu-22.04
-    
+
     steps:
       - uses: actions/cache@v4
         with:
@@ -525,22 +526,22 @@ jobs:
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
-       
+
     steps:
       - uses: actions/checkout@v4
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
-      
+
       # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
-      - uses: ilammy/msvc-dev-cmd@v1       
+      - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
 
       - name: Generate project files
         run: |
           cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
-      
+
       - name: Build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"

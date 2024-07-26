@@ -16,7 +16,7 @@ std::string_view stagger_data_t::name() const
 
 namespace stagger_impl
 {
-sample_data_t::sample_data_t( player_t* player, const stagger_data_t& data )
+void sample_data_t::init( player_t* player, const stagger_data_t& data )
 {
   absorbed  = player->get_sample_data( fmt::format( "Total damage absorbed by {}.", data.name() ) );
   taken     = player->get_sample_data( fmt::format( "Total damage taken from {}.", data.name() ) );

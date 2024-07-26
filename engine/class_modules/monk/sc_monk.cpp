@@ -199,11 +199,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // Master of Harmony
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
-                 [ this ]() {
-                   if ( !p()->buff.aspect_of_harmony->heal )
-                     return false;
-                   return p()->buff.aspect_of_harmony->heal->is_ticking();
-                 } );
+                 [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
   parse_effects( p()->buff.balanced_stratagem_physical );
   parse_effects( p()->buff.balanced_stratagem_magic );
 
@@ -1470,11 +1466,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
 
     // Reduces the remaining cooldown on your Brews by 1 sec
-    p()->baseline.brewmaster.brews->adjust(
+    p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
     if ( face_palm )
-      p()->baseline.brewmaster.brews->adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
     {
@@ -1591,7 +1587,7 @@ struct press_the_advantage_t : base_action_t
                  base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
       {
         base_action_t::p()->proc.face_palm->occur();
-        base_action_t::p()->baseline.brewmaster.brews->adjust(
+        base_action_t::p()->baseline.brewmaster.brews.adjust(
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
       }
 
@@ -2112,9 +2108,10 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
-      p()->stagger[ "Stagger" ]->purify_flat(
-          s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
-          "staggering_strikes" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat(
+              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+              "staggering_strikes" );
 
     // Martial Mixture triggers from each BoK impact
     if ( p()->talent.windwalker.martial_mixture->ok() )
@@ -3023,7 +3020,7 @@ struct melee_t : public monk_melee_attack_t
         if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
         {
           // Reduce Brew cooldown by 0.5 seconds
-          p()->baseline.brewmaster.brews->adjust(
+          p()->baseline.brewmaster.brews.adjust(
               p()->talent.brewmaster.press_the_advantage->effectN( 1 ).time_value() );
 
           // Trigger the Press the Advantage damage proc
@@ -3186,7 +3183,7 @@ struct keg_smash_t : monk_melee_attack_t
     }
     p()->buff.blackout_combo->expire();
 
-    p()->baseline.brewmaster.brews->adjust( reduction );
+    p()->baseline.brewmaster.brews.adjust( reduction );
   }
 
   void impact( action_state_t *state ) override
@@ -3282,8 +3279,9 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->baseline.brewmaster.stagger->ok() )
     {
-      p()->stagger[ "Stagger" ]->purify_flat(
-          amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(), "touch_of_death" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
+                         "touch_of_death" );
     }
   }
 };
@@ -3611,7 +3609,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
   {
     brew_t<monk_spell_t>::execute();
 
-    for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
+    for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews.cooldowns )
     {
       if ( key == p()->talent.brewmaster.purifying_brew->id() )
         cooldown->reset( true, 2 );
@@ -4020,7 +4018,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   bool ready() override
   {
-    if ( p()->stagger[ "Stagger" ]->is_ticking() )
+    if ( p()->find_stagger( "Stagger" )->is_ticking() )
       return monk_spell_t::ready();
     return false;
   }
@@ -4032,12 +4030,12 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
 
-    auto stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
+    auto stacks = as<unsigned>( p()->find_stagger( "Stagger" )->level_index() );
     if ( stacks > 0 )
     {
       p()->buff.purified_chi->trigger( stacks );
       p()->buff.ox_stance->trigger( stacks );
-      p()->buff.aspect_of_harmony->trigger_flat(
+      p()->buff.aspect_of_harmony.trigger_flat(
           stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
           ( 1.0 + p()->composite_damage_versatility() ) *
           p()->composite_total_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) );
@@ -4046,7 +4044,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
     double purify_percent = data().effectN( 1 ).percent();
     purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
-    double cleared = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
+    double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -4059,7 +4057,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     if ( p()->buff.blackout_combo->up() )
     {
       timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->stagger[ "Stagger" ]->delay_tick( delay );
+      p()->find_stagger( "Stagger" )->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
     }
     p()->buff.blackout_combo->expire();
@@ -5203,7 +5201,7 @@ struct expel_harm_t : monk_heal_t
     if ( !p()->talent.brewmaster.tranquil_spirit->ok() )
       return;
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
     p()->proc.tranquil_spirit_expel_harm->occur();
   }
 
@@ -5212,7 +5210,8 @@ struct expel_harm_t : monk_heal_t
     monk_heal_t::impact( s );
 
     double result = s->result_total;
-    if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
+    if ( p()->buff.gift_of_the_ox && p()->buff.gift_of_the_ox->up() &&
+         p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
       p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
@@ -5400,7 +5399,7 @@ struct chi_wave_t : public monk_spell_t
   {
     if ( !p()->buff.chi_wave->up() )
       return;
-    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     p()->buff.chi_wave->expire();
     monk_spell_t::execute();
 
@@ -5464,7 +5463,7 @@ struct chi_burst_t : monk_spell_t
 
   void execute() override
   {
-    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     monk_spell_t::execute();
     if ( buff )
       buff->expire();
@@ -5627,7 +5626,7 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
     }
 
-    p()->buff.aspect_of_harmony->trigger_spend();
+    p()->buff.aspect_of_harmony.trigger_spend();
     brew_t<monk_absorb_t>::execute();
 
     p()->buff.blackout_combo->expire();
@@ -5664,7 +5663,7 @@ template <class base_action_t>
 template <typename... Args>
 brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
 {
-  player->baseline.brewmaster.brews->insert_cooldown( this );
+  player->baseline.brewmaster.brews.insert_cooldown( this );
 }
 
 template <class base_action_t>
@@ -5676,7 +5675,7 @@ void brew_t<base_action_t>::execute()
 
 void brews_t::insert_cooldown( action_t *action )
 {
-  cooldowns[ action->id ] = action->player->get_cooldown( action->name() );
+  cooldowns.insert( { action->id, action->cooldown } );
 }
 
 void brews_t::adjust( timespan_t reduction )
@@ -5820,7 +5819,7 @@ void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
   if ( p()->talent.brewmaster.tranquil_spirit->ok() )
   {
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_goto" );
     p()->proc.tranquil_spirit_goto->occur();
   }
 
@@ -5880,8 +5879,8 @@ void shuffle_t::trigger( timespan_t duration )
   timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
   int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
   if ( count > 0 )
-    p().stagger[ "Stagger" ]->purify_percent(
-        as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
+    p().find_stagger( "Stagger" )
+        ->purify_percent( as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
   accumulator -= threshold * count;
 }
 
@@ -6316,32 +6315,64 @@ struct blackout_reinforcement_t : public monk_buff_t
 // ===============================================================================
 // Aspect of Harmony (Master of Harmony)
 // ===============================================================================
-
-aspect_of_harmony_t::aspect_of_harmony_t( monk_t *player )
-  : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr ), fallback( false )
+aspect_of_harmony_t::aspect_of_harmony_t()
+  : accumulator( nullptr ),
+    spender( nullptr ),
+    damage( nullptr ),
+    heal( nullptr ),
+    purified_spirit( nullptr ),
+    path_of_resurgence( nullptr ),
+    fallback( false )
 {
-  if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
+}
+
+void aspect_of_harmony_t::construct_buffs( monk_t *player )
+{
+  if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
     fallback = true;
     return;
   }
 
-  accumulator          = new accumulator_t( player );
-  spender              = new spender_t( player );
-  accumulator->spender = spender;
-  spender->accumulator = accumulator;
+  accumulator = new accumulator_t( player, this );
+  spender     = new spender_t( player, this );
 
-  if ( spender->heal )
-    heal = spender->heal->get_dot();
+  path_of_resurgence =
+      make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
+                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
+          ->apply_affecting_aura( player->talent.monk.chi_wave );
+}
+
+void aspect_of_harmony_t::construct_actions( monk_t *player )
+{
+  if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
+  {
+    fallback = true;
+    return;
+  }
+
+  damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
+                                                player->talent.master_of_harmony.aspect_of_harmony_damage );
+  heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+
+  if ( player->specialization() == MONK_BREWMASTER )
+    purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
+        player, player->talent.master_of_harmony.purified_spirit_damage, this );
+  if ( player->specialization() == MONK_MISTWEAVER )
+    purified_spirit = new spender_t::purified_spirit_t<monk_heal_t>(
+        player, player->talent.master_of_harmony.purified_spirit_heal, this );
 }
 
 void aspect_of_harmony_t::trigger( action_state_t *state )
 {
-  if ( fallback || state->result_amount == 0.0 )
+  if ( fallback || state->result_amount <= 0.0 )
     return;
 
-  accumulator->trigger_with_state( state );
-  spender->trigger_with_state( state );
+  if ( !spender->check() )
+    accumulator->trigger_with_state( state );
+  if ( spender->check() )
+    spender->trigger_with_state( state );
 }
 
 void aspect_of_harmony_t::trigger_flat( double amount )
@@ -6362,19 +6393,31 @@ void aspect_of_harmony_t::trigger_spend()
   spender->trigger();
 }
 
-aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player )
+void aspect_of_harmony_t::trigger_path_of_resurgence()
+{
+  if ( fallback )
+    return;
+
+  path_of_resurgence->trigger();
+}
+
+bool aspect_of_harmony_t::heal_ticking()
+{
+  if ( heal )
+    return heal->get_dot()->is_ticking();
+  return false;
+}
+
+aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
   : monk_buff_t( player, "aspect_of_harmony_accumulator",
                  player->talent.master_of_harmony.aspect_of_harmony_accumulator ),
-    spender( nullptr )
+    aspect_of_harmony( aspect_of_harmony )
 {
   set_default_value( 0.0 );
 }
 
 void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *state )
 {
-  if ( spender->check() )
-    return;
-
   size_t result_type_offset = 0;
   switch ( state->result_type )
   {
@@ -6395,10 +6438,9 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
   double multiplier =
       p().talent.master_of_harmony.aspect_of_harmony->effectN( result_type_offset + index_offset ).percent();
 
-  if ( p().buff.aspect_of_harmony->path_of_resurgence->up() )
+  if ( aspect_of_harmony->path_of_resurgence && aspect_of_harmony->path_of_resurgence->up() )
     multiplier *=
-        1.0 +
-        p().buff.aspect_of_harmony->path_of_resurgence->data().effectN( result_type_offset + index_offset ).percent();
+        1.0 + aspect_of_harmony->path_of_resurgence->data().effectN( result_type_offset + index_offset ).percent();
 
   const auto whitelist = { p().baseline.brewmaster.blackout_kick->id(),
                            p().talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
@@ -6414,35 +6456,19 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
   monk_buff_t::trigger( -1, amount );
 }
 
-aspect_of_harmony_t::spender_t::spender_t( monk_t *player )
+aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
   : actions::monk_buff_t( player, "aspect_of_harmony_spender",
                           player->talent.master_of_harmony.aspect_of_harmony_spender ),
-    damage( new tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
-                                      player->talent.master_of_harmony.aspect_of_harmony_damage ) ),
-    heal( new tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                   player->talent.master_of_harmony.aspect_of_harmony_heal ) ),
-    purified_spirit( nullptr ),
-    accumulator( nullptr ),
+    aspect_of_harmony( aspect_of_harmony ),
     pool( 0.0 )
 {
   set_default_value( 0.0 );
-  if ( player->specialization() == MONK_BREWMASTER )
-  {
-    purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
-        player, player->talent.master_of_harmony.purified_spirit_damage, this );
-    damage->add_child( purified_spirit );
-  }
-  if ( player->specialization() == MONK_MISTWEAVER )
-  {
-    purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
-        player, player->talent.master_of_harmony.purified_spirit_heal, this );
-    heal->add_child( purified_spirit );
-  }
 
-  set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
-    if ( !new_ )
-      purified_spirit->execute();
-  } );
+  if ( player->talent.master_of_harmony.purified_spirit->ok() )
+    set_stack_change_callback( [ = ]( buff_t *, int, int new_ ) {
+      if ( !new_ )
+        aspect_of_harmony->purified_spirit->execute();
+    } );
 }
 
 void aspect_of_harmony_t::spender_t::reset()
@@ -6454,17 +6480,14 @@ void aspect_of_harmony_t::spender_t::reset()
 
 bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance, timespan_t duration )
 {
-  pool = accumulator->check_value();
-  accumulator->expire();
+  pool = aspect_of_harmony->accumulator->check_value();
+  aspect_of_harmony->accumulator->expire();
   sim->print_debug( "Aspect of Harmony +P: {}", pool );
   return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 {
-  if ( !check() )
-    return;
-
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
   double amount     = std::min( state->result_amount * multiplier, current_value );
   if ( amount >= current_value )
@@ -6491,7 +6514,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
       if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
       {
         sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
-        residual_action::trigger( damage, state->target, amount );
+        residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
       }
       break;
     case result_amount_type::HEAL_DIRECT:
@@ -6499,7 +6522,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
       if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
       {
         sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
-        residual_action::trigger( heal, state->target, amount );
+        residual_action::trigger( aspect_of_harmony->heal, state->target, amount );
       }
       break;
     default:
@@ -6509,8 +6532,8 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 
 template <class base_action_t>
 aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::purified_spirit_t(
-    monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender )
-  : base_action_t( player, "purified_spirit", spell_data ), spender( spender )
+    monk_t *player, const spell_data_t *spell_data, aspect_of_harmony_t *aspect_of_harmony )
+  : base_action_t( player, "purified_spirit", spell_data ), aspect_of_harmony( aspect_of_harmony )
 {
   base_action_t::aoe              = -1;
   base_action_t::split_aoe_damage = true;
@@ -6527,10 +6550,10 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = spender->pool / 4.0;
-  base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}", spender->pool,
-                                   spender->pool / 4.0 );
-  spender->pool = 0.0;
+  base_action_t::base_td = aspect_of_harmony->spender->pool / 4.0;
+  base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}",
+                                   aspect_of_harmony->spender->pool, aspect_of_harmony->spender->pool / 4.0 );
+  aspect_of_harmony->spender->pool = 0.0;
   if ( base_action_t::base_td > 0.0 )
     base_action_t::execute();
 }
@@ -7220,8 +7243,6 @@ void monk_t::init_spells()
     baseline.brewmaster.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
     baseline.brewmaster.spinning_crane_kick_rank_2 = find_rank_spell( "Spinning Crane Kick", "Rank 2", current_spec );
     baseline.brewmaster.touch_of_death_rank_3      = find_rank_spell( "Touch of Death", "Rank 3", current_spec );
-
-    baseline.brewmaster.brews = new actions::brews_t();
   }
 
   // monk_t::baseline::mistweaver
@@ -7917,7 +7938,7 @@ void monk_t::init_items()
 
 struct self_damage_override : stagger_impl::self_damage_t<monk_t>
 {
-  self_damage_override( monk_t *player, stagger_impl::stagger_t<monk_t> *stagger_effect )
+  self_damage_override( monk_t *player, stagger_impl::stagger_effect_t<monk_t> *stagger_effect )
     : stagger_impl::self_damage_t<monk_t>( player, stagger_effect )
   {
     dot_duration = player->find_spell( 124273 )->duration();
@@ -7956,7 +7977,7 @@ struct training_of_niuzao_buff : actions::monk_buff_t
   bool trigger( int /* stacks */ = -1, double /* value */ = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
-    double v = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
+    double v = p().find_stagger( "Stagger" )->level_index() * data().effectN( 1 ).base_value();
     return actions::monk_buff_t::trigger( 1, v, chance, duration );
   }
 };
@@ -8109,8 +8130,8 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>(
-      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+  if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
+    buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
 
   buff.expel_harm_accumulator =
       make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
@@ -8444,12 +8465,7 @@ void monk_t::create_buffs()
             active_actions.courage_of_the_white_tiger->execute();
           } );
 
-  // Master of Harmony
-  buff.aspect_of_harmony = new buffs::aspect_of_harmony_t( this );
-  buff.aspect_of_harmony->path_of_resurgence =
-      make_buff_fallback( talent.master_of_harmony.path_of_resurgence->ok(), this, "path_of_resurgence",
-                          talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() );
-  buff.aspect_of_harmony->path_of_resurgence->apply_affecting_aura( talent.monk.chi_wave );
+  buff.aspect_of_harmony.construct_buffs( this );
 
   buff.balanced_stratagem_magic =
       make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic",
@@ -8907,7 +8923,7 @@ void monk_t::init_special_effects()
     callbacks.register_callback_execute_function(
         talent.master_of_harmony.aspect_of_harmony_driver->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          buff.aspect_of_harmony->trigger( state );
+          buff.aspect_of_harmony.trigger( state );
         } );
   }
 
@@ -9454,7 +9470,7 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       {
         cooldown.anvil__stave->start( talent.brewmaster.anvil__stave->internal_cooldown() );
         proc.anvil__stave->occur();
-        baseline.brewmaster.brews->adjust(
+        baseline.brewmaster.brews.adjust(
             timespan_t::from_seconds( talent.brewmaster.anvil__stave->effectN( 1 ).base_value() / 10 ) );
       }
 
@@ -9531,7 +9547,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
   // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
   // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
-  if ( s->action->id != baseline.brewmaster.stagger_self_damage->id() )
+  if ( buff.gift_of_the_ox && s->action->id != baseline.brewmaster.stagger_self_damage->id() )
     buff.gift_of_the_ox->trigger_from_damage( s->result_amount );
 
   base_t::target_mitigation( school, dt, s );
@@ -9581,8 +9597,7 @@ std::string monk_t::default_temporary_enchant() const
   return monk_apl::temporary_enchant( this );
 }
 
-// monk_t::init_actions =====================================================
-
+// monk_t::init_action_list =====================================================
 void monk_t::init_action_list()
 {
   // Mistweaver isn't supported atm
@@ -9635,6 +9650,14 @@ void monk_t::init_action_list()
   use_default_action_list = true;
 
   base_t::init_action_list();
+}
+
+// monk_t::create_actions =======================================================
+void monk_t::create_actions()
+{
+  base_t::create_actions();
+
+  buff.aspect_of_harmony.construct_actions( this );
 }
 
 void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
