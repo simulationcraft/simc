@@ -1618,6 +1618,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
+  m *= 1.0 + o()->hero.abyssal_dominion->effectN( 1 ).percent();
+
   return m;
 }
 

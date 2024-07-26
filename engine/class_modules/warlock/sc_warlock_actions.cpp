@@ -2603,6 +2603,9 @@ using namespace helpers;
 
       p()->buffs.tyrant->trigger();
 
+      if ( p()->hero.abyssal_dominion.ok() )
+        p()->buffs.abyssal_dominion->trigger();
+
       if ( p()->buffs.dreadstalkers->check() )
         p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
 

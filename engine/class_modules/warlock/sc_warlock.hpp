@@ -348,7 +348,7 @@ public:
     player_talent_t guillotine;
     const spell_data_t* guillotine_pet;
     const spell_data_t* fiendish_wrath_buff;
-    const spell_data_t* fiendish_wrath_dmg;
+    const spell_data_t* fiendish_wrath_dmg; // TODO: Multiplier fixes for this
     const spell_data_t* fel_explosion;
 
     // Destruction
@@ -486,6 +486,8 @@ public:
 
     player_talent_t flames_of_xoroth; // TODO: 2024-07-25 Flames of Xoroth spell data has unexpected labels for effects 3 and 4, may be causing unintended values in game
     player_talent_t abyssal_dominion;
+    const spell_data_t* abyssal_dominion_buff;
+    const spell_data_t* infernal_fragmentation;
     player_talent_t gloom_of_nathreza;
 
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate, Diabolic Ritual
@@ -602,6 +604,7 @@ public:
     propagate_const<buff_t*> art_mother;
     propagate_const<buff_t*> art_pit_lord;
     propagate_const<buff_t*> infernal_bolt;
+    propagate_const<buff_t*> abyssal_dominion;
   } buffs;
 
   // Gains - Many are automatically handled
