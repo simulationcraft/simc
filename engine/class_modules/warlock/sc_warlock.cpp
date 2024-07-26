@@ -849,7 +849,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     overlords( "overlord", w ),
     mothers( "mother_of_chaos", w ),
     pit_lords( "pit_lord", w ),
-    fragments( "infernal_fragment", w )
+    fragments( "infernal_fragment", w ),
+    diabolic_imps( "diabolic_imp", w )
 { }
 }  // namespace warlock
 

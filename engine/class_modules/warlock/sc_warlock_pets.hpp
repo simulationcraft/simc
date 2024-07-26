@@ -545,6 +545,15 @@ namespace diabolist
   {
     infernal_fragment_t( warlock_t*, util::string_view = "infernal_fragment" );
   };
+
+  struct diabolic_imp_t : public warlock_pet_t
+  {
+    int bolts;
+
+    diabolic_imp_t( warlock_t*, util::string_view = "diabolic_imp" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
 }  // namespace diabolist
 }  // namespace pets
 }  // namespace warlock
