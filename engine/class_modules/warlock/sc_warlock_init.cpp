@@ -511,6 +511,7 @@ namespace warlock
     warlock_pet_list.overlords.set_default_duration( hero.summon_overlord->duration() );
     warlock_pet_list.mothers.set_default_duration( hero.summon_mother->duration() );
     warlock_pet_list.pit_lords.set_default_duration( hero.summon_pit_lord->duration() );
+    warlock_pet_list.fragments.set_default_duration( hero.infernal_fragmentation->duration() );
   }
 
   void warlock_t::init_base_stats()

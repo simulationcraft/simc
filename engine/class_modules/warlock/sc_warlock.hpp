@@ -158,6 +158,8 @@ public:
     spawner::pet_spawner_t<pets::diabolist::mother_of_chaos_t, warlock_t> mothers;
     spawner::pet_spawner_t<pets::diabolist::pit_lord_t, warlock_t> pit_lords;
 
+    spawner::pet_spawner_t<pets::diabolist::infernal_fragment_t, warlock_t> fragments;
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
@@ -487,7 +489,7 @@ public:
     player_talent_t flames_of_xoroth; // TODO: 2024-07-25 Flames of Xoroth spell data has unexpected labels for effects 3 and 4, may be causing unintended values in game
     player_talent_t abyssal_dominion;
     const spell_data_t* abyssal_dominion_buff;
-    const spell_data_t* infernal_fragmentation;
+    const spell_data_t* infernal_fragmentation; // TODO: Re-check damage of Infernal Fragments
     player_talent_t gloom_of_nathreza;
 
     player_talent_t ruination; // TODO: Backdraft, Indiscriminate Flames, Ritual of Ruin, Improved Chaos Bolt, Burn to Ashes?, Chaos Incarnate, Diabolic Ritual

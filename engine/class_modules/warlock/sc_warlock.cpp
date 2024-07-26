@@ -848,7 +848,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     overfiends( "overfiend", w ),
     overlords( "overlord", w ),
     mothers( "mother_of_chaos", w ),
-    pit_lords( "pit_lord", w )
+    pit_lords( "pit_lord", w ),
+    fragments( "infernal_fragment", w )
 { }
 }  // namespace warlock
 
