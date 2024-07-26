@@ -711,10 +711,6 @@ namespace warlock
                                   if ( cur == 0 )
                                   {
                                     make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
-                                    
-                                    if ( hero.secrets_of_the_coven.ok() )
-                                      buffs.infernal_bolt->trigger();
-
                                     diabolic_ritual = 2;
                                   }
                                 } );
@@ -725,10 +721,6 @@ namespace warlock
                                     if ( cur == 0 )
                                     {
                                       make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
-
-                                      if ( hero.ruination.ok() )
-                                        buffs.ruination->trigger();
-
                                       diabolic_ritual = 0;
                                     }
                                   } );
@@ -744,14 +736,24 @@ namespace warlock
                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                              {
                                if ( cur == 0 )
+                               {
                                  warlock_pet_list.mothers.spawn();
+
+                                 if ( hero.secrets_of_the_coven.ok() )
+                                      buffs.infernal_bolt->trigger();
+                               }
                              } );
 
     buffs.art_pit_lord = make_buff( this, "demonic_art_pit_lord", hero.art_pit_lord )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
                                  if ( cur == 0 )
+                                 {
                                    warlock_pet_list.pit_lords.spawn();
+
+                                   if ( hero.ruination.ok() )
+                                     buffs.ruination->trigger();
+                                 }
                                } );
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
