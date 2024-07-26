@@ -456,11 +456,14 @@ namespace destruction
 struct infernal_t : public warlock_pet_t
 {
   buff_t* immolation;
+  bool primary;
 
   infernal_t( warlock_t*, util::string_view = "infernal" );
   void init_base_stats() override;
   void create_buffs() override;
   void arise() override;
+  void demise() override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 struct shadowy_tear_t : public warlock_pet_t
@@ -536,6 +539,11 @@ namespace diabolist
     pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
     void arise() override;
     action_t* create_action( util::string_view, util::string_view ) override;
+  };
+
+  struct infernal_fragment_t : public destruction::infernal_t
+  {
+    infernal_fragment_t( warlock_t*, util::string_view = "infernal_fragment" );
   };
 }  // namespace diabolist
 }  // namespace pets

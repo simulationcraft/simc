@@ -1618,6 +1618,8 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
+  m *= 1.0 + o()->hero.abyssal_dominion->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -1695,6 +1697,8 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 {
   resource_regeneration = regen_type::DISABLED;
 
+  primary = true;
+
   owner_coeff.ap_from_sp = 1.65;
   owner_coeff.sp_from_sp = 1.65;
 }
@@ -1754,6 +1758,24 @@ void infernal_t::arise()
   make_event( *sim, delay + 750_ms, [ this ] {
     immolation->trigger();
   } );
+}
+
+void infernal_t::demise()
+{
+  warlock_pet_t::demise();
+
+  if ( o()->hero.abyssal_dominion.ok() && primary )
+    o()->warlock_pet_list.fragments.spawn( 2u );
+}
+
+double infernal_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( o()->hero.abyssal_dominion.ok() && primary )
+    m *= 1.0 + o()->hero.abyssal_dominion->effectN( 3 ).percent();
+
+  return m;
 }
 
 /// Infernal End
@@ -2135,6 +2157,8 @@ action_t* darkglare_t::create_action( util::string_view name, util::string_view 
 
 namespace diabolist
 {
+  /// Diabolic Ritual Demons Begin
+
   overlord_t::overlord_t( warlock_t* owner, util::string_view name )
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
@@ -2305,6 +2329,20 @@ namespace diabolist
 
     return warlock_pet_t::create_action( name, options_str );
   }
-}
+
+  /// Diabolic Ritual Demons End
+
+  /// Infernal Fragment Begin
+
+  infernal_fragment_t::infernal_fragment_t( warlock_t* owner, util::string_view name )
+    : destruction::infernal_t( owner, name )
+  {
+    primary = false;
+    owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
+    owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
+  }
+
+  /// Infernal Fragment End
+}  // namespace diabolist
 }  // namespace pets
 }  // namespace warlock
