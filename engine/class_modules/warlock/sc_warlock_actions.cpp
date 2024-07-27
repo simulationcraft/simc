@@ -3795,6 +3795,9 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = destruction();
+
+        if ( destruction() )
+          base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
       }
 
       void tick( dot_t* d ) override
@@ -3819,6 +3822,9 @@ using namespace helpers;
 
       impact_action = new wither_dot_t( p );
       add_child( impact_action );
+
+      if ( destruction() )
+        base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override
