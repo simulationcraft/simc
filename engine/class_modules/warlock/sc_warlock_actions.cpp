@@ -1135,6 +1135,7 @@ using namespace helpers;
           }
 
           base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
         }
       }
 
@@ -1165,7 +1166,10 @@ using namespace helpers;
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
 
       if ( affliction() )
+      {
         base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
+      }
     }
 
     dot_t* get_dot( player_t* t ) override
