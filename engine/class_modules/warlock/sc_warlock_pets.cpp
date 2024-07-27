@@ -1765,7 +1765,7 @@ void infernal_t::demise()
   warlock_pet_t::demise();
 
   if ( o()->hero.abyssal_dominion.ok() && primary )
-    make_event( o()->sim, [ this ] { o()->warlock_pet_list.fragments.spawn( 2u ); } );
+    make_event( sim, [ this ] { o()->warlock_pet_list.fragments.spawn( 2u ); } );
 }
 
 double infernal_t::composite_player_multiplier( school_e school ) const
