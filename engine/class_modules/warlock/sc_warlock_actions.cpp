@@ -3677,11 +3677,10 @@ using namespace helpers;
 
   struct soul_fire_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     soul_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str )
     {
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
@@ -3690,10 +3689,15 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
+
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     double execute_time_pct_multiplier() const override
@@ -3709,7 +3713,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      immolate->execute_on_target( target );
+      applied_dot->execute_on_target( target );
 
       p()->buffs.backdraft->decrement();
 
