@@ -786,30 +786,8 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( result_is_hit( d->state->result ) )
-        {
-          if ( p()->talents.nightfall.ok() )
-          {
-            // Blizzard did not publicly release how nightfall was changed.
-            // We determined this is the probable functionality copied from Agony by first confirming the
-            // DR formula was the same and then confirming that you can get procs on 1st tick.
-            // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-            // Last checked 09-28-2020.
-            double increment_max = 0.13;
-
-            double active_corruptions = p()->get_active_dots( d );
-            increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-            p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-            if ( p()->corruption_accumulator >= 1 )
-            {
-              p()->procs.nightfall->occur();
-              p()->buffs.nightfall->trigger();
-              p()->corruption_accumulator -= 1.0;
-            }
-          }
-        }
+        if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+          helpers::nightfall_updater( p(), d );
       }
 
       double composite_ta_multiplier( const action_state_t* s ) const override
@@ -1142,6 +1120,12 @@ using namespace helpers;
       void tick( dot_t* d ) override
       {
         warlock_spell_t::tick( d );
+
+        if ( affliction() )
+        {
+          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+            helpers::nightfall_updater( p(), d );
+        }
 
         if ( destruction() )
         {
@@ -3915,6 +3899,28 @@ using namespace helpers;
     }
 
     return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+  }
+
+  void helpers::nightfall_updater( warlock_t* p, dot_t* d )
+  {
+    // Blizzard did not publicly release how nightfall was changed.
+    // We determined this is the probable functionality copied from Agony by first confirming the
+    // DR formula was the same and then confirming that you can get procs on 1st tick.
+    // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+    // Last checked 09-28-2020.
+    double increment_max = 0.13;
+
+    double active_corruptions = p->get_active_dots( d );
+    increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+    p->corruption_accumulator += p->rng().range( 0.0, increment_max );
+
+    if ( p->corruption_accumulator >= 1 )
+    {
+      p->procs.nightfall->occur();
+      p->buffs.nightfall->trigger();
+      p->corruption_accumulator -= 1.0;
+    }
   }
 
   // Event for spawning Wild Imps for Demonology

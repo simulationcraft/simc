@@ -823,5 +823,6 @@ namespace helpers
   };
 
   bool crescendo_check( warlock_t* p );
+  void nightfall_updater( warlock_t* p, dot_t* d );
 }
 }  // namespace warlock
