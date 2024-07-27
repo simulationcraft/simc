@@ -62,6 +62,7 @@ struct paladin_td_t : public actor_target_data_t
   {
     dot_t* expurgation;
     dot_t* truths_wake;
+    dot_t* dawnlight;
   } dots;
 
   struct buffs_t
@@ -143,8 +144,12 @@ public:
     action_t* expurgation;
     action_t* wrathful_sanction;
 
+    action_t* divine_hammer;
+    action_t* divine_hammer_tick;
+
     action_t* sacrosanct_crusade_heal;
     action_t* highlords_judgment;
+    action_t* dawnlight;
     action_t* sun_sear;
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
@@ -225,6 +230,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
     buff_t* judge_jury_and_executioner;
+    buff_t* divine_hammer;
 
     buff_t* echoes_of_wrath;  // T31 4pc
 
@@ -255,6 +261,7 @@ public:
 
     struct
     {
+      buff_t* dawnlight;
       buff_t* blessing_of_anshe;
       buff_t* morning_star;
       buff_t* gleaming_rays;
@@ -1140,7 +1147,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
+      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1184,6 +1191,18 @@ public:
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
+      if ( p->talents.divine_hammer->ok() )
+      {
+        for ( auto i = 2; i < 5; i++ )
+        {
+          auto label = p->talents.divine_hammer->effectN( i );
+          if ( this->data().affected_by( label ) || this->data().affected_by_category( label ) )
+          {
+            this->affected_by.divine_hammer = true;
+            break;
+          }
+        }
+      }
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -1325,6 +1344,11 @@ public:
         extension = 500_ms;
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       p()->cooldowns.higher_calling_icd->start();
+    }
+
+    if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() )
+    {
+      p()->buffs.divine_hammer->current_value = p()->buffs.divine_hammer->current_value * 1.15;
     }
   }
 
@@ -1717,6 +1741,16 @@ public:
     {
       paladin_td_t* td = p->get_target_data( s->target );
       td->debuff.vanguard_of_justice->trigger();
+    }
+
+    if ( ab::result_is_hit( s->result ) &&  p->buffs.herald_of_the_sun.dawnlight->up() )
+    {
+      paladin_td_t* td = p->get_target_data( s->target );
+      if ( ! td->dots.dawnlight->is_ticking() )
+      {
+        p->active.dawnlight->execute_on_target( s->target );
+        p->buffs.herald_of_the_sun.dawnlight->decrement();
+      }
     }
   }
 

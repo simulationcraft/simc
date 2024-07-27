@@ -3200,6 +3200,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 
   dots.expurgation = target->get_dot( "expurgation", paladin );
   dots.truths_wake = target->get_dot( "truths_wake", paladin );
+  dots.dawnlight = target->get_dot( "dawnlight", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -3283,6 +3284,12 @@ void paladin_t::create_actions()
   {
     active.sacrosanct_crusade_heal = new sacrosanct_crusade_heal_t( this );
   }
+
+  if ( talents.herald_of_the_sun.dawnlight->ok() )
+  {
+    active.dawnlight = new dawnlight_t( this );
+  }
+
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
   if ( talents.judgment_of_light->ok() )
@@ -3735,6 +3742,8 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
+    -> set_max_stack( 2 );
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
