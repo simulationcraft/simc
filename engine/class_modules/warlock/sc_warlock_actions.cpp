@@ -3793,12 +3793,30 @@ using namespace helpers;
         : warlock_spell_t( "Wither (DoT)", p, p->hero.wither_dot )
       {
         background = dual = true;
+
+        affected_by.chaotic_energies = destruction();
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( destruction() )
+        {
+          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
+
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+        }
       }
     };
 
     wither_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Wither", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
     {
+      affected_by.chaotic_energies = destruction();
+      affected_by.havoc = destruction();
+
       impact_action = new wither_dot_t( p );
       add_child( impact_action );
     }

@@ -842,6 +842,8 @@ namespace warlock
 
   void warlock_t::init_gains_hellcaller()
   {
+    gains.wither = get_gain( "wither" );
+    gains.wither_crits = get_gain( "wither_crits" );
   }
 
   void warlock_t::init_procs()

@@ -640,6 +640,12 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* summon_overfiend;
+
+    // Diabolist
+
+    // Hellcaller
+    gain_t* wither;
+    gain_t* wither_crits;
   } gains;
 
   // Procs
