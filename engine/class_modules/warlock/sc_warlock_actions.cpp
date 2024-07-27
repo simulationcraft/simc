@@ -302,7 +302,7 @@ using namespace helpers;
     {
       spell_t::tick( d );
 
-      if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
@@ -778,7 +778,7 @@ using namespace helpers;
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
-        triggers.ravenous_afflictions = true;
+        triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
@@ -1103,6 +1103,8 @@ using namespace helpers;
             base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
           }
 
+          triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
           affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
           base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
@@ -1337,7 +1339,7 @@ using namespace helpers;
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
 
-      triggers.ravenous_afflictions = true;
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
@@ -1413,7 +1415,7 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
 
-      triggers.ravenous_afflictions = true;
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
