@@ -535,6 +535,8 @@ namespace warlock
     hero.blackened_soul = find_talent_spell( talent_tree::HERO, "Blackened Soul" ); // Should be ID 440043
     hero.blackened_soul_trigger = find_spell( 445731 );
     hero.blackened_soul_dmg = find_spell( 445736 );
+
+    hero.xalans_cruelty = find_talent_spell( talent_tree::HERO, "Xalan's Cruelty" ); // Should be ID 440040
   }
 
   void warlock_t::init_base_stats()

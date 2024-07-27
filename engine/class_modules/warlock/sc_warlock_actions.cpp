@@ -53,6 +53,9 @@ using namespace helpers;
       bool xalans_ferocity_dd = false;
       bool xalans_ferocity_td = false;
       bool xalans_ferocity_crit = false;
+      bool xalans_cruelty_dd = false;
+      bool xalans_cruelty_td = false;
+      bool xalans_cruelty_crit = false;
     } affected_by;
 
     struct triggers_t
@@ -109,6 +112,9 @@ using namespace helpers;
       affected_by.xalans_ferocity_dd = data().affected_by( p->hero.xalans_ferocity->effectN( 1 ) );
       affected_by.xalans_ferocity_td = data().affected_by( p->hero.xalans_ferocity->effectN( 2 ) );
       affected_by.xalans_ferocity_crit = data().affected_by( p->hero.xalans_ferocity->effectN( 4 ) );
+      affected_by.xalans_cruelty_dd = data().affected_by( p->hero.xalans_cruelty->effectN( 3 ) );
+      affected_by.xalans_cruelty_td = data().affected_by( p->hero.xalans_cruelty->effectN( 4 ) );
+      affected_by.xalans_cruelty_crit = data().affected_by( p->hero.xalans_cruelty->effectN( 1 ) );
 
       triggers.decimation = p->talents.decimation.ok();
     }
@@ -353,6 +359,9 @@ using namespace helpers;
       if ( hellcaller() && affected_by.xalans_ferocity_crit )
         m *= 1.0 + p()->hero.xalans_ferocity->effectN( 4 ).percent();
 
+      if ( hellcaller() && affected_by.xalans_cruelty_crit )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -450,6 +459,9 @@ using namespace helpers;
       if ( hellcaller() && affected_by.xalans_ferocity_dd && p()->hero.xalans_ferocity.ok() )
         m *= 1.0 + p()->hero.xalans_ferocity->effectN( 1 ).percent();
 
+      if ( hellcaller() && affected_by.xalans_cruelty_dd && p()->hero.xalans_cruelty.ok() )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 3 ).percent();
+
       return m;
     }
 
@@ -474,6 +486,9 @@ using namespace helpers;
 
       if ( hellcaller() && affected_by.xalans_ferocity_td && p()->hero.xalans_ferocity.ok() )
         m *= 1.0 + p()->hero.xalans_ferocity->effectN( 2 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_cruelty_td && p()->hero.xalans_cruelty.ok() )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 4 ).percent();
 
       return m;
     }
