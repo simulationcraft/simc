@@ -776,6 +776,7 @@ using namespace helpers;
 
         base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
         triggers.ravenous_afflictions = true;
 
@@ -788,16 +789,6 @@ using namespace helpers;
 
         if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
           helpers::nightfall_updater( p(), d );
-      }
-
-      double composite_ta_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_ta_multiplier( s );
-
-        if ( p()->talents.sacrolashs_dark_strike.ok() )
-          m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-
-        return m;
       }
     };
 
@@ -1114,6 +1105,7 @@ using namespace helpers;
 
           base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
           base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
         }
       }
 
