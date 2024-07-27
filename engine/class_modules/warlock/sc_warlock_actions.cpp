@@ -826,7 +826,7 @@ using namespace helpers;
     corruption_dot_t* periodic;
 
     corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption, options_str )
+      : warlock_spell_t( "Corruption (Direct)", p, !p->hero.wither.ok() ? p->warlock_base.corruption : spell_data_t::not_found(), options_str )
     {
       periodic = new corruption_dot_t( p );
       impact_action = periodic;
@@ -2920,7 +2920,7 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() && !p->hero.wither.ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -3783,6 +3783,31 @@ using namespace helpers;
   };
 
   // Diabolist Actions End
+  // Hellcaller Actions Begin
+
+  struct wither_t : public warlock_spell_t
+  {
+    struct wither_dot_t : public warlock_spell_t
+    {
+      wither_dot_t( warlock_t* p )
+        : warlock_spell_t( "Wither (DoT)", p, p->hero.wither_dot )
+      {
+        background = dual = true;
+      }
+    };
+
+    wither_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Wither", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
+    {
+      impact_action = new wither_dot_t( p );
+      add_child( impact_action );
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return impact_action->get_dot( t ); }
+  };
+
+  // Hellcaller Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
@@ -4042,6 +4067,14 @@ using namespace helpers;
 
     if ( action_name == "ruination" )
       return new ruination_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_hellcaller( util::string_view action_name, util::string_view options_str )
+  {
+    if ( action_name == "wither" )
+      return new wither_t( this, options_str );
 
     return nullptr;
   }

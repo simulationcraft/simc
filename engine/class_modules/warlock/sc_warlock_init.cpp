@@ -526,6 +526,9 @@ namespace warlock
 
   void warlock_t::init_spells_hellcaller()
   {
+    hero.wither = find_talent_spell( talent_tree::HERO, "Wither" ); // Should be ID 445465
+    hero.wither_direct = find_spell( 445468 );
+    hero.wither_dot = find_spell( 445474 );
   }
 
   void warlock_t::init_base_stats()
