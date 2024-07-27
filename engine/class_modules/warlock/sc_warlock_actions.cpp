@@ -3892,6 +3892,9 @@ using namespace helpers;
     if ( action_t* diabolist_action = create_action_diabolist( action_name, options_str ) )
       return diabolist_action;
 
+    if ( action_t* hellcaller_action = create_action_hellcaller( action_name, options_str ) )
+      return hellcaller_action;
+
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
 

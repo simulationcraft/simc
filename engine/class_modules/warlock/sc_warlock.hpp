@@ -503,6 +503,8 @@ public:
 
     // Hellcaller
     player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
+    const spell_data_t* wither_direct;
+    const spell_data_t* wither_dot;
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -781,6 +783,13 @@ public:
   void init_gains_diabolist();
   void init_rng_diabolist();
   void init_procs_diabolist();
+
+  action_t* create_action_hellcaller( util::string_view, util::string_view );
+  void create_buffs_hellcaller();
+  void init_spells_hellcaller();
+  void init_gains_hellcaller();
+  void init_rng_hellcaller();
+  void init_procs_hellcaller();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
