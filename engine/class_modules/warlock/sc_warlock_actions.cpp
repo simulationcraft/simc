@@ -3548,7 +3548,7 @@ using namespace helpers;
       {
         i--;
 
-        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
+        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() && !td( target_cache.list[ i ] )->dots_wither->is_ticking() )
           target_cache.list.erase( target_cache.list.begin() + i );
       }
 
@@ -3572,7 +3572,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 )
+      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 && p()->get_active_dots( td( target )->dots_wither ) == 0 )
         return false;
 
       return warlock_spell_t::ready();
