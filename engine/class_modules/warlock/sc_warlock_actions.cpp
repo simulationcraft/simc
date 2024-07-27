@@ -354,7 +354,7 @@ using namespace helpers;
       if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
-      if ( destruction() && affected_by.ashen_remains && td( t )->dots_immolate->is_ticking() )
+      if ( destruction() && affected_by.ashen_remains && ( td( t )->dots_immolate->is_ticking() || td( t )->dots_wither->is_ticking() ) )
         m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
@@ -2820,7 +2820,7 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
-        affected_by.ashen_remains = true;
+        affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
         triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
@@ -2890,7 +2890,7 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
@@ -3057,7 +3057,7 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
@@ -3394,7 +3394,7 @@ using namespace helpers;
       
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
@@ -3730,7 +3730,7 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
 
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       if ( demonology() )
       {
