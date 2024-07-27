@@ -3348,20 +3348,24 @@ using namespace helpers;
 
   struct cataclysm_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str )
     {
       aoe = -1;
 
       affected_by.chaotic_energies = true;
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
+
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     void impact( action_state_t* s ) override
@@ -3369,7 +3373,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
-        immolate->execute_on_target( s->target );
+        applied_dot->execute_on_target( s->target );
     }
   };
 
