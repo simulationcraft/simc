@@ -48,6 +48,11 @@ using namespace helpers;
       bool touch_of_rancora = false;
       bool flames_of_xoroth_dd = false;
       bool flames_of_xoroth_td = false;
+
+      // Hellcaller
+      bool xalans_ferocity_dd = false;
+      bool xalans_ferocity_td = false;
+      bool xalans_ferocity_crit = false;
     } affected_by;
 
     struct triggers_t
@@ -92,7 +97,7 @@ using namespace helpers;
       affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
-      affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.roaring_blaze = p->talents.roaring_blaze.ok() && data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
       affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
@@ -100,6 +105,10 @@ using namespace helpers;
 
       affected_by.flames_of_xoroth_dd = data().affected_by( p->hero.flames_of_xoroth->effectN( 1 ) );
       affected_by.flames_of_xoroth_td = data().affected_by( p->hero.flames_of_xoroth->effectN( 2 ) );
+
+      affected_by.xalans_ferocity_dd = data().affected_by( p->hero.xalans_ferocity->effectN( 1 ) );
+      affected_by.xalans_ferocity_td = data().affected_by( p->hero.xalans_ferocity->effectN( 2 ) );
+      affected_by.xalans_ferocity_crit = data().affected_by( p->hero.xalans_ferocity->effectN( 4 ) );
 
       triggers.decimation = p->talents.decimation.ok();
     }
@@ -332,6 +341,16 @@ using namespace helpers;
       return c;
     }
 
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = spell_t::composite_crit_chance_multiplier();
+
+      if ( hellcaller() && affected_by.xalans_ferocity_crit )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 4 ).percent();
+
+      return m;
+    }
+
     double composite_crit_damage_bonus_multiplier() const override
     {
       double m = spell_t::composite_crit_damage_bonus_multiplier();
@@ -423,6 +442,9 @@ using namespace helpers;
       if ( diabolist() && affected_by.flames_of_xoroth_dd && p()->hero.flames_of_xoroth.ok() )
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 1 ).percent();
 
+      if ( hellcaller() && affected_by.xalans_ferocity_dd && p()->hero.xalans_ferocity.ok() )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -444,6 +466,9 @@ using namespace helpers;
 
       if ( diabolist() && affected_by.flames_of_xoroth_td && p()->hero.flames_of_xoroth.ok() )
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 2 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_ferocity_td && p()->hero.xalans_ferocity.ok() )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 2 ).percent();
 
       return m;
     }
@@ -577,6 +602,9 @@ using namespace helpers;
 
     bool diabolist() const
     { return p()->hero.diabolic_ritual.ok(); }
+
+    bool hellcaller() const
+    { return p()->hero.wither.ok(); }
   };
 
   // Shared Class Actions Begin
