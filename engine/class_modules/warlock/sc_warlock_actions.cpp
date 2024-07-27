@@ -3885,7 +3885,11 @@ using namespace helpers;
         continue;
 
       agony = agony || td->dots_agony->is_ticking();
-      corruption = corruption || td->dots_corruption->is_ticking();
+
+      if ( p->hero.wither.ok() )
+        corruption = corruption || td->dots_wither->is_ticking();
+      else
+        corruption = corruption || td->dots_corruption->is_ticking();
 
       if ( agony && corruption )
         break;

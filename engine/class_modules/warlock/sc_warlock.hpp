@@ -505,7 +505,7 @@ public:
     const spell_data_t* diabolic_bolt; // TODO: Socrethar's Guile?
 
     // Hellcaller
-    player_talent_t wither; // TODO: Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
+    player_talent_t wither; // TODO: Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
     const spell_data_t* wither_direct; // TODO: Damage values are picking up some other weird effects similar to Flames of Xoroth. Check damage again after main implementation work is done
     const spell_data_t* wither_dot; // TODO: In-game, Affliction is picking up the Socrethar's Guile effect, which is almost certainly a bug
 
