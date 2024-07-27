@@ -407,7 +407,7 @@ using namespace helpers;
       if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
 
-      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
@@ -432,7 +432,7 @@ using namespace helpers;
       if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
-      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
@@ -780,7 +780,7 @@ using namespace helpers;
 
         triggers.ravenous_afflictions = true;
 
-        affected_by.deaths_embrace = true;
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void tick( dot_t* d ) override
@@ -812,7 +812,7 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -1103,6 +1103,8 @@ using namespace helpers;
             base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
           }
 
+          affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
           base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
           base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
           base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
@@ -1143,6 +1145,8 @@ using namespace helpers;
 
       if ( affliction() )
       {
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
         base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
       }
@@ -1184,7 +1188,7 @@ using namespace helpers;
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
-        affected_by.deaths_embrace = true;
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
         if ( p->talents.malefic_touch.ok() )
         {
@@ -1335,7 +1339,7 @@ using namespace helpers;
 
       triggers.ravenous_afflictions = true;
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.perpetual_unstability.ok() )
       {
@@ -1411,7 +1415,7 @@ using namespace helpers;
 
       triggers.ravenous_afflictions = true;
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.volatile_agony.ok() )
       {
