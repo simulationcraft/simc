@@ -1107,6 +1107,55 @@ using namespace helpers;
   };
 
   // Shared Class Actions End
+  // Hellcaller Actions Begin
+
+  struct wither_t : public warlock_spell_t
+  {
+    struct wither_dot_t : public warlock_spell_t
+    {
+      wither_dot_t( warlock_t* p )
+        : warlock_spell_t( "Wither (DoT)", p, p->hero.wither_dot )
+      {
+        background = dual = true;
+
+        affected_by.chaotic_energies = destruction();
+
+        if ( destruction() )
+          base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( destruction() )
+        {
+          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
+
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+        }
+      }
+    };
+
+    wither_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Wither", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
+    {
+      affected_by.chaotic_energies = destruction();
+      affected_by.havoc = destruction();
+
+      impact_action = new wither_dot_t( p );
+      add_child( impact_action );
+
+      if ( destruction() )
+        base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return impact_action->get_dot( t ); }
+  };
+
+  // Hellcaller Actions End
   // Affliction Actions Begin
 
   struct malefic_rapture_t : public warlock_spell_t
@@ -1442,18 +1491,23 @@ using namespace helpers;
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
-      corruption_t* corr;
+      action_t* applied_dot;
 
       seed_of_corruption_aoe_t( warlock_t* p )
-        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corr( new corruption_t( p, "", true ) )
+        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe )
       {
         aoe = -1;
         background = dual = true;
 
-        corr->background = true;
-        corr->dual = true;
-        corr->base_costs[ RESOURCE_MANA ] = 0;
+        if ( p->hero.wither.ok() )
+          applied_dot = new wither_t( p, "" );
+        else
+          applied_dot = new corruption_t( p, "", true );
+
+        applied_dot->background = true;
+        applied_dot->dual = true;
+        applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+        applied_dot->base_dd_multiplier = 0.0;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent(); // TOCHECK: 2024-07-05 This is still in effect on Beta
       }
@@ -1472,7 +1526,7 @@ using namespace helpers;
             tdata->dots_seed_of_corruption->cancel();
           }
           
-          corr->execute_on_target( s->target );
+          applied_dot->execute_on_target( s->target );
         }
       }
     };
@@ -3783,55 +3837,6 @@ using namespace helpers;
   };
 
   // Diabolist Actions End
-  // Hellcaller Actions Begin
-
-  struct wither_t : public warlock_spell_t
-  {
-    struct wither_dot_t : public warlock_spell_t
-    {
-      wither_dot_t( warlock_t* p )
-        : warlock_spell_t( "Wither (DoT)", p, p->hero.wither_dot )
-      {
-        background = dual = true;
-
-        affected_by.chaotic_energies = destruction();
-
-        if ( destruction() )
-          base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
-      }
-
-      void tick( dot_t* d ) override
-      {
-        warlock_spell_t::tick( d );
-
-        if ( destruction() )
-        {
-          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
-
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
-        }
-      }
-    };
-
-    wither_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Wither", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
-    {
-      affected_by.chaotic_energies = destruction();
-      affected_by.havoc = destruction();
-
-      impact_action = new wither_dot_t( p );
-      add_child( impact_action );
-
-      if ( destruction() )
-        base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
-    }
-
-    dot_t* get_dot( player_t* t ) override
-    { return impact_action->get_dot( t ); }
-  };
-
-  // Hellcaller Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
