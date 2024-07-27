@@ -172,7 +172,7 @@ void outlaw( player_t* p )
   action_priority_list_t* stealth = p->get_action_priority_list( "stealth" );
   action_priority_list_t* stealth_cds = p->get_action_priority_list( "stealth_cds" );
 
-  precombat->add_action( "apply_poison" );
+  precombat->add_action( "apply_poison,nonlethal=none,lethal=instant" );
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
