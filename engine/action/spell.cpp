@@ -108,14 +108,14 @@ double spell_base_t::composite_crit_chance() const
   return action_t::composite_crit_chance() + player->cache.spell_crit_chance();
 }
 
-double spell_base_t::composite_haste() const
-{
-  return action_t::composite_haste() * player->cache.spell_cast_speed();
-}
-
 double spell_base_t::composite_crit_chance_multiplier() const
 {
   return action_t::composite_crit_chance_multiplier() * player->composite_spell_crit_chance_multiplier();
+}
+
+double spell_base_t::composite_haste() const
+{
+  return action_t::composite_haste() * player->cache.spell_cast_speed();
 }
 
 double spell_base_t::recharge_multiplier( const cooldown_t& cd ) const
