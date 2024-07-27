@@ -1152,6 +1152,8 @@ using namespace helpers;
 
       if ( destruction() )
       {
+        triggers.decimation = p->talents.decimation.ok() && !dual;
+
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       }
