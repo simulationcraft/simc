@@ -1238,6 +1238,7 @@ using namespace helpers;
           tdata->dots_unstable_affliction->adjust_duration( extension );
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
+          tdata->dots_wither->adjust_duration( extension );
         }
 
         if ( p()->talents.malefic_touch.ok() )
