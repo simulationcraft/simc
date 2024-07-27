@@ -1122,6 +1122,20 @@ using namespace helpers;
 
         if ( destruction() )
           base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
+
+        if ( affliction() )
+        {
+          if ( p->talents.absolute_corruption.ok() )
+          {
+            dot_duration = sim->expected_iteration_time > 0_ms
+              ? 2 * sim->expected_iteration_time
+              : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );
+
+            base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+          }
+
+          base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+        }
       }
 
       void tick( dot_t* d ) override
@@ -1149,6 +1163,9 @@ using namespace helpers;
 
       if ( destruction() )
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+
+      if ( affliction() )
+        base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
     }
 
     dot_t* get_dot( player_t* t ) override
