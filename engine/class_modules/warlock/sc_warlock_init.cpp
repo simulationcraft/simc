@@ -76,6 +76,7 @@ namespace warlock
     talents.soulburn_buff = find_spell( 387626 );
 
     warlock_t::init_spells_diabolist();
+    warlock_t::init_spells_hellcaller();
   }
 
   void warlock_t::init_spells_affliction()
@@ -523,6 +524,13 @@ namespace warlock
     warlock_pet_list.fragments.set_default_duration( hero.infernal_fragmentation->duration() );
   }
 
+  void warlock_t::init_spells_hellcaller()
+  {
+    hero.wither = find_talent_spell( talent_tree::HERO, "Wither" ); // Should be ID 445465
+    hero.wither_direct = find_spell( 445468 );
+    hero.wither_dot = find_spell( 445474 );
+  }
+
   void warlock_t::init_base_stats()
   {
     if ( base.distance < 1.0 )
@@ -587,6 +595,7 @@ namespace warlock
                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     create_buffs_diabolist();
+    create_buffs_hellcaller();
   }
 
   void warlock_t::create_buffs_affliction()
@@ -763,6 +772,10 @@ namespace warlock
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
   }
 
+  void warlock_t::create_buffs_hellcaller()
+  {
+  }
+
   void warlock_t::create_pets()
   {
     for ( auto& pet : pet_name_list )
@@ -796,6 +809,7 @@ namespace warlock
       init_gains_destruction();
 
     init_gains_diabolist();
+    init_gains_hellcaller();
 
     gains.soul_conduit = get_gain( "soul_conduit" );
   }
@@ -826,6 +840,12 @@ namespace warlock
   {
   }
 
+  void warlock_t::init_gains_hellcaller()
+  {
+    gains.wither = get_gain( "wither" );
+    gains.wither_crits = get_gain( "wither_crits" );
+  }
+
   void warlock_t::init_procs()
   {
     player_t::init_procs();
@@ -838,6 +858,7 @@ namespace warlock
       init_procs_destruction();
 
     init_procs_diabolist();
+    init_procs_hellcaller();
 
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
@@ -891,6 +912,10 @@ namespace warlock
   {
   }
 
+  void warlock_t::init_procs_hellcaller()
+  {
+  }
+
   void warlock_t::init_rng()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -901,6 +926,7 @@ namespace warlock
       init_rng_destruction();
 
     init_rng_diabolist();
+    init_rng_hellcaller();
 
     player_t::init_rng();
   }
@@ -920,6 +946,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_diabolist()
+  {
+  }
+
+  void warlock_t::init_rng_hellcaller()
   {
   }
 

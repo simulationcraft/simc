@@ -302,7 +302,7 @@ using namespace helpers;
     {
       spell_t::tick( d );
 
-      if ( affliction() && triggers.ravenous_afflictions && p()->talents.ravenous_afflictions.ok() && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
         p()->buffs.nightfall->trigger();
         p()->procs.ravenous_afflictions->occur();
@@ -354,7 +354,7 @@ using namespace helpers;
       if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
-      if ( destruction() && affected_by.ashen_remains && td( t )->dots_immolate->is_ticking() )
+      if ( destruction() && affected_by.ashen_remains && ( td( t )->dots_immolate->is_ticking() || td( t )->dots_wither->is_ticking() ) )
         m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
@@ -407,7 +407,7 @@ using namespace helpers;
       if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
 
-      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
@@ -432,7 +432,7 @@ using namespace helpers;
       if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
-      if ( affliction() && affected_by.deaths_embrace && p()->talents.deaths_embrace.ok() && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
       if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
@@ -776,57 +776,26 @@ using namespace helpers;
 
         base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
-        triggers.ravenous_afflictions = true;
+        triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
-        affected_by.deaths_embrace = true;
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void tick( dot_t* d ) override
       {
         warlock_spell_t::tick( d );
 
-        if ( result_is_hit( d->state->result ) )
-        {
-          if ( p()->talents.nightfall.ok() )
-          {
-            // Blizzard did not publicly release how nightfall was changed.
-            // We determined this is the probable functionality copied from Agony by first confirming the
-            // DR formula was the same and then confirming that you can get procs on 1st tick.
-            // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-            // Last checked 09-28-2020.
-            double increment_max = 0.13;
-
-            double active_corruptions = p()->get_active_dots( d );
-            increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-            p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-            if ( p()->corruption_accumulator >= 1 )
-            {
-              p()->procs.nightfall->occur();
-              p()->buffs.nightfall->trigger();
-              p()->corruption_accumulator -= 1.0;
-            }
-          }
-        }
-      }
-
-      double composite_ta_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_ta_multiplier( s );
-
-        if ( p()->talents.sacrolashs_dark_strike.ok() )
-          m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-
-        return m;
+        if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+          helpers::nightfall_updater( p(), d );
       }
     };
 
     corruption_dot_t* periodic;
 
     corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption, options_str )
+      : warlock_spell_t( "Corruption (Direct)", p, !p->hero.wither.ok() ? p->warlock_base.corruption : spell_data_t::not_found(), options_str )
     {
       periodic = new corruption_dot_t( p );
       impact_action = periodic;
@@ -843,7 +812,7 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -1107,6 +1076,102 @@ using namespace helpers;
   };
 
   // Shared Class Actions End
+  // Hellcaller Actions Begin
+
+  struct wither_t : public warlock_spell_t
+  {
+    struct wither_dot_t : public warlock_spell_t
+    {
+      wither_dot_t( warlock_t* p )
+        : warlock_spell_t( "Wither", p, p->hero.wither_dot )
+      {
+        background = dual = true;
+
+        affected_by.chaotic_energies = destruction();
+
+        if ( destruction() )
+        {
+          dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
+
+          base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+        }
+
+        if ( affliction() )
+        {
+          if ( p->talents.absolute_corruption.ok() )
+          {
+            dot_duration = sim->expected_iteration_time > 0_ms
+              ? 2 * sim->expected_iteration_time
+              : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );
+
+            base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+          }
+
+          triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
+          affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+          base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
+        }
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( affliction() )
+        {
+          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+            helpers::nightfall_updater( p(), d );
+        }
+
+        if ( destruction() )
+        {
+          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
+
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+
+          if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+            p()->buffs.flashpoint->trigger();
+        }
+      }
+    };
+
+    wither_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Wither (Direct)", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
+    {
+      affected_by.chaotic_energies = destruction();
+      affected_by.havoc = destruction();
+
+      impact_action = new wither_dot_t( p );
+      add_child( impact_action );
+
+      if ( destruction() )
+      {
+        triggers.decimation = p->talents.decimation.ok() && !dual;
+
+        base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+      }
+
+      if ( affliction() )
+      {
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+        base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
+      }
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return impact_action->get_dot( t ); }
+  };
+
+  // Hellcaller Actions End
   // Affliction Actions Begin
 
   struct malefic_rapture_t : public warlock_spell_t
@@ -1138,7 +1203,7 @@ using namespace helpers;
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
-        affected_by.deaths_embrace = true;
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
         if ( p->talents.malefic_touch.ok() )
         {
@@ -1192,6 +1257,7 @@ using namespace helpers;
           tdata->dots_unstable_affliction->adjust_duration( extension );
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
+          tdata->dots_wither->adjust_duration( extension );
         }
 
         if ( p()->talents.malefic_touch.ok() )
@@ -1286,9 +1352,9 @@ using namespace helpers;
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
 
-      triggers.ravenous_afflictions = true;
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.perpetual_unstability.ok() )
       {
@@ -1362,9 +1428,9 @@ using namespace helpers;
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
 
-      triggers.ravenous_afflictions = true;
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
-      affected_by.deaths_embrace = true;
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.volatile_agony.ok() )
       {
@@ -1442,18 +1508,23 @@ using namespace helpers;
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
-      corruption_t* corr;
+      action_t* applied_dot;
 
       seed_of_corruption_aoe_t( warlock_t* p )
-        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corr( new corruption_t( p, "", true ) )
+        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe )
       {
         aoe = -1;
         background = dual = true;
 
-        corr->background = true;
-        corr->dual = true;
-        corr->base_costs[ RESOURCE_MANA ] = 0;
+        if ( p->hero.wither.ok() )
+          applied_dot = new wither_t( p, "" );
+        else
+          applied_dot = new corruption_t( p, "", true );
+
+        applied_dot->background = true;
+        applied_dot->dual = true;
+        applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+        applied_dot->base_dd_multiplier = 0.0;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent(); // TOCHECK: 2024-07-05 This is still in effect on Beta
       }
@@ -1472,7 +1543,7 @@ using namespace helpers;
             tdata->dots_seed_of_corruption->cancel();
           }
           
-          corr->execute_on_target( s->target );
+          applied_dot->execute_on_target( s->target );
         }
       }
     };
@@ -1851,6 +1922,7 @@ using namespace helpers;
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
         td->dots_soul_rot->adjust_duration( darkglare_extension );
+        td->dots_wither->adjust_duration( darkglare_extension );
 
         if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
           mal_vis->execute_on_target( target );
@@ -2753,7 +2825,7 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
-        affected_by.ashen_remains = true;
+        affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
         triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
@@ -2823,7 +2895,7 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
@@ -2920,7 +2992,7 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() && !p->hero.wither.ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -2931,7 +3003,7 @@ using namespace helpers;
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
 
-      triggers.decimation = !dual;
+      triggers.decimation = p->talents.decimation.ok() && !dual;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -2957,7 +3029,7 @@ using namespace helpers;
 
     void execute() override
     {
-      dot_t* dot = td( target )->dots_immolate;
+      dot_t* dot = p()->hero.wither.ok() ? td( target )->dots_wither : td( target )->dots_immolate;
 
       assert( dot->current_action );
       action_state_t* state = dot->current_action->get_state( dot->state );
@@ -2976,8 +3048,10 @@ using namespace helpers;
       action_state_t::release( state );
 
       base_dd_min = base_dd_max = total_damage;
+
       warlock_spell_t::execute();
-      td( target )->dots_immolate->adjust_duration( -remaining );
+
+      dot->adjust_duration( -remaining );
     }
   };
 
@@ -2990,7 +3064,7 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
@@ -3060,7 +3134,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots_immolate->is_ticking() || td( s->target )->dots_wither->is_ticking() ) )
         internal_combustion->execute_on_target( s->target );
 
       if ( p()->talents.eradication.ok() && result_is_hit( s->result ) )
@@ -3289,20 +3363,24 @@ using namespace helpers;
 
   struct cataclysm_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str )
     {
       aoe = -1;
 
       affected_by.chaotic_energies = true;
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
+
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     void impact( action_state_t* s ) override
@@ -3310,7 +3388,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
-        immolate->execute_on_target( s->target );
+        applied_dot->execute_on_target( s->target );
     }
   };
 
@@ -3323,7 +3401,7 @@ using namespace helpers;
       
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
@@ -3428,6 +3506,9 @@ using namespace helpers;
 
         if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
           td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+          td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -3477,7 +3558,7 @@ using namespace helpers;
       {
         i--;
 
-        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
+        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() && !td( target_cache.list[ i ] )->dots_wither->is_ticking() )
           target_cache.list.erase( target_cache.list.begin() + i );
       }
 
@@ -3501,7 +3582,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 )
+      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 && p()->get_active_dots( td( target )->dots_wither ) == 0 )
         return false;
 
       return warlock_spell_t::ready();
@@ -3598,11 +3679,10 @@ using namespace helpers;
 
   struct soul_fire_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     soul_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str )
     {
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
@@ -3611,10 +3691,15 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
+
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     double execute_time_pct_multiplier() const override
@@ -3630,7 +3715,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      immolate->execute_on_target( target );
+      applied_dot->execute_on_target( target );
 
       p()->buffs.backdraft->decrement();
 
@@ -3659,7 +3744,7 @@ using namespace helpers;
       energize_type = action_energize::ON_CAST;
 
       affected_by.havoc = true;
-      affected_by.ashen_remains = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       if ( demonology() )
       {
@@ -3833,13 +3918,39 @@ using namespace helpers;
         continue;
 
       agony = agony || td->dots_agony->is_ticking();
-      corruption = corruption || td->dots_corruption->is_ticking();
+
+      if ( p->hero.wither.ok() )
+        corruption = corruption || td->dots_wither->is_ticking();
+      else
+        corruption = corruption || td->dots_corruption->is_ticking();
 
       if ( agony && corruption )
         break;
     }
 
     return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+  }
+
+  void helpers::nightfall_updater( warlock_t* p, dot_t* d )
+  {
+    // Blizzard did not publicly release how nightfall was changed.
+    // We determined this is the probable functionality copied from Agony by first confirming the
+    // DR formula was the same and then confirming that you can get procs on 1st tick.
+    // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+    // Last checked 09-28-2020.
+    double increment_max = 0.13;
+
+    double active_corruptions = p->get_active_dots( d );
+    increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+    p->corruption_accumulator += p->rng().range( 0.0, increment_max );
+
+    if ( p->corruption_accumulator >= 1 )
+    {
+      p->procs.nightfall->occur();
+      p->buffs.nightfall->trigger();
+      p->corruption_accumulator -= 1.0;
+    }
   }
 
   // Event for spawning Wild Imps for Demonology
@@ -3891,6 +4002,9 @@ using namespace helpers;
 
     if ( action_t* diabolist_action = create_action_diabolist( action_name, options_str ) )
       return diabolist_action;
+
+    if ( action_t* hellcaller_action = create_action_hellcaller( action_name, options_str ) )
+      return hellcaller_action;
 
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
@@ -4039,6 +4153,14 @@ using namespace helpers;
 
     if ( action_name == "ruination" )
       return new ruination_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_hellcaller( util::string_view action_name, util::string_view options_str )
+  {
+    if ( action_name == "wither" )
+      return new wither_t( this, options_str );
 
     return nullptr;
   }

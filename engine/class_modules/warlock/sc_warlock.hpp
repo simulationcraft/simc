@@ -68,6 +68,9 @@ struct warlock_td_t : public actor_target_data_t
   // Diabolist
   propagate_const<buff_t*> debuffs_cloven_soul;
 
+  // Hellcaller
+  propagate_const<dot_t*> dots_wither;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -499,10 +502,12 @@ public:
     const spell_data_t* ruination_cast;
     const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented
     const spell_data_t* diabolic_imp;
-    const spell_data_t* diabolic_bolt;
+    const spell_data_t* diabolic_bolt; // TODO: Socrethar's Guile?
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
+    player_talent_t wither;
+    const spell_data_t* wither_direct; // TODO: Damage values are picking up some other weird effects similar to Flames of Xoroth. Check damage again after main implementation work is done
+    const spell_data_t* wither_dot; // TODO: In-game, Affliction is picking up the Socrethar's Guile effect, which is almost certainly a bug
 
     player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
@@ -638,6 +643,12 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* summon_overfiend;
+
+    // Diabolist
+
+    // Hellcaller
+    gain_t* wither;
+    gain_t* wither_crits;
   } gains;
 
   // Procs
@@ -782,6 +793,13 @@ public:
   void init_rng_diabolist();
   void init_procs_diabolist();
 
+  action_t* create_action_hellcaller( util::string_view, util::string_view );
+  void create_buffs_hellcaller();
+  void init_spells_hellcaller();
+  void init_gains_hellcaller();
+  void init_rng_hellcaller();
+  void init_procs_hellcaller();
+
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
@@ -808,5 +826,6 @@ namespace helpers
   };
 
   bool crescendo_check( warlock_t* p );
+  void nightfall_updater( warlock_t* p, dot_t* d );
 }
 }  // namespace warlock
