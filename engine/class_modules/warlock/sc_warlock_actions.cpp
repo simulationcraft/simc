@@ -223,6 +223,11 @@ using namespace helpers;
               break;
           }
         }
+
+        if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
+        {
+          helpers::trigger_blackened_soul( p() );
+        }
       }
     }
 
@@ -1118,6 +1123,7 @@ using namespace helpers;
         : warlock_spell_t( "Wither", p, p->hero.wither_dot )
       {
         background = dual = true;
+        dot_ignore_stack = true;
 
         affected_by.chaotic_energies = destruction();
 
@@ -1201,6 +1207,28 @@ using namespace helpers;
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
+  };
+
+  struct blackened_soul_t : public warlock_spell_t
+  {
+    blackened_soul_t( warlock_t* p )
+      : warlock_spell_t( "Blackened Soul", p, p->hero.blackened_soul_dmg )
+    {
+      background = dual = true;
+
+      affected_by.chaotic_energies = destruction();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( td( s->target )->dots_wither->current_stack() > 1 )
+        td( s->target )->dots_wither->decrement( 1 );
+
+      if ( td( s->target )->dots_wither->current_stack() <= 1 )
+        make_event( *sim, 0_ms, [ this, s ] { td( s->target )->debuffs_blackened_soul->expire(); } );
+    }
   };
 
   // Hellcaller Actions End
@@ -3985,6 +4013,28 @@ using namespace helpers;
     }
   }
 
+  void helpers::trigger_blackened_soul( warlock_t* p )
+  {
+    for ( const auto target : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* tdata = p->get_target_data( target );
+      if ( !tdata )
+        continue;
+
+      if ( !tdata->dots_wither->is_ticking() )
+        continue;
+
+      tdata->dots_wither->increment( 1 );
+
+      // TOCHECK: Chance for this effect is not in spell data!
+      if ( p->rng().roll( 0.1 ) )
+      {
+        tdata->debuffs_blackened_soul->trigger();
+        p->procs.blackened_soul->occur();
+      }
+    }
+  }
+
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )
   { diff = timespan_t::from_millis( exp - delay ); }
@@ -4208,6 +4258,10 @@ using namespace helpers;
     if ( specialization() == WARLOCK_DESTRUCTION )
       create_destruction_proc_actions();
 
+    create_diabolist_proc_actions();
+
+    create_hellcaller_proc_actions();
+
     player_t::create_actions();
   }
 
@@ -4222,6 +4276,14 @@ using namespace helpers;
 
   void warlock_t::create_destruction_proc_actions()
   { }
+
+  void warlock_t::create_diabolist_proc_actions()
+  { }
+
+  void warlock_t::create_hellcaller_proc_actions()
+  {
+    proc_actions.blackened_soul = new blackened_soul_t( this );
+  }
 
   void warlock_t::init_special_effects()
   {

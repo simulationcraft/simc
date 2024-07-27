@@ -104,6 +104,14 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Hellcaller
   dots_wither = target->get_dot( "wither", &p );
 
+  debuffs_blackened_soul = make_buff( *this, "blackened_soul", p.hero.blackened_soul_trigger )
+                               ->set_duration( 0_ms )
+                               ->set_tick_zero( false )
+                               ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
+                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 

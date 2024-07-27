@@ -71,6 +71,8 @@ struct warlock_td_t : public actor_target_data_t
   // Hellcaller
   propagate_const<dot_t*> dots_wither;
 
+  propagate_const<buff_t*> debuffs_blackened_soul; // Dummy/Hidden debuff that triggers stack collapse
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -511,6 +513,8 @@ public:
 
     player_talent_t xalans_ferocity; // TODO: This has similar issues to Flames of Xoroth. Is/should this be affecting pets?
     player_talent_t blackened_soul;
+    const spell_data_t* blackened_soul_trigger; // Contains interval for stack collapse
+    const spell_data_t* blackened_soul_dmg;
     player_talent_t xalans_cruelty;
 
     player_talent_t hatefury_rituals;
@@ -545,6 +549,7 @@ public:
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* doom_proc;
     action_t* rain_of_fire_tick;
+    action_t* blackened_soul;
   } proc_actions;
 
   struct tier_sets_t
@@ -690,6 +695,11 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
     proc_t* dimension_ripper;
+
+    // Diabolist
+
+    // Hellcaller
+    proc_t* blackened_soul;
   } procs;
 
   int initial_soul_shards;
@@ -721,6 +731,8 @@ public:
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
   void create_destruction_proc_actions();
+  void create_diabolist_proc_actions();
+  void create_hellcaller_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -827,5 +839,7 @@ namespace helpers
 
   bool crescendo_check( warlock_t* p );
   void nightfall_updater( warlock_t* p, dot_t* d );
+
+  void trigger_blackened_soul( warlock_t* p );
 }
 }  // namespace warlock
