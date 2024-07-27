@@ -1083,7 +1083,7 @@ using namespace helpers;
     struct wither_dot_t : public warlock_spell_t
     {
       wither_dot_t( warlock_t* p )
-        : warlock_spell_t( "Wither (DoT)", p, p->hero.wither_dot )
+        : warlock_spell_t( "Wither", p, p->hero.wither_dot )
       {
         background = dual = true;
 
@@ -1130,7 +1130,7 @@ using namespace helpers;
     };
 
     wither_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Wither", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
+      : warlock_spell_t( "Wither (Direct)", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = destruction();
       affected_by.havoc = destruction();
