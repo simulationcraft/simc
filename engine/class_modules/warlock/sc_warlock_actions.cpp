@@ -1090,7 +1090,12 @@ using namespace helpers;
         affected_by.chaotic_energies = destruction();
 
         if ( destruction() )
+        {
+          dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
+
           base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+        }
 
         if ( affliction() )
         {
@@ -1143,7 +1148,10 @@ using namespace helpers;
       add_child( impact_action );
 
       if ( destruction() )
+      {
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+      }
 
       if ( affliction() )
       {
