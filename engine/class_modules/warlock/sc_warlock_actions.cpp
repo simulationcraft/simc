@@ -144,7 +144,11 @@ using namespace helpers;
           {
             if ( p()->rain_of_chaos_rng->trigger() )
             {
-              p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+              auto spawned = p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+              for ( pets::destruction::infernal_t* s : spawned )
+              {
+                s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
+              }
               p()->procs.rain_of_chaos->occur();
             }
           }

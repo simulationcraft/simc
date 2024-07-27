@@ -1697,7 +1697,7 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 {
   resource_regeneration = regen_type::DISABLED;
 
-  primary = true;
+  type = MAIN;
 
   owner_coeff.ap_from_sp = 1.65;
   owner_coeff.sp_from_sp = 1.65;
@@ -1764,7 +1764,7 @@ void infernal_t::demise()
 {
   warlock_pet_t::demise();
 
-  if ( o()->hero.abyssal_dominion.ok() && primary )
+  if ( o()->hero.abyssal_dominion.ok() && type == MAIN )
     make_event( sim, [ this ] { o()->warlock_pet_list.fragments.spawn( 2u ); } );
 }
 
@@ -1772,7 +1772,7 @@ double infernal_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->hero.abyssal_dominion.ok() && primary )
+  if ( o()->hero.abyssal_dominion.ok() && ( type == MAIN || type == RAIN ) )
     m *= 1.0 + o()->hero.abyssal_dominion->effectN( 3 ).percent();
 
   return m;
@@ -2337,7 +2337,7 @@ namespace diabolist
   infernal_fragment_t::infernal_fragment_t( warlock_t* owner, util::string_view name )
     : destruction::infernal_t( owner, name )
   {
-    primary = false;
+    type = FRAG;
     owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
     owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
   }
