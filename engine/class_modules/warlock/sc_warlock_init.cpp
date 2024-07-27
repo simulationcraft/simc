@@ -531,6 +531,10 @@ namespace warlock
     hero.wither_dot = find_spell( 445474 );
 
     hero.xalans_ferocity = find_talent_spell( talent_tree::HERO, "Xalan's Ferocity" ); // Should be ID 440044
+
+    hero.blackened_soul = find_talent_spell( talent_tree::HERO, "Blackened Soul" ); // Should be ID 440043
+    hero.blackened_soul_trigger = find_spell( 445731 );
+    hero.blackened_soul_dmg = find_spell( 445736 );
   }
 
   void warlock_t::init_base_stats()
@@ -916,6 +920,7 @@ namespace warlock
 
   void warlock_t::init_procs_hellcaller()
   {
+    procs.blackened_soul = get_proc( "blackened_soul" );
   }
 
   void warlock_t::init_rng()
