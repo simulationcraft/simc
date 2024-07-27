@@ -1134,6 +1134,9 @@ using namespace helpers;
             p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
 
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+
+          if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+            p()->buffs.flashpoint->trigger();
         }
       }
     };
