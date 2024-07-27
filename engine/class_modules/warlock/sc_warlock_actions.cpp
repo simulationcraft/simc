@@ -2931,7 +2931,7 @@ using namespace helpers;
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
 
-      triggers.decimation = !dual;
+      triggers.decimation = p->talents.decimation.ok() && !dual;
     }
 
     dot_t* get_dot( player_t* t ) override
