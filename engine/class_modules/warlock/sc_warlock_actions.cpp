@@ -1902,6 +1902,7 @@ using namespace helpers;
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
         td->dots_soul_rot->adjust_duration( darkglare_extension );
+        td->dots_wither->adjust_duration( darkglare_extension );
 
         if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
           mal_vis->execute_on_target( target );

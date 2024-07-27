@@ -101,6 +101,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Diabolist
   debuffs_cloven_soul = make_buff( *this, "cloven_soul", p.hero.cloven_soul_debuff );
 
+  // Hellcaller
+  dots_wither = target->get_dot( "wither", &p );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -165,6 +168,9 @@ int warlock_td_t::count_affliction_dots() const
     count++;
 
   if ( dots_soul_rot->is_ticking() )
+    count++;
+
+  if ( dots_wither->is_ticking() )
     count++;
 
   return count;

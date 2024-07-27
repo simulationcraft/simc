@@ -68,6 +68,9 @@ struct warlock_td_t : public actor_target_data_t
   // Diabolist
   propagate_const<buff_t*> debuffs_cloven_soul;
 
+  // Hellcaller
+  propagate_const<dot_t*> dots_wither;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
