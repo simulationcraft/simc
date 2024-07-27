@@ -3027,7 +3027,7 @@ using namespace helpers;
 
     void execute() override
     {
-      dot_t* dot = td( target )->dots_immolate;
+      dot_t* dot = p()->hero.wither.ok() ? td( target )->dots_wither : td( target )->dots_immolate;
 
       assert( dot->current_action );
       action_state_t* state = dot->current_action->get_state( dot->state );
@@ -3046,8 +3046,10 @@ using namespace helpers;
       action_state_t::release( state );
 
       base_dd_min = base_dd_max = total_damage;
+
       warlock_spell_t::execute();
-      td( target )->dots_immolate->adjust_duration( -remaining );
+
+      dot->adjust_duration( -remaining );
     }
   };
 
@@ -3130,7 +3132,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots_immolate->is_ticking() || td( s->target )->dots_wither->is_ticking() ) )
         internal_combustion->execute_on_target( s->target );
 
       if ( p()->talents.eradication.ok() && result_is_hit( s->result ) )
