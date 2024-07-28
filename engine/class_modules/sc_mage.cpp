@@ -8835,7 +8835,7 @@ void mage_t::trigger_mana_cascade()
   if ( !talents.mana_cascade.ok() )
     return;
 
-  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) ? 2 : 1;
+  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) && talents.memory_of_alar.ok() ? 2 : 1;
   auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
   {
     buffs.mana_cascade->trigger( s );
