@@ -94,7 +94,6 @@ public:
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
-  double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual;
 
@@ -711,9 +710,42 @@ public:
     proc_t* mark_of_perotharn;
   } procs;
 
+  struct rng_settings_t
+  {
+    struct rng_setting_t
+    {
+      double setting_value;
+      double default_value;
+    };
+
+    // Affliction
+    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50 };
+    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
+    rng_setting_t agony = { 0.368, 0.368 };
+    rng_setting_t nightfall = { 0.13, 0.13 };
+
+    // Demonology
+    rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
+    rng_setting_t shadow_invocation = { 0.20, 0.20 };
+    rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
+
+    // Destruction
+    rng_setting_t decimation = { 0.10, 0.10 };
+    rng_setting_t dimension_ripper = { 0.05, 0.05 };
+
+    // Diabolist
+
+    // Hellcaller
+    rng_setting_t blackened_soul = { 0.10, 0.10 };
+    rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
+    rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
+    rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+  } rng_settings;
+
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
+  bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
 
