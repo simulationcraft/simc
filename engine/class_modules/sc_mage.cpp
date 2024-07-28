@@ -1016,6 +1016,7 @@ public:
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_flash_freezeburn( bool ffb = false );
+  void trigger_spellfire_spheres();
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
@@ -2565,7 +2566,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
-      p()->buffs.spellfire_spheres->trigger();
+      p()->trigger_spellfire_spheres();
       p()->trigger_mana_cascade();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
@@ -2575,7 +2576,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         p()->trigger_lit_fuse();
-        p()->buffs.spellfire_spheres->trigger();
+        p()->trigger_spellfire_spheres();
         p()->trigger_mana_cascade();
 
         assert( pyromaniac_action );
@@ -3015,7 +3016,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
-    p()->buffs.spellfire_spheres->trigger();
+    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
@@ -3137,7 +3138,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge();
-    p()->buffs.spellfire_spheres->trigger();
+    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
     if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
@@ -7957,17 +7958,6 @@ void mage_t::create_buffs()
                               ->set_default_value_from_effect( 1 )
                               ->set_chance( talents.spellfire_spheres.ok() );
   buffs.spellfire_spheres = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
-                              ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                {
-                                  int max_stacks = specialization() == MAGE_ARCANE
-                                    ? as<int>( talents.spellfire_spheres->effectN( 2 ).base_value() )
-                                    : as<int>( talents.spellfire_spheres->effectN( 3 ).base_value() );
-                                  if ( cur >= max_stacks )
-                                  {
-                                    buffs.spellfire_sphere->trigger();
-                                    make_event( *sim, [ this ] { buffs.spellfire_spheres->expire(); } );
-                                  }
-                                } )
                               ->set_chance( talents.spellfire_spheres.ok() );
 
 
@@ -8923,6 +8913,22 @@ void mage_t::trigger_flash_freezeburn( bool ffb )
     // purpose of this whole mechanic.
     // TODO: double check this later
     make_event( *sim, 15_ms, [ this ] { buffs.frostfire_empowerment->execute(); } );
+}
+
+void mage_t::trigger_spellfire_spheres()
+{
+  if ( !talents.spellfire_spheres.ok() )
+    return;
+
+  int max_stacks = as<int>( talents.spellfire_spheres->effectN( specialization() == MAGE_FIRE ? 3 : 2 ).base_value() );
+
+  buffs.spellfire_spheres->trigger();
+
+  if ( buffs.spellfire_spheres->check() >= max_stacks )
+  {
+    buffs.spellfire_sphere->trigger();
+    buffs.spellfire_spheres->expire();
+  }
 }
 
 // If the target isn't specified, picks a random target.
