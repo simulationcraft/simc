@@ -2242,6 +2242,7 @@ namespace diabolist
     chaos_salvo_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
     {
+      channeled = true;
       base_costs_per_tick[ RESOURCE_ENERGY ] = 0.0;
 
       tick_action = new chaos_salvo_tick_t( p ); }
@@ -2300,7 +2301,10 @@ namespace diabolist
   {
     felseeker_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Felseeker", p, p->o()->hero.felseeker )
-    { tick_action = new felseeker_tick_t( p ); }
+    {
+      channeled = true;
+      tick_action = new felseeker_tick_t( p );
+    }
 
     bool ready() override
     {
