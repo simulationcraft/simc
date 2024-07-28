@@ -702,6 +702,7 @@ public:
     proc_t* blackened_soul;
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
+    proc_t* mark_of_perotharn;
   } procs;
 
   int initial_soul_shards;
