@@ -539,6 +539,8 @@ namespace warlock
     hero.xalans_cruelty = find_talent_spell( talent_tree::HERO, "Xalan's Cruelty" ); // Should be ID 440040
 
     hero.hatefury_rituals = find_talent_spell( talent_tree::HERO, "Hatefury Rituals" ); // Should be ID 440048
+
+    hero.bleakheart_tactics = find_talent_spell( talent_tree::HERO, "Bleakheart Tactics" ); // Should be ID 440051
   }
 
   void warlock_t::init_base_stats()
@@ -925,6 +927,7 @@ namespace warlock
   void warlock_t::init_procs_hellcaller()
   {
     procs.blackened_soul = get_proc( "blackened_soul" );
+    procs.bleakheart_tactics = get_proc( "bleakheart_tactics" );
   }
 
   void warlock_t::init_rng()
