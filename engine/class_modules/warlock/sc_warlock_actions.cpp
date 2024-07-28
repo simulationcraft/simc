@@ -232,7 +232,7 @@ using namespace helpers;
 
         if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
         {
-          helpers::trigger_blackened_soul( p() );
+          helpers::trigger_blackened_soul( p(), false );
         }
       }
     }
@@ -1292,11 +1292,13 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( td( s->target )->dots_wither->current_stack() > 1 )
-        td( s->target )->dots_wither->decrement( 1 );
+      player_t* tar = s->target;
 
-      if ( td( s->target )->dots_wither->current_stack() <= 1 )
-        make_event( *sim, 0_ms, [ this, s ] { td( s->target )->debuffs_blackened_soul->expire(); } );
+      if ( td( tar )->dots_wither->current_stack() > 1 )
+        td( tar )->dots_wither->decrement( 1 );
+
+      if ( td( tar )->dots_wither->current_stack() <= 1 )
+        make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
 
       double seeds_rng = 0.15;
 
@@ -1311,6 +1313,34 @@ using namespace helpers;
         p()->buffs.flashpoint->trigger( 2 );
         p()->procs.seeds_of_their_demise->occur();
       }
+    }
+  };
+
+  struct malevolence_damage_t : public warlock_spell_t
+  {
+    malevolence_damage_t( warlock_t* p )
+      : warlock_spell_t( "Malevolence (Proc)", p, p->hero.malevolence_dmg )
+    { background = dual = true; }
+  };
+
+  struct malevolence_t : public warlock_spell_t
+  {
+    malevolence_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Malevolence", p, p->hero.malevolence, options_str )
+    {
+      harmful = may_crit = false;
+      trigger_gcd = p->hero.malevolence_buff->gcd();
+      resource_current = RESOURCE_MANA;
+      base_costs[ RESOURCE_MANA ] = p->hero.malevolence_buff->cost( POWER_MANA );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.malevolence->trigger();
+
+      helpers::trigger_blackened_soul( p(), true );
     }
   };
 
@@ -4097,7 +4127,7 @@ using namespace helpers;
     }
   }
 
-  void helpers::trigger_blackened_soul( warlock_t* p )
+  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
   {
     for ( const auto target : p->sim->target_non_sleeping_list )
     {
@@ -4108,7 +4138,10 @@ using namespace helpers;
       if ( !tdata->dots_wither->is_ticking() )
         continue;
 
-      tdata->dots_wither->increment( 1 );
+      tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+
+      if ( p->buffs.malevolence->check() && !malevolence )
+        tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
       // TOCHECK: Chance for this effect is not in spell data!
       if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( 0.15 ) )
@@ -4117,7 +4150,8 @@ using namespace helpers;
         p->procs.bleakheart_tactics->occur();
       }
 
-      bool collapse = p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ;
+      bool collapse = p->buffs.malevolence->check();
+      collapse = collapse || p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ;
       collapse = collapse || p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() );
 
       if ( collapse )
@@ -4130,6 +4164,9 @@ using namespace helpers;
         tdata->debuffs_blackened_soul->trigger();
         p->procs.blackened_soul->occur();
       }
+
+      if ( malevolence )
+        p->proc_actions.malevolence->execute_on_target( target );
     }
   }
 
@@ -4342,6 +4379,9 @@ using namespace helpers;
     if ( action_name == "wither" )
       return new wither_t( this, options_str );
 
+    if ( action_name == "malevolence" )
+      return new malevolence_t( this, options_str );
+
     return nullptr;
   }
 
@@ -4381,6 +4421,7 @@ using namespace helpers;
   void warlock_t::create_hellcaller_proc_actions()
   {
     proc_actions.blackened_soul = new blackened_soul_t( this );
+    proc_actions.malevolence = new malevolence_damage_t( this );
   }
 
   void warlock_t::init_special_effects()

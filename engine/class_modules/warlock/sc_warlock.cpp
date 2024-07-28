@@ -110,7 +110,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
                                ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
-                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } );
+                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } )
+                               ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                               ->set_freeze_stacks( true );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
