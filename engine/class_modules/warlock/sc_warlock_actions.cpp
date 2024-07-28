@@ -2147,7 +2147,7 @@ using namespace helpers;
   {
     oblivion_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Oblivion", p, p->talents.oblivion, options_str )
-    { }
+    { channeled = true; }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
