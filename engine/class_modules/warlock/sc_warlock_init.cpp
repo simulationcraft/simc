@@ -547,6 +547,10 @@ namespace warlock
     hero.seeds_of_their_demise = find_talent_spell( talent_tree::HERO, "Seeds of Their Demise" ); // Should be ID 440055
 
     hero.mark_of_perotharn = find_talent_spell( talent_tree::HERO, "Mark of Peroth'arn" ); // Should be ID 440045
+
+    hero.malevolence = find_talent_spell( talent_tree::HERO, "Malevolence" ); // Should be ID 430014
+    hero.malevolence_buff = find_spell( 442726 );
+    hero.malevolence_dmg = find_spell( 446285 );
   }
 
   void warlock_t::init_base_stats()
@@ -792,6 +796,10 @@ namespace warlock
 
   void warlock_t::create_buffs_hellcaller()
   {
+    buffs.malevolence = make_buff( this, "malevolence", hero.malevolence_buff )
+                            ->set_cooldown( hero.malevolence_buff->cooldown() - 1_s )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                            ->set_default_value_from_effect( 1 );
   }
 
   void warlock_t::create_pets()

@@ -524,7 +524,9 @@ public:
     player_talent_t seeds_of_their_demise; // TODO: This still has data buffing Blackened Soul
     player_talent_t mark_of_perotharn;
 
-    player_talent_t malevolence;
+    player_talent_t malevolence; // TODO: While buff is active this guarantees Blackened Soul, but this could be leftover from earlier versions
+    const spell_data_t* malevolence_buff;
+    const spell_data_t* malevolence_dmg;
 
     // Soul Harvester
     player_talent_t demonic_soul;
@@ -550,6 +552,7 @@ public:
     action_t* doom_proc;
     action_t* rain_of_fire_tick;
     action_t* blackened_soul;
+    action_t* malevolence;
   } proc_actions;
 
   struct tier_sets_t
@@ -625,6 +628,9 @@ public:
     propagate_const<buff_t*> infernal_bolt;
     propagate_const<buff_t*> abyssal_dominion;
     propagate_const<buff_t*> ruination;
+
+    // Hellcaller Buffs
+    propagate_const<buff_t*> malevolence;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -843,6 +849,6 @@ namespace helpers
   bool crescendo_check( warlock_t* p );
   void nightfall_updater( warlock_t* p, dot_t* d );
 
-  void trigger_blackened_soul( warlock_t* p );
+  void trigger_blackened_soul( warlock_t* p, bool malevolence );
 }
 }  // namespace warlock
