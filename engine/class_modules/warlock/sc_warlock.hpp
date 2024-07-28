@@ -700,6 +700,7 @@ public:
 
     // Hellcaller
     proc_t* blackened_soul;
+    proc_t* bleakheart_tactics;
   } procs;
 
   int initial_soul_shards;

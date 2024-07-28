@@ -1143,6 +1143,7 @@ using namespace helpers;
         affected_by.chaotic_energies = destruction();
 
         base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
+        base_td_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 2 ).percent();
 
         if ( destruction() )
         {
@@ -1206,6 +1207,8 @@ using namespace helpers;
 
       impact_action = new wither_dot_t( p );
       add_child( impact_action );
+
+      base_dd_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 1 ).percent();
 
       if ( destruction() )
       {
@@ -4044,6 +4047,13 @@ using namespace helpers;
         continue;
 
       tdata->dots_wither->increment( 1 );
+
+      // TOCHECK: Chance for this effect is not in spell data!
+      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( 0.15 ) )
+      {
+        tdata->dots_wither->increment( 1 );
+        p->procs.bleakheart_tactics->occur();
+      }
 
       // TOCHECK: Chance for this effect is not in spell data!
       if ( p->rng().roll( 0.1 ) )
