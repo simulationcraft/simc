@@ -53,7 +53,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                        {
                          p.proc_actions.doom_proc->execute_on_target( b->player );
 
-                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( 0.4 ) )
+                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( p.rng_settings.pact_of_the_eredruin.setting_value ) )
                          {
                            p.warlock_pet_list.doomguards.spawn( 1u );
                            p.procs.pact_of_the_eredruin->occur();
@@ -194,7 +194,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    shadow_invocation_proc_chance( 0.0 ),
     diabolic_ritual( 0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
@@ -206,6 +205,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     gains(),
     procs(),
+    rng_settings(),
     initial_soul_shards( 3 ),
     default_pet(),
     disable_auto_felstorm( false )
@@ -564,6 +564,33 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "default_pet=" + default_pet + "\n";
     if ( disable_auto_felstorm )
       profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm );
+
+    if ( rng_settings.cunning_cruelty_sb.setting_value != rng_settings.cunning_cruelty_sb.default_value )
+      profile_str += "rng_cunning_cruelty_sb=" + util::to_string( rng_settings.cunning_cruelty_sb.setting_value ) + "\n";
+    if ( rng_settings.cunning_cruelty_ds.setting_value != rng_settings.cunning_cruelty_ds.default_value )
+      profile_str += "rng_cunning_cruelty_ds=" + util::to_string( rng_settings.cunning_cruelty_ds.setting_value ) + "\n";
+    if ( rng_settings.agony.setting_value != rng_settings.agony.default_value )
+      profile_str += "rng_agony=" + util::to_string( rng_settings.agony.setting_value ) + "\n";
+    if ( rng_settings.nightfall.setting_value != rng_settings.nightfall.default_value )
+      profile_str += "rng_nightfall=" + util::to_string( rng_settings.nightfall.setting_value ) + "\n";
+    if ( rng_settings.pact_of_the_eredruin.setting_value != rng_settings.pact_of_the_eredruin.default_value )
+      profile_str += "rng_pact_of_the_eredruin=" + util::to_string( rng_settings.pact_of_the_eredruin.setting_value ) + "\n";
+    if ( rng_settings.shadow_invocation.setting_value != rng_settings.shadow_invocation.default_value )
+      profile_str += "rng_shadow_invocation=" + util::to_string( rng_settings.shadow_invocation.setting_value ) + "\n";
+    if ( rng_settings.spiteful_reconstitution.setting_value != rng_settings.spiteful_reconstitution.default_value )
+      profile_str += "rng_spiteful_reconsitution=" + util::to_string( rng_settings.spiteful_reconstitution.setting_value ) + "\n";
+    if ( rng_settings.decimation.setting_value != rng_settings.decimation.default_value )
+      profile_str += "rng_decimation=" + util::to_string( rng_settings.decimation.setting_value ) + "\n";
+    if ( rng_settings.dimension_ripper.setting_value != rng_settings.dimension_ripper.default_value )
+      profile_str += "rng_dimension_ripper=" + util::to_string( rng_settings.dimension_ripper.setting_value ) + "\n";
+    if ( rng_settings.blackened_soul.setting_value != rng_settings.blackened_soul.default_value )
+      profile_str += "rng_blackened_soul=" + util::to_string( rng_settings.blackened_soul.setting_value ) + "\n";
+    if ( rng_settings.bleakheart_tactics.setting_value != rng_settings.bleakheart_tactics.default_value )
+      profile_str += "rng_bleakheart_tactics=" + util::to_string( rng_settings.bleakheart_tactics.setting_value ) + "\n";
+    if ( rng_settings.seeds_of_their_demise.setting_value != rng_settings.seeds_of_their_demise.default_value )
+      profile_str += "rng_seeds_of_their_demise=" + util::to_string( rng_settings.seeds_of_their_demise.setting_value ) + "\n";
+    if ( rng_settings.mark_of_perotharn.setting_value != rng_settings.mark_of_perotharn.default_value )
+      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value) + "\n";
   }
 
   return profile_str;
@@ -578,6 +605,20 @@ void warlock_t::copy_from( player_t* source )
   initial_soul_shards = p->initial_soul_shards;
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
+
+  rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
+  rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
+  rng_settings.agony = p->rng_settings.agony;
+  rng_settings.nightfall = p->rng_settings.nightfall;
+  rng_settings.pact_of_the_eredruin = p->rng_settings.pact_of_the_eredruin;
+  rng_settings.shadow_invocation = p->rng_settings.shadow_invocation;
+  rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
+  rng_settings.decimation = p->rng_settings.decimation;
+  rng_settings.dimension_ripper = p->rng_settings.dimension_ripper;
+  rng_settings.blackened_soul = p->rng_settings.blackened_soul;
+  rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
+  rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
+  rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const

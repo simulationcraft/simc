@@ -265,7 +265,7 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation && rng().roll( p()->shadow_invocation_proc_chance ) )
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation && rng().roll( p()->rng_settings.shadow_invocation.setting_value ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
@@ -277,14 +277,14 @@ using namespace helpers;
           p()->procs.reverse_entropy->occur();
       }
 
-      if ( destruction() && triggers.decimation && s->result == RESULT_CRIT && rng().roll( 0.10 ) )
+      if ( destruction() && triggers.decimation && s->result == RESULT_CRIT && rng().roll( p()->rng_settings.decimation.setting_value ) )
       {
         p()->buffs.decimation->trigger();
         p()->cooldowns.soul_fire->reset( true );
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && rng().roll( 0.05 ) )
+      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
       {
         if ( p()->talents.dimensional_rift.ok() )
         {
@@ -963,7 +963,7 @@ using namespace helpers;
           }
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
         {
           p()->procs.shadow_bolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -1198,7 +1198,7 @@ using namespace helpers;
             p()->buffs.flashpoint->trigger();
         }
 
-        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( 0.15 ) )
+        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
         {
           d->increment( 1 );
           p()->procs.mark_of_perotharn->occur();
@@ -1251,7 +1251,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( 0.15 ) )
+      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
       {
         td( s->target )->dots_wither->increment( 1 );
         p()->procs.mark_of_perotharn->occur();
@@ -1300,15 +1300,13 @@ using namespace helpers;
       if ( td( tar )->dots_wither->current_stack() <= 1 )
         make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
 
-      double seeds_rng = 0.15;
-
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( seeds_rng ) )
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.tormented_crescendo->trigger();
         p()->procs.seeds_of_their_demise->occur();
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( seeds_rng ) )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.flashpoint->trigger( 2 );
         p()->procs.seeds_of_their_demise->occur();
@@ -1652,7 +1650,7 @@ using namespace helpers;
       // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
       // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
       // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
-      double increment_max = 0.368;
+      double increment_max = p()->rng_settings.agony.setting_value;
 
       double active_agonies = p()->get_active_dots( d );
       increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
@@ -1903,7 +1901,7 @@ using namespace helpers;
           }
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.25 ) )
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
         {
           p()->procs.shadow_bolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -2373,7 +2371,7 @@ using namespace helpers;
 
       if ( p()->buffs.demonic_core->check() )
       {
-        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( 0.3 ) )
+        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( p()->rng_settings.spiteful_reconstitution.setting_value ) )
         {
           p()->warlock_pet_list.wild_imps.spawn( 1u );
           p()->procs.spiteful_reconstitution->occur();
@@ -4112,7 +4110,7 @@ using namespace helpers;
     // DR formula was the same and then confirming that you can get procs on 1st tick.
     // The procs also have a regularity that suggest it does not use a proc chance or rppm.
     // Last checked 09-28-2020.
-    double increment_max = 0.13;
+    double increment_max = p->rng_settings.nightfall.setting_value;
 
     double active_corruptions = p->get_active_dots( d );
     increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
@@ -4144,7 +4142,7 @@ using namespace helpers;
         tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
       // TOCHECK: Chance for this effect is not in spell data!
-      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( 0.15 ) )
+      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
       {
         tdata->dots_wither->increment( 1 );
         p->procs.bleakheart_tactics->occur();
@@ -4158,7 +4156,7 @@ using namespace helpers;
       {
         tdata->debuffs_blackened_soul->trigger();
       }
-      else if ( p->rng().roll( 0.1 ) )
+      else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
       {
         // TOCHECK: Chance for this effect is not in spell data!
         tdata->debuffs_blackened_soul->trigger();

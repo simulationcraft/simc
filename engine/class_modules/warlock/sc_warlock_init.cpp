@@ -1024,6 +1024,20 @@ namespace warlock
     add_option( opt_int( "soul_shards", initial_soul_shards ) );
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
+
+    add_option( opt_float( "rng_cunning_cruelty_sb", rng_settings.cunning_cruelty_sb.setting_value ) );
+    add_option( opt_float( "rng_cunning_cruelty_ds", rng_settings.cunning_cruelty_ds.setting_value ) );
+    add_option( opt_float( "rng_agony", rng_settings.agony.setting_value ) );
+    add_option( opt_float( "rng_nightfall", rng_settings.nightfall.setting_value ) );
+    add_option( opt_float( "rng_pact_of_the_eredruin", rng_settings.pact_of_the_eredruin.setting_value ) );
+    add_option( opt_float( "rng_shadow_invocation", rng_settings.shadow_invocation.setting_value ) );
+    add_option( opt_float( "rng_spiteful_reconstitution", rng_settings.spiteful_reconstitution.setting_value ) );
+    add_option( opt_float( "rng_decimation", rng_settings.decimation.setting_value ) );
+    add_option( opt_float( "rng_dimension_ripper", rng_settings.dimension_ripper.setting_value ) );
+    add_option( opt_float( "rng_blackened_soul", rng_settings.blackened_soul.setting_value ) );
+    add_option( opt_float( "rng_bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value ) );
+    add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
+    add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
   }
 
   void warlock_t::combat_begin()
@@ -1056,7 +1070,6 @@ namespace warlock
     ua_target = nullptr;
     agony_accumulator = rng().range( 0.0, 0.99 );
     corruption_accumulator = rng().range( 0.0, 0.99 );
-    shadow_invocation_proc_chance = 0.2;
     wild_imp_spawns.clear();
     diabolic_ritual = as<int>( rng().range( 0, 3 ) );
   }
