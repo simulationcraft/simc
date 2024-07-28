@@ -830,6 +830,20 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return false;
     });
   }
+  else if ( name_str == "diabolic_ritual" )
+  {
+    return make_fn_expr( name_str, [ this ]()
+      {
+        return buffs.ritual_overlord->check() || buffs.ritual_mother->check() || buffs.ritual_pit_lord->check();
+      } );
+  }
+  else if ( name_str == "demonic_art" )
+  {
+    return make_fn_expr( name_str, [ this ]()
+      {
+        return buffs.art_overlord->check() || buffs.art_mother->check() || buffs.art_pit_lord->check();
+      } );
+  }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
