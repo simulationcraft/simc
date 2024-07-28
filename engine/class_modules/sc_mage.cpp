@@ -240,6 +240,9 @@ public:
   // Splinters
   std::vector<dot_t*> embedded_splinters;
 
+  // Mana Cascade expiration events
+  std::vector<event_t*> mana_cascade_expiration;
+
   // Events
   struct events_t
   {
@@ -395,6 +398,7 @@ public:
 
 
     // Sunfury
+    buff_t* mana_cascade;
     buff_t* spellfire_sphere;
     buff_t* spellfire_spheres;
 
@@ -1009,6 +1013,7 @@ public:
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_lit_fuse();
+  void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_flash_freezeburn( bool ffb = false );
   void trigger_splinter( player_t* target, int count = -1 );
@@ -2561,14 +2566,18 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
       p()->buffs.spellfire_spheres->trigger();
+      p()->trigger_mana_cascade();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
       if ( p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
       {
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
+
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         p()->trigger_lit_fuse();
         p()->buffs.spellfire_spheres->trigger();
+        p()->trigger_mana_cascade();
+
         assert( pyromaniac_action );
         // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
         make_event( *sim, 500_ms, [ this, t = target ]
@@ -3007,6 +3016,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     p()->buffs.arcane_tempo->trigger();
     p()->buffs.spellfire_spheres->trigger();
+    p()->trigger_mana_cascade();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
@@ -3128,6 +3138,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->trigger_arcane_charge();
     p()->buffs.spellfire_spheres->trigger();
+    p()->trigger_mana_cascade();
 
     if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
     {
@@ -7927,6 +7938,21 @@ void mage_t::create_buffs()
 
 
   // Sunfury
+  buffs.mana_cascade      = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
+                              ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
+                                                               specialization() == MAGE_FIRE ? 0.001 : 0.01 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                              ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                {
+                                  if ( cur == 0 )
+                                  {
+                                    for ( auto e : mana_cascade_expiration )
+                                      event_t::cancel( e );
+
+                                    mana_cascade_expiration.clear();
+                                  }
+                                } )
+                              ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere  = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                               ->set_default_value_from_effect( 1 )
                               ->set_chance( talents.spellfire_spheres.ok() );
@@ -7943,6 +7969,7 @@ void mage_t::create_buffs()
                                   }
                                 } )
                               ->set_chance( talents.spellfire_spheres.ok() );
+
 
   // Shared
   buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
@@ -8402,6 +8429,7 @@ void mage_t::reset()
   icicles.clear();
   buff_queue.clear();
   embedded_splinters.clear();
+  mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -8810,6 +8838,34 @@ void mage_t::trigger_time_manipulation()
 
   timespan_t t = talents.time_manipulation->effectN( 1 ).time_value();
   for ( auto cd : time_manipulation_cooldowns ) cd->adjust( t, false );
+}
+
+void mage_t::trigger_mana_cascade()
+{
+  if ( !talents.mana_cascade.ok() )
+    return;
+
+  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) ? 2 : 1;
+  auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
+  {
+    buffs.mana_cascade->trigger( s );
+    mana_cascade_expiration.push_back( make_event( *sim, buffs.mana_cascade->buff_duration(), [ this, s ]
+    {
+      mana_cascade_expiration.erase( mana_cascade_expiration.begin() );
+      buffs.mana_cascade->decrement( s );
+    } ) );
+  };
+
+  if ( buffs.mana_cascade->check() < buffs.mana_cascade->max_stack() )
+  {
+    // If this is triggered twice within a small enough time frame,
+    // erroneous expiration events can be scheduled. This currently
+    // only happens with Pyromaniac.
+    if ( bugs )
+      make_event( *sim, trigger_buff );
+    else
+      trigger_buff();
+  }
 }
 
 void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
