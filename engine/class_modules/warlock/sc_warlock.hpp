@@ -520,7 +520,7 @@ public:
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;
 
-    player_talent_t mark_of_xavius;
+    player_talent_t mark_of_xavius; // TODO: This is almost certainly bugged and applying to things it shouldn't in game like Wither for Affliction and Blackened Soul for both
     player_talent_t seeds_of_their_demise;
     player_talent_t mark_of_perotharn;
 
