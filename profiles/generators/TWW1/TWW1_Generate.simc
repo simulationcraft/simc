@@ -6,7 +6,7 @@
 # * Delve gear is permitted up to the Vault cap (626)
 # * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Hero Track, 626). ["bonus_id=?"]
-# * Crafted gear is permitted up to the item level cap (629), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?/?"]
+# * Crafted gear is permitted up to the item level cap (636), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?/?"]
 #   * NOTE: You may use however many crafted pieces you wish, just as long as its possible to wear it all in-game.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
