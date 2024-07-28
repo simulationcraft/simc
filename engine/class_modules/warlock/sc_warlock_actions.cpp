@@ -1142,6 +1142,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = destruction();
 
+        base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
+
         if ( destruction() )
         {
           dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
@@ -1149,6 +1151,8 @@ using namespace helpers;
           base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
           base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
         }
+
+        dot_duration *= 1.0 + p->hero.hatefury_rituals->effectN( 2 ).percent();
 
         if ( affliction() )
         {

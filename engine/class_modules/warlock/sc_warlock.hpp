@@ -515,7 +515,7 @@ public:
     player_talent_t blackened_soul;
     const spell_data_t* blackened_soul_trigger; // Contains interval for stack collapse
     const spell_data_t* blackened_soul_dmg;
-    player_talent_t xalans_cruelty;
+    player_talent_t xalans_cruelty; // TODO: Same concerns as Xalan's Ferocity
 
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;
