@@ -1197,6 +1197,21 @@ using namespace helpers;
           if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
             p()->buffs.flashpoint->trigger();
         }
+
+        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( 0.15 ) )
+        {
+          d->increment( 1 );
+          p()->procs.mark_of_perotharn->occur();
+        }
+      }
+
+      double composite_crit_damage_bonus_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+        m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+
+        return m;
       }
     };
 
@@ -1231,6 +1246,26 @@ using namespace helpers;
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( 0.15 ) )
+      {
+        td( s->target )->dots_wither->increment( 1 );
+        p()->procs.mark_of_perotharn->occur();
+      }
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+      m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+
+      return m;
+    }
   };
 
   struct blackened_soul_t : public warlock_spell_t

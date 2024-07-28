@@ -545,6 +545,8 @@ namespace warlock
     hero.mark_of_xavius = find_talent_spell( talent_tree::HERO, "Mark of Xavius" ); // Should be ID 440046
 
     hero.seeds_of_their_demise = find_talent_spell( talent_tree::HERO, "Seeds of Their Demise" ); // Should be ID 440055
+
+    hero.mark_of_perotharn = find_talent_spell( talent_tree::HERO, "Mark of Peroth'arn" ); // Should be ID 440045
   }
 
   void warlock_t::init_base_stats()
@@ -933,6 +935,7 @@ namespace warlock
     procs.blackened_soul = get_proc( "blackened_soul" );
     procs.bleakheart_tactics = get_proc( "bleakheart_tactics" );
     procs.seeds_of_their_demise = get_proc( "seeds_of_their_demise" );
+    procs.mark_of_perotharn = get_proc( "mark_of_perotharn" );
   }
 
   void warlock_t::init_rng()
