@@ -207,6 +207,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     rng_settings(),
     initial_soul_shards( 3 ),
+    normalize_destruction_mastery( false ),
     default_pet(),
     disable_auto_felstorm( false )
 {
@@ -563,7 +564,9 @@ std::string warlock_t::create_profile( save_e stype )
     if ( !default_pet.empty() )
       profile_str += "default_pet=" + default_pet + "\n";
     if ( disable_auto_felstorm )
-      profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm );
+      profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
+    if ( normalize_destruction_mastery )
+      profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
 
     if ( rng_settings.cunning_cruelty_sb.setting_value != rng_settings.cunning_cruelty_sb.default_value )
       profile_str += "rng_cunning_cruelty_sb=" + util::to_string( rng_settings.cunning_cruelty_sb.setting_value ) + "\n";
@@ -605,6 +608,7 @@ void warlock_t::copy_from( player_t* source )
   initial_soul_shards = p->initial_soul_shards;
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
+  normalize_destruction_mastery = p->normalize_destruction_mastery;
 
   rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
   rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;

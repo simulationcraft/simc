@@ -1024,6 +1024,7 @@ namespace warlock
     add_option( opt_int( "soul_shards", initial_soul_shards ) );
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
+    add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
 
     add_option( opt_float( "rng_cunning_cruelty_sb", rng_settings.cunning_cruelty_sb.setting_value ) );
     add_option( opt_float( "rng_cunning_cruelty_ds", rng_settings.cunning_cruelty_ds.setting_value ) );

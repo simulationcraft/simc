@@ -409,6 +409,9 @@ using namespace helpers;
         double min_percentage = affected_by.chaos_incarnate ? p()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
         double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
+        if ( p()->normalize_destruction_mastery )
+          chaotic_energies_rng = ( 1.0 + min_percentage ) / 2.0;
+
         m *= 1.0 + chaotic_energies_rng * p()->cache.mastery_value();
       }
       

@@ -2095,6 +2095,9 @@ struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
     double min_percentage = p()->o()->talents.chaos_incarnate.ok() ? p()->o()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
     double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
+    if ( p()->o()->normalize_destruction_mastery )
+      chaotic_energies_rng = ( min_percentage + 1.0 ) / 2.0;
+
     m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
 
     return m;

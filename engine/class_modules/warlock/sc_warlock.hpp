@@ -745,6 +745,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
+  bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
 
