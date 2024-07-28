@@ -394,6 +394,11 @@ public:
     buff_t* unerring_proficiency;
 
 
+    // Sunfury
+    buff_t* spellfire_sphere;
+    buff_t* spellfire_spheres;
+
+
     // Shared
     buff_t* ice_floes;
     buff_t* incanters_flow;
@@ -448,6 +453,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
     bool treat_bloodlust_as_time_warp = false;
+    unsigned initial_spellfire_spheres = 3;
   } options;
 
   // Pets
@@ -1480,6 +1486,7 @@ struct mage_spell_t : public spell_t
     bool nether_munitions = true;
     bool numbing_blast = true;
     bool savant = false;
+    bool spellfire_sphere = true;
     bool unleashed_inferno = false;
 
     bool arcane_overload = true;
@@ -1635,6 +1642,9 @@ public:
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
+
+    if ( affected_by.spellfire_sphere )
+      m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
 
     if ( affected_by.touch_of_ice )
       m *= 1.0 + p()->buffs.touch_of_ice->check_value();
@@ -2550,6 +2560,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
+      p()->buffs.spellfire_spheres->trigger();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
       if ( p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
@@ -2557,6 +2568,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         p()->trigger_lit_fuse();
+        p()->buffs.spellfire_spheres->trigger();
         assert( pyromaniac_action );
         // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
         make_event( *sim, 500_ms, [ this, t = target ]
@@ -2994,6 +3006,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
+    p()->buffs.spellfire_spheres->trigger();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
@@ -3114,6 +3127,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge();
+    p()->buffs.spellfire_spheres->trigger();
 
     if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
     {
@@ -7210,6 +7224,7 @@ void mage_t::create_options()
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_bool( "mage.treat_bloodlust_as_time_warp", options.treat_bloodlust_as_time_warp ) );
+  add_option( opt_uint( "mage.initial_spellfire_spheres", options.initial_spellfire_spheres ) );
 
   player_t::create_options();
 }
@@ -7911,6 +7926,24 @@ void mage_t::create_buffs()
                                  ->set_chance( talents.unerring_proficiency.ok() );
 
 
+  // Sunfury
+  buffs.spellfire_sphere  = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_chance( talents.spellfire_spheres.ok() );
+  buffs.spellfire_spheres = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
+                              ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                {
+                                  int max_stacks = specialization() == MAGE_ARCANE
+                                    ? as<int>( talents.spellfire_spheres->effectN( 2 ).base_value() )
+                                    : as<int>( talents.spellfire_spheres->effectN( 3 ).base_value() );
+                                  if ( cur >= max_stacks )
+                                  {
+                                    buffs.spellfire_sphere->trigger();
+                                    make_event( *sim, [ this ] { buffs.spellfire_spheres->expire(); } );
+                                  }
+                                } )
+                              ->set_chance( talents.spellfire_spheres.ok() );
+
   // Shared
   buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
   buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this );
@@ -8381,6 +8414,9 @@ void mage_t::arise()
 
   buffs.flame_accelerant->trigger();
   buffs.incanters_flow->trigger();
+
+  if ( options.initial_spellfire_spheres > 0 )
+    buffs.spellfire_sphere->trigger( options.initial_spellfire_spheres );
 
   if ( talents.enlightened.ok() )
   {
