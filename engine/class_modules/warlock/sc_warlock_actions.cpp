@@ -1262,6 +1262,20 @@ using namespace helpers;
 
       if ( td( s->target )->dots_wither->current_stack() <= 1 )
         make_event( *sim, 0_ms, [ this, s ] { td( s->target )->debuffs_blackened_soul->expire(); } );
+
+      double seeds_rng = 0.15;
+
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( seeds_rng ) )
+      {
+        p()->buffs.tormented_crescendo->trigger();
+        p()->procs.seeds_of_their_demise->occur();
+      }
+
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( seeds_rng ) )
+      {
+        p()->buffs.flashpoint->trigger( 2 );
+        p()->procs.seeds_of_their_demise->occur();
+      }
     }
   };
 
@@ -4068,9 +4082,16 @@ using namespace helpers;
         p->procs.bleakheart_tactics->occur();
       }
 
-      // TOCHECK: Chance for this effect is not in spell data!
-      if ( p->rng().roll( 0.1 ) )
+      bool collapse = p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ;
+      collapse = collapse || p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() );
+
+      if ( collapse )
       {
+        tdata->debuffs_blackened_soul->trigger();
+      }
+      else if ( p->rng().roll( 0.1 ) )
+      {
+        // TOCHECK: Chance for this effect is not in spell data!
         tdata->debuffs_blackened_soul->trigger();
         p->procs.blackened_soul->occur();
       }
