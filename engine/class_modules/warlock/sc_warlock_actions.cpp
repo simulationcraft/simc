@@ -1151,6 +1151,7 @@ using namespace helpers;
 
           base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
           base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+          base_td_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 2 ).percent();
         }
 
         dot_duration *= 1.0 + p->hero.hatefury_rituals->effectN( 2 ).percent();
@@ -1216,6 +1217,7 @@ using namespace helpers;
 
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 4 ).percent();
       }
 
       if ( affliction() )
@@ -1239,6 +1241,16 @@ using namespace helpers;
       background = dual = true;
 
       affected_by.chaotic_energies = destruction();
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( target );
+
+      if ( p()->hero.mark_of_xavius.ok() )
+        m *= 1.0 + td( target )->dots_wither->current_stack() * p()->hero.mark_of_xavius->effectN( 3 ).percent();
+
+      return m;
     }
 
     void impact( action_state_t* s ) override
@@ -1509,6 +1521,7 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
+      base_td_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 1 ).percent();
 
       triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 

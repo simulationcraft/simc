@@ -541,6 +541,8 @@ namespace warlock
     hero.hatefury_rituals = find_talent_spell( talent_tree::HERO, "Hatefury Rituals" ); // Should be ID 440048
 
     hero.bleakheart_tactics = find_talent_spell( talent_tree::HERO, "Bleakheart Tactics" ); // Should be ID 440051
+
+    hero.mark_of_xavius = find_talent_spell( talent_tree::HERO, "Mark of Xavius" ); // Should be ID 440046
   }
 
   void warlock_t::init_base_stats()
