@@ -6183,6 +6183,9 @@ struct supernova_t final : public mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
+
+    if ( p->talents.gravity_lapse.ok() )
+      background = true;
   }
 
   void execute() override
@@ -6237,7 +6240,7 @@ struct gravity_lapse_t final : public mage_spell_t
     parse_options( options_str );
     affected_by.time_manipulation = triggers.clearcasting = true;
 
-    if ( !p->talents.supernova.ok() )
+    if ( !p->talents.gravity_lapse.ok() || !p->talents.supernova.ok() )
       background = true;
 
     damage_action = get_action<gravity_lapse_impact_t>( "gravity_lapse_impact", p );
