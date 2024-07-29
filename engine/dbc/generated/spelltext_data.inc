@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55789
-static const std::array<spelltext_data_t, 26260> __spelltext_data { {
+static const std::array<spelltext_data_t, 26266> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23127,6 +23127,7 @@ static const std::array<spelltext_data_t, 26260> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
+  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -24339,8 +24340,12 @@ static const std::array<spelltext_data_t, 26260> __spelltext_data { {
   { 449538, "$@spelldesc449537", "Your next Ferocious Bite or Primal Wrath deals $s1% increased direct damage.", 0 },
   { 449541, "Your melee attacks have a chance to latch a bloody hook onto the target. After $449877d the hook retracts, raking them for ${$<rolemult>*$s1} Physical damage.\r\n\r\nWhile hooked, any critical Physical strike buries the hook further into the target, causing an additional ${$<rolemult>*$s2} Physical damage over $449886d.", 0, 0 },
   { 449558, "Generating a Spellfire Sphere while your Phoenix is active causes it to cast an exceptional spell.", 0, 0 },
+  { 449559, "Calls down a meteorite which lands at the target location after $177345d, dealing $449569s1 Fire damage to all enemies hit, reduced beyond 8 targets.", 0, 0 },
+  { 449560, "$@spelldesc449559", 0, 0 },
+  { 449561, "$@spelldesc449559", "Burning for $w1 Fire damage every $t1 sec.", 0 },
   { 449563, "Your ranged attacks have a chance to inject a paralytic venom into the target, dealing ${$<rolemult>*$s1} Nature damage over $449892d.\r\n\r\nEach second the target is moving while affected grants you ${$s2/$449895u} Haste for $449895d stacking up to $449895u times.", 0, 0 },
   { 449566, "$@spelldesc153561", "Burning for $w1 Fire damage every $t1 sec.", 0 },
+  { 449569, "$@spelldesc449559", 0, 0 },
   { 449578, "$@spelldesc445066", "$pri increased by $w1, and may be further increased by remaining stationary, up to $u times.", 0 },
   { 449581, "$@spelldesc445066", "Haste increased by $w1, and may be further increased by moving, up to $u times.", 0 },
   { 449582, "Roll causes you to become lighter than air, allowing you to double jump to dash forward a short distance once within $449609d, but the cooldown of Roll is increased by ${$s1/1000} sec.", 0, 0 },
@@ -25358,6 +25363,7 @@ static const std::array<spelltext_data_t, 26260> __spelltext_data { {
   { 456120, "$@spelldesc444774", "$?c1[Overpower damage increased by $w3% and critical strike damage increased by $w4%.][Raging Blow damage increased by $w1% and critical strike damage increased by $w2%.\r\n]", 0 },
   { 456126, "Spin this thread into your Algari Weaverline, permanently increasing your Khaz Algar Perception by $s1 when using this enchantment.", 0, 0 },
   { 456127, "Spin this thread into your Algari Weaverline, permanently increasing your Khaz Algar Fishing Skill by $s1 when using this enchantment.", 0, 0 },
+  { 456137, "$@spelldesc449559", 0, 0 },
   { 456142, "$@spelldesc453672", "Eruption damage increased by $w1%.", 0 },
   { 456156, "Throw the fish back into the water to gain $s2 Fishing for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Fishing skill increased by $w2.", 0 },
   { 456157, "Throw this fish back into the water and gain a stack of Bloody Chum attracting Sanguine Dogfish to your location for $d.\r\n\r\nThis effect increases your odds by $s1% and stacks up to 10 times. Movement will cause your scent to be lost and cancel the effect.", "Increasing your chance to find Sanguine Dogfish by $w2%. \r\n\r\nMovement will cause your scent to be lost and cancel this effect.", 0 },
