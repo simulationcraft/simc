@@ -69,10 +69,20 @@ damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_ptr_t sp
   damage_affected_by affected_by;
   for ( const spelleffect_data_t& effect : spell -> effects() )
   {
-    if ( effect.type() != E_APPLY_AURA ||
-         effect.subtype() != A_ADD_PCT_MODIFIER ||
-         !a -> data().affected_by( effect ) )
-        continue;
+    if ( effect.type() != E_APPLY_AURA )
+      continue;
+
+    if ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ||
+         effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) )
+    {
+      affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
+      affected_by.tick   = as<uint8_t>( effect.spell_effect_num() + 1 );
+      print_affected_by( a, effect, "damage increase" );
+      return affected_by;
+    }
+    
+    if ( effect.subtype() != A_ADD_PCT_MODIFIER || !a->data().affected_by( effect ) )
+      continue;
 
     if ( effect.misc_value1() == P_GENERIC )
     {
@@ -528,6 +538,7 @@ public:
     spell_data_ptr_t high_explosive_trap; //Verify functionality remains same
     spell_data_ptr_t implosive_trap; // NYI
     spell_data_ptr_t unnatural_causes;
+    spell_data_ptr_t unnatural_causes_debuff;
     
     // Shared
     // BM + SV
@@ -1014,7 +1025,8 @@ public:
   {
     ab::special = true;
 
-    affected_by.unnatural_causes = parse_damage_affecting_aura( this, p->talents.unnatural_causes );
+    if ( p->talents.unnatural_causes.ok() )
+      affected_by.unnatural_causes      = parse_damage_affecting_aura( this, p->talents.unnatural_causes_debuff );
 
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
@@ -1226,7 +1238,7 @@ public:
 
     if ( affected_by.unnatural_causes.direct )
     {
-      double amount = p()->talents.unnatural_causes->effectN( affected_by.unnatural_causes.direct ).percent();
+      double amount = p()->talents.unnatural_causes_debuff->effectN( affected_by.unnatural_causes.direct ).percent();
       if ( s->target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         amount *= 1 + p()->talents.unnatural_causes->effectN( 2 ).percent();
 
@@ -1285,7 +1297,7 @@ public:
 
     if ( affected_by.unnatural_causes.tick )
     {
-      double amount = p()->talents.unnatural_causes->effectN( affected_by.unnatural_causes.tick ).percent();
+      double amount = p()->talents.unnatural_causes_debuff->effectN( affected_by.unnatural_causes.tick ).percent();
       if ( s->target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         amount *= 1 + p()->talents.unnatural_causes->effectN( 2 ).percent();
 
@@ -7010,6 +7022,7 @@ void hunter_t::init_spells()
   talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
   talents.implosive_trap                    = find_talent_spell( talent_tree::CLASS, "Implosive Trap" );
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
+  talents.unnatural_causes_debuff           = find_spell( 459529 );
 
   // Marksmanship Tree
   if (specialization() == HUNTER_MARKSMANSHIP)
