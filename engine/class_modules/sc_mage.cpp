@@ -398,6 +398,7 @@ public:
 
 
     // Sunfury
+    buff_t* burden_of_power;
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
     buff_t* spellfire_spheres;
@@ -2550,12 +2551,23 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
+    if ( last_hot_streak )
+    {
+      // For Fire, Spellfire Spheres are triggered before the spell actually casts.
+      p()->trigger_spellfire_spheres();
+    }
+
     fire_mage_spell_t::execute();
 
     p()->buffs.sparking_cinders->decrement();
 
     if ( expire_skb )
       p()->buffs.fury_of_the_sun_king->expire();
+
+    // Buff is consumed after a short delay, allowing multiple spells to benefit.
+    // TODO: Double check this later
+    if ( p()->buffs.burden_of_power->check() )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
 
     if ( last_hot_streak )
     {
@@ -2566,7 +2578,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
-      p()->trigger_spellfire_spheres();
       p()->trigger_mana_cascade();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
@@ -3012,6 +3023,11 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+    // Buff is consumed after a short delay, allowing multiple spells to benefit.
+    // TODO: Double check this later
+    if ( p()->buffs.burden_of_power->check() )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
@@ -3054,6 +3070,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
+
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 4 ).percent();
 
     return m;
   }
@@ -3137,6 +3156,11 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+    // Buff is consumed after a short delay, allowing multiple spells to benefit.
+    // TODO: Double check this later
+    if ( p()->buffs.burden_of_power->check() )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+
     p()->trigger_arcane_charge();
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
@@ -3186,6 +3210,16 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     am *= 1.0 + p()->buffs.nether_precision->check_value();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = arcane_mage_spell_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 2 ).percent();
+
+    return m;
   }
 
   double composite_crit_chance() const override
@@ -4239,7 +4273,20 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
     if ( p()->buffs.majesty_of_the_phoenix->check() )
       m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
 
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
+
     return m;
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    // Buff is consumed after a short delay, allowing multiple spells to benefit.
+    // TODO: Double check this later
+    if ( p()->buffs.burden_of_power->check() )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
   }
 };
 
@@ -4291,6 +4338,9 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     if ( p()->buffs.majesty_of_the_phoenix->check() )
       m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
 
     return m;
   }
@@ -5861,6 +5911,9 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
 
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
+
     return m;
   }
 
@@ -5871,6 +5924,16 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     c += p()->buffs.hyperthermia->check_value();
 
     return c;
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    // Buff is consumed after a short delay, allowing multiple spells to benefit.
+    // TODO: Double check this later
+    if ( p()->buffs.burden_of_power->check() )
+      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
   }
 };
 
@@ -5893,6 +5956,9 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+
+    if ( p()->buffs.burden_of_power->check() )
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
 
     return m;
   }
@@ -7951,6 +8017,8 @@ void mage_t::create_buffs()
 
 
   // Sunfury
+  buffs.burden_of_power   = make_buff( this, "burden_of_power", find_spell( 451049 ) )
+                              ->set_chance( talents.burden_of_power.ok() );
   buffs.mana_cascade      = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                               ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
                                                                specialization() == MAGE_FIRE ? 0.001 : 0.01 )
@@ -8940,6 +9008,7 @@ void mage_t::trigger_spellfire_spheres()
   {
     buffs.spellfire_sphere->trigger();
     buffs.spellfire_spheres->expire();
+    buffs.burden_of_power->trigger();
   }
 }
 
