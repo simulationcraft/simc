@@ -2047,6 +2047,7 @@ class SpellDataGenerator(DataGenerator):
           ( 438671, 0 ), ( 438672, 0 ), ( 438674, 0 ), # Excess Fire LB
           ( 460475, 0 ), ( 460476, 0 ),             # Pyromaniac Pyroblast and Flamestrike
           ( 464515, 0 ),                            # Arcane Echo ICD
+          ( 449559, 0 ), ( 449560, 0 ), ( 449562, 0 ), ( 449569, 0 ), # Meteorite (Glorious Incandescence)
         ),
 
         # Warlock:
