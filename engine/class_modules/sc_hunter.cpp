@@ -5447,8 +5447,6 @@ struct raptor_strike_base_t: public melee_focus_spender_t
   raptor_strike_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ):
     melee_focus_spender_t( n, p, s )
   {
-    if ( p->talents.mongoose_bite.ok() )
-      background = true;
   }
 };
 
@@ -6938,12 +6936,8 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
-  if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
-  if ( name == "mongoose_bite_eagle"   ) return new    mongoose_bite_eagle_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-  if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
-  if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
   if ( name == "salvo"                 ) return new                  salvo_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
@@ -6953,6 +6947,22 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "wailing_arrow"         ) return new          wailing_arrow_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
+
+  if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || "name" == "mongoose_strike" )
+  {
+    if ( talents.mongoose_bite.ok() )
+      return new mongoose_bite_t( this, options_str );
+    else
+      return new raptor_strike_t( this, options_str );
+  }
+
+  if ( name == "raptor_strike_eagle" || name == "mongoose_bite_eagle" || name == "raptor_bite_eagle" || "name" == "mongoose_strike_eagle" )
+  {
+    if ( talents.mongoose_bite.ok() )
+      return new mongoose_bite_eagle_t( this, options_str );
+    else
+      return new raptor_strike_eagle_t( this, options_str );
+  }
 
   if ( name == "multishot" )
   {
