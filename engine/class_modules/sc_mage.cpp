@@ -1110,7 +1110,7 @@ struct freeze_t final : public mage_pet_spell_t
   {
     mage_pet_spell_t::impact( s );
 
-    bool success = o()->trigger_crowd_control( s, MECHANIC_ROOT );
+    bool success = o()->trigger_crowd_control( s, MECHANIC_FREEZE );
     if ( success && o()->buffs.icy_veins->check() )
       o()->buffs.frigid_empowerment->trigger( o()->buffs.frigid_empowerment->max_stack() );
   }
@@ -2773,7 +2773,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     p()->trigger_merged_buff( p()->buffs.bone_chilling, true );
     if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Frostbite only has the initial grace period
+      p()->trigger_crowd_control( s, MECHANIC_FREEZE, -0.5_s ); // Frostbite only has the initial grace period
   }
 
   void trigger_cold_front( int stacks = 1 )
@@ -3982,7 +3982,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( p()->talents.freezing_cold.ok() )
-      p()->trigger_crowd_control( s, MECHANIC_ROOT, -0.5_s ); // Freezing Cold only has the initial grace period
+      p()->trigger_crowd_control( s, MECHANIC_FREEZE, -0.5_s ); // Freezing Cold only has the initial grace period
 
     if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
     {
@@ -4771,7 +4771,7 @@ struct frost_nova_t final : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_FREEZE );
   }
 };
 
@@ -5013,7 +5013,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( s->chain_target == 0 && p()->talents.thermal_void.ok() && p()->buffs.icy_veins->check() )
       p()->buffs.icy_veins->extend_duration( p(), p()->talents.thermal_void->effectN( 3 ).time_value() );
 
-    p()->trigger_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_FREEZE );
 
     if ( glacial_blast && cast_state( s )->frozen )
     {
@@ -5324,7 +5324,7 @@ struct ice_nova_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_ROOT );
+    p()->trigger_crowd_control( s, MECHANIC_FREEZE );
   }
 
   double action_multiplier() const override
@@ -8892,7 +8892,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
   if ( action_t::result_is_hit( s->result )
     && ( !s->target->is_boss() || s->target->level() < sim->max_player_level + 3 ) )
   {
-    if ( type == MECHANIC_ROOT && options.frozen_duration + adjust > 0_ms )
+    if ( type == MECHANIC_FREEZE && options.frozen_duration + adjust > 0_ms )
       get_target_data( s->target )->debuffs.frozen->trigger( options.frozen_duration + adjust );
 
     return true;
