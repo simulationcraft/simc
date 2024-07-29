@@ -5931,9 +5931,9 @@ struct phoenix_flames_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
-  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  double recharge_multiplier( const cooldown_t& cd ) const override
   {
-    double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
+    double m = fire_mage_spell_t::recharge_multiplier( cd );
 
     if ( &cd == cooldown )
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
