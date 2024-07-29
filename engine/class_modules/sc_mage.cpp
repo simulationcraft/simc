@@ -5798,6 +5798,7 @@ struct meteorite_t final : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 449559 ) ),
     meteor_delay( p->find_spell( 449562 )->duration() )
   {
+    background = true;
     impact_action = get_action<meteorite_impact_t>( "meteorite_impact", p );
 
     add_child( impact_action );
