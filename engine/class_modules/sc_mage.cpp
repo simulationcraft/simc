@@ -252,6 +252,7 @@ public:
     event_t* merged_buff_execute;
     event_t* splinterstorm;
     event_t* time_anomaly;
+    event_t* burden_of_power;
   } events;
 
   // Ground AoE tracking
@@ -284,6 +285,7 @@ public:
     action_t* living_bomb;
     action_t* magis_spark;
     action_t* magis_spark_echo;
+    action_t* meteorite;
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* shattered_ice;
@@ -399,6 +401,7 @@ public:
 
     // Sunfury
     buff_t* burden_of_power;
+    buff_t* glorious_incandescence;
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
     buff_t* spellfire_spheres;
@@ -559,6 +562,7 @@ public:
     bool trigger_leydrinker;
     bool trigger_ff_empowerment;
     bool trigger_flash_freezeburn;
+    bool trigger_glorious_incandescence;
     int embedded_splinters;
   } state;
 
@@ -1018,6 +1022,7 @@ public:
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_flash_freezeburn( bool ffb = false );
   void trigger_spellfire_spheres();
+  void consume_burden_of_power();
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
@@ -1984,6 +1989,19 @@ public:
     if ( !( is_fire && is_frost ) )
       p()->buffs.severe_temperatures->trigger();
   }
+
+  void trigger_glorious_incandescence( player_t* t )
+  {
+    if ( !p()->talents.glorious_incandescence.ok() || !p()->state.trigger_glorious_incandescence )
+      return;
+
+    // TODO: Test the delay more rigorously
+    p()->action.meteorite->execute_on_target( t );
+    make_repeating_event( *sim, 75_ms, [ this, t ] { p()->action.meteorite->execute_on_target( t ); },
+      as<int>( p()->talents.glorious_incandescence->effectN( 1 ).base_value() ) - 1 );
+
+    p()->state.trigger_glorious_incandescence = false;
+  }
 };
 
 double mage_spell_state_t::composite_crit_chance() const
@@ -2564,10 +2582,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( expire_skb )
       p()->buffs.fury_of_the_sun_king->expire();
 
-    // Buff is consumed after a short delay, allowing multiple spells to benefit.
-    // TODO: Double check this later
-    if ( p()->buffs.burden_of_power->check() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+    p()->consume_burden_of_power();
 
     if ( last_hot_streak )
     {
@@ -2986,6 +3001,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
   action_t* orb_barrage = nullptr;
   int snapshot_charges = -1;
   int intuition_charges = 0;
+  int glorious_incandescence_charges = 0;
 
   arcane_barrage_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) )
@@ -2995,6 +3011,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = triggers.clearcasting = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
+    glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     intuition_charges = as<int>( p->find_spell( 455683 )->effectN( 1 ).base_value() );
 
     if ( p->talents.orb_barrage.ok() )
@@ -3023,10 +3040,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    // Buff is consumed after a short delay, allowing multiple spells to benefit.
-    // TODO: Double check this later
-    if ( p()->buffs.burden_of_power->check() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+    p()->consume_burden_of_power();
 
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
@@ -3050,6 +3064,13 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     {
       p()->buffs.leydrinker->decrement();
       p()->state.trigger_leydrinker = true;
+    }
+
+    if ( p()->buffs.glorious_incandescence->check() )
+    {
+      p()->buffs.glorious_incandescence->decrement();
+      p()->trigger_arcane_charge( glorious_incandescence_charges );
+      p()->state.trigger_glorious_incandescence = true;
     }
 
     if ( p()->buffs.intuition->check() )
@@ -3116,6 +3137,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->state.trigger_leydrinker = false;
       p()->action.leydrinker_echo->execute_on_target( s->target, p()->talents.leydrinker->effectN( 2 ).percent() * s->result_total );
     }
+
+    trigger_glorious_incandescence( s->target );
   }
 };
 
@@ -3156,11 +3179,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    // Buff is consumed after a short delay, allowing multiple spells to benefit.
-    // TODO: Double check this later
-    if ( p()->buffs.burden_of_power->check() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
-
+    p()->consume_burden_of_power();
     p()->trigger_arcane_charge();
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
@@ -4283,10 +4302,7 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    // Buff is consumed after a short delay, allowing multiple spells to benefit.
-    // TODO: Double check this later
-    if ( p()->buffs.burden_of_power->check() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+    p()->consume_burden_of_power();
   }
 };
 
@@ -5390,6 +5406,12 @@ struct fire_blast_t final : public fire_mage_spell_t
 
   void execute() override
   {
+    if ( p()->buffs.glorious_incandescence->check() )
+    {
+      p()->buffs.glorious_incandescence->decrement();
+      p()->state.trigger_glorious_incandescence = true;
+    }
+
     fire_mage_spell_t::execute();
 
     if ( p()->specialization() == MAGE_FIRE )
@@ -5424,6 +5446,8 @@ struct fire_blast_t final : public fire_mage_spell_t
         p()->action.excess_living_bomb->execute_on_target( s->target );
         p()->buffs.excess_fire->decrement();
       }
+
+      trigger_glorious_incandescence( s->target );
     }
   }
 
@@ -5748,6 +5772,44 @@ struct meteor_t final : public fire_mage_spell_t
   }
 };
 
+struct meteorite_impact_t final : public mage_spell_t
+{
+  meteorite_impact_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 449569 ) )
+  {
+    aoe = -1;
+    reduced_aoe_targets = 8; // TODO: Verify this
+    background = triggers.ignite = true;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    p()->cooldowns.fire_blast->adjust( -p()->talents.glorious_incandescence->effectN( 2 ).time_value(), true, false );
+  }
+};
+
+struct meteorite_t final : public mage_spell_t
+{
+  timespan_t meteor_delay;
+
+  meteorite_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 449559 ) ),
+    meteor_delay( p->find_spell( 449562 )->duration() )
+  {
+    impact_action = get_action<meteorite_impact_t>( "meteorite_impact", p );
+
+    add_child( impact_action );
+  }
+
+  timespan_t travel_time() const override
+  {
+    // Travel time cannot go lower than 1 second to give time for Meteorite to visually fall.
+    return std::max( meteor_delay * p()->cache.spell_cast_speed(), 1.0_s );
+  }
+};
+
 struct mirror_image_t final : public mage_spell_t
 {
   mirror_image_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -5930,10 +5992,7 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    // Buff is consumed after a short delay, allowing multiple spells to benefit.
-    // TODO: Double check this later
-    if ( p()->buffs.burden_of_power->check() )
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.burden_of_power->decrement(); } );
+    p()->consume_burden_of_power();
   }
 };
 
@@ -7351,6 +7410,9 @@ void mage_t::create_actions()
     action.splinter = get_action<splinter_t>( specialization() == MAGE_FROST ? "frost_splinter" : "arcane_splinter", this );
   }
 
+  if ( talents.glorious_incandescence.ok() )
+    action.meteorite = get_action<meteorite_t>( "meteorite", this );
+
   if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
     action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
 
@@ -8072,28 +8134,30 @@ void mage_t::create_buffs()
 
 
   // Sunfury
-  buffs.burden_of_power   = make_buff( this, "burden_of_power", find_spell( 451049 ) )
-                              ->set_chance( talents.burden_of_power.ok() );
-  buffs.mana_cascade      = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
-                              ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
-                                                               specialization() == MAGE_FIRE ? 0.001 : 0.01 )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                              ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                {
-                                  if ( cur == 0 )
-                                  {
-                                    for ( auto e : mana_cascade_expiration )
-                                      event_t::cancel( e );
+  buffs.burden_of_power        = make_buff( this, "burden_of_power", find_spell( 451049 ) )
+                                   ->set_chance( talents.burden_of_power.ok() );
+  buffs.glorious_incandescence = make_buff( this, "glorious_incandescence", find_spell( 451073 ) )
+                                   ->set_chance( talents.glorious_incandescence.ok() );
+  buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
+                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
+                                                                    specialization() == MAGE_FIRE ? 0.001 : 0.01 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                     {
+                                       if ( cur == 0 )
+                                       {
+                                         for ( auto e : mana_cascade_expiration )
+                                           event_t::cancel( e );
 
-                                    mana_cascade_expiration.clear();
-                                  }
-                                } )
-                              ->set_chance( talents.mana_cascade.ok() );
-  buffs.spellfire_sphere  = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_chance( talents.spellfire_spheres.ok() );
-  buffs.spellfire_spheres = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
-                              ->set_chance( talents.spellfire_spheres.ok() );
+                                         mana_cascade_expiration.clear();
+                                       }
+                                     } )
+                                   ->set_chance( talents.mana_cascade.ok() );
+  buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
+                                   ->set_default_value_from_effect( 1 )
+                                   ->set_chance( talents.spellfire_spheres.ok() );
+  buffs.spellfire_spheres      = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
+                                   ->set_chance( talents.spellfire_spheres.ok() );
 
 
   // Shared
@@ -9065,6 +9129,22 @@ void mage_t::trigger_spellfire_spheres()
     buffs.spellfire_spheres->expire();
     buffs.burden_of_power->trigger();
   }
+}
+
+void mage_t::consume_burden_of_power()
+{
+  if ( !buffs.burden_of_power->check() || events.burden_of_power )
+    return;
+
+  // Buff is consumed after a short delay, allowing multiple spells to benefit.
+  // TODO: Double check this later
+  events.burden_of_power = make_event( *sim, 15_ms, [ this ]
+  {
+    buffs.burden_of_power->decrement();
+    events.burden_of_power = nullptr;
+  } );
+
+  buffs.glorious_incandescence->trigger();
 }
 
 // If the target isn't specified, picks a random target.
