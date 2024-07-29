@@ -3824,14 +3824,16 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     return c;
   }
 
-  timespan_t cooldown_duration() const override
+  void update_ready( timespan_t ) override
   {
-    timespan_t d = hunter_ranged_attack_t::cooldown_duration();
+    timespan_t d = cooldown->duration;
 
     if ( p()->buffs.bombardier->check() )
-      d *= 1 + p()->talents.bombardier_buff->effectN( 2 ).percent();
+    {
+      d = timespan_t::zero();
+    }
 
-    return d;
+    hunter_ranged_attack_t::update_ready( d );
   }
 };
 
@@ -7706,7 +7708,10 @@ void hunter_t::create_buffs()
   if ( talents.bombardier.ok() )
     buffs.coordinated_assault->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
       if ( cur == 0 )
+      {
         buffs.bombardier->trigger();
+        cooldowns.explosive_shot->reset( true );
+      }
     } );
 
   buffs.relentless_primal_ferocity =
@@ -7729,11 +7734,7 @@ void hunter_t::create_buffs()
 
   buffs.bombardier = 
     make_buff( this, "bombardier", talents.bombardier_buff )
-      ->set_reverse( true )
-      ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-        if ( old == 0 || cur == 0 )
-          cooldowns.explosive_shot->adjust_recharge_multiplier();
-      } );
+      ->set_reverse( true );
 
   // Pet family buffs
 
