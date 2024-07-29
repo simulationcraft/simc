@@ -76,6 +76,7 @@ namespace warlock
     talents.soulburn_buff = find_spell( 387626 );
 
     warlock_t::init_spells_diabolist();
+    warlock_t::init_spells_hellcaller();
   }
 
   void warlock_t::init_spells_affliction()
@@ -523,6 +524,35 @@ namespace warlock
     warlock_pet_list.fragments.set_default_duration( hero.infernal_fragmentation->duration() );
   }
 
+  void warlock_t::init_spells_hellcaller()
+  {
+    hero.wither = find_talent_spell( talent_tree::HERO, "Wither" ); // Should be ID 445465
+    hero.wither_direct = find_spell( 445468 );
+    hero.wither_dot = find_spell( 445474 );
+
+    hero.xalans_ferocity = find_talent_spell( talent_tree::HERO, "Xalan's Ferocity" ); // Should be ID 440044
+
+    hero.blackened_soul = find_talent_spell( talent_tree::HERO, "Blackened Soul" ); // Should be ID 440043
+    hero.blackened_soul_trigger = find_spell( 445731 );
+    hero.blackened_soul_dmg = find_spell( 445736 );
+
+    hero.xalans_cruelty = find_talent_spell( talent_tree::HERO, "Xalan's Cruelty" ); // Should be ID 440040
+
+    hero.hatefury_rituals = find_talent_spell( talent_tree::HERO, "Hatefury Rituals" ); // Should be ID 440048
+
+    hero.bleakheart_tactics = find_talent_spell( talent_tree::HERO, "Bleakheart Tactics" ); // Should be ID 440051
+
+    hero.mark_of_xavius = find_talent_spell( talent_tree::HERO, "Mark of Xavius" ); // Should be ID 440046
+
+    hero.seeds_of_their_demise = find_talent_spell( talent_tree::HERO, "Seeds of Their Demise" ); // Should be ID 440055
+
+    hero.mark_of_perotharn = find_talent_spell( talent_tree::HERO, "Mark of Peroth'arn" ); // Should be ID 440045
+
+    hero.malevolence = find_talent_spell( talent_tree::HERO, "Malevolence" ); // Should be ID 430014
+    hero.malevolence_buff = find_spell( 442726 );
+    hero.malevolence_dmg = find_spell( 446285 );
+  }
+
   void warlock_t::init_base_stats()
   {
     if ( base.distance < 1.0 )
@@ -587,6 +617,7 @@ namespace warlock
                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     create_buffs_diabolist();
+    create_buffs_hellcaller();
   }
 
   void warlock_t::create_buffs_affliction()
@@ -763,6 +794,14 @@ namespace warlock
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
   }
 
+  void warlock_t::create_buffs_hellcaller()
+  {
+    buffs.malevolence = make_buff( this, "malevolence", hero.malevolence_buff )
+                            ->set_cooldown( hero.malevolence_buff->cooldown() - 1_s )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                            ->set_default_value_from_effect( 1 );
+  }
+
   void warlock_t::create_pets()
   {
     for ( auto& pet : pet_name_list )
@@ -796,6 +835,7 @@ namespace warlock
       init_gains_destruction();
 
     init_gains_diabolist();
+    init_gains_hellcaller();
 
     gains.soul_conduit = get_gain( "soul_conduit" );
   }
@@ -826,6 +866,12 @@ namespace warlock
   {
   }
 
+  void warlock_t::init_gains_hellcaller()
+  {
+    gains.wither = get_gain( "wither" );
+    gains.wither_crits = get_gain( "wither_crits" );
+  }
+
   void warlock_t::init_procs()
   {
     player_t::init_procs();
@@ -838,6 +884,7 @@ namespace warlock
       init_procs_destruction();
 
     init_procs_diabolist();
+    init_procs_hellcaller();
 
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
@@ -891,6 +938,14 @@ namespace warlock
   {
   }
 
+  void warlock_t::init_procs_hellcaller()
+  {
+    procs.blackened_soul = get_proc( "blackened_soul" );
+    procs.bleakheart_tactics = get_proc( "bleakheart_tactics" );
+    procs.seeds_of_their_demise = get_proc( "seeds_of_their_demise" );
+    procs.mark_of_perotharn = get_proc( "mark_of_perotharn" );
+  }
+
   void warlock_t::init_rng()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -901,6 +956,7 @@ namespace warlock
       init_rng_destruction();
 
     init_rng_diabolist();
+    init_rng_hellcaller();
 
     player_t::init_rng();
   }
@@ -920,6 +976,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_diabolist()
+  {
+  }
+
+  void warlock_t::init_rng_hellcaller()
   {
   }
 
@@ -964,6 +1024,21 @@ namespace warlock
     add_option( opt_int( "soul_shards", initial_soul_shards ) );
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
+    add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
+
+    add_option( opt_float( "rng_cunning_cruelty_sb", rng_settings.cunning_cruelty_sb.setting_value ) );
+    add_option( opt_float( "rng_cunning_cruelty_ds", rng_settings.cunning_cruelty_ds.setting_value ) );
+    add_option( opt_float( "rng_agony", rng_settings.agony.setting_value ) );
+    add_option( opt_float( "rng_nightfall", rng_settings.nightfall.setting_value ) );
+    add_option( opt_float( "rng_pact_of_the_eredruin", rng_settings.pact_of_the_eredruin.setting_value ) );
+    add_option( opt_float( "rng_shadow_invocation", rng_settings.shadow_invocation.setting_value ) );
+    add_option( opt_float( "rng_spiteful_reconstitution", rng_settings.spiteful_reconstitution.setting_value ) );
+    add_option( opt_float( "rng_decimation", rng_settings.decimation.setting_value ) );
+    add_option( opt_float( "rng_dimension_ripper", rng_settings.dimension_ripper.setting_value ) );
+    add_option( opt_float( "rng_blackened_soul", rng_settings.blackened_soul.setting_value ) );
+    add_option( opt_float( "rng_bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value ) );
+    add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
+    add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
   }
 
   void warlock_t::combat_begin()
@@ -996,7 +1071,6 @@ namespace warlock
     ua_target = nullptr;
     agony_accumulator = rng().range( 0.0, 0.99 );
     corruption_accumulator = rng().range( 0.0, 0.99 );
-    shadow_invocation_proc_chance = 0.2;
     wild_imp_spawns.clear();
     diabolic_ritual = as<int>( rng().range( 0, 3 ) );
   }

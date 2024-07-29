@@ -68,6 +68,11 @@ struct warlock_td_t : public actor_target_data_t
   // Diabolist
   propagate_const<buff_t*> debuffs_cloven_soul;
 
+  // Hellcaller
+  propagate_const<dot_t*> dots_wither;
+
+  propagate_const<buff_t*> debuffs_blackened_soul; // Dummy/Hidden debuff that triggers stack collapse
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -89,7 +94,6 @@ public:
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
-  double shadow_invocation_proc_chance; // 2023-09-10: Annoyingly, at this time there is no listed proc chance in data for Shadow Invocation
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual;
 
@@ -499,23 +503,29 @@ public:
     const spell_data_t* ruination_cast;
     const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented
     const spell_data_t* diabolic_imp;
-    const spell_data_t* diabolic_bolt;
+    const spell_data_t* diabolic_bolt; // TODO: Socrethar's Guile?
 
     // Hellcaller
-    player_talent_t wither; // TODO: Socrethar's Guile, Seed of Corruption, Absolute Corruption, Siphon Life, Kindled Malice, Sacrolash, Darkglare, Death's Embrace, Roaring Blaze, Scalding Flames, Ashen Remains, Channel Demonfire, Flashpoint, Raging Demonfire, Internal Combustion, Soul Fire
+    player_talent_t wither;
+    const spell_data_t* wither_direct; // TODO: Damage values are picking up some other weird effects similar to Flames of Xoroth. Check damage again after main implementation work is done
+    const spell_data_t* wither_dot; // TODO: In-game, Affliction is picking up the Socrethar's Guile effect, which is almost certainly a bug
 
-    player_talent_t xalans_ferocity;
+    player_talent_t xalans_ferocity; // TODO: This has similar issues to Flames of Xoroth. Is/should this be affecting pets?
     player_talent_t blackened_soul;
-    player_talent_t xalans_cruelty;
+    const spell_data_t* blackened_soul_trigger; // Contains interval for stack collapse
+    const spell_data_t* blackened_soul_dmg;
+    player_talent_t xalans_cruelty; // TODO: Same concerns as Xalan's Ferocity
 
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;
 
-    player_talent_t mark_of_xavius;
-    player_talent_t seeds_of_their_demise;
+    player_talent_t mark_of_xavius; // TODO: This is almost certainly bugged and applying to Wither for Affliction
+    player_talent_t seeds_of_their_demise; // TODO: This still has data buffing Blackened Soul
     player_talent_t mark_of_perotharn;
 
-    player_talent_t malevolence;
+    player_talent_t malevolence; // TODO: While buff is active this guarantees Blackened Soul, but this could be leftover from earlier versions
+    const spell_data_t* malevolence_buff;
+    const spell_data_t* malevolence_dmg;
 
     // Soul Harvester
     player_talent_t demonic_soul;
@@ -540,6 +550,8 @@ public:
     action_t* bilescourge_bombers_proc; // From Shadow Invocation talent
     action_t* doom_proc;
     action_t* rain_of_fire_tick;
+    action_t* blackened_soul;
+    action_t* malevolence;
   } proc_actions;
 
   struct tier_sets_t
@@ -615,6 +627,9 @@ public:
     propagate_const<buff_t*> infernal_bolt;
     propagate_const<buff_t*> abyssal_dominion;
     propagate_const<buff_t*> ruination;
+
+    // Hellcaller Buffs
+    propagate_const<buff_t*> malevolence;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -638,6 +653,12 @@ public:
     gain_t* infernal;
     gain_t* shadowburn_refund;
     gain_t* summon_overfiend;
+
+    // Diabolist
+
+    // Hellcaller
+    gain_t* wither;
+    gain_t* wither_crits;
   } gains;
 
   // Procs
@@ -679,11 +700,52 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
     proc_t* dimension_ripper;
+
+    // Diabolist
+
+    // Hellcaller
+    proc_t* blackened_soul;
+    proc_t* bleakheart_tactics;
+    proc_t* seeds_of_their_demise;
+    proc_t* mark_of_perotharn;
   } procs;
+
+  struct rng_settings_t
+  {
+    struct rng_setting_t
+    {
+      double setting_value;
+      double default_value;
+    };
+
+    // Affliction
+    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50 };
+    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
+    rng_setting_t agony = { 0.368, 0.368 };
+    rng_setting_t nightfall = { 0.13, 0.13 };
+
+    // Demonology
+    rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
+    rng_setting_t shadow_invocation = { 0.20, 0.20 };
+    rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
+
+    // Destruction
+    rng_setting_t decimation = { 0.10, 0.10 };
+    rng_setting_t dimension_ripper = { 0.05, 0.05 };
+
+    // Diabolist
+
+    // Hellcaller
+    rng_setting_t blackened_soul = { 0.10, 0.10 };
+    rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
+    rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
+    rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+  } rng_settings;
 
   int initial_soul_shards;
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
+  bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
 
@@ -710,6 +772,8 @@ public:
   void create_affliction_proc_actions();
   void create_demonology_proc_actions();
   void create_destruction_proc_actions();
+  void create_diabolist_proc_actions();
+  void create_hellcaller_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -782,6 +846,13 @@ public:
   void init_rng_diabolist();
   void init_procs_diabolist();
 
+  action_t* create_action_hellcaller( util::string_view, util::string_view );
+  void create_buffs_hellcaller();
+  void init_spells_hellcaller();
+  void init_gains_hellcaller();
+  void init_rng_hellcaller();
+  void init_procs_hellcaller();
+
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
@@ -808,5 +879,8 @@ namespace helpers
   };
 
   bool crescendo_check( warlock_t* p );
+  void nightfall_updater( warlock_t* p, dot_t* d );
+
+  void trigger_blackened_soul( warlock_t* p, bool malevolence );
 }
 }  // namespace warlock

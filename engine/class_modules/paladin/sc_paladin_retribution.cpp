@@ -1,6 +1,7 @@
 #include <unordered_set>
 
 #include "simulationcraft.hpp"
+#include "sc_enums.hpp"
 #include "sc_paladin.hpp"
 #include "class_modules/apl/apl_paladin.hpp"
 
@@ -1190,6 +1191,11 @@ struct wake_of_ashes_t : public paladin_spell_t
       }
     }
 
+    if ( p()->talents.herald_of_the_sun.dawnlight->ok() )
+    {
+      p()->buffs.herald_of_the_sun.dawnlight->trigger( as<int>( p()->talents.herald_of_the_sun.dawnlight->effectN( 1 ).base_value() ) );
+    }
+
     if ( p()->talents.herald_of_the_sun.aurora->ok() && p()->cooldowns.aurora_icd->up() )
     {
       p()->cooldowns.aurora_icd->start();
@@ -1214,26 +1220,19 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
   {
     aoe         = -1;
     reduced_aoe_targets = 8; // does not appear to have a spelldata equivalent
-    dual        = true;
     direct_tick = true;
     background  = true;
     may_crit    = true;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( target );
-
-    paladin_td_t* td = p()->get_target_data( target );
-    if ( td->debuff.sanctify->up() )
-      m *= 1.0 + td->debuff.sanctify->data().effectN( 1 ).percent();
-
-    return m;
   }
 };
 
 struct divine_hammer_t : public paladin_spell_t
 {
+  divine_hammer_t( paladin_t* p ) : paladin_spell_t( "divine_hammer", p, p->talents.divine_hammer )
+  {
+    background = true;
+  }
+
   divine_hammer_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "divine_hammer", p, p->talents.divine_hammer )
   {
@@ -1241,13 +1240,13 @@ struct divine_hammer_t : public paladin_spell_t
 
     if ( !p->talents.divine_hammer->ok() )
       background = true;
+  }
 
-    may_miss       = false;
-    tick_may_crit  = true;
-    // TODO: verify
-    tick_zero      = true;
+  void execute() override
+  {
+    paladin_spell_t::execute();
 
-    tick_action = new divine_hammer_tick_t( p );
+    p()->buffs.divine_hammer->trigger();
   }
 };
 
@@ -1546,6 +1545,8 @@ void paladin_t::create_ret_actions()
     {
       active.sun_sear = new sun_sear_t( this );
     }
+    active.divine_hammer = new divine_hammer_t( this );
+    active.divine_hammer_tick = new divine_hammer_tick_t( this );
   }
 
   if ( sets->has_set_bonus(PALADIN_RETRIBUTION, T31, B2) )
@@ -1599,6 +1600,49 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
+  buffs.divine_hammer = make_buff( this, "divine_hammer", talents.divine_hammer )
+    ->set_max_stack( 1 )
+    ->set_default_value( 1.0 )
+    ->set_period( timespan_t::from_millis( 2200 ) )
+    ->set_freeze_stacks( true )
+    ->set_tick_time_callback([](const buff_t* b, unsigned) -> timespan_t {
+      auto res = timespan_t::from_millis( 2200 );
+      res *= 1.0 / b->current_value;
+      return res;
+    })
+    ->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
+      // consume a holy power, if one isn't available then buff ends
+      if ( !resource_available( RESOURCE_HOLY_POWER, 1.0 ) ) {
+        b->expire();
+      } else {
+        active.divine_hammer_tick->schedule_execute();
+      }
+    })
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      for ( size_t i = 2; i < 5; i++ )
+      {
+        double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( i ).percent() );
+        spelleffect_data_t label = b->data().effectN( i );
+        for ( auto a : action_list )
+        {
+          if ( a->cooldown->duration != 0_ms &&
+               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
+          {
+            if ( new_ == 1 )
+              a->dynamic_recharge_rate_multiplier *= recharge_mult;
+            else
+              a->dynamic_recharge_rate_multiplier /= recharge_mult;
+
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
+          }
+        }
+      }
+    }
+  );
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );

@@ -456,7 +456,8 @@ namespace destruction
 struct infernal_t : public warlock_pet_t
 {
   buff_t* immolation;
-  bool primary;
+  enum infernal_type_e { MAIN, RAIN, FRAG };
+  infernal_type_e type;
 
   infernal_t( warlock_t*, util::string_view = "infernal" );
   void init_base_stats() override;

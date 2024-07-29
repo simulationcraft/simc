@@ -1697,7 +1697,7 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 {
   resource_regeneration = regen_type::DISABLED;
 
-  primary = true;
+  type = MAIN;
 
   owner_coeff.ap_from_sp = 1.65;
   owner_coeff.sp_from_sp = 1.65;
@@ -1764,15 +1764,15 @@ void infernal_t::demise()
 {
   warlock_pet_t::demise();
 
-  if ( o()->hero.abyssal_dominion.ok() && primary )
-    o()->warlock_pet_list.fragments.spawn( 2u );
+  if ( o()->hero.abyssal_dominion.ok() && type == MAIN )
+    make_event( sim, [ this ] { o()->warlock_pet_list.fragments.spawn( 2u ); } );
 }
 
 double infernal_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->hero.abyssal_dominion.ok() && primary )
+  if ( o()->hero.abyssal_dominion.ok() && ( type == MAIN || type == RAIN ) )
     m *= 1.0 + o()->hero.abyssal_dominion->effectN( 3 ).percent();
 
   return m;
@@ -2095,6 +2095,9 @@ struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
     double min_percentage = p()->o()->talents.chaos_incarnate.ok() ? p()->o()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
     double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
+    if ( p()->o()->normalize_destruction_mastery )
+      chaotic_energies_rng = ( min_percentage + 1.0 ) / 2.0;
+
     m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
 
     return m;
@@ -2239,6 +2242,7 @@ namespace diabolist
     chaos_salvo_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
     {
+      channeled = true;
       base_costs_per_tick[ RESOURCE_ENERGY ] = 0.0;
 
       tick_action = new chaos_salvo_tick_t( p ); }
@@ -2297,7 +2301,10 @@ namespace diabolist
   {
     felseeker_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Felseeker", p, p->o()->hero.felseeker )
-    { tick_action = new felseeker_tick_t( p ); }
+    {
+      channeled = true;
+      tick_action = new felseeker_tick_t( p );
+    }
 
     bool ready() override
     {
@@ -2337,7 +2344,7 @@ namespace diabolist
   infernal_fragment_t::infernal_fragment_t( warlock_t* owner, util::string_view name )
     : destruction::infernal_t( owner, name )
   {
-    primary = false;
+    type = FRAG;
     owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
     owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
   }

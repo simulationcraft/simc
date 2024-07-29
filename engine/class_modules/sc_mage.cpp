@@ -240,6 +240,9 @@ public:
   // Splinters
   std::vector<dot_t*> embedded_splinters;
 
+  // Mana Cascade expiration events
+  std::vector<event_t*> mana_cascade_expiration;
+
   // Events
   struct events_t
   {
@@ -394,6 +397,12 @@ public:
     buff_t* unerring_proficiency;
 
 
+    // Sunfury
+    buff_t* mana_cascade;
+    buff_t* spellfire_sphere;
+    buff_t* spellfire_spheres;
+
+
     // Shared
     buff_t* ice_floes;
     buff_t* incanters_flow;
@@ -448,6 +457,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
     bool treat_bloodlust_as_time_warp = false;
+    unsigned initial_spellfire_spheres = 3;
   } options;
 
   // Pets
@@ -1003,8 +1013,10 @@ public:
   void trigger_icicle( player_t* icicle_target, bool chain = false );
   void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, double chance = 1.0, timespan_t duration = timespan_t::min() );
   void trigger_lit_fuse();
+  void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_flash_freezeburn( bool ffb = false );
+  void trigger_spellfire_spheres();
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void update_enlightened( bool double_regen = false );
@@ -1480,6 +1492,7 @@ struct mage_spell_t : public spell_t
     bool nether_munitions = true;
     bool numbing_blast = true;
     bool savant = false;
+    bool spellfire_sphere = true;
     bool unleashed_inferno = false;
 
     bool arcane_overload = true;
@@ -1635,6 +1648,9 @@ public:
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
+
+    if ( affected_by.spellfire_sphere )
+      m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
 
     if ( affected_by.touch_of_ice )
       m *= 1.0 + p()->buffs.touch_of_ice->check_value();
@@ -2550,13 +2566,19 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
+      p()->trigger_spellfire_spheres();
+      p()->trigger_mana_cascade();
 
       // TODO: Test the proc chance and whether this works with Hyperthermia and Lit Fuse.
       if ( p()->cooldowns.pyromaniac->up() && p()->accumulated_rng.pyromaniac->trigger() )
       {
         p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
+
         trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
         p()->trigger_lit_fuse();
+        p()->trigger_spellfire_spheres();
+        p()->trigger_mana_cascade();
+
         assert( pyromaniac_action );
         // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
         make_event( *sim, 500_ms, [ this, t = target ]
@@ -2994,6 +3016,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
+    p()->trigger_spellfire_spheres();
+    p()->trigger_mana_cascade();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
@@ -3114,6 +3138,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge();
+    p()->trigger_spellfire_spheres();
+    p()->trigger_mana_cascade();
 
     if ( rng().roll( p()->talents.impetus->effectN( 1 ).percent() ) )
     {
@@ -4070,7 +4096,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     // TODO: Frostfire Bolt currently doesn't respect the max travel time
-    return p()->bugs ? t : std::min( t, 0.75_s );
+    return frostfire && p()->bugs ? t : std::min( t, 0.75_s );
   }
 
   timespan_t execute_time() const override
@@ -4085,16 +4111,19 @@ struct fireball_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire )
     {
-      // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-      p()->state.trigger_ff_empowerment = true;
-      trigger_frostfire_mastery( true );
-    }
+      if ( p()->buffs.frostfire_empowerment->check() )
+      {
+        // Buff is decremented with a short delay, allowing two spells to benefit.
+        // TODO: Double check this later
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+        p()->state.trigger_ff_empowerment = true;
+        trigger_frostfire_mastery( true );
+      }
 
-    p()->trigger_flash_freezeburn( true );
+      p()->trigger_flash_freezeburn( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4111,12 +4140,15 @@ struct fireball_t final : public fire_mage_spell_t
       if ( !consume_firefall( s->target ) )
         trigger_firefall();
 
-      p()->buffs.severe_temperatures->expire();
-
-      if ( p()->state.trigger_ff_empowerment )
+      if ( frostfire )
       {
-        p()->state.trigger_ff_empowerment = false;
-        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        p()->buffs.severe_temperatures->expire();
+
+        if ( p()->state.trigger_ff_empowerment )
+        {
+          p()->state.trigger_ff_empowerment = false;
+          p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        }
       }
     }
   }
@@ -4590,7 +4622,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
     // TODO: this doesn't work with Frostfire Bolt ingame
-    if ( !p()->bugs )
+    if ( !frostfire || !p()->bugs )
       fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
@@ -4609,16 +4641,19 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire )
     {
-      // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-      p()->state.trigger_ff_empowerment = true;
-      trigger_frostfire_mastery( true );
-    }
+      if ( p()->buffs.frostfire_empowerment->check() )
+      {
+        // Buff is decremented with a short delay, allowing two spells to benefit.
+        // TODO: Double check this later
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+        p()->state.trigger_ff_empowerment = true;
+        trigger_frostfire_mastery( true );
+      }
 
-    p()->trigger_flash_freezeburn( true );
+      p()->trigger_flash_freezeburn( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4630,12 +4665,15 @@ struct frostbolt_t final : public frost_mage_spell_t
       if ( p()->buffs.icy_veins->check() )
         p()->buffs.deaths_chill->trigger();
 
-      p()->buffs.severe_temperatures->expire();
-
-      if ( p()->state.trigger_ff_empowerment )
+      if ( frostfire )
       {
-        p()->state.trigger_ff_empowerment = false;
-        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        p()->buffs.severe_temperatures->expire();
+
+        if ( p()->state.trigger_ff_empowerment )
+        {
+          p()->state.trigger_ff_empowerment = false;
+          p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        }
       }
     }
 
@@ -7210,6 +7248,7 @@ void mage_t::create_options()
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_timespan( "mage.glacial_spike_delay", options.glacial_spike_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_bool( "mage.treat_bloodlust_as_time_warp", options.treat_bloodlust_as_time_warp ) );
+  add_option( opt_uint( "mage.initial_spellfire_spheres", options.initial_spellfire_spheres ) );
 
   player_t::create_options();
 }
@@ -7911,6 +7950,29 @@ void mage_t::create_buffs()
                                  ->set_chance( talents.unerring_proficiency.ok() );
 
 
+  // Sunfury
+  buffs.mana_cascade      = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
+                              ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
+                                                               specialization() == MAGE_FIRE ? 0.001 : 0.01 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                              ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                {
+                                  if ( cur == 0 )
+                                  {
+                                    for ( auto e : mana_cascade_expiration )
+                                      event_t::cancel( e );
+
+                                    mana_cascade_expiration.clear();
+                                  }
+                                } )
+                              ->set_chance( talents.mana_cascade.ok() );
+  buffs.spellfire_sphere  = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
+                              ->set_default_value_from_effect( 1 )
+                              ->set_chance( talents.spellfire_spheres.ok() );
+  buffs.spellfire_spheres = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
+                              ->set_chance( talents.spellfire_spheres.ok() );
+
+
   // Shared
   buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
   buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this );
@@ -8369,6 +8431,7 @@ void mage_t::reset()
   icicles.clear();
   buff_queue.clear();
   embedded_splinters.clear();
+  mana_cascade_expiration.clear();
   events = events_t();
   ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
@@ -8381,6 +8444,9 @@ void mage_t::arise()
 
   buffs.flame_accelerant->trigger();
   buffs.incanters_flow->trigger();
+
+  if ( options.initial_spellfire_spheres > 0 )
+    buffs.spellfire_sphere->trigger( options.initial_spellfire_spheres );
 
   if ( talents.enlightened.ok() )
   {
@@ -8776,6 +8842,34 @@ void mage_t::trigger_time_manipulation()
   for ( auto cd : time_manipulation_cooldowns ) cd->adjust( t, false );
 }
 
+void mage_t::trigger_mana_cascade()
+{
+  if ( !talents.mana_cascade.ok() )
+    return;
+
+  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) && talents.memory_of_alar.ok() ? 2 : 1;
+  auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
+  {
+    buffs.mana_cascade->trigger( s );
+    mana_cascade_expiration.push_back( make_event( *sim, buffs.mana_cascade->buff_duration(), [ this, s ]
+    {
+      mana_cascade_expiration.erase( mana_cascade_expiration.begin() );
+      buffs.mana_cascade->decrement( s );
+    } ) );
+  };
+
+  if ( buffs.mana_cascade->check() < buffs.mana_cascade->max_stack() )
+  {
+    // If this is triggered twice within a small enough time frame,
+    // erroneous expiration events can be scheduled. This currently
+    // only happens with Pyromaniac.
+    if ( bugs )
+      make_event( *sim, trigger_buff );
+    else
+      trigger_buff();
+  }
+}
+
 void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
 {
   if ( !events.merged_buff_execute )
@@ -8831,6 +8925,22 @@ void mage_t::trigger_flash_freezeburn( bool ffb )
     // purpose of this whole mechanic.
     // TODO: double check this later
     make_event( *sim, 15_ms, [ this ] { buffs.frostfire_empowerment->execute(); } );
+}
+
+void mage_t::trigger_spellfire_spheres()
+{
+  if ( !talents.spellfire_spheres.ok() )
+    return;
+
+  int max_stacks = as<int>( talents.spellfire_spheres->effectN( specialization() == MAGE_FIRE ? 3 : 2 ).base_value() );
+
+  buffs.spellfire_spheres->trigger();
+
+  if ( buffs.spellfire_spheres->check() >= max_stacks )
+  {
+    buffs.spellfire_sphere->trigger();
+    buffs.spellfire_spheres->expire();
+  }
 }
 
 // If the target isn't specified, picks a random target.
