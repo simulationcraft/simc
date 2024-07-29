@@ -4096,7 +4096,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     // TODO: Frostfire Bolt currently doesn't respect the max travel time
-    return p()->bugs ? t : std::min( t, 0.75_s );
+    return frostfire && p()->bugs ? t : std::min( t, 0.75_s );
   }
 
   timespan_t execute_time() const override
@@ -4111,16 +4111,19 @@ struct fireball_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire )
     {
-      // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-      p()->state.trigger_ff_empowerment = true;
-      trigger_frostfire_mastery( true );
-    }
+      if ( p()->buffs.frostfire_empowerment->check() )
+      {
+        // Buff is decremented with a short delay, allowing two spells to benefit.
+        // TODO: Double check this later
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+        p()->state.trigger_ff_empowerment = true;
+        trigger_frostfire_mastery( true );
+      }
 
-    p()->trigger_flash_freezeburn( true );
+      p()->trigger_flash_freezeburn( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4137,12 +4140,15 @@ struct fireball_t final : public fire_mage_spell_t
       if ( !consume_firefall( s->target ) )
         trigger_firefall();
 
-      p()->buffs.severe_temperatures->expire();
-
-      if ( p()->state.trigger_ff_empowerment )
+      if ( frostfire )
       {
-        p()->state.trigger_ff_empowerment = false;
-        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        p()->buffs.severe_temperatures->expire();
+
+        if ( p()->state.trigger_ff_empowerment )
+        {
+          p()->state.trigger_ff_empowerment = false;
+          p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        }
       }
     }
   }
@@ -4616,7 +4622,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
     // TODO: this doesn't work with Frostfire Bolt ingame
-    if ( !p()->bugs )
+    if ( !frostfire || !p()->bugs )
       fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
@@ -4635,16 +4641,19 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( p()->buffs.icy_veins->check() )
       p()->buffs.slick_ice->trigger();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire )
     {
-      // Buff is decremented with a short delay, allowing two spells to benefit.
-      // TODO: Double check this later
-      make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
-      p()->state.trigger_ff_empowerment = true;
-      trigger_frostfire_mastery( true );
-    }
+      if ( p()->buffs.frostfire_empowerment->check() )
+      {
+        // Buff is decremented with a short delay, allowing two spells to benefit.
+        // TODO: Double check this later
+        make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
+        p()->state.trigger_ff_empowerment = true;
+        trigger_frostfire_mastery( true );
+      }
 
-    p()->trigger_flash_freezeburn( true );
+      p()->trigger_flash_freezeburn( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4656,12 +4665,15 @@ struct frostbolt_t final : public frost_mage_spell_t
       if ( p()->buffs.icy_veins->check() )
         p()->buffs.deaths_chill->trigger();
 
-      p()->buffs.severe_temperatures->expire();
-
-      if ( p()->state.trigger_ff_empowerment )
+      if ( frostfire )
       {
-        p()->state.trigger_ff_empowerment = false;
-        p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        p()->buffs.severe_temperatures->expire();
+
+        if ( p()->state.trigger_ff_empowerment )
+        {
+          p()->state.trigger_ff_empowerment = false;
+          p()->action.frostfire_empowerment->execute_on_target( s->target, p()->talents.frostfire_empowerment->effectN( 2 ).percent() * s->result_total );
+        }
       }
     }
 
