@@ -2702,6 +2702,7 @@ void signet_of_the_priory( special_effect_t& effect )
   auto signet = debug_cast<signet_of_the_priory_t*>(
     create_proc_action<signet_of_the_priory_t>( "signet_of_the_priory", effect, data ) );
   effect.execute_action = signet;  
+  effect.stat           = STAT_ANY_DPS;
 
   // TODO: determine reasonable default for party buff options
   // TODO: confirm you can have multiple party buffs at the same time
