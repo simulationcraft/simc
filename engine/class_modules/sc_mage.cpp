@@ -6177,7 +6177,7 @@ struct supernova_t final : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.savant = true;
+    affected_by.time_manipulation = affected_by.savant = true;
     triggers.clearcasting = true;
 
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
@@ -6201,6 +6201,54 @@ struct supernova_t final : public mage_spell_t
       am *= 1.0 + p()->buffs.unerring_proficiency->check_stack_value();
 
     return am;
+  }
+};
+
+// Gravity Lapse's damage does not count as a Mage spell in most ways.
+// TODO: Check this later
+struct gravity_lapse_impact_t final : public spell_t
+{
+  gravity_lapse_impact_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 449715 ) )
+  {
+    background = true;
+  }
+
+  mage_t* p() const
+  { return debug_cast<mage_t*>( player ); }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_da_multiplier( s );
+
+    m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
+
+    return m;
+  }
+};
+
+struct gravity_lapse_t final : public mage_spell_t
+{
+  action_t* damage_action = nullptr;
+
+  gravity_lapse_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    mage_spell_t( n, p, p->find_spell( 449700 ) )
+  {
+    parse_options( options_str );
+    affected_by.time_manipulation = triggers.clearcasting = true;
+
+    if ( !p->talents.supernova.ok() )
+      background = true;
+
+    damage_action = get_action<gravity_lapse_impact_t>( "gravity_lapse_impact", p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( p()->trigger_crowd_control( s, MECHANIC_ROOT ) && s->chain_target == 0 )
+      make_event( *sim, 4_s, [ this, t = s->target ] { damage_action->execute_on_target( t ); } );
   }
 };
 
@@ -7142,6 +7190,9 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( talents.frostfire_bolt.ok() && ( name == "fireball" || name == "frostbolt" ) )
     return create_action( "frostfire_bolt", options_str );
 
+  if ( talents.gravity_lapse.ok() && name == "supernova" )
+    return create_action( "gravity_lapse", options_str );
+
   // Arcane
   if ( name == "arcane_barrage"    ) return new    arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"      ) return new      arcane_blast_t( name, this, options_str );
@@ -7186,6 +7237,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "fire_blast"        ) return new        fire_blast_t( name, this, options_str );
   if ( name == "frost_nova"        ) return new        frost_nova_t( name, this, options_str );
   if ( name == "frostbolt"         ) return new         frostbolt_t( name, this, options_str );
+  if ( name == "gravity_lapse"     ) return new     gravity_lapse_t( name, this, options_str );
   if ( name == "ice_floes"         ) return new         ice_floes_t( name, this, options_str );
   if ( name == "ice_nova"          ) return new          ice_nova_t( name, this, options_str );
   if ( name == "mirror_image"      ) return new      mirror_image_t( name, this, options_str );
