@@ -8158,6 +8158,7 @@ void mage_t::create_buffs()
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
+                                   ->modify_max_stack( as<int>( talents.rondurmancy->effectN( 1 ).base_value() ) )
                                    ->set_chance( talents.spellfire_spheres.ok() );
   buffs.spellfire_spheres      = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
                                    ->set_chance( talents.spellfire_spheres.ok() );
