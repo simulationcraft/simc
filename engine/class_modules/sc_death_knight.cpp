@@ -9205,7 +9205,8 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.heartrend->trigger();
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+    // July 30 2024.  Currently blood can not stack icy talons more than 5
+    if ( !p()->bugs && p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger();
@@ -9626,7 +9627,8 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       }
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+    // July 30 2024.  Currently blood can not stack icy talons more than 5
+    if ( !p()->bugs && p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger();
