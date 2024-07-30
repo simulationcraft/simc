@@ -3574,6 +3574,32 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     propagate_const<action_t*> soul_reaper_execute;
   };
 
+  struct soul_reaper_grim_reaper_t : public drw_action_t<melee_attack_t>
+  {
+    soul_reaper_grim_reaper_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.grim_reaper_soul_reaper ),
+        soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_grim_reaper_execute", p ) )
+    {
+      if ( dk()->options.individual_pet_reporting )
+      {
+        add_child( soul_reaper_execute );
+      }
+      hasted_ticks = false;
+      dot_behavior = DOT_EXTEND;
+    }
+
+    void tick( dot_t* dot ) override
+    {
+      // SR execute only fires if DRW is still alive
+      if ( dk()->buffs.dancing_rune_weapon->up() &&
+           dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+        soul_reaper_execute->execute_on_target( dot->target );
+    }
+
+  private:
+    propagate_const<action_t*> soul_reaper_execute;
+  };
+
   struct abilities_t
   {
     action_t* blood_plague;
@@ -3583,6 +3609,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* heart_strike;
     action_t* marrowrend;
     action_t* soul_reaper;
+    action_t* grim_reaper_soul_reaper;
     action_t* consumption;
     action_t* vampiric_strike;
   } ability;
@@ -3627,6 +3654,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.soul_reaper.ok() )
     {
       ability.soul_reaper = get_action<soul_reaper_t>( "soul_reaper", this );
+    }
+    if ( dk()->talent.deathbringer.grim_reaper->ok() )
+    {
+      ability.grim_reaper_soul_reaper = get_action<soul_reaper_grim_reaper_t>( "soul_reaper_grim_reaper", this );
     }
     if ( dk()->talent.blood.consumption.ok() )
     {
@@ -6638,9 +6669,25 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
   {
     this->stacks = stacks;
     execute_on_target( target );
+
     if ( p()->talent.deathbringer.grim_reaper->ok() &&
          target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
+    {
       p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
+
+      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+      {
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
+      }
+
+      if ( p()->talent.blood.everlasting_bond.ok() )
+      {
+        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+        {
+          p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
+        }
+      }
+    }
 
     if ( p()->talent.deathbringer.exterminate->ok() )
     {
