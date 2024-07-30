@@ -6328,19 +6328,21 @@ aspect_of_harmony_t::aspect_of_harmony_t()
 
 void aspect_of_harmony_t::construct_buffs( monk_t *player )
 {
+  path_of_resurgence =
+      make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
+                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
+          ->apply_affecting_aura( player->talent.monk.chi_wave );
+
   if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
     fallback = true;
+    buff_t::make_fallback( player, "aspect_of_harmony_accumulator" );
+    buff_t::make_fallback( player, "aspect_of_harmony_spender" );
     return;
   }
 
   accumulator = new accumulator_t( player, this );
   spender     = new spender_t( player, this );
-
-  path_of_resurgence =
-      make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
-                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
-          ->apply_affecting_aura( player->talent.monk.chi_wave );
 }
 
 void aspect_of_harmony_t::construct_actions( monk_t *player )
@@ -8132,6 +8134,8 @@ void monk_t::create_buffs()
 
   if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
+  else if ( specialization() == MONK_BREWMASTER )
+    buff_t::make_fallback( this, "gift_of_the_ox" );
 
   buff.expel_harm_accumulator =
       make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
