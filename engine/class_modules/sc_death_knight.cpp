@@ -1265,8 +1265,8 @@ public:
       player_talent_t bind_in_darkness;
       player_talent_t soul_rupture;
       player_talent_t grim_reaper;
-      player_talent_t deaths_bargain;      // NYI
-      player_talent_t rune_carved_plates;  // NYI
+      player_talent_t pact_of_the_deathbringer; // NYI
+      player_talent_t rune_carved_plates;       // NYI
       player_talent_t swift_end;
       player_talent_t painful_death;
       player_talent_t dark_talons;
@@ -13147,21 +13147,21 @@ void death_knight_t::init_spells()
   talent.rider.apocalypse_now         = find_talent_spell( talent_tree::HERO, "Apocalypse Now" );
 
   //////// Deathbringer
-  talent.deathbringer.reapers_mark       = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
-  talent.deathbringer.wave_of_souls      = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
-  talent.deathbringer.blood_fever        = find_talent_spell( talent_tree::HERO, "Blood Fever" );
-  talent.deathbringer.bind_in_darkness   = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
-  talent.deathbringer.soul_rupture       = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
-  talent.deathbringer.grim_reaper        = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
-  talent.deathbringer.deaths_bargain     = find_talent_spell( talent_tree::HERO, "Death's Bargain" );
-  talent.deathbringer.rune_carved_plates = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
-  talent.deathbringer.swift_end          = find_talent_spell( talent_tree::HERO, "Swift End" );
-  talent.deathbringer.painful_death      = find_talent_spell( talent_tree::HERO, "Painful Death" );
-  talent.deathbringer.dark_talons        = find_talent_spell( talent_tree::HERO, "Dark Talons" );
-  talent.deathbringer.wither_away        = find_talent_spell( talent_tree::HERO, "Wither Away" );
-  talent.deathbringer.deaths_messenger   = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
-  talent.deathbringer.expelling_shield   = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
-  talent.deathbringer.exterminate        = find_talent_spell( talent_tree::HERO, "Exterminate" );
+  talent.deathbringer.reapers_mark              = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
+  talent.deathbringer.wave_of_souls             = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
+  talent.deathbringer.blood_fever               = find_talent_spell( talent_tree::HERO, "Blood Fever" );
+  talent.deathbringer.bind_in_darkness          = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
+  talent.deathbringer.soul_rupture              = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
+  talent.deathbringer.grim_reaper               = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
+  talent.deathbringer.pact_of_the_deathbringer  = find_talent_spell( talent_tree::HERO, "Pact of the Deathbringer" );
+  talent.deathbringer.rune_carved_plates        = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
+  talent.deathbringer.swift_end                 = find_talent_spell( talent_tree::HERO, "Swift End" );
+  talent.deathbringer.painful_death             = find_talent_spell( talent_tree::HERO, "Painful Death" );
+  talent.deathbringer.dark_talons               = find_talent_spell( talent_tree::HERO, "Dark Talons" );
+  talent.deathbringer.wither_away               = find_talent_spell( talent_tree::HERO, "Wither Away" );
+  talent.deathbringer.deaths_messenger          = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
+  talent.deathbringer.expelling_shield          = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
+  talent.deathbringer.exterminate               = find_talent_spell( talent_tree::HERO, "Exterminate" );
 
   ///////// San'layn
   talent.sanlayn.vampiric_strike      = find_talent_spell( talent_tree::HERO, "Vampiric Strike" );
