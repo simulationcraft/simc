@@ -3714,7 +3714,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     // Clear any existing surge buffs to trigger the T30 4pc buff.
     p()->buffs.arcane_surge->expire();
-    p()->buffs.arcane_surge->trigger();
+    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->talents.savor_the_moment->effectN( 3 ).time_value();
+    p()->buffs.arcane_surge->trigger( p()->buffs.arcane_surge->buff_duration() + bonus_duration );
 
     p()->trigger_clearcasting( 1.0, 0_ms );
 
@@ -3881,7 +3882,8 @@ struct combustion_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    p()->buffs.combustion->trigger();
+    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->talents.savor_the_moment->effectN( 1 ).time_value();
+    p()->buffs.combustion->trigger( p()->buffs.combustion->buff_duration() + bonus_duration );
     p()->buffs.wildfire->trigger();
     p()->cooldowns.fire_blast->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 1 ).base_value() ) );
     p()->cooldowns.phoenix_flames->reset( false, as<int>( p()->talents.spontaneous_combustion->effectN( 2 ).base_value() ) );
