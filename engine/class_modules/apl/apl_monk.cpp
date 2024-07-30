@@ -215,7 +215,7 @@ void brewmaster( player_t *p )
   precombat->add_action( "chi_burst" );
 
   race_actions->add_action( "blood_fury" );
-  race_actions->add_action( "erserking" );
+  race_actions->add_action( "berserking" );
   race_actions->add_action( "arcane_torrent" );
   race_actions->add_action( "lights_judgment" );
   race_actions->add_action( "fireblood" );
