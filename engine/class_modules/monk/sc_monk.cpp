@@ -8135,7 +8135,7 @@ void monk_t::create_buffs()
   if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
   else if ( specialization() == MONK_BREWMASTER )
-    buff_t::make_fallback( this, "gift_of_the_ox" );
+    buff_t::make_fallback( this, "gift_of_the_ox", this );
 
   buff.expel_harm_accumulator =
       make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
