@@ -2419,7 +2419,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->buffs.heat_shimmer->check() )
       return true;
 
-    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
+    return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
   }
 
   bool improved_scorch_active( player_t* target ) const
@@ -2430,7 +2430,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( p()->buffs.heat_shimmer->check() )
       return true;
 
-    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value();
+    return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
   }
 
   void trigger_firefall()
@@ -3090,7 +3090,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
 
     if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
-      m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent();
+      m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent() + p()->talents.sunfury_execution->effectN( 1 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 4 ).percent();
@@ -8728,10 +8728,10 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
     return hp_pct_expr( talents.firestarter.ok(), talents.firestarter->effectN( 1 ).base_value(), false );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "scorch_execute" ) )
-    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value(), true );
+    return hp_pct_expr( talents.scorch.ok(), talents.scorch->effectN( 2 ).base_value() + talents.sunfury_execution->effectN( 2 ).base_value(), true );
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "improved_scorch" ) )
-    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 1 ).base_value(), true );
+    return hp_pct_expr( talents.improved_scorch.ok(), talents.improved_scorch->effectN( 1 ).base_value() + talents.sunfury_execution->effectN( 2 ).base_value(), true );
 
   return player_t::create_action_expression( action, name );
 }
