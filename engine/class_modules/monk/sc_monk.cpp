@@ -6336,8 +6336,8 @@ void aspect_of_harmony_t::construct_buffs( monk_t *player )
   if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
     fallback = true;
-    buff_t::make_fallback( player, "aspect_of_harmony_accumulator" );
-    buff_t::make_fallback( player, "aspect_of_harmony_spender" );
+    buff_t::make_fallback( player, "aspect_of_harmony_accumulator", &*player );
+    buff_t::make_fallback( player, "aspect_of_harmony_spender", &*player );
     return;
   }
 
