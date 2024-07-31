@@ -9,6 +9,12 @@
 
 #include "simulationcraft.hpp"
 
+#include "util/string_view.hpp"
+
+#include <cassert>
+#include <regex>
+#include <string>
+
 // ==========================================================================
 // Shaman
 // ==========================================================================
@@ -657,6 +663,8 @@ public:
     // Thunderstrike Ward Uniform RNG proc chance
     // TODO: Double check for CL. A ~5h LB test resulted in a ~30% chance.
     double thunderstrike_ward_proc_chance = 0.3;
+
+    double earthquake_spell_power_coefficient = 0.3884;
   } options;
 
   // Cooldowns
@@ -1419,10 +1427,10 @@ struct hot_hand_buff_t : public buff_t
 struct cl_crash_lightning_buff_t : public buff_t
 {
   shaman_t* shaman;
-  cl_crash_lightning_buff_t( shaman_t* p ) : buff_t( p, "cl_crash_lightning", p->find_spell(333964) ), 
+  cl_crash_lightning_buff_t( shaman_t* p ) : buff_t( p, "cl_crash_lightning", p->find_spell(333964) ),
       shaman( p )
   {
-    int max_stack = data().max_stacks(); 
+    int max_stack = data().max_stacks();
     if (p->talent.crashing_storms->ok())
     {
       max_stack += as<int>( p->talent.crashing_storms.spell()->effectN( 3 ).base_value() );
@@ -1637,7 +1645,7 @@ public:
       maelstrom_gain    = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = action_energize::NONE;  // disable resource generation from spell data.
     }
-    affected_by_stormkeeper_cast_time = 
+    affected_by_stormkeeper_cast_time =
         ab::data().affected_by( player->find_spell( 191634 )->effectN( 1 ) );
     affected_by_stormkeeper_damage    =
         ab::data().affected_by( player->find_spell( 191634 )->effectN( 2 ) );
@@ -4176,7 +4184,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
     base_multiplier *=
         p->mastery.elemental_overload->effectN( 2 ).percent() +
         p->talent.echo_chamber->effectN( 1 ).percent();
-    
+
     // multiplier is used by Mountains Will Fall and is applied after
     // overload damage multiplier is calculated.
     if ( multiplier != -1.0 )
@@ -6955,7 +6963,7 @@ void trigger_all_elemental_blast_buffs( shaman_t* p )
 {
   if ( p->specialization() != SHAMAN_ELEMENTAL ||
        !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
-  { 
+  {
     return trigger_elemental_blast_proc( p );
   }
 
@@ -7013,7 +7021,7 @@ struct elemental_blast_t : public shaman_spell_t
 {
   elemental_blast_t( shaman_t* player, spell_variant type_, util::string_view options_str = {}) :
     shaman_spell_t(
-      ::action_name("elemental_blast", type_), 
+      ::action_name("elemental_blast", type_),
       player,
       player->find_spell( 117014 ),
       type_
@@ -7399,7 +7407,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
     {
       s->copy_state( parent->execute_state );
     }
-    else 
+    else
     {
       shaman_spell_t::snapshot_state( s, flags, rt );
     }
@@ -7437,6 +7445,36 @@ struct earthquake_damage_base_t : public shaman_spell_t
     }
 
     return cm;
+  }
+
+  double get_spell_power_coefficient_from_options() {
+      auto default_value = (new shaman_t::options_t())->earthquake_spell_power_coefficient;
+      auto option_value = p()->options.earthquake_spell_power_coefficient;
+
+      if ( option_value != default_value )
+      {
+          return option_value;
+      }
+
+      return 0.0;
+  }
+
+  double get_spell_power_coefficient_from_sdb() {
+      auto coeff = 0.0;
+
+      if ( auto vars = p()->dbc->spell_desc_vars( 462620 ).desc_vars() ) {
+          std::cmatch m;
+          std::regex get_var( R"(\$damage=\$\{\$SPN\*([\d\.]+)\*.*\})" );
+
+          if ( std::regex_search( vars, m, get_var ) )
+          {
+              coeff = util::to_double( m.str( 1 ) );
+          }
+      }
+
+      assert( coeff > 0.0 && "Could not parse Earthquake Spell Power coefficient from SDB" );
+
+      return coeff;
   }
 };
 
@@ -7499,11 +7537,13 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
   earthquake_overload_damage_t( shaman_t* player, earthquake_base_t* parent ) :
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
-    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3884 * player->talent.mountains_will_fall->effectN( 1 ).percent();
-    // TODO: implement spellpower coefficient extracttion from spell variable
-    // auto spell_desc = player->dbc->spell_desc_vars( this->data().id() );
-    // spell_desc.desc_vars()
+      auto coeff = get_spell_power_coefficient_from_options();
+      if ( coeff == 0.0 )
+      {
+          coeff = get_spell_power_coefficient_from_sdb();
+      }
+
+      spell_power_mod.direct = coeff * player->talent.mountains_will_fall->effectN( 1 ).percent();
   }
 };
 
@@ -7536,8 +7576,14 @@ struct earthquake_damage_t : public earthquake_damage_base_t
   earthquake_damage_t( shaman_t* player, earthquake_base_t* parent = nullptr ) :
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
-    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3884;
+      auto coeff = get_spell_power_coefficient_from_options();
+
+      if ( coeff == 0.0 )
+      {
+          coeff = get_spell_power_coefficient_from_sdb();
+      }
+
+      spell_power_mod.direct = coeff;
   }
 };
 
@@ -8090,7 +8136,7 @@ public:
     }
 
     // TODO: Determine proc chance / model
-    // First single target test showed a 25% chance. I didn't find it in 
+    // First single target test showed a 25% chance. I didn't find it in
     // spelldata.
     if ( p()->talent.searing_flames->ok() && rng().roll( 0.25 ) )
     {
@@ -8191,7 +8237,7 @@ struct frost_shock_t : public shaman_spell_t
     if ( p()->buff.hailstorm->check() )
     {
       // sure would be nice to have good looking client data
-      //auto additionalMaxTargets = p()->talent.hailstorm->effectN( 1 ).base_value() * 100; 
+      //auto additionalMaxTargets = p()->talent.hailstorm->effectN( 1 ).base_value() * 100;
       int additionalMaxTargets = 5;
       auto targets = p()->buff.hailstorm->check() > additionalMaxTargets
                          ? additionalMaxTargets : p()->buff.hailstorm->check();
@@ -10109,7 +10155,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new healing_wave_t( this, options_str );
   if ( name == "riptide" )
     return new riptide_t( this, options_str );
-  
+
   // Hero talents
   if ( name == "surging_totem" )
     return new surging_totem_spell_t( this, options_str );
@@ -10411,6 +10457,8 @@ void shaman_t::create_options()
 
   add_option( opt_float( "shaman.thunderstrike_ward_proc_chance", options.thunderstrike_ward_proc_chance,
                          0.0, 1.0 ) );
+
+  add_option( opt_float( "shaman.earthquake_spell_power_coefficient", options.earthquake_spell_power_coefficient, 0.0, 100.0 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -12093,7 +12141,7 @@ void shaman_t::create_buffs()
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
     ->set_default_value_from_effect_type(A_HASTE_ALL)
     ->apply_affecting_aura(spec.elemental_shaman)
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )    
+    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
@@ -12849,14 +12897,14 @@ void shaman_t::init_action_list_elemental()
                      "Spread Flame Shock against low target counts if Master of the Elements was selected up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
-    
+
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock using Surge of Power up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock against low target counts if Master of the Elements was selected up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
-    
+
     aoe->add_action( "ascendance",
                      "JUST DO IT! "
                      "https://i.kym-cdn.com/entries/icons/mobile/000/018/147/"
@@ -12867,7 +12915,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "earthquake,if=buff.master_of_the_elements.up&(buff.magma_chamber.stack=10&active_enemies>=6|talent.splintered_elements.enabled&active_enemies>=9|talent.mountains_will_fall.enabled&active_enemies>=9)&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)",
         "{T31 fire} Earthquake is still good with Mote and either 10 Magma Chamber stacks on 6+ targets or 9+ targets.");
-    aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used."); 
+    aoe->add_action("lava_beam,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.");
     aoe->add_action("chain_lightning,if=buff.stormkeeper.up&(buff.surge_of_power.up&active_enemies>=6|buff.master_of_the_elements.up&(active_enemies<6|!talent.surge_of_power.enabled))&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Stormkeeper is strong and should be used.");
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&(!talent.lightning_rod.enabled&set_bonus.tier31_4pc)", "{T31 fire} Lava Surge is strong.");
@@ -13156,7 +13204,7 @@ void shaman_t::init_action_list_enhancement()
     funnel->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
     funnel->add_action( "flame_shock,if=!ticking" );
     funnel->add_action( "frost_shock,if=!talent.hailstorm.enabled" );
- 
+
   // def->add_action( "call_action_list,name=opener" );
 }
 // shaman_t::init_action_list_restoration ===================================
