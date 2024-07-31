@@ -7499,7 +7499,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3915;
+    spell_power_mod.direct = 0.3195;
   }
 };
 
