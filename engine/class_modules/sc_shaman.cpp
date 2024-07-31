@@ -655,8 +655,8 @@ public:
     unsigned ancient_fellowship_total = 30U;
 
     // Thunderstrike Ward Uniform RNG proc chance
-    // TODO: Proper RNG
-    double thunderstrike_ward_proc_chance = 0.1;
+    // TODO: Double check for CL. A ~5h LB test resulted in a ~30% chance.
+    double thunderstrike_ward_proc_chance = 0.3;
   } options;
 
   // Cooldowns
