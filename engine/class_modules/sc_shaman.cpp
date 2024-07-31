@@ -7462,7 +7462,7 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3195 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.3195 * 0.85 * player->talent.mountains_will_fall->effectN( 1 ).percent();
     // TODO: implement spellpower coefficient extracttion from spell variable
     // auto spell_desc = player->dbc->spell_desc_vars( this->data().id() );
     // spell_desc.desc_vars()
@@ -7499,7 +7499,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3915;
+    spell_power_mod.direct = 0.3195 * 0.85;
   }
 };
 
@@ -13932,6 +13932,64 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   { }
+
+  void register_hotfixes() const override {
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Lightning Bolt Damage Increased By 3%", 274643, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 1.1742 ).verification_value( 1.14000 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Lava Burst Damage Reduced By 25%", 747255, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 0.7275 ).verification_value( 0.97200 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Elemental Blast Damage Reduced By 25%", 132332, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 1.3125 ).verification_value( 1.75000 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Flame Shock Hit Damage Reduced By 15%", 274966, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 0.16575 ).verification_value( 0.19500 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Flame Shock Tick Damage Reduced By 15%", 274967, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 0.0986 ).verification_value( 0.1160 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Thunderstrike Ward Damage Increased By 150%", 1172884, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 0.5000 ).verification_value( 0.20000 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Splintered Elements now grants 10% Haste", 1013242, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "base_value" ).operation( hotfix::HOTFIX_SET ).modifier( 10 ).verification_value( 20 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Earth Shock damage increased by 25%", 3248, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 3.54288 ).verification_value( 2.83430 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Power of the Maelstrom now has a 60% chance to trigger (was 25%)", 1015847, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "base_value" ).operation( hotfix::HOTFIX_SET ).modifier( 60 ).verification_value( 25 );
+
+    hotfix::register_spell( "Shaman" , "2024-07-30",
+        "Liquid Magma Totem now has a 30 second cooldown (was 1 minute)", 192222, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "cooldown" ).operation( hotfix::HOTFIX_SET ).modifier( 30000.00 ).verification_value( 60000.00 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Icefury damage increased by 85%", 312134, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 3.0220 ).verification_value( 1.63350 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Earthen Rage damage increased by 60%", 241705, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 0.2200 ).verification_value( 0.13750 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Additional Lava Bursts from Primordial Wave now deal 50% of normal damage (was 80%).", 1002732, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "base_value" ).operation( hotfix::HOTFIX_SET ).modifier( 50 ).verification_value( 80 );
+
+    hotfix::register_effect( "Shaman" , "2024-07-30",
+        "Farseer’s Elemental Blast damage increased by 20%", 1145376, hotfix::HOTFIX_FLAG_LIVE
+    ).field( "sp_coefficient" ).operation( hotfix::HOTFIX_SET ).modifier( 1.584 ).verification_value( 1.32000 );
+  }
 
   void combat_begin( sim_t* ) const override
   { }
