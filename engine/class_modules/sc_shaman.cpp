@@ -516,7 +516,10 @@ public:
   // Constants
   struct
   {
-    double matching_gear_multiplier;
+    /// Matching Gear multiplier
+    double mul_matching_gear;
+    /// Lightning Rod damage_multiplier
+    double mul_lightning_rod;
   } constant;
 
   // Buffs
@@ -10458,7 +10461,6 @@ void shaman_t::init_spells()
   // Generic spells
   //
   spec.mail_specialization          = find_specialization_spell( "Mail Specialization" );
-  constant.matching_gear_multiplier = spec.mail_specialization->effectN( 1 ).percent();
   spec.shaman                       = find_spell( 137038 );
 
   // Elemental
@@ -10743,6 +10745,11 @@ void shaman_t::init_spells()
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
+
+  // Constants
+  constant.mul_matching_gear = spec.mail_specialization->effectN( 1 ).percent();
+  constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent() +
+                               spec.enhancement_shaman->effectN( 27 ).percent();
 
   player_t::init_spells();
 }
@@ -11540,8 +11547,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
       return;
     }
 
-    action.lightning_rod->execute_on_target( target,
-      state->result_amount * spell.lightning_rod->effectN( 2 ).percent() );
+    action.lightning_rod->execute_on_target( target, state->result_amount * constant.mul_lightning_rod );
   } );
 }
 
@@ -13125,11 +13131,11 @@ double shaman_t::matching_gear_multiplier( attribute_e attr ) const
   switch ( specialization() )
   {
     case SHAMAN_ENHANCEMENT:
-      return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_AGILITY ? constant.mul_matching_gear : 0;
     case SHAMAN_RESTORATION:
-      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
     case SHAMAN_ELEMENTAL:
-      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
     default:
       return 0.0;
   }
