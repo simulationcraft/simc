@@ -1899,7 +1899,10 @@ public:
 
     if ( affected_by_molten_weapon_ta && p()->buff.molten_weapon->check() )
     {
-      m *= 1.0 + p()->buff.molten_weapon->stack_value();
+      for ( int x = 1; x <= p()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.molten_weapon->value();
+      }
     }
 
     if ( affected_by_crackling_surge_ta && p()->buff.crackling_surge->up() )
@@ -8831,6 +8834,21 @@ struct totem_pulse_action_t : public T
 
   bool affected_by_totemic_rebound_da;
 
+  bool affected_by_amplification_core_da;
+  bool affected_by_amplification_core_ta;
+
+  bool affected_by_molten_weapon_da;
+  bool affected_by_molten_weapon_ta;
+
+  bool affected_by_crackling_surge_da;
+  bool affected_by_crackling_surge_ta;
+
+  bool affected_by_earthen_weapon_da;
+  bool affected_by_earthen_weapon_ta;
+
+  bool affected_by_lotfw_da;
+  bool affected_by_lotfw_ta;
+
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
@@ -8849,8 +8867,18 @@ struct totem_pulse_action_t : public T
 
     affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
+    affected_by_amplification_core_da = T::data().affected_by( o()->buff.amplification_core->data().effectN( 1 ) );
+    affected_by_amplification_core_ta = T::data().affected_by( o()->buff.amplification_core->data().effectN( 2 ) );
     affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
                                      T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 2 ) );
+    affected_by_molten_weapon_da = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 1 ) );
+    affected_by_molten_weapon_ta = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 2 ) );
+    affected_by_crackling_surge_da = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 1 ) );
+    affected_by_crackling_surge_ta = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 2 ) );
+    affected_by_earthen_weapon_da = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 1 ) );
+    affected_by_earthen_weapon_ta = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 2 ) );
+    affected_by_lotfw_da = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 1 ) );
+    affected_by_lotfw_ta = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 2 ) );
   }
 
   void init() override
@@ -8902,6 +8930,40 @@ struct totem_pulse_action_t : public T
       m *= 1.0 + o()->buff.totemic_rebound->stack_value();
     }
 
+    if ( affected_by_lotfw_da && o()->buff.legacy_of_the_frost_witch->check() )
+    {
+      m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
+    }
+
+    if ( affected_by_amplification_core_da && o()->buff.amplification_core->check() )
+    {
+      m *= 1.0 + o()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_molten_weapon_da && o()->buff.molten_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.molten_weapon->value();
+      }
+    }
+
+    if ( affected_by_crackling_surge_da && o()->buff.crackling_surge->check() )
+    {
+      for ( int x = 1; x <= o()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_da && o()->buff.earthen_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.earthen_weapon->value();
+      }
+    }
+
     return m;
   }
 
@@ -8912,6 +8974,40 @@ struct totem_pulse_action_t : public T
     if ( affected_by_enh_mastery_ta )
     {
       m *= 1.0 + o()->cache.mastery_value();
+    }
+
+    if ( affected_by_lotfw_ta && o()->buff.legacy_of_the_frost_witch->check() )
+    {
+      m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
+    }
+
+    if ( affected_by_amplification_core_ta && o()->buff.amplification_core->check() )
+    {
+      m *= 1.0 + o()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_molten_weapon_ta && o()->buff.molten_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.molten_weapon->value();
+      }
+    }
+
+    if ( affected_by_crackling_surge_ta && o()->buff.crackling_surge->check() )
+    {
+      for ( int x = 1; x <= o()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_ta && o()->buff.earthen_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.earthen_weapon->value();
+      }
     }
 
     return m;
