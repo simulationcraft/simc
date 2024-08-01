@@ -2845,7 +2845,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
       if ( p()->bugs )
       {
-        p()->buff.rushing_jade_wind->trigger();
         p()->buff.combo_strikes->expire();
         p()->buff.hit_combo->expire();
       }
