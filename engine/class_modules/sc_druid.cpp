@@ -8417,12 +8417,12 @@ struct wild_mushroom_t final : public druid_spell_t
   struct wild_mushroom_damage_t final : public druid_spell_t
   {
     action_t* fungal = nullptr;
-    double ap_per = 4.0;  // not in spell data
     double ap_max;
+    double ap_per;  // not in spell data, assumed to be max / 4
 
     wild_mushroom_damage_t( druid_t* p, flag_e f )
       : druid_spell_t( "wild_mushroom_damage", p, find_trigger( p->talent.wild_mushroom ).trigger(), f ),
-        ap_max( data().effectN( 2 ).base_value() )
+        ap_max( data().effectN( 2 ).base_value() ), ap_per( ap_max / 4 )
     {
       background = dual = true;
       aoe = -1;

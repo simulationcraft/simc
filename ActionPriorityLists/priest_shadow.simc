@@ -109,6 +109,8 @@ actions.main+=/variable,name=pooling_mindblasts,op=setif,value=1,value_else=0,co
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension
 actions.main+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
+# High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter
+actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.devouring_plague.ticking,if=priest.force_devour_matter&talent.devour_matter
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=(dot.devouring_plague.remains>=execute_time|buff.entropic_rift.remains<=gcd.max|action.void_torrent.channeling&talent.void_empowerment)&(insanity.deficit>=16|cooldown.mind_blast.full_recharge_time<=gcd.max)&(!talent.mind_devourer|!buff.mind_devourer.up|buff.entropic_rift.remains<=gcd.max)
 actions.main+=/wait,sec=cooldown.mind_blast.recharge_time,if=cooldown.mind_blast.recharge_time<buff.entropic_rift.remains&buff.entropic_rift.up&buff.entropic_rift.remains<gcd.max&cooldown.mind_blast.charges<1

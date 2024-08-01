@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55789 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.55959 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -6164,7 +6164,7 @@ bonus_id={ 11138 }, mod_to_stat={ Haste (100) }
 bonus_id={ 11139 }, mod_to_stat={ Vers (100) }
 bonus_id={ 11142 }, base_ilevel={ 577 }, quality={ epic }
 bonus_id={ 11143 }, base_ilevel={ 606 }
-bonus_id={ 11144 }, base_ilevel={ 616 }
+bonus_id={ 11144 }, base_ilevel={ 623 }
 bonus_id={ 11145 }, socket={ 3 }
 bonus_id={ 11146 }, socket={ 3 }
 bonus_id={ 11147 }, socket={ 3 }

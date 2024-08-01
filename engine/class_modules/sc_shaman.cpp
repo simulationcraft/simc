@@ -516,7 +516,10 @@ public:
   // Constants
   struct
   {
-    double matching_gear_multiplier;
+    /// Matching Gear multiplier
+    double mul_matching_gear;
+    /// Lightning Rod damage_multiplier
+    double mul_lightning_rod;
   } constant;
 
   // Buffs
@@ -652,8 +655,8 @@ public:
     unsigned ancient_fellowship_total = 30U;
 
     // Thunderstrike Ward Uniform RNG proc chance
-    // TODO: Proper RNG
-    double thunderstrike_ward_proc_chance = 0.1;
+    // TODO: Double check for CL. A ~5h LB test resulted in a ~30% chance.
+    double thunderstrike_ward_proc_chance = 0.3;
   } options;
 
   // Cooldowns
@@ -1896,7 +1899,10 @@ public:
 
     if ( affected_by_molten_weapon_ta && p()->buff.molten_weapon->check() )
     {
-      m *= 1.0 + p()->buff.molten_weapon->stack_value();
+      for ( int x = 1; x <= p()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.molten_weapon->value();
+      }
     }
 
     if ( affected_by_crackling_surge_ta && p()->buff.crackling_surge->up() )
@@ -7499,7 +7505,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ), parent )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.3915;
+    spell_power_mod.direct = 0.3195;
   }
 };
 
@@ -8828,6 +8834,21 @@ struct totem_pulse_action_t : public T
 
   bool affected_by_totemic_rebound_da;
 
+  bool affected_by_amplification_core_da;
+  bool affected_by_amplification_core_ta;
+
+  bool affected_by_molten_weapon_da;
+  bool affected_by_molten_weapon_ta;
+
+  bool affected_by_crackling_surge_da;
+  bool affected_by_crackling_surge_ta;
+
+  bool affected_by_earthen_weapon_da;
+  bool affected_by_earthen_weapon_ta;
+
+  bool affected_by_lotfw_da;
+  bool affected_by_lotfw_ta;
+
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
@@ -8846,8 +8867,18 @@ struct totem_pulse_action_t : public T
 
     affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
+    affected_by_amplification_core_da = T::data().affected_by( o()->buff.amplification_core->data().effectN( 1 ) );
+    affected_by_amplification_core_ta = T::data().affected_by( o()->buff.amplification_core->data().effectN( 2 ) );
     affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
                                      T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 2 ) );
+    affected_by_molten_weapon_da = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 1 ) );
+    affected_by_molten_weapon_ta = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 2 ) );
+    affected_by_crackling_surge_da = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 1 ) );
+    affected_by_crackling_surge_ta = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 2 ) );
+    affected_by_earthen_weapon_da = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 1 ) );
+    affected_by_earthen_weapon_ta = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 2 ) );
+    affected_by_lotfw_da = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 1 ) );
+    affected_by_lotfw_ta = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 2 ) );
   }
 
   void init() override
@@ -8899,6 +8930,40 @@ struct totem_pulse_action_t : public T
       m *= 1.0 + o()->buff.totemic_rebound->stack_value();
     }
 
+    if ( affected_by_lotfw_da && o()->buff.legacy_of_the_frost_witch->check() )
+    {
+      m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
+    }
+
+    if ( affected_by_amplification_core_da && o()->buff.amplification_core->check() )
+    {
+      m *= 1.0 + o()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_molten_weapon_da && o()->buff.molten_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.molten_weapon->value();
+      }
+    }
+
+    if ( affected_by_crackling_surge_da && o()->buff.crackling_surge->check() )
+    {
+      for ( int x = 1; x <= o()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_da && o()->buff.earthen_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.earthen_weapon->value();
+      }
+    }
+
     return m;
   }
 
@@ -8909,6 +8974,40 @@ struct totem_pulse_action_t : public T
     if ( affected_by_enh_mastery_ta )
     {
       m *= 1.0 + o()->cache.mastery_value();
+    }
+
+    if ( affected_by_lotfw_ta && o()->buff.legacy_of_the_frost_witch->check() )
+    {
+      m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
+    }
+
+    if ( affected_by_amplification_core_ta && o()->buff.amplification_core->check() )
+    {
+      m *= 1.0 + o()->buff.amplification_core->value();
+    }
+
+    if ( affected_by_molten_weapon_ta && o()->buff.molten_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.molten_weapon->value();
+      }
+    }
+
+    if ( affected_by_crackling_surge_ta && o()->buff.crackling_surge->check() )
+    {
+      for ( int x = 1; x <= o()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_ta && o()->buff.earthen_weapon->check() )
+    {
+      for ( int x = 1; x <= o()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + o()->buff.earthen_weapon->value();
+      }
     }
 
     return m;
@@ -10458,7 +10557,6 @@ void shaman_t::init_spells()
   // Generic spells
   //
   spec.mail_specialization          = find_specialization_spell( "Mail Specialization" );
-  constant.matching_gear_multiplier = spec.mail_specialization->effectN( 1 ).percent();
   spec.shaman                       = find_spell( 137038 );
 
   // Elemental
@@ -10743,6 +10841,11 @@ void shaman_t::init_spells()
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
+
+  // Constants
+  constant.mul_matching_gear = spec.mail_specialization->effectN( 1 ).percent();
+  constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent() +
+                               spec.enhancement_shaman->effectN( 27 ).percent();
 
   player_t::init_spells();
 }
@@ -11540,8 +11643,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
       return;
     }
 
-    action.lightning_rod->execute_on_target( target,
-      state->result_amount * spell.lightning_rod->effectN( 2 ).percent() );
+    action.lightning_rod->execute_on_target( target, state->result_amount * constant.mul_lightning_rod );
   } );
 }
 
@@ -13125,11 +13227,11 @@ double shaman_t::matching_gear_multiplier( attribute_e attr ) const
   switch ( specialization() )
   {
     case SHAMAN_ENHANCEMENT:
-      return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_AGILITY ? constant.mul_matching_gear : 0;
     case SHAMAN_RESTORATION:
-      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
     case SHAMAN_ELEMENTAL:
-      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
     default:
       return 0.0;
   }

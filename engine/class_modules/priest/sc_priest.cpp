@@ -2823,6 +2823,11 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
       }
 
+      if ( util::str_compare_ci( splits[ 1 ], "force_devour_matter" ) )
+      {
+        return expr_t::create_constant( "force_devour_matter", options.force_devour_matter );
+      }
+
       if ( util::str_compare_ci( splits[ 1 ], "cthun_last_trigger_attempt" ) )
       {
         if ( talents.shadow.idol_of_cthun.enabled() )
