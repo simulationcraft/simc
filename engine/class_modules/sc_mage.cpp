@@ -2124,13 +2124,16 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
-  void consume_nether_precision()
+  void consume_nether_precision( player_t* t )
   {
     if ( !p()->buffs.nether_precision->check() )
       return;
 
     p()->buffs.nether_precision->decrement();
     p()->buffs.leydrinker->trigger();
+    if ( p()->talents.dematerialize.ok() )
+      p()->state.trigger_dematerialize = true;
+    p()->trigger_splinter( t );
   }
 };
 
@@ -3052,13 +3055,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
 
-    if ( p()->buffs.nether_precision->check() )
-    {
-      consume_nether_precision();
-      if ( p()->talents.dematerialize.ok() )
-        p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( target );
-    }
+    consume_nether_precision( target );
 
     if ( p()->buffs.leydrinker->check() )
     {
@@ -3197,17 +3194,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->buffs.concentration->trigger();
 
-    if ( p()->buffs.nether_precision->check() )
-    {
-      // Nether Precision is slightly delayed, allowing two spells to benefit from the
-      // last stack. Technically, the delay should be on Arcane Barrage as well, but
-      // because it's an instant, it cannot be taken advantage of.
-      // TODO: Check if AB -> PoM AB works (with low latency).
-      make_event( *sim, 15_ms, [ this ] { consume_nether_precision(); } );
-      if ( p()->talents.dematerialize.ok() )
-        p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( target );
-    }
+    consume_nether_precision( target );
 
     if ( p()->buffs.leydrinker->check() )
     {
