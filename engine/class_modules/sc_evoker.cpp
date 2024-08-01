@@ -1068,6 +1068,7 @@ struct evoker_t : public player_t
       player_talent_t might_of_the_black_dragonflight;
       player_talent_t bombardments;
       const spell_data_t* bombardments_debuff;  // 434473
+      const spell_data_t* bombardments_driver;  // 443788
       const spell_data_t* bombardments_damage;  // 434481
       player_talent_t onslaught;
       player_talent_t melt_armor;
@@ -6575,7 +6576,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   bombardments_cb_t* cb;
   bool use_bombardments_cb = false;
   rng::truncated_gauss_t gauss;
-  bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
+  bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s, const spell_data_t* driver_spell )
     : e_buff_t( td, name, s ),
       gauss( p()->option.simulate_bombardments_time_between_procs_mean,
              p()->option.simulate_bombardments_time_between_procs_stddev, data().internal_cooldown() + 1_ms )
@@ -6592,7 +6593,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     bombardments_effect->name_str                 = "bombardments_" + td.source->name_str;
     bombardments_effect->target_specific_cooldown = true;
     bombardments_effect->type                     = SPECIAL_EFFECT_EQUIP;
-    bombardments_effect->spell_id                 = data().id();
+    bombardments_effect->spell_id                 = driver_spell->id();
     td.target->special_effects.push_back( bombardments_effect );
 
     cb = new bombardments_cb_t( td.target, *bombardments_effect, p() );
@@ -6609,7 +6610,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
 
   void fake_execute()
   {
-    if ( cb->cooldown->up() )
+    auto cd = cb->get_cooldown( player );
+    assert( cd && "Bombardments CD Must Exist" );
+    if ( cd->up() )
     {
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
@@ -6705,7 +6708,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.bombardments =
       make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
-                                                      evoker->talent.scalecommander.bombardments_debuff );
+                                                      evoker->talent.scalecommander.bombardments_debuff, evoker->talent.scalecommander.bombardments_driver );
 
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
@@ -7707,6 +7710,7 @@ void evoker_t::init_spells()
   talent.scalecommander.might_of_the_black_dragonflight = HT( "Might of the Black Dragonflight" );
   talent.scalecommander.bombardments                    = HT( "Bombardments" );
   talent.scalecommander.bombardments_debuff             = find_spell( 434473 );
+  talent.scalecommander.bombardments_driver             = find_spell( 443788 );
   talent.scalecommander.bombardments_damage             = find_spell( 434481 );
   talent.scalecommander.onslaught                       = HT( "Onslaught" );
   talent.scalecommander.melt_armor                      = HT( "Melt Armor" );
