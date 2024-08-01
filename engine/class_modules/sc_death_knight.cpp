@@ -6621,13 +6621,9 @@ struct exterminate_t final : public death_knight_spell_t
                           ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                           : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
-      if ( p()->rng().roll( chance ) )
+      buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
+      if ( ! rm->up() && p()->rng().roll( chance ) )
       {
-        buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
-        if ( rm->up() )
-        {
-          rm->expire();
-        }
         rm->trigger();
         p()->procs.exterminate_reapers_mark->occur();
       }
