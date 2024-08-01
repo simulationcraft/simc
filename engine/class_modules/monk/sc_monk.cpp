@@ -207,7 +207,9 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
+  parse_effects( p()->buff.tiger_strikes,
+                 affect_list_t( 1 ).add_spell( 107270 /* SCK */, 117418 /* FoF */, 158221 /* WDP AoE */,
+                                               451767 /* WDP ST */, 395521 /* SOTWL OH */, 392983 /* SOTWL MH */ ) ); // PLEASE BLIZZARD FIX THIS SPELL DATA
   parse_effects( p()->buff.tigers_ferocity );
   parse_effects( p()->buff.flow_of_battle_damage );
 
@@ -1481,6 +1483,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.darting_hurricane->decrement();
 
     // T33 Windwalker Set Bonus
+    p()->buff.tiger_strikes->trigger();
     p()->buff.tigers_ferocity->expire();
 
     p()->buff.martial_mixture->expire();
@@ -2402,6 +2405,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -9785,14 +9791,13 @@ public:
     };
 
     // Add bugs / issues with sims here:
-    ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
+    ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
-                 true );
     ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
                  true );
+    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
+    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
 
     // =================================================
 
