@@ -3546,6 +3546,17 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
     }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = drw_action_t::composite_da_multiplier( state );
+
+      // In game if DRW is down, SR executes at full damage, attributed to the DK.  for sim we will just adjust damage
+      if ( ! dk()->buffs.dancing_rune_weapon->up() )
+        m *= 3.0;
+
+      return m;
+    }
   };
 
   struct soul_reaper_t : public drw_action_t<melee_attack_t>
@@ -3564,10 +3575,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     void tick( dot_t* dot ) override
     {
-      // SR execute only fires if DRW is still alive
-      if ( dk()->buffs.dancing_rune_weapon->up() &&
-           dot->target->health_percentage() < data().effectN( 3 ).base_value() )
-        soul_reaper_execute->execute_on_target( dot->target );
+      if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+          soul_reaper_execute->execute_on_target( dot->target );
+
     }
 
   private:
@@ -3590,10 +3600,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     void tick( dot_t* dot ) override
     {
-      // SR execute only fires if DRW is still alive
-      if ( dk()->buffs.dancing_rune_weapon->up() &&
-           dot->target->health_percentage() < data().effectN( 3 ).base_value() )
-        soul_reaper_execute->execute_on_target( dot->target );
+      // If DRW is up SR executes like normal, if DRW has faded, it executes from the DK, at full damage
+      if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+          soul_reaper_execute->execute_on_target( dot->target );
     }
 
   private:
