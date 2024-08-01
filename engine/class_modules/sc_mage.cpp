@@ -450,6 +450,7 @@ public:
   {
     gain_t* arcane_surge;
     gain_t* arcane_barrage;
+    gain_t* energized_familiar;
   } gains;
 
   // Options
@@ -3368,11 +3369,23 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
 struct arcane_assault_t final : public arcane_mage_spell_t
 {
+  double energize_pct;
+
   arcane_assault_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
+    arcane_mage_spell_t( n, p, p->find_spell( 225119 ) ),
+    energize_pct( p->find_spell( 454020 )->effectN( 1 ).percent() )
   {
     background = true;
     callbacks = false;
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    // TODO: Proc rate isn't listed anywhere, update as we get more data
+    if ( p()->talents.energized_familiar.ok() && rng().roll( 0.05 ) )
+      p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.energized_familiar, this );
   }
 };
 
@@ -8199,8 +8212,9 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.arcane_surge   = get_gain( "Arcane Surge"   );
-  gains.arcane_barrage = get_gain( "Arcane Barrage" );
+  gains.arcane_surge       = get_gain( "Arcane Surge"       );
+  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
+  gains.energized_familiar = get_gain( "Energized Familiar" );
 }
 
 void mage_t::init_procs()
