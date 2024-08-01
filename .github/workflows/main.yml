@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        compiler: [gcc-12, gcc-7]
+        compiler: [gcc-12, gcc-7, gcc-14]
         cppVersion: [17, 20]
         include:
           - compiler: gcc-7
@@ -88,7 +88,7 @@ jobs:
     strategy:
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-7, clang++-15]
+        compiler: [clang++-7, clang++-15, clang++-18]
         include:
           - compiler: clang++-7
             os: ubuntu-20.04
