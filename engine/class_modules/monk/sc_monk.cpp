@@ -1748,8 +1748,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
-      // Best guess currently is this is a 2 second window, no blue post and nothing in spell data.
-      auto wdp_grace_period = timespan_t::from_seconds( 2 );
+      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
 
       if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
         p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
@@ -2536,8 +2536,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
-      // Best guess currently is this is a 2 second window, no blue post and nothing in spell data.
-      auto wdp_grace_period = timespan_t::from_seconds( 2 );
+      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
 
       if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
         p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
