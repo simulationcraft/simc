@@ -9673,11 +9673,9 @@ void monk_t::create_actions()
 void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 {
   /*
-   * From discovery by the Peak of Serenity Discord server, ETL has three major bugs
-   * 1.) The spells that contribute to ETL change based on which buff(s) are up
-   * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   * 3.) The spells that FoX contribute to ETL change after the first tick of damage
-   * 4.) SEF does not contribute to ETL while FoX is up
+   * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
+   * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
+   * 2.) SEF Actions contribute 0 to the FoX pool
    */
 
   if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
@@ -9690,37 +9688,21 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( s->action->id == passives.empowered_tiger_lightning->id() )
     return;
 
+  auto td = get_target_data( s->target );
+
+  if ( !td )
+    return;
+
   // These abilities are always blacklisted by both tigers
-  auto etl_blacklist_always = {
-      124280,  // Touch of Karma
-      325217,  // Bonedust Brew
-      389541,  // Claw of the White Tiger
-      410139,  // Shadowflame Nova
-  };
-
-  // These abilities are blacklisted when only Fury of Xuen is up and it hasn't ticked yet
-  auto etl_blacklist_fox = {
-      391400,  // Resonant Fists
-  };
-
-  // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
-  // OR, both tigers are spawned
-  auto etl_blacklist_fox_2 = {
-      228649,  // Teachings of the Monastery
-      185099,  // Rising Sun Kick
-      395519,  // Strike of the Windlord MH
-      395519,  // Strike of the Windlord OH
-      242390,  // Thunderfist
-      345727,  // Faeline Stomp
-      327264,  // Faeline Stomp WW Hit
-      388207,  // Jadefire Stomp
-      388201,  // Jadefire Stomp WW Hit
+  auto etl_blacklist = {
+      122470,  // Touch of Karma
+      451585,  // Gale Force
+      450615,  // Flurry Strikes
       115129,  // Expel Harm
-      391400,  // Resonant Fists
-      392959,  // Glory of the Dawn
+      389541,  // White Tiger State
   };
 
-  for ( unsigned int id : etl_blacklist_always )
+  for ( unsigned int id : etl_blacklist )
     if ( s->action->id == id )
       return;
 
@@ -9730,39 +9712,15 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( mode == 0 )
     return;
 
+  double xuen_contribution = s->result_amount;
+  double fox_contribution  = s->result_amount;
+
+  // No damage done by SEF spirits contributes to FoX ETL
+  if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+    fox_contribution = 0;
+
   // Return value
-  double amount = mode != 2 ? s->result_amount : 0;
-  auto td       = get_target_data( s->target );
-
-  if ( !td )
-    return;
-
-  // Fury of Xuen is up
-  if ( mode > 1 )
-  {
-    double fox_contribution = s->result_amount;
-
-    if ( bugs )
-    {
-      if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
-        return;
-
-      auto blacklist = ( mode == 2 && buff.fury_of_xuen->remains() > buff.fury_of_xuen->tick_time() )
-                           ? etl_blacklist_fox
-                           : etl_blacklist_fox_2;
-
-      for ( unsigned int id : blacklist )
-      {
-        if ( s->action->id == id )
-        {
-          fox_contribution = 0;
-          break;
-        }
-      }
-    }
-
-    amount += fox_contribution;
-  }
+  double amount = xuen_contribution + fox_contribution;
 
   if ( amount > 0 )
   {
