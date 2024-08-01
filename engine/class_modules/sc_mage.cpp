@@ -124,6 +124,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* controlled_instincts;
     buff_t* frozen;
     buff_t* improved_scorch;
+    buff_t* magis_spark;
     buff_t* magis_spark_ab;
     buff_t* magis_spark_abar;
     buff_t* magis_spark_am;
@@ -2114,14 +2115,25 @@ struct arcane_mage_spell_t : public mage_spell_t
         default:    debuff = nullptr;                      break;
       }
 
-      if ( !debuff || !debuff->check() )
-        return;
+      bool trigger_echo = false;
+      if ( debuff && debuff->check() )
+      {
+        trigger_echo = true;
+        debuff->decrement();
 
-      p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
-      debuff->decrement();
+        if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
+          p()->action.magis_spark->execute_on_target( s->target );
+      }
 
-      if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
-        p()->action.magis_spark->execute_on_target( s->target );
+      // Special handling for AM's 2 sec grace period
+      if ( id == 7268 && td->debuffs.magis_spark->check() )
+      {
+        trigger_echo = true;
+        td->debuffs.magis_spark->expire( 2.0_s );
+      }
+
+      if ( trigger_echo )
+        p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
     }
   }
 
@@ -6378,6 +6390,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
       if ( p()->talents.magis_spark.ok() )
       {
+        td.magis_spark->trigger();
         td.magis_spark_ab->trigger();
         td.magis_spark_abar->trigger();
         td.magis_spark_am->trigger();
@@ -7177,6 +7190,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch        = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                      ->set_default_value_from_effect( 1 );
+  debuffs.magis_spark            = make_buff( *this, "magis_spark", mage->find_spell( 450004 ) );
   debuffs.magis_spark_ab         = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
   debuffs.magis_spark_abar       = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
   debuffs.magis_spark_am         = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
