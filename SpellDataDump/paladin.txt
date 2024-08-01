@@ -16179,6 +16179,7 @@ Effects          :
 Description      : Each Holy Power spent on Light of Dawn increases the healing of your next Word of Glory by $s1%, up to a maximum of $s2%.
 
 Name             : Blessing of Summer (id=388007) [Spell Family (10)] 
+Hotfixed         : GCD (1500 -> 0)
 Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Holy
@@ -16186,7 +16187,6 @@ Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265561)
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
@@ -16250,13 +16250,13 @@ Effects          :
 Description      : $@spelldesc388007
 
 Name             : Blessing of Autumn (id=388010) [Spell Family (10)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Paladin
 School           : Nature
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265562)
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
@@ -16291,13 +16291,13 @@ Description      : Bless an ally for $d, causing their cooldowns to recover $s1%
 Tooltip          : Cooldowns recover $w1% faster.
 
 Name             : Blessing of Winter (id=388011) [Spell Family (10)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Paladin
 School           : Nature
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265563)
 Spell Level      : 48
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
@@ -16376,13 +16376,13 @@ Tooltip          : Attack speed reduced by $w3%.
 Movement speed reduced by $w4%.
 
 Name             : Blessing of Spring (id=388013) [Spell Family (10)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=265564)
 Spell Level      : 48
 Range            : 40 yards
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
