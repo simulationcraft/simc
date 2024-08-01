@@ -1748,10 +1748,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
+      // Best guess currently is this is a 2 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 2 );
+
       if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
       else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
+        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() + wdp_grace_period );
 
       p()->buff.whirling_dragon_punch->trigger();
     }
@@ -2533,10 +2536,13 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
+      // Best guess currently is this is a 2 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 2 );
+
       if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
       else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
+        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() + wdp_grace_period );
 
       p()->buff.whirling_dragon_punch->trigger();
     }
@@ -6356,7 +6362,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
