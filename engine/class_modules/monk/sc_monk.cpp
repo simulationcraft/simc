@@ -207,7 +207,9 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
+  parse_effects( p()->buff.tiger_strikes,
+                 affect_list_t( 1 ).add_spell( 107270 /* SCK */, 117418 /* FoF */, 158221 /* WDP AoE */,
+                                               451767 /* WDP ST */, 395521 /* SOTWL OH */, 392983 /* SOTWL MH */ ) ); // PLEASE BLIZZARD FIX THIS SPELL DATA
   parse_effects( p()->buff.tigers_ferocity );
   parse_effects( p()->buff.flow_of_battle_damage );
 
@@ -1481,6 +1483,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.darting_hurricane->decrement();
 
     // T33 Windwalker Set Bonus
+    p()->buff.tiger_strikes->trigger();
     p()->buff.tigers_ferocity->expire();
 
     p()->buff.martial_mixture->expire();
@@ -1748,10 +1751,13 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
+      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
+
       if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
       else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
+        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() + wdp_grace_period );
 
       p()->buff.whirling_dragon_punch->trigger();
     }
@@ -2399,6 +2405,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+      p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2533,10 +2542,13 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
+      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
+      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
+
       if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
       else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
+        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() + wdp_grace_period );
 
       p()->buff.whirling_dragon_punch->trigger();
     }
@@ -2772,7 +2784,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
     {
-      p()->buff.rushing_jade_wind->trigger();
       p()->buff.combo_strikes->expire();
       p()->buff.hit_combo->expire();
     }
@@ -2834,7 +2845,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
       if ( p()->bugs )
       {
-        p()->buff.rushing_jade_wind->trigger();
         p()->buff.combo_strikes->expire();
         p()->buff.hit_combo->expire();
       }
@@ -6356,7 +6366,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -9667,11 +9677,9 @@ void monk_t::create_actions()
 void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 {
   /*
-   * From discovery by the Peak of Serenity Discord server, ETL has three major bugs
-   * 1.) The spells that contribute to ETL change based on which buff(s) are up
-   * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   * 3.) The spells that FoX contribute to ETL change after the first tick of damage
-   * 4.) SEF does not contribute to ETL while FoX is up
+   * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
+   * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
+   * 2.) SEF Actions contribute 0 to the FoX pool
    */
 
   if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
@@ -9684,37 +9692,21 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( s->action->id == passives.empowered_tiger_lightning->id() )
     return;
 
+  auto td = get_target_data( s->target );
+
+  if ( !td )
+    return;
+
   // These abilities are always blacklisted by both tigers
-  auto etl_blacklist_always = {
-      124280,  // Touch of Karma
-      325217,  // Bonedust Brew
-      389541,  // Claw of the White Tiger
-      410139,  // Shadowflame Nova
-  };
-
-  // These abilities are blacklisted when only Fury of Xuen is up and it hasn't ticked yet
-  auto etl_blacklist_fox = {
-      391400,  // Resonant Fists
-  };
-
-  // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
-  // OR, both tigers are spawned
-  auto etl_blacklist_fox_2 = {
-      228649,  // Teachings of the Monastery
-      185099,  // Rising Sun Kick
-      395519,  // Strike of the Windlord MH
-      395519,  // Strike of the Windlord OH
-      242390,  // Thunderfist
-      345727,  // Faeline Stomp
-      327264,  // Faeline Stomp WW Hit
-      388207,  // Jadefire Stomp
-      388201,  // Jadefire Stomp WW Hit
+  auto etl_blacklist = {
+      122470,  // Touch of Karma
+      451585,  // Gale Force
+      450615,  // Flurry Strikes
       115129,  // Expel Harm
-      391400,  // Resonant Fists
-      392959,  // Glory of the Dawn
+      389541,  // White Tiger State
   };
 
-  for ( unsigned int id : etl_blacklist_always )
+  for ( unsigned int id : etl_blacklist )
     if ( s->action->id == id )
       return;
 
@@ -9724,39 +9716,15 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( mode == 0 )
     return;
 
+  double xuen_contribution = s->result_amount;
+  double fox_contribution  = s->result_amount;
+
+  // No damage done by SEF spirits contributes to FoX ETL
+  if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+    fox_contribution = 0;
+
   // Return value
-  double amount = mode != 2 ? s->result_amount : 0;
-  auto td       = get_target_data( s->target );
-
-  if ( !td )
-    return;
-
-  // Fury of Xuen is up
-  if ( mode > 1 )
-  {
-    double fox_contribution = s->result_amount;
-
-    if ( bugs )
-    {
-      if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
-        return;
-
-      auto blacklist = ( mode == 2 && buff.fury_of_xuen->remains() > buff.fury_of_xuen->tick_time() )
-                           ? etl_blacklist_fox
-                           : etl_blacklist_fox_2;
-
-      for ( unsigned int id : blacklist )
-      {
-        if ( s->action->id == id )
-        {
-          fox_contribution = 0;
-          break;
-        }
-      }
-    }
-
-    amount += fox_contribution;
-  }
+  double amount = xuen_contribution + fox_contribution;
 
   if ( amount > 0 )
   {
@@ -9821,14 +9789,13 @@ public:
     };
 
     // Add bugs / issues with sims here:
-    ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
+    ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
-                 true );
     ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
                  true );
+    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
+    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
 
     // =================================================
 
