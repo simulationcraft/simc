@@ -5482,9 +5482,10 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     full_amount_targets = 1;
     background = triggers.ignite = true;
     base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
-    // TODO: the +100% damage effect from Excess Fire should only apply to Frost
-    // They also have a new label effect in Frost spec aura that currently does nothing, keep an eye out on that
-    if ( p->bugs || p->specialization() == MAGE_FROST )
+    if ( excess )
+      base_dd_multiplier *= 1.0 + p->spec.frost_mage->effectN( 11 ).percent();
+    // TODO: This is scripted to only apply to Frost, keep an eye on it
+    if ( p->specialization() == MAGE_FROST )
       base_dd_multiplier *= 1.0 + p->talents.excess_fire->effectN( 3 ).percent();
   }
 
