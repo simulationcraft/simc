@@ -2826,7 +2826,7 @@ struct icicle_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->bugs ? data().effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= data().effectN( 1 ).chain_multiplier();
     }
   }
 
@@ -3453,9 +3453,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    // TODO: Arcane Debilitation currently affects the AM channel (which doesn't do damage) rather than the ticks
-    affected_by.arcane_debilitation = !p->bugs;
-    affected_by.savant = triggers.overflowing_energy = true;
+    affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
     const auto& aa = p->buffs.aether_attunement->data();
@@ -5125,7 +5123,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->bugs ? p->find_spell( 228598 )->effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->find_spell( 228598 )->effectN( 1 ).chain_multiplier();
     }
 
     if ( p->talents.hailstones.ok() )
@@ -5480,9 +5478,6 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( explosion_spell_id( excess_, primary_ ) ) ),
     excess( excess_ )
   {
-    // Use parsed max_targets value if available.
-    if ( aoe == 0 )
-      aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
@@ -6699,18 +6694,9 @@ struct embedded_splinter_t final : public mage_spell_t
     auto vm = p()->action.volatile_magic;
     if ( vm && !sim->event_mgr.canceled )
     {
-      double old_aoe_mult = vm->base_aoe_multiplier;
       double old_mult = vm->base_multiplier;
-
-      // TODO: Only does increased damage to one (seemingly random) target
-      // Maybe add random target selection?
-      if ( p()->bugs )
-        vm->base_aoe_multiplier /= stack;
       vm->base_multiplier *= stack;
-
       vm->execute_on_target( d->target );
-
-      vm->base_aoe_multiplier = old_aoe_mult;
       vm->base_multiplier = old_mult;
     }
   }
@@ -7942,13 +7928,7 @@ void mage_t::create_buffs()
                                       ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                       ->set_chance( talents.arcane_tempo.ok() );
-  // TODO: currently only increases base intellect
-  buffs.big_brained               = bugs
-                                  ? make_buff<stat_buff_t>( this, "big_brained", find_spell( 461531 ) )
-                                      ->add_stat( STAT_INTELLECT, find_spell( 461531 )->effectN( 1 ).percent() * base.stats.attribute[ ATTR_INTELLECT ] )
-                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                      ->set_chance( talents.big_brained.ok() )
-                                  : make_buff( this, "big_brained", find_spell( 461531 ) )
+  buffs.big_brained               = make_buff( this, "big_brained", find_spell( 461531 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
