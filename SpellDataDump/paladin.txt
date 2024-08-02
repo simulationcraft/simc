@@ -18052,7 +18052,8 @@ Effects          :
 #1 (id=1050450)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1054915)  : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (4 -> 2)
 Description      : Divine Storm heals you and up to $s2 nearby allies for ${$407467s1}.1% of maximum health.
 
 Name             : Judgment of Justice (id=403495) [Spell Family (10), Passive, Hidden] 
@@ -19533,9 +19534,11 @@ Effects          :
 #1 (id=1055442)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1055443)  : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (4 -> 2)
 #3 (id=1073747)  : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+Hotfixed         : Base Value (4 -> 2)
 Description      : $?s2812[Denounce][Shield of the Righteous] heals you and up to $s3 nearby allies for ${$53600s2}.1% of maximum health.
 
 Name             : Holy Flames (id=406545) [Spell Family (10), Passive, Hidden] 
