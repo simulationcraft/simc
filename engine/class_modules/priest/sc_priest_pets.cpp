@@ -289,6 +289,11 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       }
     }
 
+    if ( p().o().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
+    {
+      parse_effects( p().o().buffs.devouring_chorus );
+    }
+
     // DISCIPLINE BUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
