@@ -1164,6 +1164,7 @@ public:
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
+    parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -10604,7 +10605,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Colossus
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
-  action.apply_affecting_aura( talents.colossus.practiced_strikes );
   action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
 
   // Slayer
