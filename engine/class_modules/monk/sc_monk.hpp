@@ -1195,6 +1195,7 @@ public:
       // Row 9
       player_talent_t last_emperors_capacitor;
       player_talent_t whirling_dragon_punch;
+      const spell_data_t *whirling_dragon_punch_buff;
       player_talent_t xuens_bond;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;

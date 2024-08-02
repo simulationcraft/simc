@@ -188,11 +188,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
-                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial,
-                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
-                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -207,9 +204,14 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes,
-                 affect_list_t( 1 ).add_spell( 107270 /* SCK */, 117418 /* FoF */, 158221 /* WDP AoE */,
-                                               451767 /* WDP ST */, 395521 /* SOTWL OH */, 392983 /* SOTWL MH */ ) ); // PLEASE BLIZZARD FIX THIS SPELL DATA
+  parse_effects(
+      p()->buff.tiger_strikes,
+      affect_list_t( 1 ).add_spell(
+          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(), p()->passives.fists_of_fury_tick->id(),
+          p()->passives.whirling_dragon_punch_aoe_tick->id(), p()->passives.whirling_dragon_punch_st_tick->id(),
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
+          ) );
   parse_effects( p()->buff.tigers_ferocity );
   parse_effects( p()->buff.flow_of_battle_damage );
 
@@ -1748,27 +1750,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       gotd->target = target;
       gotd->execute();
     }
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-    {
-      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
-      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
-
-      if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() + wdp_grace_period );
-
-      p()->buff.whirling_dragon_punch->trigger();
-    }
+    p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       p()->buff.ordered_elements->trigger();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
 
     p()->buff.august_dynasty->expire();
   }
@@ -1862,8 +1851,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
 
     // Martial Mixture triggers from each ToTM impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2051,8 +2039,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       if ( p()->talent.shado_pan.vigilant_watch->ok() )
         p()->buff.vigilant_watch->trigger();
 
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-        p()->buff.tigers_ferocity->trigger();
+      p()->buff.tigers_ferocity->trigger();
     }
   }
 
@@ -2120,8 +2107,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
               "staggering_strikes" );
 
     // Martial Mixture triggers from each BoK impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2406,8 +2392,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2540,21 +2525,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->active_actions.fury_of_xuen_summon->execute();
     }
 
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
-    {
-      // Best guess currently is this is a 1.5 second window, no blue post and nothing in spell data.
-      auto wdp_grace_period = timespan_t::from_seconds( 1.5 );
+    p()->buff.whirling_dragon_punch->trigger();
 
-      if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() + wdp_grace_period );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() + wdp_grace_period );
-
-      p()->buff.whirling_dragon_punch->trigger();
-    }
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2720,8 +2693,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   bool ready() override
@@ -2777,17 +2749,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     return am;
   }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
-    {
-      p()->buff.combo_strikes->expire();
-      p()->buff.hit_combo->expire();
-    }
-  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2835,20 +2796,13 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       int thunderfist_stacks = 1;
 
       if ( s->chain_target == 0 )
-        thunderfist_stacks += (int)p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+        thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-    {
       p()->trigger_mark_of_the_crane( s );
-      if ( p()->bugs )
-      {
-        p()->buff.combo_strikes->expire();
-        p()->buff.hit_combo->expire();
-      }
-    }
 
     if ( p()->talent.windwalker.gale_force.ok() )
       get_td( s->target )->debuff.gale_force->trigger();
@@ -5962,6 +5916,30 @@ struct touch_of_karma_buff_t : public monk_buff_t
 };
 
 // ===============================================================================
+// Whirling Dragon Punch Buff
+// ===============================================================================
+struct whirling_dragon_punch_buff_t : monk_buff_t
+{
+  using monk_buff_t::trigger;
+  whirling_dragon_punch_buff_t( monk_t *player )
+    : monk_buff_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch_buff )
+  {
+    // current measured value for grace period
+    // partial testing as of 01/08/2024 dd/mm/yy
+    base_buff_duration = 1500_ms;
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+  }
+
+  bool trigger()
+  {
+    if ( p().cooldown.rising_sun_kick->down() && p().cooldown.fists_of_fury->down() )
+      return monk_buff_t::trigger( base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
+                                                                  p().cooldown.fists_of_fury->remains() ) );
+    return false;
+  }
+};
+
+// ===============================================================================
 // Rushing Jade Wind Buff
 // ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t
@@ -6366,7 +6344,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -7561,16 +7539,17 @@ void monk_t::init_spells()
     talent.windwalker.gale_force        = _STID( 451580 );
     talent.windwalker.gale_force_damage = find_spell( 451585 );
     // Row 9
-    talent.windwalker.last_emperors_capacitor  = _ST( "Last Emperor's Capacitor" );
-    talent.windwalker.whirling_dragon_punch    = _ST( "Whirling Dragon Punch" );
-    talent.windwalker.xuens_bond               = _ST( "Xuen's Bond" );
-    talent.windwalker.xuens_battlegear         = _ST( "Xuen's Battlegear" );
-    talent.windwalker.transfer_the_power       = _ST( "Transfer the Power" );
-    talent.windwalker.jadefire_fists           = _ST( "Jadefire Fists" );
-    talent.windwalker.jadefire_stomp           = _ST( "Jadefire Stomp" );
-    talent.windwalker.jadefire_stomp_damage    = find_spell( 388207 );
-    talent.windwalker.jadefire_stomp_ww_damage = find_spell( 388201 );
-    talent.windwalker.communion_with_wind      = _ST( "Communion With Wind" );
+    talent.windwalker.last_emperors_capacitor    = _ST( "Last Emperor's Capacitor" );
+    talent.windwalker.whirling_dragon_punch      = _ST( "Whirling Dragon Punch" );
+    talent.windwalker.whirling_dragon_punch_buff = find_spell( 196742 );
+    talent.windwalker.xuens_bond                 = _ST( "Xuen's Bond" );
+    talent.windwalker.xuens_battlegear           = _ST( "Xuen's Battlegear" );
+    talent.windwalker.transfer_the_power         = _ST( "Transfer the Power" );
+    talent.windwalker.jadefire_fists             = _ST( "Jadefire Fists" );
+    talent.windwalker.jadefire_stomp             = _ST( "Jadefire Stomp" );
+    talent.windwalker.jadefire_stomp_damage      = find_spell( 388207 );
+    talent.windwalker.jadefire_stomp_ww_damage   = find_spell( 388201 );
+    talent.windwalker.communion_with_wind        = _ST( "Communion With Wind" );
     // Row 10
     talent.windwalker.power_of_the_thunder_king      = _ST( "Power of the Thunder King" );
     talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
@@ -8374,9 +8353,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.transfer_the_power->ok(), this, "transfer_the_power", find_spell( 195321 ) )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_dragon_punch = make_buff_fallback( talent.windwalker.whirling_dragon_punch->ok(), this,
-                                                   "whirling_dragon_punch", find_spell( 196742 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
+      talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   // Conduit of the Celestials
   buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
