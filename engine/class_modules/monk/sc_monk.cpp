@@ -1750,10 +1750,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       gotd->target = target;
       gotd->execute();
     }
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-      p()->buff.whirling_dragon_punch->trigger(
-          std::min( cooldown_duration(), p()->cooldown.fists_of_fury->remains() ) );
+    p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
 
@@ -2528,9 +2525,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->active_actions.fury_of_xuen_summon->execute();
     }
 
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
-      p()->buff.whirling_dragon_punch->trigger(
-          std::min( cooldown_duration(), p()->cooldown.rising_sun_kick->remains() ) );
+    p()->buff.whirling_dragon_punch->trigger();
 
     p()->buff.tigers_ferocity->trigger();
   }
@@ -5935,9 +5930,12 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
     set_refresh_behavior( buff_refresh_behavior::NONE );
   }
 
-  bool trigger( timespan_t duration )
+  bool trigger()
   {
-    return monk_buff_t::trigger( base_buff_duration + duration );
+    if ( p().cooldown.rising_sun_kick->down() && p().cooldown.fists_of_fury->down() )
+      return monk_buff_t::trigger( base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
+                                                                  p().cooldown.fists_of_fury->remains() ) );
+    return false;
   }
 };
 
