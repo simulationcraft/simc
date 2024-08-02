@@ -727,6 +727,7 @@ namespace warlock
   void warlock_t::create_buffs_diabolist()
   {
     buffs.ritual_overlord = make_buff( this, "diabolic_ritual_overlord", hero.ritual_overlord )
+                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
@@ -737,6 +738,7 @@ namespace warlock
                                   } );
 
     buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
+                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                 {
                                   if ( cur == 0 )
@@ -747,6 +749,7 @@ namespace warlock
                                 } );
 
     buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
+                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
@@ -912,6 +915,8 @@ namespace warlock
 
   void warlock_t::init_procs_demonology()
   {
+    procs.demonic_core_dogs = get_proc( "demonic_core_dogs" );
+    procs.demonic_core_imps = get_proc( "demonic_core_imps" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );

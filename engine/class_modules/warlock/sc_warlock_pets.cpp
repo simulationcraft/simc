@@ -757,16 +757,6 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     if ( p()->o()->talents.antoran_armaments.ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->o()->talents.wicked_maw.ok() )
-      m *= 1.0 + owner_td( target )->debuffs_wicked_maw->check_value();
-
-    return m;
-  }
 };
 
 struct fel_explosion_t : public warlock_pet_spell_t
@@ -1212,7 +1202,10 @@ void wild_imp_pet_t::demise()
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
 
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+
+      if ( success )
+        o()->procs.demonic_core_imps->occur();
     }
 
     if ( expiration )
@@ -1289,16 +1282,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.wicked_maw.ok() )
       owner_td( s->target )->debuffs_wicked_maw->trigger();
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->o()->talents.wicked_maw.ok() )
-      m *= 1.0 + owner_td( target )->debuffs_wicked_maw->check_value();
-
-    return m;
   }
 };
 
@@ -1379,7 +1362,11 @@ void dreadstalker_t::demise()
     o()->buffs.dreadstalkers->decrement();
 
     if ( o()->talents.demoniac.ok() )
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    {
+      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+      if ( success )
+        o()->procs.demonic_core_dogs->occur();
+    }
   }
 
   warlock_pet_t::demise();
