@@ -1423,7 +1423,6 @@ public:
     triggers_atonement = true;
 
     // Devour Matter gives you more Insanity and an extra amount of sp coeff
-    // TODO: Need to re-rest the damage mod
     if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
     {
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
