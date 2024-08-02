@@ -727,6 +727,7 @@ namespace warlock
   void warlock_t::create_buffs_diabolist()
   {
     buffs.ritual_overlord = make_buff( this, "diabolic_ritual_overlord", hero.ritual_overlord )
+                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
@@ -737,6 +738,7 @@ namespace warlock
                                   } );
 
     buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
+                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                 {
                                   if ( cur == 0 )
@@ -747,6 +749,7 @@ namespace warlock
                                 } );
 
     buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
+                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
