@@ -10513,7 +10513,7 @@ void warrior_t::parse_player_effects()
   // Colossus
   // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
   parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
-                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000 );
+                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, spec.protection_warrior );
 
   // Slayer
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
