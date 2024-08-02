@@ -6557,7 +6557,7 @@ public:
   {
     druid_spell_t::execute();
 
-    if ( dreamstate && p()->buff.dreamstate->can_expire( this ) )
+    if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
       p()->buff.dreamstate->decrement();
 
     dreamstate = false;
