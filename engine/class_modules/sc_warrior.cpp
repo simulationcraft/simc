@@ -1153,14 +1153,14 @@ public:
     parse_effects( p()->buff.vanguards_determination );
 
     // Colossus
-    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ) );
+    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ), p()->spec.protection_warrior );
     if ( p()->talents.colossus.arterial_bleed->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ) );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ), p()->spec.protection_warrior );
     }
     if ( p()->talents.colossus.tide_of_battle->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ), p()->spec.protection_warrior );
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
@@ -9304,7 +9304,8 @@ void warrior_t::create_buffs()
   // Colossus
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus );
+                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus )
+                                ->apply_affecting_aura( spec.protection_warrior );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
