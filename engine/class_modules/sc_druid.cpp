@@ -10316,7 +10316,8 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
-        auto d = b->remains();
+        // cannot use remains() here as expiration is not yet set when stack change callbacks are run
+        auto d = b->buff_duration();
 
         // advance eclipse manually if refreshing as stack_change_callback is not called
         auto in_lunar = eclipse_handler.in_lunar();
