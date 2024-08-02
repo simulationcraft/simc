@@ -2448,6 +2448,8 @@ using namespace helpers;
         background = dual = true;
         callbacks = false;
 
+        affected_by.wicked_maw = p->talents.shadowtouched.ok(); // 2024-08-01: Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Implosion
+
         base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
