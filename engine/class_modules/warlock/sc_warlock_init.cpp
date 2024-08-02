@@ -912,6 +912,8 @@ namespace warlock
 
   void warlock_t::init_procs_demonology()
   {
+    procs.demonic_core_dogs = get_proc( "demonic_core_dogs" );
+    procs.demonic_core_imps = get_proc( "demonic_core_imps" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.shadow_invocation = get_proc( "shadow_invocation" );
     procs.imp_gang_boss = get_proc( "imp_gang_boss" );

@@ -1212,7 +1212,10 @@ void wild_imp_pet_t::demise()
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
 
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+
+      if ( success )
+        o()->procs.demonic_core_imps->occur();
     }
 
     if ( expiration )
@@ -1379,7 +1382,11 @@ void dreadstalker_t::demise()
     o()->buffs.dreadstalkers->decrement();
 
     if ( o()->talents.demoniac.ok() )
-      o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    {
+      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+      if ( success )
+        o()->procs.demonic_core_dogs->occur();
+    }
   }
 
   warlock_pet_t::demise();
