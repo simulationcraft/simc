@@ -231,7 +231,7 @@ public:
     const spell_data_t* eye_beam; // Darkglare pet ability
     player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
     const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
-    player_talent_t infirmity;
+    player_talent_t infirmity; // TOCHECK: Update to Beta on 2024-07-30 changed this to an AoE application, with some weird results (currently implemented)
     const spell_data_t* infirmity_debuff;
 
     player_talent_t improved_haunt;
@@ -297,7 +297,7 @@ public:
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
     player_talent_t shadow_invocation; // Bilescourge Bomber damage and proc
     player_talent_t wicked_maw;
-    const spell_data_t* wicked_maw_debuff; // TOCHECK: Other pet abilities besides Soul Strike/Dreadbite?
+    const spell_data_t* wicked_maw_debuff;
 
     player_talent_t power_siphon;
     const spell_data_t* power_siphon_buff; // Semi-hidden aura that controls the bonus Demonbolt damage
