@@ -757,16 +757,6 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     if ( p()->o()->talents.antoran_armaments.ok() )
       soul_cleave->execute_on_target( s->target, amount );
   }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->o()->talents.wicked_maw.ok() )
-      m *= 1.0 + owner_td( target )->debuffs_wicked_maw->check_value();
-
-    return m;
-  }
 };
 
 struct fel_explosion_t : public warlock_pet_spell_t
@@ -1292,16 +1282,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.wicked_maw.ok() )
       owner_td( s->target )->debuffs_wicked_maw->trigger();
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->o()->talents.wicked_maw.ok() )
-      m *= 1.0 + owner_td( target )->debuffs_wicked_maw->check_value();
-
-    return m;
   }
 };
 
