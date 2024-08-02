@@ -3198,6 +3198,11 @@ struct bladestorm_t : public warrior_attack_t
     // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
     if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 2 == 1 ) )
     {
+      // damage buff from brutal finish does not seem to apply to the final unhinged mortal strike
+      if ( p()->bugs )
+      {
+        p()->buff.brutal_finish->trigger();
+      }
       auto t = p() -> target;
       if ( ! p() -> target || p() -> target->is_sleeping() )
         t = select_random_target();
