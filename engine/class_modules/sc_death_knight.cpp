@@ -1830,6 +1830,7 @@ public:
   void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr );
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
+  void trigger_bursting_sores( player_t* target, unsigned n = 1 );
   // Start the repeated stacking of buffs, called at combat start
   void start_cold_heart();
   void start_inexorable_assault();
@@ -11489,12 +11490,9 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   for ( int i = 0; i < n_wounds; i++ )
   {
     procs.fw_death->occur();
-    // Triggers a bursting sores explosion for each wound on the target
-    if ( talent.unholy.bursting_sores.ok() && !active_spells.bursting_sores->target_list().empty() )
-    {
-      active_spells.bursting_sores->execute_on_target( target );
-    }
   }
+
+  trigger_bursting_sores( this, n_wounds );
 
   if ( talent.unholy.festermight.ok() )
   {
@@ -11728,17 +11726,64 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   }
 }
 
+void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
+{
+  struct bs_event_t : public event_t
+  {
+    unsigned n;
+    player_t* t;
+    player_t* dk;
+
+    bs_event_t( player_t* p, player_t* target, unsigned n ) : event_t( *p, 0_ms ), n( n ), t( target ), dk( p )
+    {
+    }
+
+    const char* name() const override
+    {
+      return "bursting_sores_event";
+    }
+
+    death_knight_t* p() const
+    {
+      return debug_cast<death_knight_t*>( dk );
+    }
+
+    void execute() override
+    {
+      death_knight_td_t* td = p()->get_target_data( t );
+
+      for ( unsigned i = 0; i < n; ++i )
+      {
+        if ( p()->talent.unholy.bursting_sores.ok() && !p()->active_spells.bursting_sores->target_list().size() == 0 )
+        {
+          p()->active_spells.bursting_sores->execute_on_target( t );
+        }
+      }
+    }
+  };
+
+  const death_knight_td_t* td = get_target_data( target );
+
+  // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
+  if ( !talent.unholy.bursting_sores.ok() || sim->event_mgr.canceled )
+  {
+    return;
+  }
+
+  make_event<bs_event_t>( *sim, this, target, n );
+}
+
 void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t* proc )
 {
   struct fs_burst_t : public event_t
   {
     unsigned n;
     player_t* target;
-    death_knight_t* dk;
+    player_t* dk;
     proc_t* proc;
 
-    fs_burst_t( death_knight_t* dk, player_t* target, unsigned n, proc_t* proc )
-      : event_t( *dk, 0_ms ), n( n ), target( target ), dk( dk ), proc( proc )
+    fs_burst_t( player_t* p, player_t* target, unsigned n, proc_t* proc )
+      : event_t( *p, 0_ms ), n( n ), target( target ), dk( p ), proc( proc )
     {
     }
 
@@ -11747,33 +11792,34 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
       return "festering_wounds_burst";
     }
 
+    death_knight_t* p() const
+    {
+      return debug_cast<death_knight_t*>( dk );
+    }
+
     void execute() override
     {
-      death_knight_td_t* td = dk->get_target_data( target );
+      death_knight_td_t* td = p()->get_target_data( target );
 
       unsigned n_executes = std::min( n, as<unsigned>( td->debuff.festering_wound->check() ) );
       for ( unsigned i = 0; i < n_executes; ++i )
       {
-        dk->active_spells.festering_wound->execute_on_target( target );
+        p()->active_spells.festering_wound->execute_on_target( target );
         proc->occur();
+      }
 
-        // Don't unnecessarily call bursting sores in single target scenarios
-        if ( dk->talent.unholy.bursting_sores.ok() && !dk->active_spells.bursting_sores->target_list().empty() )
-        {
-          dk->active_spells.bursting_sores->execute_on_target( target );
-        }
+      p()->trigger_bursting_sores( p(), n_executes );
 
-        if ( dk->talent.unholy.festermight.ok() )
-        {
-          dk->buffs.festermight->trigger();
-        }
+      if ( p()->talent.unholy.festermight.ok() )
+      {
+        p()->buffs.festermight->trigger( n_executes );
+      }
 
-        if ( dk->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B2 ) )
+      {
+        if ( p()->pets.ghoul_pet.active_pet() != nullptr )
         {
-          if ( dk->pets.ghoul_pet.active_pet() != nullptr )
-          {
-            dk->pets.ghoul_pet.active_pet()->vile_infusion->trigger();
-          }
+          p()->pets.ghoul_pet.active_pet()->vile_infusion->trigger( n_executes );
         }
       }
 
