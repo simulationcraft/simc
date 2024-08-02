@@ -188,11 +188,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
-                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial,
-                 affect_list_t( 2 ).remove_spell( p()->passives.glory_of_the_dawn_damage->id(),
-                                                  p()->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ) );
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -207,7 +204,14 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
+  parse_effects(
+      p()->buff.tiger_strikes,
+      affect_list_t( 1 ).add_spell(
+          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(), p()->passives.fists_of_fury_tick->id(),
+          p()->passives.whirling_dragon_punch_aoe_tick->id(), p()->passives.whirling_dragon_punch_st_tick->id(),
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
+          ) );
   parse_effects( p()->buff.tigers_ferocity );
   parse_effects( p()->buff.flow_of_battle_damage );
 
@@ -1481,6 +1485,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.darting_hurricane->decrement();
 
     // T33 Windwalker Set Bonus
+    p()->buff.tiger_strikes->trigger();
     p()->buff.tigers_ferocity->expire();
 
     p()->buff.martial_mixture->expire();
@@ -1745,24 +1750,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       gotd->target = target;
       gotd->execute();
     }
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-    {
-      if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
-
-      p()->buff.whirling_dragon_punch->trigger();
-    }
+    p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       p()->buff.ordered_elements->trigger();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
 
     p()->buff.august_dynasty->expire();
   }
@@ -1856,8 +1851,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
 
     // Martial Mixture triggers from each ToTM impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2045,8 +2039,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       if ( p()->talent.shado_pan.vigilant_watch->ok() )
         p()->buff.vigilant_watch->trigger();
 
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-        p()->buff.tigers_ferocity->trigger();
+      p()->buff.tigers_ferocity->trigger();
     }
   }
 
@@ -2114,8 +2107,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
               "staggering_strikes" );
 
     // Martial Mixture triggers from each BoK impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2399,6 +2391,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2531,18 +2525,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->active_actions.fury_of_xuen_summon->execute();
     }
 
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
-    {
-      if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
+    p()->buff.whirling_dragon_punch->trigger();
 
-      p()->buff.whirling_dragon_punch->trigger();
-    }
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2708,8 +2693,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   bool ready() override
@@ -2765,18 +2749,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     return am;
   }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() && p()->bugs )
-    {
-      p()->buff.rushing_jade_wind->trigger();
-      p()->buff.combo_strikes->expire();
-      p()->buff.hit_combo->expire();
-    }
-  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2824,21 +2796,13 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       int thunderfist_stacks = 1;
 
       if ( s->chain_target == 0 )
-        thunderfist_stacks += (int)p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+        thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-    {
       p()->trigger_mark_of_the_crane( s );
-      if ( p()->bugs )
-      {
-        p()->buff.rushing_jade_wind->trigger();
-        p()->buff.combo_strikes->expire();
-        p()->buff.hit_combo->expire();
-      }
-    }
 
     if ( p()->talent.windwalker.gale_force.ok() )
       get_td( s->target )->debuff.gale_force->trigger();
@@ -5952,6 +5916,30 @@ struct touch_of_karma_buff_t : public monk_buff_t
 };
 
 // ===============================================================================
+// Whirling Dragon Punch Buff
+// ===============================================================================
+struct whirling_dragon_punch_buff_t : monk_buff_t
+{
+  using monk_buff_t::trigger;
+  whirling_dragon_punch_buff_t( monk_t *player )
+    : monk_buff_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch_buff )
+  {
+    // current measured value for grace period
+    // partial testing as of 01/08/2024 dd/mm/yy
+    base_buff_duration = 1500_ms;
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+  }
+
+  bool trigger()
+  {
+    if ( p().cooldown.rising_sun_kick->down() && p().cooldown.fists_of_fury->down() )
+      return monk_buff_t::trigger( base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
+                                                                  p().cooldown.fists_of_fury->remains() ) );
+    return false;
+  }
+};
+
+// ===============================================================================
 // Rushing Jade Wind Buff
 // ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t
@@ -7551,16 +7539,17 @@ void monk_t::init_spells()
     talent.windwalker.gale_force        = _STID( 451580 );
     talent.windwalker.gale_force_damage = find_spell( 451585 );
     // Row 9
-    talent.windwalker.last_emperors_capacitor  = _ST( "Last Emperor's Capacitor" );
-    talent.windwalker.whirling_dragon_punch    = _ST( "Whirling Dragon Punch" );
-    talent.windwalker.xuens_bond               = _ST( "Xuen's Bond" );
-    talent.windwalker.xuens_battlegear         = _ST( "Xuen's Battlegear" );
-    talent.windwalker.transfer_the_power       = _ST( "Transfer the Power" );
-    talent.windwalker.jadefire_fists           = _ST( "Jadefire Fists" );
-    talent.windwalker.jadefire_stomp           = _ST( "Jadefire Stomp" );
-    talent.windwalker.jadefire_stomp_damage    = find_spell( 388207 );
-    talent.windwalker.jadefire_stomp_ww_damage = find_spell( 388201 );
-    talent.windwalker.communion_with_wind      = _ST( "Communion With Wind" );
+    talent.windwalker.last_emperors_capacitor    = _ST( "Last Emperor's Capacitor" );
+    talent.windwalker.whirling_dragon_punch      = _ST( "Whirling Dragon Punch" );
+    talent.windwalker.whirling_dragon_punch_buff = find_spell( 196742 );
+    talent.windwalker.xuens_bond                 = _ST( "Xuen's Bond" );
+    talent.windwalker.xuens_battlegear           = _ST( "Xuen's Battlegear" );
+    talent.windwalker.transfer_the_power         = _ST( "Transfer the Power" );
+    talent.windwalker.jadefire_fists             = _ST( "Jadefire Fists" );
+    talent.windwalker.jadefire_stomp             = _ST( "Jadefire Stomp" );
+    talent.windwalker.jadefire_stomp_damage      = find_spell( 388207 );
+    talent.windwalker.jadefire_stomp_ww_damage   = find_spell( 388201 );
+    talent.windwalker.communion_with_wind        = _ST( "Communion With Wind" );
     // Row 10
     talent.windwalker.power_of_the_thunder_king      = _ST( "Power of the Thunder King" );
     talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
@@ -8364,9 +8353,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.transfer_the_power->ok(), this, "transfer_the_power", find_spell( 195321 ) )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_dragon_punch = make_buff_fallback( talent.windwalker.whirling_dragon_punch->ok(), this,
-                                                   "whirling_dragon_punch", find_spell( 196742 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
+      talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   // Conduit of the Celestials
   buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
@@ -9667,11 +9655,9 @@ void monk_t::create_actions()
 void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 {
   /*
-   * From discovery by the Peak of Serenity Discord server, ETL has three major bugs
-   * 1.) The spells that contribute to ETL change based on which buff(s) are up
-   * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   * 3.) The spells that FoX contribute to ETL change after the first tick of damage
-   * 4.) SEF does not contribute to ETL while FoX is up
+   * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
+   * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
+   * 2.) SEF Actions contribute 0 to the FoX pool
    */
 
   if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
@@ -9684,37 +9670,21 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( s->action->id == passives.empowered_tiger_lightning->id() )
     return;
 
+  auto td = get_target_data( s->target );
+
+  if ( !td )
+    return;
+
   // These abilities are always blacklisted by both tigers
-  auto etl_blacklist_always = {
-      124280,  // Touch of Karma
-      325217,  // Bonedust Brew
-      389541,  // Claw of the White Tiger
-      410139,  // Shadowflame Nova
-  };
-
-  // These abilities are blacklisted when only Fury of Xuen is up and it hasn't ticked yet
-  auto etl_blacklist_fox = {
-      391400,  // Resonant Fists
-  };
-
-  // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
-  // OR, both tigers are spawned
-  auto etl_blacklist_fox_2 = {
-      228649,  // Teachings of the Monastery
-      185099,  // Rising Sun Kick
-      395519,  // Strike of the Windlord MH
-      395519,  // Strike of the Windlord OH
-      242390,  // Thunderfist
-      345727,  // Faeline Stomp
-      327264,  // Faeline Stomp WW Hit
-      388207,  // Jadefire Stomp
-      388201,  // Jadefire Stomp WW Hit
+  auto etl_blacklist = {
+      122470,  // Touch of Karma
+      451585,  // Gale Force
+      450615,  // Flurry Strikes
       115129,  // Expel Harm
-      391400,  // Resonant Fists
-      392959,  // Glory of the Dawn
+      389541,  // White Tiger State
   };
 
-  for ( unsigned int id : etl_blacklist_always )
+  for ( unsigned int id : etl_blacklist )
     if ( s->action->id == id )
       return;
 
@@ -9724,39 +9694,15 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( mode == 0 )
     return;
 
+  double xuen_contribution = s->result_amount;
+  double fox_contribution  = s->result_amount;
+
+  // No damage done by SEF spirits contributes to FoX ETL
+  if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+    fox_contribution = 0;
+
   // Return value
-  double amount = mode != 2 ? s->result_amount : 0;
-  auto td       = get_target_data( s->target );
-
-  if ( !td )
-    return;
-
-  // Fury of Xuen is up
-  if ( mode > 1 )
-  {
-    double fox_contribution = s->result_amount;
-
-    if ( bugs )
-    {
-      if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
-        return;
-
-      auto blacklist = ( mode == 2 && buff.fury_of_xuen->remains() > buff.fury_of_xuen->tick_time() )
-                           ? etl_blacklist_fox
-                           : etl_blacklist_fox_2;
-
-      for ( unsigned int id : blacklist )
-      {
-        if ( s->action->id == id )
-        {
-          fox_contribution = 0;
-          break;
-        }
-      }
-    }
-
-    amount += fox_contribution;
-  }
+  double amount = xuen_contribution + fox_contribution;
 
   if ( amount > 0 )
   {
@@ -9821,14 +9767,13 @@ public:
     };
 
     // Add bugs / issues with sims here:
-    ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
+    ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is being cast on each of the SotWL Execute and per hit events", "2024-07-20",
-                 true );
     ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
                  true );
+    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
+    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
 
     // =================================================
 

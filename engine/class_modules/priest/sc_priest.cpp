@@ -1423,7 +1423,6 @@ public:
     triggers_atonement = true;
 
     // Devour Matter gives you more Insanity and an extra amount of sp coeff
-    // TODO: Need to re-rest the damage mod
     if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
     {
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
@@ -2901,12 +2900,23 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-
+  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
   if ( guardian )
+  {
+    m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
+  }
   else
+  {
+    m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
+  }
+
+  // TWW1 Set Bonus for pet spells, this double dips with pet spells
+  if ( buffs.devouring_chorus->check() )
+  {
+    m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
+  }
 
   // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )

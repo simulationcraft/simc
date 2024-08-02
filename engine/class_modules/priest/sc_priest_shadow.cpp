@@ -1675,10 +1675,18 @@ struct shadow_weaving_t final : public priest_spell_t
     callbacks                  = false;
   }
 
+  // Disable multipliers from double dipping
+  double composite_da_multiplier( const action_state_t* ) const override
+  {
+    return 1.0;
+  }
+
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * ( priest().shadow_weaving_multiplier( target, 0 ) - 1 ) );
-    player->sim->print_debug( "{} triggered shadow weaving on target {}.", priest(), *target );
+    auto mult   = priest().shadow_weaving_multiplier( target, 0 ) - 1;
+    base_dd_min = base_dd_max = original_amount * mult;
+    player->sim->print_debug( "{} triggered shadow weaving on target {}. base: {}, mult: {}", priest(), *target,
+                              original_amount, mult );
 
     set_target( target );
     execute();
@@ -2369,7 +2377,8 @@ void priest_t::create_buffs_shadow()
 
   buffs.devouring_chorus = make_buff_fallback( sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ), this, "devouring_chorus",
                                                sets->set( PRIEST_SHADOW, TWW1, B4 )->effectN( 1 ).trigger() )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_default_value_from_effect( 1 );
 
 }  // namespace priestspace
 

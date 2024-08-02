@@ -1979,6 +1979,14 @@ using namespace helpers;
         may_miss = false;
         aoe = -1;
       }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->talents.infirmity.ok() && !td( s->target )->debuffs_infirmity->check() )
+          td( s->target )->debuffs_infirmity->trigger();
+      }
     };
 
     phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -2010,7 +2018,13 @@ using namespace helpers;
     {
       warlock_spell_t::last_tick( d );
 
-      td( d->target )->debuffs_infirmity->expire();
+      for ( auto t : p()->sim->target_non_sleeping_list )
+      {
+        if ( !td( t ) )
+          continue;
+
+        make_event( *sim, 0_ms, [ this, t ] { td( t )->debuffs_infirmity->expire(); } );
+      }
     }
   };
 
@@ -2447,6 +2461,8 @@ using namespace helpers;
         aoe = -1;
         background = dual = true;
         callbacks = false;
+
+        affected_by.wicked_maw = p->talents.shadowtouched.ok(); // 2024-08-01: Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Implosion
 
         base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }

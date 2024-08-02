@@ -1389,19 +1389,19 @@ struct sacrosanct_crusade_heal_t : public paladin_heal_t
   sacrosanct_crusade_heal_t( paladin_t* p ) : paladin_heal_t( "sacrosanct_crusade_heal", p, p->find_spell( 461885 ) )
   {
     background    = true;
-    may_crit      = true;
+    may_crit      = false;
     harmful       = false;
     target        = p;
-    base_pct_heal = 0; // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
+    base_pct_heal = 0;  // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
   }
 
   void impact( action_state_t* s ) override
   {
-    [[maybe_unused]] auto health_before = p()->resources.current[ RESOURCE_HEALTH ];
+    auto health_before = p()->resources.current[ RESOURCE_HEALTH ];
     paladin_heal_t::impact( s );
     if ( p()->resources.current[ RESOURCE_HEALTH ] >= p()->resources.max[ RESOURCE_HEALTH ] )
     {
-      double absorb = s->result_total + p()->resources.current[ RESOURCE_HEALTH ] - p()->resources.max[ RESOURCE_HEALTH ];
+      double absorb = s->result_total + health_before - p()->resources.max[ RESOURCE_HEALTH ];
       p()->buffs.templar.sacrosanct_crusade->trigger( -1, absorb, -1, timespan_t::min() );
     }
   }

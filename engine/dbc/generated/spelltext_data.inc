@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55959
-static const std::array<spelltext_data_t, 26272> __spelltext_data { {
+static const std::array<spelltext_data_t, 26271> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23127,7 +23127,6 @@ static const std::array<spelltext_data_t, 26272> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
-  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -26107,7 +26106,7 @@ static const std::array<spelltext_data_t, 26272> __spelltext_data { {
   { 461885, "$@spelldesc431730", 0, 0 },
   { 461904, "While in combat, Xala'tath rains down orbs of cosmic energy that attempt to empower nearby creatures increasing their Haste and Movement speed by $s1% for $d. \r\n\r\nIf players disrupt these orbs they claim the power for themselves increasing their Haste and Movement speed by $461910s1% for $461910d.\r\n\r\nThis effect stacks.", "Haste increased by $s1%.\r\nMovement speed increased by $s2%.", 0 },
   { 461910, "$@spelldesc461904", "Haste increased by $s1%.\r\nMovement speed increased by $s2%.", 0 },
-  { 461924, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Intellect increased by $w11.", 0 },
+  { 461924, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Agility increased by $w11.", 0 },
   { 461926, "$@spelldesc431730", 0, 0 },
   { 461937, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
   { 461940, "Increases Mastery by $s1 for $d.", "Mastery increased by $w9.", 0 },
@@ -26140,7 +26139,7 @@ static const std::array<spelltext_data_t, 26272> __spelltext_data { {
   { 462166, "$@spelldesc462164", 0, 0 },
   { 462167, "$@spelldesc462165", 0, 0 },
   { 462174, "Restores ${$m1/5*$d} health over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
-  { 462177, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
+  { 462177, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second.", 0 },
   { 462179, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
   { 462209, "Increases Versatility and Mastery by $s1 for $d.", "Versatility and Mastery increased by $w9. This aura persists through death.", 0 },
   { 462211, "Set down a platter of delicacies for all players to enjoy!\r\n\r\n$@spelldesc462177\r\n\r\n$@spellicon457049 $@spellname457049  \r\nIf you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s4 of your highest secondary stat for $462209d.", 0, 0 },
@@ -26275,7 +26274,9 @@ static const std::array<spelltext_data_t, 26272> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55959
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  461924,  1, "Stamina increased by $w10 and Intellect increased by $w11.", "Stamina increased by $w10 and Agility increased by $w11." },
+  {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
 
 // Spell description variables, wow build 11.0.2.55959

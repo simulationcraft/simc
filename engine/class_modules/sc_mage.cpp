@@ -124,6 +124,7 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* controlled_instincts;
     buff_t* frozen;
     buff_t* improved_scorch;
+    buff_t* magis_spark;
     buff_t* magis_spark_ab;
     buff_t* magis_spark_abar;
     buff_t* magis_spark_am;
@@ -450,6 +451,7 @@ public:
   {
     gain_t* arcane_surge;
     gain_t* arcane_barrage;
+    gain_t* energized_familiar;
   } gains;
 
   // Options
@@ -2113,24 +2115,38 @@ struct arcane_mage_spell_t : public mage_spell_t
         default:    debuff = nullptr;                      break;
       }
 
-      if ( !debuff || !debuff->check() )
-        return;
+      bool trigger_echo = false;
+      if ( debuff && debuff->check() )
+      {
+        trigger_echo = true;
+        debuff->decrement();
 
-      p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
-      debuff->decrement();
+        if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
+          p()->action.magis_spark->execute_on_target( s->target );
+      }
 
-      if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
-        p()->action.magis_spark->execute_on_target( s->target );
+      // Special handling for AM's 2 sec grace period
+      if ( id == 7268 && td->debuffs.magis_spark->check() )
+      {
+        trigger_echo = true;
+        td->debuffs.magis_spark->expire( 2.0_s );
+      }
+
+      if ( trigger_echo )
+        p()->action.magis_spark_echo->execute_on_target( s->target, p()->talents.magis_spark->effectN( 1 ).percent() * s->result_total );
     }
   }
 
-  void consume_nether_precision()
+  void consume_nether_precision( player_t* t )
   {
     if ( !p()->buffs.nether_precision->check() )
       return;
 
     p()->buffs.nether_precision->decrement();
     p()->buffs.leydrinker->trigger();
+    if ( p()->talents.dematerialize.ok() )
+      p()->state.trigger_dematerialize = true;
+    p()->trigger_splinter( t );
   }
 };
 
@@ -2826,7 +2842,7 @@ struct icicle_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->bugs ? data().effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= data().effectN( 1 ).chain_multiplier();
     }
   }
 
@@ -3052,13 +3068,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.arcane_harmony->expire();
     p()->buffs.bursting_energy->expire();
 
-    if ( p()->buffs.nether_precision->check() )
-    {
-      consume_nether_precision();
-      if ( p()->talents.dematerialize.ok() )
-        p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( target );
-    }
+    consume_nether_precision( target );
 
     if ( p()->buffs.leydrinker->check() )
     {
@@ -3197,17 +3207,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->buffs.concentration->trigger();
 
-    if ( p()->buffs.nether_precision->check() )
-    {
-      // Nether Precision is slightly delayed, allowing two spells to benefit from the
-      // last stack. Technically, the delay should be on Arcane Barrage as well, but
-      // because it's an instant, it cannot be taken advantage of.
-      // TODO: Check if AB -> PoM AB works (with low latency).
-      make_event( *sim, 15_ms, [ this ] { consume_nether_precision(); } );
-      if ( p()->talents.dematerialize.ok() )
-        p()->state.trigger_dematerialize = true;
-      p()->trigger_splinter( target );
-    }
+    consume_nether_precision( target );
 
     if ( p()->buffs.leydrinker->check() )
     {
@@ -3381,11 +3381,23 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 
 struct arcane_assault_t final : public arcane_mage_spell_t
 {
+  double energize_pct;
+
   arcane_assault_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
+    arcane_mage_spell_t( n, p, p->find_spell( 225119 ) ),
+    energize_pct( p->find_spell( 454020 )->effectN( 1 ).percent() )
   {
     background = true;
     callbacks = false;
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    // TODO: Proc rate isn't listed anywhere, update as we get more data
+    if ( p()->talents.energized_familiar.ok() && rng().roll( 0.05 ) )
+      p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.energized_familiar, this );
   }
 };
 
@@ -3453,9 +3465,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    // TODO: Arcane Debilitation currently affects the AM channel (which doesn't do damage) rather than the ticks
-    affected_by.arcane_debilitation = !p->bugs;
-    affected_by.savant = triggers.overflowing_energy = true;
+    affected_by.savant = affected_by.arcane_debilitation = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.eureka->effectN( 1 ).percent();
 
     const auto& aa = p->buffs.aether_attunement->data();
@@ -5125,7 +5135,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
-      base_aoe_multiplier *= p->bugs ? p->find_spell( 228598 )->effectN( 1 ).chain_multiplier() : p->talents.splitting_ice->effectN( 2 ).percent();
+      base_aoe_multiplier *= p->find_spell( 228598 )->effectN( 1 ).chain_multiplier();
     }
 
     if ( p->talents.hailstones.ok() )
@@ -5480,16 +5490,14 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( explosion_spell_id( excess_, primary_ ) ) ),
     excess( excess_ )
   {
-    // Use parsed max_targets value if available.
-    if ( aoe == 0 )
-      aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
     base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
-    // TODO: the +100% damage effect from Excess Fire should only apply to Frost
-    // They also have a new label effect in Frost spec aura that currently does nothing, keep an eye out on that
-    if ( p->bugs || p->specialization() == MAGE_FROST )
+    if ( excess )
+      base_dd_multiplier *= 1.0 + p->spec.frost_mage->effectN( 11 ).percent();
+    // TODO: This is scripted to only apply to Frost, keep an eye on it
+    if ( p->specialization() == MAGE_FROST )
       base_dd_multiplier *= 1.0 + p->talents.excess_fire->effectN( 3 ).percent();
   }
 
@@ -6382,6 +6390,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
       if ( p()->talents.magis_spark.ok() )
       {
+        td.magis_spark->trigger();
         td.magis_spark_ab->trigger();
         td.magis_spark_abar->trigger();
         td.magis_spark_am->trigger();
@@ -6699,18 +6708,9 @@ struct embedded_splinter_t final : public mage_spell_t
     auto vm = p()->action.volatile_magic;
     if ( vm && !sim->event_mgr.canceled )
     {
-      double old_aoe_mult = vm->base_aoe_multiplier;
       double old_mult = vm->base_multiplier;
-
-      // TODO: Only does increased damage to one (seemingly random) target
-      // Maybe add random target selection?
-      if ( p()->bugs )
-        vm->base_aoe_multiplier /= stack;
       vm->base_multiplier *= stack;
-
       vm->execute_on_target( d->target );
-
-      vm->base_aoe_multiplier = old_aoe_mult;
       vm->base_multiplier = old_mult;
     }
   }
@@ -7190,6 +7190,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch        = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                      ->set_default_value_from_effect( 1 );
+  debuffs.magis_spark            = make_buff( *this, "magis_spark", mage->find_spell( 450004 ) );
   debuffs.magis_spark_ab         = make_buff( *this, "magis_spark_arcane_blast", mage->find_spell( 453912 ) );
   debuffs.magis_spark_abar       = make_buff( *this, "magis_spark_arcane_barrage", mage->find_spell( 453911 ) );
   debuffs.magis_spark_am         = make_buff( *this, "magis_spark_arcane_missiles", mage->find_spell( 453898 ) );
@@ -7942,13 +7943,7 @@ void mage_t::create_buffs()
                                       ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                       ->set_chance( talents.arcane_tempo.ok() );
-  // TODO: currently only increases base intellect
-  buffs.big_brained               = bugs
-                                  ? make_buff<stat_buff_t>( this, "big_brained", find_spell( 461531 ) )
-                                      ->add_stat( STAT_INTELLECT, find_spell( 461531 )->effectN( 1 ).percent() * base.stats.attribute[ ATTR_INTELLECT ] )
-                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                      ->set_chance( talents.big_brained.ok() )
-                                  : make_buff( this, "big_brained", find_spell( 461531 ) )
+  buffs.big_brained               = make_buff( this, "big_brained", find_spell( 461531 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -8157,7 +8152,7 @@ void mage_t::create_buffs()
                                      } )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
-                                   ->set_default_value_from_effect( 1 )
+                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 6 : 1, 0.01 )
                                    ->modify_max_stack( as<int>( talents.rondurmancy->effectN( 1 ).base_value() ) )
                                    ->set_chance( talents.spellfire_spheres.ok() );
   buffs.spellfire_spheres      = make_buff( this, "spellfire_spheres", find_spell( 449400 ) )
@@ -8231,8 +8226,9 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.arcane_surge   = get_gain( "Arcane Surge"   );
-  gains.arcane_barrage = get_gain( "Arcane Barrage" );
+  gains.arcane_surge       = get_gain( "Arcane Surge"       );
+  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
+  gains.energized_familiar = get_gain( "Energized Familiar" );
 }
 
 void mage_t::init_procs()

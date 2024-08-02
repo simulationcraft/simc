@@ -1153,17 +1153,18 @@ public:
     parse_effects( p()->buff.vanguards_determination );
 
     // Colossus
-    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ) );
+    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ), p()->spec.protection_warrior );
     if ( p()->talents.colossus.arterial_bleed->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ) );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ), p()->spec.protection_warrior );
     }
     if ( p()->talents.colossus.tide_of_battle->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ) );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ), p()->spec.protection_warrior );
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
+    parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -3183,15 +3184,26 @@ struct bladestorm_t : public warrior_attack_t
     }
 
     warrior_attack_t::tick( d );
-    bladestorm_mh->execute();
 
-    if ( bladestorm_mh->result_is_hit( execute_state->result ) && bladestorm_oh )
+    // To match order of operations in game, on the final tick brutal finish gets applied before the final
+    // Bladestorm tick goes off.  If using imminent demise, it will affect the final MS instead of the one that
+    // comes after the bladestorm
+    if ( d->ticks_left() == 0 )
     {
-      bladestorm_oh->execute();
+      if ( p()->talents.slayer.brutal_finish->ok() )
+      {
+        p()->buff.brutal_finish->trigger();
+      }
     }
+
     // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
     if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 2 == 1 ) )
     {
+      // damage buff from brutal finish does not seem to apply to the final unhinged mortal strike
+      if ( p()->bugs )
+      {
+        p()->buff.brutal_finish->trigger();
+      }
       auto t = p() -> target;
       if ( ! p() -> target || p() -> target->is_sleeping() )
         t = select_random_target();
@@ -3208,6 +3220,13 @@ struct bladestorm_t : public warrior_attack_t
             bloodthirst->execute_on_target( t );
         }
       }
+    }
+
+    bladestorm_mh->execute();
+
+    if ( bladestorm_mh->result_is_hit( execute_state->result ) && bladestorm_oh )
+    {
+      bladestorm_oh->execute();
     }
   }
 
@@ -3229,11 +3248,6 @@ struct bladestorm_t : public warrior_attack_t
     if ( p()->talents.slayer.imminent_demise->ok() )
     {
       p()->buff.imminent_demise->expire();
-    }
-
-    if ( p()->talents.slayer.brutal_finish->ok() )
-    {
-      p()->buff.brutal_finish->trigger();
     }
   }
 };
@@ -9296,7 +9310,8 @@ void warrior_t::create_buffs()
   // Colossus
   buff.colossal_might       = make_buff( this, "colossal_might", find_spell( 440989 ) )
                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus );
+                                ->apply_affecting_aura( talents.colossus.dominance_of_the_colossus )
+                                ->apply_affecting_aura( spec.protection_warrior );
 
   // Slayer
   buff.imminent_demise      = make_buff( this, "imminent_demise", find_spell( 445606 ) );
@@ -10504,7 +10519,7 @@ void warrior_t::parse_player_effects()
   // Colossus
   // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
   parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
-                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000 );
+                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, spec.protection_warrior );
 
   // Slayer
   parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
@@ -10590,7 +10605,6 @@ void warrior_t::apply_affecting_auras( action_t& action )
   // Colossus
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
-  action.apply_affecting_aura( talents.colossus.practiced_strikes );
   action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
 
   // Slayer

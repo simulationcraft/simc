@@ -2910,6 +2910,7 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
     base_dd_multiplier *= o() -> talents.stomp -> effectN( 1 ).base_value();
   }
 
+  //2024-08-01: TODO Laceration does 70% of damage dealt over it's duration rather than the 5% in the spell data.
   double bleed_amount = o() -> find_spell( 459555 ) -> effectN( 1 ).percent(); 
 
   void impact( action_state_t* s ) override
@@ -3133,6 +3134,7 @@ void hunter_main_pet_base_t::init_special_effects()
     effect -> set_can_proc_from_procs(true);
     special_effects.push_back( effect );
 
+    //2024-08-01: TODO Laceration does 70% of damage dealt over it's duration rather than the 5% in the spell data.
     auto cb = new laceration_cb_t( *effect, find_spell( 459555 ) -> effectN( 1 ).percent(), hunter_pet_t::active.laceration );
     cb -> initialize();
   }
