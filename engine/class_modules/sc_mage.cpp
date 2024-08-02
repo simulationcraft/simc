@@ -1938,7 +1938,7 @@ public:
     }
   }
 
-  void trigger_calefaction( player_t* target )
+  void trigger_calefaction( player_t* /*target*/ )
   {
     if ( !p()->talents.phoenix_reborn.ok() )
       return;

@@ -72,8 +72,8 @@ damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_ptr_t sp
     if ( effect.type() != E_APPLY_AURA )
       continue;
 
-    if ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ||
-         effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) )
+    if ( ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ) ||
+         ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) ) )
     {
       affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
       affected_by.tick   = as<uint8_t>( effect.spell_effect_num() + 1 );
@@ -3113,7 +3113,7 @@ void hunter_main_pet_base_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( action_t*, action_state_t* s ) override
       {
         if ( s && s -> target -> is_sleeping() )
         {
@@ -6950,7 +6950,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "wailing_arrow"         ) return new          wailing_arrow_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
-  if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || "name" == "mongoose_strike" )
+  if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || name == "mongoose_strike" )
   {
     if ( talents.mongoose_bite.ok() )
       return new mongoose_bite_t( this, options_str );
@@ -6958,7 +6958,7 @@ action_t* hunter_t::create_action( util::string_view name,
       return new raptor_strike_t( this, options_str );
   }
 
-  if ( name == "raptor_strike_eagle" || name == "mongoose_bite_eagle" || name == "raptor_bite_eagle" || "name" == "mongoose_strike_eagle" )
+  if ( name == "raptor_strike_eagle" || name == "mongoose_bite_eagle" || name == "raptor_bite_eagle" || name == "mongoose_strike_eagle" )
   {
     if ( talents.mongoose_bite.ok() )
       return new mongoose_bite_eagle_t( this, options_str );
@@ -7747,7 +7747,7 @@ void hunter_t::create_buffs()
       ->set_cooldown( 0_ms );
 
   if ( talents.bombardier.ok() )
-    buffs.coordinated_assault->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+    buffs.coordinated_assault->set_stack_change_callback( [ this ]( buff_t*, int /*old*/, int cur ) {
       if ( cur == 0 )
       {
         buffs.bombardier->trigger();
