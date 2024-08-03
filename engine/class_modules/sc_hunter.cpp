@@ -1791,6 +1791,8 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     buff_t* bloodseeker = nullptr;
     buff_t* exposed_wound = nullptr; 
+
+    buff_t* wild_attacks = nullptr;
   } buffs;
 
   struct {
@@ -2017,6 +2019,10 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
       make_buff( this, "bloodseeker", o() -> find_spell( 260249 ) )
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+    
+    buffs.wild_attacks = 
+      make_buff( this, "wild_attacks", o() -> talents.wild_attacks )
+        -> set_max_stack( 3 ); 
   }
 
   void init_action_list() override
@@ -2820,6 +2826,34 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     wild_hunt.benefit -> update( used_wild_hunt );
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_main_pet_attack_t::composite_crit_chance();
+
+    if ( o()->talents.wild_attacks.ok() )
+      p()->buffs.wild_attacks->trigger();
+
+    if ( p()->buffs.wild_attacks->at_max_stacks() )
+      cc = 1.0;
+
+    return cc;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = hunter_main_pet_attack_t::composite_crit_damage_bonus_multiplier();
+
+    //2024-08-03: Wild Attacks seems to amp the damage of the basic attack after the guaranteed crit, regardless of it being a crit or not.  
+    //TODO: Check if this bug is still happening closer to launch of TWW and adjust implementation for it if necessary
+    if ( p()->buffs.wild_attacks->at_max_stacks() )
+    {
+      cm *= 1 + o()->cache.attack_crit_chance()*2;
+      p()->buffs.wild_attacks->expire();
+    }
+
+    return cm;
   }
 
   double cost_pct_multiplier() const override
