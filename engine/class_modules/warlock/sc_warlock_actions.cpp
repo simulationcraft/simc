@@ -3933,6 +3933,7 @@ using namespace helpers;
       : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
     {
       energize_type = action_energize::ON_CAST;
+      energize_amount += p->warlock_base.destruction_warlock->effectN( 9 ).base_value() / 10.0;
 
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
