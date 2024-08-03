@@ -454,6 +454,7 @@ public:
 
     // Hero Talents 
     buff_t* vicious_hunt;
+    buff_t* howl_of_the_pack;
   } buffs;
 
   // Cooldowns
@@ -2824,6 +2825,11 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     if ( result_is_hit( s -> result ) )
       trigger_beast_cleave( s );
+
+    if ( o() -> talents.howl_of_the_pack.ok() && s -> result == RESULT_CRIT )
+    {
+      o() -> buffs.howl_of_the_pack -> trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -7940,6 +7946,10 @@ void hunter_t::create_buffs()
       -> apply_affecting_aura( talents.pack_assault )
       -> set_initial_stack( 1 + as<int>( talents.pack_assault -> effectN( 1 ).base_value() ) )
       -> set_default_value_from_effect( 1 );
+
+  buffs.howl_of_the_pack
+    = make_buff( this, "howl_of_the_pack", find_spell( 462515 ) )
+      -> set_default_value_from_effect( 1 );
 }
 
 // hunter_t::init_gains =====================================================
@@ -8328,6 +8338,11 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( s -> action -> school ) )
     m *= 1.0 + talents.penetrating_shots -> effectN( 2 ).percent() * cache.attack_crit_chance();
+
+  if ( buffs.howl_of_the_pack -> check() )
+  {
+    m *= 1.0 + buffs.howl_of_the_pack -> check_stack_value();
+  }
 
   return m;
 }
