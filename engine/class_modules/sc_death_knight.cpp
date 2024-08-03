@@ -8089,6 +8089,7 @@ struct death_coil_t final : public death_knight_spell_t
     parse_options( options_str );
 
     impact_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    impact_action->stats = stats;
     stats->action_list.push_back( impact_action );
 
     aoe = 1 + as<int>( p->talent.unholy.improved_death_coil->effectN( 2 ).base_value() );
