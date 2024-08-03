@@ -1404,6 +1404,10 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     mage_pet_t::demise();
 
     event_t::cancel( cast_event );
+
+    if ( !o()->talents.memory_of_alar.ok() )
+      return;
+
     timespan_t buff_duration;
     if ( o()->specialization() == MAGE_FIRE )
     {
@@ -8609,6 +8613,10 @@ void mage_t::create_buffs()
   // Frostfire Empowerment can be activated through Flash Freezeburn and doesn't need the previous talent
   if ( talents.flash_freezeburn.ok() )
     buffs.frostfire_empowerment->default_chance = -1.0;
+
+  // Hyperthermia can be activated through Memory of Al'ar and doesn't need to be talented
+  if ( talents.memory_of_alar.ok() )
+    buffs.hyperthermia->default_chance = -1.0;
 }
 
 void mage_t::init_gains()
