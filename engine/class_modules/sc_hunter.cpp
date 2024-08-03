@@ -1796,6 +1796,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     buff_t* bloodseeker = nullptr;
     buff_t* exposed_wound = nullptr; 
 
+    buff_t* pack_coordination = nullptr;
     buff_t* wild_attacks = nullptr;
   } buffs;
 
@@ -2024,6 +2025,11 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
         -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
     
+    buffs.pack_coordination
+      = make_buff( this, "pack_coordination", o() -> find_spell( 445695 ) )
+        -> set_initial_stack( 1 + as<int>( o() -> talents.pack_assault -> effectN( 2 ).base_value() ) )
+        -> set_default_value_from_effect( 1 );
+
     buffs.wild_attacks = 
       make_buff( this, "wild_attacks", o() -> talents.wild_attacks )
         -> set_max_stack( 3 ); 
@@ -4220,6 +4226,14 @@ struct vicious_hunt_t final : hunter_ranged_attack_t
     aoe        = -1;
     background = dual = true;
   }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p()->talents.pack_coordination.ok() && p()->pets.main )
+      p()->pets.main->buffs.pack_coordination->trigger();
+  }
 };
 
 //==============================
@@ -4413,6 +4427,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     }
 
     p() -> buffs.lethal_command -> trigger();
+
+    if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
+    {
+      p()->pets.main->active.basic_attack->execute_on_target( target );
+      p()->pets.main->buffs.pack_coordination->decrement();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5312,6 +5332,12 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p()->cooldowns.kill_command->reset( true );
 
     p()->buffs.merciless_blows->expire();
+
+    if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
+    {
+      p()->pets.main->active.basic_attack->execute_on_target( target );
+      p()->pets.main->buffs.pack_coordination->decrement();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -6125,7 +6151,7 @@ struct kill_command_t: public hunter_spell_t
       }
       else
       {
-        p()->buffs.vicious_hunt->trigger( p()->talents.pack_assault.ok() ? 2 : 1);
+        p()->buffs.vicious_hunt->trigger();
       }
     }
   }
@@ -7912,6 +7938,7 @@ void hunter_t::create_buffs()
   buffs.vicious_hunt = 
     make_buff( this, "vicious_hunt", find_spell( 431917 ) )
       -> apply_affecting_aura( talents.pack_assault )
+      -> set_initial_stack( 1 + as<int>( talents.pack_assault -> effectN( 1 ).base_value() ) )
       -> set_default_value_from_effect( 1 );
 }
 
