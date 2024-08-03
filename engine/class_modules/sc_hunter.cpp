@@ -752,7 +752,6 @@ public:
 
     spell_data_ptr_t withering_fire;  // TODO nyi in game
 
-    // TODO: Pack Leader
     spell_data_ptr_t vicious_hunt;
 
     spell_data_ptr_t pack_coordination;
@@ -766,7 +765,7 @@ public:
 
     spell_data_ptr_t scattered_prey;
     spell_data_ptr_t covering_fire;
-    spell_data_ptr_t cull_the_herd; //TODO increase bleed damage by 25%
+    spell_data_ptr_t cull_the_herd;
     spell_data_ptr_t furious_assault;
     spell_data_ptr_t beast_of_opportunity;
 
@@ -4591,7 +4590,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
     {
       p()->pets.main->active.basic_attack->execute_on_target( target );
-      p()->pets.main->buffs.pack_coordination->decrement();
+      if( !p()->talents.pack_assault.ok() || !p()->buffs.call_of_the_wild->check() )
+        p()->pets.main->buffs.pack_coordination->decrement();
     }
 
     if( p()->buffs.furious_assault->check() )
@@ -5529,7 +5529,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
     {
       p()->pets.main->active.basic_attack->execute_on_target( target );
-      p()->pets.main->buffs.pack_coordination->decrement();
+      if( !p()->talents.pack_assault.ok() || !p()->buffs.coordinated_assault->check() )
+        p()->pets.main->buffs.pack_coordination->decrement();
     }
 
     if( p()->buffs.furious_assault->check() )
@@ -5987,6 +5988,9 @@ struct coordinated_assault_t: public hunter_melee_attack_t
 
     if( p()->talents.beast_of_opportunity.ok() )
       p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
+
+    if( p()->talents.pack_assault.ok() )
+      p()->buffs.vicious_hunt->trigger();
   }
 };
 
@@ -6369,7 +6373,8 @@ struct kill_command_t: public hunter_spell_t
       if( p()->buffs.vicious_hunt->up() )
       {
         p()->actions.vicious_hunt->execute_on_target( target ); 
-        p()->buffs.vicious_hunt->decrement(); 
+        if( !p()->talents.pack_assault.ok() || !p()->buffs.call_of_the_wild->check() )
+          p()->buffs.vicious_hunt->decrement(); 
       }
       else
       {
@@ -6628,6 +6633,9 @@ struct call_of_the_wild_t: public hunter_spell_t
       for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
         pet -> hunter_pet_t::buffs.beast_cleave -> trigger( duration );
     }
+
+    if( p()->talents.pack_assault.ok() )
+      p()->buffs.vicious_hunt->trigger();
   }
 };
 
