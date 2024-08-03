@@ -3374,13 +3374,13 @@ void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
-  unique_gear::register_special_effect( 457302, consumables::selector_food( 457172, true ) );  // the sushi special
-  unique_gear::register_special_effect( 455960, consumables::selector_food( 457172, false ) );  // everything stew
+  unique_gear::register_special_effect( 457302, consumables::selector_food( 457284, true ) );  // the sushi special
+  unique_gear::register_special_effect( 455960, consumables::selector_food( 457284, false ) );  // everything stew
   unique_gear::register_special_effect( 454149, consumables::selector_food( 457169, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
   unique_gear::register_special_effect( 457282, consumables::selector_food( 457170, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
   unique_gear::register_special_effect( 454087, consumables::selector_food( 457171, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
-  unique_gear::register_special_effect( 457283, consumables::primary_food( 457172, STAT_STR_AGI_INT, 2 ) );  // feast of the divine day
-  unique_gear::register_special_effect( 457285, consumables::primary_food( 457172, STAT_STR_AGI_INT, 2 ) );  // feast of the midnight masquerade
+  unique_gear::register_special_effect( 457283, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the divine day
+  unique_gear::register_special_effect( 457285, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the midnight masquerade
   unique_gear::register_special_effect( 457294, consumables::primary_food( 457124, STAT_STRENGTH ) );  // sizzling honey roast
   unique_gear::register_special_effect( 457136, consumables::primary_food( 457124, STAT_AGILITY ) );  // mycobloom risotto
   unique_gear::register_special_effect( 457295, consumables::primary_food( 457124, STAT_INTELLECT ) );  // stuffed cave peppers
