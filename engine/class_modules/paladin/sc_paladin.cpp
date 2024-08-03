@@ -5112,6 +5112,27 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return std::make_unique<judgment_holy_power_expr_t>( name_str, *this );
   }
 
+  struct hpg_to_2dawn_expr_t : public paladin_expr_t
+  {
+    hpg_to_2dawn_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
+    double evaluate() override
+    {
+      if ( paladin.talents.of_dusk_and_dawn->ok() )
+      {
+        return 6.0 - paladin.holy_power_generators_used - ( paladin.buffs.blessing_of_dawn->stack() * 3 );
+      }
+      else
+        return -1.0;
+    }
+  };
+
+  if (splits[0] == "hpg_to_2dawn")
+  {
+    return std::make_unique<hpg_to_2dawn_expr_t>( name_str, *this );
+  }
+
   auto cons_expr = create_consecration_expression( name_str );
   auto aw_expr   = create_aw_expression( name_str );
   if ( cons_expr )
