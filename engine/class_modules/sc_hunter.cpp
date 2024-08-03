@@ -477,6 +477,7 @@ public:
     cooldown_t* bestial_wrath;
 
     cooldown_t* wildfire_bomb;
+    cooldown_t* butchery;
     cooldown_t* harpoon;
     cooldown_t* flanking_strike;
     cooldown_t* fury_of_the_eagle;
@@ -869,6 +870,7 @@ public:
     cooldowns.bestial_wrath         = get_cooldown( "bestial_wrath" );
 
     cooldowns.wildfire_bomb         = get_cooldown( "wildfire_bomb" );
+    cooldowns.butchery              = get_cooldown( "butchery" );
     cooldowns.harpoon               = get_cooldown( "harpoon" );
     cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
     cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
@@ -6251,6 +6253,21 @@ struct kill_command_t: public hunter_spell_t
         p()->buffs.vicious_hunt->trigger();
       }
     }
+
+    if( p()->talents.covering_fire.ok() )
+    {
+      timespan_t duration = timespan_t::from_seconds( p()->talents.covering_fire->effectN( 1 ).base_value() );
+      if( p()->buffs.beast_cleave->check() )
+        p()->buffs.beast_cleave->extend_duration( p(), duration );
+
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+      {
+        if ( pet->buffs.beast_cleave->check() ) 
+          pet->buffs.beast_cleave->extend_duration( p(), duration );
+      }
+
+    }
+
   }
 
   double cost_pct_multiplier() const override
@@ -6886,6 +6903,11 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     if ( rng().roll(grenade_juggler.chance) )
       grenade_juggler.explosive->execute_on_target( target );
+
+    if ( p()->talents.covering_fire.ok() )
+    {
+      p()->cooldowns.butchery->adjust( -timespan_t::from_seconds( p()->talents.covering_fire->effectN( 2 ).base_value() ) );
+    }
   }
 };
 
