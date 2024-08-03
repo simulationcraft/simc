@@ -458,6 +458,7 @@ public:
     buff_t* vicious_hunt;
     buff_t* howl_of_the_pack;
     buff_t* frenzied_tear; 
+    buff_t* scattered_prey;
   } buffs;
 
   // Cooldowns
@@ -4344,7 +4345,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
     }
 
-
     if ( p() -> talents.explosive_venom.ok() ) 
     {
       p() -> buffs.explosive_venom -> up(); //Benefit tracking
@@ -4356,6 +4356,18 @@ struct multishot_bm_t: public hunter_ranged_attack_t
       else 
       {
         p() -> buffs.explosive_venom -> increment();
+      }
+    }
+
+    if ( p() -> talents.scattered_prey.ok() ) 
+    {
+      if( p() -> buffs.scattered_prey -> up() ) 
+      {
+        p() -> buffs.scattered_prey -> decrement();
+      }
+      else
+      {
+        p() -> buffs.scattered_prey -> trigger();
       }
     }
   }
@@ -4374,6 +4386,15 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     {
       serpent_sting -> execute_on_target( s -> target );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+    
+    m *= 1.0 + p() -> buffs.scattered_prey -> value();
+
+    return m;
   }
 
   action_state_t* new_state() override
@@ -5569,6 +5590,27 @@ struct butchery_t : public hunter_melee_attack_t
       p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
 
     p()->buffs.merciless_blows->trigger();
+
+    if ( p() -> talents.scattered_prey.ok() ) 
+    {
+      if( p() -> buffs.scattered_prey -> up() ) 
+      {
+        p() -> buffs.scattered_prey -> decrement();
+      }
+      else
+      {
+        p() -> buffs.scattered_prey -> trigger();
+      }
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_melee_attack_t::composite_da_multiplier( s );
+    
+    m *= 1.0 + p() -> buffs.scattered_prey -> value();
+
+    return m;
   }
 };
 
@@ -8002,6 +8044,10 @@ void hunter_t::create_buffs()
 
   buffs.frenzied_tear 
     = make_buff( this, "frenzied_tear", find_spell( 447262 ) )
+      -> set_default_value_from_effect( 1 );
+
+  buffs.scattered_prey
+    = make_buff( this, "scattered_prey", find_spell( 461866 ) )
       -> set_default_value_from_effect( 1 );
 }
 
