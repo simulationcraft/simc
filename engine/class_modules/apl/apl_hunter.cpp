@@ -5,7 +5,8 @@ namespace hunter_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
+  return ( p -> true_level > 70 ) ? "potion_of_unwavering_focus_3" : 
+         ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
          ( p -> true_level > 50 ) ? "spectral_agility" :
          ( p -> true_level >= 40 ) ? "unbridled_fury" :
          "disabled";
@@ -13,7 +14,8 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p -> true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : 
+  return ( p -> true_level > 70 ) ? "flask_of_alchemical_chaos_3" : 
+         ( p -> true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : 
          ( p -> true_level > 50 ) ? "spectral_flask_of_power" :
          ( p -> true_level >= 40 ) ? "greater_flask_of_the_currents" :
          "disabled";
@@ -21,17 +23,19 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level >= 70 ) ? "fated_fortune_cookie" : 
-         ( p -> true_level >= 60 ) ? "feast_of_gluttonous_hedonism" :
+  return ( p -> true_level > 70 ) ? "everything_stew" : 
+         ( p -> true_level > 60 ) ? "fated_fortune_cookie" : 
+         ( p -> true_level > 50 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
          "disabled";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p -> true_level >= 70 ) ? "draconic" :
-         ( p -> true_level >= 60 ) ? "veiled" :
-         ( p -> true_level >= 50 ) ? "battle_scarred" :
+  return ( p -> true_level > 70 ) ? "crystallized" : 
+         ( p -> true_level > 60 ) ? "draconic" :
+         ( p -> true_level > 50 ) ? "veiled" :
+         ( p -> true_level >= 40 ) ? "battle_scarred" :
          "disabled";
 }
 
