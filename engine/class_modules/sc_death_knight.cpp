@@ -4297,8 +4297,6 @@ struct trollbane_pet_t final : public horseman_pet_t
       : horseman_spell_t( p, n, p->dk()->pet_spell.trollbanes_chains_of_ice_ability )
     {
       parse_options( options_str );
-      aoe = data().effectN( 1 ).chain_target() +
-            as<int>( p->dk()->talent.proliferating_chill->effectN( 1 ).base_value() );
       trigger_gcd        = 1_s;
       cooldown->duration = 4_s;
       cooldown->hasted   = true;
@@ -4308,8 +4306,11 @@ struct trollbane_pet_t final : public horseman_pet_t
     {
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
-      dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
+      if ( !a->target->is_boss() || !dk()->bugs )
+      {
+        dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
+      }
     }
   };
 
@@ -8097,9 +8098,10 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
 struct death_coil_damage_t final : public death_knight_spell_t
 {
   death_coil_damage_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr ), sd( false )
+    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr )
   {
     background = dual = true;
+    aoe = 0;
 
     if ( p->talent.unholy.coil_of_devastation.ok() )
     {
@@ -8107,9 +8109,9 @@ struct death_coil_damage_t final : public death_knight_spell_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
+    double m = death_knight_spell_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
@@ -8120,79 +8122,18 @@ struct death_coil_damage_t final : public death_knight_spell_t
     return m;
   }
 
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
-    {
-      p()->buffs.dark_transformation->extend_duration(
-          p(), timespan_t::from_seconds( p()->talent.unholy.eternal_agony->effectN( 1 ).base_value() ) );
-    }
-
-    if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
-    {
-      p()->pets.doomed_bidding_magus_coil.spawn();
-    }
-
-    if ( p()->talent.sanlayn.visceral_strength && p()->buffs.sudden_doom->check() )
-    {
-      p()->buffs.visceral_strength->trigger();
-    }
-
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      p()->trigger_vampiric_strike_proc( target );
-    }
-
-    // Decrement behavior here means we need to snapshot this to get the proper state on impact
-    // Not sure why this is the case. 
-    if ( p()->buffs.sudden_doom->check() )
-    {
-      sd = true;
-      p()->buffs.sudden_doom->decrement();
-    }
-    else
-    {
-      sd = false;
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-
     if ( p()->talent.unholy.coil_of_devastation.ok() )
     {
       residual_action::trigger( coil_of_devastation, state->target,
                                 state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
-
-    if ( p()->talent.unholy.death_rot.ok() )
-    {
-      get_td( state->target )->debuff.death_rot->trigger();
-
-      if ( sd )
-      {
-        get_td( state->target )->debuff.death_rot->trigger();
-      }
-    }
-
-    if ( p()->talent.unholy.rotten_touch.ok() && sd )
-    {
-      get_td( state->target )->debuff.rotten_touch->trigger();
-    }
-
-    if ( sd )
-    {
-      p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
-                                  p()->procs.fw_sudden_doom );
-    }
   }
 
 private:
   propagate_const<action_t*> coil_of_devastation;
-  bool sd;
 };
 
 struct death_coil_t final : public death_knight_spell_t
@@ -8202,9 +8143,11 @@ struct death_coil_t final : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    execute_action        = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    execute_action->stats = stats;
-    stats->action_list.push_back( execute_action );
+    impact_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    impact_action->stats = stats;
+    stats->action_list.push_back( impact_action );
+
+    aoe = 1 + as<int>( p->talent.unholy.improved_death_coil->effectN( 2 ).base_value() );
 
     if ( p->talent.unholy.coil_of_devastation.ok() )
       add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
@@ -8212,6 +8155,59 @@ struct death_coil_t final : public death_knight_spell_t
     if ( p->talent.unholy.doomed_bidding.ok() )
     {
       p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    if ( p()->buffs.sudden_doom->check() )
+    {
+      if ( p()->talent.unholy.doomed_bidding.ok() )
+      {
+        p()->pets.doomed_bidding_magus_coil.spawn();
+      }
+
+      if ( p()->talent.sanlayn.visceral_strength )
+      {
+        p()->buffs.visceral_strength->trigger();
+      }
+    }
+
+    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
+    {
+      p()->buffs.dark_transformation->extend_duration(
+          p(), timespan_t::from_seconds( p()->talent.unholy.eternal_agony->effectN( 1 ).base_value() ) );
+    }
+
+    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
+    {
+      p()->trigger_vampiric_strike_proc( target );
+    }
+
+    p()->buffs.sudden_doom->decrement();
+  }
+
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p()->talent.unholy.death_rot.ok() )
+    {
+      get_td( state->target )->debuff.death_rot->trigger( 1 + p()->buffs.sudden_doom->check() );
+    }
+
+    if ( p()->talent.unholy.rotten_touch.ok() && p()->buffs.sudden_doom->check() )
+    {
+      get_td( state->target )->debuff.rotten_touch->trigger();
+    }
+
+    if ( p()->buffs.sudden_doom->check() )
+    {
+      p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
+                                  p()->procs.fw_sudden_doom );
     }
   }
 };
@@ -8717,9 +8713,9 @@ struct festering_base_t : public death_knight_melee_attack_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
@@ -10387,9 +10383,9 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     return current_targets;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
@@ -10537,9 +10533,9 @@ struct scourge_strike_shadow_t final : public death_knight_melee_attack_t
     weapon                   = &( player->main_hand_weapon );
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
@@ -10622,9 +10618,9 @@ struct soul_reaper_execute_t : public death_knight_spell_t
     background = dual = true;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
+    double m = death_knight_spell_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )
@@ -10651,9 +10647,9 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     dot_behavior = DOT_EXTEND;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() &&
          target->health_percentage() < p()->talent.unholy.reaping->effectN( 2 ).base_value() )

@@ -3933,6 +3933,7 @@ using namespace helpers;
       : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
     {
       energize_type = action_energize::ON_CAST;
+      energize_amount += p->warlock_base.destruction_warlock->effectN( 9 ).base_value() / 10.0;
 
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
@@ -4168,8 +4169,8 @@ using namespace helpers;
       }
 
       bool collapse = p->buffs.malevolence->check();
-      collapse = collapse || p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ;
-      collapse = collapse || p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() );
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
       if ( collapse )
       {

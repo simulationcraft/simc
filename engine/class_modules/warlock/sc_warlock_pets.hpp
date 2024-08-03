@@ -181,7 +181,7 @@ public:
   const warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( ab::player ); }
 
-  virtual void execute()
+  void execute() override
   {
     ab::execute();
 
