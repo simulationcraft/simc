@@ -1386,6 +1386,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
     }
 
+    // allow Darting Hurricane to reduce GCD all the way down to 500ms
+    min_gcd          = 500_ms;
     ww_mastery       = true;
     may_combo_strike = true;
     trigger_chiji    = true;
@@ -5920,7 +5922,6 @@ struct touch_of_karma_buff_t : public monk_buff_t
 // ===============================================================================
 struct whirling_dragon_punch_buff_t : monk_buff_t
 {
-  using monk_buff_t::trigger;
   whirling_dragon_punch_buff_t( monk_t *player )
     : monk_buff_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch_buff )
   {
@@ -5930,10 +5931,14 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
     set_refresh_behavior( buff_refresh_behavior::NONE );
   }
 
-  bool trigger()
+  bool trigger( int, double, double, timespan_t ) override
   {
-    if ( p().cooldown.rising_sun_kick->down() && p().cooldown.fists_of_fury->down() )
-      return monk_buff_t::trigger( base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
+    bool rsk_unknown_or_on_cd = !p().talent.monk.rising_sun_kick->ok() || p().cooldown.rising_sun_kick->down();
+    bool wdp_unknown_or_on_cd =
+        !p().talent.windwalker.whirling_dragon_punch->ok() || p().cooldown.rising_sun_kick->down();
+    if ( rsk_unknown_or_on_cd && wdp_unknown_or_on_cd )
+      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
+                                   base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
                                                                   p().cooldown.fists_of_fury->remains() ) );
     return false;
   }
@@ -8249,7 +8254,8 @@ void monk_t::create_buffs()
                                    ->set_quiet( true );
 
   buff.darting_hurricane =
-      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane", find_spell( 459841 ) )
+      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
+                          talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
           ->modify_initial_stack( as<int>( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() ) )
           ->set_default_value_from_effect( 1 );
 
