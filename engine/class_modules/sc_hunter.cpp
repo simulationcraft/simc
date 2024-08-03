@@ -749,9 +749,9 @@ public:
     spell_data_ptr_t howl_of_the_pack;
     spell_data_ptr_t wild_attacks;
 
-    spell_data_ptr_t den_recovery;
-    spell_data_ptr_t tireless_hunt;
-    spell_data_ptr_t cornered_prey;
+    spell_data_ptr_t den_recovery;  // TODO defensive
+    spell_data_ptr_t tireless_hunt; // TODO utility
+    spell_data_ptr_t cornered_prey; // TODO utility
     spell_data_ptr_t frenzied_tear;
 
     spell_data_ptr_t scattered_prey;
