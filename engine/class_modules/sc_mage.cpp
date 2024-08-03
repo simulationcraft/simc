@@ -1728,6 +1728,7 @@ struct mage_spell_t : public spell_t
     bool icicles_st = false;
     bool improved_scorch = true;
     bool incanters_flow = true;
+    bool lingering_embers = true;
     bool molten_fury = true;
     bool nether_munitions = true;
     bool numbing_blast = true;
@@ -1888,6 +1889,9 @@ public:
 
     if ( affected_by.incanters_flow )
       m *= 1.0 + p()->buffs.incanters_flow->check_stack_value();
+
+    if ( affected_by.lingering_embers )
+      m *= 1.0 + p()->buffs.lingering_embers->check_stack_value();
 
     if ( affected_by.spellfire_sphere )
       m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
@@ -8388,6 +8392,9 @@ void mage_t::create_buffs()
                                    ->set_chance( talents.burden_of_power.ok() );
   buffs.glorious_incandescence = make_buff( this, "glorious_incandescence", find_spell( 451073 ) )
                                    ->set_chance( talents.glorious_incandescence.ok() );
+  buffs.lingering_embers       = make_buff( this, "lingering_embers", find_spell( 461145 ) )
+                                   ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 6 : 1 ).percent() )
+                                   ->set_chance( talents.codex_of_the_sunstriders.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1,
                                                                     specialization() == MAGE_FIRE ? 0.001 : 0.01 )
