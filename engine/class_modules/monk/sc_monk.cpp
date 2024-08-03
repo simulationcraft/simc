@@ -5933,7 +5933,10 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
 
   bool trigger( int, double, double, timespan_t ) override
   {
-    if ( p().cooldown.rising_sun_kick->down() && p().cooldown.fists_of_fury->down() )
+    bool rsk_unknown_or_on_cd = !p().talent.monk.rising_sun_kick->ok() || p().cooldown.rising_sun_kick->down();
+    bool wdp_unknown_or_on_cd =
+        !p().talent.windwalker.whirling_dragon_punch->ok() || p().cooldown.rising_sun_kick->down();
+    if ( rsk_unknown_or_on_cd && wdp_unknown_or_on_cd )
       return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
                                    base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
                                                                   p().cooldown.fists_of_fury->remains() ) );
