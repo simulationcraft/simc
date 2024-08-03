@@ -319,6 +319,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* wildfire_bomb;
     dot_t* black_arrow;
     dot_t* barbed_shot;
+    dot_t* cull_the_herd;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -761,7 +762,7 @@ public:
 
     spell_data_ptr_t scattered_prey;
     spell_data_ptr_t covering_fire;
-    spell_data_ptr_t cull_the_herd;
+    spell_data_ptr_t cull_the_herd; //TODO increase bleed damage by 25%
     spell_data_ptr_t furious_assault;
     spell_data_ptr_t beast_of_opportunity;
 
@@ -823,6 +824,7 @@ public:
     action_t* shadow_surge = nullptr;
     action_t* a_murder_of_crows = nullptr;
     action_t* vicious_hunt = nullptr;
+    action_t* cull_the_herd = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -3357,6 +3359,7 @@ int hunter_t::ticking_dots( hunter_td_t* td )
   dots += hunter_dots.black_arrow->is_ticking();
   dots += hunter_dots.serpent_sting->is_ticking();
   dots += hunter_dots.wildfire_bomb->is_ticking();
+  dots += hunter_dots.cull_the_herd->is_ticking();
 
   auto pet_dots = pets.main->get_target_data( td->target )->dots;
   dots += pet_dots.bloodshed->is_ticking();
@@ -4095,6 +4098,13 @@ struct kill_shot_t : hunter_ranged_attack_t
           residual_action::trigger( razor_fragments, t, amount );
       }
     }
+
+    if ( p()->talents.cull_the_herd.ok() )
+    {
+      double amount = s -> result_amount * p()->talents.cull_the_herd->effectN( 1 ).percent();
+      if ( amount > 0 )
+        residual_action::trigger( p()->actions.cull_the_herd, s -> target, amount );
+    }
   }
 
   int n_targets() const override
@@ -4292,6 +4302,14 @@ struct vicious_hunt_t final : hunter_ranged_attack_t
     if ( p()->talents.pack_coordination.ok() && p()->pets.main )
       p()->pets.main->buffs.pack_coordination->trigger();
   }
+};
+
+// Cull The Herd ==================================================================
+struct cull_the_herd_t : residual_bleed_base_t
+{
+  cull_the_herd_t( hunter_t* p ):
+    residual_bleed_base_t( "cull_the_herd", p, p -> find_spell( 449233 ) )
+  { }
 };
 
 //==============================
@@ -7026,6 +7044,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.wildfire_bomb = target -> get_dot( "wildfire_bomb_dot", p );
   dots.black_arrow = target -> get_dot( "black_arrow", p );
   dots.barbed_shot = target -> get_dot( "barbed_shot", p );
+  dots.cull_the_herd = target -> get_dot( "cull_the_herd", p ); 
 
   target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -7662,6 +7681,9 @@ void hunter_t::create_actions()
 
   if( talents.vicious_hunt.ok() )
     actions.vicious_hunt = new attacks::vicious_hunt_t( this ); 
+
+  if( talents.cull_the_herd.ok() )
+    actions.cull_the_herd = new attacks::cull_the_herd_t( this );
 }
 
 void hunter_t::create_buffs()
