@@ -23,7 +23,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level > 70 ) ? "everything_stew" : 
+  return //( p -> true_level > 70 ) ? "everything_stew" : 
          ( p -> true_level > 60 ) ? "fated_fortune_cookie" : 
          ( p -> true_level > 50 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
