@@ -1233,7 +1233,7 @@ namespace arcane_phoenix {
 
 struct arcane_phoenix_spell_t : public mage_pet_spell_t
 {
-  bool is_mage_spell;
+  bool is_mage_spell; // TODO: Check if these spells also scale with target multipliers.
   bool exceptional;
 
   arcane_phoenix_spell_t( std::string_view n, mage_pet_t* p, const spell_data_t* s, bool exceptional_ = false ) :
@@ -1288,6 +1288,30 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
 
     if ( is_mage_spell )
       m *= 1.0 + o()->buffs.arcane_overload->check_value();
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = mage_pet_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( is_mage_spell )
+    {
+      if ( o()->buffs.combustion->check() )
+      {
+        // TODO: The value here comes from spell 453385 effect#2, which is then adjusted based on the talent rank.
+        // For now, just use effect#3, which is what Blizzard is using for the tooltip.
+        double value = 0.001 * o()->talents.fires_ire->effectN( 3 ).base_value();
+        if ( o()->bugs )
+          value = std::floor( value );
+        m *= 1.0 + value * 0.01;
+      }
+
+      m *= 1.0 + o()->buffs.wildfire->check_value();
+      double eff_mult = 1.0 + o()->buffs.tier31_4pc->check_value();
+      m *= 1.0 + eff_mult * o()->buffs.searing_rage->check_stack_value();
+    }
 
     return m;
   }
