@@ -4647,8 +4647,10 @@ Effects          :
 #8 (id=261059)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
-#9 (id=261060)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#9 (id=261060)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4045 (Label) | Target: Self (1)
+                   Affected Spells (Label): Infernal Bolt (434506)
+Hotfixed         : Sub Type (4 -> 219), Base Value (0 -> -10), Misc Value (0 -> 12), Misc Value 2 (0 -> 4045)
 #10 (id=261061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=261062)   : Apply Aura (6) | Dummy (4)
@@ -8038,8 +8040,9 @@ Attributes       : ....x... x....... ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Log (8), Do Not Sheath (18), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=707727)   : Apply Aura (6) | Periodic Trigger Spell (23): Burning Ember every 0.5 seconds
+#1 (id=707727)   : Apply Aura (6) | Periodic Trigger Spell (23): Burning Ember every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 264365 | Target: Self (1)
+Hotfixed         : Period (500 -> 1000)
 Description      : Generates $264365s1 Soul Shard Fragment every $t1 sec.
 Tooltip          : Generates $264365s1 Soul Shard Fragment every $t1 sec.
 
@@ -14411,8 +14414,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1021660)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1839 (Label) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1839 (Label) | Target: Self (1)
                    Affected Spells (Label): Pyrogenics (387096)
+Hotfixed         : Base Value (5 -> 3)
 Description      : Enemies affected by your Rain of Fire take $s1% increased damage from your Fire spells.
 
 Name             : Pyrogenics (id=387096) [Spell Family (5)] 
@@ -19488,6 +19492,7 @@ Velocity         : 30 yards/sec
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
+                 : 4045: Destruction Warlock (137046 effect#9)
 Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Shadowy Inspiration (196606 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Conflagrate (265931 effect#1), Sacrificed Souls (272591 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effects: #1, #2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Rune of Shadows (453744 effects: #2, #3), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 0, 38, 49, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19603,6 +19608,7 @@ School           : Chaos
 Spell Type       : None
 Range            : 40 yards
 Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
 Travel Time      : 1 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
@@ -22990,8 +22996,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Icon (60)
 Effects          :
-#1 (id=1162892)  : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
+#1 (id=1162892)  : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+Hotfixed         : Period (500 -> 1000)
 Description      : $@spelldesc456975
 
 Name             : Malefic Touch (id=458029) [Spell Family (5), Passive] 
