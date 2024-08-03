@@ -451,6 +451,9 @@ public:
     buff_t* contained_explosion;
     buff_t* light_the_fuse;
     buff_t* rapid_reload; 
+
+    // Hero Talents 
+    buff_t* vicious_hunt;
   } buffs;
 
   // Cooldowns
@@ -813,6 +816,7 @@ public:
     action_t* wildfire_bomb_t31 = nullptr;
     action_t* shadow_surge = nullptr;
     action_t* a_murder_of_crows = nullptr;
+    action_t* vicious_hunt = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -4207,6 +4211,17 @@ struct shadow_surge_t final : hunter_ranged_attack_t
   }
 };
 
+// Vicious Hunt ==================================================================
+
+struct vicious_hunt_t final : hunter_ranged_attack_t
+{
+  vicious_hunt_t( hunter_t* p ) : hunter_ranged_attack_t( "vicious_hunt", p, p->find_spell( 445431 ) )
+  {
+    aoe        = -1;
+    background = dual = true;
+  }
+};
+
 //==============================
 // Beast Mastery attacks
 //==============================
@@ -6100,6 +6115,19 @@ struct kill_command_t: public hunter_spell_t
       p()->buffs.sic_em->trigger();
       p()->cooldowns.kill_shot->reset( true );
     }
+
+    if( p()->talents.vicious_hunt.ok() )
+    {
+      if( p()->buffs.vicious_hunt->up() )
+      {
+        p()->actions.vicious_hunt->execute_on_target( target ); 
+        p()->buffs.vicious_hunt->decrement(); 
+      }
+      else
+      {
+        p()->buffs.vicious_hunt->trigger( p()->talents.pack_assault.ok() ? 2 : 1);
+      }
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -7486,6 +7514,9 @@ void hunter_t::create_actions()
   
   if ( talents.a_murder_of_crows.ok() )
     actions.a_murder_of_crows = new attacks::a_murder_of_crows_t( this );
+
+  if( talents.vicious_hunt.ok() )
+    actions.vicious_hunt = new attacks::vicious_hunt_t( this ); 
 }
 
 void hunter_t::create_buffs()
@@ -7876,6 +7907,12 @@ void hunter_t::create_buffs()
   buffs.rapid_reload = 
     make_buff( this, "rapid_reload", tier_set.t31_mm_4pc_buff )
       -> set_default_value( tier_set.t31_mm_4pc_buff -> effectN( 1 ).percent() );
+
+  // Hero Talents
+  buffs.vicious_hunt = 
+    make_buff( this, "vicious_hunt", find_spell( 431917 ) )
+      -> apply_affecting_aura( talents.pack_assault )
+      -> set_default_value_from_effect( 1 );
 }
 
 // hunter_t::init_gains =====================================================
