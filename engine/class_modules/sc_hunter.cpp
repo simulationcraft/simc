@@ -376,6 +376,10 @@ public:
     spell_data_ptr_t t31_sv_4pc;
     spell_data_ptr_t t31_sv_4pc_buff;
     spell_data_ptr_t t31_sv_4pc_buff2;
+
+    // TWW Season 1 - Nerub'ar Palace
+    spell_data_ptr_t tww_s1_bm_2pc;
+    spell_data_ptr_t tww_s1_bm_4pc;
   } tier_set;
 
   // Buffs
@@ -454,6 +458,9 @@ public:
     buff_t* contained_explosion;
     buff_t* light_the_fuse;
     buff_t* rapid_reload; 
+
+    //TWW - S1
+    buff_t* harmonize;
 
     // Hero Talents 
 
@@ -1030,6 +1037,8 @@ public:
     damage_affected_by tip_of_the_spear_explosive;
     bool spearhead_crit_chance = false;
     bool spearhead_crit_damage = false;
+
+    // Tier Set
     bool t29_sv_4pc_cost = false;
     damage_affected_by t29_sv_4pc_dmg;
     bool t31_sv_2pc_crit_chance = false;
@@ -1791,6 +1800,7 @@ struct stable_pet_t : public hunter_pet_t
 
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
+    m *= 1 + o()->buffs.harmonize->data().effectN( 1 ).percent();
 
     return m;
   }
@@ -1849,6 +1859,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     buffs.frenzy =
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
       -> set_default_value_from_effect( 1 )
+      -> modify_default_value( o() -> tier_set.tww_s1_bm_2pc -> effectN( 1 ).percent() )
       -> apply_affecting_aura( o() -> talents.savagery )
       -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
@@ -2884,6 +2895,11 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
     hunter_pet_melee_t::impact( s );
 
     trigger_beast_cleave( s );
+
+    if( ( p()==o()->pets.main || p()==o()->pets.animal_companion ) && o()->rng().roll( o()->tier_set.tww_s1_bm_4pc->effectN( 1 ).percent() ) )
+    {
+      o()->buffs.harmonize->trigger();
+    }
   }
 };
 
@@ -7705,6 +7721,9 @@ void hunter_t::init_spells()
   tier_set.t31_sv_4pc_buff2 = find_spell( 428464 );
   tier_set.t31_mm_4pc_buff = find_spell( 431156 );
 
+  tier_set.tww_s1_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B2 );
+  tier_set.tww_s1_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B4 );
+
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
   cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
@@ -8190,6 +8209,10 @@ void hunter_t::create_buffs()
   buffs.rapid_reload = 
     make_buff( this, "rapid_reload", tier_set.t31_mm_4pc_buff )
       -> set_default_value( tier_set.t31_mm_4pc_buff -> effectN( 1 ).percent() );
+
+  buffs.harmonize =
+    make_buff( this, "harmonize", find_spell( 457072 ) )
+      -> set_default_value_from_effect( 1 );
 
   // Hero Talents
   buffs.vicious_hunt = 
