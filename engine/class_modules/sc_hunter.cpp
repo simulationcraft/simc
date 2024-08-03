@@ -1004,6 +1004,7 @@ public:
   maybe_bool decrements_tip_of_the_spear;
 
   struct {
+    bool cull_the_herd = false;
     damage_affected_by unnatural_causes;
 
     // bm
@@ -1039,6 +1040,12 @@ public:
     track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms )
   {
     ab::special = true;
+
+    for ( size_t i = 1; i <= ab::data().effect_count(); i++ )
+    {
+      if ( ab::data().mechanic() == MECHANIC_BLEED || ab::data().effectN( i ).mechanic() == MECHANIC_BLEED )
+        affected_by.cull_the_herd = true;
+    }
 
     if ( p->talents.unnatural_causes.ok() )
       affected_by.unnatural_causes      = parse_damage_affecting_aura( this, p->talents.unnatural_causes_debuff );
@@ -1388,6 +1395,18 @@ public:
     }
 
     return cm;
+  }
+
+  double composite_target_ta_multiplier( player_t* target ) const override
+  {
+    double ta = ab::composite_target_ta_multiplier( target );
+
+    if ( affected_by.cull_the_herd && p() -> get_target_data( target ) -> dots.cull_the_herd -> is_ticking() )
+    {
+      ta *= 1 + p() -> talents.cull_the_herd -> effectN( 3 ).percent();
+    }
+
+    return ta;
   }
 
   double cost_flat_modifier() const override
@@ -2865,6 +2884,16 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
+  void execute() override
+  {
+    if ( o() -> talents.wild_attacks.ok() )
+    {
+      p() -> buffs.wild_attacks -> trigger();
+    }
+    
+    hunter_main_pet_attack_t::execute();    
+  }
+
   void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
@@ -2881,6 +2910,11 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     {
       o()->cooldowns.kill_command->reset( true ); 
       o()->buffs.frenzied_tear->trigger(); 
+    }
+
+    if ( p()->buffs.wild_attacks->at_max_stacks() )
+    {
+      p()->buffs.wild_attacks->expire();
     }
   }
 
@@ -2900,9 +2934,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   {
     double cc = hunter_main_pet_attack_t::composite_crit_chance();
 
-    if ( o()->talents.wild_attacks.ok() )
-      p()->buffs.wild_attacks->trigger();
-
     if ( p()->buffs.wild_attacks->at_max_stacks() )
       cc = 1.0;
 
@@ -2918,7 +2949,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     if ( p()->buffs.wild_attacks->at_max_stacks() )
     {
       cm *= 1 + o()->cache.attack_crit_chance()*2;
-      p()->buffs.wild_attacks->expire();
     }
 
     return cm;
