@@ -453,8 +453,11 @@ public:
     buff_t* rapid_reload; 
 
     // Hero Talents 
+
+    // Pack Leader
     buff_t* vicious_hunt;
     buff_t* howl_of_the_pack;
+    buff_t* frenzied_tear; 
   } buffs;
 
   // Cooldowns
@@ -1784,6 +1787,8 @@ struct hunter_main_pet_base_t : public stable_pet_t
     action_t* flanking_strike = nullptr;
     action_t* coordinated_assault = nullptr;
     action_t* spearhead = nullptr;
+
+    action_t* frenzied_tear = nullptr;
   } active;
 
   struct buffs_t
@@ -2583,6 +2588,13 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
     {
       o() -> get_target_data( s -> target ) -> debuffs.wild_instincts -> trigger();
     }
+
+    if( o()->buffs.frenzied_tear->check() && p()==o()->pets.main )
+    {
+      double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
+      p()->active.frenzied_tear->execute_on_target( s -> target, amount );
+      o()->buffs.frenzied_tear->decrement();
+    }
   }
 
   double action_multiplier() const override
@@ -2633,6 +2645,13 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
 
     o() -> state.last_kc_target = s -> target;
     o() -> get_target_data( s -> target ) -> debuffs.shredded_armor -> trigger();
+
+    if( o()->buffs.frenzied_tear->check() && p()==o()->pets.main )
+    {
+      double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
+      p()->active.frenzied_tear->execute_on_target( s -> target, amount );
+      o()->buffs.frenzied_tear->decrement();
+    }
   }
   
   void trigger_dot( action_state_t* s ) override
@@ -2772,6 +2791,28 @@ struct laceration_t : public residual_action::residual_periodic_action_t<hunter_
   { }
 };
 
+// Frenzied Tear ==================================================================
+
+struct frenzied_tear_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
+{
+  frenzied_tear_t( hunter_pet_t* p ) : hunter_pet_action_t( "frenzied_tear", p, p -> find_spell( 83381 ) )
+  {
+    background = true;
+    // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
+    weapon_multiplier = 0;
+  }
+
+  void init() override
+  {
+    hunter_pet_action_t::init();
+
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+};
+
 // Pet Melee ================================================================
 
 struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
@@ -2829,6 +2870,12 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     if ( o() -> talents.howl_of_the_pack.ok() && s -> result == RESULT_CRIT )
     {
       o() -> buffs.howl_of_the_pack -> trigger();
+    }
+
+    if ( rng().roll( o() -> talents.frenzied_tear -> effectN( 1 ).percent() ) )
+    {
+      o()->cooldowns.kill_command->reset( true ); 
+      o()->buffs.frenzied_tear->trigger(); 
     }
   }
 
@@ -3103,6 +3150,9 @@ void hunter_main_pet_base_t::init_spells()
 
   if ( o() -> talents.stomp.ok() || o() -> talents.bloody_frenzy.ok() )
     active.stomp = new actions::stomp_t( this );
+
+  if( o() -> talents.frenzied_tear.ok() )
+    active.frenzied_tear = new actions::frenzied_tear_t( this );
 }
 
 void hunter_main_pet_t::init_spells()
@@ -4229,8 +4279,7 @@ struct vicious_hunt_t final : hunter_ranged_attack_t
 {
   vicious_hunt_t( hunter_t* p ) : hunter_ranged_attack_t( "vicious_hunt", p, p->find_spell( 445431 ) )
   {
-    aoe        = -1;
-    background = dual = true;
+    background = true;
   }
 
   void execute() override
@@ -7949,6 +7998,10 @@ void hunter_t::create_buffs()
 
   buffs.howl_of_the_pack
     = make_buff( this, "howl_of_the_pack", find_spell( 462515 ) )
+      -> set_default_value_from_effect( 1 );
+
+  buffs.frenzied_tear 
+    = make_buff( this, "frenzied_tear", find_spell( 447262 ) )
       -> set_default_value_from_effect( 1 );
 }
 
