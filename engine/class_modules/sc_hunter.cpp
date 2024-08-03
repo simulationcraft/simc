@@ -460,6 +460,7 @@ public:
     buff_t* howl_of_the_pack;
     buff_t* frenzied_tear; 
     buff_t* scattered_prey;
+    buff_t* furious_assault;
   } buffs;
 
   // Cooldowns
@@ -2618,6 +2619,11 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
       double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
       p()->active.frenzied_tear->execute_on_target( s -> target, amount );
       o()->buffs.frenzied_tear->decrement();
+      if( o() -> talents.furious_assault.ok() && o() -> rng().roll( o() -> talents.furious_assault -> effectN( 1 ).percent() ) )
+      {
+        o()->buffs.furious_assault->trigger();
+        o()->cooldowns.barbed_shot->reset( true );
+      }
     }
   }
 
@@ -2675,6 +2681,10 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
       double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
       p()->active.frenzied_tear->execute_on_target( s -> target, amount );
       o()->buffs.frenzied_tear->decrement();
+      if( o()->talents.furious_assault.ok() && o()->rng().roll( o()->talents.furious_assault->effectN( 1 ).percent() ) )
+      {
+        o()->buffs.furious_assault->trigger();
+      }
     }
   }
   
@@ -4559,6 +4569,20 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       p()->pets.main->active.basic_attack->execute_on_target( target );
       p()->pets.main->buffs.pack_coordination->decrement();
     }
+
+    if( p()->buffs.furious_assault->check() )
+    {
+      p()->buffs.furious_assault->decrement();
+    }
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_ta_multiplier( s );
+
+    m *= 1 + p()->buffs.furious_assault->value();
+
+    return m;
   }
 
   void tick( dot_t* d ) override
@@ -5442,6 +5466,25 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     wildfire_infusion_chance = p->talents.wildfire_infusion->effectN( 1 ).percent();
   }
 
+  double cost() const override
+  {
+    double cost = hunter_melee_attack_t::cost();
+
+    if( p()->buffs.furious_assault->up() )
+      cost *= 1 + p()->buffs.furious_assault->data().effectN( 3 ).percent();
+
+    return cost; 
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_melee_attack_t::composite_da_multiplier( s );
+
+    m *= 1 + p()->buffs.furious_assault->value();
+
+    return m;
+  }
+
   void execute() override
   {
     hunter_melee_attack_t::execute();
@@ -5463,6 +5506,11 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     {
       p()->pets.main->active.basic_attack->execute_on_target( target );
       p()->pets.main->buffs.pack_coordination->decrement();
+    }
+
+    if( p()->buffs.furious_assault->check() )
+    {
+      p()->buffs.furious_assault->decrement();
     }
   }
 
@@ -8123,6 +8171,10 @@ void hunter_t::create_buffs()
   buffs.scattered_prey
     = make_buff( this, "scattered_prey", find_spell( 461866 ) )
       -> set_default_value_from_effect( 1 );
+
+  buffs.furious_assault
+    = make_buff( this, "furious_assault", find_spell( 448814 ) )
+      -> set_default_value_from_effect( 4 );
 }
 
 // hunter_t::init_gains =====================================================
