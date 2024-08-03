@@ -286,6 +286,7 @@ namespace pets
 {
 struct stable_pet_t;
 struct call_of_the_wild_pet_t;
+struct beast_of_opportunity_pet_t;
 struct hunter_main_pet_t;
 struct animal_companion_t;
 struct dire_critter_t;
@@ -337,12 +338,13 @@ public:
     pets::animal_companion_t* animal_companion = nullptr;
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
+    spawner::pet_spawner_t<pets::beast_of_opportunity_pet_t, hunter_t> boo_stable_pet;
     spawner::pet_spawner_t<pets::shadow_hound_t, hunter_t> dark_hound;
     spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
     spawner::pet_spawner_t<pets::hati_t, hunter_t> hati;
 
     pets_t( hunter_t* p )
-      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), dark_hound( "dark_hound", p ), fenryr( "fenryr", p ), hati( "hati", p )
+      : dire_beast( "dire_beast", p ), cotw_stable_pet( "call_of_the_wild_pet", p ), boo_stable_pet( "beast_of_opportunity_pet", p ), dark_hound( "dark_hound", p ), fenryr( "fenryr", p ), hati( "hati", p )
     {
     }
   } pets;
@@ -461,6 +463,7 @@ public:
     buff_t* frenzied_tear; 
     buff_t* scattered_prey;
     buff_t* furious_assault;
+    buff_t* beast_of_opportunity;
   } buffs;
 
   // Cooldowns
@@ -1967,6 +1970,27 @@ struct call_of_the_wild_pet_t final : public stable_pet_t
 {
   call_of_the_wild_pet_t( hunter_t* owner ):
     stable_pet_t( owner, "call_of_the_wild_pet", PET_HUNTER )
+  {
+    resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    stable_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack -> execute();
+  }
+};
+
+// ==========================================================================
+// Beast of Opportunity
+// ==========================================================================
+
+struct beast_of_opportunity_pet_t final : public stable_pet_t
+{
+  beast_of_opportunity_pet_t( hunter_t* owner ):
+    stable_pet_t( owner, "beast_of_opportunity_pet", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
   }
@@ -5960,6 +5984,9 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     
     if ( p()->talents.bombardier.ok() )
       p()->cooldowns.wildfire_bomb->reset( false, as<int>( p()->talents.bombardier->effectN( 3 ).base_value() ) );
+
+    if( p()->talents.beast_of_opportunity.ok() )
+      p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
   }
 };
 
@@ -6547,6 +6574,9 @@ struct bestial_wrath_t: public hunter_spell_t
         p() -> pets.dire_beast.active_pets().back() -> buffs.beast_cleave -> trigger( duration );
       }
     }
+
+    if( p()->talents.beast_of_opportunity.ok() )
+      p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
   }
 
   bool ready() override
@@ -8175,6 +8205,10 @@ void hunter_t::create_buffs()
   buffs.furious_assault
     = make_buff( this, "furious_assault", find_spell( 448814 ) )
       -> set_default_value_from_effect( 4 );
+
+  buffs.beast_of_opportunity
+    = make_buff( this, "beast_of_opportunity", find_spell( 450143 ) )
+      -> set_default_value_from_effect( 1 );
 }
 
 // hunter_t::init_gains =====================================================
