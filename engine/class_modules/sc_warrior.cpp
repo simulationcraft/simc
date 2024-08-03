@@ -3188,12 +3188,9 @@ struct bladestorm_t : public warrior_attack_t
     // To match order of operations in game, on the final tick brutal finish gets applied before the final
     // Bladestorm tick goes off.  If using imminent demise, it will affect the final MS instead of the one that
     // comes after the bladestorm
-    if ( d->ticks_left() == 0 )
+    if ( d->ticks_left() == 0  && p()->talents.slayer.brutal_finish->ok() )
     {
-      if ( p()->talents.slayer.brutal_finish->ok() )
-      {
-        p()->buff.brutal_finish->trigger();
-      }
+      p()->buff.brutal_finish->trigger();
     }
 
     // As of TWW, since bladestorm has an initial tick, unhinged procs on odd ticks
@@ -3202,7 +3199,7 @@ struct bladestorm_t : public warrior_attack_t
       // damage buff from brutal finish does not seem to apply to the final unhinged mortal strike
       if ( p()->bugs )
       {
-        p()->buff.brutal_finish->trigger();
+        p()->buff.brutal_finish->expire();
       }
       auto t = p() -> target;
       if ( ! p() -> target || p() -> target->is_sleeping() )
