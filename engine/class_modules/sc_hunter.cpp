@@ -2341,8 +2341,8 @@ struct fenryr_t final : public dire_critter_t
   fenryr_t( hunter_t* owner, util::string_view n = "fenryr" )
     : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 0.48;
-    auto_attack_multiplier = 5.27;
+    owner_coeff.ap_from_ap = 0.4;
+    auto_attack_multiplier = 4.85;
   }
 
   void init_spells() override;
@@ -2368,8 +2368,8 @@ struct hati_t final : public dire_critter_t
   hati_t( hunter_t* owner, util::string_view n = "hati" )
     : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 0.48;
-    auto_attack_multiplier = 5.27;
+    owner_coeff.ap_from_ap = 0.4;
+    auto_attack_multiplier = 4.85;
   }
 
   void summon( timespan_t duration = 0_ms ) override
