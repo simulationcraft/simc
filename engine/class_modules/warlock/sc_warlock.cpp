@@ -207,9 +207,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     procs(),
     rng_settings(),
     initial_soul_shards( 3 ),
-    normalize_destruction_mastery( false ),
     default_pet(),
-    disable_auto_felstorm( false )
+    disable_auto_felstorm( false ),
+    normalize_destruction_mastery( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );

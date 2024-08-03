@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55959
-static const std::array<spelltext_data_t, 26271> __spelltext_data { {
+static const std::array<spelltext_data_t, 26276> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23127,6 +23127,7 @@ static const std::array<spelltext_data_t, 26271> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
+  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -24463,12 +24464,15 @@ static const std::array<spelltext_data_t, 26271> __spelltext_data { {
   { 450412, "$@spelldesc450369", 0, 0 },
   { 450418, "Consuming Umbral Embrace increases the damage of your Moonfire, Sunfire, Stellar Flare, Shooting Stars, and Starfall by $450419s1% for $450419d.", 0, 0 },
   { 450419, "$@spelldesc450418", "Moonfire, Sunfire, Stellar Flare, Shooting Stars, and Starfall damage increased by $w1%", 0 },
+  { 450421, "Hurls an immense fiery boulder that deals up to $s1 Fire damage.", 0, 0 },
   { 450426, "Magical damage done increased by $s1% and healing done increased by $s2%.", 0, 0 },
   { 450427, "Increases your Physical damage done by $s1% and Avoidance increased by $s2%.", 0, 0 },
   { 450429, "$@spelldesc443525", 0, 0 },
   { 450432, "Paralysis now removes all Enrage effects from its target.", 0, 0 },
   { 450448, "Reduces the cooldown of Ring of Peace by ${$s1/-1000} sec and Song of Chi-Ji's cast time is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 450453, "$@spelldesc446764", "Your next melee attack will inflict additional Fire damage.", 0 },
+  { 450462, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
+  { 450499, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. ", 0, 0 },
   { 450503, "The duration of snare effects on you is reduced by $s1%.", 0, 0 },
   { 450506, "$@spelldesc257541", 0, 0 },
   { 450508, "Store vitality from $?a137023[$s1%][$s2%] of your damage dealt and $?a137023[$s3%][$s4%] of your $?a137023[effective ][]healing.$?a137024[ Vitality stored from overhealing is reduced.][]\r\n\r\nFor $450711d after casting $?a137023[Celestial Brew][Thunder Focus Tea] your spells and abilities draw upon the stored vitality to deal $s6% additional $?a137023[damage over $450763d][healing over $450769d].", 0, 0 },
@@ -24923,6 +24927,7 @@ static const std::array<spelltext_data_t, 26271> __spelltext_data { {
   { 453314, "$@spelldesc452414", "$?a212612[Chaos Strike and Blade Dance damage increased by $w2%.\r\nHaste increased by $w1%][Maximum health increased by $w3% and Armor by $w4%].", 0 },
   { 453317, "You've been webbed!\r\n\r\nStruggle against the threads to break out!", "You've been webbed!\r\n\r\nStruggle against the threads to break out!", 0 },
   { 453323, "$@spelldesc452402", "Damage of your next Demonsurge is increased by $w2%.", 0 },
+  { 453326, "Expend all of your current mana to annihilate your enemy target and nearby enemies for up to ${$s1*$s2} Arcane damage based on Mana spent. Deals reduced damage beyond $s3 targets.\r\n\r\nFor the next $365362d, your Mana regeneration is increased by $365362s3% and spell damage is increased by $365362s1%.", 0, 0 },
   { 453327, "$@spelldesc121817", 0, 0 },
   { 453328, "$@spelldesc121817", 0, 0 },
   { 453329, "$@spelldesc451440", "Flamestrike damage increased and cast time reduced.", 0 },

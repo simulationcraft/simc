@@ -2048,6 +2048,10 @@ class SpellDataGenerator(DataGenerator):
           ( 460475, 0 ), ( 460476, 0 ),             # Pyromaniac Pyroblast and Flamestrike
           ( 464515, 0 ),                            # Arcane Echo ICD
           ( 449559, 0 ), ( 449560, 0 ), ( 449562, 0 ), ( 449569, 0 ), # Meteorite (Glorious Incandescence)
+          ( 450499, 0 ),                            # Arcane Barrage (Arcane Phoenix)
+          ( 450462, 0 ),                            # Flamestrike (Arcane Phoenix)
+          ( 453326, 0 ),                            # Arcane Surge (Arcane Phoenix)
+          ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
         ),
 
         # Warlock:

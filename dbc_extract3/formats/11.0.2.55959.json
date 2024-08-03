@@ -971,10 +971,10 @@
   "JournalTierXInstance": {
     "parent": "JournalTier",
     "fields": [
-      { "data_type": "H", "field": "id_journal_tier" },
+      { "data_type": "i", "field": "id_journal_tier" },
       { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" },
-      { "data_type": "H", "field": "order" },
-      { "data_type": "H", "field": "availability_condition" }
+      { "data_type": "i", "field": "order" },
+      { "data_type": "i", "field": "availability_condition" }
     ]
   },
   "ManifestInterfaceData": {
@@ -2012,6 +2012,8 @@
       { "data_type": "S", "field": "name" },
       { "data_type": "i", "field": "id" },
       { "data_type": "H", "field": "id_ui_texture_atlas" },
+      { "data_type": "h", "field": "width" },
+      { "data_type": "h", "field": "height" },
       { "data_type": "h", "field": "left" },
       { "data_type": "h", "field": "right" },
       { "data_type": "h", "field": "top" },
@@ -2020,9 +2022,7 @@
       { "data_type": "h", "field": "override_width" },
       { "data_type": "h", "field": "override_height" },
       { "data_type": "b", "field": "flags" },
-      { "data_type": "b", "field": "id_ui_canvas" },
-      { "data_type": "i", "field": "unk_1" },
-      { "data_type": "h", "field": "unk_2" }
+      { "data_type": "b", "field": "id_ui_canvas" }
     ]
   }
 }
