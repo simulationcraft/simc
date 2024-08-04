@@ -6244,8 +6244,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     full_amount_targets = 1;
     background = affected_by.unleashed_inferno = triggers.ignite = true;
     triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
-    base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.from_the_ashes->effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, TWW1, B2 )->effectN( 1 ).percent();
     base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
   }
@@ -6289,6 +6290,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
 
     if ( s->n_targets <= as<unsigned>( p()->talents.ashen_feather->effectN( 1 ).base_value() ) )
       m *= 1.0 + p()->talents.ashen_feather->effectN( 2 ).percent();
+
+    if ( s->chain_target == 0 )
+      m *= 1.0 + p()->sets->set( MAGE_FIRE, TWW1, B2 )->effectN( 2 ).percent();
 
     return m;
   }
