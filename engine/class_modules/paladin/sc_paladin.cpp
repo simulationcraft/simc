@@ -598,7 +598,8 @@ struct consecration_t : public paladin_spell_t
           p()->active.divine_guidance_heal->execute();
         }
       }
-      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
+      p()->active.divine_guidance_damage->base_dd_multiplier =
+          ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
     }
 
     paladin_spell_t::execute();
