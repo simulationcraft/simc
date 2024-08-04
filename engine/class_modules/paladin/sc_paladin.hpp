@@ -1842,7 +1842,7 @@ public:
     }
 
     // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all
-    if ( p->talents.righteous_protector->ok() && ( ( is_hammer_of_light_driver || !is_hammer_of_light ) && !p->bugs ) )
+    if ( p->talents.righteous_protector->ok() && ( ( is_hammer_of_light_driver && !p->bugs ) || !is_hammer_of_light ) )
     {
       // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
       if ( p->cooldowns.righteous_protector_icd->up() ||
