@@ -744,6 +744,7 @@ public:
     propagate_const<proc_t*> inescapable_torment_missed_swd;
     propagate_const<proc_t*> mind_spike_insanity_munched;
     propagate_const<proc_t*> shadowy_apparition_crit;
+    propagate_const<proc_t*> depth_of_shadows;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
