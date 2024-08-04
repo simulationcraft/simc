@@ -1143,6 +1143,7 @@ public:
   pet_t* get_active_elemental_pet() const;
   void summon_elemental( elemental type, timespan_t override_duration = 0_ms );
   void summon_ancestor( double proc_chance = 1.0 );
+  void trigger_elemental_blast_proc();
   void summon_lesser_elemental( elemental type, timespan_t override_duration = 0_ms );
   timespan_t last_t30_proc;
   bool t30_proc_possible;
@@ -3693,6 +3694,13 @@ struct ancestor_t : public shaman_pet_t
   {
     elemental_blast_t( ancestor_t* p ) : super( p, "elemental_blast", p->find_spell( 447427 ) )
     { background = true; }
+
+    void execute() override
+    {
+      o()->trigger_elemental_blast_proc();
+      pet_spell_t::execute();
+    }
+
   };
 
   ancestor_t( shaman_t* owner ) : shaman_pet_t( owner, "ancestor", true, false ),
@@ -11021,6 +11029,11 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
     elemental_buff->trigger( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->spawn( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
   }
+}
+
+void shaman_t::trigger_elemental_blast_proc()
+{
+    ::trigger_elemental_blast_proc( this );
 }
 
 void shaman_t::summon_ancestor( double proc_chance )
