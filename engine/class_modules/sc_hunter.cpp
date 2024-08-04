@@ -5385,7 +5385,7 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
     {
       p()->buffs.moving_target->trigger();
     }
-    
+
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
@@ -8064,13 +8064,9 @@ void hunter_t::create_buffs()
 
           if( talents.bloody_frenzy.ok() )
           {
-            //In-game this (re)application of beast_cleave happens multiple times a second and applies to the player once per pet active 
-            //Since the regular Beast Cleave buff is longer than the time between ticks, we can get by with just refreshing once per tick
-            timespan_t duration = buffs.call_of_the_wild -> remains();
-            if ( duration > 0_ms )
-            {
-              buffs.beast_cleave -> trigger( duration );
-            }
+            //In-game this (re)application of beast_cleave happens multiple times a second, since the regular Beast Cleave buff is longer than the time between ticks, we can get by with just refreshing once per tick
+            //In 11.0 it has been changed to use the player's remaining duration of beast_cleave, instead of the remaining duration of call_of_the_wild - this change is to support covering_fire functionality
+            timespan_t duration = buffs.beast_cleave -> remains();
             for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( pets.main, pets.animal_companion ) )
             {
               pet -> active.stomp -> execute();
