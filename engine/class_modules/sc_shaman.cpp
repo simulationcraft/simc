@@ -11670,6 +11670,16 @@ void shaman_t::trigger_flash_of_lightning()
     cooldown.totemic_recall->adjust( reduction, false );
   }
 
+  if ( talent.primordial_wave.enabled() )
+  {
+    cooldown.primordial_wave->adjust( reduction, false );
+  }
+
+  if ( talent.ancestral_swiftness.enabled() )
+  {
+    cooldown.ancestral_swiftness->adjust( reduction, false );
+  }
+
   cooldown.flame_shock->adjust( reduction, false );
 
   proc.flash_of_lightning->occur();
