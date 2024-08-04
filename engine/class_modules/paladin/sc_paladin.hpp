@@ -1767,10 +1767,6 @@ public:
     if ( ab::background && is_divine_storm )
       return;
 
-    // ToDo (Fluttershy): Check what the driver can and cannot do. Pretty sure it can proc DP at least
-    if ( is_hammer_of_light_driver )
-      return;
-
     bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
@@ -1797,6 +1793,7 @@ public:
       }
     }
 
+    // TODO (Fluttershy): Check how this behaves with Hammer of Light
     if ( p->talents.radiant_glory->ok() )
     {
       // This is a bit of a hack. As far as we can tell from logs,
@@ -1820,16 +1817,32 @@ public:
       }
     }
 
-    if ( p->talents.relentless_inquisitor->ok() )
+    if ( p->talents.relentless_inquisitor->ok() && !ab::background )
       p->buffs.relentless_inquisitor->trigger();
 
+    /*
+      Hammer of Light shenanigans, leaving these findings for later, not touching for now:
+      Crusade, no RG:
+      Execute gives 5 Stacks, if no DP active
+      Damage gives 5 Stacks, if DP active
+      (Can go to 10 stacks immediately, if HoL was the one to trigger DP, see
+      https://www.warcraftlogs.com/reports/WjvLtYRhfq1PmQTF#fight=last&type=auras&ability=231895&view=events&pins=0%24Separate%24%23244F4B%24any%24-1%246015535.0.0.Unknown%240.0.0.Any%24true%240.0.0.Any%24true%24429826%7C427453%7C408458
+      )
+
+      Crusade, RG:
+      Execute gives 5 Stacks, if no DP active
+      Damage never gives stacks
+
+      Light's Deliverance never gives Stacks
+    */
     if ( p->buffs.crusade->check() )
     {
       // Free Hammer of Light from Templar currently gives 0 stacks, needs to be adjusted later
       p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
-    if ( p->talents.righteous_protector->ok() )
+    // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all
+    if ( p->talents.righteous_protector->ok() && ( ( is_hammer_of_light_driver || !is_hammer_of_light ) && !p->bugs ) )
     {
       // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
       if ( p->cooldowns.righteous_protector_icd->up() ||
@@ -1852,7 +1865,7 @@ public:
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
-    if ( p->talents.resolute_defender->ok() )
+    if ( p->talents.resolute_defender->ok() && !ab::background )
     {
       // Just like RP, value is in deciseconds, for whatever reasons
       timespan_t reduction =
@@ -1861,7 +1874,7 @@ public:
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
-    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() )
+    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )
     {
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost() );
@@ -1895,7 +1908,7 @@ public:
       p->buffs.shining_light_free->decrement();
     }
 
-    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )
+    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() && !ab::background )
     {
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
@@ -1918,7 +1931,9 @@ public:
     }
 
     // Roll for Divine Purpose
-    if ( p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
+    // 2024-08-04 Damage event of Hammer of Light cannot proc Divine Purpose, if you're Ret
+    // (Although it is also likely that the driver being able to proc Divine Purpose is also a bug, but who knows
+    if ( !( p->bugs && !is_hammer_of_light_driver && is_hammer_of_light && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();
@@ -1945,7 +1960,7 @@ public:
       }
     }
 
-    if ( p->buffs.blessing_of_dawn->up() )
+    if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light_driver )
     {
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();
