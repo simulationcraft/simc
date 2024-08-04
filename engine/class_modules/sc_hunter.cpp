@@ -1144,6 +1144,7 @@ public:
     ab::apply_affecting_aura( p -> tier_set.t31_mm_2pc );
 
     ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_2pc );
+    ab::apply_affecting_aura( p -> tier_set.tww_s1_sv_2pc );
 
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.overshadow );
@@ -5553,6 +5554,17 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     double m = hunter_melee_attack_t::composite_da_multiplier( s );
 
     m *= 1 + p()->buffs.furious_assault->value();
+
+    return m;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_melee_attack_t::composite_target_da_multiplier( t );
+
+    hunter_td_t *td = p()->get_target_data( t );
+    if ( p()->tier_set.tww_s1_sv_4pc.ok() && td->dots.wildfire_bomb->is_ticking() )
+      m *= 1 + p()->tier_set.tww_s1_sv_4pc->effectN( 1 ).percent();
 
     return m;
   }
