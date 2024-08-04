@@ -1062,6 +1062,7 @@ public:
     }
 
     auto action        = new T( n, this, std::forward<Ts>( args )... );
+    assert( action->name_str == n && "Created background action does not match requested name" );
     action->background = true;
     background_actions.push_back( action );
     return action;
