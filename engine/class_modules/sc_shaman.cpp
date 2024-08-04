@@ -12205,7 +12205,9 @@ void shaman_t::create_buffs()
                                 ->set_default_value_from_effect( 1 )
                                 ->set_trigger_spell( talent.storm_frenzy );
   buff.fury_of_the_storms = make_buff( this, "fury_of_storms", find_spell( 191716 ) )
-                                ->set_trigger_spell( talent.fury_of_the_storms );
+                                ->set_trigger_spell( talent.fury_of_the_storms )
+                                ->set_duration( find_spell( 191716 )->duration() *
+                                  ( 1.0 + talent.everlasting_elements->effectN( 1 ).percent() ) );
 
   buff.call_of_the_ancestors = make_buff( this, "call_of_the_ancestors", find_spell( 447244 ) )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
