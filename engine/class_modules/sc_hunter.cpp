@@ -3740,7 +3740,7 @@ struct barrage_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if( p() -> talents.beast_cleave.ok() )
+    if( p()->talents.beast_cleave->ok() && p()->buffs.beast_cleave->buff_duration() > p()->buffs.beast_cleave->remains() )
     {
       p() -> buffs.beast_cleave -> trigger(); 
       for ( auto pet : pets::active<pets::hunter_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -4449,7 +4449,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.beast_cleave -> ok() ) {
+    if ( p()->talents.beast_cleave->ok() && p()->buffs.beast_cleave->buff_duration() > p()->buffs.beast_cleave->remains() ) {
 
       p() -> buffs.beast_cleave -> trigger();
       
