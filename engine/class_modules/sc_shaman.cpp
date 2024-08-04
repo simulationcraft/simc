@@ -1571,6 +1571,9 @@ public:
   bool affected_by_ele_mastery_da;
   bool affected_by_ele_mastery_ta;
 
+  bool affected_by_lightning_elemental_da;
+  bool affected_by_lightning_elemental_ta;
+
   bool affected_by_ele_tww1_4pc_cc;
   bool affected_by_ele_tww1_4pc_cd;
 
@@ -1613,6 +1616,8 @@ public:
       affected_by_elemental_unity_se_ta( false ),
       affected_by_ele_mastery_da( false ),
       affected_by_ele_mastery_ta( false ),
+      affected_by_lightning_elemental_da( false ),
+      affected_by_lightning_elemental_ta( false ),
       affected_by_ele_tww1_4pc_cc( false ),
       affected_by_ele_tww1_4pc_cd( false )
   {
@@ -1702,6 +1707,9 @@ public:
     affected_by_ele_mastery_da = ab::data().affected_by( player->mastery.elemental_overload->effectN( 4 ) );
     affected_by_ele_mastery_ta = ab::data().affected_by( player->mastery.elemental_overload->effectN( 5 ) );
 
+    affected_by_lightning_elemental_da = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 2 ) );
+    affected_by_lightning_elemental_ta = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 3 ) );
+
     affected_by_ele_tww1_4pc_cc = ab::data().affected_by(
       player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by_ele_tww1_4pc_cd = ab::data().affected_by(
@@ -1787,6 +1795,11 @@ public:
     if ( affected_by_ele_mastery_da )
     {
       m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery();
+    }
+
+    if ( affected_by_lightning_elemental_da && p()->buff.fury_of_the_storms->up() )
+    {
+      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
     }
 
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
@@ -1890,6 +1903,11 @@ public:
     if ( affected_by_ele_mastery_ta )
     {
       m *= 1.0 + p()->mastery.elemental_overload->effectN( 5 ).mastery_value() * p()->cache.mastery();
+    }
+
+    if ( affected_by_lightning_elemental_da && p()->buff.fury_of_the_storms->up() )
+    {
+      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
     }
 
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
