@@ -2114,11 +2114,24 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
     holy_power_consumer_t::execute();
     p()->trigger_empyrean_hammer(
         target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
-        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
-        true );
+        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
-      p()->buffs.templar.shake_the_heavens->execute();
+      if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
+        p()->buffs.templar.shake_the_heavens->execute();
+      else
+      {
+        // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
+        // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
+        timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
+        timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
+        double extension       = 4.0;
+        if ( maxDur < extendedDur )
+        {
+          extension -= ( extendedDur - maxDur ).total_seconds();
+        }
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
+      }
     }
   }
   void impact( action_state_t* s ) override
@@ -2151,19 +2164,31 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     direct_hammer               = new hammer_of_light_damage_t( p, options_str );
     add_child( direct_hammer );
     background = !p->talents.templar.lights_guidance->ok();
+    // This is not set by definition, since cost changes by spec
+    resource_current = RESOURCE_HOLY_POWER;
   }
 
-  double cost_pct_multiplier() const override
-   {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
+  double cost() const override
+  {
+    // double c = holy_power_consumer_t::cost();
+    double c;
+    // It costs 5 for Ret, 3 for Prot. Hardcoding here since cost could change in order
+    if ( p()->specialization() == PALADIN_RETRIBUTION )
+      c = 5.0;
+    else
+      c = 3.0;
+
+    // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
+    if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
+      return c;
 
     if ( p()->buffs.templar.hammer_of_light_free->up() )
       c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
-    if ( p()->buffs.divine_purpose->up() )
-      c *= 1.0 - 1.0;
+    if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )
+      c = 0.0;
 
     return c;
-   }
+  }
 
    bool target_ready( player_t* candidate_target ) override
    {
@@ -3710,8 +3735,8 @@ void paladin_t::create_buffs()
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
-                                }
-  );
+                                        } )
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
