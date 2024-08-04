@@ -1414,6 +1414,7 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
       buff_duration = o()->talents.memory_of_alar->effectN( 3 ).time_value()
                     + exceptional_spells_used * o()->talents.memory_of_alar->effectN( 4 ).time_value();
       o()->buffs.hyperthermia->execute( -1, buff_t::DEFAULT_VALUE(), buff_duration );
+      o()->buffs.hyperthermia->predict();
     }
     else
     {
@@ -4283,7 +4284,10 @@ struct combustion_t final : public fire_mage_spell_t
     p()->buffs.tier31_4pc->trigger();
     p()->trigger_flash_freezeburn();
     if ( p()->talents.explosivo.ok() )
+    {
       p()->buffs.lit_fuse->trigger();
+      p()->buffs.lit_fuse->predict();
+    }
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( combustion_duration );
 
