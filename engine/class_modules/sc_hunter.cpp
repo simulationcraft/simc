@@ -2706,18 +2706,19 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
   }
 };
 
-struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
+struct kill_command_sv_t : public hunter_main_pet_attack_t
 {
-  kill_command_sv_t( hunter_main_pet_base_t* p ) :
-    kill_command_base_t( p, p -> find_spell( 259277 ) )
+  kill_command_sv_t( hunter_main_pet_t* p ) : hunter_main_pet_attack_t( "kill_command", p, p->find_spell( 259277 ) )
   {
     if ( ! o() -> talents.bloodseeker.ok() )
       dot_duration = 0_ms;
+
+    base_multiplier *= 1 + o()->talents.alpha_predator->effectN( 2 ).percent();
   }
 
   void impact( action_state_t* s ) override
   {
-    kill_command_base_t::impact( s );
+    hunter_main_pet_attack_t::impact( s );
 
     if( ! o() -> tier_set.t30_sv_4pc.ok() )
       return;
@@ -2742,21 +2743,21 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
   
   void trigger_dot( action_state_t* s ) override
   {
-    kill_command_base_t::trigger_dot( s );
+    hunter_main_pet_attack_t::trigger_dot( s );
 
     o() -> trigger_bloodseeker_update();
   }
 
   void last_tick( dot_t* d ) override
   {
-    kill_command_base_t::last_tick( d );
+    hunter_main_pet_attack_t::last_tick( d );
 
     o() -> trigger_bloodseeker_update();
   }
 
   double action_multiplier() const override
   {
-    double am = kill_command_base_t::action_multiplier();
+    double am = hunter_main_pet_attack_t::action_multiplier();
 
     am *= 1 + o() -> buffs.exposed_wound -> value(); 
 
@@ -2768,7 +2769,7 @@ struct kill_command_sv_t : public kill_command_base_t<hunter_main_pet_base_t>
     if ( o()->buffs.exposed_flank->up() )
       return as<int>( o()->buffs.exposed_flank->check_value() );
 
-    return kill_command_base_t::n_targets();
+    return hunter_main_pet_attack_t::n_targets();
   }
 };
 
@@ -3239,8 +3240,6 @@ void hunter_main_pet_base_t::init_spells()
 
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.kill_command = new actions::kill_command_bm_t( this );
-  else if ( o() -> specialization() == HUNTER_SURVIVAL )
-    active.kill_command = new actions::kill_command_sv_t( this );
 
   spells.bloodshed = find_spell( 321538 );
 
@@ -3260,6 +3259,9 @@ void hunter_main_pet_base_t::init_spells()
 void hunter_main_pet_t::init_spells()
 {
   hunter_main_pet_base_t::init_spells();
+
+  if ( o()->specialization() == HUNTER_SURVIVAL )
+    active.kill_command = new actions::kill_command_sv_t( this );
 
   if ( o() -> talents.flanking_strike.ok() )
     active.flanking_strike = new actions::flanking_strike_t( this );
