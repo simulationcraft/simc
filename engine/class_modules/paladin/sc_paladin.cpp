@@ -2161,29 +2161,28 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   hammer_of_light_damage_t* direct_hammer;
+  double prot_cost;
+  double ret_cost;
   hammer_of_light_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ),
-      direct_hammer()
+    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), direct_hammer()
   {
     parse_options( options_str );
-    is_hammer_of_light_driver   = true;
-    is_hammer_of_light          = true;
-    direct_hammer               = new hammer_of_light_damage_t( p, options_str );
-    add_child( direct_hammer );
-    background = !p->talents.templar.lights_guidance->ok();
+    is_hammer_of_light_driver = true;
+    is_hammer_of_light        = true;
+    direct_hammer             = new hammer_of_light_damage_t( p, options_str );
+    background                = !p->talents.templar.lights_guidance->ok();
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
+    ret_cost         = data().powerN( 1 ).cost();
+    prot_cost        = data().powerN( 2 ).cost();
+    add_child( direct_hammer );
   }
 
   double cost() const override
   {
     // double c = holy_power_consumer_t::cost();
-    double c;
-    // It costs 5 for Ret, 3 for Prot. Hardcoding here since cost could change in order
-    if ( p()->specialization() == PALADIN_RETRIBUTION )
-      c = 5.0;
-    else
-      c = 3.0;
+    // It costs 5 for Ret, 3 for Prot
+    double c = p()->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
 
     // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
     if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
