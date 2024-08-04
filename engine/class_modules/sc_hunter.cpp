@@ -3955,7 +3955,7 @@ struct serpent_sting_explosive_venom_t final : public serpent_sting_base_t
   serpent_sting_explosive_venom_t( hunter_t* p ):
     serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
   {
-    dual = true;
+    background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
@@ -4090,7 +4090,7 @@ struct explosive_shot_background_t : public explosive_shot_t
 
   explosive_shot_background_t( hunter_t* p ) : explosive_shot_t( p, "" )
   {
-    dual = true;
+    background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
@@ -4115,7 +4115,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     serpent_sting_venoms_bite_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
@@ -4795,7 +4795,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     serpent_sting_sst_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
     }
   };
 
@@ -4804,7 +4804,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     serpent_sting_hb_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
       aoe = as<int>( p->talents.hydras_bite->effectN( 3 ).base_value() );
     }
 
@@ -5505,7 +5505,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     serpent_sting_vv_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 259491 ) )
     {
-      dual = true;
+      background = dual = true;
     }
 
     timespan_t travel_time() const override
@@ -6258,7 +6258,7 @@ struct kill_command_t: public hunter_spell_t
     arcane_shot_qs_t( hunter_t* p ):
       arcane_shot_t( p, "" )
     {
-      dual = true;
+      background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
 
