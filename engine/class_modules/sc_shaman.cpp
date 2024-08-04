@@ -3693,14 +3693,16 @@ struct ancestor_t : public shaman_pet_t
   struct elemental_blast_t : public pet_spell_t<ancestor_t>
   {
     elemental_blast_t( ancestor_t* p ) : super( p, "elemental_blast", p->find_spell( 447427 ) )
-    { background = true; }
+    {
+        background = true;
+        spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    }
 
     void execute() override
     {
       o()->trigger_elemental_blast_proc();
       pet_spell_t::execute();
     }
-
   };
 
   ancestor_t( shaman_t* owner ) : shaman_pet_t( owner, "ancestor", true, false ),
