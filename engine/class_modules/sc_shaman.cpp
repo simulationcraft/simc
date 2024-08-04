@@ -6963,7 +6963,11 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     {
       m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
     }
-    
+
+    if ( exec_type == spell_variant::FUSION_OF_ELEMENTS )
+    {
+      m *= p()->talent.fusion_of_elements->effectN( 1 ).percent();
+    }    
     return m;
   }
 
