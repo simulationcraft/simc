@@ -2701,7 +2701,6 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.mind_spike_insanity_munched    = get_proc( "Mind Spike: Insanity stacks consumed by normal Mind Spikes" );
   procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
   procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
   // Holy

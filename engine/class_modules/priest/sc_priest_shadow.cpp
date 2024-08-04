@@ -188,21 +188,6 @@ struct mind_spike_t final : public mind_spike_base_t
 
     return mind_spike_base_t::action_ready();
   }
-
-  void execute() override
-  {
-    mind_spike_base_t::execute();
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1192
-    if ( priest().bugs && priest().talents.shadow.surge_of_insanity.enabled() )
-    {
-      if ( priest().buffs.mind_spike_insanity->check() )
-      {
-        priest().buffs.mind_spike_insanity->decrement();
-        priest().procs.mind_spike_insanity_munched->occur();
-      }
-    }
-  }
 };
 
 struct mind_spike_insanity_t final : public mind_spike_base_t
