@@ -380,6 +380,11 @@ public:
     // TWW Season 1 - Nerub'ar Palace
     spell_data_ptr_t tww_s1_bm_2pc;
     spell_data_ptr_t tww_s1_bm_4pc;
+    spell_data_ptr_t tww_s1_mm_2pc;
+    spell_data_ptr_t tww_s1_mm_4pc;
+    spell_data_ptr_t tww_s1_mm_4pc_buff;
+    spell_data_ptr_t tww_s1_sv_2pc;
+    spell_data_ptr_t tww_s1_sv_4pc;
   } tier_set;
 
   // Buffs
@@ -460,7 +465,8 @@ public:
     buff_t* rapid_reload; 
 
     //TWW - S1
-    buff_t* harmonize;
+    buff_t* harmonize; //BM 4pc
+    buff_t* moving_target; //MM 4pc
 
     // Hero Talents 
 
@@ -1043,6 +1049,8 @@ public:
     damage_affected_by t29_sv_4pc_dmg;
     bool t31_sv_2pc_crit_chance = false;
     bool t31_sv_2pc_crit_damage = false;
+
+    damage_affected_by tww_s1_mm_4pc;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1083,6 +1091,8 @@ public:
 
     affected_by.t31_sv_2pc_crit_chance = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 2 ) ); 
     affected_by.t31_sv_2pc_crit_damage = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) );
+
+    affected_by.tww_s1_mm_4pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s1_mm_4pc_buff );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1132,6 +1142,8 @@ public:
     ab::apply_affecting_aura( p -> tier_set.t30_sv_2pc );
 
     ab::apply_affecting_aura( p -> tier_set.t31_mm_2pc );
+
+    ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_2pc );
 
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.overshadow );
@@ -1310,6 +1322,11 @@ public:
 
       am *= 1 + tip_bonus;
     }
+
+    if ( affected_by.tww_s1_mm_4pc.direct && p()->buffs.moving_target->check() )
+    {
+      am *= 1 + p()->buffs.moving_target->value();
+    } 
 
     return am;
   }
@@ -3755,6 +3772,11 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if( p()->tier_set.tww_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() )
+    {
+      p()->buffs.moving_target->trigger();
+    }
+
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
@@ -4688,6 +4710,11 @@ struct chimaera_shot_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if( p()->tier_set.tww_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() )
+    {
+      p()->buffs.moving_target->trigger();
+    }
+
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
@@ -5353,6 +5380,11 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if( p()->tier_set.tww_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() )
+    {
+      p()->buffs.moving_target->trigger();
+    }
+    
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
@@ -7723,6 +7755,11 @@ void hunter_t::init_spells()
 
   tier_set.tww_s1_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B2 );
   tier_set.tww_s1_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, TWW1, B4 );
+  tier_set.tww_s1_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, TWW1, B2 );
+  tier_set.tww_s1_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, TWW1, B4 );
+  tier_set.tww_s1_mm_4pc_buff = find_spell( 457116 );
+  tier_set.tww_s1_sv_2pc = sets -> set( HUNTER_SURVIVAL, TWW1, B2 );
+  tier_set.tww_s1_sv_4pc = sets -> set( HUNTER_SURVIVAL, TWW1, B4 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
@@ -8212,6 +8249,10 @@ void hunter_t::create_buffs()
 
   buffs.harmonize =
     make_buff( this, "harmonize", find_spell( 457072 ) )
+      -> set_default_value_from_effect( 1 );
+
+  buffs.moving_target
+    = make_buff( this, "moving_target", tier_set.tww_s1_mm_4pc_buff )
       -> set_default_value_from_effect( 1 );
 
   // Hero Talents
