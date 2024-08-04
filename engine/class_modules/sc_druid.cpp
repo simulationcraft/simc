@@ -4324,14 +4324,14 @@ struct ferocious_bite_base_t : public cat_finisher_t
   double excess_energy = 0.0;
   double max_excess_energy;
   double saber_jaws_mul;
-  double rf_energy_mul_pct;
+  double rf_energy_mod_pct;
   bool max_energy = false;
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : cat_finisher_t( n, p, s, f ),
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
-      rf_energy_mul_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
+      rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
@@ -4391,7 +4391,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
         auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
         state->combo_points = cp( from );
-        state->energy_mul = energy_multiplier( from ) * rf_energy_mul_pct;
+        state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
       } );
     }
   }
@@ -4409,7 +4409,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     cat_finisher_t::consume_resource();
   }
 
-  virtual double energy_multiplier( const action_state_t* ) const
+  virtual double energy_modifier( const action_state_t* ) const
   {
     return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
   }
@@ -4417,7 +4417,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = 1.0 + energy_multiplier( s );
+    auto energy_mul = 1.0 + energy_modifier( s );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -4431,9 +4431,9 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
   {
     ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
-    double energy_multiplier( const action_state_t* s ) const override
+    double energy_modifier( const action_state_t* s ) const override
     {
-      return s->chain_target == 0 ? base_t::energy_multiplier( s ) : 1.0;
+      return s->chain_target == 0 ? base_t::energy_modifier( s ) : 0.0;
     }
   };
 

@@ -557,9 +557,9 @@ struct consecration_t : public paladin_spell_t
 
     /*
       Divine Guidance seems to function as follows:
-      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5
-      If you cannot heal 5 targets, deal the rest in damage to other targets inside the Consecration
-      Damage and Healing is divided by target count, up to 5, damage is then further divided by amount of mobs hit
+      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5 (max_dg_heal_targets)
+      If you cannot heal 5 (max_dg_heal_targets) targets, deal the rest in damage to other targets inside the Consecration
+      Damage and Healing is divided by target count, up to 5 (max_dg_heal_targets), damage is then further divided by amount of mobs hit
     */
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
@@ -572,27 +572,34 @@ struct consecration_t : public paladin_spell_t
           healingAllies.push_back( friendly );
         else if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
           healingAllies.push_back( friendly );
-        if ( healingAllies.size() == 5 )
+        if ( healingAllies.size() == p()->options.max_dg_heal_targets )
           break;
       }
-      // If we hit less than 5 healing targets, we can fill the rest with damage targets
+      // If we hit less than 5 (max_dg_heal_targets) healing targets, we can fill the rest with damage targets
       int healingAlliesSize = as<int>( healingAllies.size() );
+
+      if ( healingAlliesSize > p()->options.min_dg_heal_targets )
+        healingAlliesSize = p()->options.min_dg_heal_targets;
+
       totalTargets          = healingAlliesSize;
+
       if ( healingAlliesSize < 5 )
       {
         totalTargets = as<int>( sim->target_non_sleeping_list.size() ) + healingAlliesSize;
-        if ( totalTargets > 5 )
-          totalTargets = 5;
       }
-      p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
-      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
 
-      // Healing events come before Consecration cast
-      for (auto friendly : healingAllies)
+      if ( healingAlliesSize > 0 )
       {
-        p()->active.divine_guidance_heal->set_target( friendly );
-        p()->active.divine_guidance_heal->execute();
+        p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
+        // Healing events come before Consecration cast
+        for ( auto friendly : healingAllies )
+        {
+          p()->active.divine_guidance_heal->set_target( friendly );
+          p()->active.divine_guidance_heal->execute();
+        }
       }
+      p()->active.divine_guidance_damage->base_dd_multiplier =
+          ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
     }
 
     paladin_spell_t::execute();
@@ -2114,11 +2121,24 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
     holy_power_consumer_t::execute();
     p()->trigger_empyrean_hammer(
         target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
-        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
-        true );
+        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
-      p()->buffs.templar.shake_the_heavens->execute();
+      if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
+        p()->buffs.templar.shake_the_heavens->execute();
+      else
+      {
+        // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
+        // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
+        timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
+        timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
+        double extension       = 4.0;
+        if ( maxDur < extendedDur )
+        {
+          extension -= ( extendedDur - maxDur ).total_seconds();
+        }
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
+      }
     }
   }
   void impact( action_state_t* s ) override
@@ -2151,19 +2171,31 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     direct_hammer               = new hammer_of_light_damage_t( p, options_str );
     add_child( direct_hammer );
     background = !p->talents.templar.lights_guidance->ok();
+    // This is not set by definition, since cost changes by spec
+    resource_current = RESOURCE_HOLY_POWER;
   }
 
-  double cost_pct_multiplier() const override
-   {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
+  double cost() const override
+  {
+    // double c = holy_power_consumer_t::cost();
+    double c;
+    // It costs 5 for Ret, 3 for Prot. Hardcoding here since cost could change in order
+    if ( p()->specialization() == PALADIN_RETRIBUTION )
+      c = 5.0;
+    else
+      c = 3.0;
+
+    // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
+    if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
+      return c;
 
     if ( p()->buffs.templar.hammer_of_light_free->up() )
       c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
-    if ( p()->buffs.divine_purpose->up() )
-      c *= 1.0 - 1.0;
+    if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )
+      c = 0.0;
 
     return c;
-   }
+  }
 
    bool target_ready( player_t* candidate_target ) override
    {
@@ -3710,8 +3742,8 @@ void paladin_t::create_buffs()
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
-                                }
-  );
+                                        } )
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
@@ -4816,6 +4848,8 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
+  add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
 
   player_t::create_options();
 }
@@ -5110,6 +5144,27 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   if (splits[0] == "judgment_holy_power")
   {
     return std::make_unique<judgment_holy_power_expr_t>( name_str, *this );
+  }
+
+  struct hpg_to_2dawn_expr_t : public paladin_expr_t
+  {
+    hpg_to_2dawn_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
+    double evaluate() override
+    {
+      if ( paladin.talents.of_dusk_and_dawn->ok() )
+      {
+        return 6.0 - paladin.holy_power_generators_used - ( paladin.buffs.blessing_of_dawn->stack() * 3 );
+      }
+      else
+        return -1.0;
+    }
+  };
+
+  if (splits[0] == "hpg_to_2dawn")
+  {
+    return std::make_unique<hpg_to_2dawn_expr_t>( name_str, *this );
   }
 
   auto cons_expr = create_consecration_expression( name_str );

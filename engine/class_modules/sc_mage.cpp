@@ -4395,18 +4395,13 @@ struct cone_of_cold_t final : public frost_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
+      trigger_winters_chill( s );
+
     frost_mage_spell_t::impact( s );
 
     if ( p()->talents.freezing_cold.ok() )
       p()->trigger_crowd_control( s, MECHANIC_FREEZE, -0.5_s ); // Freezing Cold only has the initial grace period
-
-    if ( p()->talents.coldest_snap.ok() && num_targets_hit >= as<int>( p()->talents.coldest_snap->effectN( 3 ).base_value() ) )
-    {
-      // One of the two WC stacks gets instantly consumed (without enabling shatter),
-      // which does trigger Splintering Sorcery.
-      trigger_winters_chill( s, 1 );
-      p()->trigger_splinter( p()->target );
-    }
   }
 };
 

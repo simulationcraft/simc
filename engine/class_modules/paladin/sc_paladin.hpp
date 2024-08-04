@@ -753,6 +753,8 @@ public:
   {
     bool fake_sov                    = true;
     double proc_chance_ret_aura_sera = 0.10;
+    double min_dg_heal_targets       = 1.0;
+    double max_dg_heal_targets       = 5.0;
   } options;
   player_t* beacon_target;
 
