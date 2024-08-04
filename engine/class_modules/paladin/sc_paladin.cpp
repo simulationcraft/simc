@@ -557,9 +557,9 @@ struct consecration_t : public paladin_spell_t
 
     /*
       Divine Guidance seems to function as follows:
-      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5
-      If you cannot heal 5 targets, deal the rest in damage to other targets inside the Consecration
-      Damage and Healing is divided by target count, up to 5, damage is then further divided by amount of mobs hit
+      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5 (max_dg_heal_targets)
+      If you cannot heal 5 (max_dg_heal_targets) targets, deal the rest in damage to other targets inside the Consecration
+      Damage and Healing is divided by target count, up to 5 (max_dg_heal_targets), damage is then further divided by amount of mobs hit
     */
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
@@ -572,27 +572,33 @@ struct consecration_t : public paladin_spell_t
           healingAllies.push_back( friendly );
         else if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
           healingAllies.push_back( friendly );
-        if ( healingAllies.size() == 5 )
+        if ( healingAllies.size() == p()->options.max_dg_heal_targets )
           break;
       }
-      // If we hit less than 5 healing targets, we can fill the rest with damage targets
+      // If we hit less than 5 (max_dg_heal_targets) healing targets, we can fill the rest with damage targets
       int healingAlliesSize = as<int>( healingAllies.size() );
+
+      if ( healingAlliesSize > p()->options.min_dg_heal_targets )
+        healingAlliesSize = p()->options.min_dg_heal_targets;
+
       totalTargets          = healingAlliesSize;
+
       if ( healingAlliesSize < 5 )
       {
         totalTargets = as<int>( sim->target_non_sleeping_list.size() ) + healingAlliesSize;
-        if ( totalTargets > 5 )
-          totalTargets = 5;
       }
-      p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
-      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
 
-      // Healing events come before Consecration cast
-      for (auto friendly : healingAllies)
+      if ( healingAlliesSize > 0 )
       {
-        p()->active.divine_guidance_heal->set_target( friendly );
-        p()->active.divine_guidance_heal->execute();
+        p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
+        // Healing events come before Consecration cast
+        for ( auto friendly : healingAllies )
+        {
+          p()->active.divine_guidance_heal->set_target( friendly );
+          p()->active.divine_guidance_heal->execute();
+        }
       }
+      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
     }
 
     paladin_spell_t::execute();
@@ -4841,6 +4847,8 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
+  add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
 
   player_t::create_options();
 }
