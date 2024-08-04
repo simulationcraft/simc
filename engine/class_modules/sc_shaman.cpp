@@ -8862,6 +8862,9 @@ struct totem_pulse_action_t : public T
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
 
+  bool affected_by_ele_mastery_da;
+  bool affected_by_ele_mastery_ta;
+
   bool affected_by_totemic_rebound_da;
 
   bool affected_by_amplification_core_da;
@@ -8897,6 +8900,8 @@ struct totem_pulse_action_t : public T
 
     affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
+    affected_by_ele_mastery_da        = T::data().affected_by( o()->mastery.elemental_overload->effectN( 4 ) );
+    affected_by_ele_mastery_ta        = T::data().affected_by( o()->mastery.elemental_overload->effectN( 5 ) );
     affected_by_amplification_core_da = T::data().affected_by( o()->buff.amplification_core->data().effectN( 1 ) );
     affected_by_amplification_core_ta = T::data().affected_by( o()->buff.amplification_core->data().effectN( 2 ) );
     affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
@@ -8955,6 +8960,11 @@ struct totem_pulse_action_t : public T
       m *= 1.0 + o()->cache.mastery_value();
     }
 
+    if ( affected_by_ele_mastery_da )
+    {
+      m *= 1.0 + o()->mastery.elemental_overload->effectN( 4 ).mastery_value() * o()->cache.mastery();
+    }
+
     if ( affected_by_totemic_rebound_da )
     {
       m *= 1.0 + o()->buff.totemic_rebound->stack_value();
@@ -9004,6 +9014,11 @@ struct totem_pulse_action_t : public T
     if ( affected_by_enh_mastery_ta )
     {
       m *= 1.0 + o()->cache.mastery_value();
+    }
+
+    if ( affected_by_ele_mastery_ta )
+    {
+      m *= 1.0 + o()->mastery.elemental_overload->effectN( 5 ).mastery_value() * o()->cache.mastery();
     }
 
     if ( affected_by_lotfw_ta && o()->buff.legacy_of_the_frost_witch->check() )
@@ -13440,11 +13455,12 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
-    m *= 1.0 + buff.elemental_equilibrium->value();
+    //m *= 1.0 + buff.elemental_equilibrium->value();  TODO: check what this was doing here
   }
   else
   {
-    m *= 1.0 + spec.elemental_shaman->effectN( 14 ).percent();
+    m *= 1.0 + spec.elemental_shaman->effectN( 4 ).percent();
+    m *= 1.0 + spec.elemental_shaman->effectN( 28 ).percent();
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 13 ).percent();
   }
