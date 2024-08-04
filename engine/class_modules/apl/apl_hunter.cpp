@@ -87,7 +87,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "bloodshed" );
-  cleave->add_action( "kill_shot,target_if=min:dot.sepent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
+  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
   cleave->add_action( "dire_beast" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
@@ -163,7 +163,7 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "kill_command,if=talent.kill_cleave" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "bloodshed" );
-  cleave->add_action( "kill_shot,target_if=min:dot.sepent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
+  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
   cleave->add_action( "dire_beast" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
   cleave->add_action( "kill_command" );
