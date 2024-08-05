@@ -422,6 +422,7 @@ public:
     buff_t* bursting_energy;
     buff_t* intuition;
 
+    buff_t* blessing_of_the_phoenix;
     buff_t* searing_rage;
     buff_t* tier31_4pc;
 
@@ -1859,6 +1860,7 @@ struct mage_spell_t : public spell_t
     bool unleashed_inferno = false;
 
     bool arcane_overload = true;
+    bool blessing_of_the_phoenix = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -2036,6 +2038,9 @@ public:
 
     if ( affected_by.arcane_overload )
       m *= 1.0 + p()->buffs.arcane_overload->check_value();
+
+    if ( affected_by.blessing_of_the_phoenix )
+      m *= 1.0 + p()->buffs.blessing_of_the_phoenix->check_value();
 
     return m;
   }
@@ -6310,8 +6315,11 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
 
 struct phoenix_flames_t final : public fire_mage_spell_t
 {
+  double blessing_speed;
+
   phoenix_flames_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->talents.phoenix_flames )
+    fire_mage_spell_t( n, p, p->talents.phoenix_flames ),
+    blessing_speed( p->find_spell( 455137 )->missile_speed() )
   {
     parse_options( options_str );
 
@@ -6350,6 +6358,17 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       {
         cooldown->reset( false );
         p()->buffs.flames_fury->decrement();
+      } );
+    }
+
+    const spell_data_t* set = p()->sets->set( MAGE_FIRE, TWW1, B4 );
+    if ( rng().roll( set->effectN( 1 ).percent() ) )
+    {
+      timespan_t delay = timespan_t::from_seconds( p()->get_player_distance( *s->target ) / blessing_speed );
+      make_event( *sim, delay, [ this, set ]
+      {
+        p()->buffs.blessing_of_the_phoenix->trigger();
+        cooldown->adjust( set->effectN( 2 ).percent() * cooldown_t::cooldown_duration( cooldown ), false, false );
       } );
     }
   }
@@ -8578,12 +8597,15 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
 
-  buffs.searing_rage = make_buff( this, "searing_rage", find_spell( 424285 ) )
-                         ->set_default_value_from_effect( 1 )
-                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B2 ) );
-  buffs.tier31_4pc   = make_buff( this, "tier31_4pc", find_spell( 424289 ) )
-                         ->set_default_value_from_effect( 1 )
-                         ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B4 ) );
+  buffs.blessing_of_the_phoenix = make_buff( this, "blessing_of_the_phoenix", find_spell( 455134 ) )
+                                    ->set_default_value_from_effect( 1 )
+                                    ->set_chance( sets->has_set_bonus( MAGE_FIRE, TWW1, B4 ) );
+  buffs.searing_rage            = make_buff( this, "searing_rage", find_spell( 424285 ) )
+                                    ->set_default_value_from_effect( 1 )
+                                    ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B2 ) );
+  buffs.tier31_4pc              = make_buff( this, "tier31_4pc", find_spell( 424289 ) )
+                                    ->set_default_value_from_effect( 1 )
+                                    ->set_chance( sets->has_set_bonus( MAGE_FIRE, T31, B4 ) );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )
