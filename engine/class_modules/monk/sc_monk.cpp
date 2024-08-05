@@ -4556,8 +4556,9 @@ struct celestial_conduit_t : public monk_spell_t
     celestial_conduit_dmg_t( monk_t *p )
       : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
-      background = true;
-      aoe        = -1;
+      background       = true;
+      aoe              = -1;
+      split_aoe_damage = true;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
