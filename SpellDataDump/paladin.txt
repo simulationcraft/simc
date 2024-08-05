@@ -25926,6 +25926,7 @@ Tooltip          : Your next spell is empowered:
 -Greater Judgment prevents ${$w4-100}% more damage.
 
 Name             : Radiant Glory (id=458359) [Spell Family (10), Passive] 
+Hotfixed         : Proc Flags 1 (86032 -> 0)
 Talent Entry     : Retribution [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
@@ -25934,8 +25935,8 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x.x. x....... ........   ..x..... ........ ........ ........   
-                 : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Successful
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
