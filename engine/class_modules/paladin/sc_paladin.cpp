@@ -3746,7 +3746,8 @@ void paladin_t::create_buffs()
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
-                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                        ->set_partial_tick( true );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
