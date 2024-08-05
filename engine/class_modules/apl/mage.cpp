@@ -7,7 +7,8 @@ namespace mage_apl {
 
 std::string potion( const player_t* p )
 {
-  return p->true_level >= 70 ? "elemental_potion_of_ultimate_power_3"
+  return p->true_level >= 80 ? "tempered_potion_3"
+       : p->true_level >= 70 ? "elemental_potion_of_ultimate_power_3"
        : p->true_level >= 60 ? "spectral_intellect"
        : p->true_level >= 50 ? "superior_battle_potion_of_intellect"
        :                       "disabled";
@@ -15,7 +16,8 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return p->true_level >= 70 ? "phial_of_tepid_versatility_3"
+  return p->true_level >= 80 ? "flask_of_alchemical_chaos_3"
+       : p->true_level >= 70 ? "phial_of_tepid_versatility_3"
        : p->true_level >= 60 ? "spectral_flask_of_power"
        : p->true_level >= 50 ? "greater_flask_of_endless_fathoms"
        :                       "disabled";
@@ -23,7 +25,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return p->true_level >= 70 ? "fated_fortune_cookie"
+  return p->true_level >= 80 ? "feisty_fish_sticks"
+       : p->true_level >= 70 ? "fated_fortune_cookie"
        : p->true_level >= 60 ? "feast_of_gluttonous_hedonism"
        : p->true_level >= 50 ? "famine_evaluator_and_snack_table"
        :                       "disabled";
@@ -31,7 +34,8 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return p->true_level >= 70 ? "draconic"
+  return p->true_level >= 80 ? "crystallized"
+       : p->true_level >= 70 ? "draconic"
        : p->true_level >= 60 ? "veiled"
        : p->true_level >= 50 ? "battle_scarred"
        :                       "disabled";
@@ -39,9 +43,8 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string lvl70_temp_enchant = p->specialization() == MAGE_FIRE ? "main_hand:howling_rune_3" : "main_hand:buzzing_rune_3";
-
-  return p->true_level >= 70 ? lvl70_temp_enchant
+  return p->true_level >= 80 ? "main_hand:algari_mana_oil_3"
+       : p->true_level >= 70 ? "main_hand:buzzing_rune_3"
        : p->true_level >= 60 ? "main_hand:shadowcore_oil"
        :                       "disabled";
 }
@@ -52,8 +55,10 @@ void arcane( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cd_opener = p->get_action_priority_list( "cd_opener" );
-  action_priority_list_t* rotation_aoe = p->get_action_priority_list( "rotation_aoe" );
-  action_priority_list_t* rotation_default = p->get_action_priority_list( "rotation_default" );
+  action_priority_list_t* spellslinger_aoe = p->get_action_priority_list( "spellslinger_aoe" );
+  action_priority_list_t* spellslinger = p->get_action_priority_list( "spellslinger" );
+  action_priority_list_t* sunfury_aoe = p->get_action_priority_list( "sunfury_aoe" );
+  action_priority_list_t* sunfury = p->get_action_priority_list( "sunfury" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -62,8 +67,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=aoe_target_count,op=reset,default=2" );
   precombat->add_action( "variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave" );
   precombat->add_action( "variable,name=opener,op=set,value=1" );
-  precombat->add_action( "variable,name=alt_rotation,op=set,if=talent.high_voltage,value=1" );
-  precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.ashes_of_the_embersoul|equipped.nymues_unraveling_spindle|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter", "Variable indicates use of a trinket that boosts stats during burst" );
+  precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.ashes_of_the_embersoul|equipped.nymues_unraveling_spindle|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "arcane_blast,if=!talent.evocation" );
@@ -76,57 +80,76 @@ void arcane( player_t* p )
   default_->add_action( "blood_fury,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "fireblood,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "ancestral_call,if=prev_gcd.1.arcane_surge" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=prev_gcd.1.arcane_surge", "PI/Summer after Radiant Spark when cooldowns are coming up, Autumn after Touch of the Magi cd starts" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=prev_gcd.1.arcane_surge", "Invoke Externals with cooldowns except Autumn which should come just after cooldowns" );
   default_->add_action( "invoke_external_buff,name=blessing_of_summer,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5" );
-  default_->add_action( "use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remains<20|!variable.steroid_trinket_equipped" );
+  default_->add_action( "use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remains<20|!variable.steroid_trinket_equipped", "Trinket specific use cases vary, default is just with cooldowns" );
+  default_->add_action( "use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment)|fight_remains<20" );
   default_->add_action( "use_item,name=high_speakers_accretion,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)|cooldown.evocation.remains<7|fight_remains<20" );
   default_->add_action( "use_item,name=treacherous_transmitter,if=((prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&variable.opener)|cooldown.evocation.remains<6|fight_remains<20" );
   default_->add_action( "do_treacherous_transmitter_task,use_off_gcd=1,if=buff.siphon_storm.up|fight_remains<20" );
-  default_->add_action( "use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment)|fight_remains<20" );
   default_->add_action( "use_item,name=aberrant_spellforge,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|(equipped.spymasters_web&target.health.pct>35)" );
   default_->add_action( "use_item,name=mad_queens_mandate,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
   default_->add_action( "use_item,name=mereldars_toll,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=nymues_unraveling_spindle,if=cooldown.arcane_surge.remains<=(gcd.max*4)|cooldown.arcane_surge.ready|fight_remains<=24" );
-  default_->add_action( "use_item,name=belorrelos_the_suncaller,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=beacon_to_the_beyond,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=iceblood_deathsnare,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=desperate_invokers_codex,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=conjured_chillglobe,if=mana.pct>65&!variable.steroid_trinket_equipped|buff.siphon_storm.down" );
-  default_->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle" );
-  default_->add_action( "use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains" );
   default_->add_action( "variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0" );
   default_->add_action( "arcane_barrage,if=fight_remains<2" );
-  default_->add_action( "call_action_list,name=cd_opener", "Enter cooldown phase when cds are available or coming off cooldown otherwise default to rotation priority" );
-  default_->add_action( "call_action_list,name=rotation_aoe,if=active_enemies>=(variable.aoe_target_count+talent.impetus+talent.splintering_sorcery)" );
-  default_->add_action( "call_action_list,name=rotation_default" );
+  default_->add_action( "call_action_list,name=cd_opener", "Enter cooldowns, then action list depending on your hero talent choices" );
+  default_->add_action( "call_action_list,name=sunfury_aoe,if=active_enemies>=(variable.aoe_target_count+talent.impetus-talent.reverberate)&talent.spellfire_spheres" );
+  default_->add_action( "call_action_list,name=spellslinger_aoe,if=active_enemies>=(variable.aoe_target_count+talent.impetus)&talent.splintering_sorcery" );
+  default_->add_action( "call_action_list,name=sunfury,if=talent.spellfire_spheres" );
+  default_->add_action( "call_action_list,name=spellslinger,if=talent.splintering_sorcery" );
   default_->add_action( "arcane_barrage" );
 
-  cd_opener->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.5|gcd.remains<=0.5)" );
-  cd_opener->add_action( "supernova,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.unerring_proficiency.stack=30", "Use PoM or Supernova if you have Unerring Proficiency to end Touch of the Magi windows - if PoM then cancel it after to trigger the cooldown to align with future Touch windows" );
-  cd_opener->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=prev_gcd.1.arcane_blast&buff.presence_of_mind.stack=1" );
+  cd_opener->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.5|gcd.remains<=0.5)|prev_gcd.1.arcane_surge&buff.arcane_charge.stack<4", "Touch of the Magi used when Arcane Barrage is mid-flight or if you just used Arcane Surge and you don't have 4 Arcane Charges" );
+  cd_opener->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=prev_gcd.1.arcane_blast&buff.presence_of_mind.stack=1", "In single target, use Presence of Mind at the very end of Touch of the Magi, then cancelaura the buff to start the cooldown, wait is to simulate the delay of hitting Presence of Mind after another spell cast" );
   cd_opener->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.nether_precision.up&active_enemies<variable.aoe_target_count&!talent.unerring_proficiency" );
-  cd_opener->add_action( "wait,sec=0.05,if=buff.presence_of_mind.up,line_cd=15" );
+  cd_opener->add_action( "wait,sec=0.05,if=buff.presence_of_mind.up&prev_gcd.1.arcane_blast,line_cd=15" );
   cd_opener->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
-  cd_opener->add_action( "arcane_orb,if=variable.opener,line_cd=10" );
-  cd_opener->add_action( "evocation,if=cooldown.arcane_surge.remains<gcd.max*2" );
-  cd_opener->add_action( "arcane_missiles,if=variable.opener,interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,line_cd=10", "Use the Clearcasting from Evocation to trigger Nether Precision, Harmony, charges from High Voltage, and increment Aether" );
-  cd_opener->add_action( "arcane_surge" );
-  cd_opener->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)|(prev_gcd.1.arcane_barrage&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)&talent.shifting_shards),interrupt_if=(cooldown.evocation.ready&cooldown.arcane_surge.remains<3),interrupt_immediate=1,interrupt_global=1", "Use Shifting Power whenever all major cooldowns will fully benefit, add Arcane Orb to the list if its AOE, as Spellslinger you can use this in cooldowns with no damage lost" );
-  cd_opener->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&(cooldown.touch_of_the_magi.remains>18|!active_enemies>=variable.aoe_target_count)", "Pool Arcane Orb for Touch of the Magi in AOE, otherwise just use to recover charges when you're low" );
+  cd_opener->add_action( "arcane_orb,if=talent.high_voltage&variable.opener,line_cd=10", "Use Orb for charges if you have High Voltage, then evocation, then Missiles for Nether Precision, then Arcane Surge" );
+  cd_opener->add_action( "evocation,if=cooldown.arcane_surge.remains<gcd.max*4&cooldown.touch_of_the_magi.remains<gcd.max*7" );
+  cd_opener->add_action( "arcane_missiles,if=variable.opener,interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,line_cd=10" );
+  cd_opener->add_action( "arcane_surge,if=cooldown.touch_of_the_magi.remains<gcd.max*3" );
 
-  rotation_aoe->add_action( "arcane_blast,if=active_enemies>=variable.aoe_target_count&debuff.touch_of_the_magi.up&talent.magis_spark,line_cd=15", "Cast Blast in AOE if you have Magi's Spark" );
-  rotation_aoe->add_action( "arcane_barrage,if=(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|((buff.intuition.up&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|!variable.alt_rotation))&buff.nether_precision.up)|(buff.nether_precision.up&action.arcane_blast.executing)", "Use Barrage to maintain Arcane Tempo, to double dip Nether Precision when you use the above line, or if you get a 4pc proc" );
-  rotation_aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&((variable.alt_rotation&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|buff.aether_attunement.up|talent.arcane_harmony)&((variable.alt_rotation&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|!buff.nether_precision.up),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1", "Use Missiles to regenerate charges, generate Nether Precision, and stack Harmony/Aether, but we always interrupt it as soon as possible." );
-  rotation_aoe->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
-  rotation_aoe->add_action( "arcane_explosion" );
+  spellslinger_aoe->add_action( "supernova,if=buff.unerring_proficiency.stack=30" );
+  spellslinger_aoe->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)" );
+  spellslinger_aoe->add_action( "shifting_power,if=(prev_gcd.1.arcane_barrage&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)&talent.shifting_shards),interrupt_if=(cooldown.evocation.ready&cooldown.arcane_surge.remains<3),interrupt_immediate=1,interrupt_global=1", "Use Shifting Power whenever as long as you'll get some cooldown reduction on your cds, especially if you get a Time Anomaly proc, this usually works out to just using it off cooldown" );
+  spellslinger_aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
+  spellslinger_aoe->add_action( "arcane_blast,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)", "Blast in AOE for Magi's Spark" );
+  spellslinger_aoe->add_action( "arcane_barrage,if=(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|((buff.intuition.up&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|!talent.high_voltage))&buff.nether_precision.up)|(buff.nether_precision.up&action.arcane_blast.executing)" );
+  spellslinger_aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|buff.aether_attunement.up|talent.arcane_harmony)&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|!buff.nether_precision.up),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1", "Clearcasting is exclusively spent on Arcane Missiles in AOE and always interrupted after the global cooldown ends" );
+  spellslinger_aoe->add_action( "presence_of_mind,if=buff.arcane_charge.stack=3|buff.arcane_charge.stack=2", "Only use Presence of Mind at low charges, use these to get to 4 Charges, but cancelaura the buff if you need to queue Arcane Barrage with Magi's Spark." );
+  spellslinger_aoe->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
+  spellslinger_aoe->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
+  spellslinger_aoe->add_action( "arcane_explosion" );
 
-  rotation_default->add_action( "arcane_missiles,if=buff.clearcasting.react&(buff.nether_precision.down|(buff.clearcasting.stack=3&!talent.splintering_sorcery)|(variable.alt_rotation&buff.nether_precision.stack=1&buff.arcane_charge.stack<4)),interrupt_if=!gcd.remains&(!variable.alt_rotation|buff.arcane_charge.stack=buff.arcane_charge.max_stack),interrupt_immediate=1,interrupt_global=1,chain=1", "Use Missiles to generate charges and Nether Precision, interrupt if you get 4 charges" );
-  rotation_default->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&((buff.nether_precision.stack=1&((buff.clearcasting.up|action.arcane_orb.charges>0)&time-action.arcane_blast.last_used<0.015)&buff.arcane_harmony.stack>12)|(cooldown.touch_of_the_magi.ready&(buff.nether_precision.up|!talent.magis_spark))))|(talent.arcane_tempo&buff.arcane_tempo.remains<(gcd.max*2))|buff.intuition.up", "Queue Barrage on the second Nether Precision stack under certain conditions, ensure you have nether precision before doing this to start Touch window, maintain Tempo and use 4pc as soon as possible" );
-  rotation_default->add_action( "arcane_blast,if=buff.nether_precision.stack=2|(buff.nether_precision.stack=1&!prev_gcd.1.arcane_blast)" );
-  rotation_default->add_action( "arcane_barrage,if=buff.arcane_surge.down&(mana.pct<70&cooldown.arcane_surge.remains>45&cooldown.touch_of_the_magi.remains>6)|(mana.deficit>(mana.max-action.arcane_blast.cost))|cooldown.touch_of_the_magi.ready|(cooldown.shifting_power.ready&cooldown.arcane_orb.ready)", "Conserve mana above 70% when Evocation is further than your next Touch" );
-  rotation_default->add_action( "arcane_blast,if=!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down)", "Blast for filler if you're not in execute or you already have some charges from another effect" );
-  rotation_default->add_action( "arcane_barrage" );
+  spellslinger->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)|(prev_gcd.1.arcane_barrage&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)),interrupt_if=(cooldown.evocation.ready&cooldown.arcane_surge.remains<3),interrupt_immediate=1,interrupt_global=1" );
+  spellslinger->add_action( "supernova,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.unerring_proficiency.stack=30" );
+  spellslinger->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
+  spellslinger->add_action( "arcane_missiles,if=buff.clearcasting.react&(buff.nether_precision.down|(talent.high_voltage&!buff.nether_precision.up&buff.arcane_charge.stack<4)),interrupt_if=!gcd.remains&(!talent.high_voltage|buff.arcane_charge.stack=4),interrupt_immediate=1,interrupt_global=1,chain=1" );
+  spellslinger->add_action( "arcane_barrage,if=buff.nether_precision.stack=1&((!talent.high_voltage|buff.clearcasting.react)|cooldown.arcane_orb.remains<gcd.max)|(buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.ready)|buff.intuition.up", "Always queue Arcane Barrage on the second stack of Nether Precision as Spellslinger" );
+  spellslinger->add_action( "arcane_blast" );
+  spellslinger->add_action( "arcane_barrage" );
+
+  sunfury_aoe->add_action( "arcane_barrage,if=buff.arcane_soul.up&buff.clearcasting.stack<4", "Spam Arcane Barrage during Arcane Soul, ensuring that you always get to maximum Clearcasting by the end." );
+  sunfury_aoe->add_action( "arcane_missiles,if=buff.arcane_soul.up,interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1" );
+  sunfury_aoe->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)|(buff.burden_of_power.up&time-action.arcane_blast.last_used>0.015&buff.arcane_charge.stack=4)" );
+  sunfury_aoe->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)", "For Sunfury, Shifting Power only when you're not under the effect of any cooldowns" );
+  sunfury_aoe->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&cooldown.touch_of_the_magi.remains>18&(!talent.high_voltage|!buff.clearcasting.up)" );
+  sunfury_aoe->add_action( "arcane_blast,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)|(buff.burden_of_power.up&time-action.arcane_blast.last_used>0.015&buff.arcane_charge.stack=4)", "Always queue Arcane Barrage after Arcane Blast when you have Burden of Power" );
+  sunfury_aoe->add_action( "arcane_barrage,if=(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|((buff.intuition.up&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|!talent.high_voltage))&buff.nether_precision.up)|(buff.nether_precision.up&action.arcane_blast.executing)" );
+  sunfury_aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|buff.aether_attunement.up|talent.arcane_harmony)&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|!buff.nether_precision.up),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1" );
+  sunfury_aoe->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
+  sunfury_aoe->add_action( "presence_of_mind,if=buff.arcane_charge.stack=3|buff.arcane_charge.stack=2" );
+  sunfury_aoe->add_action( "arcane_blast,if=buff.presence_of_mind.up&buff.burden_of_power.down" );
+  sunfury_aoe->add_action( "arcane_explosion" );
+
+  sunfury->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&fight_remains>10)&buff.arcane_soul.down" );
+  sunfury->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_soul.down" );
+  sunfury->add_action( "arcane_blast,if=((buff.spellfire_spheres.stack=3&time-action.arcane_blast.last_used<0.015)|(buff.spellfire_spheres.stack=4&time-action.arcane_blast.last_used>0.015))&buff.arcane_soul.down", "Always increment your Spellfire Spheres so that Nether Precision lines up better with Burden of Power" );
+  sunfury->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.glorious_incandescence.down&(buff.nether_precision.down|(buff.clearcasting.stack=3)|(buff.nether_precision.stack=1&time-action.arcane_blast.last_used<0.015)),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1" );
+  sunfury->add_action( "arcane_barrage,if=buff.glorious_incandescence.up|(buff.burden_of_power.down&buff.intuition.up&time-action.arcane_blast.last_used<0.015)|buff.arcane_soul.up|(buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.ready)" );
+  sunfury->add_action( "arcane_blast" );
+  sunfury->add_action( "arcane_barrage" );
 }
 //arcane_apl_end
 
