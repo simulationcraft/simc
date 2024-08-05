@@ -12276,7 +12276,8 @@ void shaman_t::create_buffs()
     ->apply_affecting_aura( talent.heed_my_call )
     ->set_trigger_spell( talent.call_of_the_ancestors );
   buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", find_spell( 443454 ) )
-    ->set_trigger_spell( talent.ancestral_swiftness );
+    ->set_trigger_spell( talent.ancestral_swiftness )
+    ->set_cooldown( 0_ms );
   buff.thunderstrike_ward = make_buff( this, "thunderstrike_ward", talent.thunderstrike_ward );
 
   //
