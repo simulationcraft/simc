@@ -879,6 +879,7 @@ public:
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
     action_t* heart_strike_bloodied_blade;
+    propagate_const<action_t*> soul_reaper_execute_expired_drw;
 
     // Deathbringer
     action_t* reapers_mark_explosion;
@@ -3547,17 +3548,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       background = true;
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = drw_action_t::composite_da_multiplier( state );
-
-      // In game if DRW is down, SR executes at full damage, attributed to the DK.  for sim we will just adjust damage
-      if ( ! dk()->buffs.dancing_rune_weapon->up() )
-        m *= 3.0;
-
-      return m;
-    }
   };
 
   struct soul_reaper_t : public drw_action_t<melee_attack_t>
@@ -3577,8 +3567,13 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     void tick( dot_t* dot ) override
     {
       if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+      {
+        // If DRW is still up, fire drw soul reaper execute, otherwise fire from the DK, with full DK damage mods
+        if ( dk()->buffs.dancing_rune_weapon->up() )
           soul_reaper_execute->execute_on_target( dot->target );
-
+        else
+          dk()->active_spells.soul_reaper_execute_expired_drw->execute_on_target( dot->target );
+      }
     }
 
   private:
@@ -3601,9 +3596,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     void tick( dot_t* dot ) override
     {
-      // If DRW is up SR executes like normal, if DRW has faded, it executes from the DK, at full damage
-      if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+     if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+      {
+        // If DRW is still up, fire drw soul reaper execute, otherwise fire from the DK, with full DK damage mods
+        if ( dk()->buffs.dancing_rune_weapon->up() )
           soul_reaper_execute->execute_on_target( dot->target );
+        else
+          dk()->active_spells.soul_reaper_execute_expired_drw->execute_on_target( dot->target );
+      }
     }
 
   private:
@@ -12338,6 +12338,10 @@ void death_knight_t::create_actions()
     if ( talent.blood.bloodied_blade.ok() )
     {
       active_spells.heart_strike_bloodied_blade = get_action<heart_strike_bloodied_blade_t>( "heart_strike_bloodied_blade", this );
+    }
+    if ( talent.soul_reaper.ok() || talent.deathbringer.grim_reaper.ok() )
+    {
+      active_spells.soul_reaper_execute_expired_drw = get_action<soul_reaper_execute_t>( "soul_reaper_execute_expired_drw", this );
     }
   }
 
