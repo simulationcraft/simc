@@ -2692,6 +2692,8 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     channeled           = true;
     tick_on_application = false;
     cooldown            = p->cooldown.eye_beam;
+    // This might need to change if CDs ever get de-synced
+    cooldown->duration  = data().cooldown();
 
     // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
     //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
@@ -5537,10 +5539,10 @@ struct felblade_t : public demon_hunter_attack_t
 
   felblade_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
-      max_fragments_consumed( p->specialization() == DEMON_HUNTER_HAVOC &&
-                                      p->talent.aldrachi_reaver.warblades_hunger->ok()
-                                  ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
-                                  : 0 )
+      max_fragments_consumed(
+          p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok()
+              ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
+              : 0 )
   {
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
