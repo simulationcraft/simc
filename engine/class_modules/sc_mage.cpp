@@ -1288,7 +1288,10 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     double m = mage_pet_spell_t::composite_da_multiplier( s );
 
     if ( is_mage_spell )
+    {
       m *= 1.0 + o()->buffs.arcane_overload->check_value();
+      m *= 1.0 + o()->buffs.blessing_of_the_phoenix->check_value();
+    }
 
     return m;
   }
