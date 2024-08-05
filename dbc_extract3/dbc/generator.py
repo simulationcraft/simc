@@ -2053,6 +2053,7 @@ class SpellDataGenerator(DataGenerator):
           ( 450462, 0 ),                            # Flamestrike (Arcane Phoenix)
           ( 453326, 0 ),                            # Arcane Surge (Arcane Phoenix)
           ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
+          ( 455137, 0 ),                            # Blessing of the Phoenix missile speed
         ),
 
         # Warlock:
