@@ -2171,6 +2171,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light        = true;
     direct_hammer             = new hammer_of_light_damage_t( p, options_str );
     background                = !p->talents.templar.lights_guidance->ok();
+    hasted_gcd                = true;
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
