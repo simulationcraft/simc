@@ -8252,14 +8252,20 @@ struct death_strike_heal_t final : public death_knight_heal_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    return std::max( player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier,
-                     player->compute_incoming_damage( interval ) * max_heal_multiplier );
+    printf("DEBUGME Death Strike cur  time: %ld\n", sim->current_time().total_millis() );
+    printf("DEBUGME Death Strike last used: %ld\n", last_used.total_millis() );
+    printf("DEBUGME Death Strike interval : %ld\n", sim->current_time().total_millis() - last_used.total_millis() );
+
+    auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
+    auto cur_heal = player->compute_incoming_damage( interval ) * max_heal_multiplier;
+    return std::max( min_heal, cur_heal );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
-    return std::max( player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier,
-                     player->compute_incoming_damage( interval ) * max_heal_multiplier );
+    auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
+    auto cur_heal = player->compute_incoming_damage( interval ) * max_heal_multiplier;
+    return std::max( min_heal, cur_heal );
   }
 
   double action_multiplier() const override

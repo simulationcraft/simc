@@ -1897,6 +1897,7 @@ class SpellDataGenerator(DataGenerator):
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
+          ( 463730, 0 ), # Coagulating Blood for Death Strike
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
