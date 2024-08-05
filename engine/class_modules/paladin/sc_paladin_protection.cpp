@@ -744,7 +744,7 @@ struct judgment_prot_t : public judgment_t
       if ( p()->talents.sanctified_wrath->ok() && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
         hopo += sw_holy_power;
       if ( p()->buffs.bastion_of_light->up() )
-        hopo += p()->buffs.bastion_of_light->default_value;
+        hopo += as<int>( p()->buffs.bastion_of_light->default_value );
       if ( hopo > 0 )
         p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
     }
@@ -954,7 +954,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( buffs.blessing_of_dusk->up() )
   {
-    s->result_amount *= 1.0 + buffs.blessing_of_dusk->value();
+    s->result_amount *= 1.0 + buffs.blessing_of_dusk->data().effectN( 1 ).percent();
   }
 
   if ( buffs.devotion_aura->up() )
@@ -998,9 +998,6 @@ void paladin_t::target_mitigation( school_e school,
   {
     double reduction = spec.consecration_2->effectN( 1 ).percent()
     + cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
-    // Sanctuary reduces damage taken by an additional 5%, additive
-    if ( talents.sanctuary->ok() )
-      reduction += talents.sanctuary->effectN( 1 ).percent();
     s->result_amount *= 1.0 + reduction;
   }
 

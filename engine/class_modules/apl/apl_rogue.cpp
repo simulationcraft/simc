@@ -177,7 +177,7 @@ void outlaw( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand" );
+  precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "stealth,precombat_seconds=2" );
   precombat->add_action( "cancel_buff,name=stealth,if=talent.double_jeopardy", "Cancel Stealth to activate Double Jeopardy" );
   precombat->add_action( "roll_the_bones,precombat_seconds=2" );
@@ -218,11 +218,12 @@ void outlaw( player_t* p )
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|stealthed.all&talent.crackshot&talent.improved_adrenaline_rush&combo_points<=2", "Cooldowns  Use Adrenaline Rush if it is not active and the finisher condition is not met, but Crackshot builds can refresh it with 2cp or lower inside stealth" );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets" );
   cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)", "With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount given" );
-  cds->add_action( "roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)", "Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish ready" );
-  cds->add_action( "keep_it_rolling,if=(buff.broadside.up+buff.true_bearing.up+buff.ruthless_precision.up+buff.skull_and_crossbones.up)>=3|fight_remains<60&rtb_buffs>=3", "Use Keep it Rolling with at least 3 of Broadside/True Bearing/Ruthless Precision/Skull and Crossbones, or with any 3 buffs if sim duration ends in <1 min" );
+  cds->add_action( "roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&cooldown.vanish.ready&talent.crackshot", "Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish ready" );
+  cds->add_action( "keep_it_rolling,if=rtb_buffs>=3+(buff.buried_treasure.up|set_bonus.tier31_4pc)&(rtb_buffs.min_remains<2|buff.broadside.up)", "Use Keep it Rolling with at least 3 buffs that are not Buried Treasure. If Broadside is not active, then wait until just before the lowest buff expires." );
   cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend" );
-  cds->add_action( "use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Manic Grieftorch and Beacon to the Beyond should not be used during stealth and have higher priority than stealth cooldowns" );
+  cds->add_action( "use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5", "Trinkets that should not be used during stealth and have higher priority than entering stealth" );
   cds->add_action( "use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5" );
+  cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22" );
   cds->add_action( "killing_spree,if=variable.finish_condition&!stealthed.all", "Killing Spree has higher priority than stealth cooldowns" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all&(!talent.crackshot|cooldown.between_the_eyes.ready)", "Crackshot builds use stealth cooldowns if Between the Eyes is ready" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=150|fight_remains<charges*6)" );
@@ -244,6 +245,7 @@ void outlaw( player_t* p )
   finish->add_action( "between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&(raid_event.adds.remains>8|raid_event.adds.in<raid_event.adds.remains|!raid_event.adds.up)", "Crackshot builds use Between the Eyes outside of Stealth if we will not enter a Stealth window before the next cast" );
   finish->add_action( "slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable" );
   finish->add_action( "cold_blood" );
+  finish->add_action( "coup_de_grace" );
   finish->add_action( "dispatch" );
 
   stealth->add_action( "blade_flurry,if=talent.subterfuge&talent.hidden_opportunity&spell_targets>=2&buff.blade_flurry.remains<gcd", "Stealth" );
@@ -254,9 +256,10 @@ void outlaw( player_t* p )
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and low CPs, or with Greenskins active" );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
-  stealth_cds->add_action( "vanish,if=talent.crackshot&variable.finish_condition&(buff.adrenaline_rush.up|!talent.underhanded_upper_hand&!talent.without_a_trace)", "Stealth Cooldowns  Builds with Crackshot use Vanish at finish condition. If also using Underhanded Upper Hand + Without a Trace, use Vanish only when Adrenaline Rush is active" );
-  stealth_cds->add_action( "vanish,if=!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition", "Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks" );
-  stealth_cds->add_action( "vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)", "Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise" );
+  stealth_cds->add_action( "vanish,if=talent.underhanded_upper_hand&talent.subterfuge&(buff.adrenaline_rush.up|!talent.without_a_trace&talent.crackshot)&(variable.finish_condition|!talent.crackshot&(variable.ambush_condition|!talent.hidden_opportunity))", "Stealth Cooldowns  Builds with Underhanded Upper Hand and Subterfuge (and Without a Trace for Crackshot) must use Vanish while Adrenaline Rush is active" );
+  stealth_cds->add_action( "vanish,if=!talent.underhanded_upper_hand&talent.crackshot&variable.finish_condition", "Builds without Underhanded Upper Hand but with Crackshot must still use Vanish into Between the Eyes on cooldown" );
+  stealth_cds->add_action( "vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition", "Builds without Underhanded Upper Hand and Crackshot but still Hidden Opportunity use Vanish into Ambush when Audacity is not active and under max Opportunity stacks" );
+  stealth_cds->add_action( "vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)", "Builds without Underhanded Upper Hand, Crackshot, and Hidden Opportunity use Vanish into a builder to activate Double Jeopardy without breaking the current coin streak, or to activate Take 'em by Surprise" );
   stealth_cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready" );
 }
 //outlaw_apl_end
@@ -346,6 +349,7 @@ void subtlety( player_t* p )
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable", "Multidotting targets that will live long enough, refresh during pandemic." );
   finish->add_action( "rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
   finish->add_action( "black_powder,if=!variable.priority_rotation&spell_targets>=3" );
+  finish->add_action( "coup_de_grace" );
   finish->add_action( "eviscerate" );
 
   stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.double_dance", "Stealth Cooldowns  Helper Variable for Shadow Dance." );

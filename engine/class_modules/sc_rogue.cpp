@@ -32,6 +32,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   CRACKSHOT,
   T31_SUBTLETY_2PC,
+  COUP_DE_GRACE,
 };
 
 enum stealth_type_e
@@ -636,6 +637,13 @@ public:
     const spell_data_t* clear_the_witnesses_damage;
     const spell_data_t* cloud_cover_distract;
     const spell_data_t* corrupt_the_blood_damage;
+    const spell_data_t* coup_de_grace;
+    const spell_data_t* coup_de_grace_damage_1;
+    const spell_data_t* coup_de_grace_damage_2;
+    const spell_data_t* coup_de_grace_damage_3;
+    const spell_data_t* coup_de_grace_damage_bonus_1;
+    const spell_data_t* coup_de_grace_damage_bonus_2;
+    const spell_data_t* coup_de_grace_damage_bonus_3;
     const spell_data_t* darkest_night_buff;
     const spell_data_t* deathstalkers_mark_buff;
     const spell_data_t* deathstalkers_mark_damage;
@@ -1116,7 +1124,7 @@ public:
       player_talent_t no_scruples;
       player_talent_t nimble_flurry;
 
-      player_talent_t coup_de_grace;      // TODO: Needs to be reimplemented
+      player_talent_t coup_de_grace;
 
     } trickster;
 
@@ -1158,6 +1166,7 @@ public:
     proc_t* count_the_odds_ambush;
     proc_t* count_the_odds_ss;
     proc_t* count_the_odds_dispatch;
+    proc_t* count_the_odds_coup_de_grace;
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
@@ -1172,9 +1181,6 @@ public:
     proc_t* deepening_shadows;
     proc_t* flagellation_cp_spend;
     proc_t* weaponmaster;
-
-    // Trickster
-    proc_t* coup_de_grace;
 
     // Set Bonus
 
@@ -1365,15 +1371,9 @@ public:
   }
 
   // Current number of effective combo points, considering Echoing Reprimand and Escalating Blade
-  double current_effective_cp( bool use_echoing_reprimand = true, bool use_escalating_blade = false, bool react = false ) const
+  double current_effective_cp( bool use_echoing_reprimand = true, bool react = false ) const
   {
     double current_cp = this->current_cp( react );
-
-    // ALPHA TOCHECK -- Can this be used with 0 CP? How does this work with ER?
-    if ( talent.trickster.coup_de_grace->ok() && use_escalating_blade && current_cp > 0 && buffs.escalating_blade->at_max_stacks() )
-    {
-      current_cp += talent.trickster.coup_de_grace->effectN( 3 ).base_value();
-    }
 
     if ( use_echoing_reprimand && current_cp > 0 )
     {
@@ -1861,7 +1861,7 @@ public:
 
     affected_by.improved_shiv =
       ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
-      ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ||
+      ( ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) ) ||
         ab::data().affected_by_label( p->spec.improved_shiv_debuff->effectN( 4 ) ) );
 
     if ( p->talent.assassination.systemic_failure->ok() )
@@ -2080,8 +2080,12 @@ public:
 
     register_consume_buff( p()->buffs.audacity, affected_by.audacity );
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
-    register_consume_buff( p()->buffs.cold_blood,
-                           p()->buffs.cold_blood->is_affecting( &ab::data() ) && ab::data().id() != p()->talent.subtlety.secret_technique->id(),
+    // Special case for Coup de Grace as it is not consumed until the final impact
+    register_consume_buff( p()->buffs.cold_blood, ( p()->buffs.cold_blood->is_affecting( &ab::data() ) &&
+                                                    ab::data().id() != p()->talent.subtlety.secret_technique->id() &&
+                                                    ab::data().id() != p()->spell.coup_de_grace->id() &&
+                                                    ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
+                                                      ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitability->ok() );
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
                            nullptr, 1_ms ); // ALPHA TOCHECK -- Assume WM
@@ -2209,13 +2213,6 @@ public:
   {
     int consume_cp = as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) );
     int effective_cp = consume_cp;
-
-    // Apply and Snapshot Escalating Blade / Coup de Grace Bonus
-    if ( p()->talent.trickster.coup_de_grace->ok() && consumes_escalating_blade() && p()->buffs.escalating_blade->at_max_stacks() )
-    {
-      effective_cp += as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
-      effective_cp = std::min( as<int>( p()->consume_cp_max() ), effective_cp );
-    }
 
     // Apply and Snapshot Echoing Reprimand Buffs
     if ( p()->spell.echoing_reprimand->ok() && consumes_echoing_reprimand() )
@@ -2397,10 +2394,6 @@ public:
   virtual bool consumes_echoing_reprimand() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
-  // Overridable function to determine whether a finisher is working with Coup de Grace / Escalating Blade.
-  virtual bool consumes_escalating_blade() const
-  { return false; }
-
   double parry_chance( double exp, player_t* target ) const override
   {
     auto chance = ab::parry_chance(exp, target);
@@ -2456,7 +2449,6 @@ public:
   void trigger_shadowcraft( const action_state_t* state );
   void trigger_cut_to_the_chase( const action_state_t* state );
   void trigger_cloud_cover( const action_state_t* state );
-  void trigger_coup_de_grace( const action_state_t* state );
   void trigger_deathstalkers_mark( const action_state_t* state );
   bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_unseen_blade( const action_state_t* state );
@@ -3980,13 +3972,18 @@ struct dispatch_t: public rogue_attack_t
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
   }
 
+  bool ready() override
+  {
+    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+
   bool procs_main_gauche() const override
   { return true; }
 
   bool procs_blade_flurry() const override
-  { return true; }
-
-  bool consumes_escalating_blade() const override
   { return true; }
 };
 
@@ -4104,6 +4101,7 @@ struct between_the_eyes_t : public rogue_attack_t
       {
         p()->cooldowns.between_the_eyes->reset( false );
         dispatch->trigger_secondary_action( execute_state->target, cp_spend );
+        // ALPHA TODO -- Currently triggers Coup de Grace but with half damage, possibly unintended?
       }
     }
   }
@@ -4798,8 +4796,13 @@ struct eviscerate_t : public rogue_attack_t
     return false;
   }
 
-  bool consumes_escalating_blade() const override
-  { return true; }
+  bool ready() override
+  {
+    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
 
   bool procs_nimble_flurry() const override
   { return true; }
@@ -5700,9 +5703,6 @@ struct rupture_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( !is_secondary_action() && p()->talent.deathstalker.corrupt_the_blood->ok() && result_is_hit( execute_state->result ) )
-      td( execute_state->target )->debuffs.corrupt_the_blood->expire(); // remove and reset existing corrupt the blood stacks
-
     trigger_scent_of_blood();
     trigger_hand_of_fate( execute_state );
 
@@ -5739,6 +5739,12 @@ struct rupture_t : public rogue_attack_t
       p()->active.internal_bleeding->trigger_secondary_action( state->target,
                                                                cast_state( state )->get_combo_points( p()->bugs ) );
     }
+
+    // 2024-07-25 -- Rupture and Deathmark Rupture trigger one stack on cast
+    if ( p()->active.deathstalker.corrupt_the_blood )
+    {
+      p()->active.deathstalker.corrupt_the_blood->execute_on_target( state->target );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -5760,7 +5766,8 @@ struct rupture_t : public rogue_attack_t
       poisoned_edges_damage->trigger_residual_action( d->state, multiplier );
     }
 
-    if ( p()->active.deathstalker.corrupt_the_blood )
+    // 2024-07-25 -- Currently does not stack from Deathmark ticks
+    if ( !is_secondary_action() && p()->active.deathstalker.corrupt_the_blood )
     {
       p()->active.deathstalker.corrupt_the_blood->execute_on_target( d->target );
     }
@@ -5772,8 +5779,6 @@ struct rupture_t : public rogue_attack_t
 
     // Delay to allow the demise to reset() and update get_active_dots() count
     make_event( *p()->sim, [this] { trigger_scent_of_blood(); } );
-    
-    td( d->target )->debuffs.corrupt_the_blood->expire();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -7546,6 +7551,190 @@ struct nimble_flurry_t : public rogue_attack_t
   { return false; }
 };
 
+struct coup_de_grace_t : public rogue_attack_t
+{
+  struct coup_de_grace_bonus_t : public rogue_attack_t
+  {
+    int last_cp;
+
+    coup_de_grace_bonus_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_attack_t( name, p, s ),
+      last_cp( 1 )
+    {
+      dual = true;
+
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
+      {
+        // Spell has the full damage coefficient and is modified via talent scripting
+        base_multiplier *= p->talent.subtlety.shadowed_finishers->effectN( 1 ).percent();
+      }
+    }
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* ) const override
+    {
+      return as<double>( last_cp );
+    }
+
+    bool procs_nimble_flurry() const override
+    { return true; }
+  };
+
+  struct coup_de_grace_damage_t : public rogue_attack_t
+  {
+    coup_de_grace_bonus_t* bonus_attack;
+
+    coup_de_grace_damage_t( util::string_view name, rogue_t* p, const spell_data_t* s, const spell_data_t* bonus = nullptr ) :
+      rogue_attack_t( name, p, s ),
+      bonus_attack( nullptr )
+    {
+      if ( p->talent.subtlety.shadowed_finishers->ok() )
+      {
+        auto formatted_name = fmt::format( "eviscerate_{}", name );
+        util::replace_all( formatted_name, "damage", "bonus" );
+        bonus_attack = p->get_background_action<coup_de_grace_bonus_t>( formatted_name, bonus);
+      }
+    }
+
+    double combo_point_da_multiplier( const action_state_t* state ) const override
+    {
+      return cast_state( state )->get_combo_points();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      if ( bonus_attack && td( state->target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
+      {
+        bonus_attack->last_cp = cast_state( state )->get_combo_points();
+        bonus_attack->execute_on_target( state->target );
+      }
+    }
+
+    bool procs_main_gauche() const override
+    { return true; }
+
+    bool procs_blade_flurry() const override
+    { return true; }
+
+    bool procs_nimble_flurry() const override
+    { return true; }
+  };
+
+  std::vector<coup_de_grace_damage_t*> attacks;
+
+  coup_de_grace_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+    rogue_attack_t( name, p, p->spell.coup_de_grace, options_str )
+  {
+    affected_by.danse_macabre = false; // Stacks gained from impact spells
+
+    if ( attacks.empty() )
+    {
+      attacks.push_back( p->get_secondary_trigger_action<coup_de_grace_damage_t>(
+        secondary_trigger::COUP_DE_GRACE, fmt::format( "{}_damage", name ),
+        p->spell.coup_de_grace_damage_1, p->spell.coup_de_grace_damage_bonus_1 ) );
+      attacks.push_back( p->get_secondary_trigger_action<coup_de_grace_damage_t>(
+        secondary_trigger::COUP_DE_GRACE, fmt::format( "{}_damage_2", name ),
+        p->spell.coup_de_grace_damage_2, p->spell.coup_de_grace_damage_bonus_2 ) );
+      attacks.push_back( p->get_secondary_trigger_action<coup_de_grace_damage_t>(
+        secondary_trigger::COUP_DE_GRACE, fmt::format( "{}_damage_3", name ),
+        p->spell.coup_de_grace_damage_3, p->spell.coup_de_grace_damage_bonus_3 ) );
+    }
+  }
+
+  void init_finished() override
+  {
+    rogue_attack_t::init_finished();
+
+    // Merge attacks for reporting display and DPET purposes
+    for ( auto& attack : attacks )
+    {
+      attack->stats = stats;
+      if ( attack->bonus_attack && attack->bonus_attack != attacks.front()->bonus_attack )
+      {
+        attack->bonus_attack->stats = attacks.front()->bonus_attack->stats;
+      }
+    }
+
+    if ( attacks.front()->bonus_attack )
+    {
+      add_child( attacks.front()->bonus_attack );
+    }
+  }
+
+  void execute() override
+  {
+    p()->buffs.deeper_daggers->trigger();
+
+    rogue_attack_t::execute();
+    
+    // ALPHA TOCHECK -- Consumption and triggering is a bit bugged on alpha servers
+    if ( p()->spec.finality_eviscerate_buff->ok() )
+    {
+      if ( p()->buffs.finality_eviscerate->check() )
+        p()->buffs.finality_eviscerate->expire();
+      else
+        p()->buffs.finality_eviscerate->trigger();
+    }
+
+    if ( p()->talent.outlaw.summarily_dispatched->ok() )
+    {
+      int cp = cast_state( execute_state )->get_combo_points();
+      if ( cp >= p()->talent.outlaw.summarily_dispatched->effectN( 2 ).base_value() )
+      {
+        p()->buffs.summarily_dispatched->trigger();
+      }
+    }
+
+    // Extra Flawless Form stacks are currently granted prior to the impact, so self-affecting
+    if ( p()->get_target_data( execute_state->target )->debuffs.fazed->check() )
+    {
+      p()->buffs.flawless_form->trigger( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
+    }
+
+    const int trigger_cp = cast_state( execute_state )->get_combo_points() + as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
+    attacks[ 0 ]->trigger_secondary_action( execute_state->target, trigger_cp );
+    attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
+    attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
+
+    if ( !is_secondary_action() )
+    {
+      trigger_restless_blades( execute_state );
+      if ( !p()->bugs )
+      {
+        trigger_cut_to_the_chase( execute_state ); // ALPHA TOCHECK -- Doesn't trigger CttC currently
+      }
+    }
+
+    trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
+
+    p()->buffs.escalating_blade->expire();
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+      return rogue_attack_t::ready();
+
+    return false;
+  }
+
+  bool procs_main_gauche() const override
+  { return true; }
+
+  bool has_amount_result() const override
+  { return true; }
+
+  bool consumes_echoing_reprimand() const override
+  { return false; }
+};
+
 // TWW1 Set Bonus ===========================================================
 
 struct ethereal_rampage_t : public rogue_attack_t
@@ -7776,7 +7965,7 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand(), consumes_escalating_blade(), true ); } );
+    return make_fn_expr( name_str, [ this ]() { return p()->current_effective_cp( consumes_echoing_reprimand(), true ); } );
   }
 
   return ab::create_expression( name_str );
@@ -8714,9 +8903,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
       }
     }
   }
-
-  // Remove Escalating Blade Buff
-  trigger_coup_de_grace( state );
 }
 
 template <typename Base>
@@ -8793,7 +8979,7 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !p()->mastery.main_gauche->ok() )
     return;
 
-  if ( state->result_total <= 0 )
+  if ( !ab::has_amount_result() )
     return;
 
   if ( !ab::result_is_hit( state->result ) )
@@ -9448,8 +9634,10 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
     return;
 
   // 2023-10-19 -- Shuriken Tornado can now trigger DM stacks as a Shuriken Storm
+  // 2024-07-19 -- All Coup de Grace impacts can trigger DM stacks
   if ( ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre ) &&
-       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
+       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO &&
+       secondary_trigger_type != secondary_trigger::COUP_DE_GRACE )
     return;
 
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
@@ -9582,27 +9770,6 @@ void actions::rogue_action_t<Base>::trigger_cloud_cover( const action_state_t* s
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_coup_de_grace( const action_state_t* state )
-{
-  if ( !p()->talent.trickster.coup_de_grace->ok() )
-    return;
-
-  if ( !consumes_escalating_blade() )
-    return;
-
-  if ( !p()->buffs.escalating_blade->at_max_stacks() )
-    return;
-
-  p()->buffs.escalating_blade->expire();
-  p()->procs.coup_de_grace->occur();
-  
-  if ( p()->get_target_data( state->target )->debuffs.fazed->check() )
-  {
-    p()->buffs.flawless_form->trigger( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
-  }
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_state_t* state )
 {
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
@@ -9652,7 +9819,7 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   buff_t*& debuff = p()->deathstalkers_mark_debuff;
   if ( debuff && debuff->check() )
   {
-    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker’s Mark
+    // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker's Mark
     // 2024-07-05 -- Exception being that Darkest Night can refresh the stack
     if ( debuff->player == state->target && !from_darkest_night )
       return false;
@@ -10231,6 +10398,7 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
   if ( name == "blade_rush"             ) return new blade_rush_t             ( name, this, options_str );
   if ( name == "cheap_shot"             ) return new cheap_shot_t             ( name, this, options_str );
   if ( name == "cold_blood"             ) return new cold_blood_t             ( name, this, options_str );
+  if ( name == "coup_de_grace"          ) return new coup_de_grace_t          ( name, this, options_str );
   if ( name == "crimson_tempest"        ) return new crimson_tempest_t        ( name, this, options_str );
   if ( name == "deathmark"              ) return new deathmark_t              ( name, this, options_str );
   if ( name == "detection"              ) return new detection_t              ( name, this, options_str );
@@ -10362,7 +10530,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( name_str == "effective_combo_points" )
   {
-    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, false, true ); } );
+    return make_fn_expr( name_str, [ this ]() { return current_effective_cp( true, true ); } );
   }
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
@@ -11321,6 +11489,13 @@ void rogue_t::init_spells()
 
   // Trickster
   spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
+  spell.coup_de_grace = talent.trickster.coup_de_grace->ok() ? find_spell( 441776 ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_1 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462241 ) : find_spell( 462140 ) ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_2 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462242 ) : find_spell( 462239 ) ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_3 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462243 ) : find_spell( 462240 ) ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_bonus_1 = talent.trickster.coup_de_grace->ok() && talent.subtlety.shadowed_finishers->ok() ? find_spell( 462244 ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_bonus_2 = talent.trickster.coup_de_grace->ok() && talent.subtlety.shadowed_finishers->ok() ? find_spell( 462247 ) : spell_data_t::not_found();
+  spell.coup_de_grace_damage_bonus_3 = talent.trickster.coup_de_grace->ok() && talent.subtlety.shadowed_finishers->ok() ? find_spell( 462248 ) : spell_data_t::not_found();
   spell.escalating_blade_buff = talent.trickster.coup_de_grace->ok() ? find_spell( 441786 ) : spell_data_t::not_found();
   spell.unseen_blade = talent.trickster.unseen_blade->ok() ? find_spell( 441144 ) : spell_data_t::not_found();
   spell.unseen_blade_buff = talent.trickster.unseen_blade->ok() ? find_spell( 459485 ) : spell_data_t::not_found();
@@ -11769,6 +11944,7 @@ void rogue_t::init_procs()
   procs.count_the_odds_ambush                 = get_proc( "Count the Odds (Ambush)" );
   procs.count_the_odds_ss                     = get_proc( "Count the Odds (Sinister Strike)" );
   procs.count_the_odds_dispatch               = get_proc( "Count the Odds (Dispatch)" );
+  procs.count_the_odds_coup_de_grace          = get_proc( "Count the Odds (Coup de Grace)" );
   procs.count_the_odds_capped                 = get_proc( "Count the Odds Capped" );
   procs.roll_the_bones_wasted                 = get_proc( "Roll the Bones Wasted" );
   procs.t31_buff_extended                     = get_proc( "(T31) Roll the Bones Buff Extended" );
@@ -11776,8 +11952,6 @@ void rogue_t::init_procs()
 
   procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
   procs.amplifying_poison_deathmark_consumed  = get_proc( "Amplifying Poison (Deathmark) Consumed" );
-
-  procs.coup_de_grace                         = get_proc( "Coup de Grace Consumed" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -12027,9 +12201,6 @@ void rogue_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.momentum_of_despair = make_buff<damage_buff_t>( this, "momentum_of_despair", spell.momentum_of_despair_buff );
-  // ALPHA TOCHECK -- This is wrong and uses Percent Modifier instead of Flat Modifier
-  // Just doing this manually for now so it sims as intended
-  buffs.momentum_of_despair->set_crit_chance_mod( spell.momentum_of_despair_buff, 1 );
 
   buffs.symbolic_victory = make_buff<damage_buff_t>( this, "symbolic_victory", spell.symbolic_victory_buff );
 
@@ -12051,20 +12222,24 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+      {
         if ( buffs.fatebound_lucky_coin->check() )
           active.fatebound.lucky_coin->execute();
         else
           buffs.fatebound_lucky_coin->trigger();
+      }
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
+      {
         if ( buffs.fatebound_lucky_coin->check() )
           active.fatebound.lucky_coin->execute();
         else
           buffs.fatebound_lucky_coin->trigger();
+      }
     } )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   if ( talent.fatebound.chosens_revelry->ok() )

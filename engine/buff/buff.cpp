@@ -18,7 +18,7 @@
 #include "sim/cooldown.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
@@ -610,6 +610,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
     schools( 0U ),
+    gcd_type( gcd_haste_type::NONE ),
     activated( true ),
     reactable( false ),
     reverse(),
@@ -657,7 +658,6 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     trigger_successes(),
     simulation_max_stack( 0 ),
     invalidate_list(),
-    gcd_type( gcd_haste_type::NONE ),
     benefit_pct(),
     trigger_pct(),
     avg_start(),
@@ -1375,7 +1375,18 @@ buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& c
 {
   if ( !is_fallback )
   {
-    stack_change_callback = cb;
+    stack_change_callback.clear();
+    stack_change_callback.push_back( cb );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::add_stack_change_callback( const buff_stack_change_callback_t& cb )
+{
+  if ( !is_fallback )
+  {
+    stack_change_callback.push_back( cb );
   }
 
   return this;
@@ -1662,7 +1673,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown set to hasted", *this );
         break;
 
-      case A_MOD_RECHARGE_TIME:
+      case A_MOD_RECHARGE_TIME_CATEGORY:
         if ( cooldown->duration > timespan_t::zero() )
         {
           set_cooldown( cooldown->duration += effect.time_value() );
@@ -1670,7 +1681,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
-      case A_MOD_RECHARGE_MULTIPLIER:
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         // TODO: Should buffs support a base_recharge_multiplier?
         //base_recharge_multiplier *= 1 + effect.percent();
         //if ( base_recharge_multiplier <= 0 )
@@ -2139,8 +2150,8 @@ void buff_t::decrement( int stacks, double value )
 
       last_stack_change = sim->current_time();
 
-      if ( stack_change_callback )
-        stack_change_callback( this, old_stack, current_stack );
+      for ( const auto& cb : stack_change_callback )
+        cb( this, old_stack, current_stack );
     }
   }
 }
@@ -2537,8 +2548,8 @@ void buff_t::bump( int stacks, double value )
 
     last_stack_change = sim->current_time();
 
-    if ( stack_change_callback )
-      stack_change_callback( this, old_stack, current_stack );
+    for ( const auto& cb : stack_change_callback )
+      cb( this, old_stack, current_stack );
   }
 
   if ( expire_at_max_stack && at_max_stacks() )
@@ -2723,10 +2734,8 @@ void buff_t::expire( timespan_t delay )
     invalidate_cache();
   adjust_haste();
 
-  if ( stack_change_callback )
-  {
-    stack_change_callback( this, old_stack, current_stack );
-  }
+  for ( const auto& cb : stack_change_callback )
+    cb( this, old_stack, current_stack );
 
   if ( player )
     player->trigger_ready();
@@ -3376,8 +3385,8 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
       last_stack_change = sim->current_time();
 
-      if ( stack_change_callback )
-        stack_change_callback( this, old_stack, current_stack );
+      for ( const auto& cb : stack_change_callback )
+        cb( this, old_stack, current_stack );
     }
 
     if ( player )

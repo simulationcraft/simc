@@ -2949,7 +2949,7 @@ void meticulous_scheming( special_effect_t& effect )
   secondary->source = effect.source;
   secondary->proc_flags_ = PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HEAL |
                            PF_NONE_SPELL | PF_MAGIC_SPELL | PF_MAGIC_HEAL;
-  secondary->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  secondary->proc_flags2_ = PF2_ALL_CAST;
   effect.player -> special_effects.push_back( secondary );
 
   auto meticulous_cb = new seize_driver_t( *secondary );

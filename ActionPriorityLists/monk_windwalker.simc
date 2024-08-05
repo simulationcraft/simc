@@ -1,0 +1,96 @@
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+# Move to target
+actions+=/roll,if=movement.distance>5
+actions+=/chi_torpedo,if=movement.distance>5
+actions+=/flying_serpent_kick,if=movement.distance>5
+actions+=/spear_hand_strike,if=target.debuff.casting.react
+# Potion
+actions+=/potion,if=buff.storm_earth_and_fire.up&pet.xuen_the_white_tiger.active|fight_remains<=30
+# Use Trinkets
+actions+=/call_action_list,name=trinkets
+# Use Cooldowns
+actions+=/call_action_list,name=cooldowns,if=talent.storm_earth_and_fire
+# Default Priority
+actions+=/call_action_list,name=default_aoe,if=active_enemies>=3
+actions+=/call_action_list,name=default_st,if=active_enemies<3
+actions+=/lights_judgment,if=buff.storm_earth_and_fire.down
+actions+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
+
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
+actions.cooldowns=invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active
+actions.cooldowns+=/invoke_xuen_the_white_tiger,if=(active_enemies>2|debuff.acclamation.up)&(prev.tiger_palm|energy<60&!talent.inner_peace|energy<55&talent.inner_peace|chi>3)
+actions.cooldowns+=/storm_earth_and_fire,if=(buff.invokers_delight.up|target.time_to_die>15&cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&cooldown.strike_of_the_windlord.remains<2)|fight_remains<=30|buff.bloodlust.up&cooldown.invoke_xuen_the_white_tiger.remains
+actions.cooldowns+=/touch_of_karma
+actions.cooldowns+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<20
+actions.cooldowns+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>60|fight_remains<15
+actions.cooldowns+=/fireblood,if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<10
+actions.cooldowns+=/ancestral_call,if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<20
+
+# >=3 Targets
+actions.default_aoe=tiger_palm,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_burst)|buff.storm_earth_and_fire.remains>3&cooldown.fists_of_fury.remains<3&chi<2
+actions.default_aoe+=/touch_of_death
+actions.default_aoe+=/spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike
+actions.default_aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.remains<2&buff.storm_earth_and_fire.up&talent.ordered_elements
+actions.default_aoe+=/celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord.remains
+actions.default_aoe+=/chi_burst,if=combo_strike
+actions.default_aoe+=/spinning_crane_kick,if=buff.dance_of_chiji.stack=2|buff.dance_of_chiji.up&combo_strike&buff.storm_earth_and_fire.up
+actions.default_aoe+=/whirling_dragon_punch
+actions.default_aoe+=/strike_of_the_windlord
+actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8&talent.shadowboxing_treads
+actions.default_aoe+=/fists_of_fury,target_if=max:debuff.acclamation.stack
+actions.default_aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.xuens_battlegear|cooldown.whirling_dragon_punch.remains<3
+actions.default_aoe+=/spinning_crane_kick,if=combo_strike
+actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!talent.knowledge_of_the_broken_temple&buff.teachings_of_the_monastery.stack=4&talent.shadowboxing_treads
+actions.default_aoe+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike&talent.power_of_the_thunder_king
+actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&talent.shadowboxing_treads
+actions.default_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
+actions.default_aoe+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike
+actions.default_aoe+=/jadefire_stomp
+actions.default_aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1
+
+# <3 Targets
+actions.default_st=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_burst)
+actions.default_st+=/touch_of_death
+actions.default_st+=/celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord.remains
+actions.default_st+=/rising_sun_kick,target_if=max:debuff.acclamation.stack,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm|buff.storm_earth_and_fire.up&talent.ordered_elements
+actions.default_st+=/strike_of_the_windlord,if=talent.gale_force&buff.invokers_delight.up
+actions.default_st+=/fists_of_fury,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up
+actions.default_st+=/rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up
+actions.default_st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8
+actions.default_st+=/whirling_dragon_punch
+actions.default_st+=/strike_of_the_windlord,if=time>5
+actions.default_st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up
+actions.default_st+=/rising_sun_kick,target_if=max:debuff.acclamation.stack
+actions.default_st+=/fists_of_fury,if=buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements.remains<=gcd.max
+actions.default_st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up&talent.energy_burst
+actions.default_st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&(!buff.ordered_elements.up|energy.time_to_max<=gcd.max*3)
+actions.default_st+=/jadefire_stomp,if=talent.Singularly_Focused_Jade|talent.jadefire_harmony
+actions.default_st+=/rising_sun_kick,target_if=max:debuff.acclamation.stack
+actions.default_st+=/blackout_kick,if=combo_strike&buff.blackout_reinforcement.up
+actions.default_st+=/chi_burst,if=!buff.ordered_elements.up
+actions.default_st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_proc.up&chi.deficit>=1&talent.energy_burst)
+actions.default_st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(buff.ordered_elements.up|energy.time_to_max>=gcd.max*3&talent.sequenced_strikes&talent.energy_burst|!talent.sequenced_strikes|!talent.energy_burst|buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<=gcd.max*3)
+actions.default_st+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike
+actions.default_st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
+actions.default_st+=/jadefire_stomp
+actions.default_st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1
+actions.default_st+=/chi_burst
+actions.default_st+=/spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo
+actions.default_st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo
+
+actions.trinkets=use_item,name=epic_purple_shirt

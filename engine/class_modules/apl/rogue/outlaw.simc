@@ -5,7 +5,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/blade_flurry,precombat_seconds=3,if=talent.underhanded_upper_hand
+actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
 # Cancel Stealth to activate Double Jeopardy
 actions.precombat+=/cancel_buff,name=stealth,if=talent.double_jeopardy
@@ -71,13 +71,14 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 # With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount given
 actions.cds+=/blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)
 # Use Roll the Bones if reroll conditions are met, or with no buffs, or 2s before buffs expire with T31, or 7s before buffs expire with Vanish ready
-actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&(cooldown.vanish.ready)
-# Use Keep it Rolling with at least 3 of Broadside/True Bearing/Ruthless Precision/Skull and Crossbones, or with any 3 buffs if sim duration ends in <1 min
-actions.cds+=/keep_it_rolling,if=(buff.broadside.up+buff.true_bearing.up+buff.ruthless_precision.up+buff.skull_and_crossbones.up)>=3|fight_remains<60&rtb_buffs>=3
+actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=2&set_bonus.tier31_4pc|rtb_buffs.max_remains<=7&cooldown.vanish.ready&talent.crackshot
+# Use Keep it Rolling with at least 3 buffs that are not Buried Treasure. If Broadside is not active, then wait until just before the lowest buff expires.
+actions.cds+=/keep_it_rolling,if=rtb_buffs>=3+(buff.buried_treasure.up|set_bonus.tier31_4pc)&(rtb_buffs.min_remains<2|buff.broadside.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
-# Manic Grieftorch and Beacon to the Beyond should not be used during stealth and have higher priority than stealth cooldowns
+# Trinkets that should not be used during stealth and have higher priority than entering stealth
 actions.cds+=/use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
 actions.cds+=/use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
+actions.cds+=/use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22
 # Killing Spree has higher priority than stealth cooldowns
 actions.cds+=/killing_spree,if=variable.finish_condition&!stealthed.all
 # Crackshot builds use stealth cooldowns if Between the Eyes is ready
@@ -107,6 +108,7 @@ actions.finish=between_the_eyes,if=!talent.crackshot&(buff.between_the_eyes.rema
 actions.finish+=/between_the_eyes,if=talent.crackshot&cooldown.vanish.remains>45&(raid_event.adds.remains>8|raid_event.adds.in<raid_event.adds.remains|!raid_event.adds.up)
 actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&refreshable
 actions.finish+=/cold_blood
+actions.finish+=/coup_de_grace
 actions.finish+=/dispatch
 
 # Stealth
@@ -122,10 +124,12 @@ actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&
 actions.stealth+=/ambush,if=talent.hidden_opportunity
 
 # Stealth Cooldowns
-# Builds with Crackshot use Vanish at finish condition. If also using Underhanded Upper Hand + Without a Trace, use Vanish only when Adrenaline Rush is active
-actions.stealth_cds=vanish,if=talent.crackshot&variable.finish_condition&(buff.adrenaline_rush.up|!talent.underhanded_upper_hand&!talent.without_a_trace)
-# Hidden Opportunity builds without Crackshot use Vanish if Audacity is not active and when under max Opportunity stacks
-actions.stealth_cds+=/vanish,if=!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition
-# Builds without Crackshot and Hidden Opportunity use Vanish when not at finish condition to trigger Double Jeopardy, or to trigger Take 'em by Surprise
-actions.stealth_cds+=/vanish,if=!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)
+# Builds with Underhanded Upper Hand and Subterfuge (and Without a Trace for Crackshot) must use Vanish while Adrenaline Rush is active
+actions.stealth_cds=vanish,if=talent.underhanded_upper_hand&talent.subterfuge&(buff.adrenaline_rush.up|!talent.without_a_trace&talent.crackshot)&(variable.finish_condition|!talent.crackshot&(variable.ambush_condition|!talent.hidden_opportunity))
+# Builds without Underhanded Upper Hand but with Crackshot must still use Vanish into Between the Eyes on cooldown
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&talent.crackshot&variable.finish_condition
+# Builds without Underhanded Upper Hand and Crackshot but still Hidden Opportunity use Vanish into Ambush when Audacity is not active and under max Opportunity stacks
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition
+# Builds without Underhanded Upper Hand, Crackshot, and Hidden Opportunity use Vanish into a builder to activate Double Jeopardy without breaking the current coin streak, or to activate Take 'em by Surprise
+actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&(!variable.finish_condition&talent.double_jeopardy|!buff.take_em_by_surprise.up&talent.take_em_by_surprise)
 actions.stealth_cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready

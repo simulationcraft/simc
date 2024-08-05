@@ -62,6 +62,7 @@ struct paladin_td_t : public actor_target_data_t
   {
     dot_t* expurgation;
     dot_t* truths_wake;
+    dot_t* dawnlight;
   } dots;
 
   struct buffs_t
@@ -77,6 +78,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* heartfire;  // T30 2p Prot
     buff_t* empyrean_hammer;
     buff_t* vanguard_of_justice;
+    buff_t* holy_flames;
   } debuff;
 
   struct
@@ -123,7 +125,6 @@ public:
     // Covenant stuff
     action_t* divine_toll;
     action_t* seasons[ NUM_SEASONS ];
-    action_t* armament[ NUM_ARMAMENT ];
     action_t* divine_resonance;
 
     // talent stuff
@@ -143,9 +144,16 @@ public:
     action_t* expurgation;
     action_t* wrathful_sanction;
 
+    action_t* divine_hammer;
+    action_t* divine_hammer_tick;
+
     action_t* sacrosanct_crusade_heal;
     action_t* highlords_judgment;
+    action_t* dawnlight;
     action_t* sun_sear;
+    action_t* armament[ NUM_ARMAMENT ];
+    action_t* sacred_weapon_proc_damage;
+    action_t* sacred_weapon_proc_heal;
   } active;
 
   // Buffs
@@ -222,6 +230,7 @@ public:
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
     buff_t* judge_jury_and_executioner;
+    buff_t* divine_hammer;
 
     buff_t* echoes_of_wrath;  // T31 4pc
 
@@ -252,6 +261,7 @@ public:
 
     struct
     {
+      buff_t* dawnlight;
       buff_t* blessing_of_anshe;
       buff_t* morning_star;
       buff_t* gleaming_rays;
@@ -339,6 +349,7 @@ public:
     cooldown_t* consecrated_blade_icd;
     cooldown_t* searing_light_icd;
     cooldown_t* radiant_glory_icd;
+    cooldown_t* righteous_cause_icd;
 
     cooldown_t* aurora_icd;
     cooldown_t* second_sunrise_icd;
@@ -417,6 +428,7 @@ public:
 
     const spell_data_t* ashen_hallow_how;
 
+    const spell_data_t* consecrated_blade;
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
@@ -626,9 +638,9 @@ public:
     const spell_data_t* crusading_strikes;
     const spell_data_t* templar_strikes;
     const spell_data_t* divine_wrath;
-    const spell_data_t* consecrated_blade;
     const spell_data_t* divine_hammer;
     const spell_data_t* blade_of_vengeance;
+    const spell_data_t* holy_flames;
     const spell_data_t* empyrean_legacy;
 
     const spell_data_t* vanguard_of_justice;
@@ -741,11 +753,14 @@ public:
   {
     bool fake_sov                    = true;
     double proc_chance_ret_aura_sera = 0.10;
+    double min_dg_heal_targets       = 1.0;
+    double max_dg_heal_targets       = 5.0;
   } options;
   player_t* beacon_target;
 
   season next_season;
   armament next_armament;
+  double radiant_glory_accumulator;
 
   bool lights_deliverance_triggered_during_ready;
 
@@ -755,6 +770,7 @@ public:
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
+  int divine_inspiration_next;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -879,6 +895,8 @@ public:
   void generate_action_prio_list_prot();
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
+
+  void spread_expurgation( action_t* act, player_t* og );
 
   target_specific_t<paladin_td_t> target_data;
 
@@ -1131,7 +1149,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
+      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1175,6 +1193,18 @@ public:
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
+      if ( p->talents.divine_hammer->ok() )
+      {
+        for ( auto i = 2; i < 5; i++ )
+        {
+          auto label = p->talents.divine_hammer->effectN( i );
+          if ( this->data().affected_by( label ) || this->data().affected_by_category( label ) )
+          {
+            this->affected_by.divine_hammer = true;
+            break;
+          }
+        }
+      }
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -1316,6 +1346,11 @@ public:
         extension = 500_ms;
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
       p()->cooldowns.higher_calling_icd->start();
+    }
+
+    if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() )
+    {
+      p()->buffs.divine_hammer->current_value = p()->buffs.divine_hammer->current_value * 1.15;
     }
   }
 
@@ -1471,7 +1506,7 @@ public:
     double cttm = ab::composite_target_ta_multiplier( target );
 
     paladin_td_t* td = this->td( target );
-    if ( td->dots.truths_wake->is_ticking() && ab::id != 403695 && p()->talents.burn_to_ash->ok() )
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() && ab::id != 403695 )
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;
@@ -1697,7 +1732,7 @@ public:
     {
       int additionalTargets = 0;
       if ( p->buffs.templar.shake_the_heavens->up() )
-        additionalTargets += p->talents.templar.hammerfall->effectN( 2 ).base_value();
+        additionalTargets += as<int>( p->talents.templar.hammerfall->effectN( 2 ).base_value() );
       p->trigger_empyrean_hammer( nullptr, 1 + additionalTargets,
                                   timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
                                   true );
@@ -1708,6 +1743,16 @@ public:
     {
       paladin_td_t* td = p->get_target_data( s->target );
       td->debuff.vanguard_of_justice->trigger();
+    }
+
+    if ( ab::result_is_hit( s->result ) &&  p->buffs.herald_of_the_sun.dawnlight->up() )
+    {
+      paladin_td_t* td = p->get_target_data( s->target );
+      if ( ! td->dots.dawnlight->is_ticking() )
+      {
+        p->active.dawnlight->execute_on_target( s->target );
+        p->buffs.herald_of_the_sun.dawnlight->decrement();
+      }
     }
   }
 
@@ -1722,10 +1767,6 @@ public:
     if ( ab::background && is_divine_storm )
       return;
 
-    // ToDo (Fluttershy): Check what the driver can and cannot do. Pretty sure it can proc DP at least
-    if ( is_hammer_of_light_driver )
-      return;
-
     bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
@@ -1736,9 +1777,32 @@ public:
     if ( isFreeSLDPSpender )
       num_hopo_spent = 3.0;
 
+    if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
+    {
+      // TODO: verify that this is how this works
+      unsigned base_cost = as<int>( ab::base_cost() );
+      for ( unsigned i = 0; i < base_cost; i++ )
+      {
+        if ( ab::rng().roll( p->talents.righteous_cause->effectN( 1 ).percent() ) )
+        {
+          p->procs.righteous_cause->occur();
+          p->cooldowns.blade_of_justice->reset( true );
+          p->cooldowns.righteous_cause_icd->start();
+          break;
+        }
+      }
+    }
+
+    // TODO (Fluttershy): Check how this behaves with Hammer of Light
     if ( p->talents.radiant_glory->ok() )
     {
-      if ( p->rppm.radiant_glory->trigger() )
+      // This is a bit of a hack. As far as we can tell from logs,
+      // this agony-like accumulator logic matches the distribution
+      // of procs pretty closely, tested on a couple thousand TV casts.
+      // This will need periodic re-verification, but is good enough for beta
+      // purposes.
+      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
+      if ( p->radiant_glory_accumulator >= 1.0 )
       {
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
@@ -1749,19 +1813,36 @@ public:
         {
           p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
         }
+        p->radiant_glory_accumulator -= 1.0;
       }
     }
 
-    if ( p->talents.relentless_inquisitor->ok() )
+    if ( p->talents.relentless_inquisitor->ok() && !ab::background )
       p->buffs.relentless_inquisitor->trigger();
 
+    /*
+      Hammer of Light shenanigans, leaving these findings for later, not touching for now:
+      Crusade, no RG:
+      Execute gives 5 Stacks, if no DP active
+      Damage gives 5 Stacks, if DP active
+      (Can go to 10 stacks immediately, if HoL was the one to trigger DP, see
+      https://www.warcraftlogs.com/reports/WjvLtYRhfq1PmQTF#fight=last&type=auras&ability=231895&view=events&pins=0%24Separate%24%23244F4B%24any%24-1%246015535.0.0.Unknown%240.0.0.Any%24true%240.0.0.Any%24true%24429826%7C427453%7C408458
+      )
+
+      Crusade, RG:
+      Execute gives 5 Stacks, if no DP active
+      Damage never gives stacks
+
+      Light's Deliverance never gives Stacks
+    */
     if ( p->buffs.crusade->check() )
     {
       // Free Hammer of Light from Templar currently gives 0 stacks, needs to be adjusted later
       p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
-    if ( p->talents.righteous_protector->ok() )
+    // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all
+    if ( p->talents.righteous_protector->ok() && ( ( is_hammer_of_light_driver && !p->bugs ) || !is_hammer_of_light ) )
     {
       // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
       if ( p->cooldowns.righteous_protector_icd->up() ||
@@ -1784,7 +1865,7 @@ public:
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
-    if ( p->talents.resolute_defender->ok() )
+    if ( p->talents.resolute_defender->ok() && !ab::background )
     {
       // Just like RP, value is in deciseconds, for whatever reasons
       timespan_t reduction =
@@ -1793,7 +1874,7 @@ public:
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
-    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() )
+    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() && !ab::background )
     {
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost() );
@@ -1827,7 +1908,7 @@ public:
       p->buffs.shining_light_free->decrement();
     }
 
-    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() )
+    if ( p->buffs.sentinel->up() && p->buffs.sentinel_decay->up() && !ab::background )
     {
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
@@ -1850,7 +1931,9 @@ public:
     }
 
     // Roll for Divine Purpose
-    if ( p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
+    // 2024-08-04 Damage event of Hammer of Light cannot proc Divine Purpose, if you're Ret
+    // (Although it is also likely that the driver being able to proc Divine Purpose is also a bug, but who knows
+    if ( !( p->bugs && !is_hammer_of_light_driver && is_hammer_of_light && p->specialization() == PALADIN_RETRIBUTION ) && p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();
@@ -1877,7 +1960,7 @@ public:
       }
     }
 
-    if ( p->buffs.blessing_of_dawn->up() )
+    if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light_driver )
     {
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();

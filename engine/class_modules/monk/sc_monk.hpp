@@ -27,42 +27,6 @@
 
 #include "simulationcraft.hpp"
 
-template <class TActor, class TBuff = buff_t>
-struct hp_triggered_buff_t
-{
-  struct buff_pack_t
-  {
-    const spelleffect_data_t *effect;
-    const spell_data_t *spell_data;
-    propagate_const<TBuff *> buff;
-
-    buff_pack_t( TActor *player, const spelleffect_data_t *effect )
-      : effect( effect ),
-        spell_data( effect->trigger() ),
-        buff( make_buff<TBuff>( player, fmt::format( "{}_{}", effect->spell()->name_cstr(), effect->id() ),
-                                effect->trigger() ) )
-    {
-    }
-  };
-
-  std::vector<std::unique_ptr<buff_pack_t>> buffs;
-  hp_triggered_buff_t( TActor *player, const spell_data_t *driver )
-  {
-    for ( const spelleffect_data_t &effect : driver->effects() )
-      if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_468 )
-        buffs.emplace_back( std::make_unique<buff_pack_t>( player, &effect ) );
-
-    std::sort( buffs.begin(), buffs.end(),
-               []( const std::unique_ptr<buff_pack_t> &lhs, const std::unique_ptr<buff_pack_t> &rhs ) {
-                 return lhs->effect->base_value() > rhs->effect->base_value();
-               } );
-  }
-
-  std::unique_ptr<TBuff> trigger()
-  {
-  }
-};
-
 namespace monk
 {
 struct monk_t;
@@ -104,6 +68,7 @@ enum class sef_ability_e
   SEF_WHIRLING_DRAGON_PUNCH,
   SEF_STRIKE_OF_THE_WINDLORD,
   SEF_STRIKE_OF_THE_WINDLORD_OH,
+  SEF_CELESTIAL_CONDUIT,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -198,7 +163,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
   monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
   double composite_persistent_multiplier( const action_state_t *state ) const override;
-  double action_multiplier() const override;
 };
 
 struct monk_heal_t : public monk_action_t<heal_t>
@@ -323,18 +287,24 @@ struct gift_of_the_ox_t : actions::monk_buff_t
 struct aspect_of_harmony_t
 {
 private:
+  template <class base_action_t>
+  friend struct purified_spirit_t;
+
   struct accumulator_t;
   struct spender_t;
-  propagate_const<accumulator_t *> accumulator;
-  propagate_const<spender_t *> spender;
+  propagate_const<accumulator_t *> accumulator;  // accumulator buff
+  propagate_const<spender_t *> spender;          // spender buff
+  propagate_const<action_t *> damage;            // spender damage periodic action
+  propagate_const<action_t *> heal;              // spender heal periodic action
+  propagate_const<action_t *> purified_spirit;   // purified spirit damage / heal
+  propagate_const<buff_t *> path_of_resurgence;  // path of resurgence buff
 
   bool fallback;
 
   struct accumulator_t : actions::monk_buff_t
   {
-    propagate_const<buff_t *> spender;
-
-    accumulator_t( monk_t *player );
+    aspect_of_harmony_t *aspect_of_harmony;
+    accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
   };
 
@@ -343,9 +313,9 @@ private:
     template <class base_action_t>
     struct purified_spirit_t : base_action_t
     {
-      propagate_const<spender_t *> spender;
+      aspect_of_harmony_t *aspect_of_harmony;
 
-      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender );
+      purified_spirit_t( monk_t *player, const spell_data_t *spell_data, aspect_of_harmony_t *aspect_of_harmony );
       void init() override;
       void execute() override;
     };
@@ -356,14 +326,10 @@ private:
       tick_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
     };
 
-    propagate_const<action_t *> damage;
-    propagate_const<action_t *> heal;
-    propagate_const<action_t *> purified_spirit;
-    propagate_const<buff_t *> accumulator;
-
+    aspect_of_harmony_t *aspect_of_harmony;
     double pool;
 
-    spender_t( monk_t *player );
+    spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void reset() override;
     bool trigger( int stacks = -1, double = DEFAULT_VALUE(), double chance = -1.0,
                   timespan_t duration = timespan_t::min() ) override;
@@ -371,13 +337,16 @@ private:
   };
 
 public:
-  propagate_const<buff_t *> path_of_resurgence;
-  propagate_const<dot_t *> heal;
+  aspect_of_harmony_t();
+  void construct_buffs( monk_t *player );
+  void construct_actions( monk_t *player );
 
-  aspect_of_harmony_t( monk_t *player );
   void trigger( action_state_t *state );
   void trigger_flat( double amount );
   void trigger_spend();
+  void trigger_path_of_resurgence();
+
+  bool heal_ticking();
 };
 }  // namespace buffs
 
@@ -392,9 +361,11 @@ public:
   struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
+    propagate_const<dot_t *> crackling_jade_lightning_aoe;
+    propagate_const<dot_t *> crackling_jade_lightning_sef;
+    propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
     propagate_const<dot_t *> enveloping_mist;
     propagate_const<dot_t *> renewing_mist;
-    propagate_const<dot_t *> rushing_jade_wind;
     propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
 
@@ -411,6 +382,7 @@ public:
     // Windwalker
     propagate_const<buff_t *> acclamation;
     propagate_const<buff_t *> flying_serpent_kick;
+    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> empowered_tiger_lightning;
     propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
     propagate_const<buff_t *> mark_of_the_crane;
@@ -490,9 +462,16 @@ public:
   struct active_actions_t
   {
     // General
-    propagate_const<action_t *> bountiful_brew;
     propagate_const<action_t *> chi_wave;
-    propagate_const<action_t *> rushing_jade_wind;
+
+    // Conduit of the Celestials
+    propagate_const<action_t *> courage_of_the_white_tiger;
+    propagate_const<action_t *> flight_of_the_red_crane_damage;
+    propagate_const<action_t *> flight_of_the_red_crane_heal;
+    propagate_const<action_t *> flight_of_the_red_crane_celestial_damage;
+    propagate_const<action_t *> flight_of_the_red_crane_celestial_heal;
+    propagate_const<action_t *> strength_of_the_black_ox_dmg;
+    propagate_const<action_t *> strength_of_the_black_ox_absorb;
 
     // Shado-Pan
     propagate_const<action_t *> flurry_strikes;
@@ -511,6 +490,7 @@ public:
     propagate_const<action_t *> flurry_of_xuen;
     propagate_const<action_t *> fury_of_xuen_summon;
     propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
+    propagate_const<action_t *> gale_force;
 
     // Tier 31
     propagate_const<action_t *> charred_dreams_dmg_2p;
@@ -704,9 +684,28 @@ public:
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
+    propagate_const<buff_t *> august_dynasty;
+    propagate_const<buff_t *> celestial_conduit;
+    propagate_const<buff_t *> chi_jis_swiftness;
+    propagate_const<buff_t *> courage_of_the_white_tiger;
+    propagate_const<buff_t *> flight_of_the_red_crane;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_ww;
+    propagate_const<buff_t *> heart_of_the_jade_serpent;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
+    propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
+    propagate_const<buff_t *> inner_compass_crane_stance;
+    propagate_const<buff_t *> inner_compass_ox_stance;
+    propagate_const<buff_t *> inner_compass_serpent_stance;
+    propagate_const<buff_t *> inner_compass_tiger_stance;
+    propagate_const<buff_t *> jade_sanctuary;
+    propagate_const<buff_t *> strength_of_the_black_ox;
+    propagate_const<buff_t *> unity_within;
 
     // Master of Harmony
-    buffs::aspect_of_harmony_t *aspect_of_harmony;
+    buffs::aspect_of_harmony_t aspect_of_harmony;
+    propagate_const<buff_t *> balanced_stratagem_physical;
+    propagate_const<buff_t *> balanced_stratagem_magic;
 
     // Shado-Pan
     propagate_const<buff_t *> against_all_odds;
@@ -736,9 +735,8 @@ public:
     // T32 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
     propagate_const<buff_t *> tigers_ferocity;
-    propagate_const<buff_t *> flow_of_battle;
-
-    propagate_const<hp_triggered_buff_t<monk_t, actions::monk_buff_t> *> flow_of_chi;
+    propagate_const<buff_t *> flow_of_battle_damage;
+    propagate_const<buff_t *> flow_of_battle_free_keg_smash;
   } buff;
 
   struct gains_t
@@ -761,7 +759,6 @@ public:
     propagate_const<gain_t *> open_palm_strikes;
     propagate_const<gain_t *> ordered_elements;
     propagate_const<gain_t *> power_strikes;
-    propagate_const<gain_t *> rushing_jade_wind_tick;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
     propagate_const<gain_t *> weapons_of_order;
@@ -823,8 +820,6 @@ public:
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> rushing_jade_wind_brm;
-    propagate_const<cooldown_t *> rushing_jade_wind_ww;
     propagate_const<cooldown_t *> storm_earth_and_fire;
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;
@@ -862,6 +857,7 @@ public:
     {
       const spell_data_t *mastery;
       const spell_data_t *aura;
+      const spell_data_t *aura_2;
       const spell_data_t *brewmasters_balance;
       const spell_data_t *celestial_fortune;
       const spell_data_t *celestial_fortune_heal;
@@ -877,7 +873,7 @@ public:
       const spell_data_t *moderate_stagger;
       const spell_data_t *heavy_stagger;
 
-      actions::brews_t *brews;
+      actions::brews_t brews;
     } brewmaster;
 
     struct
@@ -885,6 +881,7 @@ public:
       const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *aura_3;
       const spell_data_t *expel_harm_rank_2;
     } mistweaver;
 
@@ -892,6 +889,7 @@ public:
     {
       const spell_data_t *mastery;
       const spell_data_t *aura;
+      const spell_data_t *aura_2;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
       const spell_data_t *combo_breaker;
@@ -1109,6 +1107,7 @@ public:
       player_talent_t yulons_whisper;
       player_talent_t mist_wrap;
       player_talent_t refreshing_jade_wind;
+      const spell_data_t *refreshing_jade_wind_tick;
       player_talent_t celestial_harmony;
       player_talent_t dancing_mists;
       player_talent_t chi_harmony;
@@ -1192,9 +1191,11 @@ public:
       player_talent_t invokers_delight;
       player_talent_t dual_threat;
       player_talent_t gale_force;
+      const spell_data_t *gale_force_damage;
       // Row 9
       player_talent_t last_emperors_capacitor;
       player_talent_t whirling_dragon_punch;
+      const spell_data_t *whirling_dragon_punch_buff;
       player_talent_t xuens_bond;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;
@@ -1233,7 +1234,9 @@ public:
       const spell_data_t *purified_spirit_damage;
       const spell_data_t *purified_spirit_heal;
       player_talent_t harmonic_gambit;
-      player_talent_t balanced_strategem;
+      player_talent_t balanced_stratagem;
+      const spell_data_t *balanced_stratagem_physical;
+      const spell_data_t *balanced_stratagem_magic;
       // Row 3
       player_talent_t tigers_vigor;
       player_talent_t roar_from_the_heavens;
@@ -1282,16 +1285,26 @@ public:
     {
       // Row 1
       player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_dmg;
+      const spell_data_t *celestial_conduit_heal;
       // Row 2
       player_talent_t temple_training;
       player_talent_t xuens_guidance;
       player_talent_t courage_of_the_white_tiger;
+      const spell_data_t *courage_of_the_white_tiger_damage;
+      const spell_data_t *courage_of_the_white_tiger_heal;
       player_talent_t restore_balance;
       player_talent_t yulons_knowledge;
       // Row 3
       player_talent_t heart_of_the_jade_serpent;
       player_talent_t strength_of_the_black_ox;
+      const spell_data_t *strength_of_the_black_ox_absorb;
+      const spell_data_t *strength_of_the_black_ox_damage;
       player_talent_t flight_of_the_red_crane;
+      const spell_data_t *flight_of_the_red_crane_dmg;
+      const spell_data_t *flight_of_the_red_crane_heal;
+      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
+      const spell_data_t *flight_of_the_red_crane_celestial_heal;
       // Row 4
       player_talent_t niuzaos_protection;
       player_talent_t jade_sanctuary;
@@ -1300,6 +1313,7 @@ public:
       player_talent_t august_dynasty;
       // Row 5
       player_talent_t unity_within;
+      const spell_data_t *unity_within_dmg_mult;
     } conduit_of_the_celestials;
   } talent;
 
@@ -1329,6 +1343,8 @@ public:
     struct
     {
       const spell_data_t *ww_4pc;
+      const spell_data_t *brm_4pc_damage_buff;
+      const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;
   } tier;
 
@@ -1418,7 +1434,6 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_melee_auto_attack_speed() const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
@@ -1430,6 +1445,7 @@ public:
   void init_scaling() override;
   void init_items() override;
   void create_buffs() override;
+  void create_actions() override;
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
@@ -1503,42 +1519,6 @@ public:
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet );
 };
-
-template <class Buff>
-Buff *make_fallback( monk_t *player, std::string_view name, monk_t *source = nullptr )
-{
-  /*
-   * TODO: Come up with another solution.
-   *  This is very likely UB, but seems to work at least ok-ish.
-   *  Future me shall replace this with a less dangerous solution.
-   */
-  return static_cast<Buff *>(
-      buff_t::make_fallback( static_cast<player_t *>( player ), name, static_cast<player_t *>( source ) ) );
-}
-
-template <typename Buff, typename Player, typename... Args>
-Buff *make_buff_fallback( bool true_buff, Player &&player, std::string_view name, Args &&...args )
-{
-  static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-  static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
-                     std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
-                 "Player must be derived from player_t or actor_pair_t" );
-
-  if ( true_buff )
-  {
-    if constexpr ( std::is_constructible_v<Buff, Player, Args...> )
-      return new Buff( std::forward<Player>( player ), std::forward<Args>( args )... );
-    else
-      return new Buff( std::forward<Player>( player ), name, std::forward<Args>( args )... );
-  }
-  else
-  {
-    if constexpr ( std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>> )
-      return make_fallback<Buff>( player.target, name, player.source );
-    else
-      return make_fallback<Buff>( player, name, player );
-  }
-}
 
 struct sef_despawn_cb_t
 {

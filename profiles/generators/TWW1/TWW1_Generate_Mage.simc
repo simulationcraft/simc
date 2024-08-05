@@ -1,29 +1,35 @@
-# mage="TWW1_Mage_Arcane"
-# spec=arcane
-# level=70
-# race=troll
-# role=spell
-# position=ranged_back
-# talents=1032021
+mage="TWW1_Mage_Arcane"
+spec=arcane
+level=80
+race=mechagnome
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAMjZxsNLYmxMzCwYGjpZmlZAAAAAAYAAQAzMz2y2MTsAAAAAAwGALzYYMmZYMzMGzMzMzMzMMG
 
-# head=erudite_occultists_hood,id=188844,bonus_id=1498/7187/6935,gem_id=173128
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173128
-# shoulders=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-# hands=grimveiled_mittens,id=173244,bonus_id=1588/6926/6647/6648
-# waist=grimveiled_belt,id=173248,bonus_id=1588/8123/6647/6650/6935,gem_id=173129
-# legs=erudite_occultists_leggings,id=188842,bonus_id=1498/7187
-# feet=dark_stride_footwraps,id=180102,bonus_id=1592/6536/6646
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_versatility
-# finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
-# trinket1=moonlit_prism,id=137541,bonus_id=3151
-# trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6916
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feisty_fish_sticks
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# save=TWW1_Mage_Arcane.simc
+head=hood_of_violet_rebirth,id=212092,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213497/213485
+shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7403
+chest=shadowed_orators_tunic,id=221095,ilevel=639,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=11103,ilevel=629,gem_id=213461,crafted_stats=32/40
+hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
+waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213467
+legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=11103,ilevel=629,gem_id=213467,crafted_stats=32/40
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213467/213467,enchant_id=7334
+finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213467/213467,enchant_id=7334
+trinket1=unbound_changeling,id=178708,ilevel=639
+trinket2=spymasters_web,id=220202,ilevel=639
+main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
+off_hand=broodtwisters_grim_catalyst,id=212387,ilevel=639
+
+save=TWW1_Mage_Arcane.simc
 
 # mage="TWW1_Mage_Fire"
 # spec=fire

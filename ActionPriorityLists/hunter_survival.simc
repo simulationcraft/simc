@@ -1,0 +1,65 @@
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=cleave,if=active_enemies>2
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/arcane_torrent
+actions+=/bag_of_tricks
+
+actions.cds=blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/harpoon,if=prev.kill_command
+actions.cds+=/ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/lights_judgment
+actions.cds+=/berserking,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault|time_to_die<13
+actions.cds+=/muzzle
+actions.cds+=/potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/use_item,name=algethar_puzzle_box,use_off_gcd=1
+actions.cds+=/use_item,name=manic_grieftorch
+actions.cds+=/use_item,name=beacon_to_the_beyond
+actions.cds+=/use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains
+actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
+
+actions.cleave=spearhead,if=cooldown.coordinated_assault.remains
+actions.cleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
+actions.cleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
+actions.cleave+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
+actions.cleave+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
+actions.cleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
+actions.cleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
+actions.cleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
+actions.cleave+=/mongoose_bite,if=buff.merciless_blows.up
+actions.cleave+=/raptor_strike,if=buff.merciless_blows.up
+actions.cleave+=/butchery
+actions.cleave+=/kill_shot
+actions.cleave+=/mongoose_bite
+actions.cleave+=/raptor_strike
+
+actions.st=spearhead,if=cooldown.coordinated_assault.remains
+actions.st+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
+actions.st+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
+actions.st+=/fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc
+actions.st+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
+actions.st+=/kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em
+actions.st+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
+actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
+actions.st+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
+actions.st+=/mongoose_bite
+actions.st+=/raptor_strike

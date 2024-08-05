@@ -4704,7 +4704,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
   }
 
   effect.proc_flags_  = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.proc_flags2_ = PF2_ALL_CAST;
   effect.custom_buff  = primary_buff;
 
   new recalibration_cb_t( effect, primary_buff, recalibration_buff );
@@ -5117,7 +5117,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
   };
 
   effect.proc_flags_  = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_flags2_ = PF2_ALL_CAST;
   effect.proc_chance_ = 1.0;
 
   new loop_of_recursion_cb_t( effect );
@@ -5143,7 +5143,7 @@ void items::logic_loop_of_maintenance( special_effect_t& effect )
   };
 
   effect.proc_flags_  = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL | PF2_CAST;
+  effect.proc_flags2_ = PF2_ALL_CAST;
   effect.proc_chance_ = 1.0;
 
   new loop_of_maintenance_cb_t( effect );
@@ -5229,7 +5229,7 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
   spell_tracker->source       = SPECIAL_EFFECT_SOURCE_ITEM;
   spell_tracker->proc_chance_ = 1.0;
   spell_tracker->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
-  spell_tracker->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  spell_tracker->proc_flags2_ = PF2_ALL_CAST;
   effect.player->special_effects.push_back( spell_tracker );
 
   static constexpr auto spell_blacklist = ::util::make_static_set<unsigned>( {

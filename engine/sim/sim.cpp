@@ -4242,7 +4242,7 @@ void sim_t::setup( sim_control_t* c )
 
   range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
-  if ( parent )
+  if ( parent || profileset_enabled )
   {
     debug = false;
     log = 0;

@@ -1508,6 +1508,7 @@ class SpellDataGenerator(DataGenerator):
          451303, 451991, # harvester's edict
          450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
          450204, # twin fang instruments
+         457284, # TWW Primary Stat Food
         ),
 
         # Warrior:
@@ -1652,6 +1653,7 @@ class SpellDataGenerator(DataGenerator):
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
           ( 426703, 5), # Dire Beast Kill Command
+          ( 459834, 3), # Sulfur-Lined Pockets (Explosive Shot buff)
           # Hero Talents
           ( 444354, 0), # Shadow Lash
           ( 444269, 0), # Shadow Surge
@@ -1981,6 +1983,11 @@ class SpellDataGenerator(DataGenerator):
           ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
           ( 390287, 0 ),                                # Improved Stormbringer damage spell
           ( 289439, 0 ),                                # Frost Shock Maelstrom generator
+          ( 463351, 0 ),                                # Tempest Overload
+          ( 451137, 0 ), ( 450511, 0 ), ( 451031, 0 ),  # Call of the Ancestors spells
+          ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
+          ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
+          ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
         ),
 
         # Mage:
@@ -2040,6 +2047,13 @@ class SpellDataGenerator(DataGenerator):
           ( 461508, 0 ),                            # Energy Reconstitution AE
           ( 438671, 0 ), ( 438672, 0 ), ( 438674, 0 ), # Excess Fire LB
           ( 460475, 0 ), ( 460476, 0 ),             # Pyromaniac Pyroblast and Flamestrike
+          ( 464515, 0 ),                            # Arcane Echo ICD
+          ( 449559, 0 ), ( 449560, 0 ), ( 449562, 0 ), ( 449569, 0 ), # Meteorite (Glorious Incandescence)
+          ( 450499, 0 ),                            # Arcane Barrage (Arcane Phoenix)
+          ( 450462, 0 ),                            # Flamestrike (Arcane Phoenix)
+          ( 453326, 0 ),                            # Arcane Surge (Arcane Phoenix)
+          ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
+          ( 455137, 0 ),                            # Blessing of the Phoenix missile speed
         ),
 
         # Warlock:
@@ -2143,6 +2157,9 @@ class SpellDataGenerator(DataGenerator):
           ( 421970, 0 ),    # Ner'zhul's Volition Buff 10.2
           ( 423874, 0 ),    # T31 - Flame Rift
           ( 427285, 0 ),    # T31 - Dimensional Cinder
+          ( 438973, 0 ),    # Diabolist - Felseeker
+          ( 434404, 0 ),    # Diabolist - Felseeker
+          ( 438823, 0 ),    # Diabolic Bolt (pet spell)
         ),
 
         # Monk:
@@ -3350,14 +3367,16 @@ class SpellDataGenerator(DataGenerator):
 
         labels = []
         for label in self.db('SpellLabel').values():
-            if label.label not in included_labels:
-                continue
             if label.id_parent not in id_keys:
                 continue
+
             if label.label in constants.SPELL_LABEL_BLACKLIST:
                 continue
-            labels.append(label)
-            spelllabel_index[label.id_parent] += 1
+
+            label_tuple = (label.id_parent, label.label, label)
+            if label_tuple not in labels:
+                labels.append(label_tuple)
+                spelllabel_index[label.id_parent] += 1
 
         for spell_id, effect_ids in spelleffect_index.items():
             for effect_id in effect_ids:
@@ -3650,13 +3669,13 @@ class SpellDataGenerator(DataGenerator):
 
         # Write out labels
         self.output_header(
-                header = 'Applied spell labels',
+                header = 'Spell labels',
                 type = 'spelllabel_data_t',
                 array = 'spelllabel',
                 length = len(labels))
 
-        for label in sorted(labels, key=lambda l: (l.id_parent, l.id)):
-            self.output_record(label.field('id', 'id_parent', 'label'))
+        for _, _, label in sorted(labels, key=lambda l: (l[0], l[1])):
+            self.output_record(label.field('id_parent', 'label'))
 
         self.output_footer()
 
@@ -5117,10 +5136,10 @@ class CharacterLoadoutGenerator(DataGenerator):
         return CharacterLoadoutSet(self._options).get()
 
     def generate(self, data = None):
-        # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 6 * 13
+        # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 5 * 13
         _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
         _ilevels.sort(reverse=True)
-        self._out.write('static constexpr int MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(_ilevels[0] + 6 * 13))
+        self._out.write('static constexpr int MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(_ilevels[0] + 5 * 13))
 
         self.output_header(
             header = 'Character Loadout data',

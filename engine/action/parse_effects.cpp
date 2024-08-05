@@ -8,7 +8,73 @@
 #include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "report/decorators.hpp"
+#include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
+
+namespace opt_strings
+{
+std::string attributes( uint32_t opt )
+{
+  std::vector<std::string> str_list;
+
+  for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+    if ( opt & ( 1 << ( stat - 1 ) ) )
+      str_list.emplace_back( util::stat_type_string( stat ) );
+
+  return util::string_join( str_list );
+}
+
+std::string attributes_invalidate( const player_effect_t& data )
+{
+  std::vector<std::string> str_list;
+
+  for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+  {
+    if ( data.opt_enum & ( 1 << ( stat - 1 ) ) )
+    {
+      str_list.emplace_back( util::stat_type_string( stat ) );
+      if ( data.buff )
+        data.buff->add_invalidate( cache_from_stat( stat ) );
+    }
+  }
+
+  return util::string_join( str_list );
+}
+
+std::string ratings( uint32_t opt )
+{
+  std::vector<std::string> str_list;
+
+  for ( auto stat : util::translate_all_rating_mod( opt ) )
+    str_list.emplace_back( util::stat_type_string( stat ) );
+
+  return util::string_join( str_list );
+}
+
+std::string ratings_invalidate( const player_effect_t& data )
+{
+  std::vector<std::string> str_list;
+
+  for ( auto stat : util::translate_all_rating_mod( data.opt_enum ) )
+  {
+    str_list.emplace_back( util::stat_type_string( stat ) );
+    if ( data.buff )
+      data.buff->add_invalidate( cache_from_stat( stat ) );
+  }
+
+  return util::string_join( str_list );
+}
+
+std::string school( uint32_t opt )
+{
+  return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
+}
+
+std::string pet_type( uint32_t opt )
+{
+  return opt ? "Guardian" : "Pet";
+}
+}  // namespace opt_strings
 
 std::string player_effect_t::value_type_name( uint8_t t ) const
 {
@@ -23,8 +89,8 @@ std::string player_effect_t::value_type_name( uint8_t t ) const
 }
 
 void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
-                                         std::function<std::string( uint32_t )> note_fn,
-                                         std::function<std::string( double )> val_str_fn ) const
+                                         const std::function<std::string( uint32_t )>& note_fn,
+                                         const std::function<std::string( double )>& val_str_fn ) const
 {
   std::vector<std::string> notes;
 
@@ -80,8 +146,8 @@ std::string target_effect_t::value_type_name( uint8_t t ) const
 }
 
 void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t& sim, bool decorate,
-                                         std::function<std::string( uint32_t )> note_fn,
-                                         std::function<std::string( double )> val_str_fn ) const
+                                         const std::function<std::string( uint32_t )>& note_fn,
+                                         const std::function<std::string( double )>& val_str_fn ) const
 {
   std::vector<std::string> notes;
 
@@ -159,7 +225,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
 template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, bool&, const spell_data_t*, size_t,
                                                                       const spell_data_t* );
 
-double modified_spelleffect_t::base_value() const
+double modified_spelleffect_t::base_value( const action_t* action, const action_state_t* state ) const
 {
   auto return_value = value;
 
@@ -167,7 +233,7 @@ double modified_spelleffect_t::base_value() const
   {
     double eff_val = i.value;
 
-    if ( i.func && !i.func() )
+    if ( i.func && !i.func( action, state ) )
       continue;  // continue to next effect if conditional effect function is false
 
     if ( i.buff )
@@ -935,18 +1001,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_TOTAL_STAT_PERCENTAGE:
       data.opt_enum = eff.misc_value2();
-      {
-        std::vector<std::string> str_list;
-        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
-        {
-          if ( data.opt_enum & ( 1 << ( stat - 1 ) ) )
-          {
-            str_list.emplace_back( util::stat_type_string( stat ) );
-            invalidate( cache_from_stat( stat ) );
-          }
-        }
-        str = util::string_join( str_list );
-      }
+      str = opt_strings::attributes_invalidate( data );
 
       if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
       {
@@ -962,16 +1017,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_RATING_MULTIPLIER:
       data.opt_enum = eff.misc_value1();
-      {
-        std::vector<std::string> str_list;
-        for ( auto stat : util::translate_all_rating_mod( data.opt_enum ) )
-        {
-          str_list.emplace_back( util::stat_type_string( stat ) );
-          invalidate( cache_from_stat( stat ) );
-        }
-        str = util::string_join( str_list );
-      }
-
+      str = opt_strings::ratings_invalidate( data );
       return &rating_multiplier_effects;
 
     case A_MOD_VERSATILITY_PCT:
@@ -997,7 +1043,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_DAMAGE_PERCENT_DONE:
       data.opt_enum = eff.misc_value1();
-      str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
+      str = opt_strings::school( data.opt_enum );
       str += " damage";
       invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       return &player_multiplier_effects;
@@ -1124,7 +1170,7 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
   {
     case A_MOD_DAMAGE_FROM_CASTER:
       data.opt_enum = eff.misc_value1();
-      str = data.opt_enum == 0x7f ? "all" : util::school_type_string( dbc::get_school_type( data.opt_enum ) );
+      str = opt_strings::school( data.opt_enum );
       return &target_multiplier_effects;
 
     case A_MOD_DAMAGE_FROM_CASTER_PET:
@@ -1169,45 +1215,17 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
        << "<th>Notes</th>"
        << "</tr></thead>\n";
 
-    // TODO: consolidate these with debug message functors in get_effect_vector()
-    auto attr_note = []( uint32_t opt ) {
-      std::vector<std::string> str_list;
-
-      for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
-        if ( opt & ( 1 << ( stat - 1 ) ) )
-          str_list.emplace_back( util::stat_type_string( stat ) );
-
-      return util::string_join( str_list );
-    };
-
-    auto rating_note = []( uint32_t opt ) {
-      std::vector<std::string> str_list;
-
-      for ( auto stat : util::translate_all_rating_mod( opt ) )
-        str_list.emplace_back( util::stat_type_string( stat ) );
-
-      return util::string_join( str_list );
-    };
-
-    auto mult_note = []( uint32_t opt ) {
-      return opt == 0x7f ? "All" : util::school_type_string( dbc::get_school_type( opt ) );
-    };
-
-    auto pet_note = []( uint32_t opt ) {
-      return opt ? "Guardian" : "Pet";
-    };
-
     auto mastery_val = [ this ]( double v ) {
       return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
     };
 
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
-    print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", attr_note );
-    print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", attr_note );
-    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", rating_note );
+    print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
+    print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", &opt_strings::attributes );
+    print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
     print_parsed_type( os, versatility_effects, "Versatility" );
-    print_parsed_type( os, player_multiplier_effects, "Player Multiplier", mult_note );
-    print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", pet_note );
+    print_parsed_type( os, player_multiplier_effects, "Player Multiplier", &opt_strings::school );
+    print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", &opt_strings::pet_type );
     print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
     print_parsed_type( os, crit_chance_effects, "Crit Chance" );
     print_parsed_type( os, leech_effects, "Leech" );
@@ -1220,8 +1238,8 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
     print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
     print_parsed_type( os, dodge_effects, "Dodge" );
-    print_parsed_type( os, target_multiplier_effects, "Target Multiplier", mult_note );
-    print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", pet_note );
+    print_parsed_type( os, target_multiplier_effects, "Target Multiplier", &opt_strings::school );
+    print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", &opt_strings::pet_type );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
@@ -1298,16 +1316,6 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   if ( !force && !_action->data().affected_by_all( eff ) )
     return nullptr;
 
-  auto& data = pack.data;
-
-  auto adjust_recharge_multiplier_warning = [ this, &data ] {
-    if ( _action->sim->debug && data.buff && !data.buff->stack_change_callback )
-    {
-      _action->sim->error( "WARNING: {} adjusts cooldown of {} but does not have a stack change callback.\n\r"
-                           "Make sure adjust_recharge_multiplier() is properly called.", *data.buff, *_action );
-    }
-  };
-
   if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
     switch ( eff.misc_value1() )
@@ -1321,8 +1329,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
       case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
       case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
-      case P_COOLDOWN:      adjust_recharge_multiplier_warning();
-                            str = "cooldown";               return &recharge_multiplier_effects;
+      case P_COOLDOWN:      str = "cooldown";               return &recharge_multiplier_effects;
       default:              return nullptr;
     }
   }
@@ -1335,18 +1342,43 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_CAST_TIME:     val_mul = 1.0;
                             str = "cast time";   return &flat_execute_time_effects;
       case P_TICK_TIME:     val_mul = 1.0;
-                            str = "tick time";   return &flat_tick_time_effects; 
+                            str = "tick time";   return &flat_tick_time_effects;
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
       case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
       default:              return nullptr;
     }
   }
-  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
+  else if ( eff.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
   {
     str = "cooldown";
-    adjust_recharge_multiplier_warning();
     return &recharge_multiplier_effects;
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY ||
+            eff.subtype() == A_MOD_RECHARGE_RATE )
+  {
+    str = "recharge rate";
+    return &recharge_rate_effects;
+  }
+  else if ( eff.subtype() == A_MODIFY_SCHOOL )
+  {
+    auto school = dbc::get_school_type( eff.misc_value1() );
+
+    if ( pack.data.buff )
+    {
+      pack.data.buff->add_stack_change_callback( [ a = _action, school ]( buff_t*, int old_, int new_ ) {
+        if ( !old_ )
+          a->set_school_override( school );
+        else if ( !new_ )
+          a->clear_school_override();
+      } );
+    }
+
+    pack.data.type |= parse_flag_e::ALLOW_ZERO;
+    pack.data.opt_enum = eff.misc_value1();
+    flat = true;
+    str = fmt::format( "spell school|{}", util::school_type_string( school ) );
+    return &spell_school_effects;
   }
 
   return nullptr;
@@ -1355,6 +1387,13 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
                                          std::string_view val_str, bool mastery, const spell_data_t* s_data, size_t i )
 {
+  auto splits = util::string_split<std::string_view>( type_str, "|" );
+  auto tok1 = splits[ 0 ];
+  auto tok2 = std::string( val_str );
+
+  if ( splits.size() > 1 )
+    tok2 = splits[ 1 ];
+
   if ( data.buff )
   {
     std::string stack_str;
@@ -1374,23 +1413,22 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
     }
 
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, stack_str, data.buff->name(), data.buff->data().id(),
-                               i );
+                               _action->id, tok1, tok2, stack_str, data.buff->name(), data.buff->data().id(), i );
   }
   else if ( mastery && !data.func )
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
   else if ( data.func )
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
-                               _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->name(), _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
   else
   {
     _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
   }
 }
 
@@ -1534,22 +1572,26 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
        << "</tr>\n";
 
     auto timespan_fn = []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); };
+    auto flat_fn = []( double v ) { return fmt::to_string( v ); };
+    auto empty_fn = []( double ) { return ""; };
 
     using VEC = parse_action_base_t;
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
     print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
-    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", timespan_fn );
+    print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
-    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration", timespan_fn );
+    print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
-    print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", timespan_fn );
+    print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::tick_time_effects, "Percent Tick Time" );
     print_parsed_type( os, &VEC::recharge_multiplier_effects, "Recharge Multiplier" );
-    print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", []( double v ) { return fmt::to_string( v ); } );
+    print_parsed_type( os, &VEC::recharge_rate_effects, "Recharge Rate" );
+    print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", nullptr, flat_fn );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
+    print_parsed_type( os, &VEC::spell_school_effects, "Spell School", &opt_strings::school, empty_fn );
     print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
     print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
     print_parsed_type( os, &VEC::target_crit_damage_effects, "Crit Damage on Debuff" );
@@ -1572,11 +1614,13 @@ size_t parse_action_base_t::total_effects_count()
          tick_time_effects.size() +
          flat_tick_time_effects.size() +
          recharge_multiplier_effects.size() +
+         recharge_rate_effects.size() +
          cost_effects.size() +
          flat_cost_effects.size() +
          crit_chance_effects.size() +
          crit_chance_multiplier_effects.size() +
          crit_damage_effects.size() +
+         spell_school_effects.size() +
          target_multiplier_effects.size() +
          target_crit_chance_effects.size() +
          target_crit_damage_effects.size();
@@ -1624,11 +1668,13 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( tick_time_effects );
   initialize_buff_list_on_vector( flat_tick_time_effects );
   initialize_buff_list_on_vector( recharge_multiplier_effects );
+  initialize_buff_list_on_vector( recharge_rate_effects );
   initialize_buff_list_on_vector( cost_effects );
   initialize_buff_list_on_vector( flat_cost_effects );
   initialize_buff_list_on_vector( crit_chance_effects );
   initialize_buff_list_on_vector( crit_chance_multiplier_effects );
   initialize_buff_list_on_vector( crit_damage_effects );
+  initialize_buff_list_on_vector( spell_school_effects );
 }
 
 void parse_action_base_t::consume_buff_list()

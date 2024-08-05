@@ -1297,7 +1297,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   shadow_word_death_self_damage_t( priest_t& p )
     : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage ),
-      self_damage_coeff( p.talents.shadow_word_death->effectN( 5 ).percent() )
+      self_damage_coeff( p.talents.shadow_word_death->effectN( 6 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -1423,7 +1423,6 @@ public:
     triggers_atonement = true;
 
     // Devour Matter gives you more Insanity and an extra amount of sp coeff
-    // TODO: Need to re-rest the damage mod
     if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
     {
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
@@ -1550,11 +1549,10 @@ public:
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
         // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
-        // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1203
-        if ( ( ( !priest().bugs && priest().buffs.deathspeaker->check() ) ||
-               save_health_percentage <= depth_of_shadows_threshold ) &&
+        if ( ( priest().buffs.deathspeaker->check() || save_health_percentage <= depth_of_shadows_threshold ) &&
              rng().roll( 0.9 ) )
         {
+          priest().procs.depth_of_shadows->occur();
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
         }
       }
@@ -1764,10 +1762,12 @@ struct collapsing_void_damage_t final : public priest_spell_t
 
   void trigger( player_t* target, int stacks )
   {
-    parent_stacks = stacks;
+    // The first trigger of the buff on the spawn of the rift does not count towards the damage mod stacks
+    // Only relevant if you didn't extend the rift at all while active
+    parent_stacks = stacks - 1;
 
     player->sim->print_debug( "{} triggered collapsing_void_damage on target {} with {} stacks", priest(), *target,
-                              stacks );
+                              parent_stacks );
 
     // TODO: Handle if the target dies between entropic rift start and collapsing void
     // Make sure the target is still available
@@ -1859,30 +1859,6 @@ struct entropic_rift_t final : public priest_spell_t
           break;
       }
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    // TODO: check if it does anything after it arrives. For now assume no.
-
-    /*
-
-    if ( priest().talents.voidweaver.entropic_rift.enabled() )
-    {
-      priest().buffs.entropic_rift->extend_duration(
-          player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
-    }
-
-    if ( priest().talents.voidweaver.voidheart.enabled() )
-    {
-      priest().buffs.voidheart->extend_duration(
-          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
-    }
-
-    double size_increase_mod = priest().bugs ? 0.5 : 1.0;
-    */
   }
 };
 
@@ -2725,8 +2701,8 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.mind_spike_insanity_munched    = get_proc( "Mind Spike: Insanity stacks consumed by normal Mind Spikes" );
   procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
+  procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -2845,6 +2821,11 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
       }
 
+      if ( util::str_compare_ci( splits[ 1 ], "force_devour_matter" ) )
+      {
+        return expr_t::create_constant( "force_devour_matter", options.force_devour_matter );
+      }
+
       if ( util::str_compare_ci( splits[ 1 ], "cthun_last_trigger_attempt" ) )
       {
         if ( talents.shadow.idol_of_cthun.enabled() )
@@ -2918,12 +2899,23 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-
+  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
   if ( guardian )
+  {
+    m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
+  }
   else
+  {
+    m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
+  }
+
+  // TWW1 Set Bonus for pet spells, this double dips with pet spells
+  if ( buffs.devouring_chorus->check() )
+  {
+    m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
+  }
 
   // Auto parsing does not cover melee attacks, and other attacks double dip with this
   if ( buffs.devoured_pride->check() )
@@ -3171,8 +3163,14 @@ void priest_t::init_resources( bool force )
        options.init_insanity )
   {
     auto divine_star_insanity  = talents.divine_star->effectN( 3 ).resource( RESOURCE_INSANITY );
-    auto halo_insanity         = talents.halo->effectN( 2 ).resource( RESOURCE_INSANITY );
+    auto halo_insanity         = talents.halo->effectN( 4 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
+
+    // Don't let Archon count Halo for pre-pull Insanity purposes
+    if ( talents.archon.power_surge.enabled() )
+    {
+      halo_insanity = 0.0;
+    }
 
     if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
     {
@@ -3504,8 +3502,10 @@ void priest_t::create_buffs()
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
           // to miss the main target.
-          if ( b->current_tick >= 2 )
+          if ( b->current_tick >= 2 && rng().roll( 1.0 - options.entropic_rift_miss_percent ) )
+          {
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
+          }
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
           if ( !new_ )
@@ -3518,9 +3518,8 @@ void priest_t::create_buffs()
   }
 
   // Tracking buff for Darkening Horizon extension
-  // TODO: use some other buff id or make quiet
   buffs.darkening_horizon =
-      make_buff( this, "darkening_horizon", talents.voidweaver.entropic_rift_aoe )
+      make_buff( this, "darkening_horizon", talents.voidweaver.darkening_horizon )
           ->set_max_stack( talents.voidweaver.darkening_horizon.enabled()
                                ? as<int>( talents.voidweaver.darkening_horizon->effectN( 2 ).base_value() )
                                : 1 );
@@ -3893,6 +3892,7 @@ void priest_t::create_options()
                             0_s, timespan_t::max() ) );
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
+  add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -4046,7 +4046,17 @@ void priest_t::trigger_void_shield( double result_amount )
 
 void priest_t::trigger_entropic_rift()
 {
+  // Spawn Entropic Rift
   background_actions.entropic_rift->execute();
+
+  // Trigger the first stack of collapsing rift
+  // This stack does not count for the damage mod
+  if ( !talents.voidweaver.collapsing_void.enabled() )
+  {
+    return;
+  }
+
+  buffs.collapsing_void->trigger();
 }
 
 void priest_t::expand_entropic_rift()

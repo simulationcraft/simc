@@ -1149,7 +1149,7 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
   {
     if ( s.resource_gain.actual[ i ] > 0 )
     {
-      os.format( R"(<tr class="right"><td class=\"left\">{}</td><td class=\"left\">{}</td>)"
+      os.format( R"(<tr class="right"><td class="left">{}</td><td class="left">{}</td>)"
                  "<td>{:.2Lf}</td>"
                  "<td>{:.2Lf}</td>"
                  "<td>{:.2f}%</td>"
@@ -1889,13 +1889,13 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     {
       case talent_tree::CLASS:
         class_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+        if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
           class_points += _rank;
         break;
 
       case talent_tree::SPECIALIZATION:
         spec_traits.at( trait->row - 1 ).emplace_back( trait, _rank );
-        if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+        if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
           spec_points += _rank;
         break;
 
@@ -1906,7 +1906,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
                 range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
           {
             hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
-            if ( !trait_data_t::is_granted( trait, p.specialization() ) )
+            if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
               hero_points[ id ] += _rank;
           }
         }
@@ -4340,7 +4340,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 
       if ( p.sim->report_details && ( show_count || show_interval ) )
       {
-        os.format( R"(<tr class="details hide"><td colspan="{}")", columns );
+        os.format( R"(<tr class="details hide"><td colspan="{}">)", columns );
 
         if ( show_count )
           report_helper::print_distribution_chart( os, p, &proc->count, name, token, "_proc" );

@@ -59,9 +59,8 @@
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
 #include "sim/proc.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/shuffled_rng.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
@@ -2624,7 +2623,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
   // add any freely granted traits
   for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
   {
-    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
+    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
     {
       auto id = trait.id_trait_node_entry;
       auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
@@ -2700,6 +2699,7 @@ constexpr size_t byte_size    = 6;
 static std::string generate_traits_hash( player_t* player )
 {
   std::string export_str;
+  auto ptr = player->is_ptr();
 
   if ( player->player_traits.empty() )
     return export_str;
@@ -2737,7 +2737,7 @@ static std::string generate_traits_hash( player_t* player )
     if ( !ranks )
       continue;
 
-    auto trait_data = trait_data_t::find( id_entry, maybe_ptr( player->dbc->ptr ) );
+    auto trait_data = trait_data_t::find( id_entry, ptr );
     auto tree_entry = &tree_nodes[ trait_data->id_node ];
 
     for ( auto& entry : *tree_entry )
@@ -2754,15 +2754,15 @@ static std::string generate_traits_hash( player_t* player )
   {
     if ( node.size() > 1 )
     {
-      range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-        return sort_node_entries( a.first, b.first, player->is_ptr() );
+      range::sort( node, [ ptr ]( const auto& a, const auto& b ) {
+        return sort_node_entries( a.first, b.first, ptr );
       } );
     }
 
     const trait_data_t* trait = nullptr;
     unsigned rank = 0;
     unsigned index = 0;
-    bool is_choice = node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3;
+    bool is_choice = node.size() > 0 ? node[ 0 ].first->node_type == 2 || node[ 0 ].first->node_type == 3 : false;
 
     for ( size_t i = 0; i < node.size(); i++ )
     {
@@ -2786,7 +2786,7 @@ static std::string generate_traits_hash( player_t* player )
     }
 
     // is node purchased? granted nodes are baseline 1 rank.
-    if ( rank > ( trait_data_t::is_granted( trait, player->specialization() ) ? 1U : 0U ) )
+    if ( rank > ( trait_data_t::is_granted( trait, player->type, player->specialization(), ptr ) ? 1U : 0U ) )
     {
       put_bit( 1, 1 );
     }
@@ -2908,7 +2908,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       size_t rank = trait->max_ranks;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
 
-      // hero talents don't seem to require a matching specialization
+      // hero talents don't seem to require a matching id_spec_set
+      // TODO: utilize logic in trait_data_t::is_granted() to check against id_spec_set of the subtree selection trait
       if ( _tree != talent_tree::HERO &&
            !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
@@ -3000,7 +3001,8 @@ static void enable_all_talents( player_t* player )
         continue;
 
       if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
-           range::contains( trait->id_spec, player->specialization() ) )
+           range::contains( trait->id_spec, player->specialization() ) ||
+           trait_data_t::is_hero_trait_available( trait, player->type, player->specialization(), player->is_ptr() ) )
       {
         auto _tree = static_cast<talent_tree>( trait->tree_index );
 
@@ -3113,10 +3115,9 @@ void player_t::init_talents()
       continue;
     }
 
-    const auto trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+    const auto trait = trait_data_t::find( trait_node_entry_id, is_ptr() );
     assert( trait );
-    const auto effect_points = trait_definition_effect_entry_t::find( trait->id_trait_definition,
-        dbc->ptr );
+    const auto effect_points = trait_definition_effect_entry_t::find( trait->id_trait_definition, is_ptr() );
     auto spell = dbc::find_spell( this, trait->id_spell );
 
     if ( spell->id() != trait->id_spell )
@@ -3155,7 +3156,7 @@ void player_t::init_talents()
         continue;
       }
 
-      auto curve_data = curve_point_t::find( effect_point.id_curve, dbc->ptr );
+      auto curve_data = curve_point_t::find( effect_point.id_curve, is_ptr() );
       auto value = 0.0f;
       auto it = range::find_if( curve_data, [rank]( const auto& point ) {
         return point.primary1 == as<float>( rank );
@@ -3814,16 +3815,24 @@ void player_t::init_assessors()
 
 void player_t::init_finished()
 {
+  // Add dynamic cooldowns first before action_t::init_finished so actions can adjust their behavior accordingly if
+  // necessary.
+  range::for_each( cooldown_list, [ this ]( cooldown_t* c ) {
+    if ( c->hasted )
+    {
+      dynamic_cooldown_list.push_back( c );
+    }
+  } );
 
-  for (auto action : action_list)
+  for ( auto action : action_list )
   {
     try
     {
-      action_init_finished(*action);
+      action_init_finished( *action );
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
     }
   }
 
@@ -3833,12 +3842,11 @@ void player_t::init_finished()
     {
       action->init_finished();
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
     }
   }
-
 
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
@@ -3856,20 +3864,13 @@ void player_t::init_finished()
 
   range::sort( resource_thresholds );
 
-  range::for_each( cooldown_list, [this]( cooldown_t* c ) {
-    if ( c->hasted )
-    {
-      dynamic_cooldown_list.push_back( c );
-    }
-  } );
-
   // Sort outbound assessors
   assessor_out_damage.sort();
 
   // Print items to debug log
   if ( sim->debug )
   {
-    range::for_each( items, [this]( const item_t& item ) {
+    range::for_each( items, [ this ]( const item_t& item ) {
       if ( item.active() )
       {
         sim->print_debug( "{}", item );
@@ -3879,7 +3880,9 @@ void player_t::init_finished()
 
   if ( !precombat_state_map.empty() )
   {
-    sim->error( "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and and may produce incorrect or misleading results." );
+    sim->error(
+      "Warning: The 'override.precombat_state' option may not be fully supported for all buffs and cooldowns and may "
+      "produce incorrect or misleading results." );
 
     struct buff_state_t
     {
@@ -3889,8 +3892,8 @@ void player_t::init_finished()
     };
 
     std::unordered_map<buff_t*, buff_state_t> precombat_buff_state;
-    auto update_buff_state = [ this, &precombat_buff_state ] ( std::string_view buff_name, std::string_view type, std::string_view value )
-    {
+    auto update_buff_state = [ this, &precombat_buff_state ]( std::string_view buff_name, std::string_view type,
+                                                              std::string_view value ) {
       buff_t* buff = buff_t::find( this, buff_name );
       if ( !buff )
       {
@@ -3905,7 +3908,8 @@ void player_t::init_finished()
       else if ( type == "remains" )
         precombat_buff_state[ buff ].duration = timespan_t::from_seconds( util::to_double( value ) );
       else
-        throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
+        throw std::invalid_argument(
+            fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
     };
 
     for ( const auto& v : precombat_state_map )
@@ -3925,7 +3929,8 @@ void player_t::init_finished()
       {
         if ( splits.size() != 3 )
         {
-          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
+          throw std::invalid_argument(
+              fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
         }
 
         update_buff_state( name, splits[ 2 ], v.second );
@@ -3934,7 +3939,8 @@ void player_t::init_finished()
       {
         if ( splits.size() != 2 )
         {
-          throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
+          throw std::invalid_argument(
+              fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
         }
 
         auto cd = find_cooldown( name );
@@ -3949,11 +3955,12 @@ void player_t::init_finished()
       }
       else
       {
-        throw std::invalid_argument( fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
+        throw std::invalid_argument(
+            fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
       }
     }
 
-    for ( const auto& [buff, buff_state] : precombat_buff_state )
+    for ( const auto& [ buff, buff_state ] : precombat_buff_state )
     {
       add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
     }
@@ -3967,35 +3974,18 @@ void player_t::init_finished()
       stat_pct_buff_type stat_pct;
       switch ( convert_hybrid_stat( c.stat ) )
       {
-        case STAT_CRIT_RATING:
-          stat_pct = STAT_PCT_BUFF_CRIT;
-          break;
-        case STAT_HASTE_RATING:
-          stat_pct = STAT_PCT_BUFF_HASTE;
-          break;
-        case STAT_VERSATILITY_RATING:
-          stat_pct = STAT_PCT_BUFF_VERSATILITY;
-          break;
-        case STAT_MASTERY_RATING:
-          stat_pct = STAT_PCT_BUFF_MASTERY;
-          break;
-        case STAT_STRENGTH:
-          stat_pct = STAT_PCT_BUFF_STRENGTH;
-          break;
-        case STAT_AGILITY:
-          stat_pct = STAT_PCT_BUFF_AGILITY;
-          break;
-        case STAT_STAMINA:
-          stat_pct = STAT_PCT_BUFF_STAMINA;
-          break;
-        case STAT_INTELLECT:
-          stat_pct = STAT_PCT_BUFF_INTELLECT;
-          break;
-        case STAT_SPIRIT:
-          stat_pct = STAT_PCT_BUFF_SPIRIT;
-          break;
+        case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
+        case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
+        case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
+        case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
+        case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
+        case STAT_INTELLECT:          stat_pct = STAT_PCT_BUFF_INTELLECT; break;
+        case STAT_SPIRIT:             stat_pct = STAT_PCT_BUFF_SPIRIT; break;
         default:
-          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
+          throw std::invalid_argument(
+            fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
       }
 
       custom_buff = make_buff( this, buff_name )
@@ -6271,9 +6261,7 @@ void player_t::reset()
 
   range::for_each( proc_list, []( proc_t* proc ) { proc->reset(); } );
 
-  range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm->reset(); } );
-
-  range::for_each( shuffled_rng_list, []( shuffled_rng_t* shuffled_rng ) { shuffled_rng->reset(); } );
+  range::for_each( proc_rng_list, []( proc_rng_t* prng ) { prng->reset(); } );
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
@@ -8268,58 +8256,84 @@ target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& 
   return tcd;
 }
 
-real_ppm_t* player_t::get_rppm( util::string_view name )
+real_ppm_t* player_t::find_rppm( std::string_view name )
 {
-  return get_rppm(name, spell_data_t::nil(), nullptr);
-}
-
-real_ppm_t* player_t::get_rppm( util::string_view name, const spell_data_t* data, const item_t* item )
-{
-  auto it = range::find_if( rppm_list,
-                            [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
-
-  if ( it != rppm_list.end() )
-  {
-    return *it;
-  }
-
-  real_ppm_t* new_rppm = new real_ppm_t( name, this, data, item );
-  rppm_list.push_back( new_rppm );
-
-  return new_rppm;
-}
-
-real_ppm_t* player_t::get_rppm( util::string_view name, double freq, double mod, unsigned s )
-{
-  auto it = range::find_if( rppm_list,
-                            [&name]( const real_ppm_t* rppm ) { return util::str_compare_ci( rppm->name(), name ); } );
-
-  if ( it != rppm_list.end() )
-  {
-    return *it;
-  }
-
-  real_ppm_t* new_rppm = new real_ppm_t( name, this, freq, mod, s );
-  rppm_list.push_back( new_rppm );
-
-  return new_rppm;
-}
-
-shuffled_rng_t* player_t::get_shuffled_rng( util::string_view name, int success_entries, int total_entries )
-{
-  auto it = range::find_if( shuffled_rng_list, [&name]( const shuffled_rng_t* shuffled_rng ) {
-    return util::str_compare_ci( shuffled_rng->name(), name );
+  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
+    return rng->type() == rng_type_e::RNG_RPPM && util::str_compare_ci( rng->name(), name );
   } );
 
-  if ( it != shuffled_rng_list.end() )
+  if ( it != proc_rng_list.end() )
   {
-    return *it;
+    auto rppm = dynamic_cast<real_ppm_t*>( *it );
+    assert( rppm );
+    return rppm;
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* data, const item_t* item )
+{
+  if ( auto rppm = find_rppm( name ) )
+    return rppm;
+
+  auto new_rppm = new real_ppm_t( name, this, data, item );
+  proc_rng_list.push_back( new_rppm );
+
+  return new_rppm;
+}
+
+real_ppm_t* player_t::get_rppm( std::string_view name, double freq, double mod, unsigned s )
+{
+  if ( auto rppm = find_rppm( name ) )
+    return rppm;
+
+  auto new_rppm = new real_ppm_t( name, this, freq, mod, s );
+  proc_rng_list.push_back( new_rppm );
+
+  return new_rppm;
+}
+
+shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries, int total_entries )
+{
+  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
+    return rng->type() == rng_type_e::RNG_SHUFFLE && util::str_compare_ci( rng->name(), name );
+  } );
+
+  if ( it != proc_rng_list.end() )
+  {
+    auto s_rng = dynamic_cast<shuffled_rng_t*>( *it );
+    assert( s_rng );
+    return s_rng;
   }
 
-  shuffled_rng_t* new_shuffled_rng = new shuffled_rng_t( name, rng(), success_entries, total_entries );
-  shuffled_rng_list.push_back( new_shuffled_rng );
+  auto new_rng = new shuffled_rng_t( name, this, success_entries, total_entries );
+  proc_rng_list.push_back( new_rng );
 
-  return new_shuffled_rng;
+  return new_rng;
+}
+
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double proc_chance,
+                                                  std::function<double( double, unsigned )> accumulator_fn,
+                                                  unsigned initial_count )
+{
+  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
+    return rng->type() == rng_type_e::RNG_ACCUMULATE && util::str_compare_ci( rng->name(), name );
+  } );
+
+  if ( it != proc_rng_list.end() )
+  {
+    auto a_rng = dynamic_cast<accumulated_rng_t*>( *it );
+    assert( a_rng );
+    return a_rng;
+  }
+
+  auto new_rng = new accumulated_rng_t( name, this, proc_chance, std::move( accumulator_fn ), initial_count );
+  proc_rng_list.push_back( new_rng );
+
+  return new_rng;
 }
 
 dot_t* player_t::get_dot( util::string_view name, player_t* source )

@@ -23,17 +23,39 @@ using namespace helpers;
       bool summoners_embrace_td = false;
       bool malediction = false;
       bool contagion = false;
+      bool deaths_embrace = false;
 
       // Demonology
       bool master_demonologist_dd = false;
-      bool houndmasters = false;
+      bool sacrificed_souls = false;
+      bool wicked_maw = false;
       bool soul_conduit_base_cost = false;
+      bool demonic_brutality = false;
 
       // Destruction
       bool chaotic_energies = false;
       bool havoc = false;
+      bool backdraft = false;
       bool roaring_blaze = false;
+      bool ashen_remains = false;
+      bool emberstorm_dd = false;
+      bool emberstorm_td = false;
+      bool devastation = false;
+      bool ruin = false;
       bool chaos_incarnate = false;
+
+      // Diabolist
+      bool touch_of_rancora = false;
+      bool flames_of_xoroth_dd = false;
+      bool flames_of_xoroth_td = false;
+
+      // Hellcaller
+      bool xalans_ferocity_dd = false;
+      bool xalans_ferocity_td = false;
+      bool xalans_ferocity_crit = false;
+      bool xalans_cruelty_dd = false;
+      bool xalans_cruelty_td = false;
+      bool xalans_cruelty_crit = false;
     } affected_by;
 
     struct triggers_t
@@ -41,17 +63,24 @@ using namespace helpers;
       // Class
 
       // Affliction
+      bool ravenous_afflictions = false;
 
       // Demonology
+      bool shadow_invocation = false;
 
       // Destruction
-      bool shadow_invocation_direct = false;
-      bool shadow_invocation_tick = false;
+      bool decimation = false;
+      bool dimension_ripper = false;
+
+      // Diabolist
+      bool diabolic_ritual = false;
+      bool demonic_art = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
     : spell_t( token, p, s ),
-      affected_by()
+      affected_by(),
+      triggers()
     {
       may_crit = true;
       tick_may_crit = true;
@@ -66,9 +95,28 @@ using namespace helpers;
       affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
-      affected_by.houndmasters = data().affected_by( p->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) );
+      // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
+      affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
+      affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
-      affected_by.roaring_blaze = data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
+      affected_by.roaring_blaze = p->talents.roaring_blaze.ok() && data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
+      affected_by.emberstorm_dd = data().affected_by( p->talents.emberstorm->effectN( 1 ) );
+      affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
+      affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
+      affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
+
+      affected_by.flames_of_xoroth_dd = data().affected_by( p->hero.flames_of_xoroth->effectN( 1 ) );
+      affected_by.flames_of_xoroth_td = data().affected_by( p->hero.flames_of_xoroth->effectN( 2 ) );
+
+      affected_by.xalans_ferocity_dd = data().affected_by( p->hero.xalans_ferocity->effectN( 1 ) );
+      affected_by.xalans_ferocity_td = data().affected_by( p->hero.xalans_ferocity->effectN( 2 ) );
+      affected_by.xalans_ferocity_crit = data().affected_by( p->hero.xalans_ferocity->effectN( 4 ) );
+      affected_by.xalans_cruelty_dd = data().affected_by( p->hero.xalans_cruelty->effectN( 3 ) );
+      affected_by.xalans_cruelty_td = data().affected_by( p->hero.xalans_cruelty->effectN( 4 ) );
+      affected_by.xalans_cruelty_crit = data().affected_by( p->hero.xalans_cruelty->effectN( 1 ) );
+
+      triggers.decimation = p->talents.decimation.ok();
     }
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s, util::string_view options_str )
@@ -96,13 +144,13 @@ using namespace helpers;
 
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
-        int shards_used = as<int>( cost() );
+        int shards_used = as<int>( last_resource_cost );
         int base_shards = as<int>( base_cost() ); // Power Overwhelming is ignoring any cost changes
 
-        if ( p()->talents.soul_conduit->ok() )
+        if ( p()->talents.soul_conduit.ok() )
         {
           // Soul Conduit events are delayed slightly (100 ms) in sims to avoid instantaneous reactions
-          make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : last_resource_cost ) );
+          make_event<sc_event_t>( *p()->sim, p(), as<int>( affected_by.soul_conduit_base_cost ? base_shards : shards_used ) );
         }
 
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -111,7 +159,11 @@ using namespace helpers;
           {
             if ( p()->rain_of_chaos_rng->trigger() )
             {
-              p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+              auto spawned = p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_roc->duration() );
+              for ( pets::destruction::infernal_t* s : spawned )
+              {
+                s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
+              }
               p()->procs.rain_of_chaos->occur();
             }
           }
@@ -127,6 +179,61 @@ using namespace helpers;
 
         if ( p()->talents.power_overwhelming.ok() && base_shards > 0 )
           p()->buffs.power_overwhelming->trigger( base_shards );
+
+        if ( diabolist() && triggers.diabolic_ritual )
+        {
+          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+
+          if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
+            adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
+
+          if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
+            adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
+
+          switch( p()->diabolic_ritual )
+          {
+            case 0:
+              if ( p()->buffs.ritual_overlord->check() )
+              {
+                p()->buffs.ritual_overlord->extend_duration( p(), adjustment );
+              }
+              else
+              {
+                p()->buffs.ritual_overlord->trigger();
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment ); } );
+              }
+              break;
+            case 1:
+              if ( p()->buffs.ritual_mother->check() )
+              {
+                p()->buffs.ritual_mother->extend_duration( p(), adjustment );
+              }
+              else
+              {
+                p()->buffs.ritual_mother->trigger();
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment ); } );
+              }
+              break;
+            case 2:
+              if ( p()->buffs.ritual_pit_lord->check() )
+              {
+                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment );
+              }
+              else
+              {
+                p()->buffs.ritual_pit_lord->trigger();
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment ); } );
+              }
+              break;
+            default:
+              break;
+          }
+        }
+
+        if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
+        {
+          helpers::trigger_blackened_soul( p(), false );
+        }
       }
     }
 
@@ -141,12 +248,6 @@ using namespace helpers;
     void impact( action_state_t* s ) override
     {
       spell_t::impact( s );
-
-      if ( p()->talents.reverse_entropy.ok() )
-      {
-        if ( p()->buffs.reverse_entropy->trigger() )
-          p()->procs.reverse_entropy->occur();
-      }
 
       if ( affected_by.havoc && p()->talents.mayhem.ok() )
       {
@@ -164,10 +265,60 @@ using namespace helpers;
         }
       }
 
-      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_direct && rng().roll( p()->shadow_invocation_proc_chance ) )
+      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation && rng().roll( p()->rng_settings.shadow_invocation.setting_value ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
         p()->procs.shadow_invocation->occur();
+      }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      {
+        if ( p()->buffs.reverse_entropy->trigger() )
+          p()->procs.reverse_entropy->occur();
+      }
+
+      if ( destruction() && triggers.decimation && s->result == RESULT_CRIT && rng().roll( p()->rng_settings.decimation.setting_value ) )
+      {
+        p()->buffs.decimation->trigger();
+        p()->cooldowns.soul_fire->reset( true );
+        p()->procs.decimation->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
+      {
+        if ( p()->talents.dimensional_rift.ok() )
+        {
+          p()->cooldowns.dimensional_rift->reset( true, 1 );
+        }
+        else
+        {
+          int rift = rng().range( 3 );
+
+          switch ( rift )
+          {
+          case 0:
+            p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+            break;
+          case 1:
+            p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+            break;
+          case 2:
+            p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+            break;
+          default:
+            break;
+          }
+        }
+
+        p()->procs.dimension_ripper->occur();
+      }
+
+      if ( diabolist() && triggers.demonic_art && s->chain_target == 0 )
+      {
+        // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
       }
     }
 
@@ -175,16 +326,16 @@ using namespace helpers;
     {
       spell_t::tick( d );
 
-      if ( p()->talents.reverse_entropy.ok() )
+      if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
+      {
+        p()->buffs.nightfall->trigger();
+        p()->procs.ravenous_afflictions->occur();
+      }
+
+      if ( destruction() && p()->talents.reverse_entropy.ok() )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
-      }
-
-      if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation_tick && rng().roll( p()->shadow_invocation_proc_chance ) )
-      {
-        p()->proc_actions.bilescourge_bombers_proc->execute_on_target( d->target );
-        p()->procs.shadow_invocation->occur();
       }
     }
 
@@ -195,7 +346,23 @@ using namespace helpers;
       if ( affliction() && affected_by.malediction )
         c += p()->talents.malediction->effectN( 1 ).percent();
 
+      if ( destruction() && affected_by.devastation )
+        c += p()->talents.devastation->effectN( 1 ).percent();
+
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = spell_t::composite_crit_chance_multiplier();
+
+      if ( hellcaller() && affected_by.xalans_ferocity_crit )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 4 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_cruelty_crit )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 1 ).percent();
+
+      return m;
     }
 
     double composite_crit_damage_bonus_multiplier() const override
@@ -205,6 +372,12 @@ using namespace helpers;
       if ( affliction() && affected_by.contagion )
         m *= 1.0 + p()->talents.contagion->effectN( 1 ).percent();
 
+      if ( demonology() && affected_by.demonic_brutality )
+        m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.ruin )
+        m *= 1.0 + p()->talents.ruin->effectN( 1 ).percent();
+
       return m;
     }
 
@@ -212,11 +385,14 @@ using namespace helpers;
     {
       double m = spell_t::composite_target_multiplier( t );
 
-      if ( p()->talents.the_houndmasters_stratagem.ok() && affected_by.houndmasters )
-        m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
+      if ( demonology() && affected_by.wicked_maw )
+        m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();
 
-      if ( p()->talents.roaring_blaze.ok() && affected_by.roaring_blaze )
+      if ( destruction() && affected_by.roaring_blaze && p()->talents.roaring_blaze.ok() )
         m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
+
+      if ( destruction() && affected_by.ashen_remains && ( td( t )->dots_immolate->is_ticking() || td( t )->dots_wither->is_ticking() ) )
+        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
       return m;
     }
@@ -230,15 +406,34 @@ using namespace helpers;
 
       if ( destruction() && affected_by.chaotic_energies )
       {
-        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+        double min_percentage = affected_by.chaos_incarnate ? p()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+        double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
-        if ( affected_by.chaos_incarnate )
-          chaotic_energies_rng = destro_mastery_value;
+        if ( p()->normalize_destruction_mastery )
+          chaotic_energies_rng = ( 1.0 + min_percentage ) / 2.0;
 
-        m *= 1.0 + chaotic_energies_rng + destro_mastery_value;
+        m *= 1.0 + chaotic_energies_rng * p()->cache.mastery_value();
       }
       
+      return m;
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = spell_t::composite_persistent_multiplier( s );
+
+      if ( diabolist() && affected_by.touch_of_rancora )
+      {
+        if ( p()->buffs.art_overlord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+        if ( p()->buffs.art_mother->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+        if ( p()->buffs.art_pit_lord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+      }
+
       return m;
     }
 
@@ -249,8 +444,26 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_dd )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_dd )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_dd )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 1 ).percent();
+
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+        m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
+        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
+
+      if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
+
+      if ( diabolist() && affected_by.flames_of_xoroth_dd && p()->hero.flames_of_xoroth.ok() )
+        m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 1 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_ferocity_dd && p()->hero.xalans_ferocity.ok() )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 1 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_cruelty_dd && p()->hero.xalans_cruelty.ok() )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 3 ).percent();
 
       return m;
     }
@@ -262,10 +475,66 @@ using namespace helpers;
       if ( affliction() && affected_by.potent_afflictions_td )
         m *= 1.0 + p()->cache.mastery_value();
 
-      if ( affliction() && affected_by.summoners_embrace_td )
+      if ( ( affliction() || destruction() ) && affected_by.summoners_embrace_td )
         m *= 1.0 + p()->talents.summoners_embrace->effectN( 3 ).percent();
 
+      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
+        m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
+        m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
+
+      if ( diabolist() && affected_by.flames_of_xoroth_td && p()->hero.flames_of_xoroth.ok() )
+        m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 2 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_ferocity_td && p()->hero.xalans_ferocity.ok() )
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 2 ).percent();
+
+      if ( hellcaller() && affected_by.xalans_cruelty_td && p()->hero.xalans_cruelty.ok() )
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 4 ).percent();
+
       return m;
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = spell_t::execute_time_pct_multiplier();
+
+      if ( destruction() && affected_by.backdraft && p()->buffs.backdraft->check() )
+        m *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+
+      if ( diabolist() && affected_by.touch_of_rancora )
+      {
+        if ( p()->buffs.art_overlord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+
+        if ( p()->buffs.art_mother->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+
+        if ( p()->buffs.art_pit_lord->check() )
+          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
+      }
+
+      return m;
+    }
+
+    timespan_t gcd() const override
+    {
+      timespan_t t = spell_t::gcd();
+
+      if ( !destruction() )
+        return t;
+
+      if ( t == 0_ms )
+        return t;
+
+      if ( affected_by.backdraft && p()->buffs.backdraft->check() )
+        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
+
+      if ( t < min_gcd )
+        t = min_gcd;
+
+      return t;
     }
 
     void extend_dot( dot_t* dot, timespan_t extend_duration )
@@ -337,7 +606,7 @@ using namespace helpers;
 
       if ( destruction() && affected_by.havoc )
       {
-        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + p()->hero.gloom_of_nathreza->effectN( 2 ).percent();
         p()->havoc_spells.push_back( this );
       }
 
@@ -353,6 +622,12 @@ using namespace helpers;
 
     bool destruction() const
     { return p()->specialization() == WARLOCK_DESTRUCTION; }
+
+    bool diabolist() const
+    { return p()->hero.diabolic_ritual.ok(); }
+
+    bool hellcaller() const
+    { return p()->hero.wither.ok(); }
   };
 
   // Shared Class Actions Begin
@@ -481,8 +756,6 @@ using namespace helpers;
       add_child( aoe_dot );
 
       channeled = true;
-
-      triggers.shadow_invocation_tick = true;
     }
 
     void execute() override
@@ -558,55 +831,26 @@ using namespace helpers;
 
         base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+        base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
-        triggers.shadow_invocation_tick = true;
+        triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void tick( dot_t* d ) override
       {
         warlock_spell_t::tick( d );
 
-        if ( result_is_hit( d->state->result ) )
-        {
-          if ( p()->talents.nightfall.ok() )
-          {
-            // Blizzard did not publicly release how nightfall was changed.
-            // We determined this is the probable functionality copied from Agony by first confirming the
-            // DR formula was the same and then confirming that you can get procs on 1st tick.
-            // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-            // Last checked 09-28-2020.
-            double increment_max = 0.13;
-
-            double active_corruptions = p()->get_active_dots( d );
-            increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-            p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-            if ( p()->corruption_accumulator >= 1 )
-            {
-              p()->procs.nightfall->occur();
-              p()->buffs.nightfall->trigger();
-              p()->corruption_accumulator -= 1.0;
-            }
-          }
-        }
-      }
-
-      double composite_ta_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_ta_multiplier( s );
-
-        if ( p()->talents.sacrolashs_dark_strike.ok() )
-          m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-
-        return m;
+        if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+          helpers::nightfall_updater( p(), d );
       }
     };
 
     corruption_dot_t* periodic;
 
     corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-      : warlock_spell_t( "Corruption (Direct)", p, p->warlock_base.corruption, options_str )
+      : warlock_spell_t( "Corruption (Direct)", p, !p->hero.wither.ok() ? p->warlock_base.corruption : spell_data_t::not_found(), options_str )
     {
       periodic = new corruption_dot_t( p );
       impact_action = periodic;
@@ -622,6 +866,8 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
+
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -647,11 +893,13 @@ using namespace helpers;
     shadow_bolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt, options_str )
     {
-      triggers.shadow_invocation_direct = true;
+      affected_by.sacrificed_souls = true;
+      triggers.shadow_invocation = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.improved_shadow_bolt->effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
 
       if ( demonology() )
       {
@@ -667,6 +915,14 @@ using namespace helpers;
       }
     }
 
+    bool ready() override
+    {
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     double execute_time_pct_multiplier() const override
     {
       double m = warlock_spell_t::execute_time_pct_multiplier();
@@ -675,6 +931,8 @@ using namespace helpers;
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 1 ).percent();
 
       m *= 1.0 + p()->talents.improved_shadow_bolt->effectN( 1 ).percent();
+
+      m *= 1.0 + p()->talents.rune_of_shadows->effectN( 2 ).percent();
 
       return m;
     }
@@ -708,7 +966,7 @@ using namespace helpers;
           }
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_sb.setting_value ) )
         {
           p()->procs.shadow_bolt_volley->occur();
           volley->execute_on_target( s->target );
@@ -722,9 +980,6 @@ using namespace helpers;
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
         m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
-
-      if ( p()->talents.sacrificed_souls.ok() )
-        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
       return m;
     }
@@ -778,6 +1033,8 @@ using namespace helpers;
     {
       background = true;
       proc = true;
+
+      triggers.decimation = false;
 
       base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 2 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 2 ).percent();
@@ -874,13 +1131,241 @@ using namespace helpers;
   };
 
   // Shared Class Actions End
+  // Hellcaller Actions Begin
+
+  struct wither_t : public warlock_spell_t
+  {
+    struct wither_dot_t : public warlock_spell_t
+    {
+      wither_dot_t( warlock_t* p )
+        : warlock_spell_t( "Wither", p, p->hero.wither_dot )
+      {
+        background = dual = true;
+        dot_ignore_stack = true;
+
+        affected_by.chaotic_energies = destruction();
+
+        base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
+        base_td_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 2 ).percent();
+
+        if ( destruction() )
+        {
+          dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
+
+          base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
+          base_td_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 2 ).percent();
+        }
+
+        dot_duration *= 1.0 + p->hero.hatefury_rituals->effectN( 2 ).percent();
+
+        if ( affliction() )
+        {
+          if ( p->talents.absolute_corruption.ok() )
+          {
+            dot_duration = sim->expected_iteration_time > 0_ms
+              ? 2 * sim->expected_iteration_time
+              : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );
+
+            base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+          }
+
+          triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
+          affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+          base_td_multiplier *= 1.0 + p->talents.siphon_life->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
+          base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
+        }
+      }
+
+      void tick( dot_t* d ) override
+      {
+        warlock_spell_t::tick( d );
+
+        if ( affliction() )
+        {
+          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() )
+            helpers::nightfall_updater( p(), d );
+        }
+
+        if ( destruction() )
+        {
+          if ( d->state->result == RESULT_CRIT && rng().roll( p()->hero.wither_direct->effectN( 2 ).percent() ) )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
+
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+
+          if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+            p()->buffs.flashpoint->trigger();
+        }
+
+        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
+        {
+          d->increment( 1 );
+          p()->procs.mark_of_perotharn->occur();
+        }
+      }
+
+      double composite_crit_damage_bonus_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+        m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+
+        return m;
+      }
+    };
+
+    wither_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Wither (Direct)", p, p->hero.wither.ok() ? p->hero.wither_direct : spell_data_t::not_found(), options_str )
+    {
+      affected_by.chaotic_energies = destruction();
+      affected_by.havoc = destruction();
+
+      impact_action = new wither_dot_t( p );
+      add_child( impact_action );
+
+      base_dd_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 1 ).percent();
+
+      if ( destruction() )
+      {
+        triggers.decimation = p->talents.decimation.ok() && !dual;
+
+        base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 4 ).percent();
+      }
+
+      if ( affliction() )
+      {
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+        base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
+      }
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return impact_action->get_dot( t ); }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
+      {
+        td( s->target )->dots_wither->increment( 1 );
+        p()->procs.mark_of_perotharn->occur();
+      }
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+      m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  struct blackened_soul_t : public warlock_spell_t
+  {
+    blackened_soul_t( warlock_t* p )
+      : warlock_spell_t( "Blackened Soul", p, p->hero.blackened_soul_dmg )
+    {
+      background = dual = true;
+
+      affected_by.chaotic_energies = destruction();
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( target );
+
+      if ( p()->hero.mark_of_xavius.ok() )
+        m *= 1.0 + td( target )->dots_wither->current_stack() * p()->hero.mark_of_xavius->effectN( 3 ).percent();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      player_t* tar = s->target;
+
+      if ( td( tar )->dots_wither->current_stack() > 1 )
+        td( tar )->dots_wither->decrement( 1 );
+
+      if ( td( tar )->dots_wither->current_stack() <= 1 )
+        make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
+
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      {
+        p()->buffs.tormented_crescendo->trigger();
+        p()->procs.seeds_of_their_demise->occur();
+      }
+
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      {
+        p()->buffs.flashpoint->trigger( 2 );
+        p()->procs.seeds_of_their_demise->occur();
+      }
+    }
+  };
+
+  struct malevolence_damage_t : public warlock_spell_t
+  {
+    malevolence_damage_t( warlock_t* p )
+      : warlock_spell_t( "Malevolence (Proc)", p, p->hero.malevolence_dmg )
+    { background = dual = true; }
+  };
+
+  struct malevolence_t : public warlock_spell_t
+  {
+    malevolence_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Malevolence", p, p->hero.malevolence, options_str )
+    {
+      harmful = may_crit = false;
+      trigger_gcd = p->hero.malevolence_buff->gcd();
+      resource_current = RESOURCE_MANA;
+      base_costs[ RESOURCE_MANA ] = p->hero.malevolence_buff->cost( POWER_MANA );
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.malevolence->trigger();
+
+      helpers::trigger_blackened_soul( p(), true );
+    }
+  };
+
+  // Hellcaller Actions End
   // Affliction Actions Begin
 
   struct malefic_rapture_t : public warlock_spell_t
   {
+    struct malefic_touch_t : public warlock_spell_t
+    {
+      malefic_touch_t( warlock_t* p )
+        : warlock_spell_t( "Malefic Touch", p, p->talents.malefic_touch_proc )
+      {
+        background = dual = true;
+
+        base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+      }
+    };
+
     struct malefic_rapture_damage_t : public warlock_spell_t
     {
       int target_count;
+      malefic_touch_t* touch;
 
       malefic_rapture_damage_t( warlock_t* p )
         : warlock_spell_t ( "Malefic Rapture (hit)", p, p->warlock_base.malefic_rapture_dmg ),
@@ -890,6 +1375,15 @@ using namespace helpers;
         callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+        if ( p->talents.malefic_touch.ok() )
+        {
+          touch = new malefic_touch_t( p );
+          add_child( touch );
+        }
       }
 
       double composite_da_multiplier( const action_state_t* s ) const override
@@ -906,8 +1400,6 @@ using namespace helpers;
 
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
-
-        m *= 1.0 + p()->talents.improved_malefic_rapture->effectN( 1 ).percent();
 
         return m;
       }
@@ -939,7 +1431,11 @@ using namespace helpers;
           tdata->dots_unstable_affliction->adjust_duration( extension );
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
+          tdata->dots_wither->adjust_duration( extension );
         }
+
+        if ( p()->talents.malefic_touch.ok() )
+          touch->execute_on_target( s->target );
       }
     };
 
@@ -987,7 +1483,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( p()->talents.malign_omen.ok() )
+      if ( p()->talents.malign_omen.ok() && p()->buffs.malign_omen->check() )
         p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
 
       p()->buffs.tormented_crescendo->decrement();
@@ -1001,7 +1497,7 @@ using namespace helpers;
       debug_cast<malefic_rapture_damage_t*>( impact_action )->target_count = as<int>( s->n_targets );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl )
+    size_t available_targets( std::vector<player_t*>& tl ) const override
     {
       warlock_spell_t::available_targets( tl );
 
@@ -1029,6 +1525,10 @@ using namespace helpers;
       base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
 
       dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
+
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.perpetual_unstability.ok() )
       {
@@ -1101,6 +1601,11 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 4 ).percent();
+      base_td_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 1 ).percent();
+
+      triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
+
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.volatile_agony.ok() )
       {
@@ -1148,7 +1653,7 @@ using namespace helpers;
       // results to within 0.1% of accuracy in all tests conducted on all targets numbers up to 8.
       // Accurate as of 08-24-2018. TOCHECK regularly. If any changes are made to this section of
       // code, please also update the Time_to_Shard expression in sc_warlock.cpp.
-      double increment_max = 0.368;
+      double increment_max = p()->rng_settings.agony.setting_value;
 
       double active_agonies = p()->get_active_dots( d );
       increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
@@ -1178,18 +1683,23 @@ using namespace helpers;
   {
     struct seed_of_corruption_aoe_t : public warlock_spell_t
     {
-      corruption_t* corr;
+      action_t* applied_dot;
 
       seed_of_corruption_aoe_t( warlock_t* p )
-        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corr( new corruption_t( p, "", true ) )
+        : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe )
       {
         aoe = -1;
         background = dual = true;
 
-        corr->background = true;
-        corr->dual = true;
-        corr->base_costs[ RESOURCE_MANA ] = 0;
+        if ( p->hero.wither.ok() )
+          applied_dot = new wither_t( p, "" );
+        else
+          applied_dot = new corruption_t( p, "", true );
+
+        applied_dot->background = true;
+        applied_dot->dual = true;
+        applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+        applied_dot->base_dd_multiplier = 0.0;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent(); // TOCHECK: 2024-07-05 This is still in effect on Beta
       }
@@ -1208,7 +1718,7 @@ using namespace helpers;
             tdata->dots_seed_of_corruption->cancel();
           }
           
-          corr->execute_on_target( s->target );
+          applied_dot->execute_on_target( s->target );
         }
       }
     };
@@ -1394,7 +1904,7 @@ using namespace helpers;
           }
         }
 
-        if ( p()->talents.cunning_cruelty.ok() && rng().roll( 0.5 ) )
+        if ( p()->talents.cunning_cruelty.ok() && rng().roll( p()->rng_settings.cunning_cruelty_ds.setting_value ) )
         {
           p()->procs.shadow_bolt_volley->occur();
           volley->execute_on_target( d->target );
@@ -1469,6 +1979,14 @@ using namespace helpers;
         may_miss = false;
         aoe = -1;
       }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->talents.infirmity.ok() && !td( s->target )->debuffs_infirmity->check() )
+          td( s->target )->debuffs_infirmity->trigger();
+      }
     };
 
     phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -1500,7 +2018,13 @@ using namespace helpers;
     {
       warlock_spell_t::last_tick( d );
 
-      td( d->target )->debuffs_infirmity->expire();
+      for ( auto t : p()->sim->target_non_sleeping_list )
+      {
+        if ( !td( t ) )
+          continue;
+
+        make_event( *sim, 0_ms, [ this, t ] { td( t )->debuffs_infirmity->expire(); } );
+      }
     }
   };
 
@@ -1587,6 +2111,7 @@ using namespace helpers;
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
         td->dots_soul_rot->adjust_duration( darkglare_extension );
+        td->dots_wither->adjust_duration( darkglare_extension );
 
         if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
           mal_vis->execute_on_target( target );
@@ -1614,7 +2139,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.dark_harvest.ok() && aoe > 1 )
+      if ( p()->talents.dark_harvest.ok() )
       {
         p()->buffs.dark_harvest_haste->trigger();
         p()->buffs.dark_harvest_crit->trigger();
@@ -1627,6 +2152,22 @@ using namespace helpers;
 
       if ( s->chain_target == 0 && aoe > 1 )
         m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
+
+      return m;
+    }
+  };
+
+  struct oblivion_t : public warlock_spell_t
+  {
+    oblivion_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Oblivion", p, p->talents.oblivion, options_str )
+    { channeled = true; }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      m *= 1.0 + std::min( td( s->target )->count_affliction_dots(), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
 
       return m;
     }
@@ -1645,8 +2186,6 @@ using namespace helpers;
         background = dual = true;
         hasted_ticks = false;
         base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
-        
-        triggers.shadow_invocation_tick = true;
       }
     };
 
@@ -1663,8 +2202,11 @@ using namespace helpers;
       {
         aoe = -1;
         dual = true;
+
+        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
         
-        triggers.shadow_invocation_direct = true;
+        triggers.shadow_invocation = true;
+        triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
         if ( p->talents.umbral_blaze.ok() )
         {
@@ -1681,6 +2223,9 @@ using namespace helpers;
         double m = warlock_spell_t::action_multiplier();
 
         m *= shards_used;
+
+        if ( p()->hero.gloom_of_nathreza.ok() )
+          m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
 
         return m;
       }
@@ -1717,13 +2262,22 @@ using namespace helpers;
     hand_of_guldan_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
-    { add_child( impact_spell ); }
+    {
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
+
+      add_child( impact_spell );
+    }
 
     timespan_t travel_time() const override
     { return 0_ms; }
 
     bool ready() override
     {
+      if ( diabolist() && p()->buffs.ruination->check() )
+        return false;
+
       if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
         return false;
 
@@ -1768,6 +2322,34 @@ using namespace helpers;
 
   struct demonbolt_t : public warlock_spell_t
   {
+    struct demonbolt_state_t : public action_state_t
+    {
+      bool core_spent;
+
+      demonbolt_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        core_spent( false )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        core_spent = false;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s ) << " core_spent=" << core_spent;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        core_spent = debug_cast<const demonbolt_state_t*>( s )->core_spent;
+      }
+    };
+
     demonbolt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Demonbolt", p, p->talents.demoniac.ok() ? p->talents.demonbolt_spell : spell_data_t::not_found(), options_str )
     {
@@ -1775,7 +2357,17 @@ using namespace helpers;
       energize_resource = RESOURCE_SOUL_SHARD;
       energize_amount = 2.0;
 
-      triggers.shadow_invocation_direct = true;
+      affected_by.sacrificed_souls = true;
+      triggers.shadow_invocation = true;
+    }
+
+    action_state_t* new_state() override
+    { return new demonbolt_state_t( this, target ); }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      debug_cast<demonbolt_state_t*>( s )->core_spent = p()->buffs.demonic_core->up();
+      warlock_spell_t::snapshot_state( s, rt );
     }
 
     double execute_time_pct_multiplier() const override
@@ -1796,7 +2388,7 @@ using namespace helpers;
 
       if ( p()->buffs.demonic_core->check() )
       {
-        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( 0.3 ) )
+        if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( p()->rng_settings.spiteful_reconstitution.setting_value ) )
         {
           p()->warlock_pet_list.wild_imps.spawn( 1u );
           p()->procs.spiteful_reconstitution->occur();
@@ -1808,6 +2400,15 @@ using namespace helpers;
 
           if ( active_pet->pet_type == PET_FELGUARD )
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
+        }
+
+        if ( p()->talents.doom.ok() )
+        {
+          for ( const auto t : p()->sim->target_non_sleeping_list )
+          {
+            if ( td( t )->debuffs_doom->check() )
+              td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() - p()->talents.doom_eternal->effectN( 1 ).time_value() );
+          }
         }
       }
       else
@@ -1823,22 +2424,25 @@ using namespace helpers;
 
       p()->buffs.demonic_core->decrement();
 
-      if ( p()->talents.power_siphon.ok() )
-        p()->buffs.power_siphon->decrement();
+      p()->buffs.power_siphon->decrement();
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
     }
 
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.doom.ok() && debug_cast<demonbolt_state_t*>( s )->core_spent && !td( s->target )->debuffs_doom->check() )
+        td( s->target )->debuffs_doom->trigger();
+    }
+
     double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->talents.sacrificed_souls.ok() )
-        m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
       
-      if ( p()->talents.power_siphon.ok() )
-        m *= 1.0 + p()->buffs.power_siphon->check_value();
+      m *= 1.0 + p()->buffs.power_siphon->check_value();
 
       return m;
     }
@@ -1857,6 +2461,10 @@ using namespace helpers;
         aoe = -1;
         background = dual = true;
         callbacks = false;
+
+        affected_by.wicked_maw = p->talents.shadowtouched.ok(); // 2024-08-01: Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Implosion
+
+        base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
       double action_multiplier() const override
@@ -1865,9 +2473,6 @@ using namespace helpers;
 
         if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
-
-        if ( p()->talents.spiteful_reconstitution.ok() )
-          m *= 1.0 + p()->talents.spiteful_reconstitution->effectN( 1 ).percent();
 
         return m;
       }
@@ -1968,6 +2573,7 @@ using namespace helpers;
     {
       may_crit = false;
       affected_by.soul_conduit_base_cost = true;
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     double cost_pct_multiplier() const override
@@ -2078,7 +2684,7 @@ using namespace helpers;
   struct bilescourge_bombers_proc_t : public warlock_spell_t
   {
     bilescourge_bombers_proc_t( warlock_t* p )
-      : warlock_spell_t( "Bilescourge Bombers (proc)", p, p->find_spell( 267213 ) )
+      : warlock_spell_t( "Bilescourge Bombers (proc)", p, p->talents.bilescourge_bombers_aoe )
     {
       aoe = -1;
       background = dual = direct_tick = true;
@@ -2093,7 +2699,7 @@ using namespace helpers;
   {
     demonic_strength_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Demonic Strength", p, p->talents.demonic_strength, options_str )
-    { internal_cooldown = p->get_cooldown( "felstorm_icd" ); }
+    { internal_cooldown = p->cooldowns.felstorm_icd; }
 
     bool ready() override
     {
@@ -2210,6 +2816,9 @@ using namespace helpers;
     {
       harmful = true; // Set to true because of 10.1 class trinket
       may_crit = false;
+      resource_current = RESOURCE_SOUL_SHARD; // For Cruelty of Kerxan proccing
+
+      triggers.diabolic_ritual = p->hero.cruelty_of_kerxan.ok();
     }
 
     void execute() override
@@ -2251,7 +2860,7 @@ using namespace helpers;
           wild_imp_counter++;
           demon_counter++;
         }
-        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || lock_pet->is_main_pet )
+        else if ( pet_type == PET_DREADSTALKER || pet_type == PET_VILEFIEND || pet_type == PET_SERVICE_FELGUARD || pet_type == PET_FELGUARD )
         {
           if ( lock_pet->expiration )
             lock_pet->expiration->reschedule_time = lock_pet->expiration->time + extension_time;
@@ -2262,6 +2871,9 @@ using namespace helpers;
       }
 
       p()->buffs.tyrant->trigger();
+
+      if ( p()->hero.abyssal_dominion.ok() )
+        p()->buffs.abyssal_dominion->trigger();
 
       if ( p()->buffs.dreadstalkers->check() )
         p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
@@ -2280,6 +2892,15 @@ using namespace helpers;
             t->buffs.reign_of_tyranny->trigger( demon_counter );
         }
       }
+
+      if ( p()->hero.cruelty_of_kerxan.ok() )
+      {
+        timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
+
+        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
+        p()->buffs.ritual_mother->extend_duration( p(), reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+      }
     }
   };
 
@@ -2287,7 +2908,11 @@ using namespace helpers;
   {
     grimoire_felguard_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Grimoire: Felguard", p, p->talents.grimoire_felguard, options_str )
-    { harmful = may_crit = false; }
+    {
+      harmful = may_crit = false;
+
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
+    }
 
     void execute() override
     {
@@ -2305,8 +2930,7 @@ using namespace helpers;
     {
       harmful = may_crit = false;
 
-      if ( p->talents.fel_invocation.ok() )
-        base_execute_time += p->talents.fel_invocation->effectN( 2 ).time_value();
+      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
 
     void execute() override
@@ -2357,6 +2981,27 @@ using namespace helpers;
     }
   };
 
+  struct doom_t : public warlock_spell_t
+  {
+    doom_t( warlock_t* p )
+      : warlock_spell_t( "Doom", p, p->talents.doom_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = p->talents.doom->effectN( 2 ).base_value();
+
+      base_dd_multiplier *= 1.0 + p->talents.impending_doom->effectN( 1 ).percent();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.impending_doom.ok() )
+        p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
+    }
+  };
+
   // Demonology Actions End
   // Destruction Actions Begin
 
@@ -2371,6 +3016,9 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+        affected_by.ashen_remains = p->talents.ashen_remains.ok();
+
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
@@ -2406,28 +3054,19 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( p()->talents.burn_to_ashes.ok() )
-          m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
         return m;
       }
 
-      double composite_target_multiplier( player_t* t ) const override
+      double composite_crit_chance() const override
       {
-        double m = warlock_spell_t::composite_target_multiplier( t );
+        double c = warlock_spell_t::composite_crit_chance();
 
-        if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-          m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+        if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+          c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
-        return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( s->result == RESULT_CRIT )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
+        return c;
       }
     };
 
@@ -2447,50 +3086,40 @@ using namespace helpers;
 
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
+
+      triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
       add_child( fnb_action );
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
     }
 
-    double execute_time_pct_multiplier() const override
+    bool ready() override
     {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
+      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+        return false;
 
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
-
-      return mul;
+      return warlock_spell_t::ready();
     }
 
-    timespan_t gcd() const override
+    double execute_time_pct_multiplier() const override
     {
-      timespan_t t = warlock_spell_t::gcd();
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
-      if ( t == 0_ms )
-        return t;
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
 
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
+      return m;
     }
 
     void execute() override
     {
       warlock_spell_t::execute();
       
-      p()->buffs.backdraft->decrement();
-
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
-
+      p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
     }
 
@@ -2506,20 +3135,19 @@ using namespace helpers;
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.burn_to_ashes.ok() )
-        m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
 
       return m;
     }
 
-    double composite_target_multiplier( player_t* t ) const override
+    double composite_crit_chance() const override
     {
-      double m = warlock_spell_t::composite_target_multiplier( t );
+      double c = warlock_spell_t::composite_crit_chance();
 
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
-      return m;
+      return c;
     }
   };
 
@@ -2533,6 +3161,8 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+
+        dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
 
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
         base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
@@ -2553,7 +3183,7 @@ using namespace helpers;
     };
 
     immolate_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
+      : warlock_spell_t( "Immolate (direct)", p, p->warlock_base.immolate->ok() && !p->hero.wither.ok() ? p->warlock_base.immolate_old : spell_data_t::not_found(), options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -2563,6 +3193,8 @@ using namespace helpers;
 
       base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
+
+      triggers.decimation = p->talents.decimation.ok() && !dual;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -2573,7 +3205,11 @@ using namespace helpers;
   {
     internal_combustion_t( warlock_t* p )
       : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
-    { background = dual = true; }
+    {
+      background = dual = true;
+
+      triggers.decimation = false;
+    }
 
     void init() override
     {
@@ -2584,7 +3220,7 @@ using namespace helpers;
 
     void execute() override
     {
-      dot_t* dot = td( target )->dots_immolate;
+      dot_t* dot = p()->hero.wither.ok() ? td( target )->dots_wither : td( target )->dots_immolate;
 
       assert( dot->current_action );
       action_state_t* state = dot->current_action->get_state( dot->state );
@@ -2603,8 +3239,10 @@ using namespace helpers;
       action_state_t::release( state );
 
       base_dd_min = base_dd_max = total_damage;
+
       warlock_spell_t::execute();
-      td( target )->dots_immolate->adjust_duration( -remaining );
+
+      dot->adjust_duration( -remaining );
     }
   };
 
@@ -2617,13 +3255,28 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+
+      base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
       if ( p->talents.internal_combustion.ok() )
       {
         internal_combustion = new internal_combustion_t( p );
         add_child( internal_combustion );
       }
+    }
+
+    timespan_t execute_time_flat_modifier() const override
+    {
+      timespan_t m = warlock_spell_t::execute_time_flat_modifier();
+
+      m += p()->talents.improved_chaos_bolt->effectN( 2 ).time_value();
+
+      return m;
     }
 
     double cost_pct_multiplier() const override
@@ -2638,16 +3291,21 @@ using namespace helpers;
 
     double execute_time_pct_multiplier() const override
     {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
       if ( p()->buffs.ritual_of_ruin->check() )
-        mul *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
-    
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+        m *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 3 ).percent();
 
-      return mul;
+      return m;
+    }
+
+    bool ready() override
+    {
+      if ( p()->hero.ruination.ok() && p()->buffs.ruination->check() )
+        return false;
+
+      return warlock_spell_t::ready();
     }
 
     double action_multiplier() const override
@@ -2655,43 +3313,19 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( p()->buffs.crashing_chaos->check() )
-        m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
 
       return m;
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-      return m;
-    }
-
-    timespan_t gcd() const override
-    {
-      timespan_t t = warlock_spell_t::gcd();
-
-      if ( t == 0_ms )
-        return t;
-
-      // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
     }
 
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
+      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots_immolate->is_ticking() || td( s->target )->dots_wither->is_ticking() ) )
         internal_combustion->execute_on_target( s->target );
 
       if ( p()->talents.eradication.ok() && result_is_hit( s->result ) )
@@ -2707,7 +3341,10 @@ using namespace helpers;
         p()->buffs.backdraft->decrement();
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -2745,8 +3382,6 @@ using namespace helpers;
       cooldown->hasted = true;
       cooldown->charges += as<int>( p->talents.improved_conflagrate->effectN( 1 ).base_value() );
       cooldown->duration += p->talents.explosive_potential->effectN( 1 ).time_value();
-
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -2771,17 +3406,15 @@ using namespace helpers;
 
       if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
-
-      if ( p()->talents.decimation.ok() && target->health_percentage() <= p()->talents.decimation->effectN( 2 ).base_value() )
-        p()->cooldowns.soul_fire->adjust( p()->talents.decimation->effectN( 1 ).time_value() );
     }
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_cf->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -2811,8 +3444,11 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
         base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
+
+        triggers.decimation = false;
       }
       
       void impact( action_state_t* s ) override
@@ -2828,7 +3464,7 @@ using namespace helpers;
         double m = warlock_spell_t::composite_persistent_multiplier( s );
 
         if ( p()->buffs.crashing_chaos->check() )
-          m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+          m *= 1.0 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
         return m;
       }
@@ -2841,6 +3477,12 @@ using namespace helpers;
       base_tick_time = 1_s;
       dot_duration = 0_s;
       aoe = -1; // Needed to apply Pyrogenics
+
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+
+      base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
       if ( !p->proc_actions.rain_of_fire_tick )
       {
@@ -2877,7 +3519,10 @@ using namespace helpers;
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
       if ( p()->talents.avatar_of_destruction.ok() && p()->buffs.ritual_of_ruin->check() )
-        p()->proc_actions.avatar_of_destruction->execute_on_target( target );
+      {
+        p()->warlock_pet_list.overfiends.spawn();
+        p()->buffs.summon_overfiend->trigger();
+      }
 
       p()->buffs.ritual_of_ruin->expire();
 
@@ -2909,20 +3554,24 @@ using namespace helpers;
 
   struct cataclysm_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     cataclysm_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Cataclysm", p, p->talents.cataclysm, options_str )
     {
       aoe = -1;
 
       affected_by.chaotic_energies = true;
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
+
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     void impact( action_state_t* s ) override
@@ -2930,7 +3579,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( result_is_hit( s->result ) )
-        immolate->execute_on_target( s->target );
+        applied_dot->execute_on_target( s->target );
     }
   };
 
@@ -2943,9 +3592,13 @@ using namespace helpers;
       
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
+      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+
+      base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -2958,6 +3611,10 @@ using namespace helpers;
 
         if ( p()->talents.eradication.ok() )
           td( s->target )->debuffs_eradication->trigger();
+
+        // Fiendish Cruelty checks for state after damage is applied
+        if ( p()->talents.fiendish_cruelty.ok() && s->target->health_percentage() <= p()->talents.fiendish_cruelty->effectN( 2 ).base_value() )
+          make_event( *sim, 0_ms, [ this ] { p()->cooldowns.shadowburn->adjust( timespan_t::from_seconds( -p()->talents.fiendish_cruelty->effectN( 1 ).base_value() ) ); } );
       }
     }
 
@@ -2977,32 +3634,26 @@ using namespace helpers;
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
     }
 
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double m = warlock_spell_t::composite_target_multiplier( t );
-
-      if ( p()->talents.ashen_remains.ok() && td( t )->dots_immolate->is_ticking() )
-        m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
-
-      return m;
-    }
-
     double composite_target_crit_chance( player_t* t ) const override
     {
       double m = warlock_spell_t::composite_target_crit_chance( t );
 
-      if ( target->health_percentage() <= 20.0 )
+      if ( target->health_percentage() <= p()->talents.shadowburn->effectN( 4 ).base_value() )
         m += p()->talents.shadowburn->effectN( 3 ).percent();
+
+      if ( target->health_percentage() <= p()->talents.blistering_atrophy->effectN( 4 ).base_value() )
+        m += p()->talents.blistering_atrophy->effectN( 3 ).percent();
 
       return m;
     }
 
     double composite_crit_chance() const override
     {
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
-        return 1.0;
+      double c = warlock_spell_t::composite_crit_chance();
 
-      return warlock_spell_t::composite_crit_chance();
+      c += p()->buffs.conflagration_of_chaos_sb->check_value();
+
+      return c;
     }
 
     double calculate_direct_amount( action_state_t* state ) const override
@@ -3033,8 +3684,11 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
-        // TOCHECK: Is this needed?
+        triggers.decimation = false;
+
         spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
       }
 
       void impact( action_state_t* s ) override
@@ -3043,6 +3697,19 @@ using namespace helpers;
 
         if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
           td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+          td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        if ( s->chain_target != 0 )
+          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+        return m;
       }
     };
 
@@ -3055,8 +3722,15 @@ using namespace helpers;
       channeled = true;
       hasted_ticks = true;
       may_crit = false;
+      cooldown->hasted = true;
 
       add_child( channel_demonfire_tick );
+
+      if ( p->talents.demonfire_mastery.ok() )
+      {
+        base_tick_time *= 1.0 + p->talents.demonfire_mastery->effectN( 2 ).percent();
+        dot_duration *= 1.0 + p->talents.demonfire_mastery->effectN( 3 ).percent();
+      }
 
       if ( p->talents.raging_demonfire.ok() )
       {
@@ -3064,13 +3738,6 @@ using namespace helpers;
         base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
         dot_duration = num_ticks * base_tick_time;
       }
-    }
-
-    void init() override
-    {
-      warlock_spell_t::init();
-
-      cooldown->hasted = true;
     }
 
     std::vector<player_t*>& target_list() const override
@@ -3082,7 +3749,7 @@ using namespace helpers;
       {
         i--;
 
-        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() )
+        if ( !td( target_cache.list[ i ] )->dots_immolate->is_ticking() && !td( target_cache.list[ i ] )->dots_wither->is_ticking() )
           target_cache.list.erase( target_cache.list.begin() + i );
       }
 
@@ -3106,123 +3773,15 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 )
+      if ( p()->get_active_dots( td( target )->dots_immolate ) == 0 && p()->get_active_dots( td( target )->dots_wither ) == 0 )
         return false;
 
       return warlock_spell_t::ready();
     }
   };
 
-  struct shadowy_tear_t : public warlock_spell_t
-  {
-    struct rift_shadow_bolt_t : public warlock_spell_t
-    {
-      rift_shadow_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Shadow Bolt", p, p->talents.rift_shadow_bolt )
-      {
-        background = dual = true;
-
-        // TOCHECK: In the past, this double-dipped on both direct and periodic spell auras
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct shadow_barrage_t : public warlock_spell_t
-    {
-      shadow_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Shadow Barrage", p, p->talents.shadow_barrage )
-      {
-        background = true;
-
-        tick_action = new rift_shadow_bolt_t( p );
-      }
-
-      double last_tick_factor( const dot_t* d, timespan_t t, timespan_t dur ) const override
-      { return 1.0; }
-    };
-
-    shadowy_tear_t( warlock_t* p )
-      : warlock_spell_t( "Shadowy Tear", p, p->talents.shadowy_tear_summon )
-    {
-      background = true;
-
-      impact_action = new shadow_barrage_t( p );
-    }
-  };
-
-  struct unstable_tear_t : public warlock_spell_t
-  {
-    struct chaos_barrage_tick_t : public warlock_spell_t
-    {
-      chaos_barrage_tick_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage (tick)", p, p->talents.chaos_barrage_tick )
-      {
-        background = dual = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-    };
-
-    struct chaos_barrage_t : public warlock_spell_t
-    {
-      chaos_barrage_t( warlock_t* p )
-        : warlock_spell_t( "Chaos Barrage", p, p->talents.chaos_barrage )
-      {
-        background = true;
-
-        tick_action = new chaos_barrage_tick_t( p );
-      }
-    };
-
-    unstable_tear_t( warlock_t* p )
-      : warlock_spell_t( "Unstable Tear", p, p->talents.unstable_tear_summon )
-    {
-      background = true;
-
-      impact_action = new chaos_barrage_t( p );
-    }
-  };
-
-  struct chaos_tear_t : public warlock_spell_t
-  {
-    struct rift_chaos_bolt_t : public warlock_spell_t
-    {
-      rift_chaos_bolt_t( warlock_t* p )
-        : warlock_spell_t( "Rift Chaos Bolt", p, p->talents.rift_chaos_bolt )
-      {
-        background = true;
-
-        base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 2 ).percent();
-      }
-
-      double composite_crit_chance() const override
-      { return 1.0; }
-
-      double calculate_direct_amount( action_state_t* s ) const override
-      {
-        warlock_spell_t::calculate_direct_amount( s );
-
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-        return s->result_total;
-      }
-    };
-
-    chaos_tear_t( warlock_t* p )
-      : warlock_spell_t( "Chaos Tear", p, p->talents.chaos_tear_summon )
-    {
-      background = true;
-      
-      impact_action = new rift_chaos_bolt_t( p );
-    }
-  };
-
   struct dimensional_rift_t : public warlock_spell_t
   {
-    shadowy_tear_t* shadowy_tear;
-    unstable_tear_t* unstable_tear;
-    chaos_tear_t* chaos_tear;
-
     dimensional_rift_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Dimensional Rift", p, p->talents.dimensional_rift, options_str )
     {
@@ -3230,14 +3789,6 @@ using namespace helpers;
 
       energize_type = action_energize::ON_CAST;
       energize_amount = p->talents.dimensional_rift->effectN( 2 ).base_value() / 10.0;
-
-      shadowy_tear = new shadowy_tear_t( p );
-      unstable_tear = new unstable_tear_t( p );
-      chaos_tear = new chaos_tear_t( p );
-
-      add_child( shadowy_tear );
-      add_child( unstable_tear );
-      add_child( chaos_tear );
     }
 
     void execute() override
@@ -3249,13 +3800,13 @@ using namespace helpers;
       switch ( rift )
       {
       case 0:
-        shadowy_tear->execute_on_target( target );
+        p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
         break;
       case 1:
-        unstable_tear->execute_on_target( target );
+        p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
         break;
       case 2:
-        chaos_tear->execute_on_target( target );
+        p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
         break;
       default:
         break;
@@ -3270,13 +3821,15 @@ using namespace helpers;
     {
       background = dual = true;
       aoe = -1;
+
+      triggers.decimation = false;
     }
 
     void execute() override
     {
       warlock_spell_t::execute();
       
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() );
+      p()->warlock_pet_list.infernals.spawn();
     }
   };
 
@@ -3286,6 +3839,10 @@ using namespace helpers;
       : warlock_spell_t( "Summon Infernal", p, p->talents.summon_infernal, options_str )
     {
       may_crit = false;
+      resource_current = RESOURCE_SOUL_SHARD; // For Cruelty of Kerxan proccing
+
+      triggers.diabolic_ritual = p->hero.cruelty_of_kerxan.ok();
+
       impact_action = new infernal_awakening_t( p );
       add_child( impact_action );
     }
@@ -3299,16 +3856,24 @@ using namespace helpers;
 
       if ( p()->talents.rain_of_chaos.ok() )
         p()->buffs.rain_of_chaos->trigger();
+
+      if ( p()->hero.cruelty_of_kerxan.ok() )
+      {
+        timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
+
+        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
+        p()->buffs.ritual_mother->extend_duration( p(), reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+      }
     }
   };
 
   struct soul_fire_t : public warlock_spell_t
   {
-    immolate_t* immolate;
+    action_t* applied_dot;
 
     soul_fire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str ),
-      immolate( new immolate_t( p, "" ) )
+      : warlock_spell_t( "Soul Fire", p, p->talents.soul_fire, options_str )
     {
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
@@ -3317,89 +3882,184 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
-      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+      if ( p->hero.wither.ok() )
+        applied_dot = new wither_t( p, "" );
+      else
+        applied_dot = new immolate_t( p, "" );
 
-      immolate->background = true;
-      immolate->dual = true;
-      immolate->base_costs[ RESOURCE_MANA ] = 0;
-      immolate->base_dd_multiplier = 0.0;
+      applied_dot->background = true;
+      applied_dot->dual = true;
+      applied_dot->base_costs[ RESOURCE_MANA ] = 0;
+      applied_dot->base_dd_multiplier = 0.0;
     }
 
     double execute_time_pct_multiplier() const override
     {
-      auto mul = warlock_spell_t::execute_time_pct_multiplier();
+      double m = warlock_spell_t::execute_time_pct_multiplier();
 
-      if ( p()->buffs.backdraft->check() )
-        mul *= 1.0 + p()->talents.backdraft_buff->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.decimation->check_value();
 
-      return mul;
-    }
-
-    timespan_t gcd() const override
-    {
-      timespan_t t = warlock_spell_t::gcd();
-
-      if ( t == 0_ms )
-        return t;
-
-      if ( p()->buffs.backdraft->check() )
-        t *= 1.0 + p()->talents.backdraft_buff->effectN( 2 ).percent();
-
-      if ( t < min_gcd )
-        t = min_gcd;
-
-      return t;
+      return m;
     }
 
     void execute() override
     {
       warlock_spell_t::execute();
 
-      immolate->execute_on_target( target );
+      applied_dot->execute_on_target( target );
 
       p()->buffs.backdraft->decrement();
-    }
-  };
 
-  struct avatar_of_destruction_t : public warlock_spell_t
-  {
-    struct infernal_awakening_proc_t : public warlock_spell_t
-    {
-      infernal_awakening_proc_t( warlock_t* p )
-        : warlock_spell_t( "Infernal Awakening (Blasphemy)", p, p->talents.infernal_awakening )
-      {
-        background = dual = true;
-        aoe = -1;
-      }
-    };
-
-    infernal_awakening_proc_t* infernal_awakening;
-
-    avatar_of_destruction_t( warlock_t* p )
-      : warlock_spell_t( "Avatar of Destruction", p, p->talents.summon_blasphemy )
-    {
-      background = dual = true;
-      infernal_awakening = new infernal_awakening_proc_t( p );
+      p()->buffs.decimation->decrement();
     }
 
-    void execute() override
+    double composite_crit_chance() const override
     {
-      warlock_spell_t::execute();
+      double c = warlock_spell_t::composite_crit_chance();
 
-      if ( p()->warlock_pet_list.blasphemy.active_pet() )
-      {
-        p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
-      }
-      else
-      {
-        p()->warlock_pet_list.blasphemy.spawn( p()->talents.avatar_of_destruction->effectN( 1 ).time_value() * 1000 );
-        infernal_awakening->execute_on_target( target );
-      }
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
     }
   };
 
   // Destruction Actions End
+  // Diabolist Actions Begin
+  
+  struct infernal_bolt_t : public warlock_spell_t
+  {
+    infernal_bolt_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
+    {
+      energize_type = action_energize::ON_CAST;
+      energize_amount += p->warlock_base.destruction_warlock->effectN( 9 ).base_value() / 10.0;
+
+      affected_by.havoc = true;
+      affected_by.ashen_remains = p->talents.ashen_remains.ok();
+
+      if ( demonology() )
+      {
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
+      }
+
+      if ( destruction() )
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+    }
+
+    bool ready() override
+    {
+      if ( !p()->buffs.infernal_bolt->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      double m = warlock_spell_t::execute_time_pct_multiplier();
+
+      m *= 1.0 + p()->talents.rune_of_shadows->effectN( 2 ).percent();
+
+      m *= 1.0 + p()->talents.emberstorm->effectN( 2 ).percent();
+
+      return m;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( p()->talents.demonic_calling.ok() )
+        p()->buffs.demonic_calling->trigger();
+
+      p()->buffs.burn_to_ashes->decrement();
+      p()->buffs.infernal_bolt->decrement();
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = warlock_spell_t::composite_crit_chance();
+
+      if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+
+      return c;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= 1.0 + p()->buffs.burn_to_ashes->check_value();
+
+      return m;
+    }
+  };
+
+  struct ruination_t : public warlock_spell_t
+  {
+    struct ruination_impact_t : public warlock_spell_t
+    {
+      ruination_impact_t( warlock_t* p )
+        : warlock_spell_t( "Ruination (Impact)", p, p->hero.ruination_impact )
+      {
+        background = dual = true;
+        aoe = -1;
+        reduced_aoe_targets = p->hero.ruination_cast->effectN( 2 ).base_value();
+
+        affected_by.chaotic_energies = true;
+        affected_by.backdraft = true;
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( result_is_hit( s->result ) && s->target == target )
+        {
+          if ( demonology() )
+          {
+            for ( int i = 1; i <= as<int>( p()->hero.ruination_buff->effectN( 2 ).base_value() ); i++ )
+            {
+              auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
+              p()->wild_imp_spawns.push_back( ev );
+            }
+          }
+
+          if ( destruction() )
+          {
+            p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
+          }
+        }
+      }
+    };
+
+    ruination_t( warlock_t* p, util::string_view options_str )
+      : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
+    {
+      impact_action = new ruination_impact_t( p );
+      add_child( impact_action );
+    }
+
+    bool ready() override
+    {
+      if ( !p()->buffs.ruination->check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->buffs.ruination->decrement();
+    }
+  };
+
+  // Diabolist Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
@@ -3416,7 +4076,16 @@ using namespace helpers;
 
   void sc_event_t::execute()
   {
-    double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+    double soul_conduit_rng = 0.0;
+
+    if ( pl->specialization() == WARLOCK_AFFLICTION )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
+
+    if ( pl->specialization() == WARLOCK_DEMONOLOGY )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 2 ).percent();
+
+    if ( pl->specialization() == WARLOCK_DESTRUCTION )
+      soul_conduit_rng = pl->talents.soul_conduit->effectN( 3 ).percent();
 
     for ( int i = 0; i < shards_used; i++ )
     {
@@ -3441,13 +4110,82 @@ using namespace helpers;
         continue;
 
       agony = agony || td->dots_agony->is_ticking();
-      corruption = corruption || td->dots_corruption->is_ticking();
+
+      if ( p->hero.wither.ok() )
+        corruption = corruption || td->dots_wither->is_ticking();
+      else
+        corruption = corruption || td->dots_corruption->is_ticking();
 
       if ( agony && corruption )
         break;
     }
 
     return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+  }
+
+  void helpers::nightfall_updater( warlock_t* p, dot_t* d )
+  {
+    // Blizzard did not publicly release how nightfall was changed.
+    // We determined this is the probable functionality copied from Agony by first confirming the
+    // DR formula was the same and then confirming that you can get procs on 1st tick.
+    // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+    // Last checked 09-28-2020.
+    double increment_max = p->rng_settings.nightfall.setting_value;
+
+    double active_corruptions = p->get_active_dots( d );
+    increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+    p->corruption_accumulator += p->rng().range( 0.0, increment_max );
+
+    if ( p->corruption_accumulator >= 1 )
+    {
+      p->procs.nightfall->occur();
+      p->buffs.nightfall->trigger();
+      p->corruption_accumulator -= 1.0;
+    }
+  }
+
+  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
+  {
+    for ( const auto target : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* tdata = p->get_target_data( target );
+      if ( !tdata )
+        continue;
+
+      if ( !tdata->dots_wither->is_ticking() )
+        continue;
+
+      tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+
+      if ( p->buffs.malevolence->check() && !malevolence )
+        tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
+
+      // TOCHECK: Chance for this effect is not in spell data!
+      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
+      {
+        tdata->dots_wither->increment( 1 );
+        p->procs.bleakheart_tactics->occur();
+      }
+
+      bool collapse = p->buffs.malevolence->check();
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
+
+      if ( collapse )
+      {
+        tdata->debuffs_blackened_soul->trigger();
+      }
+      else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
+      {
+        // TOCHECK: Chance for this effect is not in spell data!
+        tdata->debuffs_blackened_soul->trigger();
+        p->procs.blackened_soul->occur();
+      }
+
+      if ( malevolence )
+        p->proc_actions.malevolence->execute_on_target( target );
+    }
   }
 
   // Event for spawning Wild Imps for Demonology
@@ -3496,6 +4234,12 @@ using namespace helpers;
       if ( action_t* destro_action = create_action_destruction( action_name, options_str ) )
         return destro_action;
     }
+
+    if ( action_t* diabolist_action = create_action_diabolist( action_name, options_str ) )
+      return diabolist_action;
+
+    if ( action_t* hellcaller_action = create_action_hellcaller( action_name, options_str ) )
+      return hellcaller_action;
 
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
@@ -3573,6 +4317,8 @@ using namespace helpers;
       return new soul_rot_t( this, options_str );
     if ( action_name == "seed_of_corruption" )
       return new seed_of_corruption_t( this, options_str );
+    if ( action_name == "oblivion" )
+      return new oblivion_t( this, options_str );
 
     return nullptr;
   }
@@ -3635,6 +4381,28 @@ using namespace helpers;
     return nullptr;
   }
 
+  action_t* warlock_t::create_action_diabolist( util::string_view action_name, util::string_view options_str )
+  {
+    if ( action_name == "infernal_bolt" )
+      return new infernal_bolt_t( this, options_str );
+
+    if ( action_name == "ruination" )
+      return new ruination_t( this, options_str );
+
+    return nullptr;
+  }
+
+  action_t* warlock_t::create_action_hellcaller( util::string_view action_name, util::string_view options_str )
+  {
+    if ( action_name == "wither" )
+      return new wither_t( this, options_str );
+
+    if ( action_name == "malevolence" )
+      return new malevolence_t( this, options_str );
+
+    return nullptr;
+  }
+
   void warlock_t::create_actions()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -3646,6 +4414,10 @@ using namespace helpers;
     if ( specialization() == WARLOCK_DESTRUCTION )
       create_destruction_proc_actions();
 
+    create_diabolist_proc_actions();
+
+    create_hellcaller_proc_actions();
+
     player_t::create_actions();
   }
 
@@ -3655,11 +4427,19 @@ using namespace helpers;
   void warlock_t::create_demonology_proc_actions()
   {
     proc_actions.bilescourge_bombers_proc = new bilescourge_bombers_proc_t( this );
+    proc_actions.doom_proc = new doom_t( this );
   }
 
   void warlock_t::create_destruction_proc_actions()
+  { }
+
+  void warlock_t::create_diabolist_proc_actions()
+  { }
+
+  void warlock_t::create_hellcaller_proc_actions()
   {
-    proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
+    proc_actions.blackened_soul = new blackened_soul_t( this );
+    proc_actions.malevolence = new malevolence_damage_t( this );
   }
 
   void warlock_t::init_special_effects()

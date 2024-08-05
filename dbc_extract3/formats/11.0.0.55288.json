@@ -1773,18 +1773,18 @@
       { "data_type": "i", "field": "type" },
       { "data_type": "i", "field": "id_trait_tree", "ref": "TraitTree" },
       { "data_type": "i", "field": "granted_ranks" },
-      { "data_type": "i", "field": "unk_5" },
-      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "id_quest" },
+      { "data_type": "i", "field": "id_achievement" },
       { "data_type": "i", "field": "id_spec_set" },
       { "data_type": "i", "field": "id_trait_node_group", "ref": "TraitNodeGroup" },
-      { "data_type": "i", "field": "unk_9" },
+      { "data_type": "i", "field": "id_trait_node", "ref": "TraitNode" },
       { "data_type": "i", "field": "id_trait_currency" },
       { "data_type": "i", "field": "req_points" },
       { "data_type": "i", "field": "flags" },
-      { "data_type": "i", "field": "unk_13" },
-      { "data_type": "i", "field": "unk_14" },
-      { "data_type": "i", "field": "unk_15" },
-      { "data_type": "i", "field": "unk_16" }
+      { "data_type": "i", "field": "required_level" },
+      { "data_type": "i", "field": "id_free_shared_string" },
+      { "data_type": "i", "field": "id_spend_more_shared_string" },
+      { "data_type": "i", "field": "id_trait_cond_account_element" }
     ]
   },
   "TraitCost": {
@@ -2017,7 +2017,9 @@
       { "data_type": "h", "field": "override_width" },
       { "data_type": "h", "field": "override_height" },
       { "data_type": "b", "field": "flags" },
-      { "data_type": "b", "field": "id_ui_canvas" }
+      { "data_type": "b", "field": "id_ui_canvas" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "h", "field": "unk_2" }
     ]
   }
 }

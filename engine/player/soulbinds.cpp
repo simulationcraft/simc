@@ -990,7 +990,7 @@ void let_go_of_the_past( special_effect_t& effect )
   };
 
   effect.proc_flags_  = PF_ALL_DAMAGE;
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.proc_flags2_ = PF2_ALL_CAST;
 
   // TODO: currently this only sets the buffs, but doesn't check for the buff in player_t::target_mitigation(). Possibly
   // we want to consolidate that into vectors on the player like with stat_pct_buff so we don't have to unnecessarily

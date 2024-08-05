@@ -1068,6 +1068,7 @@ struct evoker_t : public player_t
       player_talent_t might_of_the_black_dragonflight;
       player_talent_t bombardments;
       const spell_data_t* bombardments_debuff;  // 434473
+      const spell_data_t* bombardments_driver;  // 443788
       const spell_data_t* bombardments_damage;  // 434481
       player_talent_t onslaught;
       player_talent_t melt_armor;
@@ -1316,30 +1317,6 @@ struct time_skip_t : public buff_t
         a->cooldown->adjust_recharge_multiplier();
       if ( a->internal_cooldown->action == a )
         a->internal_cooldown->adjust_recharge_multiplier();
-    }
-  }
-};
-
-struct temporal_burst_t : public buff_t
-{
-  std::vector<cooldown_t*> affected_cooldowns;
-
-  temporal_burst_t( evoker_t* p )
-    : buff_t( p, "temporal_burst", p->talent.chronowarden.temporal_burst_buff ), affected_cooldowns()
-  {
-    set_cooldown( 0_ms );
-    
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    set_default_value_from_effect( 2 );
-
-    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int /* new_ */ ) { update_cooldowns(); } );
-  }
-
-  void update_cooldowns()
-  {
-    for ( auto c : affected_cooldowns )
-    {
-      c->adjust_recharge_multiplier();
     }
   }
 };
@@ -1842,8 +1819,7 @@ public:
 
     if ( p()->talent.chronowarden.temporal_burst.enabled() )
     {
-      auto& vec = static_cast<buffs::temporal_burst_t*>( p()->buff.temporal_burst.get() )->affected_cooldowns;
-      parse_cd_effects( vec, p()->buff.temporal_burst );
+      parse_effects( p()->buff.temporal_burst );
     }
 
     if ( p()->talent.flameshaper.burning_adrenaline.enabled() )
@@ -1910,11 +1886,11 @@ public:
   template <typename... Ts>
   void parse_cd_effects( std::vector<cooldown_t*>& v, buff_t* buff, Ts&&... mods )
   {
-    size_t old = ab::recharge_multiplier_effects.size();
+    size_t old = ab::recharge_rate_effects.size();
 
     parse_effects( buff, std::forward<Ts>( mods )... );
 
-    if ( ab::recharge_multiplier_effects.size() > old )
+    if ( ab::recharge_rate_effects.size() > old )
     {
       v.push_back( ab::cooldown );
       v.push_back( ab::internal_cooldown );
@@ -3046,7 +3022,9 @@ public:
     {
       p->spec.ebon_might = std::make_unique<modified_spell_data_t>( data() );
       p->spec.ebon_might->parse_effects( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) )
-        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ] { return p->close_as_clutchmates; } );
+        ->parse_effects( p->spec.close_as_clutchmates, [ p = p ]( const action_t*, const action_state_t* ) {
+          return p->close_as_clutchmates;
+        } );
     }
   }
 
@@ -3508,7 +3486,7 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
     return da;
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     base_t::impact( state );
 
@@ -3606,13 +3584,13 @@ struct fire_breath_t : public empowered_charge_spell_t
   {
     timespan_t dot_dur_per_emp;
     action_t* chrono_flames;
-    size_t max_afterimage_targets;
+    int max_afterimage_targets;
 
     fire_breath_damage_t( evoker_t* p )
       : base_t( "fire_breath_damage", p, p->spec.fire_breath_damage ),
         dot_dur_per_emp( 6_s ),
         chrono_flames( nullptr ),
-        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
+        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
     {
       aoe                 = -1;  // TODO: actually a cone so we need to model it if possible
       reduced_aoe_targets = 5.0;
@@ -3710,7 +3688,7 @@ struct fire_breath_t : public empowered_charge_spell_t
       p()->buff.burnout->trigger();
     }
 
-    void impact(action_state_t* s)
+    void impact( action_state_t* s ) override
     {
       empowered_release_spell_t::impact( s );
 
@@ -5106,21 +5084,22 @@ struct upheaval_t : public empowered_charge_spell_t
   struct upheaval_damage_t : public empowered_release_spell_t
   {
     reverberations_t* reverberations;
-    action_t* chrono_flames;
-    size_t max_afterimage_targets;
-    upheaval_damage_t* rumbling_earth;
-    bool is_rumbling_earth;
     double reverb_mul;
-    size_t repeats;
+    int repeats;
+    upheaval_damage_t* rumbling_earth;
+    action_t* chrono_flames;
+    int max_afterimage_targets;
+    bool is_rumbling_earth;
 
     upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth )
       : base_t( name, p, p->find_spell( 396288 ) ),
         reverberations( nullptr ),
         reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
-        repeats( as<size_t>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
+        repeats( as<int>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
         rumbling_earth( nullptr ),
         chrono_flames( nullptr ),
-        max_afterimage_targets( as<size_t>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) )
+        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) ),
+        is_rumbling_earth( is_rumbling_earth )
     {
       aoe = -1;
 
@@ -5164,7 +5143,7 @@ struct upheaval_t : public empowered_charge_spell_t
       return da;
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       empowered_release_spell_t::impact( s );
 
@@ -5179,7 +5158,7 @@ struct upheaval_t : public empowered_charge_spell_t
       }
     }
 
-    void execute()
+    void execute() override
     {
       if ( rumbling_earth )
       {
@@ -6038,7 +6017,7 @@ public:
   {
     base::impact( s );
 
-    if ( p( s )->talent.scalecommander.wingleader.ok() )
+    if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
 
@@ -6123,9 +6102,8 @@ public:
     evoker_t* source;
     spells::thread_of_fate_damage_t* thread_of_fate_damage;
     spells::thread_of_fate_heal_t* thread_of_fate_heal;
-    buff_t* source_buff;
-
     double mult;
+    buff_t* source_buff;
 
     thread_of_fate_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, buff_t* source_buff_ )
       : dbc_proc_callback_t( p, e ),
@@ -6598,7 +6576,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   bombardments_cb_t* cb;
   bool use_bombardments_cb = false;
   rng::truncated_gauss_t gauss;
-  bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
+  bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s, const spell_data_t* driver_spell )
     : e_buff_t( td, name, s ),
       gauss( p()->option.simulate_bombardments_time_between_procs_mean,
              p()->option.simulate_bombardments_time_between_procs_stddev, data().internal_cooldown() + 1_ms )
@@ -6615,7 +6593,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     bombardments_effect->name_str                 = "bombardments_" + td.source->name_str;
     bombardments_effect->target_specific_cooldown = true;
     bombardments_effect->type                     = SPECIAL_EFFECT_EQUIP;
-    bombardments_effect->spell_id                 = data().id();
+    bombardments_effect->spell_id                 = driver_spell->id();
     td.target->special_effects.push_back( bombardments_effect );
 
     cb = new bombardments_cb_t( td.target, *bombardments_effect, p() );
@@ -6632,7 +6610,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
 
   void fake_execute()
   {
-    if ( cb->cooldown->up() )
+    auto cd = cb->get_cooldown( player );
+    assert( cd && "Bombardments CD Must Exist" );
+    if ( cd->up() )
     {
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
@@ -6728,7 +6708,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.bombardments =
       make_buff_fallback<buffs::bombardments_buff_t>( evoker->talent.scalecommander.bombardments, *this, "bombardments",
-                                                      evoker->talent.scalecommander.bombardments_debuff );
+                                                      evoker->talent.scalecommander.bombardments_debuff, evoker->talent.scalecommander.bombardments_driver );
 
   bool make_unbound_surge = evoker->naszuro && !target->is_enemy() && !target->is_pet();
   buffs.unbound_surge = make_buff_fallback<stat_buff_t>( make_unbound_surge, *this, "unbound_surge_" + evoker->name_str,
@@ -7386,15 +7366,6 @@ void evoker_t::init_finished()
       }
     } );
   }
-
-  if ( talent.chronowarden.temporal_burst.ok() )
-  {
-    auto temporal_burst = static_cast<buffs::temporal_burst_t*>( buff.temporal_burst.get() );
-    auto& vec            = temporal_burst->affected_cooldowns;
-
-    std::sort( vec.begin(), vec.end() );
-    vec.erase( std::unique( vec.begin(), vec.end() ), vec.end() );
-  }
 }
 
 role_e evoker_t::primary_role() const
@@ -7739,6 +7710,7 @@ void evoker_t::init_spells()
   talent.scalecommander.might_of_the_black_dragonflight = HT( "Might of the Black Dragonflight" );
   talent.scalecommander.bombardments                    = HT( "Bombardments" );
   talent.scalecommander.bombardments_debuff             = find_spell( 434473 );
+  talent.scalecommander.bombardments_driver             = find_spell( 443788 );
   talent.scalecommander.bombardments_damage             = find_spell( 434481 );
   talent.scalecommander.onslaught                       = HT( "Onslaught" );
   talent.scalecommander.melt_armor                      = HT( "Melt Armor" );
@@ -8070,7 +8042,11 @@ void evoker_t::create_buffs()
                      ->set_default_value_from_effect( 1 )
                      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.temporal_burst = make_buff_fallback<temporal_burst_t>( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst" );
+  buff.temporal_burst =
+      MBF( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst", talent.chronowarden.temporal_burst_buff )
+          ->set_cooldown( 0_ms )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+          ->set_default_value_from_effect( 2 );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )

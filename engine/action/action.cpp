@@ -416,6 +416,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     dot_duration(),
     hasted_dot_duration(),
     dot_max_stack( 1 ),
+    dot_ignore_stack(),
     base_costs(),
     secondary_costs(),
     base_costs_per_tick(),
@@ -754,6 +755,8 @@ void action_t::parse_effect_periodic_mods( const spelleffect_data_t& spelleffect
   }
 
   radius = spelleffect_data.radius_max();
+
+  dot_ignore_stack = spelleffect_data.flags( spelleffect_attribute::EX_SUPPRESS_STACKING );
 }
 
 void action_t::parse_effect_period( const spelleffect_data_t& spelleffect_data )
@@ -1968,7 +1971,9 @@ void action_t::tick( dot_t* d )
     if ( tick_may_crit && rng().roll( d->state->composite_crit_chance() ) )
       d->state->result = RESULT_CRIT;
 
-    d->state->result_amount = calculate_tick_amount( d->state, d->get_tick_factor() * d->current_stack() );
+    auto stack = dot_ignore_stack ? 1 : d->current_stack();
+
+    d->state->result_amount = calculate_tick_amount( d->state, d->get_tick_factor() * stack );
 
     assess_damage( amount_type( d->state, true ), d->state );
 
@@ -3893,11 +3898,11 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   }
 
   if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" )
+       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" )
   {
     std::vector<action_t*> in_flight_list;
-    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
-      splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
+    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" ||
+                                 splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" );
     auto action_name  = ( in_flight_singleton ) ? this->name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
@@ -3963,6 +3968,42 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           }
         };
         return std::make_unique<in_flight_to_target_multi_expr_t>( std::move(in_flight_list), *this );
+      }
+      else if ( splits[ 0 ] == "in_flight_to_target_count" ||
+                ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target_count" ) )
+      {
+        struct in_flight_to_target_count_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          action_t& action;
+
+          in_flight_to_target_count_multi_expr_t( std::vector<action_t*> al, action_t& a )
+            : expr_t( "in_flight_to_target_count" ), action_list( std::move( al ) ), action( a )
+          {
+          }
+
+          double evaluate() override
+          {
+            auto count = 0;
+
+            for ( auto i : action_list )
+            {
+              for ( const auto& travel_event : i->travel_events )
+              {
+                if ( travel_event->state->target == action.target )
+                  count++;
+              }
+            }
+
+            return count;
+          }
+
+          bool is_constant() override
+          {
+            return action_list.empty();
+          }
+        };
+        return std::make_unique<in_flight_to_target_count_multi_expr_t>( std::move( in_flight_list ), *this );
       }
       else if ( splits[ 0 ] == "in_flight_remains" ||
         ( !in_flight_singleton && splits[ 2 ] == "in_flight_remains" ) )
@@ -5648,7 +5689,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         value_ = 1;
         break;
 
-      case A_MOD_RECHARGE_TIME:
+      case A_MOD_RECHARGE_TIME_CATEGORY:
         if ( cooldown->action == this )
         {
           if ( data().charge_cooldown() <= 0_ms )
@@ -5667,10 +5708,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
-      case A_MOD_RECHARGE_MULTIPLIER:
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         if ( data().charge_cooldown() > 0_ms )
         {
           base_recharge_multiplier *= 1 + effect.percent();
+          if ( base_recharge_multiplier <= 0 )
+          {
+            cooldown->duration = timespan_t::zero();
+          }
           sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
           value_ = effect.percent();
         }

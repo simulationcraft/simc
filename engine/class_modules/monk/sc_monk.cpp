@@ -125,16 +125,21 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Brewmaster
   apply_affecting_aura( p()->baseline.brewmaster.aura );
+  apply_affecting_aura( p()->baseline.brewmaster.aura_2 );
 
   // Mistweaver
   apply_affecting_aura( p()->baseline.mistweaver.aura );
   apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
+  apply_affecting_aura( p()->baseline.mistweaver.aura_3 );
 
   // Windwalker
   apply_affecting_aura( p()->baseline.windwalker.aura );
+  apply_affecting_aura( p()->baseline.windwalker.aura_2 );
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
 
   // Conduit of the Celestials
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
+  apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
   apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
@@ -158,9 +163,14 @@ void monk_action_t<Base>::apply_buff_effects()
    */
 
   // Monk
+  parse_effects( p()->buff.fatal_touch );
 
   // Brewmaster
   parse_effects( p()->buff.blackout_combo );
+  parse_effects(
+      p()->buff.counterstrike,
+      affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
+      CONSUME_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -169,25 +179,41 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
+  parse_effects( p()->buff.pressure_point );
+  parse_effects( p()->buff.kicks_of_flowing_momentum,
+                 affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
+  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
+                 affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
 
   // Conduit of the Celestials
+  parse_effects( p()->buff.august_dynasty );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->buff.jade_sanctuary );
+  parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
-                 [ this ]() {
-                   if ( !p()->buff.aspect_of_harmony->heal )
-                     return false;
-                   return p()->buff.aspect_of_harmony->heal->is_ticking();
-                 } );
+                 [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
+  parse_effects( p()->buff.balanced_stratagem_physical );
+  parse_effects( p()->buff.balanced_stratagem_magic );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
 
   // TWW S1 Set Effects
-  parse_effects( p()->buff.tiger_strikes );
+  parse_effects(
+      p()->buff.tiger_strikes,
+      affect_list_t( 1 ).add_spell(
+          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(), p()->passives.fists_of_fury_tick->id(),
+          p()->passives.whirling_dragon_punch_aoe_tick->id(), p()->passives.whirling_dragon_punch_st_tick->id(),
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
+          p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
+          ) );
   parse_effects( p()->buff.tigers_ferocity );
-  parse_effects( p()->buff.flow_of_battle );
+  parse_effects( p()->buff.flow_of_battle_damage );
 
   // TWW S2 Set Effects
 
@@ -214,9 +240,6 @@ void monk_action_t<Base>::apply_debuff_effects()
 
   if ( p()->talent.windwalker.jadefire_harmony->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
-
-  parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
-                        p()->talent.windwalker.acclamation->effectN( 1 ).trigger() );
 }
 
 template <class Base>
@@ -431,13 +454,22 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
+  auto final_cost = base_t::cost();
+
   if ( current_resource() == RESOURCE_ENERGY )
   {
-    if ( base_t::cost() > 0 )
+    if ( final_cost > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        p()->flurry_strikes_energy += as<int>( base_t::cost() );
+        // Tiger Palm counts the full energy base cost
+        if ( base_t::id == p()->baseline.monk.tiger_palm->id() )
+          p()->flurry_strikes_energy += as<int>( base_t::base_cost() );
+        // Crackling Jade Lightning is whatever the current cost
+        else if ( base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
+          // this needs to be rounded to the nearest whole number
+          p()->flurry_strikes_energy += as<int>( std::round( final_cost ) );
+        // Detox, Paralysis and Vivify do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
           p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
@@ -447,7 +479,7 @@ void monk_action_t<Base>::consume_resource()
 
       if ( p()->talent.shado_pan.efficient_training.ok() )
       {
-        p()->efficient_training_energy += as<int>( base_t::cost() );
+        p()->efficient_training_energy += as<int>( final_cost );
         if ( p()->efficient_training_energy >= p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() )
         {
           timespan_t cdr =
@@ -466,11 +498,16 @@ void monk_action_t<Base>::consume_resource()
     // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji->trigger();
 
-    if ( base_t::cost() > 0 )
+    auto base_cost = base_t::base_cost();
+
+    if ( base_cost )
     {
+      // This triggers prior to cost reduction
+      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_cost ) );
+
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
-        p()->spiritual_focus_count += base_t::cost();
+        p()->spiritual_focus_count += base_cost;
 
         if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
         {
@@ -481,21 +518,21 @@ void monk_action_t<Base>::consume_resource()
           p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
         }
       }
-    }
 
-    if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
-    {
-      if ( p()->buff.storm_earth_and_fire->up() )
+      if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
       {
-        auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-        time_extend *= base_t::cost();
+        if ( p()->buff.storm_earth_and_fire->up() )
+        {
+          auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
+          time_extend *= base_cost;
 
-        p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
+          p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
-        p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-        p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+          p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+        }
+        p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
       }
-      p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
     }
 
     p()->buff.the_emperors_capacitor->trigger();
@@ -545,6 +582,11 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
   base_t::impact( s );
 
+  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_physical->data().effectN( 1 ) ) )
+    p()->buff.balanced_stratagem_physical->expire();
+  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_magic->data().effectN( 1 ) ) )
+    p()->buff.balanced_stratagem_magic->expire();
+
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
   {
     p()->trigger_empowered_tiger_lightning( s );
@@ -563,14 +605,22 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         p()->flurry_strikes_damage += damage_contribution;
 
-        double ap_threshold =
-            p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() * p()->composite_melee_attack_power();
+        double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() *
+                              p()->composite_melee_attack_power() * p()->composite_damage_versatility();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
           p()->flurry_strikes_damage -= ap_threshold;
           p()->buff.flurry_charge->trigger();
         }
+      }
+
+      if ( s->action->id != 451585 && get_td( s->target )->debuff.gale_force->check() &&
+           p()->rng().roll( get_td( s->target )->debuff.gale_force->default_chance ) )
+      {
+        double amount = s->result_amount * get_td( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
+        p()->active_actions.gale_force->base_dd_min = p()->active_actions.gale_force->base_dd_max = amount;
+        p()->active_actions.gale_force->execute_on_target( s->target );
       }
 
       if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
@@ -771,17 +821,6 @@ double monk_spell_t::composite_persistent_multiplier( const action_state_t *stat
   return pm;
 }
 
-double monk_spell_t::action_multiplier() const
-{
-  double am = base_t::action_multiplier();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-  return am;
-}
-
 monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_action_t<heal_t>( name, player, spell_data )
 {
@@ -819,10 +858,6 @@ double monk_heal_t::action_multiplier() const
       break;
 
     case MONK_WINDWALKER:
-
-      // Storm, Earth, and Fire
-      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
       break;
 
@@ -866,10 +901,6 @@ double monk_melee_attack_t::action_multiplier() const
 
   if ( ww_mastery && p()->buff.combo_strikes->check() )
     am *= 1 + p()->cache.mastery_value();
-
-  // Storm, Earth, and Fire
-  if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
-    am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
   if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
     am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
@@ -1355,6 +1386,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
     }
 
+    // allow Darting Hurricane to reduce GCD all the way down to 500ms
+    min_gcd          = 500_ms;
     ww_mastery       = true;
     may_combo_strike = true;
     trigger_chiji    = true;
@@ -1371,8 +1404,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
-    parse_effects( p->talent.brewmaster.face_palm, [ this ]() { return face_palm; } );
-    parse_effects( p->buff.counterstrike );
+    if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ & ] { return face_palm; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
@@ -1406,15 +1442,15 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_tiger_palm->occur();
-    p()->buff.blackout_combo->expire();
 
     if ( p()->buff.counterstrike->up() )
       p()->proc.counterstrike_tp->occur();
-    p()->buff.counterstrike->expire();
 
     //------------
 
     monk_melee_attack_t::execute();
+
+    p()->buff.blackout_combo->expire();
 
     if ( result_is_miss( execute_state->result ) )
       return;
@@ -1436,11 +1472,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
 
     // Reduces the remaining cooldown on your Brews by 1 sec
-    p()->baseline.brewmaster.brews->adjust(
+    p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
     if ( face_palm )
-      p()->baseline.brewmaster.brews->adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
     {
@@ -1451,6 +1487,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->buff.darting_hurricane->decrement();
 
     // T33 Windwalker Set Bonus
+    p()->buff.tiger_strikes->trigger();
     p()->buff.tigers_ferocity->expire();
 
     p()->buff.martial_mixture->expire();
@@ -1526,7 +1563,8 @@ struct press_the_advantage_t : base_action_t
 
     damage_t( monk_t *player, std::string_view name )
       : base_action_t( player, {}, name ),
-        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() )
+        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() ),
+        face_palm( false )
     {
       base_action_t::proc        = true;
       base_action_t::trigger_gcd = 0_s;
@@ -1534,25 +1572,34 @@ struct press_the_advantage_t : base_action_t
       base_action_t::dual        = true;
 
       base_action_t::parse_effects( player->buff.counterstrike,
-                                    affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
                                     player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
+      base_action_t::parse_effects( player->buff.blackout_combo,
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
+                                    player->buff.blackout_combo->data().effectN( 1 ).percent() * mod );
+
       // effect must still be rolled in execute so it triggers brew cdr
-      base_action_t::parse_effects(
-          player->buff.blackout_combo, affect_list_t( 1 ).adjust_spell( base_action_t::data().id() ),
-          player->buff.counterstrike->data().effectN( 1 ).percent() * mod, [ this ]() { return face_palm; } );
+      if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+        add_parse_entry( base_action_t::da_multiplier_effects )
+            .set_func( [ & ] { return face_palm; } )
+            .set_value( ( effect.percent() - 1.0 ) * mod )
+            .set_eff( &effect );
     }
 
     void execute() override
     {
       base_action_t::p()->buff.press_the_advantage->expire();
 
-      face_palm = base_action_t::rng().roll( base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() );
+      if ( ( face_palm = base_action_t::rng().roll(
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+      {
+        base_action_t::p()->proc.face_palm->occur();
+        base_action_t::p()->baseline.brewmaster.brews.adjust(
+            base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+      }
+
       base_action_t::execute();
 
-      if ( face_palm )
-        base_action_t::p()->baseline.brewmaster.brews->adjust(
-            base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-      base_action_t::p()->buff.counterstrike->expire();
       base_action_t::p()->buff.blackout_combo->expire();
 
       if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
@@ -1608,8 +1655,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     trigger_chiji     = true;
 
     apply_affecting_aura( p->talent.windwalker.rising_star );
-    parse_effects( p->buff.kicks_of_flowing_momentum );
-    parse_effects( p->buff.pressure_point );
   }
 
   void execute() override
@@ -1634,7 +1679,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     // Brewmaster RSK also applies the WoO debuff.
     if ( p()->buff.weapons_of_order->up() )
-      for ( auto &target : target_list() )
+      for ( const auto &target : target_list() )
         get_td( target )->debuff.weapons_of_order->trigger();
   }
 
@@ -1707,24 +1752,16 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       gotd->target = target;
       gotd->execute();
     }
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-    {
-      if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
-
-      p()->buff.whirling_dragon_punch->trigger();
-    }
+    p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
 
     if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       p()->buff.ordered_elements->trigger();
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
+
+    p()->buff.august_dynasty->expire();
   }
 };
 
@@ -1816,8 +1853,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
       p()->trigger_mark_of_the_crane( s );
 
     // Martial Mixture triggers from each ToTM impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -1882,11 +1918,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 {
   using base_t = charred_passions_t<monk_melee_attack_t>;
   blackout_kick_totm_proc_t *bok_totm_proc;
+  cooldown_t *keg_smash_cooldown;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
     : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                       : p->baseline.monk.blackout_kick ) )
+                                                       : p->baseline.monk.blackout_kick ) ),
+      keg_smash_cooldown( nullptr )
   {
     parse_options( options_str );
     if ( p->specialization() == MONK_WINDWALKER )
@@ -1907,6 +1945,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->buff.blackout_reinforcement );
     parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
+
+    if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
+      keg_smash_cooldown = player->get_cooldown( "keg_smash" );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -1944,6 +1985,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
 
+    p()->buff.flow_of_battle_damage->trigger();
+    if ( keg_smash_cooldown && p()->rng().roll( 0.5 ) )
+    {
+      keg_smash_cooldown->reset( false );
+      p()->buff.flow_of_battle_free_keg_smash->trigger();
+    }
+
     if ( result_is_hit( execute_state->result ) )
     {
       if ( p()->buff.bok_proc->up() )
@@ -1976,7 +2024,16 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
       p()->buff.transfer_the_power->trigger();
 
-      p()->buff.teachings_of_the_monastery->expire();
+      if ( p()->buff.teachings_of_the_monastery->up() )
+      {
+        p()->buff.teachings_of_the_monastery->expire();
+
+        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+          p()->buff.teachings_of_the_monastery->trigger();
+      }
+
+      if ( p()->specialization() == MONK_WINDWALKER )
+        p()->buff.strength_of_the_black_ox->expire();
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
@@ -1984,8 +2041,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
       if ( p()->talent.shado_pan.vigilant_watch->ok() )
         p()->buff.vigilant_watch->trigger();
 
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-        p()->buff.tigers_ferocity->trigger();
+      p()->buff.tigers_ferocity->trigger();
     }
   }
 
@@ -2047,13 +2103,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p()->talent.brewmaster.staggering_strikes->ok() )
-      p()->stagger[ "Stagger" ]->purify_flat(
-          s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
-          "staggering_strikes" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat(
+              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+              "staggering_strikes" );
 
     // Martial Mixture triggers from each BoK impact
-    if ( p()->talent.windwalker.martial_mixture->ok() )
-      p()->buff.martial_mixture->trigger();
+    p()->buff.martial_mixture->trigger();
   }
 };
 
@@ -2061,57 +2117,46 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 // Rushing Jade Wind
 // ==========================================================================
 
-struct rjw_tick_action_t : public monk_melee_attack_t
+struct flight_of_the_red_crane_dmg_t : public monk_spell_t
 {
-  double test_softcap;
-  rjw_tick_action_t( monk_t *p )
-    : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->passives.rushing_jade_wind_tick )
+  flight_of_the_red_crane_dmg_t( monk_t *p )
+    : monk_spell_t( p, "flight_of_the_red_crane_dmg", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
   {
-    ww_mastery = true;
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+  }
 
-    dual = background   = true;
-    aoe                 = -1;
-    reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
-    radius              = data().effectN( 1 ).radius();
+  void execute() override
+  {
+    monk_spell_t::execute();
 
-    // Reset some variables to ensure proper execution
-    dot_duration       = timespan_t::zero();
-    cooldown->duration = timespan_t::zero();
+    p()->buff.flight_of_the_red_crane->trigger();
+  }
+};
 
-    // Merge action statistics if RJW exists as an active ability
-    auto rjw_action = p->find_action( "rushing_jade_wind" );
-
-    if ( rjw_action )
-      stats = rjw_action->stats;
+struct flight_of_the_red_crane_heal_t : public monk_heal_t
+{
+  flight_of_the_red_crane_heal_t( monk_t *p )
+    : monk_heal_t( p, "flight_of_the_red_crane_heal", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
+  {
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+    target     = p;
   }
 };
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
-  rushing_jade_wind_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "rushing_jade_wind", p->shared.rushing_jade_wind )
+  rushing_jade_wind_t( monk_t *player, util::string_view options_str )
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind )
   {
     parse_options( options_str );
-
     may_combo_strike = true;
-    gcd_type         = gcd_haste_type::NONE;
-
-    // Set dot data to 0, since we handle everything through the buff.
-    base_tick_time = timespan_t::zero();
-    dot_duration   = timespan_t::zero();
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    update_flags &= ~STATE_HASTE;
   }
 
   void execute() override
   {
     monk_melee_attack_t::execute();
-
     p()->buff.rushing_jade_wind->trigger();
   }
 };
@@ -2151,19 +2196,10 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-    radius              = data->effectN( 1 ).radius_max();
 
-    // Reset some variables to ensure proper execution
-    base_costs[ RESOURCE_ENERGY ] = 0;
-
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
+    ap_type = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
-
-    // kotfm and cs are scripted for SCK, we can add this id to the whitelist instead
-    parse_effects( p->buff.kicks_of_flowing_momentum, affect_list_t( 1 ).adjust_spell( data->id() ) );
-    parse_effects( p->buff.counterstrike, affect_list_t( 1 ).adjust_spell( data->id() ) );
 
     // // dance of chiji is scripted
     if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
@@ -2173,6 +2209,11 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
           .set_eff( &effect );
 
     // TODO: Mark of the Crane parsing
+  }
+
+  result_amount_type report_amount_type( const action_state_t * ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
   }
 
   int motc_counter() const
@@ -2198,20 +2239,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     }
 
     return count;
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->tier.t30.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
-
-    return c;
   }
 
   double action_multiplier() const override
@@ -2247,7 +2274,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 
@@ -2264,30 +2291,31 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = false;
-    tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
-    // Does not incur channel lag when interrupted by a cast-thru ability
-    ability_lag = p->world_lag;
-
-    spell_power_mod.direct = 0.0;
-
-    tick_action        = new sck_tick_action_t( p, "spinning_crane_kick_tick",
-                                                p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger() );
-    tick_action->stats = stats;
-
-    // Brewmaster can use SCK again after the GCD
+    interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
     }
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      dot_behavior = DOT_CLIP;
+
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
       chi_x = new chi_explosion_t( p );
-
       add_child( chi_x );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->channeling && p()->channeling->id == id )
+      return false;
+
+    return monk_melee_attack_t::ready();
   }
 
   bool usable_moving() const override
@@ -2365,6 +2393,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.windwalker.transfer_the_power->ok() )
       p()->buff.transfer_the_power->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2378,10 +2408,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     p()->buff.kicks_of_flowing_momentum->decrement();
 
     if ( p()->buff.counterstrike->up() )
-    {
       p()->proc.counterstrike_sck->occur();
-      p()->buff.counterstrike->expire();
-    }
   }
 };
 
@@ -2429,7 +2456,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.momentum_boost.ok() )
-      am *= 1 + ( ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 ) *
+      am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
                   p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
 
     return am;
@@ -2494,20 +2521,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
-      p()->buff.fury_of_xuen_stacks->expire();
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
-      if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
-
-      p()->buff.whirling_dragon_punch->trigger();
+      p()->buff.fury_of_xuen_stacks->expire();
+      p()->buff.fury_of_xuen->trigger();
+      p()->active_actions.fury_of_xuen_summon->execute();
     }
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.whirling_dragon_punch->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
   }
 
   void last_tick( dot_t *dot ) override
@@ -2515,20 +2537,13 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
 
     p()->buff.fists_of_flowing_momentum_fof->expire();
-
     p()->buff.transfer_the_power->expire();
-
     p()->buff.pressure_point->trigger();
 
     if ( p()->talent.windwalker.momentum_boost->ok() )
     {
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
-    }
-
-    // If Fists of Fury went the full duration
-    if ( dot->current_tick == dot->num_ticks() )
-    {
     }
   }
 };
@@ -2600,7 +2615,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
       // effects that care about casts).
-      return PROC2_CAST;
+      return PROC2_CAST_GENERIC;
     }
   };
 
@@ -2680,8 +2695,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
       p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      p()->buff.tigers_ferocity->trigger();
+    p()->buff.tigers_ferocity->trigger();
   }
 
   bool ready() override
@@ -2784,13 +2798,16 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       int thunderfist_stacks = 1;
 
       if ( s->chain_target == 0 )
-        thunderfist_stacks += (int)p()->talent.windwalker.thunderfist->effectN( 1 ).base_value();
+        thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
       p()->trigger_mark_of_the_crane( s );
+
+    if ( p()->talent.windwalker.gale_force.ok() )
+      get_td( s->target )->debuff.gale_force->trigger();
   }
 };
 
@@ -2833,7 +2850,11 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack->execute();
 
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    {
       p()->buff.rushing_jade_wind->trigger();
+      if ( p()->bugs )
+        combo_strikes_trigger();
+    }
 
     p()->buff.tigers_ferocity->trigger();
 
@@ -2841,6 +2862,11 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
+
+    if ( !p()->buff.heart_of_the_jade_serpent->check() )
+      return;
+    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+    p()->buff.heart_of_the_jade_serpent->expire();
   }
 };
 
@@ -2936,9 +2962,7 @@ struct melee_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( first )
-      first = false;
-
+    first = false;
     monk_melee_attack_t::execute();
   }
 
@@ -2962,7 +2986,7 @@ struct melee_t : public monk_melee_attack_t
         if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
         {
           // Reduce Brew cooldown by 0.5 seconds
-          p()->baseline.brewmaster.brews->adjust(
+          p()->baseline.brewmaster.brews.adjust(
               p()->talent.brewmaster.press_the_advantage->effectN( 1 ).time_value() );
 
           // Trigger the Press the Advantage damage proc
@@ -3099,6 +3123,7 @@ struct keg_smash_t : monk_melee_attack_t
           .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
           .set_value( effect.percent() )
           .set_eff( &effect );
+    parse_effects( player->buff.flow_of_battle_free_keg_smash );
   }
 
   void execute() override
@@ -3106,6 +3131,7 @@ struct keg_smash_t : monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.hit_scheme->expire();
+    p()->buff.flow_of_battle_free_keg_smash->expire();
 
     if ( p()->talent.brewmaster.salsalabims_strength->ok() )
     {
@@ -3123,7 +3149,7 @@ struct keg_smash_t : monk_melee_attack_t
     }
     p()->buff.blackout_combo->expire();
 
-    p()->baseline.brewmaster.brews->adjust( reduction );
+    p()->baseline.brewmaster.brews.adjust( reduction );
   }
 
   void impact( action_state_t *state ) override
@@ -3150,6 +3176,8 @@ struct touch_of_death_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown->duration = data().cooldown();
+
+    apply_affecting_aura( p->talent.monk.fatal_touch );
   }
 
   void init() override
@@ -3174,7 +3202,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
     // Only applicable in health based sims
-    if ( target->current_health() > 0 && target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] )
+    if ( target->current_health() > 0 && target->current_health() <= p()->max_health() )
       return monk_melee_attack_t::target_ready( target );
 
     return false;
@@ -3185,6 +3213,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.touch_of_death_ww->trigger();
+    p()->buff.fatal_touch->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -3192,7 +3221,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     double max_hp, amount;
 
     // In execute range ToD deals player's max HP
-    amount = max_hp = p()->resources.max[ RESOURCE_HEALTH ];
+    amount = max_hp = p()->max_health();
 
     // Not in execute range
     // or not a health-based fight style
@@ -3216,8 +3245,9 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->baseline.brewmaster.stagger->ok() )
     {
-      p()->stagger[ "Stagger" ]->purify_flat(
-          amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(), "touch_of_death" );
+      p()->find_stagger( "Stagger" )
+          ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
+                         "touch_of_death" );
     }
   }
 };
@@ -3330,7 +3360,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
 
     if ( pct_health > 0 )
     {
-      double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
+      double damage_amount = pct_health * player->max_health();
 
       // Redirects 70% of the damage absorbed
       damage_amount *= data().effectN( 4 ).percent();
@@ -3377,14 +3407,6 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     cast_during_sck       = player->specialization() != MONK_WINDWALKER;
     may_miss = may_block = may_dodge = may_parry = false;
   }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
-  }
 };
 
 // ==========================================================================
@@ -3402,14 +3424,6 @@ struct leg_sweep_t : public monk_melee_attack_t
     cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
 
     radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -3561,10 +3575,10 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
   {
     brew_t<monk_spell_t>::execute();
 
-    for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews->cooldowns )
+    for ( auto &[ key, cooldown ] : p()->baseline.brewmaster.brews.cooldowns )
     {
       if ( key == p()->talent.brewmaster.purifying_brew->id() )
-        cooldown->reset( true, -1 );
+        cooldown->reset( true, 2 );
       if ( key == p()->talent.brewmaster.celestial_brew->id() )
         cooldown->reset( true, 1 );
     }
@@ -3630,50 +3644,73 @@ struct chi_torpedo_t : public monk_spell_t
 // ==========================================================================
 // Crackling Jade Lightning
 // ==========================================================================
-// Power of the Thunder King TODO: Either
-// a) Copy Warlock's Soul Rot implementation for Drain Soul.
-// b)  channel do 0 damage and use a fake tick_action to do a single instance
-// of aoe damage on each tick, and on the tick_action override
-// action_t::amount_type() to return result_amount_type::DMG_OVER_TIME
 
 struct crackling_jade_lightning_t : public monk_spell_t
 {
-  crackling_jade_lightning_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning )
+  struct crackling_jade_lightning_aoe_t : public monk_spell_t
   {
-    sef_ability      = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
-    may_combo_strike = true;
+    crackling_jade_lightning_aoe_t( monk_t *p )
+      : monk_spell_t( p, "crackling_jade_lightning_aoe", p->baseline.monk.crackling_jade_lightning )
+    {
+      dual = background = true;
+      ww_mastery        = true;
+
+      parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+      parse_effects( p->buff.the_emperors_capacitor );
+    }
+
+    double cost_per_tick( resource_e ) const override
+    {
+      return 0.0;
+    }
+  };
+
+  crackling_jade_lightning_aoe_t *aoe_dot;
+
+  crackling_jade_lightning_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning ),
+      aoe_dot( new crackling_jade_lightning_aoe_t( p ) )
+  {
+    sef_ability           = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
+    may_combo_strike      = true;
+    ww_mastery            = true;
+    interrupt_auto_attack = true;
+    channeled             = true;
 
     parse_options( options_str );
 
-    channeled = tick_zero = tick_may_crit = true;
-    dot_duration                          = data().duration();
-    interrupt_auto_attack                 = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    min_gcd = timespan_t::from_millis( 750 );
 
-    // parse_effects( p->talent.windwalker.power_of_the_thunder_king );
+    parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( p->buff.the_emperors_capacitor );
+
+    if ( p->talent.windwalker.power_of_the_thunder_king->ok() )
+      add_child( aoe_dot );
   }
 
-  double cost_per_tick( resource_e resource ) const override
+  void execute() override
   {
-    double c = monk_spell_t::cost_per_tick( resource );
+    monk_spell_t::execute();
 
-    if ( resource == RESOURCE_ENERGY )
-      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
-                 p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() );
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    {
+      const auto &tl = target_list();
+      int count      = 0;
 
-    return c;
-  }
+      for ( auto &t : tl )
+      {
+        // Don't apply AoE version to primary target
+        if ( t == target )
+          continue;
 
-  double composite_persistent_multiplier( const action_state_t *action_state ) const override
-  {
-    double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-    pm *= 1 + p()->buff.the_emperors_capacitor->check_stack_value();
-
-    return pm;
+        if ( count < p()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
+        {
+          aoe_dot->execute_on_target( t );
+          count++;
+        }
+      }
+    }
   }
 
   void last_tick( dot_t *dot ) override
@@ -3682,6 +3719,16 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     p()->buff.the_emperors_capacitor->expire();
 
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    {
+      const auto &tl = target_list();
+      for ( const auto &t : tl )
+      {
+        get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef->cancel();
+        get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
+      }
+    }
     // Reset swing timer
     if ( player->main_hand_attack )
     {
@@ -3710,7 +3757,8 @@ struct breath_of_fire_dot_t : public monk_spell_t
 {
   bool blackout_combo;
 
-  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
+  breath_of_fire_dot_t( monk_t *p )
+    : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot ), blackout_combo( false )
   {
     background    = true;
     tick_may_crit = may_crit = true;
@@ -3811,10 +3859,26 @@ struct breath_of_fire_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
+// Niuzao's Protection ==============================================
 struct fortifying_brew_t : brew_t<monk_spell_t>
 {
+  struct niuzaos_protection_t : public monk_absorb_t
+  {
+    niuzaos_protection_t( monk_t *p )
+      : monk_absorb_t( p, "niuzaos_protection", p->talent.conduit_of_the_celestials.niuzaos_protection )
+    {
+      background  = true;
+      target      = p;
+      base_dd_min = p->max_health() * data().effectN( 2 ).percent();
+      base_dd_max = base_dd_min;
+    }
+  };
+
+  niuzaos_protection_t *absorb;
+
   fortifying_brew_t( monk_t *p, util::string_view options_str )
-    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() )
+    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
+      absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
   {
     cast_during_sck = player->specialization() != MONK_WINDWALKER;
 
@@ -3831,6 +3895,8 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
   {
     brew_t<monk_spell_t>::execute();
 
+    if ( p()->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
+      absorb->execute();
     p()->buff.fortifying_brew->trigger();
     p()->active_actions.special_delivery->execute();
   }
@@ -3918,7 +3984,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   bool ready() override
   {
-    if ( p()->stagger[ "Stagger" ]->is_ticking() )
+    if ( p()->find_stagger( "Stagger" )->is_ticking() )
       return monk_spell_t::ready();
     return false;
   }
@@ -3930,20 +3996,21 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
 
-    double stacks = as<unsigned>( p()->stagger[ "Stagger" ]->level_index() );
+    auto stacks = as<unsigned>( p()->find_stagger( "Stagger" )->level_index() );
     if ( stacks > 0 )
     {
       p()->buff.purified_chi->trigger( stacks );
       p()->buff.ox_stance->trigger( stacks );
-      p()->buff.aspect_of_harmony->trigger_flat(
+      p()->buff.aspect_of_harmony.trigger_flat(
           stacks * p()->talent.master_of_harmony.clarity_of_purpose->effectN( 1 ).percent() *
-          ( 1.0 + p()->composite_damage_versatility() ) );
+          ( 1.0 + p()->composite_damage_versatility() ) *
+          p()->composite_total_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) );
+      p()->buff.recent_purifies->trigger( stacks );
     }
 
     double purify_percent = data().effectN( 1 ).percent();
     purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
-    double cleared = p()->stagger[ "Stagger" ]->purify_percent( purify_percent, "purifying_brew" );
-    p()->buff.recent_purifies->trigger( 1, cleared );
+    double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
     if ( healed )
@@ -3956,7 +4023,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     if ( p()->buff.blackout_combo->up() )
     {
       timespan_t delay = timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() );
-      p()->stagger[ "Stagger" ]->delay_tick( delay );
+      p()->find_stagger( "Stagger" )->delay_tick( delay );
       p()->proc.blackout_combo_purifying_brew->occur();
     }
     p()->buff.blackout_combo->expire();
@@ -4065,6 +4132,58 @@ struct diffuse_magic_t : public monk_spell_t
 // Invoke Xuen, the White Tiger
 // ==========================================================================
 
+// Courage of the White Tiger ability ===================================================
+struct courage_of_the_white_tiger_t : public monk_melee_attack_t
+{
+  struct courage_of_the_white_tiger_heal_t : public monk_heal_t
+  {
+    courage_of_the_white_tiger_heal_t( monk_t *p )
+      : monk_heal_t( p, "courage_of_the_white_tiger_heal",
+                     p->talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal )
+    {
+      background = dual = true;
+      target            = p;
+      base_dd_min = base_dd_max = 1.0;
+    }
+  };
+
+  courage_of_the_white_tiger_heal_t *heal;
+
+  courage_of_the_white_tiger_t( monk_t *p )
+    : monk_melee_attack_t( p, "courage_of_the_white_tiger_dmg",
+                           p->talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage ),
+      heal( new courage_of_the_white_tiger_heal_t( p ) )
+  {
+    background = true;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+
+  void execute() override
+  {
+    p()->buff.strength_of_the_black_ox->trigger();
+
+    monk_melee_attack_t::execute();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    double result = s->result_total;
+
+    result *= p()->talent.conduit_of_the_celestials.courage_of_the_white_tiger->effectN( 2 ).percent();
+
+    heal->base_dd_min = heal->base_dd_max = result;
+    heal->execute();
+  }
+};
+
 struct xuen_spell_t : public monk_spell_t
 {
   xuen_spell_t( monk_t *p, util::string_view options_str )
@@ -4104,6 +4223,11 @@ struct xuen_spell_t : public monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
+
+    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
+      p()->buff.rushing_jade_wind->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
   }
 };
 
@@ -4122,6 +4246,9 @@ struct fury_of_xuen_summon_t final : monk_spell_t
   void execute() override
   {
     monk_spell_t::execute();
+
+    if ( !p()->talent.windwalker.fury_of_xuen->ok() )
+      return;
 
     if ( p()->bugs )
     {
@@ -4202,6 +4329,35 @@ struct flurry_of_xuen_t : public monk_spell_t
 // Invoke Niuzao, the Black Ox
 // ==========================================================================
 
+struct strength_of_the_black_ox_t : public monk_spell_t
+{
+  strength_of_the_black_ox_t( monk_t *p )
+    : monk_spell_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
+  {
+    background = true;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+};
+
+struct strength_of_the_black_ox_absorb_t : public monk_absorb_t
+{
+  strength_of_the_black_ox_absorb_t( monk_t *p )
+    : monk_absorb_t( p, "strength_of_the_black_ox_absorb",
+                     p->talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb )
+  {
+    background  = true;
+    aoe         = as<int>( data().effectN( 3 ).base_value() );
+    base_dd_min = p->max_health() * data().effectN( 2 ).percent();
+    base_dd_max = base_dd_min;
+  }
+};
+
 struct niuzao_spell_t : public monk_spell_t
 {
   niuzao_spell_t( monk_t *p, util::string_view options_str )
@@ -4278,6 +4434,8 @@ struct chiji_spell_t : public monk_spell_t
     p()->buff.invoke_chiji->trigger();
 
     p()->buff.invokers_delight->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
   }
 };
 
@@ -4306,6 +4464,179 @@ struct yulon_spell_t : public monk_spell_t
     p()->pets.yulon.spawn( p()->talent.mistweaver.invoke_yulon_the_jade_serpent->duration(), 1 );
 
     p()->buff.invokers_delight->trigger();
+
+    p()->buff.courage_of_the_white_tiger->trigger();
+  }
+};
+
+// ==========================================================================
+// Unity Within
+// ==========================================================================
+
+struct unity_within_t : public monk_spell_t
+{
+  unity_within_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "unity_within", p->talent.conduit_of_the_celestials.unity_within )
+  {
+    parse_options( options_str );
+
+    harmful              = false;
+    usable_while_casting = true;
+  }
+
+  bool ready() override
+  {
+    return p()->buff.unity_within->up();
+  }
+
+  void execute() override
+  {
+    // Expiring this before the execute so that there is an easy way to apply the damage bonus.
+    p()->buff.unity_within->expire();
+
+    monk_spell_t::execute();
+  }
+};
+
+// ==========================================================================
+// Celestial Conduit
+// ==========================================================================
+
+// This is a separate spell from the normal Flight of the Red Crane damage spell
+struct flight_of_the_red_crane_celestial_dmg_t : public monk_spell_t
+{
+  flight_of_the_red_crane_celestial_dmg_t( monk_t *p )
+    : monk_spell_t( p, "flight_of_the_red_crane_celestial_dmg",
+                    p->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg )
+  {
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.flight_of_the_red_crane->trigger();
+  }
+};
+
+struct flight_of_the_red_crane_celestial_heal_t : public monk_heal_t
+{
+  flight_of_the_red_crane_celestial_heal_t( monk_t *p )
+    : monk_heal_t( p, "flight_of_the_red_crane_celestial",
+                   p->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg )
+  {
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+    target     = p;
+
+    // we have to set this up by hand, as Unity Within multiplier is scripted
+    if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ p ]() { return p->buff.unity_within->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+  }
+};
+
+struct celestial_conduit_t : public monk_spell_t
+{
+  struct celestial_conduit_dmg_t : public monk_spell_t
+  {
+    celestial_conduit_dmg_t( monk_t *p )
+      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+    {
+      background = true;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_spell_t::composite_aoe_multiplier( state );
+
+      if ( state->n_targets > 0 )
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( as<double>( state->n_targets ),
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  struct celestial_conduit_heal_t : public monk_heal_t
+  {
+    celestial_conduit_heal_t( monk_t *p )
+      : monk_heal_t( p, "celestial_conduit_heal", p->talent.conduit_of_the_celestials.celestial_conduit_heal )
+    {
+      background = true;
+      target     = p;
+    }
+
+    double composite_aoe_multiplier( const action_state_t *state ) const override
+    {
+      double cam = monk_heal_t::composite_aoe_multiplier( state );
+
+      if ( state->n_targets > 0 )
+        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 1 ).percent() *
+                     std::min( (double)state->n_targets,
+                               p()->talent.conduit_of_the_celestials.celestial_conduit->effectN( 3 ).base_value() ) );
+
+      return cam;
+    }
+  };
+
+  celestial_conduit_dmg_t *damage;
+  celestial_conduit_heal_t *heal;
+
+  celestial_conduit_t( monk_t *p, util::string_view options_str )
+    : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit ),
+      damage( new celestial_conduit_dmg_t( p ) ),
+      heal( new celestial_conduit_heal_t( p ) )
+  {
+    parse_options( options_str );
+
+    may_combo_strike      = true;
+    sef_ability           = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
+    channeled             = true;
+    interrupt_auto_attack = false;
+
+    tick_action = damage;
+
+    apply_affecting_aura( p->talent.conduit_of_the_celestials.flight_of_the_red_crane );
+    apply_affecting_aura( p->talent.conduit_of_the_celestials.jade_sanctuary );
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.unity_within->trigger();
+  }
+
+  void tick( dot_t *d ) override
+  {
+    monk_spell_t::tick( d );
+
+    heal->execute();
+  }
+
+  void last_tick( dot_t *dot ) override
+  {
+    monk_spell_t::last_tick( dot );
+
+    p()->buff.unity_within->expire();
   }
 };
 
@@ -4337,48 +4668,33 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 // Chi Surge
 // ==========================================================================
 
-struct chi_surge_t : public monk_spell_t
+struct chi_surge_t : monk_spell_t
 {
-  chi_surge_t( monk_t *p ) : monk_spell_t( p, "chi_surge", p->talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
+  chi_surge_t( monk_t *player )
+    : monk_spell_t( player, "chi_surge", player->talent.brewmaster.chi_surge->effectN( 1 ).trigger() )
   {
     harmful = true;
     dual = background = true;
     aoe               = -1;
-    school            = SCHOOL_NATURE;
+
+    apply_affecting_aura( player->talent.brewmaster.press_the_advantage );
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t *state ) const override
   {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p()->talent.brewmaster.press_the_advantage->ok() )
-      am *= 1 + p()->talent.brewmaster.press_the_advantage->effectN( 4 ).percent();
-
-    return am;
-  }
-
-  double composite_total_spell_power() const override
-  {
-    return std::max( monk_spell_t::composite_total_spell_power(), monk_spell_t::composite_total_attack_power() );
-  }
-
-  double composite_persistent_multiplier( const action_state_t *s ) const override
-  {
-    return monk_spell_t::composite_persistent_multiplier( s ) / s->n_targets;
+    return monk_spell_t::composite_persistent_multiplier( state ) / as<double>( state->n_targets );
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    int targets_hit = std::min( 5U, execute_state->n_targets );
-
-    if ( targets_hit > 0 )
-    {
-      double cdr = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value();  // Saved as 4
-      p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
-      p()->proc.chi_surge->occur();
-    }
+    if ( execute_state->n_targets <= 0 )
+      return;
+    unsigned targets_hit = std::min( 5U, execute_state->n_targets );
+    double cdr           = p()->talent.brewmaster.chi_surge->effectN( 1 ).base_value();  // Saved as 4
+    p()->cooldown.weapons_of_order->adjust( timespan_t::from_seconds( -1 * cdr * targets_hit ) );
+    p()->proc.chi_surge->occur();
   }
 };
 
@@ -4451,11 +4767,10 @@ struct jadefire_stomp_damage_t : public monk_spell_t
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
 
-    const std::vector<player_t *> &targets = state->action->target_list();
-
-    if ( p()->talent.windwalker.path_of_jade->ok() && !targets.empty() )
-      cam *= 1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
-                   std::min( (double)targets.size(), p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
+    if ( p()->talent.windwalker.path_of_jade->ok() && state->n_targets > 0 )
+      cam *=
+          1 + ( p()->talent.windwalker.path_of_jade->effectN( 1 ).percent() *
+                std::min( (double)state->n_targets, p()->talent.windwalker.path_of_jade->effectN( 2 ).base_value() ) );
 
     return cam;
   }
@@ -4500,7 +4815,7 @@ struct jadefire_stomp_t : public monk_spell_t
     aoe    = as<int>( data().effectN( 1 ).base_value() );
 
     apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
-    aoe += p->talent.windwalker.singularly_focused_jade->effectN( 1 ).base_value();
+    aoe += as<int>( p->talent.windwalker.singularly_focused_jade->effectN( 1 ).base_value() );
 
     if ( p->specialization() == MONK_WINDWALKER )
     {
@@ -4544,6 +4859,7 @@ struct jadefire_stomp_t : public monk_spell_t
 
     p()->buff.jadefire_stomp->trigger();
     p()->buff.jadefire_brand->trigger();
+    p()->buff.august_dynasty->trigger();
   }
 
   void impact( action_state_t *s ) override
@@ -4558,6 +4874,19 @@ struct jadefire_stomp_t : public monk_spell_t
       ww_damage->execute_on_target( s->target );
 
     get_td( s->target )->debuff.jadefire_brand->trigger();
+  }
+};
+
+// ==========================================================================
+// Gale Force
+// ==========================================================================
+
+struct gale_force_t : public monk_spell_t
+{
+  gale_force_t( monk_t *p ) : monk_spell_t( p, "gale_force", p->talent.windwalker.gale_force_damage )
+  {
+    background  = true;
+    base_dd_min = base_dd_max = 1;
   }
 };
 }  // namespace spells
@@ -4823,7 +5152,8 @@ struct expel_harm_t : monk_heal_t
     double am = monk_heal_t::action_multiplier();
     if ( !p()->talent.monk.strength_of_spirit->ok() )
       return am;
-    am *= 1.0 + ( 1.0 - p()->health_percentage() ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
+    am *=
+        1.0 + ( 1.0 - p()->health_percentage() / 100.0 ) * p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
     return am;
   }
 
@@ -4837,7 +5167,7 @@ struct expel_harm_t : monk_heal_t
     if ( !p()->talent.brewmaster.tranquil_spirit->ok() )
       return;
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_eh" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
     p()->proc.tranquil_spirit_expel_harm->occur();
   }
 
@@ -4846,7 +5176,8 @@ struct expel_harm_t : monk_heal_t
     monk_heal_t::impact( s );
 
     double result = s->result_total;
-    if ( p()->buff.gift_of_the_ox->up() && p()->baseline.brewmaster.expel_harm_rank_2->ok() )
+    if ( p()->buff.gift_of_the_ox && p()->buff.gift_of_the_ox->up() &&
+         p()->baseline.brewmaster.expel_harm_rank_2->ok() )
     {
       p()->buff.gift_of_the_ox->consume( 5 );
       result += p()->buff.expel_harm_accumulator->check_value();
@@ -5003,7 +5334,7 @@ struct chi_wave_t : public monk_spell_t
       TBase::execute();
     }
 
-    void impact( action_state_t *state )
+    void impact( action_state_t *state ) override
     {
       TBase::impact( state );
       other_cb( ++count );
@@ -5034,7 +5365,7 @@ struct chi_wave_t : public monk_spell_t
   {
     if ( !p()->buff.chi_wave->up() )
       return;
-    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     p()->buff.chi_wave->expire();
     monk_spell_t::execute();
 
@@ -5083,19 +5414,22 @@ struct chi_burst_t : monk_spell_t
     parse_options( options_str );
     add_child( damage );
     add_child( heal );
-    gcd_type = gcd_haste_type::NONE;
+    may_combo_strike = true;
+    gcd_type         = gcd_haste_type::NONE;
   }
 
   bool ready() override
   {
-    if ( p()->specialization() != MONK_WINDWALKER || buff->up() )
+    if ( p()->specialization() != MONK_WINDWALKER )
+      return monk_spell_t::ready();
+    if ( buff && buff->up() )
       return monk_spell_t::ready();
     return false;
   }
 
   void execute() override
   {
-    p()->buff.aspect_of_harmony->path_of_resurgence->trigger();
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     monk_spell_t::execute();
     if ( buff )
       buff->expire();
@@ -5250,7 +5584,6 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
       p()->proc.blackout_combo_celestial_brew->occur();
     }
-    p()->buff.blackout_combo->expire();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
     {
@@ -5259,9 +5592,10 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
       p()->buff.brewmaster_t31_4p_fake_absorb->trigger( 1, accumulated );
     }
 
-    p()->buff.aspect_of_harmony->trigger_spend();
+    p()->buff.aspect_of_harmony.trigger_spend();
     brew_t<monk_absorb_t>::execute();
 
+    p()->buff.blackout_combo->expire();
     p()->buff.purified_chi->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
@@ -5279,7 +5613,7 @@ struct life_cocoon_t : public monk_absorb_t
     parse_options( options_str );
     harmful = may_crit = false;
 
-    base_dd_min = p->resources.max[ RESOURCE_HEALTH ] * p->talent.mistweaver.life_cocoon->effectN( 3 ).percent();
+    base_dd_min = p->max_health() * p->talent.mistweaver.life_cocoon->effectN( 3 ).percent();
     base_dd_max = base_dd_min;
   }
 
@@ -5295,7 +5629,7 @@ template <class base_action_t>
 template <typename... Args>
 brew_t<base_action_t>::brew_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
 {
-  player->baseline.brewmaster.brews->insert_cooldown( this );
+  player->baseline.brewmaster.brews.insert_cooldown( this );
 }
 
 template <class base_action_t>
@@ -5307,7 +5641,7 @@ void brew_t<base_action_t>::execute()
 
 void brews_t::insert_cooldown( action_t *action )
 {
-  cooldowns[ action->id ] = action->player->get_cooldown( action->name() );
+  cooldowns.insert( { action->id, action->cooldown } );
 }
 
 void brews_t::adjust( timespan_t reduction )
@@ -5388,7 +5722,7 @@ void gift_of_the_ox_t::trigger_from_damage( double amount )
   if ( accumulator < player->max_health() )
     return;
 
-  int added = accumulator / player->max_health();
+  int added = std::lround( accumulator / player->max_health() );
   accumulator -= added * player->max_health();
   spawn_orb( added );
 }
@@ -5439,7 +5773,7 @@ double gift_of_the_ox_t::orb_t::action_multiplier() const
 {
   double am = monk_heal_t::action_multiplier();
   if ( p()->talent.monk.strength_of_spirit->ok() && p()->buff.expel_harm_accumulator->check() )
-    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage(), 0.0 ) ) *
+    am *= 1.0 + ( 1.0 - std::max( p()->health_percentage() / 100.0, 0.0 ) ) *
                     p()->talent.monk.strength_of_spirit->effectN( 1 ).percent();
   return am;
 }
@@ -5451,7 +5785,7 @@ void gift_of_the_ox_t::orb_t::impact( action_state_t *state )
   if ( p()->talent.brewmaster.tranquil_spirit->ok() )
   {
     double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->stagger[ "Stagger" ]->purify_percent( percent, "tranquil_spirit_goto" );
+    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_goto" );
     p()->proc.tranquil_spirit_goto->occur();
   }
 
@@ -5511,21 +5845,10 @@ void shuffle_t::trigger( timespan_t duration )
   timespan_t threshold = timespan_t::from_seconds( p().talent.brewmaster.quick_sip->effectN( 2 ).base_value() );
   int count            = as<int>( timespan_t::to_native( accumulator ) / timespan_t::to_native( threshold ) );
   if ( count > 0 )
-    p().stagger[ "Stagger" ]->purify_percent(
-        as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
+    p().find_stagger( "Stagger" )
+        ->purify_percent( as<double>( count ) * p().talent.brewmaster.quick_sip->effectN( 1 ).percent(), "quick_sip" );
   accumulator -= threshold * count;
 }
-
-// ===============================================================================
-// Elixir of Determination
-// ===============================================================================
-
-struct flow_of_chi_t : hp_triggered_buff_t<monk_t, monk_buff_t>
-{
-  flow_of_chi_t( monk_t *player ) : hp_triggered_buff_t( player, player->talent.monk.flow_of_chi )
-  {
-  }
-};
 
 // ===============================================================================
 // Fortifying Brew Buff
@@ -5551,7 +5874,7 @@ struct fortifying_brew_t : public monk_buff_t
     //   health_multiplier = p().talent.monk.fortifying_brew->effectN( 6 ).percent();
 
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * health_multiplier );
+    health_gain = static_cast<int>( p().max_health() * health_multiplier );
 
     p().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t *)nullptr, (action_t *)nullptr, true );
     p().stat_gain( STAT_HEALTH, health_gain, (gain_t *)nullptr, (action_t *)nullptr, true );
@@ -5595,51 +5918,78 @@ struct touch_of_karma_buff_t : public monk_buff_t
 };
 
 // ===============================================================================
+// Whirling Dragon Punch Buff
+// ===============================================================================
+struct whirling_dragon_punch_buff_t : monk_buff_t
+{
+  whirling_dragon_punch_buff_t( monk_t *player )
+    : monk_buff_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch_buff )
+  {
+    // current measured value for grace period
+    // partial testing as of 01/08/2024 dd/mm/yy
+    base_buff_duration = 1500_ms;
+    set_refresh_behavior( buff_refresh_behavior::NONE );
+  }
+
+  bool trigger( int, double, double, timespan_t ) override
+  {
+    bool rsk_unknown_or_on_cd = !p().talent.monk.rising_sun_kick->ok() || p().cooldown.rising_sun_kick->down();
+    bool wdp_unknown_or_on_cd =
+        !p().talent.windwalker.whirling_dragon_punch->ok() || p().cooldown.rising_sun_kick->down();
+    if ( rsk_unknown_or_on_cd && wdp_unknown_or_on_cd )
+      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
+                                   base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
+                                                                  p().cooldown.fists_of_fury->remains() ) );
+    return false;
+  }
+};
+
+// ===============================================================================
 // Rushing Jade Wind Buff
 // ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t
 {
-  // gonna assume this is 1 buff per monk combatant
+  struct tick_action_t : monk_melee_attack_t
+  {
+    tick_action_t( monk_t *p ) : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->passives.rushing_jade_wind_tick )
+    {
+      ww_mastery = true;
+
+      dual = background   = true;
+      aoe                 = -1;
+      reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();
+
+      // Merge action statistics if RJW exists as an active ability
+      if ( const action_t *action = p->find_action( "rushing_jade_wind" ); action )
+        stats = action->stats;
+    }
+  };
+
   timespan_t _period;
+  action_t *rushing_jade_wind_tick;
 
-  static void rjw_callback( buff_t *b, int, timespan_t )
+  rushing_jade_wind_buff_t( monk_t *player )
+    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ),
+      rushing_jade_wind_tick( new tick_action_t( player ) )
   {
-    auto *p = debug_cast<monk_t *>( b->player );
-
-    p->active_actions.rushing_jade_wind->execute();
-  }
-
-  rushing_jade_wind_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_can_cancel( true );
-    set_tick_zero( true );
-    set_cooldown( timespan_t::zero() );
-
-    set_period( s->effectN( 1 ).period() );
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
-    set_tick_time_callback( [ & ]( const buff_t *, unsigned int ) { return _period; } );
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-    set_partial_tick( true );
+    set_tick_time_callback( [ this ]( const buff_t *, unsigned int ) { return _period; } );
 
-    // if ( p.specialization() == MONK_BREWMASTER )
-    //   set_duration_multiplier( 1 + p.spec.brewmaster_monk->effectN( 9 ).percent() );
-
-    set_tick_callback( rjw_callback );
+    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { rushing_jade_wind_tick->execute(); } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+
+    apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
+    apply_affecting_aura( player->baseline.brewmaster.aura );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_cast_speed();
-    // RJW snapshots the tick period on cast. this + the tick_time
-    // callback represent that behavior
-    _period = this->buff_period * p().cache.spell_cast_speed();
+    // RJW snapshots the tick period on cast.
+    if ( duration < timespan_t::zero() )
+      duration = monk_buff_t::buff_duration();
+    duration *= p().cache.spell_cast_speed();
+    _period = monk_buff_t::buff_period * p().cache.spell_cast_speed();
     return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -5703,17 +6053,10 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t
   fury_of_xuen_stacking_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
     // Currently this is saved as 100, but we need to utilize it as a percent so (100 / 100) = 1 * 0.01 = 1%
-    set_default_value( ( s->effectN( 3 ).base_value() / 100 ) * 0.01 );
+    set_default_value( ( s->effectN( 3 ).percent() / 100 ) );
     set_cooldown( p->talent.windwalker.fury_of_xuen->internal_cooldown() );
     set_trigger_spell( p->talent.windwalker.fury_of_xuen );
     set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    p().buff.fury_of_xuen->trigger();
-    p().active_actions.fury_of_xuen_summon->execute();
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -5784,74 +6127,19 @@ struct fury_of_xuen_t : public monk_buff_t
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t
 {
-  std::deque<double> values;
-  // tracking variable for debug code
-  bool ignore_empty;
-  purifying_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  purifying_buff_t( monk_t *player ) : monk_buff_t( player, "purifying_brew", spell_data_t::nil() )
   {
-    set_trigger_spell( p->talent.brewmaster.purifying_brew );
+    set_trigger_spell( player->talent.brewmaster.purifying_brew );
     set_can_cancel( true );
     set_quiet( true );
     set_cooldown( timespan_t::zero() );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    set_default_value( 0.2 );
 
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    set_duration( timespan_t::from_seconds( 6 ) );
+    set_duration( 6_s );
     set_max_stack( 99 );
-
-    ignore_empty = false;
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    ignore_empty = false;
-    p().sim->print_debug( "adding recent purify (amount: {})", value );
-    // Make sure the value is reset upon each trigger
-    current_value = 0;
-
-    values.push_back( value );
-
-    return monk_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  double check_value() const override
-  {
-    double total_value = 0;
-
-    if ( !values.empty() )
-    {
-      for ( auto &i : values )
-        total_value += i;
-    }
-
-    return total_value;
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    if ( values.empty() )
-    {
-      // decrement ends up being called after expire_override sometimes. if this
-      // debug msg is showing, then we have an error besides that that is
-      // leading to stack/queue mismatches
-      if ( !ignore_empty )
-      {
-        p().sim->print_debug( "purifying_buff decrement called with no values in queue!" );
-      }
-    }
-    else
-    {
-      values.pop_front();
-    }
-    monk_buff_t::decrement( stacks, value );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    ignore_empty = true;
-    values.clear();
-    monk_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6020,32 +6308,66 @@ struct blackout_reinforcement_t : public monk_buff_t
 // ===============================================================================
 // Aspect of Harmony (Master of Harmony)
 // ===============================================================================
-
-aspect_of_harmony_t::aspect_of_harmony_t( monk_t *player )
-  : accumulator( nullptr ), spender( nullptr ), path_of_resurgence( nullptr ), heal( nullptr )
+aspect_of_harmony_t::aspect_of_harmony_t()
+  : accumulator( nullptr ),
+    spender( nullptr ),
+    damage( nullptr ),
+    heal( nullptr ),
+    purified_spirit( nullptr ),
+    path_of_resurgence( nullptr ),
+    fallback( false )
 {
-  if ( !player->talent.master_of_harmony.aspect_of_harmony->ok() )
+}
+
+void aspect_of_harmony_t::construct_buffs( monk_t *player )
+{
+  path_of_resurgence =
+      make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
+                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
+          ->apply_affecting_aura( player->talent.monk.chi_wave );
+
+  if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
+  {
+    fallback = true;
+    buff_t::make_fallback( player, "aspect_of_harmony_accumulator", &*player );
+    buff_t::make_fallback( player, "aspect_of_harmony_spender", &*player );
+    return;
+  }
+
+  accumulator = new accumulator_t( player, this );
+  spender     = new spender_t( player, this );
+}
+
+void aspect_of_harmony_t::construct_actions( monk_t *player )
+{
+  if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
     fallback = true;
     return;
   }
 
-  accumulator          = new accumulator_t( player );
-  spender              = new spender_t( player );
-  accumulator->spender = spender;
-  spender->accumulator = accumulator;
+  damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
+                                                player->talent.master_of_harmony.aspect_of_harmony_damage );
+  heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
-  if ( spender->heal )
-    heal = spender->heal->get_dot();
+  if ( player->specialization() == MONK_BREWMASTER )
+    purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
+        player, player->talent.master_of_harmony.purified_spirit_damage, this );
+  if ( player->specialization() == MONK_MISTWEAVER )
+    purified_spirit = new spender_t::purified_spirit_t<monk_heal_t>(
+        player, player->talent.master_of_harmony.purified_spirit_heal, this );
 }
 
 void aspect_of_harmony_t::trigger( action_state_t *state )
 {
-  if ( fallback || state->result_amount == 0.0 )
+  if ( fallback || state->result_amount <= 0.0 )
     return;
 
-  accumulator->trigger_with_state( state );
-  spender->trigger_with_state( state );
+  if ( !spender->check() )
+    accumulator->trigger_with_state( state );
+  if ( spender->check() )
+    spender->trigger_with_state( state );
 }
 
 void aspect_of_harmony_t::trigger_flat( double amount )
@@ -6053,6 +6375,8 @@ void aspect_of_harmony_t::trigger_flat( double amount )
   if ( fallback || spender->check() )
     return;
 
+  accumulator->sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", amount, accumulator->current_value,
+                                 accumulator->current_value + amount );
   accumulator->current_value += amount;
 }
 
@@ -6064,19 +6388,31 @@ void aspect_of_harmony_t::trigger_spend()
   spender->trigger();
 }
 
-aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player )
+void aspect_of_harmony_t::trigger_path_of_resurgence()
+{
+  if ( fallback )
+    return;
+
+  path_of_resurgence->trigger();
+}
+
+bool aspect_of_harmony_t::heal_ticking()
+{
+  if ( heal )
+    return heal->get_dot()->is_ticking();
+  return false;
+}
+
+aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
   : monk_buff_t( player, "aspect_of_harmony_accumulator",
                  player->talent.master_of_harmony.aspect_of_harmony_accumulator ),
-    spender( nullptr )
+    aspect_of_harmony( aspect_of_harmony )
 {
   set_default_value( 0.0 );
 }
 
 void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *state )
 {
-  if ( spender->check() )
-    return;
-
   size_t result_type_offset = 0;
   switch ( state->result_type )
   {
@@ -6097,10 +6433,9 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
   double multiplier =
       p().talent.master_of_harmony.aspect_of_harmony->effectN( result_type_offset + index_offset ).percent();
 
-  if ( p().buff.aspect_of_harmony->path_of_resurgence->up() )
+  if ( aspect_of_harmony->path_of_resurgence && aspect_of_harmony->path_of_resurgence->up() )
     multiplier *=
-        1.0 +
-        p().buff.aspect_of_harmony->path_of_resurgence->data().effectN( result_type_offset + index_offset ).percent();
+        1.0 + aspect_of_harmony->path_of_resurgence->data().effectN( result_type_offset + index_offset ).percent();
 
   const auto whitelist = { p().baseline.brewmaster.blackout_kick->id(),
                            p().talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id(),
@@ -6110,60 +6445,54 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
        effect.ok() && std::find( whitelist.begin(), whitelist.end(), state->action->id ) != whitelist.end() )
     multiplier *= 1.0 + effect.percent();
 
-  monk_buff_t::trigger( -1, check_value() + state->result_amount * multiplier );
+  double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
+  sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", state->result_amount * multiplier, check_value(),
+                    check_value() + state->result_amount * multiplier );
+  monk_buff_t::trigger( -1, amount );
 }
 
-aspect_of_harmony_t::spender_t::spender_t( monk_t *player )
+aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
   : actions::monk_buff_t( player, "aspect_of_harmony_spender",
                           player->talent.master_of_harmony.aspect_of_harmony_spender ),
-    damage( new tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
-                                      player->talent.master_of_harmony.aspect_of_harmony_damage ) ),
-    heal( new tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                   player->talent.master_of_harmony.aspect_of_harmony_heal ) ),
-    purified_spirit( nullptr ),
-    accumulator( nullptr ),
+    aspect_of_harmony( aspect_of_harmony ),
     pool( 0.0 )
 {
   set_default_value( 0.0 );
-  if ( player->specialization() == MONK_BREWMASTER )
-    purified_spirit = new purified_spirit_t<actions::monk_spell_t>(
-        player, player->talent.master_of_harmony.purified_spirit_damage, this );
-  if ( player->specialization() == MONK_MISTWEAVER )
-    purified_spirit = new purified_spirit_t<actions::monk_heal_t>(
-        player, player->talent.master_of_harmony.purified_spirit_heal, this );
 
-  set_stack_change_callback( [ this ]( buff_t *, int, int new_ ) {
-    if ( !new_ )
-      purified_spirit->execute();
-  } );
+  if ( player->talent.master_of_harmony.purified_spirit->ok() )
+    set_stack_change_callback( [ = ]( buff_t *, int, int new_ ) {
+      if ( !new_ )
+        aspect_of_harmony->purified_spirit->execute();
+    } );
 }
 
 void aspect_of_harmony_t::spender_t::reset()
 {
   monk_buff_t::reset();
   pool = 0.0;
+  sim->print_debug( "Aspect of Harmony =P: 0" );
 }
 
 bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance, timespan_t duration )
 {
-  pool = accumulator->check_value();
-  accumulator->expire();
+  pool = aspect_of_harmony->accumulator->check_value();
+  aspect_of_harmony->accumulator->expire();
+  sim->print_debug( "Aspect of Harmony +P: {}", pool );
   return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 {
-  if ( !check() )
-    return;
-
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
-  double amount     = std::min( state->result_amount * multiplier, pool );
-  if ( amount == pool )
+  double amount     = std::min( state->result_amount * multiplier, current_value );
+  if ( amount >= current_value )
   {
+    sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value, current_value - amount );
+    pool = current_value;
     expire();
     return;
   }
-  pool -= amount;
+  current_value -= amount;
 
   const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
                            p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
@@ -6178,25 +6507,32 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     case result_amount_type::DMG_DIRECT:
     case result_amount_type::DMG_OVER_TIME:
       if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
-        residual_action::trigger( damage, state->target, amount );
-      return;
+      {
+        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
+        residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
+      }
+      break;
     case result_amount_type::HEAL_DIRECT:
     case result_amount_type::HEAL_OVER_TIME:
       if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
-        residual_action::trigger( heal, state->target, amount );
-      return;
+      {
+        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
+        residual_action::trigger( aspect_of_harmony->heal, state->target, amount );
+      }
+      break;
     default:
-      return;
+      break;
   }
 }
 
 template <class base_action_t>
 aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::purified_spirit_t(
-    monk_t *player, const spell_data_t *spell_data, propagate_const<spender_t *> spender )
-  : base_action_t( player, "purified_spirit", spell_data ), spender( spender )
+    monk_t *player, const spell_data_t *spell_data, aspect_of_harmony_t *aspect_of_harmony )
+  : base_action_t( player, "purified_spirit", spell_data ), aspect_of_harmony( aspect_of_harmony )
 {
   base_action_t::aoe              = -1;
   base_action_t::split_aoe_damage = true;
+  base_action_t::dot_behavior     = DOT_CLIP;
 }
 
 template <class base_action_t>
@@ -6209,8 +6545,12 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = spender->pool;
-  base_action_t::execute();
+  base_action_t::base_td = aspect_of_harmony->spender->pool / 4.0;
+  base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}",
+                                   aspect_of_harmony->spender->pool, aspect_of_harmony->spender->pool / 4.0 );
+  aspect_of_harmony->spender->pool = 0.0;
+  if ( base_action_t::base_td > 0.0 )
+    base_action_t::execute();
 }
 
 template <class base_action_t>
@@ -6278,6 +6618,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
           ->set_max_stack( 1 )
           ->set_default_value( 0 );
 
+  debuff.gale_force =
+      make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
+
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
@@ -6327,13 +6670,15 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                          ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
                                          ->set_default_value_from_effect( 1 );
 
-  dot.breath_of_fire    = target->get_dot( "breath_of_fire_dot", p );
-  dot.enveloping_mist   = target->get_dot( "enveloping_mist", p );
-  dot.renewing_mist     = target->get_dot( "renewing_mist", p );
-  dot.rushing_jade_wind = target->get_dot( "rushing_jade_wind", p );
-  dot.soothing_mist     = target->get_dot( "soothing_mist", p );
-  dot.touch_of_karma    = target->get_dot( "touch_of_karma", p );
-  dot.aspect_of_harmony = target->get_dot( "aspect_of_harmony_damage", p );
+  dot.breath_of_fire                   = target->get_dot( "breath_of_fire_dot", p );
+  dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
+  dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
+  dot.crackling_jade_lightning_sef_aoe = target->get_dot( "crackling_jade_lightning_sef_aoe", p );
+  dot.enveloping_mist                  = target->get_dot( "enveloping_mist", p );
+  dot.renewing_mist                    = target->get_dot( "renewing_mist", p );
+  dot.soothing_mist                    = target->get_dot( "soothing_mist", p );
+  dot.touch_of_karma                   = target->get_dot( "touch_of_karma", p );
+  dot.aspect_of_harmony                = target->get_dot( "aspect_of_harmony_damage", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
@@ -6377,8 +6722,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
-  cooldown.rushing_jade_wind_brm  = get_cooldown( "rushing_jade_wind" );
-  cooldown.rushing_jade_wind_ww   = get_cooldown( "rushing_jade_wind" );
   cooldown.storm_earth_and_fire   = get_cooldown( "storm_earth_and_fire" );
   cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
   cooldown.thunder_focus_tea      = get_cooldown( "thunder_focus_tea" );
@@ -6423,15 +6766,18 @@ void monk_t::parse_player_effects()
 
   // brewmaster player auras
   parse_effects( baseline.brewmaster.aura );
+  parse_effects( baseline.brewmaster.aura_2 );
   parse_effects( baseline.brewmaster.brewmasters_balance );
   parse_effects( baseline.brewmaster.celestial_fortune );
 
   // mistweaver player auras
   parse_effects( baseline.mistweaver.aura );
   parse_effects( baseline.mistweaver.aura_2 );
+  parse_effects( baseline.mistweaver.aura_3 );
 
   // windwalker player auras
   parse_effects( baseline.windwalker.aura );
+  parse_effects( baseline.windwalker.aura_2 );
 
   // class talent auras
   parse_effects( talent.monk.grace_of_the_crane );
@@ -6446,9 +6792,37 @@ void monk_t::parse_player_effects()
 
   // mistweaver talent auras
   // windwalker talent auras
+  parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
+                        talent.windwalker.acclamation->effectN( 1 ).trigger() );
+  parse_effects( buff.invokers_delight, baseline.windwalker.aura );
+  parse_effects( buff.memory_of_the_monastery );
+  parse_effects( buff.momentum_boost_speed );
+  parse_effects( buff.dual_threat );
+  parse_effects( buff.ferociousness, USE_CURRENT );
+
+  if ( talent.windwalker.jadefire_harmony->ok() )
+    parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg, 0b001U );
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
+  // parse_effects( buff.against_all_odds );
+  parse_effects( buff.veterans_eye );
+
+  // Conduit of the Celestials
+  parse_effects( buff.flight_of_the_red_crane );
+  parse_effects( buff.inner_compass_crane_stance );
+  parse_effects( buff.inner_compass_ox_stance );
+  parse_effects( buff.inner_compass_serpent_stance );
+  parse_effects( buff.inner_compass_tiger_stance );
+
+  // TWW S1 Set Effects
+  parse_effects( buff.shuffle, sets->set( MONK_BREWMASTER, TWW1, B2 ) );
+
+  // TWW S2 Set Effects
+
+  // TWW S3 Set Effects
+
+  // TWW S4 Set Effects
 }
 
 // monk_t::create_action ====================================================
@@ -6573,6 +6947,12 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new jadefire_stomp_t( this, options_str );
   if ( name == "weapons_of_order" )
     return new weapons_of_order_t( this, options_str );
+
+  // Hero Talents
+  if ( name == "celestial_conduit" )
+    return new celestial_conduit_t( this, options_str );
+  if ( name == "unity_within" )
+    return new unity_within_t( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -6762,9 +7142,13 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
     {
       case FIGHT_STYLE_PATCHWERK:
       case FIGHT_STYLE_CASTING_PATCHWERK:
+        return true;
       case FIGHT_STYLE_DUNGEON_ROUTE:
       case FIGHT_STYLE_DUNGEON_SLICE:
+      {
+        sim->error( "Action Priority Lists (APL) for Dungeon Route and Dungeon Slice are not final." );
         return true;
+      }
       default:
         return false;
     }
@@ -6840,6 +7224,7 @@ void monk_t::init_spells()
     current_spec                                   = MONK_BREWMASTER;
     baseline.brewmaster.mastery                    = find_mastery_spell( MONK_BREWMASTER );
     baseline.brewmaster.aura                       = find_specialization_spell( "Brewmaster Monk" );
+    baseline.brewmaster.aura_2                     = find_specialization_spell( 462087 );
     baseline.brewmaster.brewmasters_balance        = find_specialization_spell( "Brewmaster's Balance" );
     baseline.brewmaster.celestial_fortune          = find_specialization_spell( "Celestial Fortune" );
     baseline.brewmaster.celestial_fortune_heal     = find_spell( 216521 );  // TODO: Can you be more specific?
@@ -6853,8 +7238,6 @@ void monk_t::init_spells()
     baseline.brewmaster.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
     baseline.brewmaster.spinning_crane_kick_rank_2 = find_rank_spell( "Spinning Crane Kick", "Rank 2", current_spec );
     baseline.brewmaster.touch_of_death_rank_3      = find_rank_spell( "Touch of Death", "Rank 3", current_spec );
-
-    baseline.brewmaster.brews = new actions::brews_t();
   }
 
   // monk_t::baseline::mistweaver
@@ -6863,6 +7246,7 @@ void monk_t::init_spells()
     baseline.mistweaver.mastery           = find_mastery_spell( MONK_MISTWEAVER );
     baseline.mistweaver.aura              = find_specialization_spell( "Mistweaver Monk" );
     baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
+    baseline.mistweaver.aura_3            = find_specialization_spell( 462090 );
     baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   }
 
@@ -6871,6 +7255,7 @@ void monk_t::init_spells()
     current_spec                                  = MONK_WINDWALKER;
     baseline.windwalker.mastery                   = find_mastery_spell( MONK_WINDWALKER );
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
+    baseline.windwalker.aura_2                    = find_specialization_spell( 462091 );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
     baseline.windwalker.combo_breaker             = find_specialization_spell( "Combo Breaker" );
@@ -6896,10 +7281,12 @@ void monk_t::init_spells()
     talent.monk.disable           = _CT( "Disable" );
     talent.monk.fast_feet         = _CT( "Fast Feet" );
     // Row 3
-    talent.monk.bounding_agility = _CT( "Bounding Agility" );
-    talent.monk.winds_reach      = _CT( "Wind's Reach" );
-    talent.monk.detox            = _CT( "Detox" );           // Brewmaster and Windwalker
-    talent.monk.improved_detox   = _CT( "Improved Detox" );  // Mistweaver only
+    talent.monk.grace_of_the_crane = _CT( "Grace of the Crane" );
+    talent.monk.bounding_agility   = _CT( "Bounding Agility" );
+    talent.monk.calming_presence   = _CT( "Calming Presence" );
+    talent.monk.winds_reach        = _CT( "Wind's Reach" );
+    talent.monk.detox              = _CT( "Detox" );           // Brewmaster and Windwalker
+    talent.monk.improved_detox     = _CT( "Improved Detox" );  // Mistweaver only
     // Row 4
     talent.monk.vivacious_vivification = _CT( "Vivacious Vivification" );
     talent.monk.jade_walk              = _CT( "Jade Walk" );
@@ -6924,6 +7311,7 @@ void monk_t::init_spells()
     // Row 6
     talent.monk.quick_footed            = _CT( "Quick Footed" );
     talent.monk.hasty_provocation       = _CT( "Hasty Provocation" );
+    talent.monk.ferocity_of_xuen        = _CT( "Ferocity of Xuen" );
     talent.monk.ring_of_peace           = _CT( "Ring of Peace" );
     talent.monk.song_of_chi_ji          = _CT( "Song of Chi-Ji" );
     talent.monk.spirits_essence         = _CT( "Spirit's Essence" );
@@ -6950,9 +7338,11 @@ void monk_t::init_spells()
     talent.monk.ironshell_brew             = _CT( "Ironshell Brew" );
     talent.monk.celestial_determination    = _CT( "Celestial Determination" );
     // Row 9
-    talent.monk.healing_winds = _CT( "Healing Winds" );
-    talent.monk.windwalking   = _CT( "Windwalking" );
-    talent.monk.bounce_back   = _CT( "Bounce Back" );
+    talent.monk.chi_proficiency   = _CT( "Chi Proficiency" );
+    talent.monk.healing_winds     = _CT( "Healing Winds" );
+    talent.monk.windwalking       = _CT( "Windwalking" );
+    talent.monk.bounce_back       = _CT( "Bounce Back" );
+    talent.monk.martial_instincts = _CT( "Martial Instincts" );
     // Row 10
     talent.monk.lighter_than_air    = _CT( "Lighter Than Air" );
     talent.monk.flow_of_chi         = _CT( "Flow of Chi" );
@@ -7064,14 +7454,15 @@ void monk_t::init_spells()
     talent.mistweaver.deep_clarity                  = _ST( "Deep Clarity" );
     talent.mistweaver.rapid_diffusion               = _ST( "Rapid Diffusion" );
     // Row 7
-    talent.mistweaver.chrysalis            = _ST( "Chrysalis" );
-    talent.mistweaver.burst_of_life        = _ST( "Burst of Life" );
-    talent.mistweaver.yulons_whisper       = _ST( "Yu'lon's Whisper" );
-    talent.mistweaver.mist_wrap            = _ST( "Mist Wrap" );
-    talent.mistweaver.refreshing_jade_wind = _ST( "Refreshing Jade Wind" );
-    talent.mistweaver.celestial_harmony    = _ST( "Celestial Harmony" );
-    talent.mistweaver.dancing_mists        = _ST( "Dancing Mists" );
-    talent.mistweaver.chi_harmony          = _ST( "Chi Harmony" );
+    talent.mistweaver.chrysalis                 = _ST( "Chrysalis" );
+    talent.mistweaver.burst_of_life             = _ST( "Burst of Life" );
+    talent.mistweaver.yulons_whisper            = _ST( "Yu'lon's Whisper" );
+    talent.mistweaver.mist_wrap                 = _ST( "Mist Wrap" );
+    talent.mistweaver.refreshing_jade_wind      = _ST( "Refreshing Jade Wind" );
+    talent.mistweaver.refreshing_jade_wind_tick = find_spell( 162530 );
+    talent.mistweaver.celestial_harmony         = _ST( "Celestial Harmony" );
+    talent.mistweaver.dancing_mists             = _ST( "Dancing Mists" );
+    talent.mistweaver.chi_harmony               = _ST( "Chi Harmony" );
     // Row 8
     talent.mistweaver.jadefire_stomp         = _ST( "Jadefire Stomp" );
     talent.mistweaver.peer_into_peace        = _ST( "Peer Into Peace" );
@@ -7150,18 +7541,20 @@ void monk_t::init_spells()
     talent.windwalker.rising_star       = _ST( "Rising Star" );
     talent.windwalker.invokers_delight  = _ST( "Invoker's Delight" );
     talent.windwalker.dual_threat       = _ST( "Dual Threat" );
-    talent.windwalker.gale_force        = _ST( "Gale Force" );
+    talent.windwalker.gale_force        = _STID( 451580 );
+    talent.windwalker.gale_force_damage = find_spell( 451585 );
     // Row 9
-    talent.windwalker.last_emperors_capacitor  = _ST( "Last Emperor's Capacitor" );
-    talent.windwalker.whirling_dragon_punch    = _ST( "Whirling Dragon Punch" );
-    talent.windwalker.xuens_bond               = _ST( "Xuen's Bond" );
-    talent.windwalker.xuens_battlegear         = _ST( "Xuen's Battlegear" );
-    talent.windwalker.transfer_the_power       = _ST( "Transfer the Power" );
-    talent.windwalker.jadefire_fists           = _ST( "Jadefire Fists" );
-    talent.windwalker.jadefire_stomp           = _ST( "Jadefire Stomp" );
-    talent.windwalker.jadefire_stomp_damage    = find_spell( 388207 );
-    talent.windwalker.jadefire_stomp_ww_damage = find_spell( 388201 );
-    talent.windwalker.communion_with_wind      = _ST( "Communion With Wind" );
+    talent.windwalker.last_emperors_capacitor    = _ST( "Last Emperor's Capacitor" );
+    talent.windwalker.whirling_dragon_punch      = _ST( "Whirling Dragon Punch" );
+    talent.windwalker.whirling_dragon_punch_buff = find_spell( 196742 );
+    talent.windwalker.xuens_bond                 = _ST( "Xuen's Bond" );
+    talent.windwalker.xuens_battlegear           = _ST( "Xuen's Battlegear" );
+    talent.windwalker.transfer_the_power         = _ST( "Transfer the Power" );
+    talent.windwalker.jadefire_fists             = _ST( "Jadefire Fists" );
+    talent.windwalker.jadefire_stomp             = _ST( "Jadefire Stomp" );
+    talent.windwalker.jadefire_stomp_damage      = find_spell( 388207 );
+    talent.windwalker.jadefire_stomp_ww_damage   = find_spell( 388201 );
+    talent.windwalker.communion_with_wind        = _ST( "Communion With Wind" );
     // Row 10
     talent.windwalker.power_of_the_thunder_king      = _ST( "Power of the Thunder King" );
     talent.windwalker.revolving_whirl                = _ST( "Revolving Whirl" );
@@ -7181,16 +7574,26 @@ void monk_t::init_spells()
   // monk_t::talent::conduit_of_the_celestials
   {
     // Row 1
-    talent.conduit_of_the_celestials.celestial_conduit = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit      = _HT( "Celestial Conduit" );
+    talent.conduit_of_the_celestials.celestial_conduit_dmg  = find_spell( 443038 );
+    talent.conduit_of_the_celestials.celestial_conduit_heal = find_spell( 443039 );
     // Row 2
-    talent.conduit_of_the_celestials.temple_training            = _HT( "Temple Training" );
-    talent.conduit_of_the_celestials.xuens_guidance             = _HT( "Xuen's Guidance" );
-    talent.conduit_of_the_celestials.courage_of_the_white_tiger = _HT( "Courage of the White Tiger" );
-    talent.conduit_of_the_celestials.restore_balance            = _HT( "Restore Balance" );
+    talent.conduit_of_the_celestials.temple_training                   = _HT( "Temple Training" );
+    talent.conduit_of_the_celestials.xuens_guidance                    = _HT( "Xuen's Guidance" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger        = _HT( "Courage of the White Tiger" );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage = find_spell( 457917 );
+    talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
+    talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
     // Row 3
-    talent.conduit_of_the_celestials.heart_of_the_jade_serpent = _HT( "Heart of the_Jade Serpent" );
-    talent.conduit_of_the_celestials.strength_of_the_black_ox  = _HT( "Strength of the Black Ox" );
-    talent.conduit_of_the_celestials.flight_of_the_red_crane   = _HT( "Flight of the Red Crane" );
+    talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the Jade Serpent" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb        = find_spell( 443113 );
+    talent.conduit_of_the_celestials.strength_of_the_black_ox_damage        = find_spell( 443127 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane                = _HT( "Flight of the Red Crane" );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg            = find_spell( 443263 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_heal           = find_spell( 443272 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg  = find_spell( 443611 );
+    talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_heal = find_spell( 443614 );
     // Row 4
     talent.conduit_of_the_celestials.niuzaos_protection = _HT( "Niuzao's Protection" );
     talent.conduit_of_the_celestials.jade_sanctuary     = _HT( "Jade Sanctuary" );
@@ -7198,7 +7601,8 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.inner_compass      = _HT( "Inner Compass" );
     talent.conduit_of_the_celestials.august_dynasty     = _HT( "August Dynasty" );
     // Row 5
-    talent.conduit_of_the_celestials.unity_within = _HT( "Unity Within" );
+    talent.conduit_of_the_celestials.unity_within          = _HT( "Unity Within" );
+    talent.conduit_of_the_celestials.unity_within_dmg_mult = find_spell( 443591 );
   }
 
   // monk_t::talent::master_of_harmony
@@ -7211,12 +7615,14 @@ void monk_t::init_spells()
     talent.master_of_harmony.aspect_of_harmony_damage      = find_spell( 450763 );
     talent.master_of_harmony.aspect_of_harmony_heal        = find_spell( 450769 );
     // Row 2
-    talent.master_of_harmony.manifestation          = _HT( "Manifestation" );
-    talent.master_of_harmony.purified_spirit        = _HT( "Purified Spirit" );
-    talent.master_of_harmony.purified_spirit_damage = find_spell( 450820 );
-    talent.master_of_harmony.purified_spirit_heal   = find_spell( 450805 );
-    talent.master_of_harmony.harmonic_gambit        = _HT( "Harmonic Gambit" );
-    talent.master_of_harmony.balanced_strategem     = _HT( "Balanced Strategem" );
+    talent.master_of_harmony.manifestation               = _HT( "Manifestation" );
+    talent.master_of_harmony.purified_spirit             = _HT( "Purified Spirit" );
+    talent.master_of_harmony.purified_spirit_damage      = find_spell( 450820 );
+    talent.master_of_harmony.purified_spirit_heal        = find_spell( 450805 );
+    talent.master_of_harmony.harmonic_gambit             = _HT( "Harmonic Gambit" );
+    talent.master_of_harmony.balanced_stratagem          = _HT( "Balanced Stratagem" );
+    talent.master_of_harmony.balanced_stratagem_magic    = find_spell( 451508 );
+    talent.master_of_harmony.balanced_stratagem_physical = find_spell( 451514 );
     // Row 3
     talent.master_of_harmony.tigers_vigor          = _HT( "Tiger's Vigor" );
     talent.master_of_harmony.roar_from_the_heavens = _HT( "Roar from the Heavens" );
@@ -7273,7 +7679,9 @@ void monk_t::init_spells()
     tier.t31.charred_dreams_heal = find_spell( 425298 );
     tier.t31.t31_celestial_brew  = find_spell( 425965 );
 
-    tier.tww1.ww_4pc = find_spell( 454505 );
+    tier.tww1.ww_4pc                      = find_spell( 454505 );
+    tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
+    tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
   }
 
   // Passives =========================================
@@ -7336,12 +7744,30 @@ void monk_t::init_spells()
   // Active Action Spells
 
   // General
-  active_actions.chi_wave          = new actions::chi_wave_t( this );
-  active_actions.rushing_jade_wind = new actions::rjw_tick_action_t( this );
-  windwalking_aura                 = new actions::windwalking_aura_t( this );
+  active_actions.chi_wave = new actions::chi_wave_t( this );
+  windwalking_aura        = new actions::windwalking_aura_t( this );
+
+  // Conduit of the Celestials
+  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+    active_actions.courage_of_the_white_tiger = new actions::courage_of_the_white_tiger_t( this );
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
+    active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
+    active_actions.flight_of_the_red_crane_celestial_damage =
+        new actions::flight_of_the_red_crane_celestial_dmg_t( this );
+    active_actions.flight_of_the_red_crane_celestial_heal =
+        new actions::flight_of_the_red_crane_celestial_heal_t( this );
+  }
+  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() )
+  {
+    active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
+    active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
+  }
 
   // Shado-Pan
-  active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
+  if ( talent.shado_pan.flurry_strikes->ok() )
+    active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -7369,6 +7795,7 @@ void monk_t::init_spells()
     active_actions.fury_of_xuen_summon       = new actions::fury_of_xuen_summon_t( this );
     active_actions.fury_of_xuen_empowered_tiger_lightning =
         new actions::fury_of_xuen_empowered_tiger_lightning_t( this );
+    active_actions.gale_force = new actions::gale_force_t( this );
   }
 
   // Passive Action Spells
@@ -7507,7 +7934,7 @@ void monk_t::init_items()
 
 struct self_damage_override : stagger_impl::self_damage_t<monk_t>
 {
-  self_damage_override( monk_t *player, stagger_impl::stagger_t<monk_t> *stagger_effect )
+  self_damage_override( monk_t *player, stagger_impl::stagger_effect_t<monk_t> *stagger_effect )
     : stagger_impl::self_damage_t<monk_t>( player, stagger_effect )
   {
     dot_duration = player->find_spell( 124273 )->duration();
@@ -7546,7 +7973,7 @@ struct training_of_niuzao_buff : actions::monk_buff_t
   bool trigger( int /* stacks */ = -1, double /* value */ = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() ) override
   {
-    double v = p().stagger[ "Stagger" ]->level_index() * data().effectN( 1 ).base_value();
+    double v = p().find_stagger( "Stagger" )->level_index() * data().effectN( 1 ).base_value();
     return actions::monk_buff_t::trigger( 1, v, chance, duration );
   }
 };
@@ -7562,7 +7989,7 @@ void monk_t::create_buffs()
         { "quick_sip", "staggering_strikes", "touch_of_death", "purifying_brew", "tranquil_spirit_eh",
           "tranquil_spirit_goto" },
         [ this ]() { return specialization() == MONK_BREWMASTER; },
-        [ this ]( school_e, result_amount_type, action_state_t *state ) {
+        [ this ]( school_e, result_amount_type, const action_state_t *state ) {
           if ( state->action->id == baseline.brewmaster.stagger_self_damage->id() )
             return false;
           return true;
@@ -7608,47 +8035,50 @@ void monk_t::create_buffs()
   // buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal )
   //                                     ->set_trigger_spell( talent.monk.soothing_mist );
 
-  buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
+  buff.chi_torpedo = make_buff_fallback( talent.monk.chi_torpedo->ok(), this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.monk.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
 
   buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
 
-  buff.dual_threat = make_buff( this, "dual_threat", find_spell( 451833 ) )
-                         ->set_trigger_spell( talent.windwalker.dual_threat )
-                         ->set_default_value_from_effect( 1 );
+  buff.dampen_harm = make_buff_fallback( talent.monk.dampen_harm->ok(), this, "dampen_harm", talent.monk.dampen_harm );
 
-  buff.combat_wisdom = make_buff( this, "combat_wisdom", find_spell( 129914 ) )
-                           ->set_trigger_spell( talent.windwalker.combat_wisdom )
+  buff.diffuse_magic = make_buff_fallback( talent.monk.diffuse_magic->ok() && specialization() == MONK_BREWMASTER, this,
+                                           "diffuse_magic", talent.monk.diffuse_magic )
                            ->set_default_value_from_effect( 1 );
 
-  buff.jadefire_stomp = make_buff( this, "jadefire_stomp", find_spell( 388193 ) )
+  buff.invokers_delight = make_buff_fallback( shared.invokers_delight->ok(), this, "invokers_delight",
+                                              shared.invokers_delight->effectN( 1 ).trigger() )
+                              ->set_trigger_spell( shared.invokers_delight );
+
+  buff.combat_wisdom =
+      make_buff_fallback( talent.windwalker.combat_wisdom->ok(), this, "combat_wisdom", find_spell( 129914 ) )
+          ->set_trigger_spell( talent.windwalker.combat_wisdom )
+          ->set_default_value_from_effect( 1 );
+
+  buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch",
+                                         talent.monk.fatal_touch->effectN( 2 ).trigger() )
+                         ->set_trigger_spell( talent.monk.fatal_touch );
+
+  buff.fortifying_brew = make_buff_fallback<buffs::fortifying_brew_t>(
+      talent.monk.fortifying_brew->ok() && specialization() == MONK_BREWMASTER, this, "fortifying_brew" );
+
+  buff.jadefire_stomp = make_buff_fallback( shared.jadefire_stomp->ok(), this, "jadefire_stomp", find_spell( 388193 ) )
                             ->set_trigger_spell( shared.jadefire_stomp )
                             ->set_default_value_from_effect( 2 );
 
-  buff.fortifying_brew = new buffs::fortifying_brew_t( this );
-
-  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( this, "rushing_jade_wind", passives.rushing_jade_wind );
-
-  buff.dampen_harm = make_buff( this, "dampen_harm", talent.monk.dampen_harm );
-
-  buff.diffuse_magic =
-      make_buff( this, "diffuse_magic", talent.monk.diffuse_magic )->set_default_value_from_effect( 1 );
-
-  buff.invokers_delight = make_buff( this, "invokers_delight", find_spell( 388663 ) )
-                              ->set_trigger_spell( shared.invokers_delight )
-                              ->set_default_value_from_effect_type( A_HASTE_ALL )
-                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                              ->add_invalidate( CACHE_ATTACK_HASTE )
-                              ->add_invalidate( CACHE_HASTE )
-                              ->add_invalidate( CACHE_SPELL_HASTE );
+  buff.rushing_jade_wind = make_buff_fallback<buffs::rushing_jade_wind_buff_t>(
+      talent.brewmaster.rushing_jade_wind->ok() || talent.windwalker.rushing_jade_wind->ok() ||
+          talent.conduit_of_the_celestials.restore_balance->ok(),
+      this, "rushing_jade_wind" );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", baseline.monk.spinning_crane_kick )
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.teachings_of_the_monastery =
-      make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
+      make_buff_fallback( shared.teachings_of_the_monastery->ok(), this, "teachings_of_the_monastery",
+                          find_spell( 202090 ) )
           ->set_trigger_spell( shared.teachings_of_the_monastery )
           ->set_default_value_from_effect( 1 )
           ->modify_max_stack( as<int>( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() ) );
@@ -7658,15 +8088,16 @@ void monk_t::create_buffs()
   buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
 
   // Brewmaster
-  buff.training_of_niuzao = make_buff<training_of_niuzao_buff>( this );
+  buff.training_of_niuzao = make_buff_fallback<training_of_niuzao_buff>( talent.brewmaster.training_of_niuzao->ok(),
+                                                                         this, "training_of_niuzao" );
   buff.ox_stance =
       make_buff_fallback( talent.brewmaster.ox_stance->ok(), this, "ox_stance", talent.brewmaster.ox_stance_buff );
 
   buff.blackout_combo = make_buff_fallback( talent.brewmaster.blackout_combo->ok(), this, "blackout_combo",
                                             talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
 
-  buff.call_to_arms_invoke_niuzao =
-      make_buff( this, "call_to_arms_invoke_niuzao", talent.brewmaster.call_to_arms_buff );
+  buff.call_to_arms_invoke_niuzao = make_buff_fallback(
+      talent.brewmaster.call_to_arms->ok(), this, "call_to_arms_invoke_niuzao", talent.brewmaster.call_to_arms_buff );
 
   buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
   buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
@@ -7676,11 +8107,12 @@ void monk_t::create_buffs()
           ->set_trigger_spell( talent.brewmaster.celestial_brew )
           ->set_default_value_from_effect( 1 );
 
-  buff.charred_passions = make_buff( this, "charred_passions", find_spell( 386963 ) )
-                              ->set_default_value_from_effect( 1 )
+  buff.charred_passions = make_buff_fallback( talent.brewmaster.charred_passions->ok(), this, "charred_passions",
+                                              talent.brewmaster.charred_passions->effectN( 1 ).trigger() )
                               ->set_trigger_spell( talent.brewmaster.charred_passions );
 
-  buff.counterstrike = make_buff( this, "counterstrike", talent.brewmaster.counterstrike->effectN( 1 ).trigger() )
+  buff.counterstrike = make_buff_fallback( talent.brewmaster.counterstrike->ok(), this, "counterstrike",
+                                           talent.brewmaster.counterstrike->effectN( 1 ).trigger() )
                            ->set_cooldown( talent.brewmaster.counterstrike->internal_cooldown() );
 
   buff.celestial_flames =
@@ -7694,8 +8126,10 @@ void monk_t::create_buffs()
   buff.exploding_keg =
       make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )->set_default_value_from_effect( 2 );
 
-  buff.gift_of_the_ox = monk::make_buff_fallback<buffs::gift_of_the_ox_t>(
-      talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this, "gift_of_the_ox" );
+  if ( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok() )
+    buff.gift_of_the_ox = new buffs::gift_of_the_ox_t( this );
+  else if ( specialization() == MONK_BREWMASTER )
+    buff_t::make_fallback( this, "gift_of_the_ox", this );
 
   buff.expel_harm_accumulator =
       make_buff_fallback( talent.brewmaster.gift_of_the_ox->ok() || talent.brewmaster.spirit_of_the_ox->ok(), this,
@@ -7734,14 +8168,21 @@ void monk_t::create_buffs()
       make_buff_fallback( sets->set( MONK_WINDWALKER, TWW1, B4 )->ok(), this, "tigers_ferocity", find_spell( 454502 ) )
           ->set_trigger_spell( sets->set( MONK_WINDWALKER, TWW1, B4 ) );
 
-  buff.flow_of_battle = make_buff( this, "flow_of_battle", find_spell( 457257 ) )
-                            ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+  buff.flow_of_battle_damage = make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this,
+                                                   "flow_of_battle_damage", tier.tww1.brm_4pc_damage_buff )
+                                   ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
+
+  buff.flow_of_battle_free_keg_smash =
+      make_buff_fallback( sets->set( MONK_BREWMASTER, TWW1, B4 )->ok(), this, "flow_of_battle_free_keg_smash",
+                          tier.tww1.brm_4pc_free_keg_smash_buff )
+          ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   buff.weapons_of_order = make_buff_fallback( talent.brewmaster.weapons_of_order->ok(), this, "weapons_of_order",
                                               talent.brewmaster.weapons_of_order )
                               ->set_trigger_spell( talent.brewmaster.weapons_of_order );
 
-  buff.recent_purifies = new buffs::purifying_buff_t( this, "recent_purifies", spell_data_t::nil() );
+  buff.recent_purifies = make_buff_fallback<buffs::purifying_buff_t>(
+      talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
 
   buff.leverage = make_buff( this, "leverage", tier.t30.leverage )
                       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ) )
@@ -7786,10 +8227,6 @@ void monk_t::create_buffs()
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.mistweaver.focused_thunder->effectN( 1 ).base_value() ) );
 
-  buff.fatal_touch = make_buff_fallback( talent.monk.fatal_touch->ok(), this, "fatal_touch", find_spell( 450832 ) )
-                         ->set_default_value_from_effect( 1 )
-                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   // Windwalker
   buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
                       ->set_trigger_spell( baseline.windwalker.combo_breaker )
@@ -7817,8 +8254,14 @@ void monk_t::create_buffs()
                                    ->set_quiet( true );
 
   buff.darting_hurricane =
-      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane", find_spell( 459841 ) )
-          ->modify_initial_stack( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() )
+      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
+                          talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
+          ->modify_initial_stack( as<int>( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() ) )
+          ->set_default_value_from_effect( 1 );
+
+  buff.dual_threat =
+      make_buff_fallback( talent.windwalker.dual_threat->ok(), this, "dual_threat", find_spell( 451833 ) )
+          ->set_trigger_spell( talent.windwalker.dual_threat )
           ->set_default_value_from_effect( 1 );
 
   buff.jadefire_brand = make_buff_fallback( talent.windwalker.jadefire_harmony->ok(), this, "jadefire_brand_heal",
@@ -7830,19 +8273,14 @@ void monk_t::create_buffs()
                            ->set_quiet( true )
                            ->set_default_value_from_effect( 1 )
                            ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
-                             double old_value    = self->current_value;
+                             double previous     = self->current_value;
                              self->current_value = self->default_value;
-
                              if ( ( pets.xuen.n_active_pets() + pets.fury_of_xuen_tiger.n_active_pets() ) > 0 )
                                self->current_value *= 1 + self->data().effectN( 2 ).percent();
-
-                             if ( old_value != self->current_value )
-                               self->invalidate_cache();
+                             if ( previous != self->current_value )
+                               invalidate_cache( CACHE_CRIT_CHANCE );
                            } )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                           ->set_cooldown( timespan_t::zero() )
-                           ->set_duration( timespan_t::zero() )
-                           ->set_period( timespan_t::from_seconds( 1 ) )
+                           ->set_period( 1_s )
                            ->set_freeze_stacks( true )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
 
@@ -7850,10 +8288,11 @@ void monk_t::create_buffs()
                                                           "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
                                           ->set_trigger_spell( baseline.windwalker.flying_serpent_kick );
 
-  buff.fury_of_xuen_stacks =
-      new buffs::fury_of_xuen_stacking_buff_t( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
+  buff.fury_of_xuen_stacks = make_buff_fallback<buffs::fury_of_xuen_stacking_buff_t>(
+      talent.windwalker.fury_of_xuen->ok(), this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
 
-  buff.fury_of_xuen = new buffs::fury_of_xuen_t( this, "fury_of_xuen", passives.fury_of_xuen );
+  buff.fury_of_xuen = make_buff_fallback<buffs::fury_of_xuen_t>( talent.windwalker.fury_of_xuen->ok(), this,
+                                                                 "fury_of_xuen", passives.fury_of_xuen );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 )
@@ -7868,36 +8307,32 @@ void monk_t::create_buffs()
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_freeze_stacks( true );
 
-  buff.invoke_xuen = new buffs::invoke_xuen_the_white_tiger_buff_t( this, "invoke_xuen_the_white_tiger",
-                                                                    talent.windwalker.invoke_xuen_the_white_tiger );
+  buff.invoke_xuen = make_buff<buffs::invoke_xuen_the_white_tiger_buff_t>(
+      this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
-  buff.martial_mixture =
-      make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure", find_spell( 451457 ) )
-          ->set_default_value_from_effect( 1 );
+  buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
+                                             talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
+                             ->set_trigger_spell( talent.windwalker.martial_mixture );
 
   buff.memory_of_the_monastery = make_buff_fallback( talent.windwalker.memory_of_the_monastery->ok(), this,
                                                      "memory_of_the_monastery", find_spell( 454970 ) )
-                                     ->set_default_value_from_effect( 1 )
-                                     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                     ->add_invalidate( CACHE_ATTACK_HASTE )
-                                     ->add_invalidate( CACHE_HASTE )
-                                     ->add_invalidate( CACHE_SPELL_HASTE );
+                                     ->set_trigger_spell( talent.windwalker.memory_of_the_monastery );
 
   buff.momentum_boost_damage =
-      make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage", find_spell( 451297 ) )
+      make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_damage",
+                          talent.windwalker.momentum_boost->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1 );
 
   buff.momentum_boost_speed =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
-          ->set_default_value_from_effect( 1 )
-          ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+          ->set_trigger_spell( talent.windwalker.momentum_boost );
 
   buff.ordered_elements =
       make_buff_fallback( talent.windwalker.ordered_elements->ok(), this, "ordered_elements", find_spell( 451462 ) )
-          ->set_default_value_from_effect( 1 );
+          ->set_trigger_spell( talent.windwalker.ordered_elements );
 
   buff.pressure_point =
-      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 337482 ) )
+      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
           ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -7924,18 +8359,118 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.transfer_the_power->ok(), this, "transfer_the_power", find_spell( 195321 ) )
           ->set_default_value_from_effect( 1 );
 
-  buff.whirling_dragon_punch = make_buff_fallback( talent.windwalker.whirling_dragon_punch->ok(), this,
-                                                   "whirling_dragon_punch", find_spell( 196742 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
+      talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   // Conduit of the Celestials
+  buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
+                                            "august_dynasty", find_spell( 442850 ) );
 
-  // Master of Harmony
-  buff.aspect_of_harmony = new buffs::aspect_of_harmony_t( this );
-  buff.aspect_of_harmony->path_of_resurgence =
-      make_buff_fallback( talent.master_of_harmony.path_of_resurgence->ok(), this, "path_of_resurgence",
-                          talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() );
-  buff.aspect_of_harmony->path_of_resurgence->apply_affecting_aura( talent.monk.chi_wave );
+  buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
+                                               "celestial_conduit", find_spell( 443028 ) );
+
+  buff.chi_jis_swiftness = make_buff_fallback( talent.conduit_of_the_celestials.chi_jis_swiftness->ok(), this,
+                                               "chi_jis_swiftness", find_spell( 443569 ) );
+
+  buff.courage_of_the_white_tiger =
+      make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,
+                          "courage_of_the_white_tiger", find_spell( 460127 ) )
+          ->set_expire_callback(
+              [ this ]( buff_t *, double, timespan_t ) { active_actions.courage_of_the_white_tiger->execute(); } );
+
+  buff.flight_of_the_red_crane = make_buff_fallback( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok(),
+                                                     this, "flight_of_the_red_crane", find_spell( 457459 ) );
+
+  buff.heart_of_the_jade_serpent_cdr =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
+
+  buff.heart_of_the_jade_serpent_cdr_celestial =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
+
+  buff.heart_of_the_jade_serpent_stack_mw =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_stack_mw", find_spell( 443506 ) )
+          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
+            if ( new_ == buff_->max_stack() )
+              buff.heart_of_the_jade_serpent_cdr->trigger();
+          } )
+          ->set_expire_at_max_stack( true );
+
+  buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
+                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) );
+
+  buff.heart_of_the_jade_serpent_stack_ww =
+      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
+                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
+          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
+            if ( new_ >= buff_->max_stack() )
+              buff.heart_of_the_jade_serpent->trigger();
+          } )
+          ->set_expire_at_max_stack( true );
+
+  buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "crane_stance", find_spell( 443572 ) );
+
+  buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                     "ox_stance", find_spell( 443574 ) );
+
+  buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                          "serpent_stance", find_spell( 443576 ) );
+
+  buff.inner_compass_tiger_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
+                                                        "tiger_stance", find_spell( 443575 ) );
+
+  buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
+                                            "jade_sanctuary", find_spell( 448508 ) );
+
+  buff.strength_of_the_black_ox =
+      make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
+                          "strength_of_the_black_ox", find_spell( 443112 ) )
+          ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            if ( specialization() == MONK_WINDWALKER )
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  as<int>( talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
+            }
+          } );
+
+  buff.unity_within =
+      make_buff_fallback( talent.conduit_of_the_celestials.unity_within->ok(), this, "unity_within",
+                          find_spell( 443592 ) )
+          ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
+            buff.jade_sanctuary->trigger();
+            if ( specialization() == MONK_MISTWEAVER )
+            {
+              active_actions.flight_of_the_red_crane_celestial_heal->execute();
+              active_actions.strength_of_the_black_ox_absorb->execute();
+            }
+            if ( specialization() == MONK_WINDWALKER )
+            {
+              active_actions.strength_of_the_black_ox_dmg->execute();
+              buff.teachings_of_the_monastery->trigger(
+                  as<int>( talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
+
+              active_actions.flight_of_the_red_crane_celestial_damage->execute();
+            }
+            buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
+            active_actions.courage_of_the_white_tiger->execute();
+          } );
+
+  buff.aspect_of_harmony.construct_buffs( this );
+
+  buff.balanced_stratagem_magic =
+      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_magic",
+                          talent.master_of_harmony.balanced_stratagem_magic );
+  buff.balanced_stratagem_physical =
+      make_buff_fallback( talent.master_of_harmony.balanced_stratagem->ok(), this, "balanced_stratagem_physical",
+                          talent.master_of_harmony.balanced_stratagem_physical );
 
   // Shado-Pan
 
@@ -7953,11 +8488,7 @@ void monk_t::create_buffs()
 
   buff.veterans_eye =
       make_buff_fallback( talent.shado_pan.veterans_eye->ok(), this, "veterans_eye", find_spell( 451085 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->add_invalidate( CACHE_ATTACK_HASTE )
-          ->add_invalidate( CACHE_HASTE )
-          ->add_invalidate( CACHE_SPELL_HASTE );
+          ->set_default_value_from_effect( 1 );
 
   buff.vigilant_watch =
       make_buff_fallback( talent.shado_pan.vigilant_watch->ok(), this, "vigilant_watch", find_spell( 451233 ) )
@@ -7990,8 +8521,7 @@ void monk_t::create_buffs()
   buff.wisdom_of_the_wall_mastery = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
-                                        ->set_default_value_from_effect( 1 )
-                                        ->add_invalidate( CACHE_MASTERY );
+                                        ->set_default_value_from_effect( 1 );
 
   // Tier 29 Set Bonus
   buff.kicks_of_flowing_momentum = make_buff_fallback<buffs::kicks_of_flowing_momentum_t>(
@@ -8015,8 +8545,8 @@ void monk_t::create_buffs()
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Tier 31 Set Bonus
-  buff.blackout_reinforcement =
-      new buffs::blackout_reinforcement_t( this, "blackout_reinforcement", find_spell( 424454 ) );
+  buff.blackout_reinforcement = make_buff_fallback<buffs::blackout_reinforcement_t>(
+      sets->set( MONK_WINDWALKER, T31, B4 )->ok(), this, "blackout_reinforcement", find_spell( 424454 ) );
 
   // stagger = new stagger_t( this );
 
@@ -8038,8 +8568,6 @@ void monk_t::create_buffs()
 
   movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch );
   movement.whirling_dragon_punch->set_distance( 1 );
-
-  buff.flow_of_chi = new buffs::flow_of_chi_t( this );
 }
 
 // monk_t::init_gains =======================================================
@@ -8062,7 +8590,6 @@ void monk_t::init_gains()
   gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
   gain.ordered_elements         = get_gain( "ordered_elements" );
   gain.power_strikes            = get_gain( "power_strikes" );
-  gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
 }
@@ -8242,9 +8769,9 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
       if ( !state->target->is_sleeping() )
       {
         // Dynamically find and execute proc tracking
-        auto proc = p->find_proc( effect.trigger()->_name );
-        if ( proc )
-          proc->occur();
+        auto effect_proc = p->find_proc( effect.trigger()->_name );
+        if ( effect_proc )
+          effect_proc->occur();
       }
 
       dbc_proc_callback_t::execute( a, state );
@@ -8287,7 +8814,6 @@ void monk_t::init_special_effects()
   // ======================================
 
   if ( talent.brewmaster.exploding_keg.ok() )
-  {
     create_proc_callback( talent.brewmaster.exploding_keg.spell(), []( monk_t *p, action_state_t *state ) {
       // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
       if ( !p->buff.exploding_keg->up() )
@@ -8295,17 +8821,14 @@ void monk_t::init_special_effects()
       p->active_actions.exploding_keg->set_target( state->target );
       return true;
     } );
-  }
 
   // ======================================
   // Blackout Reinforcement ( Windwalker T31 Set Bonus )
   // ======================================
 
   if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-  {
     create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
                           []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
-  }
 
   // ======================================
   // Flurry of Xuen ( Windwalker Talent )
@@ -8317,7 +8840,6 @@ void monk_t::init_special_effects()
       if ( state->action->id == p->active_actions.flurry_of_xuen->id ||
            state->action->id == p->active_actions.empowered_tiger_lightning->id )
         return false;
-
       return true;
     } );
 
@@ -8334,7 +8856,6 @@ void monk_t::init_special_effects()
   // ======================================
 
   if ( talent.windwalker.darting_hurricane.ok() )
-  {
     create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
       if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
            state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
@@ -8343,14 +8864,12 @@ void monk_t::init_special_effects()
         return false;
       return true;
     } );
-  }
 
   // ======================================
   // Veteran's Eye ( Shado-pan Talent )
   // ======================================
 
   if ( talent.shado_pan.veterans_eye->ok() )
-  {
     create_proc_callback(
         talent.shado_pan.veterans_eye.spell(),
         []( monk_t *p, action_state_t *state ) {
@@ -8367,7 +8886,6 @@ void monk_t::init_special_effects()
           return true;
         },
         PF2_ALL_HIT );
-  }
 
   // ======================================
   // Chi Burst ( Monk Talent )
@@ -8379,23 +8897,101 @@ void monk_t::init_special_effects()
   // Spirit of the Ox ( Brewmaster Talent )
   // ======================================
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
+  {
     create_proc_callback( talent.brewmaster.spirit_of_the_ox.spell(), []( monk_t *player, action_state_t *state ) {
       if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
            state->action->id != player->baseline.brewmaster.blackout_kick->id() )
         return false;
-      player->buff.gift_of_the_ox->spawn_orb( 1 );
       return true;
     } );
+    callbacks.register_callback_execute_function(
+        talent.brewmaster.spirit_of_the_ox.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.gift_of_the_ox->spawn_orb( 1 );
+        } );
+  }
 
+  // ======================================
+  // Master of Harmony
+  // ======================================
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
   {
-    auto cb = []( monk_t *player, action_state_t *state ) {
-      player->buff.aspect_of_harmony->trigger( state );
+    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver,
+                          []( monk_t *, action_state_t * ) { return true; } );
+    callbacks.register_callback_execute_function(
+        talent.master_of_harmony.aspect_of_harmony_driver->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          buff.aspect_of_harmony.trigger( state );
+        } );
+  }
+
+  if ( talent.master_of_harmony.balanced_stratagem->ok() )
+  {
+    create_proc_callback( talent.master_of_harmony.balanced_stratagem, []( monk_t *, action_state_t *state ) {
+      if ( state->action->school == SCHOOL_NONE )
+        return false;
       return true;
-    };
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver, cb );
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_damage, cb );
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_heal, cb );
+    } );
+    callbacks.register_callback_execute_function(
+        talent.master_of_harmony.balanced_stratagem->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          if ( state->action->school == SCHOOL_PHYSICAL )
+            buff.balanced_stratagem_magic->trigger();
+          if ( state->action->school != SCHOOL_PHYSICAL )
+            buff.balanced_stratagem_physical->trigger();
+        } );
+  }
+
+  // ======================================
+  // Courage of the White Tiger
+  // ======================================
+  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+  {
+    create_proc_callback(
+        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->baseline.monk.vivify->id() ) ||
+               state->action->id == p->baseline.monk.tiger_palm->id() )
+            return true;
+
+          return false;
+        } );
+
+    callbacks.register_callback_execute_function(
+        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          active_actions.courage_of_the_white_tiger->execute_on_target( state->target );
+        } );
+  }
+
+  // ======================================
+  // Flight of the Red Crane
+  // ======================================
+  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  {
+    create_proc_callback(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell(), []( monk_t *p, action_state_t *state ) {
+          if ( ( p->specialization() == MONK_MISTWEAVER &&
+                 state->action->id == p->talent.mistweaver.refreshing_jade_wind_tick->id() ) ||
+               ( p->specialization() == MONK_WINDWALKER &&
+                 state->action->id == p->passives.rushing_jade_wind_tick->id() ) ||
+               state->action->id == p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() )
+            return true;
+
+          return false;
+        } );
+
+    callbacks.register_callback_execute_function(
+        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          if ( specialization() == MONK_MISTWEAVER )
+          {
+            active_actions.flight_of_the_red_crane_heal->execute_on_target( state->target );
+          }
+          else
+          {
+            active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
+          }
+        } );
   }
 
   // ======================================
@@ -8473,7 +9069,7 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
 
   // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
   // the debuff remaining duration
-  range::sort( l, [ this ]( player_t *l, player_t *r ) {
+  range::sort( l, [ this ]( const player_t *l, const player_t *r ) {
     auto td_left  = find_target_data( l );
     auto td_right = find_target_data( r );
     bool lcs      = td_left ? td_left->debuff.mark_of_the_crane->check() : false;
@@ -8521,14 +9117,13 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
 
 bool monk_t::affected_by_sef( spell_data_t data ) const
 {
-  // Storm, Earth, and Fire (monk_spell_t)
-  bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
-
-  // Chi Explosion IS affected by SEF but needs to be overriden here manually
-  if ( data.id() == 337342 )
-    affected = true;
-
-  return affected;
+  auto filter = [ & ]( std::vector<size_t> indices ) {
+    return std::any_of( indices.begin(), indices.end(), [ & ]( size_t index ) {
+      return data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( index ) );
+    } );
+  };
+  // Chi Explosion must be added manually.
+  return filter( { 1, 2, 7, 8 } ) || data.id() == 337342;
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
@@ -8564,17 +9159,6 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
 
   range::for_each( pet->action_list,
                    [ pet ]( action_t *a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
-}
-
-// monk_t::composite_melee_auto_attack_speed =====================================
-
-double monk_t::composite_melee_auto_attack_speed() const
-{
-  double h = base_t::composite_melee_auto_attack_speed();
-
-  h *= 1.0 / ( 1.0 + buff.momentum_boost_speed->check_value() );
-
-  return h;
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================
@@ -8884,7 +9468,7 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       {
         cooldown.anvil__stave->start( talent.brewmaster.anvil__stave->internal_cooldown() );
         proc.anvil__stave->occur();
-        baseline.brewmaster.brews->adjust(
+        baseline.brewmaster.brews.adjust(
             timespan_t::from_seconds( talent.brewmaster.anvil__stave->effectN( 1 ).base_value() / 10 ) );
       }
 
@@ -8906,7 +9490,7 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
 
 void monk_t::target_mitigation( school_e school, result_amount_type dt, action_state_t *s )
 {
-  auto target_data = get_target_data( s->action->player );
+  monk_td_t *target_td = get_target_data( s->action->player );
 
   // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
   if ( buff.dampen_harm->up() )
@@ -8927,7 +9511,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + buff.diffuse_magic->value();  // Stored as -60%
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
-  if ( target_data->dot.breath_of_fire->is_ticking() )
+  if ( target_td->dot.breath_of_fire->is_ticking() )
     s->result_amount *=
         1.0 + active_actions.breath_of_fire->data().effectN( 2 ).percent() + buff.celestial_flames->value() / 100.0;
 
@@ -8961,7 +9545,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Gift of the Ox is no longer a random chance, under the hood. When you are hit, it increments a counter by
   // (DamageTakenBeforeAbsorbsOrStagger / MaxHealth). It now drops an orb whenever that reaches 1.0, and decrements it
   // by 1.0. The tooltip still says ‘chance’, to keep it understandable.
-  if ( s->action->id != baseline.brewmaster.stagger_self_damage->id() )
+  if ( buff.gift_of_the_ox && s->action->id != baseline.brewmaster.stagger_self_damage->id() )
     buff.gift_of_the_ox->trigger_from_damage( s->result_amount );
 
   base_t::target_mitigation( school, dt, s );
@@ -9011,8 +9595,7 @@ std::string monk_t::default_temporary_enchant() const
   return monk_apl::temporary_enchant( this );
 }
 
-// monk_t::init_actions =====================================================
-
+// monk_t::init_action_list =====================================================
 void monk_t::init_action_list()
 {
   // Mistweaver isn't supported atm
@@ -9067,14 +9650,20 @@ void monk_t::init_action_list()
   base_t::init_action_list();
 }
 
+// monk_t::create_actions =======================================================
+void monk_t::create_actions()
+{
+  base_t::create_actions();
+
+  buff.aspect_of_harmony.construct_actions( this );
+}
+
 void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 {
   /*
-   * From discovery by the Peak of Serenity Discord server, ETL has three major bugs
-   * 1.) The spells that contribute to ETL change based on which buff(s) are up
-   * 2.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   * 3.) The spells that FoX contribute to ETL change after the first tick of damage
-   * 4.) SEF does not contribute to ETL while FoX is up
+   * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
+   * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
+   * 2.) SEF Actions contribute 0 to the FoX pool
    */
 
   if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
@@ -9087,37 +9676,21 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( s->action->id == passives.empowered_tiger_lightning->id() )
     return;
 
+  auto td = get_target_data( s->target );
+
+  if ( !td )
+    return;
+
   // These abilities are always blacklisted by both tigers
-  auto etl_blacklist_always = {
-      124280,  // Touch of Karma
-      325217,  // Bonedust Brew
-      389541,  // Claw of the White Tiger
-      410139,  // Shadowflame Nova
-  };
-
-  // These abilities are blacklisted when only Fury of Xuen is up and it hasn't ticked yet
-  auto etl_blacklist_fox = {
-      391400,  // Resonant Fists
-  };
-
-  // These abilities are blacklisted when Fury of Xuen is up and it has ticked once
-  // OR, both tigers are spawned
-  auto etl_blacklist_fox_2 = {
-      228649,  // Teachings of the Monastery
-      185099,  // Rising Sun Kick
-      395519,  // Strike of the Windlord MH
-      395519,  // Strike of the Windlord OH
-      242390,  // Thunderfist
-      345727,  // Faeline Stomp
-      327264,  // Faeline Stomp WW Hit
-      388207,  // Jadefire Stomp
-      388201,  // Jadefire Stomp WW Hit
+  auto etl_blacklist = {
+      122470,  // Touch of Karma
+      451585,  // Gale Force
+      450615,  // Flurry Strikes
       115129,  // Expel Harm
-      391400,  // Resonant Fists
-      392959,  // Glory of the Dawn
+      389541,  // White Tiger State
   };
 
-  for ( unsigned int id : etl_blacklist_always )
+  for ( unsigned int id : etl_blacklist )
     if ( s->action->id == id )
       return;
 
@@ -9127,39 +9700,15 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( mode == 0 )
     return;
 
+  double xuen_contribution = s->result_amount;
+  double fox_contribution  = s->result_amount;
+
+  // No damage done by SEF spirits contributes to FoX ETL
+  if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
+    fox_contribution = 0;
+
   // Return value
-  double amount = mode != 2 ? s->result_amount : 0;
-  auto td       = get_target_data( s->target );
-
-  if ( !td )
-    return;
-
-  // Fury of Xuen is up
-  if ( mode > 1 )
-  {
-    double fox_contribution = s->result_amount;
-
-    if ( bugs )
-    {
-      if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
-        return;
-
-      auto blacklist = ( mode == 2 && buff.fury_of_xuen->remains() > buff.fury_of_xuen->tick_time() )
-                           ? etl_blacklist_fox
-                           : etl_blacklist_fox_2;
-
-      for ( unsigned int id : blacklist )
-      {
-        if ( s->action->id == id )
-        {
-          fox_contribution = 0;
-          break;
-        }
-      }
-    }
-
-    amount += fox_contribution;
-  }
+  double amount = xuen_contribution + fox_contribution;
 
   if ( amount > 0 )
   {
@@ -9215,7 +9764,7 @@ public:
     // Description: Self-explanatory
     // Date: Self-explanatory
     // Match: True if sim matches in-game behavior
-    auto ReportIssue = [ this ]( std::string desc, std::string date, bool match = false ) {
+    auto ReportIssue = [ this ]( std::string_view desc, std::string_view date, bool match = false ) {
       monk_bug *new_issue = new monk_bug;
       new_issue->desc     = desc;
       new_issue->date     = date;
@@ -9224,11 +9773,13 @@ public:
     };
 
     // Add bugs / issues with sims here:
-    ReportIssue( "The spells that contribute to ETL change based on which buff(s) are up", "2023-08-01", true );
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "The spells that FoX contributes to ETL change after the first tick of damage", "2023-08-01", true );
-    ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
+    ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
+    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
+                 true );
+    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
+    ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
 
     // =================================================
 

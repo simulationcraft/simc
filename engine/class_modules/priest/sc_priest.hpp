@@ -742,8 +742,8 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
-    propagate_const<proc_t*> mind_spike_insanity_munched;
     propagate_const<proc_t*> shadowy_apparition_crit;
+    propagate_const<proc_t*> depth_of_shadows;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -836,6 +836,10 @@ public:
 
     // Force enables Devour Matter if the talent is active for all casts of Shadow Word: Death
     bool force_devour_matter = false;
+
+    // Chance for Entropic Rift ticks to miss all targets and deal no damage
+    // Can be used to account for boss movement
+    double entropic_rift_miss_percent = 0.00;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

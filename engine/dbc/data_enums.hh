@@ -143,7 +143,7 @@ enum proc_types2
   PROC2_MISS,
 
   PROC2_LANDED,                 // Any "positive" execute result
-  PROC2_CAST,                   // Any proc_types1 cast finished
+  PROC2_CAST_GENERIC,           // Generic (not damage nor heal) cast finished
   PROC2_CAST_DAMAGE,            // Damaging proc_types1 cast finished
   PROC2_CAST_HEAL,              // Healing proc_types1 cast finished
   PROC2_CAST_INTERRUPT,         // actions with 'is_interrupt' set to true
@@ -230,7 +230,7 @@ enum proc_flag2
   PF2_MISS                    = 1 << PROC2_MISS,
 
   PF2_LANDED                  = 1 << PROC2_LANDED,
-  PF2_CAST                    = 1 << PROC2_CAST,
+  PF2_CAST_GENERIC            = 1 << PROC2_CAST_GENERIC,
   PF2_CAST_DAMAGE             = 1 << PROC2_CAST_DAMAGE,
   PF2_CAST_HEAL               = 1 << PROC2_CAST_HEAL,
   PF2_CAST_INTERRUPT          = 1 << PROC2_CAST_INTERRUPT,
@@ -239,7 +239,7 @@ enum proc_flag2
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
   PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
   PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
-  PF2_ALL_CAST                = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL, // All successful cast results
+  PF2_ALL_CAST                = PF2_CAST_GENERIC | PF2_CAST_DAMAGE | PF2_CAST_HEAL, // All successful cast results
 };
 
 enum item_flag
@@ -1275,8 +1275,8 @@ enum effect_subtype_t : unsigned {
     A_447 = 447,
     A_448 = 448,
     A_451 = 451,
-    A_MOD_RECHARGE_TIME = 453,
-    A_MOD_RECHARGE_MULTIPLIER = 454,
+    A_MOD_RECHARGE_TIME_CATEGORY = 453,
+    A_MOD_RECHARGE_TIME_PCT_CATEGORY = 454,
     A_455 = 455,
     A_HASTED_CATEGORY = 457,
     A_458 = 458,

@@ -23,9 +23,9 @@ struct spell_base_t : public action_t
 
   double composite_crit_chance() const override;
 
-  double composite_haste() const override;
-
   double composite_crit_chance_multiplier() const override;
+
+  double composite_haste() const override;
 
   double recharge_multiplier( const cooldown_t& cd ) const override;
 

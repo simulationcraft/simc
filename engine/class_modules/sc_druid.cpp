@@ -625,6 +625,7 @@ public:
 
     // Hero talents
     action_t* bloodseeker_vines;
+    action_t* bloodseeker_vines_implant;
     action_t* boundless_moonlight_heal;
     action_t* bursting_growth;
     action_t* dream_burst;
@@ -1941,7 +1942,7 @@ public:
   double composite_energize_amount( const action_state_t* s ) const override
   {
     if ( energize )
-      return energize->resource();
+      return energize->resource( this, s );
     else
       return ab::composite_energize_amount( s );
   }
@@ -2762,6 +2763,19 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
                                                       "Snapshots (Direct)" );
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    // tiger's fury can have different persistent multipliers for DMG_DIRECT vs DMG_OVER_TIME
+    // because the state is released after impact, there is no downstream concerns
+    if ( snapshots.tigers_fury && s->result_type != result_amount_type::DMG_OVER_TIME )
+    {
+      s->result_type = result_amount_type::DMG_OVER_TIME;
+      s->persistent_multiplier = composite_persistent_multiplier( s );
+    }
+
+    base_t::trigger_dot( s );
+  }
+
   void tick( dot_t* d ) override
   {
     base_t::tick( d );
@@ -3066,6 +3080,69 @@ struct moonkin_form_buff_t final : public druid_buff_t
   }
 };
 
+// Berserk / Incarnation (Bear) Buff ========================================
+struct berserk_bear_buff_base_t : public druid_buff_t
+{
+  berserk_bear_buff_base_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_cooldown( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
+    if ( p->talent.berserk_unchecked_aggression.ok() )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    if ( p()->talent.berserk_persistence.ok() )
+      p()->cooldown.frenzied_regeneration->reset( true, p()->cooldown.frenzied_regeneration->charges );
+
+    if ( p()->talent.berserk_ravage.ok() )
+    {
+      p()->cooldown.growl->reset( true );
+      p()->cooldown.mangle->reset( true );
+      p()->cooldown.thrash_bear->reset( true );
+    }
+
+    base_t::start( s, v, d );
+  }
+};
+
+struct berserk_bear_buff_t final : public berserk_bear_buff_base_t
+{
+  berserk_bear_buff_t( druid_t* p ) : berserk_bear_buff_base_t( p, "berserk_bear", p->spec.berserk_bear )
+  {
+    set_name_reporting( "berserk" );
+  }
+};
+
+struct incarnation_bear_buff_t final : public berserk_bear_buff_base_t
+{
+  double inc_mul;
+
+  incarnation_bear_buff_t( druid_t* p )
+    : berserk_bear_buff_base_t( p, "incarnation_guardian_of_ursoc", p->spec.incarnation_bear ),
+      inc_mul( 1.0 + find_effect( p->spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() )
+  {}
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    berserk_bear_buff_base_t::start( s, v, d );
+
+    p()->adjust_health_pct( inc_mul, true );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    berserk_bear_buff_base_t::expire_override( s, d );
+
+    p()->adjust_health_pct( inc_mul, false );
+  }
+};
+
 // Bloodtalons Tracking Buff ================================================
 struct bt_dummy_buff_t final : public druid_buff_t
 {
@@ -3109,12 +3186,10 @@ struct bt_dummy_buff_t final : public druid_buff_t
 // Brambles =================================================================
 struct brambles_buff_t final : public druid_absorb_buff_t
 {
-  action_t*& damage;
   double coeff;
 
   brambles_buff_t( druid_t* p )
     : base_t( p, "brambles", p->talent.brambles ),
-      damage( p->active.brambles_reflect ),
       coeff( find_effect( this, A_SCHOOL_ABSORB ).ap_coeff() )
   {
     set_quiet( true );
@@ -3132,9 +3207,7 @@ struct brambles_buff_t final : public druid_absorb_buff_t
     sim->print_debug( "{} {} absorbs {}", *player, *this, amount );
 
     if ( s && s->action->player && s->action->player != player )
-    {
-      damage->execute_on_target( s->action->player, amount );
-    }
+      p()->active.brambles_reflect->execute_on_target( s->action->player, amount );
 
     return amount;
   }
@@ -3469,7 +3542,9 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
       // technically requires cat form, but as currently the only way to cast cp generators outside of form is via
       // convoke, and convoke doesn't trigger as it is a proc, we are fine for now
       energize->add_parse_entry()
-        .set_func( [ this ] { return !proc && attack_critical; } )
+        .set_func( []( const action_t* a, const action_state_t* ) {
+          return a ? !a->proc && debug_cast<const cp_generator_t*>( a )->attack_critical : false;
+        } )
         .set_flat( true )
         .set_value( eff.resource() )
         .set_eff( &eff );
@@ -3479,7 +3554,9 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
     {
       energize->add_parse_entry()
         .set_buff( p->buff.berserk_cat )
-        .set_func( [ this ] { return !proc; } )
+        .set_func( []( const action_t* a, const action_state_t* ) {
+          return a ? !a->proc : false;
+        } )
         .set_flat( true )
         .set_value( eff.base_value() )
         .set_eff( &eff );
@@ -3510,6 +3587,20 @@ struct cp_generator_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attac
 
       if ( berserk_frenzy_mul && p()->buff.b_inc_cat->check() )
         residual_action::trigger( p()->active.frenzied_assault, s->target, s->result_amount * berserk_frenzy_mul );
+    }
+  }
+
+  void gain_energize_resource( resource_e rt, double a, gain_t* g ) override
+  {
+    base_t::gain_energize_resource( rt, a, g );
+
+    // TODO: coiled to spring procs when you end up at 5 CP from a crit while not in berserk
+    if ( p()->bugs && attack_critical &&
+         rt == RESOURCE_COMBO_POINT && p()->resources.current[ RESOURCE_COMBO_POINT ] == 5 &&
+         p()->talent.coiled_to_spring.ok() && !p()->buff.coiled_to_spring->check() &&
+         !p()->buff.b_inc_cat->check() )
+    {
+      p()->buff.coiled_to_spring->trigger();
     }
   }
 };
@@ -3616,7 +3707,8 @@ public:
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
     }
 
-    p()->buff.tigers_tenacity->trigger( this );
+    if ( p()->buff.tigers_tenacity->check() && p()->buff.tigers_tenacity->can_expire( this ) )
+      p()->buff.tigers_tenacity->decrement();
   }
 };
 
@@ -3811,13 +3903,6 @@ struct adaptive_swarm_t final : public cat_attack_t
         jump_swarm( d );
       else if ( BASE::sim->log )
         BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
-    }
-
-    double calculate_tick_amount( action_state_t* s, double m ) const override
-    {
-      auto stack = BASE::find_dot( s->target )->current_stack();
-
-      return BASE::calculate_tick_amount( s, m / stack );
     }
   };
 
@@ -4046,13 +4131,13 @@ struct bloodseeker_vines_t final : public cat_attack_t
   timespan_t orig_dur;
   double twin_pct;
 
-  bloodseeker_vines_t( druid_t* p )
-    : cat_attack_t( "bloodseeker_vines", p, p->spec.bloodseeker_vines ),
-      twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
+  bloodseeker_vines_t( druid_t* p, std::string_view n )
+    : cat_attack_t( n, p, p->spec.bloodseeker_vines ), twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
   {
     dot_max_stack = 1;
     dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
+    dot_name = "bloodseeker_vines";
     orig_dur = dot_duration;
   }
 
@@ -4239,14 +4324,14 @@ struct ferocious_bite_base_t : public cat_finisher_t
   double excess_energy = 0.0;
   double max_excess_energy;
   double saber_jaws_mul;
-  double rf_energy_mul_pct;
+  double rf_energy_mod_pct;
   bool max_energy = false;
 
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : cat_finisher_t( n, p, s, f ),
       max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
-      rf_energy_mul_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
+      rf_energy_mod_pct( p->talent.rampant_ferocity->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_energy", max_energy ) );
 
@@ -4306,7 +4391,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
         auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
         state->combo_points = cp( from );
-        state->energy_mul = energy_multiplier( from ) * rf_energy_mul_pct;
+        state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
       } );
     }
   }
@@ -4324,7 +4409,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     cat_finisher_t::consume_resource();
   }
 
-  virtual double energy_multiplier( const action_state_t* ) const
+  virtual double energy_modifier( const action_state_t* ) const
   {
     return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
   }
@@ -4332,7 +4417,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     auto dam = cat_finisher_t::composite_da_multiplier( s );
-    auto energy_mul = 1.0 + energy_multiplier( s );
+    auto energy_mul = 1.0 + energy_modifier( s );
     // base spell coeff is for 5CP, so we reduce if lower than 5.
     auto combo_mul = cp( s ) / p()->resources.max[ RESOURCE_COMBO_POINT ];
 
@@ -4346,9 +4431,9 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
   {
     ravage_ferocious_bite_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->find_spell( 441591 ), f ) {}
 
-    double energy_multiplier( const action_state_t* s ) const override
+    double energy_modifier( const action_state_t* s ) const override
     {
-      return s->chain_target == 0 ? base_t::energy_multiplier( s ) : 1.0;
+      return s->chain_target == 0 ? base_t::energy_modifier( s ) : 0.0;
     }
   };
 
@@ -4619,7 +4704,10 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
   {
     base_t::impact( s );
 
-    if ( tear && result_is_hit( s->result ) )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( tear )
     {
       auto tick_amount = calculate_tick_amount( s, 1.0 );
       auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
@@ -4627,13 +4715,20 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
       tear->base_td = dot_total;
       tear->execute_on_target( s->target );
     }
+
+    // rip is scripted to consume implant
+    if ( p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
+    {
+      p()->active.bloodseeker_vines_implant->execute_on_target( s->target );
+      p()->buff.implant->expire();
+    }
   }
 
   void tick( dot_t* d ) override
   {
     base_t::tick( d );
 
-    auto c = apex_pct / std::cbrt( p()->get_active_dots( d ) );
+    auto c = apex_pct / std::pow( p()->get_active_dots( d ), 0.3 );
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
@@ -4679,6 +4774,16 @@ struct primal_wrath_t final : public cat_finisher_t
     }
   }
 
+  std::vector<player_t*>& target_list() const override
+  {
+    // target order is randomized, can be important for rip application ordering
+    auto& tl = cat_finisher_t::target_list();
+
+    rng().shuffle( tl.begin(), tl.end() );
+
+    return tl;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     return cat_finisher_t::composite_da_multiplier( s ) * ( 1.0 + cp( s ) );
@@ -4719,7 +4824,9 @@ struct shred_t final : public use_fluid_form_t<DRUID_FERAL,
       {
         energize->add_parse_entry()
           .set_value( eff.base_value() )
-          .set_func( [ this ] { return stealthed_any(); } )
+          .set_func( []( const action_t* a, const action_state_t* ) {
+            return a ? debug_cast<const shred_t*>( a )->stealthed_any() : false;
+          } )
           .set_flat( true )
           .set_eff( &eff );
       }
@@ -6000,8 +6107,14 @@ struct regrowth_t final : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( t == player )
-      ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
+    if ( t == player && p()->talent.harmonious_constitution.ok() )
+    {
+      auto hc_mul = p()->talent.harmonious_constitution->effectN( 1 ).percent();
+      if ( p()->specialization() == DRUID_FERAL )
+        hc_mul += p()->spec_spell->effectN( 16 ).percent();
+
+      ctm *= 1.0 + hc_mul;
+    }
 
     return ctm;
   }
@@ -6444,7 +6557,7 @@ public:
   {
     druid_spell_t::execute();
 
-    if ( dreamstate && p()->buff.dreamstate->can_expire( this ) )
+    if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
       p()->buff.dreamstate->decrement();
 
     dreamstate = false;
@@ -6894,7 +7007,7 @@ struct fury_of_elune_t final : public druid_spell_t
 
   ground_aoe_params_t params;
   const spell_data_t* tick_spell;
-  buff_t* energize;
+  buff_t* energize_buff;
   action_t* damage = nullptr;
   action_t* boundless = nullptr;
   timespan_t tick_period;
@@ -6902,8 +7015,8 @@ struct fury_of_elune_t final : public druid_spell_t
   DRUID_ABILITY_C( fury_of_elune_t, druid_spell_t, "fury_of_elune", p->talent.fury_of_elune,
                    const spell_data_t* sd = nullptr, buff_t* b = nullptr ),
     tick_spell( sd ? sd : p->find_spell( 211545 ) ),
-    energize( b ? b : p->buff.fury_of_elune ),
-    tick_period( find_effect( energize, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER ).period() )
+    energize_buff( b ? b : p->buff.fury_of_elune ),
+    tick_period( find_effect( energize_buff, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER ).period() )
   {
     track_cd_waste = true;
 
@@ -6939,7 +7052,7 @@ struct fury_of_elune_t final : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    energize->trigger( params.duration() );
+    energize_buff->trigger( params.duration() );
 
     params.start_time( timespan_t::min() )  // reset start time
       .target( target );
@@ -8304,12 +8417,12 @@ struct wild_mushroom_t final : public druid_spell_t
   struct wild_mushroom_damage_t final : public druid_spell_t
   {
     action_t* fungal = nullptr;
-    double ap_per = 4.0;  // not in spell data
     double ap_max;
+    double ap_per;  // not in spell data, assumed to be max / 4
 
     wild_mushroom_damage_t( druid_t* p, flag_e f )
       : druid_spell_t( "wild_mushroom_damage", p, find_trigger( p->talent.wild_mushroom ).trigger(), f ),
-        ap_max( data().effectN( 2 ).base_value() )
+        ap_max( data().effectN( 2 ).base_value() ), ap_per( ap_max / 4 )
     {
       background = dual = true;
       aoe = -1;
@@ -8998,8 +9111,10 @@ struct druid_melee_t : public Base
   using ab = Base;
   using base_t = druid_melee_t<Base>;
 
+  accumulated_rng_t* ravage_rng = nullptr;
+  proc_t* ravage_proc = nullptr;
+  buff_t* ravage_buff = nullptr;
   double ooc_chance = 0.0;
-  double ravage_chance = 0.0;
 
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
@@ -9028,8 +9143,14 @@ struct druid_melee_t : public Base
     if ( p->talent.moment_of_clarity.ok() )
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    if ( p->talent.ravage.ok() )
-      ravage_chance = 2.00;  // TODO: placeholder. test if rppm or proc, different for spec/form
+    // Feral: 0.286% via community testing (~197k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+    if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
+    {
+      ravage_rng = p->get_accumulated_rng( "ravage", 0.00286 );
+      ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
+      ravage_buff = p->buff.ravage_fb;
+    }
   }
 
   timespan_t execute_time() const override
@@ -9059,11 +9180,10 @@ struct druid_melee_t : public Base
         }
       }
 
-      if ( ravage_chance )
+      if ( ravage_rng && ravage_rng->trigger() )
       {
-        double chance = ab::weapon->proc_chance_on_swing( ravage_chance );
-        ab::p()->buff.ravage_fb->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
-        ab::p()->buff.ravage_maul->trigger( 1, buff_t::DEFAULT_VALUE(), chance );
+        ravage_proc->occur();
+        ravage_buff->trigger();
       }
     }
   }
@@ -9245,6 +9365,32 @@ void druid_t::activate()
       else
       {
         event_t::cancel( astral_power_decay );
+      }
+    } );
+  }
+
+  if ( talent.lycaras_teachings.ok() )
+  {
+    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+      buff_t* new_buff;
+
+      switch ( get_form() )
+      {
+        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit; break;
+        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers; break;
+        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast; break;
+        default:           return;
+      }
+
+      if ( !new_buff->check() )
+      {
+        buff.lycaras_teachings_haste->expire();
+        buff.lycaras_teachings_crit->expire();
+        buff.lycaras_teachings_vers->expire();
+        buff.lycaras_teachings_mast->expire();
+
+        new_buff->trigger();
       }
     } );
   }
@@ -10170,7 +10316,8 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       if ( !old_ )
       {
-        auto d = b->remains();
+        // cannot use remains() here as expiration is not yet set when stack change callbacks are run
+        auto d = b->buff_duration();
 
         // advance eclipse manually if refreshing as stack_change_callback is not called
         auto in_lunar = eclipse_handler.in_lunar();
@@ -10499,41 +10646,11 @@ void druid_t::create_buffs()
                                            talent.after_the_wildfire->effectN( 1 ).trigger() )
                               ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() );
 
-  auto berserk_cd_fn = [ this ] {
-    cooldown.growl->adjust_recharge_multiplier();
-    cooldown.mangle->adjust_recharge_multiplier();
-    cooldown.thrash_bear->adjust_recharge_multiplier();
-    cooldown.frenzied_regeneration->adjust_recharge_multiplier();
-  };
-
   buff.berserk_bear =
-    make_fallback( talent.berserk_ravage.ok(), this, "berserk_bear", spec.berserk_bear )
-      ->set_name_reporting( "berserk" )
-      ->set_stack_change_callback( [ berserk_cd_fn ]( buff_t*, int, int ) { berserk_cd_fn(); } );
+    make_fallback<berserk_bear_buff_t>( talent.berserk_ravage.ok(), this, "berserk_bear" );
 
   buff.incarnation_bear =
-    make_fallback( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc", spec.incarnation_bear )
-      ->set_stack_change_callback(
-        [ this,
-          berserk_cd_fn,
-          mul = 1.0 + find_effect( spec.incarnation_bear, A_MOD_INCREASE_HEALTH_PERCENT ).percent() ]
-        ( buff_t*, int old_, int new_ ) {
-          berserk_cd_fn();
-          if ( !old_ )
-            adjust_health_pct( mul, true );
-          else if ( !new_ )
-            adjust_health_pct( mul, false );
-        } );
-
-  buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
-  buff.b_inc_bear->set_cooldown( 0_ms )
-    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
-
-  if ( talent.berserk_unchecked_aggression.ok() )
-  {
-    buff.b_inc_bear->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
+    make_fallback<incarnation_bear_buff_t>( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc" );
 
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
@@ -10576,7 +10693,8 @@ void druid_t::create_buffs()
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore )
-    ->set_cooldown( talent.gore->internal_cooldown() );
+    ->set_cooldown( talent.gore->internal_cooldown() )
+    ->set_chance( talent.gore->effectN( 1 ).percent() );
 
   buff.gory_fur = make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
     ->set_trigger_spell( talent.gory_fur );
@@ -10762,10 +10880,12 @@ void druid_t::create_buffs()
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.ravage_fb = make_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
-    this, "ravage", find_spell( 441585 ) );
+    this, "ravage", find_spell( 441585 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.ravage_maul = make_fallback( talent.ravage.ok() && specialization() == DRUID_GUARDIAN,
-    this, "ravage", find_spell( 441602 ) );
+    this, "ravage", find_spell( 441602 ) )
+      ->set_trigger_spell( talent.ravage );
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
@@ -11027,7 +11147,24 @@ void druid_t::create_actions()
   }
 
   if ( talent.thriving_growth.ok() )
-    active.bloodseeker_vines = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines" );
+  {
+    auto vines = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines" );
+
+    if ( talent.implant.ok() )
+    {
+      auto m_data = get_modified_spell( talent.implant )
+        ->parse_effects( talent.resilient_flourishing );
+
+      auto implant = get_secondary_action<bloodseeker_vines_t>( "bloodseeker_vines_implant" );
+      implant->name_str_reporting = "bloodseeker_vines";
+      implant->dot_duration = m_data->effectN( specialization() == DRUID_FERAL ? 1 : 2 ).time_value();
+      active.bloodseeker_vines_implant = implant;
+
+      vines->replace_stats( implant );
+    }
+
+    active.bloodseeker_vines = vines;
+  }
 
   if ( talent.treants_of_the_moon.ok() )
   {
@@ -11264,6 +11401,15 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
+  if ( true_level <= 70 )
+  {
+    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
+      sim->error( "Dragonflight Tier Sets are no longer supported for Druids." );
+
+    sim->error( "{} does not yet have a complete Action Prioirty List (APL).",
+                util::specialization_string( specialization() ) );
+  }
+
   if ( specialization() == DRUID_BALANCE )
   {
     switch ( style )
@@ -11277,6 +11423,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
         return false;
     }
   }
+
   if ( specialization() == DRUID_GUARDIAN )
   {
     switch ( style )
@@ -11291,6 +11438,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
       return true;
     }
   }
+
   return true;
 }
 
@@ -11703,13 +11851,29 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
-        // raze (400254) triggers moonless night despite being an aoe spell
-        // moonfire damage (164812) does not trigger
-        if ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 || a->id == 400254 ) && a->id != 164812 &&
-             p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+        if ( !s->result_amount || !p()->get_target_data( s->target )->dots.moonfire->is_ticking() )
+          return;
+
+        // raze (400254) & ravage (441605) trigger moonless night despite being an aoe spell
+        // moonfire (164812) & sunfire (164815) do not trigger
+        switch ( a->id )
         {
-          druid_cb_t::trigger( a, s );
+          case 164812:  // moonfire
+          case 164815:  // sunfire
+            return;     // end
+
+          case 400254:  // raze
+          case 441605:  // ravage
+            break;      // continue
+
+          default:
+            if ( a->aoe < 0 || a->aoe > 1 )
+              return;   // end
+            else
+              break;    // continue
         }
+
+        druid_cb_t::trigger( a, s );
       }
 
       void execute( action_t*, action_state_t* s ) override
@@ -11762,19 +11926,11 @@ void druid_t::init_special_effects()
     } );
   }
 
-  if ( talent.implant.ok() && active.bloodseeker_vines )
+  if ( talent.implant.ok() && active.bloodseeker_vines_implant )
   {
     struct implant_cb_t final : public druid_cb_t
     {
-      timespan_t dur;
-
-      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e )
-      {
-        auto m_data = p->get_modified_spell( p->talent.implant )
-          ->parse_effects( p->talent.resilient_flourishing );
-
-        dur = m_data->effectN( p->specialization() == DRUID_FERAL ? 1 : 2 ).time_value();
-      }
+      implant_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
       // TODO: whitelist aoe spells as necessary if they can trigger
       void trigger( action_t* a, action_state_t* s ) override
@@ -11785,12 +11941,7 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        auto orig_dur = p()->active.bloodseeker_vines->dot_duration;
-
-        p()->active.bloodseeker_vines->dot_duration = dur;
-        p()->active.bloodseeker_vines->execute_on_target( target( s, p()->active.bloodseeker_vines ) );
-        p()->active.bloodseeker_vines->dot_duration = orig_dur;
-
+        p()->active.bloodseeker_vines_implant->execute_on_target( target( s, p()->active.bloodseeker_vines_implant ) );
         p()->buff.implant->expire( a );
       }
     };
@@ -11798,6 +11949,7 @@ void druid_t::init_special_effects()
     const auto driver = new special_effect_t( this );
     driver->name_str = talent.implant->name_cstr();
     driver->spell_id = buff.implant->data().id();
+    driver->proc_flags2_ = PF2_CAST_DAMAGE;
     special_effects.push_back( driver );
 
     auto cb = new implant_cb_t( this, *driver );
@@ -11936,14 +12088,15 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t* a )
 {
   auto actual = player_t::resource_gain( r, amount, g, a );
-  auto over = amount - actual;
-
   if ( r == RESOURCE_COMBO_POINT )
   {
+    auto over = amount - actual;
+
     if ( g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
     {
       auto avail =
         std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
+
       if ( avail > 0 )
         g->overflow[ r ] -= avail;
 
@@ -12014,29 +12167,6 @@ void druid_t::precombat_init()
   start_buff( buff.shooting_stars_sunfire );
   start_buff( buff.treants_of_the_moon );
   start_buff( buff.yseras_gift );
-
-  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    buff_t* new_buff;
-
-    switch( get_form() )
-    {
-      case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-      case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
-      case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
-      case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
-      default: return;
-    }
-
-    if ( !new_buff->check() )
-    {
-      buff.lycaras_teachings_haste->expire();
-      buff.lycaras_teachings_crit->expire();
-      buff.lycaras_teachings_vers->expire();
-      buff.lycaras_teachings_mast->expire();
-
-      new_buff->trigger();
-    }
-  } );
 }
 
 // druid_t::combat_begin (called after precombat apl before default apl)=======
@@ -13479,29 +13609,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
 
-  // lunar calling + 4pc interaction with thrash is scripted to multiply by 1.05/1.08 to account for thrash doing
-  // arcane damage. instead of a scripted multiplier, we can simply force the effect with the correct value.
-  // NOTE: this is currently bugged as multiplying by 5/8, not 1.05/1.08
-  auto bear_tww1 = sets->set( DRUID_GUARDIAN, TWW1, B4 );
-  if ( action.data().affected_by( talent.lunar_calling->effectN( 4 ) ) &&
-       ( action.data().affected_by( bear_tww1->effectN( 3 ) ) ||
-         action.data().affected_by( bear_tww1->effectN( 4 ) ) ) )
-  {
-    auto val = bear_tww1->effectN( 1 ).percent();
-    action.base_dd_multiplier *= 1.0 + val;
-    sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, val * 100 );
-    action.affecting_list.emplace_back( &bear_tww1->effectN( 3 ), val );
-
-    val = bear_tww1->effectN( 2 ).percent();
-    action.base_td_multiplier *= 1.0 + val;
-    sim->print_debug( "{} base_td_multiplier modified by {}%", *this, val * 100 );
-    action.affecting_list.emplace_back( &bear_tww1->effectN( 4 ), val );
-  }
-  else
-  {
-    action.apply_affecting_aura( bear_tww1 );
-  }
-
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
   action.apply_affecting_aura( talent.germination );
@@ -13610,9 +13717,9 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->mastery.astral_invocation,
                  // arcane passive mastery (eff#1) and nature passive mastery (eff#3) apply to orbital strike &
                  // goldrinn's fang (label 2391) via hidden script
-                 affect_list_t( 1, 3 ).adjust_label( 2391 ),
+                 affect_list_t( 1, 3 ).add_label( 2391 ),
                  // nature passive mastery (eff#3) applies to dream burst (433850) via hidden script
-                 affect_list_t( 3 ).adjust_spell( 433850 ) );
+                 affect_list_t( 3 ).add_spell( 433850 ) );
 
   // talent data for balance of all things only modifies effect#1 of the buff, and is missing modification to effect#3
   // which is done via hidden script. hack around this by overriding the value instead of normally parsing the talent.
@@ -13628,7 +13735,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 7 ), p()->talent.umbral_intensity );
   parse_effects( p()->buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 7 ), USE_CURRENT,
                  // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) via hidden script
-                 affect_list_t( 1 ).adjust_label( 2391 ) );
+                 affect_list_t( 1 ).add_label( 2391 ) );
 
   // due to harmony of the heavens, we parse the damage effects (#1/#8) separately and use the current buff value
   // instead of data value
@@ -13636,7 +13743,7 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
                  // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
                  // via hidden script
-                 affect_list_t( 1 ).adjust_label( 2391 ).adjust_spell( 433850 ) );
+                 affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ) );
 
   auto owl_mask = effect_mask_t( false ).enable( 1, 2, 3, 4 );
   if ( p()->talent.astral_insight.ok() )
@@ -13684,6 +13791,12 @@ void druid_action_t<Base>::parse_action_effects()
   parse_effects( p()->buff.incarnation_bear, bear_mask, p()->talent.berserk_ravage,
                  p()->talent.berserk_unchecked_aggression );
   parse_effects( p()->buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+
+  if ( p()->talent.lunar_calling.ok() )
+    parse_effects( p()->sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 3, 4 ) );
+  else
+    parse_effects( p()->sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
+
   parse_effects( p()->buff.guardians_tenacity );
 
   // wrapper to bypass ab:: resoultion for compile time checks
@@ -13736,7 +13849,7 @@ void druid_action_t<Base>::parse_target_effects()
   parse_target_effects( d_fn( &druid_td_t::dots_t::sunfire ),
                         p()->spec.sunfire_dmg, p()->mastery.astral_invocation,
                         // nature dot mastery (eff#4) applies to dream burst (433850) via hidden script
-                        affect_list_t( 4 ).adjust_spell( 433850 ) );
+                        affect_list_t( 4 ).add_spell( 433850 ) );
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ),
                         p()->spec.stellar_amplification );

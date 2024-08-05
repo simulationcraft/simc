@@ -363,13 +363,12 @@ proc_types2 action_state_t::execute_proc_type2() const
 proc_types2 action_state_t::cast_proc_type2() const
 {
   // Only foreground actions may trigger the "on cast" procs
-  if (action->background)
+  if ( action->background )
   {
     return PROC2_INVALID;
   }
 
-  if ( action->has_amount_result() ||
-       action->base_ta( this ) || action->base_da_min( this ) ||
+  if ( action->has_amount_result() || action->base_ta( this ) || action->base_da_min( this ) ||
        action->bonus_ta( this ) || action->bonus_da( this ) )
   {
     // This is somewhat naive way to differentiate, better way would be to classify based on the
@@ -394,7 +393,7 @@ proc_types2 action_state_t::cast_proc_type2() const
   }
 
   // Generic fallback "on any cast"
-  return PROC2_CAST;
+  return PROC2_CAST_GENERIC;
 }
 
 proc_types2 action_state_t::interrupt_proc_type2() const

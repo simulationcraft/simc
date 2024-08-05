@@ -105,44 +105,54 @@ struct pet_action_base_t : public BASE
   {
     super_t::impact( s );
 
-    if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-      o()->trigger_empowered_tiger_lightning( s );
+    if ( s->result_type != result_amount_type::DMG_DIRECT && s->result_type != result_amount_type::DMG_OVER_TIME )
+      return;
 
-    if ( !super_t::result_is_miss( s->result ) && s->result_amount > 0 )
+    o()->trigger_empowered_tiger_lightning( s );
+
+    if ( super_t::result_is_miss( s->result ) || s->result_amount <= 0.0 )
+      return;
+
+    if ( o()->get_target_data( s->target )->debuff.gale_force->check() &&
+         o()->rng().roll( o()->get_target_data( s->target )->debuff.gale_force->default_chance ) )
     {
-      if ( o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
-      {
-        if ( s->action->school == SCHOOL_SHADOWFLAME )
-        {
-          double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
-          double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
-          double increase      = std::fmin( current_value + result,
-                                            o()->max_health() );  // accumulator is capped at the player's current max hp
-          o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-          o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-        }
+      double amount =
+          s->result_amount * o()->get_target_data( s->target )->debuff.gale_force->data().effectN( 1 ).percent();
+      o()->active_actions.gale_force->base_dd_min = o()->active_actions.gale_force->base_dd_max = amount;
+      o()->active_actions.gale_force->execute_on_target( s->target );
+    }
 
-        switch ( s->action->id )
+    if ( !o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
+      return;
+
+    if ( s->action->school == SCHOOL_SHADOWFLAME )
+    {
+      double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
+      double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
+      double increase      = std::fmin( current_value + result,
+                                        o()->max_health() );  // accumulator is capped at the player's current max hp
+      o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
+      o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
+    }
+
+    switch ( s->action->id )
+    {
+      // Blacklist
+      case 425299:  // charred dreams
+      case 325217:  // bonedust brew
+        break;
+      default:
+        // This value is not presented in any spell data and was found via logs.
+        if ( o()->rng().roll( 0.5 ) )
         {
-          // Blacklist
-          case 425299:  // charred dreams
-          case 325217:  // bonedust brew
-            break;
-          default:
-            // This value is not presented in any spell data and was found via logs.
-            if ( o()->rng().roll( 0.5 ) )
-            {
-              double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-              o()->active_actions.charred_dreams_dmg_4p->target = s->target;
-              o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-                  o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-              o()->active_actions.charred_dreams_dmg_4p->execute();
-              o()->sim->print_debug(
-                  "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}", s->action->id,
-                  s->result_amount, amt );
-            }
+          double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
+          o()->active_actions.charred_dreams_dmg_4p->target = s->target;
+          o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
+              o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
+          o()->active_actions.charred_dreams_dmg_4p->execute();
+          o()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
+                                 s->action->id, s->result_amount, amt );
         }
-      }
     }
   }
 
@@ -1132,14 +1142,86 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_crackling_jade_lightning_t : public sef_spell_t
   {
-    sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning )
+    struct sef_crackling_jade_lightning_aoe_t : public sef_spell_t
     {
-      tick_may_crit = true;
-      channeled = tick_zero = true;
-      hasted_ticks          = false;
+      sef_crackling_jade_lightning_aoe_t( storm_earth_and_fire_pet_t *player )
+        : sef_spell_t( "crackling_jade_lightning_sef_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
+      {
+        dual = background = true;
+      }
+
+      double cost_per_tick( resource_e ) const override
+      {
+        return 0.0;
+      }
+    };
+
+    sef_crackling_jade_lightning_aoe_t *aoe_dot;
+
+    sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
+      : sef_spell_t( "crackling_jade_lightning_sef", player, player->o()->baseline.monk.crackling_jade_lightning ),
+        aoe_dot( new sef_crackling_jade_lightning_aoe_t( player ) )
+    {
       interrupt_auto_attack = true;
-      dot_duration          = data().duration();
+      channeled             = true;
+
+      add_child( aoe_dot );
+    }
+
+    double cost_per_tick( resource_e ) const override
+    {
+      return 0;
+    }
+
+    void execute() override
+    {
+      sef_spell_t::execute();
+
+      if ( p()->o()->talent.windwalker.power_of_the_thunder_king->ok() )
+      {
+        const auto &tl = target_list();
+        double count   = 0;
+
+        for ( auto &t : tl )
+        {
+          // Don't apply AoE version to primary target
+          if ( t == target )
+            continue;
+
+          if ( count < p()->o()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
+          {
+            aoe_dot->execute_on_target( t );
+            count++;
+          }
+        }
+      }
+    }
+  };
+
+  struct sef_celestial_conduit_tick_t : public sef_tick_action_t
+  {
+    sef_celestial_conduit_tick_t( storm_earth_and_fire_pet_t *p )
+      : sef_tick_action_t( "celestial_conduit_tick", p, p->o()->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+    {
+      base_dd_min = base_dd_max = 1.0;  // parse state flags
+
+      dot_duration = timespan_t::zero();
+      trigger_gcd  = timespan_t::zero();
+    }
+  };
+
+  struct sef_celestial_conduit_t : public sef_melee_attack_t
+  {
+    sef_celestial_conduit_t( storm_earth_and_fire_pet_t *player )
+      : sef_melee_attack_t( "celestial_conduit", player,
+                            player->o()->talent.conduit_of_the_celestials.celestial_conduit )
+    {
+      channeled = tick_zero = interrupt_auto_attack = true;
+
+      attack_power_mod.direct = 0;
+      weapon_power_mod        = 0;
+
+      tick_action = new sef_celestial_conduit_tick_t( player );
     }
 
     // sef_action_base_t uses the source action's tick_time instead of the sef_action.
@@ -1159,9 +1241,21 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
 
-    double cost_per_tick( resource_e ) const override
+    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
+    // Recalculate composite_dot_duration here.
+    timespan_t composite_dot_duration( const action_state_t *s ) const override
     {
-      return 0;
+      auto base = dot_duration.base;
+
+      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
+      if ( mul <= 0 )
+        return 0_ms;
+
+      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
+      if ( base <= 0_ms )
+        return 0_ms;
+
+      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 
@@ -1247,6 +1341,7 @@ public:
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) =
         new sef_strike_of_the_windlord_oh_t( this );
+    attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT ) = new sef_celestial_conduit_t( this );
 
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
@@ -1325,7 +1420,8 @@ public:
       // and we're channeling spinning crane kick
       if ( dynamic_cast<sef_spinning_crane_kick_t *>( channeling ) == nullptr ||
            ability == actions::sef_ability_e::SEF_FISTS_OF_FURY ||
-           ability == actions::sef_ability_e::SEF_SPINNING_CRANE_KICK )
+           ability == actions::sef_ability_e::SEF_SPINNING_CRANE_KICK ||
+           ability == actions::sef_ability_e::SEF_CELESTIAL_CONDUIT )
       {
         channeling->cancel();
       }
@@ -1469,32 +1565,13 @@ struct niuzao_pet_t : public monk_pet_t
       parse_options( options_str );
       aoe      = -1;
       may_crit = true;
-      if ( pet->o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-        split_aoe_damage = true;
-    }
-
-    double bonus_da( const action_state_t *state ) const override
-    {
-      double base_da = pet_melee_attack_t::bonus_da( state );
-      if ( o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok() )
-      {
-        // close enough, not exact though
-        // the base damage from stomp is not split, but the added damage from recent purification is split
-        double base_stomp = sim->averaged_range( base_da_min( state ), base_da_max( state ) );
-        double purify     = o()->buff.recent_purifies->check_value();
-        double added_damage =
-            purify * o()->talent.brewmaster.improved_invoke_niuzao_the_black_ox->effectN( 1 ).percent();
-        o()->sim->print_debug( "applying bonus purify damage (base da: {}, purify: {}, added: {}, final: {})", base_da,
-                               purify, added_damage, base_da + added_damage );
-        return base_stomp * ( state->n_targets - 1 ) + base_da + added_damage;
-      }
-      return base_da;
     }
 
     double action_multiplier() const override
     {
       double am = pet_melee_attack_t::action_multiplier();
       am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
+      am *= 1.0 + o()->buff.recent_purifies->check_value();
       return am;
     }
 
@@ -1731,7 +1808,8 @@ private:
 public:
   fury_of_xuen_pet_t( monk_t *owner ) : monk_pet_t( owner, "fury_of_xuen_tiger", PET_XUEN, false, true )
   {
-    // npc_id                      = o()->passives.fury_of_xuen->effectN( 2 ).misc_value1();
+    npc_id                      = o()->passives.fury_of_xuen->effectN( 2 ).misc_value1();
+    npc_suffix                  = "fury";
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );

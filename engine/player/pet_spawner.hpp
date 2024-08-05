@@ -91,7 +91,8 @@ private:
   /// Check function for creation of persistent pets
   check_fn_t      m_check_create;
   /// A list of all dynamically spawned, active, and inactive pets of type T, respectively
-  std::vector<T*> m_pets, m_active_pets, m_inactive_pets;
+  std::vector<T*> m_pets, m_inactive_pets;
+  mutable std::vector<T*> m_active_pets;
   /// Pre-defined duration for the spawn
   timespan_t      m_duration;
   /// Type of spawn
@@ -117,9 +118,9 @@ private:
   // Bookkeeping optimization
 
   /// Pet states changed, must recompute active/inactive pet vectors
-  bool m_dirty;
+  mutable bool m_dirty;
   /// Number of currently active pets
-  size_t m_active;
+  mutable size_t m_active;
   /// First created pet, required for proper data collection
   T* m_initial_pet;
 
@@ -129,7 +130,7 @@ private:
   T* create_pet( create_phase phase );
 
   /// Recreate m_active pets, m_inactive pets if m_dirty == 1
-  void update_state();
+  void update_state() const;
 
   /// Select replacement pet
   T* replacement_pet();
@@ -212,7 +213,7 @@ public:
   /// Access the zero-indexth created pet, nullptr if no pets are created
   T* pet( size_t index = 0 ) const;
   /// Access the zero-indexth active pet, nullptr if no pet of index active
-  T* active_pet( size_t index = 0 );
+  T* active_pet( size_t index = 0 ) const;
   /// Access the first active pet based on an unary check function, nullptr if no pet found
   T* active_pet( const check_arg_fn_t& fn );
   /// Acccess the active pet with highest remaining time left using an optional unary constraint
@@ -240,6 +241,7 @@ public:
   /// Collect statistical data
   void datacollection_end() override;
 };
+
 } // Namespace spawner ends
 
 #include "pet_spawner_impl.hpp"

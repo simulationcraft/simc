@@ -114,6 +114,7 @@ actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.pri
 # Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
 actions.finish+=/rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
 actions.finish+=/black_powder,if=!variable.priority_rotation&spell_targets>=3
+actions.finish+=/coup_de_grace
 actions.finish+=/eviscerate
 
 # Stealth Cooldowns

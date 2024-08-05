@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ thewarwithin ] # TODO: remove if-checks for only DF branch when TWW APLS are ready
+    branches: [ thewarwithin ]
   push:
     branches: [ thewarwithin ]
     paths-ignore:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        compiler: [gcc-12, gcc-7]
+        compiler: [gcc-12, gcc-7, gcc-14]
         cppVersion: [17, 20]
         include:
           - compiler: gcc-7
@@ -32,6 +32,10 @@ jobs:
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
+          - compiler: gcc-14
+            cxx: g++-14
+            packages: gcc-14 g++-14
+            os: ubuntu-24.04
         exclude:
           - compiler: gcc-7
             cppVersion: 20
@@ -56,7 +60,7 @@ jobs:
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.compiler }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
+              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
 
       - name: Build
         env:
@@ -67,7 +71,7 @@ jobs:
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
-          
+
       - uses: actions/cache@v4
         with:
           path: |
@@ -84,7 +88,7 @@ jobs:
     strategy:
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-7, clang++-15]
+        compiler: [clang++-7, clang++-15, clang++-18]
         include:
           - compiler: clang++-7
             os: ubuntu-20.04
@@ -92,6 +96,10 @@ jobs:
           - compiler: clang++-15
             os: ubuntu-22.04
             packages: clang-15 lld-15
+            enable_file_prefix_map: true
+          - compiler: clang++-18
+            os: ubuntu-24.04
+            packages: clang-18 lld-18
             enable_file_prefix_map: true
         exclude:
           - compiler: clang++-7
@@ -210,7 +218,11 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             druid_balance, druid_feral, druid_guardian,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
-            demonhunter_vengeance, demonhunter_havoc, priest_shadow
+            demonhunter_vengeance, demonhunter_havoc,
+            priest_shadow,
+            hunter_beast_mastery, hunter_marksmanship, hunter_survival,
+            monk_brewmaster, monk_windwalker,
+            mage_arcane, mage_fire, mage_frost,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
@@ -239,11 +251,11 @@ jobs:
 
       - name: Setup
         id: setup
-        env: 
+        env:
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
           echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
-          echo "SPEC_STR=${MATRIX_SPEC##*_}" >> "$GITHUB_ENV"
+          echo "SPEC_STR=${MATRIX_SPEC#*_}" >> "$GITHUB_ENV"
 
       - name: "Log Debug"
         if: always()
@@ -251,12 +263,16 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "HTML JSON"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
@@ -403,7 +419,7 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
-    if: github.ref_name == 'dragonflight'
+    if: false # TODO: re-enable when all TWW APLs are ready && CI.simc has all specs
 
     strategy:
       fail-fast: false
@@ -454,7 +470,7 @@ jobs:
     name: Regenerate profiles
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push' && github.ref_name == 'dragonflight'
+    if: github.event_name == 'push' && false # TODO: re-enable when all TWW APLs are ready
 
     strategy:
       fail-fast: false
@@ -464,7 +480,7 @@ jobs:
         include:
           - compiler: clang++-15
             os: ubuntu-22.04
-    
+
     steps:
       - uses: actions/cache@v4
         with:
@@ -502,7 +518,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: github.ref_name == 'dragonflight'
+        if: false # TODO: re-enable when all TWW APLs are ready
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -514,30 +530,30 @@ jobs:
         arch: [x64, amd64_arm64]
         include:
           - arch: x64
-            runSmokeTest: true
+            runSmokeTest: false # TODO: re-enable when all TWW APLs are ready
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
-       
+
     steps:
       - uses: actions/checkout@v4
 
        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
-      
+
       # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
-      - uses: ilammy/msvc-dev-cmd@v1       
+      - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
 
       - name: Generate project files
         run: |
           cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
-      
+
       - name: Build
         run: |
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: matrix.runSmokeTest && github.ref_name == 'dragonflight'
+        if: matrix.runSmokeTest
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

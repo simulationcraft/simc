@@ -41,11 +41,25 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Demonology
-  debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
-                                           ->set_default_value_from_effect( 1 );
+  debuffs_wicked_maw = make_buff( *this, "wicked_maw", p.talents.wicked_maw_debuff )
+                           ->set_default_value_from_effect( 1 );
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
+
+  debuffs_doom = make_buff( *this, "doom", p.talents.doom_debuff )
+                     ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
+                       if ( cur == 0 )
+                       {
+                         p.proc_actions.doom_proc->execute_on_target( b->player );
+
+                         if ( p.talents.pact_of_the_eredruin.ok() && p.rng().roll( p.rng_settings.pact_of_the_eredruin.setting_value ) )
+                         {
+                           p.warlock_pet_list.doomguards.spawn( 1u );
+                           p.procs.pact_of_the_eredruin->occur();
+                         }
+                       }
+                       } );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
@@ -83,6 +97,22 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
+
+  // Diabolist
+  debuffs_cloven_soul = make_buff( *this, "cloven_soul", p.hero.cloven_soul_debuff );
+
+  // Hellcaller
+  dots_wither = target->get_dot( "wither", &p );
+
+  debuffs_blackened_soul = make_buff( *this, "blackened_soul", p.hero.blackened_soul_trigger )
+                               ->set_duration( 0_ms )
+                               ->set_tick_zero( false )
+                               ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
+                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } )
+                               ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                               ->set_freeze_stacks( true );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -150,6 +180,9 @@ int warlock_td_t::count_affliction_dots() const
   if ( dots_soul_rot->is_ticking() )
     count++;
 
+  if ( dots_wither->is_ticking() )
+    count++;
+
   return count;
 }
 
@@ -161,7 +194,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
-    shadow_invocation_proc_chance( 0.0 ),
+    diabolic_ritual( 0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -172,13 +205,16 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     buffs(),
     gains(),
     procs(),
+    rng_settings(),
     initial_soul_shards( 3 ),
     default_pet(),
-    disable_auto_felstorm( false )
+    disable_auto_felstorm( false ),
+    normalize_destruction_mastery( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
+  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
@@ -234,6 +270,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
 
+  if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
+    m *= 1.0 + hero.cloven_soul_debuff->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -271,6 +310,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + cache.mastery_value();
     else
       m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+    if ( !guardian && talents.rune_of_shadows.ok() )
+      m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -281,6 +323,12 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     if ( !guardian && talents.summoners_embrace.ok() )
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   }
+
+  if ( hero.flames_of_xoroth.ok() && !guardian )
+    m *= 1.0 + hero.flames_of_xoroth->effectN( 3 ).percent();
+
+  if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
+    m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
 
   return m;
 }
@@ -311,10 +359,13 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2022-11-27
-    if ( talents.fel_sunder.ok() && !guardian )
+    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
+    if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
       m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
   }
+
+  if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
+    m *= 1.0 + hero.cloven_soul_debuff->effectN( guardian ? 3 : 2 ).percent();
 
   return m;
 }
@@ -383,7 +434,7 @@ void warlock_t::init_assessors()
 {
   player_t::init_assessors();
 
-  auto assessor_fn = [ this ]( result_amount_type rt, action_state_t* s ){
+  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ){
     if ( get_target_data( s->target )->dots_seed_of_corruption->is_ticking() )
       accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
 
@@ -480,10 +531,6 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet == source )
       continue;
 
-    // Pit Lord is not affected by The Expendables
-    if ( lock_pet->pet_type == PET_PIT_LORD )
-      continue;
-
     lock_pet->buffs.the_expendables->trigger();
   }
 }
@@ -517,7 +564,36 @@ std::string warlock_t::create_profile( save_e stype )
     if ( !default_pet.empty() )
       profile_str += "default_pet=" + default_pet + "\n";
     if ( disable_auto_felstorm )
-      profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm );
+      profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
+    if ( normalize_destruction_mastery )
+      profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
+
+    if ( rng_settings.cunning_cruelty_sb.setting_value != rng_settings.cunning_cruelty_sb.default_value )
+      profile_str += "rng_cunning_cruelty_sb=" + util::to_string( rng_settings.cunning_cruelty_sb.setting_value ) + "\n";
+    if ( rng_settings.cunning_cruelty_ds.setting_value != rng_settings.cunning_cruelty_ds.default_value )
+      profile_str += "rng_cunning_cruelty_ds=" + util::to_string( rng_settings.cunning_cruelty_ds.setting_value ) + "\n";
+    if ( rng_settings.agony.setting_value != rng_settings.agony.default_value )
+      profile_str += "rng_agony=" + util::to_string( rng_settings.agony.setting_value ) + "\n";
+    if ( rng_settings.nightfall.setting_value != rng_settings.nightfall.default_value )
+      profile_str += "rng_nightfall=" + util::to_string( rng_settings.nightfall.setting_value ) + "\n";
+    if ( rng_settings.pact_of_the_eredruin.setting_value != rng_settings.pact_of_the_eredruin.default_value )
+      profile_str += "rng_pact_of_the_eredruin=" + util::to_string( rng_settings.pact_of_the_eredruin.setting_value ) + "\n";
+    if ( rng_settings.shadow_invocation.setting_value != rng_settings.shadow_invocation.default_value )
+      profile_str += "rng_shadow_invocation=" + util::to_string( rng_settings.shadow_invocation.setting_value ) + "\n";
+    if ( rng_settings.spiteful_reconstitution.setting_value != rng_settings.spiteful_reconstitution.default_value )
+      profile_str += "rng_spiteful_reconsitution=" + util::to_string( rng_settings.spiteful_reconstitution.setting_value ) + "\n";
+    if ( rng_settings.decimation.setting_value != rng_settings.decimation.default_value )
+      profile_str += "rng_decimation=" + util::to_string( rng_settings.decimation.setting_value ) + "\n";
+    if ( rng_settings.dimension_ripper.setting_value != rng_settings.dimension_ripper.default_value )
+      profile_str += "rng_dimension_ripper=" + util::to_string( rng_settings.dimension_ripper.setting_value ) + "\n";
+    if ( rng_settings.blackened_soul.setting_value != rng_settings.blackened_soul.default_value )
+      profile_str += "rng_blackened_soul=" + util::to_string( rng_settings.blackened_soul.setting_value ) + "\n";
+    if ( rng_settings.bleakheart_tactics.setting_value != rng_settings.bleakheart_tactics.default_value )
+      profile_str += "rng_bleakheart_tactics=" + util::to_string( rng_settings.bleakheart_tactics.setting_value ) + "\n";
+    if ( rng_settings.seeds_of_their_demise.setting_value != rng_settings.seeds_of_their_demise.default_value )
+      profile_str += "rng_seeds_of_their_demise=" + util::to_string( rng_settings.seeds_of_their_demise.setting_value ) + "\n";
+    if ( rng_settings.mark_of_perotharn.setting_value != rng_settings.mark_of_perotharn.default_value )
+      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value) + "\n";
   }
 
   return profile_str;
@@ -532,6 +608,21 @@ void warlock_t::copy_from( player_t* source )
   initial_soul_shards = p->initial_soul_shards;
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
+  normalize_destruction_mastery = p->normalize_destruction_mastery;
+
+  rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
+  rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
+  rng_settings.agony = p->rng_settings.agony;
+  rng_settings.nightfall = p->rng_settings.nightfall;
+  rng_settings.pact_of_the_eredruin = p->rng_settings.pact_of_the_eredruin;
+  rng_settings.shadow_invocation = p->rng_settings.shadow_invocation;
+  rng_settings.spiteful_reconstitution = p->rng_settings.spiteful_reconstitution;
+  rng_settings.decimation = p->rng_settings.decimation;
+  rng_settings.dimension_ripper = p->rng_settings.dimension_ripper;
+  rng_settings.blackened_soul = p->rng_settings.blackened_soul;
+  rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
+  rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
+  rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -555,7 +646,7 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view pet_type )
+pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
   if ( p )
@@ -743,6 +834,20 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return false;
     });
   }
+  else if ( name_str == "diabolic_ritual" )
+  {
+    return make_fn_expr( name_str, [ this ]()
+      {
+        return buffs.ritual_overlord->check() || buffs.ritual_mother->check() || buffs.ritual_pit_lord->check();
+      } );
+  }
+  else if ( name_str == "demonic_art" )
+  {
+    return make_fn_expr( name_str, [ this ]()
+      {
+        return buffs.art_overlord->check() || buffs.art_mother->check() || buffs.art_pit_lord->check();
+      } );
+  }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
@@ -805,13 +910,22 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     infernals( "infernal", w ),
-    blasphemy( "blasphemy", w ),
     darkglares( "darkglare", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
     grimoire_felguards( "grimoire_felguard", w ),
-    wild_imps( "wild_imp", w )
+    wild_imps( "wild_imp", w ),
+    doomguards( "Doomguard", w ),
+    shadow_rifts( "shadowy_tear", w ),
+    unstable_rifts( "unstable_tear", w ),
+    chaos_rifts( "chaos_tear", w ),
+    overfiends( "overfiend", w ),
+    overlords( "overlord", w ),
+    mothers( "mother_of_chaos", w ),
+    pit_lords( "pit_lord", w ),
+    fragments( "infernal_fragment", w ),
+    diabolic_imps( "diabolic_imp", w )
 { }
 }  // namespace warlock
 

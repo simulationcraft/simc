@@ -172,8 +172,9 @@ public:
       std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
   void shuffle( T first, T last )
   {
-    size_t n = last - first;
-    for ( size_t i = 0; i < n - 1; i++ )
+    using diff_t = typename std::iterator_traits<T>::difference_type;
+    diff_t n = last - first;
+    for ( diff_t i = 0; i < n - 1; i++ )
       std::swap( first[ i ], first[ range( i, n ) ] );
   }
 

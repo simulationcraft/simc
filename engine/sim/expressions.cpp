@@ -1396,9 +1396,6 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
     if ( action->sim->debug )
       expression::print_tokens( tokens, action->sim );
 
-    if ( action->sim->debug )
-      expression::print_tokens( tokens, action->sim );
-
     if ( !expression::convert_to_rpn( tokens ) )
     {
       throw std::invalid_argument( fmt::format( "Unable to convert '{}' into RPN.", expr_str ) );

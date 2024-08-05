@@ -375,7 +375,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   else if ( p.report_information.save_str.find( "TWW1" ) != std::string::npos )
   {
     tier_name          = "TWW1";
-    max_ilevel_allowed = 636;
+    max_ilevel_allowed = 639;
   }
   else
   {
@@ -455,17 +455,17 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     }
 
     // Check gem count and gem slot usage
-    if ( gem_count > 1 && item.slot != SLOT_NECK )
+    if ( gem_count > 1 && item.slot != SLOT_NECK && item.slot != SLOT_FINGER_1 && item.slot != SLOT_FINGER_2 )
     {
-      sim.error( "Player {} has {} with {} gems slotted. Only one gem per item is allowed.\n",
-                 p.name(), util::slot_type_string( slot ), gem_count );
+      sim.error( "Player {} has {} with {} gems slotted. Only one gem per item is allowed.\n", p.name(),
+                 util::slot_type_string( slot ), gem_count );
     }
-    
-    // Jewelcrafting item lets you add 3 sockets on a Neck item
-    if ( gem_count > 3 && item.slot == SLOT_NECK )
+
+    // Jewelcrafting item lets you add 2 sockets on a Neck or Finger item
+    if ( gem_count > 2 && ( item.slot == SLOT_NECK || item.slot == SLOT_FINGER_1 || item.slot == SLOT_FINGER_2 ) )
     {
-      sim.error( "Player {} has {} with {} gems slotted. Only three gems per neck is allowed.\n",
-                 p.name(), util::slot_type_string( slot ), gem_count );
+      sim.error( "Player {} has {} with {} gems slotted. Only three gems per neck or finger is allowed.\n", p.name(),
+                 util::slot_type_string( slot ), gem_count );
     }
 
     // Prismatic sockets can only proc (or be added) on head, neck, wrists, belt and rings

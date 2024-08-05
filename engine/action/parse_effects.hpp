@@ -72,8 +72,9 @@ struct player_effect_t
 
   std::string value_type_name( uint8_t ) const;
 
-  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
-                          std::function<std::string( double )> ) const;
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
+                          const std::function<std::string( uint32_t )>&,
+                          const std::function<std::string( double )>& ) const;
 };
 
 // effects dependent on target state
@@ -108,14 +109,15 @@ struct target_effect_t
 
   std::string value_type_name( uint8_t ) const;
 
-  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool, std::function<std::string( uint32_t )>,
-                          std::function<std::string( double )> ) const;
+  void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
+                          const std::function<std::string( uint32_t )>&,
+                          const std::function<std::string( double )>& ) const;
 };
 
 struct modify_effect_t
 {
   buff_t* buff = nullptr;
-  std::function<bool()> func = nullptr;
+  std::function<bool( const action_t*, const action_state_t* )> func = nullptr;
   double value = 0.0;
   bool use_stacks = true;
   bool flat = false;
@@ -124,7 +126,7 @@ struct modify_effect_t
   modify_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
 
-  modify_effect_t& set_func( std::function<bool()> f )
+  modify_effect_t& set_func( std::function<bool( const action_t*, const action_state_t* )> f )
   { func = std::move( f ); return *this; }
 
   modify_effect_t& set_value( double v )
@@ -140,7 +142,15 @@ struct modify_effect_t
   { eff = e; return *this; }
 };
 
-// handy wrapper to create ignore masks with verbose effect index enable/disable methods
+/*
+ * Wrapper to create ignore masks effects for parse_effects and parse_target_effects.
+ * effect_mask_t( bool b ): default state for effects (true = all enabled, false = all disabled)
+ * enable( ints... ): enable effects by index
+ * disable( ints... ): disable effects by index
+ *
+ * e.g.
+ * effect_mask_t( true ).disable( 2, 4 ); enables all effects, then disables 2 and 4
+ */
 struct effect_mask_t
 {
   uint32_t mask;
@@ -165,6 +175,16 @@ struct effect_mask_t
   { return mask; }
 };
 
+/*
+ * Modifies whitelists of effects.
+ * affect_list_t( ints... ): selects effects to modify
+ * add/remove_family( ints... ): add/remove by family flag
+ * add/remove_label( ints... ): add/remove by label id
+ * add/remove_spell( ints... ): add/remove by spell id
+ *
+ * affect_list_t( 1, 3 ).add_spell( 1, 2 ).remove_spell( 3 );
+ * modifies effect 1 and 3 whitelist. adds spell id 1 & 2, removes spell id 3
+ */
 struct affect_list_t
 {
   std::vector<uint8_t> idx;
@@ -179,26 +199,47 @@ struct affect_list_t
   template <typename... Ts>
   affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
-  affect_list_t& adjust_family( int8_t f )
+  affect_list_t& add_family( int8_t f )
   { family.push_back( f ); return *this; }
 
-  template <typename... Ts>
-  affect_list_t& adjust_family( int8_t f, Ts... fs )
-  { adjust_family( f ); return adjust_family( fs... ); }
+  affect_list_t& remove_family( int8_t f )
+  { family.push_back( -f ); return *this; }
 
-  affect_list_t& adjust_label( int16_t l )
+  template <typename... Ts>
+  affect_list_t& add_family( int8_t f, Ts... fs )
+  { add_family( f ); return add_family( fs... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_family( int8_t f, Ts... fs )
+  { remove_family( f ); return remove_family( fs... ); }
+
+  affect_list_t& add_label( int16_t l )
   { label.push_back( l ); return *this; }
 
-  template <typename... Ts>
-  affect_list_t& adjust_label( int16_t l, Ts... ls )
-  { adjust_label( l ); return adjust_label( ls... ); }
+  affect_list_t& remove_label( int16_t l )
+  { label.push_back( -l ); return *this; }
 
-  affect_list_t& adjust_spell( int32_t s )
+  template <typename... Ts>
+  affect_list_t& add_label( int16_t l, Ts... ls )
+  { add_label( l ); return add_label( ls... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_label( int16_t l, Ts... ls )
+  { remove_label( l ); return remove_label( ls... ); }
+
+  affect_list_t& add_spell( int32_t s )
   { spell.push_back( s ); return *this; }
 
+  affect_list_t& remove_spell( int32_t s )
+  { spell.push_back( -s ); return *this; }
+
   template <typename... Ts>
-  affect_list_t& adjust_spell( int32_t s, Ts... ss )
-  { adjust_spell( s ); return adjust_spell( ss... ); }
+  affect_list_t& add_spell( int32_t s, Ts... ss )
+  { add_spell( s ); return add_spell( ss... ); }
+
+  template <typename... Ts>
+  affect_list_t& remove_spell( int32_t s, Ts... ss )
+  { remove_spell( s ); return remove_spell( ss... ); }
 };
 
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
@@ -290,7 +331,9 @@ struct parse_base_t
     {
       tmp.list.push_back( mod );
     }
-    else if constexpr ( std::is_convertible_v<T, std::function<bool()>> && is_detected_v<detect_func, U> )
+    else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
+                          std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
+                        is_detected_v<detect_func, U> )
     {
       tmp.data.func = std::move( mod );
     }
@@ -364,19 +407,19 @@ struct modified_spelleffect_t
   modified_spelleffect_t() : _eff( spelleffect_data_t::nil() ), value( 0.0 ) {}
 
   // return base value after modifiers
-  double base_value() const;
+  double base_value( const action_t* = nullptr, const action_state_t* = nullptr ) const;
 
-  double percent() const
-  { return base_value() * 0.01; }
+  double percent( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return base_value( a, s ) * 0.01; }
 
-  double resource( resource_e r ) const
-  { return base_value() * _eff.resource_multiplier( r ); }
+  double resource( resource_e r, const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return base_value( a, s ) * _eff.resource_multiplier( r ); }
 
-  double resource() const
-  { return resource( _eff.resource_gain_type() ); }
+  double resource( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return resource( _eff.resource_gain_type(), a, s ); }
 
-  timespan_t time_value() const
-  { return timespan_t::from_millis( base_value() ); }
+  timespan_t time_value( const action_t* a = nullptr, const action_state_t* s = nullptr ) const
+  { return timespan_t::from_millis( base_value( a, s ) ); }
 
   operator const spelleffect_data_t&() const
   { return _eff; }
@@ -703,8 +746,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
 
   template <typename U>
   void print_parsed_type( report::sc_html_stream& os, const std::vector<U>& entries, std::string_view n,
-                          std::function<std::string( uint32_t )> note_fn = nullptr,
-                          std::function<std::string( double )> val_str_fn = nullptr )
+                          const std::function<std::string( uint32_t )>& note_fn = nullptr,
+                          const std::function<std::string( double )>& val_str_fn = nullptr )
   {
     auto c = entries.size();
     if ( !c )
@@ -734,11 +777,13 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> tick_time_effects;
   std::vector<player_effect_t> flat_tick_time_effects;
   std::vector<player_effect_t> recharge_multiplier_effects;
+  std::vector<player_effect_t> recharge_rate_effects;
   std::vector<player_effect_t> cost_effects;
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
   std::vector<player_effect_t> crit_chance_multiplier_effects;
   std::vector<player_effect_t> crit_damage_effects;
+  std::vector<player_effect_t> spell_school_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
   std::vector<target_effect_t> target_crit_damage_effects;
@@ -781,7 +826,8 @@ public:
 
   template <typename W = parse_action_base_t, typename V>
   void print_parsed_type( report::sc_html_stream& os, V vector_ptr, std::string_view n,
-                          std::function<std::string( double )> val_str_fn = nullptr )
+                          const std::function<std::string( uint32_t )>& note_fn = nullptr,
+                          const std::function<std::string( double )>& val_str_fn = nullptr )
   {
     auto _this = dynamic_cast<W*>( _action );
     assert( _this );
@@ -808,7 +854,7 @@ public:
       if ( i > 0 )
         os << "<tr>";
 
-      entries[ i ].print_parsed_line( os, *_action->sim, false, nullptr, val_str_fn );
+      entries[ i ].print_parsed_line( os, *_action->sim, false, note_fn, val_str_fn );
     }
   }
 };
@@ -817,17 +863,60 @@ template <typename BASE>
 struct parse_action_effects_t : public BASE, public parse_action_base_t
 {
 private:
-  using base_t = parse_action_effects_t<BASE>;
+  std::vector<buff_t*> _cd_buffs;  // buffs that affect the cooldown of this action
 
 public:
   parse_action_effects_t( std::string_view name, player_t* player, const spell_data_t* spell )
     : BASE( name, player, spell ), parse_action_base_t( player, this )
   {}
 
+  void initialize_cooldown_buffs()
+  {
+    if ( !BASE::cooldown )
+      return;
+
+    bool dynamic = range::contains( BASE::player->dynamic_cooldown_list, BASE::cooldown );
+
+    auto vec = recharge_multiplier_effects;  // make a copy
+    vec.insert( vec.end(), recharge_rate_effects.begin(), recharge_rate_effects.end() );
+
+    for ( const auto& i : vec )
+    {
+      if ( i.buff && ( i.buff->gcd_type == gcd_haste_type::NONE || !dynamic ) &&
+           !range::contains( _cd_buffs, i.buff ) )
+      {
+        BASE::sim->print_debug( "action-effects: cooldown {} recharge multiplier adjusted by buff {} ({})",
+                                BASE::cooldown->name(), i.buff->name(), i.buff->data().id() );
+
+        if ( BASE::internal_cooldown->charges )
+        {
+          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            BASE::cooldown->adjust_recharge_multiplier();
+            BASE::internal_cooldown->adjust_recharge_multiplier();
+          } );
+        }
+        else
+        {
+          i.buff->add_stack_change_callback( [ this ]( buff_t*, int, int ) {
+            BASE::cooldown->adjust_recharge_multiplier();
+          } );
+        }
+
+        // actions do not necessarily have unique cooldowns, so we need to go through every action and check to see if
+        // the cooldown matches, then add the buff to _cd_buffs so that we don't add duplicate stack_change_callbacks.
+        for ( auto a : BASE::player->action_list )
+          if ( a->cooldown == BASE::cooldown )
+            if ( auto tmp = dynamic_cast<parse_action_effects_t<BASE>*>( a ) )
+              tmp->_cd_buffs.push_back( i.buff );
+      }
+    }
+  }
+
   void init_finished() override
   {
     BASE::init_finished();
     initialize_buff_list();
+    initialize_cooldown_buffs();
   }
 
   void execute() override
@@ -994,6 +1083,16 @@ public:
 
     for ( const auto& i : recharge_multiplier_effects )
       rm *= 1.0 + get_effect_value( i );
+
+    return rm;
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    auto rm = BASE::recharge_rate_multiplier( cd );
+
+    for ( const auto& i : recharge_rate_effects )
+      rm /= 1.0 + get_effect_value( i );
 
     return rm;
   }

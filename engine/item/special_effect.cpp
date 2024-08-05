@@ -13,7 +13,7 @@
 #include "item.hpp"
 #include "player/player.hpp"
 #include "player/unique_gear_helper.hpp"
-#include "sim/real_ppm.hpp"
+#include "sim/proc_rng.hpp"
 
 namespace
 {
@@ -50,7 +50,9 @@ constexpr proc_parse_opt_t __proc2_opts[] =
   { "dodge",       PF2_DODGE            },
   { "parry",       PF2_PARRY            },
   { "miss",        PF2_MISS             },
-  { "cast",        PF2_CAST             },
+  { "castgeneric", PF2_CAST_GENERIC     },
+  { "castheal",    PF2_CAST_HEAL        },
+  { "castdamage",  PF2_CAST_DAMAGE      },
   { "impact",      PF2_LANDED           },
   { "tickheal",    PF2_PERIODIC_HEAL    },
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },

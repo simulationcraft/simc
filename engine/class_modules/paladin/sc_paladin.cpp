@@ -31,11 +31,13 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     beacon_target( nullptr ),
     next_season( SUMMER ),
     next_armament( HOLY_BULWARK ),
+    radiant_glory_accumulator( 0.0 ),
     lights_deliverance_triggered_during_ready( false ),
+    holy_power_generators_used( 0 ),
+    melee_swing_count( 0 ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
-    holy_power_generators_used( 0 ),
-    melee_swing_count( 0 )
+    divine_inspiration_next( -1 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -106,6 +108,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.radiant_glory_icd = get_cooldown( "radiant_glory_icd" );
   cooldowns.radiant_glory_icd->duration = timespan_t::from_millis( 500 );
+
+  cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
+  cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -181,6 +186,16 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     cooldown->duration = 0_ms;
   }
 
+
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool res = absorb_buff_t::trigger( stacks, value, chance, duration );
+    if ( res )
+      max_absorb = value;
+    return res;
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -190,8 +205,10 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     p->active.shield_of_vengeance_damage->base_dd_max = p->active.shield_of_vengeance_damage->base_dd_min =
         p->options.fake_sov ? max_absorb : current_value;
     p->active.shield_of_vengeance_damage->execute();
+    max_absorb = 0.0;
   }
 };
+
 struct sacrosanct_crusade_t :public absorb_buff_t
 {
   sacrosanct_crusade_t(player_t* p) : absorb_buff_t(p, "sacrosanct_crusade", p->find_spell(461867))
@@ -397,7 +414,8 @@ struct consecration_t : public paladin_spell_t
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
 
-    if ( p->talents.divine_hammer->ok() || p->talents.consecrated_blade->ok() )
+    // technically this doesn't work for characters under level 11?
+    if ( p->specialization() == PALADIN_RETRIBUTION )
       background = true;
 
     add_child( damage_tick );
@@ -539,9 +557,9 @@ struct consecration_t : public paladin_spell_t
 
     /*
       Divine Guidance seems to function as follows:
-      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5
-      If you cannot heal 5 targets, deal the rest in damage to other targets inside the Consecration
-      Damage and Healing is divided by target count, up to 5, damage is then further divided by amount of mobs hit
+      Try to heal as many injured people (and pets!) as possible inside your Consecration, up to 5 (max_dg_heal_targets)
+      If you cannot heal 5 (max_dg_heal_targets) targets, deal the rest in damage to other targets inside the Consecration
+      Damage and Healing is divided by target count, up to 5 (max_dg_heal_targets), damage is then further divided by amount of mobs hit
     */
     // Divine Guidance seems to prioritise Healing, so count healing targets first
     std::vector<player_t*> healingAllies;
@@ -554,27 +572,34 @@ struct consecration_t : public paladin_spell_t
           healingAllies.push_back( friendly );
         else if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
           healingAllies.push_back( friendly );
-        if ( healingAllies.size() == 5 )
+        if ( healingAllies.size() == p()->options.max_dg_heal_targets )
           break;
       }
-      // If we hit less than 5 healing targets, we can fill the rest with damage targets
-      double healingAlliesSize = healingAllies.size();
-      totalTargets             = healingAlliesSize;
+      // If we hit less than 5 (max_dg_heal_targets) healing targets, we can fill the rest with damage targets
+      int healingAlliesSize = as<int>( healingAllies.size() );
+
+      if ( healingAlliesSize > p()->options.min_dg_heal_targets )
+        healingAlliesSize = p()->options.min_dg_heal_targets;
+
+      totalTargets          = healingAlliesSize;
+
       if ( healingAlliesSize < 5 )
       {
-        totalTargets = sim->target_non_sleeping_list.size() + healingAlliesSize;
-        if ( totalTargets > 5 )
-          totalTargets = 5;
+        totalTargets = as<int>( sim->target_non_sleeping_list.size() ) + healingAlliesSize;
       }
-      p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
-      p()->active.divine_guidance_damage->base_dd_multiplier = (totalTargets - healingAlliesSize) / totalTargets;
 
-      // Healing events come before Consecration cast
-      for (auto friendly : healingAllies)
+      if ( healingAlliesSize > 0 )
       {
-        p()->active.divine_guidance_heal->set_target( friendly );
-        p()->active.divine_guidance_heal->execute();
+        p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
+        // Healing events come before Consecration cast
+        for ( auto friendly : healingAllies )
+        {
+          p()->active.divine_guidance_heal->set_target( friendly );
+          p()->active.divine_guidance_heal->execute();
+        }
       }
+      p()->active.divine_guidance_damage->base_dd_multiplier =
+          ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
     }
 
     paladin_spell_t::execute();
@@ -1371,10 +1396,10 @@ struct sacrosanct_crusade_heal_t : public paladin_heal_t
   sacrosanct_crusade_heal_t( paladin_t* p ) : paladin_heal_t( "sacrosanct_crusade_heal", p, p->find_spell( 461885 ) )
   {
     background    = true;
-    may_crit      = true;
+    may_crit      = false;
     harmful       = false;
     target        = p;
-    base_pct_heal = 0; // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
+    base_pct_heal = 0;  // We need to overwrite this later, since it scales with targets hit and the Paladin's spec
   }
 
   void impact( action_state_t* s ) override
@@ -1383,7 +1408,7 @@ struct sacrosanct_crusade_heal_t : public paladin_heal_t
     paladin_heal_t::impact( s );
     if ( p()->resources.current[ RESOURCE_HEALTH ] >= p()->resources.max[ RESOURCE_HEALTH ] )
     {
-      double absorb = s->result_total + p()->resources.current[ RESOURCE_HEALTH ] - p()->resources.max[ RESOURCE_HEALTH ];
+      double absorb = s->result_total + health_before - p()->resources.max[ RESOURCE_HEALTH ];
       p()->buffs.templar.sacrosanct_crusade->trigger( -1, absorb, -1, timespan_t::min() );
     }
   }
@@ -1955,18 +1980,6 @@ struct weapon_enchant_t : public paladin_spell_t
     parse_options( options_str );
   }
 
-  void init_finished() override
-  {
-    paladin_spell_t::init_finished();
-
-    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
-    {
-      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
-                  util::slot_type_string( SLOT_MAIN_HAND ), p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(),
-                  name() );
-    }
-  }
-
   bool ready() override
   {
     if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
@@ -1990,6 +2003,21 @@ struct rite_of_sanctification_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_sanctification->execute();
   }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_sanctification->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
+  }
 };
 
 struct rite_of_adjuration_t : public weapon_enchant_t
@@ -2004,6 +2032,21 @@ struct rite_of_adjuration_t : public weapon_enchant_t
     weapon_enchant_t::execute();
     p()->buffs.lightsmith.rite_of_adjuration->execute();
     p()->adjust_health_percent();
+  }
+
+  void init_finished() override
+  {
+    weapon_enchant_t::init_finished();
+
+    if ( !p()->talents.lightsmith.rite_of_adjuration->ok() )
+      return;
+
+    if ( p()->items[ SLOT_MAIN_HAND ].active() && p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant() > 0 )
+    {
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}", p()->name(),
+                  p()->items[ SLOT_MAIN_HAND ].selected_temporary_enchant(), util::slot_type_string( SLOT_MAIN_HAND ), 
+                  name() );
+    }
   }
 };
 
@@ -2077,12 +2120,25 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
   {
     holy_power_consumer_t::execute();
     p()->trigger_empyrean_hammer(
-        target, p()->talents.templar.lights_guidance->effectN( 2 ).base_value(),
-        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ),
-        true );
+        target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
+        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
-      p()->buffs.templar.shake_the_heavens->execute();
+      if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
+        p()->buffs.templar.shake_the_heavens->execute();
+      else
+      {
+        // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
+        // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
+        timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
+        timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
+        double extension       = 4.0;
+        if ( maxDur < extendedDur )
+        {
+          extension -= ( extendedDur - maxDur ).total_seconds();
+        }
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
+      }
     }
   }
   void impact( action_state_t* s ) override
@@ -2105,29 +2161,42 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   hammer_of_light_damage_t* direct_hammer;
+  double prot_cost;
+  double ret_cost;
   hammer_of_light_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ),
-      direct_hammer()
+    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), direct_hammer()
   {
     parse_options( options_str );
-    is_hammer_of_light_driver   = true;
-    is_hammer_of_light          = true;
-    direct_hammer               = new hammer_of_light_damage_t( p, options_str );
+    is_hammer_of_light_driver = true;
+    is_hammer_of_light        = true;
+    direct_hammer             = new hammer_of_light_damage_t( p, options_str );
+    background                = !p->talents.templar.lights_guidance->ok();
+    // This is not set by definition, since cost changes by spec
+    resource_current = RESOURCE_HOLY_POWER;
+    ret_cost         = data().powerN( 1 ).cost();
+    prot_cost        = data().powerN( 2 ).cost();
     add_child( direct_hammer );
-    background = !p->talents.templar.lights_guidance->ok();
+
+    doesnt_consume_dp = !( p->specialization() == PALADIN_PROTECTION && p->bugs );
   }
 
-  double cost_pct_multiplier() const override
-   {
-    double c = holy_power_consumer_t::cost_pct_multiplier();
+  double cost() const override
+  {
+    // double c = holy_power_consumer_t::cost();
+    // It costs 5 for Ret, 3 for Prot
+    double c = p()->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
+
+    // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
+    if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
+      return c;
 
     if ( p()->buffs.templar.hammer_of_light_free->up() )
       c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
-    if ( p()->buffs.divine_purpose->up() )
-      c *= 1.0 - 1.0;
+    if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )
+      c = 0.0;
 
     return c;
-   }
+  }
 
    bool target_ready( player_t* candidate_target ) override
    {
@@ -2284,7 +2353,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   {
     if ( ( i > 0 && random_after_first ) || target == nullptr )
     {
-      double result = (int)( rng().real() * sim->target_non_sleeping_list.size() );
+      int result  = as<int>( std::floor( rng().real() * sim->target_non_sleeping_list.size() ) );
       next_target   = sim->target_non_sleeping_list[ result ];
     }
     make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
@@ -2365,29 +2434,22 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
 
 struct sacred_weapon_cb_t : public dbc_proc_callback_t
 {
-  sacred_weapon_proc_damage_t* dmg;
-  sacred_weapon_proc_heal_t* heal;
-
+  paladin_t* p;
   sacred_weapon_cb_t( player_t* player, paladin_t* paladin, const special_effect_t& effect )
     : dbc_proc_callback_t( player, effect )
   {
-    dmg  = new sacred_weapon_proc_damage_t( paladin );
-    heal = new sacred_weapon_proc_heal_t( paladin );
-    dmg->init();
-    heal->init();
+    p = paladin;
   }
 
   void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_enemy() )
     {
-      dmg->set_target( s->target );
-      dmg->schedule_execute();
+      p->active.sacred_weapon_proc_damage->execute_on_target( s->target );
     }
     else
     {
-      heal->set_target( s->target );
-      heal->schedule_execute();
+      p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
     }
   }
 };
@@ -2460,9 +2522,13 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
 {
   auto nextArmament = active.armament[ usedArmament ];
 
+  // Random is not truly random. Starting weapon is semi-random-ish (It's always the opposite from the last and does not reset on combat start)
+  // So we just rng the first one
   if (random)
   {
-    usedArmament = (armament)rng().range( 2 );
+    if ( divine_inspiration_next == -1 )
+      divine_inspiration_next = rng().range( 2 );
+    usedArmament = (armament)divine_inspiration_next;
     nextArmament = active.armament[ usedArmament ];
   }
 
@@ -2492,10 +2558,6 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
 
           switch (_p->role)
           {
-            case ROLE_ATTACK:
-              if ( first_dps == nullptr )
-                first_dps = _p;
-              break;
             case ROLE_HEAL:
               if ( first_healer == nullptr )
                 first_healer = _p;
@@ -2503,6 +2565,10 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
             case ROLE_TANK:
               if ( first_tank == nullptr )
                 first_tank = _p;
+              break;
+            default:
+              if ( first_dps == nullptr )
+                first_dps = _p;
               break;
           }
         }
@@ -2537,6 +2603,8 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
   }
   if ( changeArmament )
     next_armament = armament( ( next_armament + 1 ) % NUM_ARMAMENT );
+  if ( random )
+    divine_inspiration_next = (divine_inspiration_next + 1) % NUM_ARMAMENT;
 }
 
 dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source, player_t* target )
@@ -2580,6 +2648,7 @@ private:
   {
     background = true;
   }
+
 public:
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
     : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
@@ -2624,13 +2693,18 @@ public:
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
       echo = new hammer_of_wrath_t( p );
+      echo->base_multiplier = base_multiplier;
+      echo->aoe = aoe;
+      echo->base_aoe_multiplier = base_aoe_multiplier;
+      echo->crit_bonus_multiplier = crit_bonus_multiplier;
+      echo->triggers_higher_calling = true;
       echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
     }
   }
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( !p()->get_how_availability( candidate_target ) )
+    if ( !background && !p()->get_how_availability( candidate_target ) )
     {
       return false;
     }
@@ -2710,11 +2784,15 @@ public:
     if ( p()->talents.adjudication->ok() )
     {
       // TODO: verify this is right
-      double mastery_chance = p()->cache.mastery_value() * 2;
+      double mastery_chance = p()->cache.mastery() * p()->mastery.highlords_judgment->effectN( 4 ).mastery_value();
       if ( p()->talents.boundless_judgment->ok() )
       {
         // according to bolas this also increases HoW proc chance
         mastery_chance *= 1.0 + p()->talents.boundless_judgment->effectN( 3 ).percent();
+      }
+      if ( p()->talents.highlords_wrath->ok() )
+      {
+        mastery_chance *= 1.0 + p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value();
       }
 
       if ( rng().roll( mastery_chance ) )
@@ -3155,6 +3233,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 
   dots.expurgation = target->get_dot( "expurgation", paladin );
   dots.truths_wake = target->get_dot( "truths_wake", paladin );
+  dots.dawnlight = target->get_dot( "dawnlight", paladin );
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -3212,6 +3291,8 @@ void paladin_t::create_actions()
   {
     auto cb = create_sacred_weapon_callback(this, this);
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
+    active.sacred_weapon_proc_damage = new sacred_weapon_proc_damage_t( this );
+    active.sacred_weapon_proc_heal   = new sacred_weapon_proc_heal_t( this );
   }
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
@@ -3236,6 +3317,12 @@ void paladin_t::create_actions()
   {
     active.sacrosanct_crusade_heal = new sacrosanct_crusade_heal_t( this );
   }
+
+  if ( talents.herald_of_the_sun.dawnlight->ok() )
+  {
+    active.dawnlight = new dawnlight_t( this );
+  }
+
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 
   if ( talents.judgment_of_light->ok() )
@@ -3414,11 +3501,13 @@ void paladin_t::reset()
 
   next_season = SUMMER;
   next_armament = HOLY_BULWARK;
+  radiant_glory_accumulator = 0.0;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
   lights_deliverance_triggered_during_ready = false;
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
+  divine_inspiration_next = -1;
 }
 
 // paladin_t::init_gains ====================================================
@@ -3519,8 +3608,8 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
-  buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
-    debug_cast<paladin_t*>( buff->source )->buffs.heightened_wrath->expire();
+  buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+    buffs.heightened_wrath->expire();
   } );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
@@ -3602,24 +3691,24 @@ void paladin_t::create_buffs()
 
   buffs.lightsmith.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
                                       ->set_cooldown( 0_s )
-                                      ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+                                      ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
                                         if ( b->remains().total_millis() > 0 )
-                                          debug_cast<paladin_t*>( b->source )->trigger_laying_down_arms();
+                                          trigger_laying_down_arms();
                                         timespan_t residual = std::min( d * 0.3, b->remains() );
                                         return residual + d;
                                       } )
-                                      ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
-                                        debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                      ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+                                        trigger_laying_down_arms();
                                       } );
   buffs.lightsmith.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
-                                       ->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+                                       ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
                                          if ( b->remains().total_millis() > 0 )
-                                           debug_cast<paladin_t*>( b->source )->trigger_laying_down_arms();
+                                           trigger_laying_down_arms();
                                          timespan_t residual = std::min( d * 0.3, b->remains() );
                                          return residual + d;
                                        } )
-                                       ->set_expire_callback( [ this ]( buff_t* buff, double, timespan_t ) {
-                                         debug_cast<paladin_t*>( buff->source )->trigger_laying_down_arms();
+                                       ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+                                         trigger_laying_down_arms();
                                        } );
   buffs.lightsmith.blessed_assurance =
       make_buff( this, "blessed_assurance", find_spell( 433019 ) )->set_default_value_from_effect( 1 );
@@ -3654,8 +3743,8 @@ void paladin_t::create_buffs()
   buffs.templar.shake_the_heavens = make_buff( this, "shake_the_heavens", find_spell( 431536 ) )
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
-                                }
-  );
+                                        } )
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )
@@ -3663,7 +3752,7 @@ void paladin_t::create_buffs()
                                      ->set_default_value_from_effect( 1 );
 
   buffs.templar.lights_deliverance    = make_buff( this, "lights_deliverance", find_spell( 433674 ) )
-                                 ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+                                 ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
                                    if ( b->at_max_stacks() )
                                    {
                                      trigger_lights_deliverance();
@@ -3686,6 +3775,8 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
+    -> set_max_stack( 2 );
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
@@ -3899,9 +3990,7 @@ void paladin_t::init_special_effects()
 
       void execute( action_t*, action_state_t* ) override
       {
-        // 2024-06-20 If next armament is Holy Bulwark, then Divine Inspiration always procs Sacred Weapon
-        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false,
-                                !p->bugs || !( p->next_armament == paladin::armament::HOLY_BULWARK && p->bugs ) );
+        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false, true );
         p->procs.divine_inspiration->occur();
       }
     };
@@ -4355,6 +4444,19 @@ double paladin_t::composite_base_armor_multiplier() const
 double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double cptm      = player_t::composite_player_target_multiplier( target, school );
+
+  if ( dbc::is_school( school, SCHOOL_HOLY ) )
+  {
+    if ( talents.holy_flames->ok() )
+    {
+      paladin_td_t* td = get_target_data( target );
+      if ( td->dots.expurgation->is_ticking() )
+      {
+        cptm *= 1.0 + talents.holy_flames->effectN( 2 ).percent();
+      }
+    }
+  }
+
   return cptm;
 }
 
@@ -4747,6 +4849,8 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
+  add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
 
   player_t::create_options();
 }
@@ -5010,11 +5114,11 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
   if (splits[0] == "holy_bulwark")
   {
-    return make_fn_expr( "holy_bulwark", [ this ]() { return armament::HOLY_BULWARK; } );
+    return make_fn_expr( "holy_bulwark", []() { return armament::HOLY_BULWARK; } );
   }
   if ( splits[ 0 ] == "sacred_weapon" )
   {
-    return make_fn_expr( "sacred_weapon", [ this ]() { return armament::SACRED_WEAPON; } );
+    return make_fn_expr( "sacred_weapon", []() { return armament::SACRED_WEAPON; } );
   }
 
   struct judgment_holy_power_expr_t : public paladin_expr_t
@@ -5041,6 +5145,27 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   if (splits[0] == "judgment_holy_power")
   {
     return std::make_unique<judgment_holy_power_expr_t>( name_str, *this );
+  }
+
+  struct hpg_to_2dawn_expr_t : public paladin_expr_t
+  {
+    hpg_to_2dawn_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
+    double evaluate() override
+    {
+      if ( paladin.talents.of_dusk_and_dawn->ok() )
+      {
+        return 6.0 - paladin.holy_power_generators_used - ( paladin.buffs.blessing_of_dawn->stack() * 3 );
+      }
+      else
+        return -1.0;
+    }
+  };
+
+  if (splits[0] == "hpg_to_2dawn")
+  {
+    return std::make_unique<hpg_to_2dawn_expr_t>( name_str, *this );
   }
 
   auto cons_expr = create_consecration_expression( name_str );

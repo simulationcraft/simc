@@ -1,0 +1,95 @@
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/variable,name=aoe_target_count,op=reset,default=2
+actions.precombat+=/variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave
+actions.precombat+=/variable,name=opener,op=set,value=1
+actions.precombat+=/variable,name=alt_rotation,op=set,if=talent.high_voltage,value=1
+# Variable indicates use of a trinket that boosts stats during burst
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.ashes_of_the_embersoul|equipped.nymues_unraveling_spindle|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/arcane_blast,if=!talent.evocation
+actions.precombat+=/evocation,if=talent.evocation
+
+# Executed every time the actor is available.
+actions=counterspell
+actions+=/potion,if=buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready)
+actions+=/lights_judgment,if=buff.arcane_surge.down&debuff.touch_of_the_magi.down&active_enemies>=2
+actions+=/berserking,if=prev_gcd.1.arcane_surge
+actions+=/blood_fury,if=prev_gcd.1.arcane_surge
+actions+=/fireblood,if=prev_gcd.1.arcane_surge
+actions+=/ancestral_call,if=prev_gcd.1.arcane_surge
+# PI/Summer after Radiant Spark when cooldowns are coming up, Autumn after Touch of the Magi cd starts
+actions+=/invoke_external_buff,name=power_infusion,if=prev_gcd.1.arcane_surge
+actions+=/invoke_external_buff,name=blessing_of_summer,if=prev_gcd.1.arcane_surge
+actions+=/invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5
+actions+=/use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remains<20|!variable.steroid_trinket_equipped
+actions+=/use_item,name=high_speakers_accretion,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)|cooldown.evocation.remains<7|fight_remains<20
+actions+=/use_item,name=treacherous_transmitter,if=((prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&variable.opener)|cooldown.evocation.remains<6|fight_remains<20
+actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.siphon_storm.up|fight_remains<20
+actions+=/use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment)|fight_remains<20
+actions+=/use_item,name=aberrant_spellforge,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|(equipped.spymasters_web&target.health.pct>35)
+actions+=/use_item,name=mad_queens_mandate,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=mereldars_toll,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=nymues_unraveling_spindle,if=cooldown.arcane_surge.remains<=(gcd.max*4)|cooldown.arcane_surge.ready|fight_remains<=24
+actions+=/use_item,name=belorrelos_the_suncaller,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=beacon_to_the_beyond,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=iceblood_deathsnare,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=desperate_invokers_codex,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=conjured_chillglobe,if=mana.pct>65&!variable.steroid_trinket_equipped|buff.siphon_storm.down
+actions+=/use_item,name=dreambinder_loom_of_the_great_cycle
+actions+=/use_item,name=iridal_the_earths_master,use_off_gcd=1,if=gcd.remains
+actions+=/variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0
+actions+=/arcane_barrage,if=fight_remains<2
+# Enter cooldown phase when cds are available or coming off cooldown otherwise default to rotation priority
+actions+=/call_action_list,name=cd_opener
+actions+=/call_action_list,name=rotation_aoe,if=active_enemies>=(variable.aoe_target_count+talent.impetus+talent.splintering_sorcery)
+actions+=/call_action_list,name=rotation_default
+actions+=/arcane_barrage
+
+actions.cd_opener=touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.5|gcd.remains<=0.5)
+# Use PoM or Supernova if you have Unerring Proficiency to end Touch of the Magi windows - if PoM then cancel it after to trigger the cooldown to align with future Touch windows
+actions.cd_opener+=/supernova,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.unerring_proficiency.stack=30
+actions.cd_opener+=/cancel_buff,name=presence_of_mind,use_off_gcd=1,if=prev_gcd.1.arcane_blast&buff.presence_of_mind.stack=1
+actions.cd_opener+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.nether_precision.up&active_enemies<variable.aoe_target_count&!talent.unerring_proficiency
+actions.cd_opener+=/wait,sec=0.05,if=buff.presence_of_mind.up,line_cd=15
+actions.cd_opener+=/arcane_blast,if=buff.presence_of_mind.up
+actions.cd_opener+=/arcane_orb,if=variable.opener,line_cd=10
+actions.cd_opener+=/evocation,if=cooldown.arcane_surge.remains<gcd.max*2
+# Use the Clearcasting from Evocation to trigger Nether Precision, Harmony, charges from High Voltage, and increment Aether
+actions.cd_opener+=/arcane_missiles,if=variable.opener,interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,line_cd=10
+actions.cd_opener+=/arcane_surge
+# Use Shifting Power whenever all major cooldowns will fully benefit, add Arcane Orb to the list if its AOE, as Spellslinger you can use this in cooldowns with no damage lost
+actions.cd_opener+=/shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)|(prev_gcd.1.arcane_barrage&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)&talent.shifting_shards),interrupt_if=(cooldown.evocation.ready&cooldown.arcane_surge.remains<3),interrupt_immediate=1,interrupt_global=1
+# Pool Arcane Orb for Touch of the Magi in AOE, otherwise just use to recover charges when you're low
+actions.cd_opener+=/arcane_orb,if=buff.arcane_charge.stack<2&(cooldown.touch_of_the_magi.remains>18|!active_enemies>=variable.aoe_target_count)
+
+# Cast Blast in AOE if you have Magi's Spark
+actions.rotation_aoe=arcane_blast,if=active_enemies>=variable.aoe_target_count&debuff.touch_of_the_magi.up&talent.magis_spark,line_cd=15
+# Use Barrage to maintain Arcane Tempo, to double dip Nether Precision when you use the above line, or if you get a 4pc proc
+actions.rotation_aoe+=/arcane_barrage,if=(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|((buff.intuition.up&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|!variable.alt_rotation))&buff.nether_precision.up)|(buff.nether_precision.up&action.arcane_blast.executing)
+# Use Missiles to regenerate charges, generate Nether Precision, and stack Harmony/Aether, but we always interrupt it as soon as possible.
+actions.rotation_aoe+=/arcane_missiles,if=buff.clearcasting.react&((variable.alt_rotation&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|buff.aether_attunement.up|talent.arcane_harmony)&((variable.alt_rotation&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|!buff.nether_precision.up),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.rotation_aoe+=/arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack
+actions.rotation_aoe+=/arcane_explosion
+
+# Use Missiles to generate charges and Nether Precision, interrupt if you get 4 charges
+actions.rotation_default=arcane_missiles,if=buff.clearcasting.react&(buff.nether_precision.down|(buff.clearcasting.stack=3&!talent.splintering_sorcery)|(variable.alt_rotation&buff.nether_precision.stack=1&buff.arcane_charge.stack<4)),interrupt_if=!gcd.remains&(!variable.alt_rotation|buff.arcane_charge.stack=buff.arcane_charge.max_stack),interrupt_immediate=1,interrupt_global=1,chain=1
+# Queue Barrage on the second Nether Precision stack under certain conditions, ensure you have nether precision before doing this to start Touch window, maintain Tempo and use 4pc as soon as possible
+actions.rotation_default+=/arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&((buff.nether_precision.stack=1&((buff.clearcasting.up|action.arcane_orb.charges>0)&time-action.arcane_blast.last_used<0.015)&buff.arcane_harmony.stack>12)|(cooldown.touch_of_the_magi.ready&(buff.nether_precision.up|!talent.magis_spark))))|(talent.arcane_tempo&buff.arcane_tempo.remains<(gcd.max*2))|buff.intuition.up
+actions.rotation_default+=/arcane_blast,if=buff.nether_precision.stack=2|(buff.nether_precision.stack=1&!prev_gcd.1.arcane_blast)
+# Conserve mana above 70% when Evocation is further than your next Touch
+actions.rotation_default+=/arcane_barrage,if=buff.arcane_surge.down&(mana.pct<70&cooldown.arcane_surge.remains>45&cooldown.touch_of_the_magi.remains>6)|(mana.deficit>(mana.max-action.arcane_blast.cost))|cooldown.touch_of_the_magi.ready|(cooldown.shifting_power.ready&cooldown.arcane_orb.ready)
+# Blast for filler if you're not in execute or you already have some charges from another effect
+actions.rotation_default+=/arcane_blast,if=!talent.splintering_sorcery|(buff.arcane_charge.stack>2&buff.nether_precision.down)
+actions.rotation_default+=/arcane_barrage

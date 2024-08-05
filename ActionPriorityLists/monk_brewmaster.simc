@@ -1,0 +1,48 @@
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/chi_burst
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
+actions+=/potion
+actions+=/call_action_list,name=race_actions
+actions+=/call_action_list,name=item_actions
+actions+=/black_ox_brew,if=energy<40
+actions+=/celestial_brew,if=buff.aspect_of_harmony_accumulator.value>0.98*health.max|(target.time_to_die<20&target.time_to_die>14&buff.aspect_of_harmony_accumulator.value>0.2*health.max)
+actions+=/blackout_kick
+actions+=/chi_burst
+actions+=/weapons_of_order
+actions+=/rising_sun_kick,if=!talent.fluidity_of_motion.enabled
+actions+=/tiger_palm,if=buff.blackout_combo.up
+actions+=/rising_sun_kick,if=talent.fluidity_of_motion.enabled
+actions+=/purifying_brew,if=buff.blackout_combo.down
+actions+=/breath_of_fire,if=buff.charred_passions.down
+actions+=/exploding_keg
+actions+=/keg_smash
+actions+=/rushing_jade_wind
+actions+=/invoke_niuzao
+actions+=/tiger_palm
+actions+=/spinning_crane_kick
+
+actions.item_actions=use_item,slot=trinket1
+actions.item_actions+=/use_item,slot=trinket2
+
+actions.race_actions=blood_fury
+actions.race_actions+=/berserking
+actions.race_actions+=/arcane_torrent
+actions.race_actions+=/lights_judgment
+actions.race_actions+=/fireblood
+actions.race_actions+=/ancestral_call
+actions.race_actions+=/bag_of_tricks
