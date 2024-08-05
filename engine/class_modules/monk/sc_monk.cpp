@@ -1517,6 +1517,8 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     background  = true;
     ww_mastery  = true;
     sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
+
+    apply_affecting_aura( p->talent.windwalker.rising_star );
   }
 
   double action_multiplier() const override
@@ -4555,6 +4557,7 @@ struct celestial_conduit_t : public monk_spell_t
       : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
       background = true;
+      aoe        = -1;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -8256,7 +8259,6 @@ void monk_t::create_buffs()
   buff.darting_hurricane =
       make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
                           talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
-          ->modify_initial_stack( as<int>( talent.windwalker.darting_hurricane->effectN( 1 ).base_value() ) )
           ->set_default_value_from_effect( 1 );
 
   buff.dual_threat =
