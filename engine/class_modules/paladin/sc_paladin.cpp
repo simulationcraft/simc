@@ -2178,6 +2178,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     add_child( direct_hammer );
 
     doesnt_consume_dp = !( p->specialization() == PALADIN_PROTECTION && p->bugs );
+    hol_cost          = cost();
   }
 
   double cost() const override
