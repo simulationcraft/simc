@@ -5315,6 +5315,8 @@ struct raging_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    p()->buff.opportunist->decrement();
   }
 
   bool ready() override
@@ -5475,6 +5477,8 @@ struct crushing_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    p()->buff.opportunist->decrement();
   }
 
   bool ready() override
@@ -5823,6 +5827,7 @@ struct overpower_t : public warrior_attack_t
     }
 
     p()->buff.overpowering_might->expire();
+    p()->buff.opportunist->decrement();
   }
 
   bool ready() override
