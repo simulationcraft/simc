@@ -36,7 +36,7 @@ std::string rune( const player_t* p )
 {
   return p->true_level >= 80 ? "crystallized"
        : p->true_level >= 70 ? "draconic"
-	   : p->true_level >= 60 ? "veiled"
+       : p->true_level >= 60 ? "veiled"
        : p->true_level >= 50 ? "battle_scarred"
        :                       "disabled";
 }
