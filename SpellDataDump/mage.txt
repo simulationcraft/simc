@@ -21068,6 +21068,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 3617
+Triggered by     : Blessing of the Phoenix (455137)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -21083,6 +21084,31 @@ Effects          :
                    Family Flags: 3
 Description      : $@spelldesc453721
 Tooltip          : Your spell damage is increased by $s1%.
+
+Name             : Blessing of the Phoenix (id=455137) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Velocity         : 20 yards/sec
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 3617
+Attributes       : .......x ........ .......x ........   ........ ........ ........ ........ 
+                 : x.x..... ......x. ........ .....x..   ........ ........ ........ ........ 
+                 : .......x x....... ........ ........   ........ ........ .xx..... ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Allow While Fleeing (177), Allow While Confused (178), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1158354)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=1158363)  : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 455134 | Target: Enemy (6)
 
 Name             : Barrier Diffusion (id=455428) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=7, max_rank=1, req_points=20]
