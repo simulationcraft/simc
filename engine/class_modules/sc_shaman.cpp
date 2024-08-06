@@ -1192,6 +1192,8 @@ public:
   void track_magma_chamber();
   void track_t29_2pc_ele();
 
+  double windfury_proc_chance();
+
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
   void trigger_windfury_weapon( const action_state_t* );
@@ -10305,6 +10307,11 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( splits[ 0 ], tempest_counter );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "windfury_chance" ) )
+  {
+    return make_mem_fn_expr( splits[ 0 ], *this, &shaman_t::windfury_proc_chance );
+  }
+
   return player_t::create_expression( name );
 }
 
@@ -11563,6 +11570,23 @@ void shaman_t::generate_maelstrom_weapon( const action_state_t* state, int stack
   generate_maelstrom_weapon( state->action, stacks );
 }
 
+double shaman_t::windfury_proc_chance()
+{
+  double proc_chance = spell.windfury_weapon->proc_chance();
+  proc_chance += talent.imbuement_mastery->effectN( 1 ).percent();
+  double proc_mul = mastery.enhanced_elements->effectN( 4 ).mastery_value() *
+    ( 1.0 + talent.storms_wrath->effectN( 2 ).percent() );
+
+  proc_chance += cache.mastery() * proc_mul;
+  if ( buff.doom_winds->up() )
+  {
+    proc_chance *= talent.windfury_weapon.ok() *
+                  talent.doom_winds->effectN( 1 ).base_value();
+  }
+
+  return proc_chance;
+}
+
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -11582,19 +11606,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     return;
   }
 
-  double proc_chance = spell.windfury_weapon->proc_chance();
-  proc_chance += talent.imbuement_mastery->effectN( 1 ).percent();
-  double proc_mul = mastery.enhanced_elements->effectN( 4 ).mastery_value() *
-    ( 1.0 + talent.storms_wrath->effectN( 2 ).percent() );
-
-  proc_chance += cache.mastery() * proc_mul;
-  if ( buff.doom_winds->up() )
-  {
-    proc_chance *= talent.windfury_weapon.ok() *
-                  talent.doom_winds->effectN( 1 ).base_value();
-  }
-
-  if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( proc_chance ) )
+  if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( windfury_proc_chance() ) )
   {
     action_t* a = windfury_mh;
 
