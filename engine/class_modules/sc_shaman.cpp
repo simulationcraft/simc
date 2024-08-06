@@ -7105,7 +7105,7 @@ struct elemental_blast_t : public shaman_spell_t
     // these are effects which ONLY trigger when the player cast the spell directly
     if ( exec_type == spell_variant::NORMAL )
     {
-      if ( p->talent.echoes_of_great_sundering.ok() )
+      if ( p()->talent.echoes_of_great_sundering.ok() )
       {
         p()->buff.echoes_of_great_sundering_eb->trigger();
       }
