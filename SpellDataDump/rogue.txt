@@ -297,6 +297,7 @@ Effects          :
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
+Hotfixed         : Cooldown (20000 -> 25000), Category Cooldown (20000 -> 25000)
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -307,13 +308,13 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 20 seconds
+Cooldown         : 25 seconds
 Category         : 33
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
                  : 292
-Category Cooldown: 20 seconds
+Category Cooldown: 25 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Incapacitate
