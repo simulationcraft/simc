@@ -9034,8 +9034,7 @@ void monk_t::init_special_effects()
           {
             active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
           }
-          if ( talent.conduit_of_the_celestials.inner_compass->ok() )
-            buff.inner_compass_crane_stance->trigger();
+          buff.inner_compass_crane_stance->trigger();
         } );
   }
 
