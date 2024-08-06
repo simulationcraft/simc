@@ -2171,6 +2171,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light        = true;
     direct_hammer             = new hammer_of_light_damage_t( p, options_str );
     background                = !p->talents.templar.lights_guidance->ok();
+    hasted_gcd                = true;
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
@@ -2178,6 +2179,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     add_child( direct_hammer );
 
     doesnt_consume_dp = !( p->specialization() == PALADIN_PROTECTION && p->bugs );
+    hol_cost          = cost();
   }
 
   double cost() const override
@@ -3744,7 +3746,8 @@ void paladin_t::create_buffs()
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
-                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                        ->set_partial_tick( true );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
   buffs.templar.sanctification = make_buff( this, "sanctification", find_spell( 433671 ) )

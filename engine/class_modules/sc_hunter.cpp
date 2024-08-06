@@ -765,6 +765,7 @@ public:
 
     spell_data_ptr_t withering_fire;  // TODO nyi in game
 
+    // Pack Leader
     spell_data_ptr_t vicious_hunt;
 
     spell_data_ptr_t pack_coordination;
@@ -2720,19 +2721,19 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
   {
     hunter_main_pet_attack_t::impact( s );
 
-    if( ! o() -> tier_set.t30_sv_4pc.ok() )
-      return;
+    if( o()->tier_set.t30_sv_4pc.ok() )
+    {
+      if ( o()->state.last_kc_target && o()->state.last_kc_target != s->target )
+        o()->get_target_data( o()->state.last_kc_target )->debuffs.shredded_armor->expire();
 
-    if ( o() -> state.last_kc_target && o() -> state.last_kc_target != s -> target )
-      o() -> get_target_data( o() -> state.last_kc_target ) -> debuffs.shredded_armor -> expire();
-
-    o() -> state.last_kc_target = s -> target;
-    o() -> get_target_data( s -> target ) -> debuffs.shredded_armor -> trigger();
+      o()->state.last_kc_target = s->target;
+      o()->get_target_data( s->target )->debuffs.shredded_armor->trigger();
+    }
 
     if( o()->buffs.frenzied_tear->check() && p()==o()->pets.main )
     {
-      double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
-      p()->active.frenzied_tear->execute_on_target( s -> target, amount );
+      double amount = s->result_mitigated * o()->talents.frenzied_tear->effectN( 2 ).percent() / (1 + s->result_crit_bonus);
+      p()->active.frenzied_tear->execute_on_target( s->target, amount );
       o()->buffs.frenzied_tear->decrement();
       if( o()->talents.furious_assault.ok() && o()->rng().roll( o()->talents.furious_assault->effectN( 1 ).percent() ) )
       {

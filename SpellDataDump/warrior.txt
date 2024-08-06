@@ -4982,7 +4982,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .xx..... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Discount Power On Miss (59), No Aura Icon (60), Can't Crit (93), Ignore Healing Modifiers (219), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=297953)   : Direct Heal% (136)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.67000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : $@spelldesc202168
 
 Name             : Impending Victory (id=202168) [Spell Family (4)] 

@@ -20204,9 +20204,11 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10920 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10920 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=1144448)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24570 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24570 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 
@@ -20407,7 +20409,8 @@ Effects          :
 #3 (id=1138466)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Resource: runic_power | Target: Self (1)
 #4 (id=1173983)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.20000 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Viciously slice into the soul of your enemy, dealing $?a137008[$s1][$s4] Shadowfrost damage and applying Reaper's Mark.
 
 Each time you deal Shadow or Frost damage, add a stack of Reaper's Mark. After $434765d or reaching $434765u stacks, the mark explodes, dealing $?a137008[$436304s1][$436304s2] damage per stack.
@@ -20793,7 +20796,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134381)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=1139663)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1139664)  : Apply Aura (6) | Dummy (4)
@@ -21010,9 +21014,11 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75400 | PvP Coefficient: 0.70000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=1174046)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.30312 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.30312 | PvP Coefficient: 0.70000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -21038,9 +21044,11 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1135882)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.83600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.83600 | PvP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=1174049)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.83600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.83600 | PvP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc441378
 
 Name             : Death's Messenger (id=441511) 
@@ -23252,10 +23260,12 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1157778)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1157779)  : Apply Aura (6) | Modify Debuff Duration% (245)
-                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 0.29000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.29)
 Description      : Magic damage taken is reduced by $s1% and the duration of harmful Magic effects against you are reduced by $s2%.
 
 Name             : Vestigial Shell (id=454851) [Spell Family (15), Passive, Hidden] 
