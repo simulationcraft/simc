@@ -7102,36 +7102,37 @@ struct elemental_blast_t : public shaman_spell_t
       trigger_elemental_blast_proc( p() );
     }
 
-    if ( p()->talent.echoes_of_great_sundering.ok() )
+    // these are effects which ONLY trigger when the player cast the spell directly
+    if ( exec_type == spell_variant::NORMAL )
     {
-      p()->buff.echoes_of_great_sundering_es->expire();
-      p()->buff.echoes_of_great_sundering_eb->trigger();
+      if ( p->talent.echoes_of_great_sundering.ok() )
+      {
+        p()->buff.echoes_of_great_sundering_eb->trigger();
+      }
+
+      // talents
+      p()->buff.storm_frenzy->trigger();
+
+      p()->track_magma_chamber();
+      p()->buff.magma_chamber->expire();
+
+      // set bonuses and other external systems
+      p()->track_t29_2pc_ele();
+      p()->buff.t29_2pc_ele->expire();
+      p()->buff.t29_4pc_ele->trigger();
+
+      if ( p()->buff.whirling_earth->up() )
+      {
+        p()->buff.whirling_earth->decrement();
+        cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
+      }
     }
 
+    // for some reason, background EBs *can* proc SoP still
     if ( p()->talent.surge_of_power->ok() )
     {
       p()->buff.surge_of_power->trigger();
-    }
-
-    p()->track_magma_chamber();
-    p()->buff.magma_chamber->expire();
-
-    p()->track_t29_2pc_ele();
-    p()->buff.t29_2pc_ele->expire();
-
-
-    p()->buff.t29_4pc_ele->trigger();
-
-    if ( p()->buff.whirling_earth->up() )
-    {
-      p()->buff.whirling_earth->decrement();
-      cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
-    }
-
-    if ( exec_type == spell_variant::NORMAL )
-    {
-      p()->buff.storm_frenzy->trigger();
-    }
+    }    
   }
 
   void impact( action_state_t* state ) override
