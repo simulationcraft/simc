@@ -588,7 +588,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=343726)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 0.75000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #3 (id=355654)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #4 (id=1014264)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
@@ -6877,7 +6878,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -6985,7 +6987,8 @@ Effects          :
                    Affected Spells: Prismatic Barrier (235450)
                    Family Flags: 68
 #6 (id=1014263)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : Shields you with an arcane force, absorbing $<shield> damage and reducing magic damage taken by $s3% for $d.
 
 The duration of harmful Magic effects against you is reduced by $s4%.
@@ -16025,7 +16028,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): All
 #2 (id=1083957)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 0.75000 | Misc Value: 127 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #3 (id=1083958)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
 #4 (id=1083959)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)

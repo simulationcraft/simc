@@ -14168,7 +14168,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=888867)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.67000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : Interrupting a spell with Wind Shear decreases your damage taken from that spell school by $s1% for $355634d. Stacks up to $355634U times.
 
 Name             : Seasoned Winds (desc=PvP Talent) (id=355634) [Spell Family (11)] 
