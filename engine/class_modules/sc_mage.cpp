@@ -8343,8 +8343,6 @@ void mage_t::create_buffs()
                                             int count = as<int>( talents.energized_familiar->effectN( 1 ).base_value() );
                                             make_repeating_event( *sim, 75_ms, [ this ] { action.arcane_assault->execute_on_target( target ); }, count );
                                           }
-                                          // TODO: the bolts also have a chance to generate extra mana, but it doesn't work in game
-                                          // and spell data has no information about proc rate
                                         } )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                         { recalculate_resource_max( RESOURCE_MANA ); } )
