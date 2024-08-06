@@ -7102,35 +7102,39 @@ struct elemental_blast_t : public shaman_spell_t
       trigger_elemental_blast_proc( p() );
     }
 
-    if ( p()->talent.echoes_of_great_sundering.ok() )
-    {
-      p()->buff.echoes_of_great_sundering_es->expire();
-      p()->buff.echoes_of_great_sundering_eb->trigger();
-    }
-
-    if ( p()->talent.surge_of_power->ok() )
-    {
-      p()->buff.surge_of_power->trigger();
-    }
-
-    p()->track_magma_chamber();
-    p()->buff.magma_chamber->expire();
-
-    p()->track_t29_2pc_ele();
-    p()->buff.t29_2pc_ele->expire();
-
-
-    p()->buff.t29_4pc_ele->trigger();
-
-    if ( p()->buff.whirling_earth->up() )
-    {
-      p()->buff.whirling_earth->decrement();
-      cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
-    }
-
+    // these are effects which ONLY trigger when the player cast the spell directly
     if ( exec_type == spell_variant::NORMAL )
     {
+      if ( p()->talent.echoes_of_great_sundering.ok() )
+      {
+        p()->buff.echoes_of_great_sundering_eb->trigger();
+      }
+
+      // talents
       p()->buff.storm_frenzy->trigger();
+
+      if ( p()->buff.whirling_earth->up() )
+      {
+        p()->buff.whirling_earth->decrement();
+        cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
+      }
+
+      // set bonuses and other external systems
+      p()->track_t29_2pc_ele();
+      p()->buff.t29_2pc_ele->expire();
+      p()->buff.t29_4pc_ele->trigger();
+    }
+
+    // Magma Chamber is consumed and SoP triggered by PWave and Normal, but not FoE
+    if ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::PRIMORDIAL_WAVE )
+    {
+      p()->track_magma_chamber();
+      p()->buff.magma_chamber->expire();
+
+      if ( p()->talent.surge_of_power->ok() )
+      {
+        p()->buff.surge_of_power->trigger();
+      }
     }
   }
 
