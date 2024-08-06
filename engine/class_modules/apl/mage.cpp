@@ -125,12 +125,12 @@ void arcane( player_t* p )
   spellslinger->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)|(prev_gcd.1.arcane_barrage&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)),interrupt_if=(cooldown.evocation.ready&cooldown.arcane_surge.remains<3),interrupt_immediate=1,interrupt_global=1" );
   spellslinger->add_action( "supernova,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.unerring_proficiency.stack=30" );
   spellslinger->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
-  spellslinger->add_action( "arcane_missiles,if=buff.clearcasting.react&(buff.nether_precision.down|(talent.high_voltage&!buff.nether_precision.up&buff.arcane_charge.stack<4)),interrupt_if=!gcd.remains&(!talent.high_voltage|buff.arcane_charge.stack=4),interrupt_immediate=1,interrupt_global=1,chain=1" );
-  spellslinger->add_action( "arcane_barrage,if=buff.nether_precision.stack=1&((!talent.high_voltage|buff.clearcasting.react)|cooldown.arcane_orb.remains<gcd.max)|(buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.ready)|buff.intuition.up", "Always queue Arcane Barrage on the second stack of Nether Precision as Spellslinger" );
+  spellslinger->add_action( "arcane_barrage,if=(buff.nether_precision.stack=1&time-action.arcane_blast.last_used<0.015)|(cooldown.touch_of_the_magi.ready&buff.nether_precision.stack=2)", "Always queue Arcane Barrage on the second stack of Nether Precision as Spellslinger" );
+  spellslinger->add_action( "arcane_missiles,if=(buff.clearcasting.react&buff.nether_precision.down)|(buff.clearcasting.react&buff.clearcasting.stack=3),interrupt_if=!gcd.remains&(!talent.high_voltage|buff.arcane_charge.stack=4),interrupt_immediate=1,interrupt_global=1,chain=1" );
   spellslinger->add_action( "arcane_blast" );
   spellslinger->add_action( "arcane_barrage" );
 
-  sunfury_aoe->add_action( "arcane_barrage,if=buff.arcane_soul.up&buff.clearcasting.stack<4", "Spam Arcane Barrage during Arcane Soul, ensuring that you always get to maximum Clearcasting by the end." );
+  sunfury_aoe->add_action( "arcane_barrage,if=buff.arcane_soul.up&buff.clearcasting.stack<3", "Spam Arcane Barrage during Arcane Soul, ensuring that you always get to maximum Clearcasting by the end." );
   sunfury_aoe->add_action( "arcane_missiles,if=buff.arcane_soul.up,interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1" );
   sunfury_aoe->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)|(buff.burden_of_power.up&time-action.arcane_blast.last_used>0.015&buff.arcane_charge.stack=4)" );
   sunfury_aoe->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&(cooldown.arcane_orb.remains&action.arcane_orb.charges=0)&fight_remains>10)", "For Sunfury, Shifting Power only when you're not under the effect of any cooldowns" );
@@ -140,8 +140,9 @@ void arcane( player_t* p )
   sunfury_aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|buff.aether_attunement.up|talent.arcane_harmony)&((talent.high_voltage&buff.arcane_charge.stack<buff.arcane_charge.max_stack)|!buff.nether_precision.up),interrupt_if=!gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1" );
   sunfury_aoe->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   sunfury_aoe->add_action( "presence_of_mind,if=buff.arcane_charge.stack=3|buff.arcane_charge.stack=2" );
-  sunfury_aoe->add_action( "arcane_blast,if=buff.presence_of_mind.up&buff.burden_of_power.down" );
-  sunfury_aoe->add_action( "arcane_explosion" );
+  sunfury_aoe->add_action( "arcane_explosion,if=talent.reverberate" );
+  sunfury_aoe->add_action( "arcane_blast" );
+  sunfury_aoe->add_action( "arcane_barrage" );
 
   sunfury->add_action( "shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>15)&fight_remains>10)&buff.arcane_soul.down" );
   sunfury->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_soul.down" );
