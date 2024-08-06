@@ -1689,6 +1689,7 @@ public:
   bool doesnt_consume_dp;
   bool is_hammer_of_light;
   bool is_hammer_of_light_driver;
+  double hol_cost;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
@@ -1696,7 +1697,8 @@ public:
       is_sotr( false ),
       doesnt_consume_dp( false ),
       is_hammer_of_light( false ),
-      is_hammer_of_light_driver( false )
+      is_hammer_of_light_driver( false ),
+      hol_cost( 3.0 )
   {
   }
 
@@ -1771,6 +1773,10 @@ public:
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
     double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
+    if ( is_hammer_of_light_driver && !p->buffs.templar.hammer_of_light_free->up() )
+      num_hopo_spent = hol_cost;
+    else if ( is_hammer_of_light )
+      num_hopo_spent = 0.0;
     // Free spenders seem to count as 3 Holy Power, regardless the cost
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
@@ -1793,8 +1799,8 @@ public:
       }
     }
 
-    // TODO (Fluttershy): Check how this behaves with Hammer of Light
-    if ( p->talents.radiant_glory->ok() )
+    // Hammer of Light driver can proc it under all circumstances, but not the damage part
+    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
     {
       // This is a bit of a hack. As far as we can tell from logs,
       // this agony-like accumulator logic matches the distribution
@@ -1837,8 +1843,28 @@ public:
     */
     if ( p->buffs.crusade->check() )
     {
-      // Free Hammer of Light from Templar currently gives 0 stacks, needs to be adjusted later
-      p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
+      double crusade_stacks_given = num_hopo_spent;
+
+      if (is_hammer_of_light_driver)
+      {
+        // 2024-08-05 The driver doesn't give stacks if it was free
+        if ( ( p->buffs.divine_purpose->up() && p->bugs ) ||
+             ( p->buffs.templar.hammer_of_light_free->up() && p->bugs ) )
+        {
+          crusade_stacks_given = 0.0;
+        }
+      }
+      // Damage part of Hammer of Light
+      else if ( is_hammer_of_light )
+      {
+        // 2024-08-05 The damage part gives stacks if Divine Purpose is up (Can go to 10 stacks immediately if the driver procced it). But only for hardcast Crusades
+        if ( p->bugs && p->buffs.divine_purpose->up() && !p->talents.radiant_glory->ok() )
+        {
+          crusade_stacks_given = 5.0;
+        }
+      }
+      if ( crusade_stacks_given > 0 )
+        p->buffs.crusade->trigger( as<int>( crusade_stacks_given ) );
     }
 
     // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all
