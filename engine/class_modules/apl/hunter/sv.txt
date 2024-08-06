@@ -69,7 +69,7 @@ actions.plcleave+=/explosive_shot,if=buff.bombardier.remains
 actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
 actions.plcleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
 actions.plcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
-actions.plcleave+=/explosive_shot,if=if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2
+actions.plcleave+=/explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2
 actions.plcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.plcleave+=/kill_shot,if=buff.sic_em.remains&active_enemies<4
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
