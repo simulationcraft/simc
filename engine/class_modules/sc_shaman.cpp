@@ -7125,18 +7125,17 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.t29_4pc_ele->trigger();
     }
 
-    // Magma Chamber is consumed by PWave and Normal, but not FoE
+    // Magma Chamber is consumed and SoP triggered by PWave and Normal, but not FoE
     if ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
       p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
-    }
 
-    // for some reason, background EBs *can* proc SoP still
-    if ( p()->talent.surge_of_power->ok() )
-    {
-      p()->buff.surge_of_power->trigger();
-    }    
+      if ( p()->talent.surge_of_power->ok() )
+      {
+        p()->buff.surge_of_power->trigger();
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
