@@ -5374,6 +5374,11 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p()->executing != this && !p()->buffs.icicles->at_max_stacks() )
       return false;
 
+    // TODO: Glacial Spike actually relies on a different buff that allows it to be
+    // cast (id 199844). Normally, this is no different from checking that Icicles are
+    // at max stacks since that's when the buff is active. However, if you queue an instant
+    // Frostfire Bolt after a Glacial Spike, this buff will reapply (even though the player has
+    // a single Icicle and no Icicles buff), allowing Glacial Spike to be cast again.
     return frost_mage_spell_t::ready();
   }
 
