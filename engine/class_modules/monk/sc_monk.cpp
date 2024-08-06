@@ -2034,12 +2034,10 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
           p()->buff.teachings_of_the_monastery->trigger();
       }
 
-      if ( p()->talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() &&
-           p()->specialization() == MONK_WINDWALKER )
+      if ( p()->specialization() == MONK_WINDWALKER )
       {
         p()->buff.strength_of_the_black_ox->expire();
-        if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
-          p()->buff.inner_compass_ox_stance->trigger();
+        p()->buff.inner_compass_ox_stance->trigger();
       }
 
       if ( p()->buff.blackout_reinforcement->up() )
@@ -2874,8 +2872,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       return;
     p()->buff.heart_of_the_jade_serpent_cdr->trigger();
     p()->buff.heart_of_the_jade_serpent->expire();
-    if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
-      p()->buff.inner_compass_serpent_stance->trigger();
+    p()->buff.inner_compass_serpent_stance->trigger();
   }
 };
 
@@ -4179,8 +4176,7 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
   {
     p()->buff.strength_of_the_black_ox->trigger();
 
-    if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
-      p()->buff.inner_compass_tiger_stance->trigger();
+    p()->buff.inner_compass_tiger_stance->trigger();
 
     monk_melee_attack_t::execute();
   }
