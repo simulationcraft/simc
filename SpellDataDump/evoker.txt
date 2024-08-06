@@ -15391,6 +15391,7 @@ Increases the duration of your active Ebon Might effects by ${$395153s3/1000} se
 Tooltip          : Spewing molten cinders. Immune to crowd control.
 
 Name             : Bombardments (desc=Black) (id=434300) [Spell Family (224), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -15416,19 +15417,20 @@ Effects          :
 Description      : $?c1[Mass Disintegrate][Mass Eruption] marks your primary target for destruction for the next $434473d.
 
 You and your allies have a chance to trigger a Bombardment when attacking marked targets, dealing $<dmg> Volcanic damage split amongst all nearby enemies.
-Variables        : $dmg=${$INT*1.3*(1+$@versadmg)*$pctD}
+Variables        : $dmg=${$INT*3.8*(1+$@versadmg)*$pctD}
 
 Name             : Bombardments (id=434473) [Spell Family (224)] 
+Hotfixed         : Proc Chance (20 -> 30), Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
 Spell Level      : 10
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 3022
-Proc Chance      : 20%
+Proc Chance      : 30%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Bombardments (434300)
@@ -15438,9 +15440,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can Proc From Procs (122), Nameplate Enemy Debuffs (426), Periodic Refresh Extends Duration (436)
+                 : Can Proc From Procs (122), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1124491)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15470,7 +15472,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1124499)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.80000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.3 -> 3.8)
 Description      : $@spelldesc434300
 
 Name             : Warp (desc=Bronze) (id=436036) 
@@ -15574,7 +15577,8 @@ Effects          :
 #1 (id=1127595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1127596)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 15)
 Description      : Empower spells cause your next Disintegrate to strike up to $s1 targets. When striking less than $s1 targets, Disintegrate damage is increased by $s2% for each missing target.
 
 Name             : Mass Disintegrate (desc=Black) (id=436336) [Spell Family (224)] 
@@ -15627,7 +15631,8 @@ Effects          :
 #1 (id=1131288)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1131289)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 15)
 Description      : Empower spells cause your next Eruption to strike up to $s1 targets. When striking less than $s1 targets, Eruption damage is increased by $s2% for each missing target.
 
 Name             : Mass Eruption (desc=Black) (id=438588) [Spell Family (224)] 
