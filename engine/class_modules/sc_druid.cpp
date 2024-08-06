@@ -4391,7 +4391,12 @@ struct ferocious_bite_base_t : public cat_finisher_t
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
         auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
         state->combo_points = cp( from );
-        state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
+
+        // TODO: RF from apex/convoke currently does not scale with excess energy, unlike hardcasted FB
+        if ( p()->bugs && is_free() )
+          state->energy_mul = 1.0;
+        else
+          state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
       } );
     }
   }
