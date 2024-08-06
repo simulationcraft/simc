@@ -7113,19 +7113,23 @@ struct elemental_blast_t : public shaman_spell_t
       // talents
       p()->buff.storm_frenzy->trigger();
 
-      p()->track_magma_chamber();
-      p()->buff.magma_chamber->expire();
-
-      // set bonuses and other external systems
-      p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc_ele->expire();
-      p()->buff.t29_4pc_ele->trigger();
-
       if ( p()->buff.whirling_earth->up() )
       {
         p()->buff.whirling_earth->decrement();
         cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
       }
+
+      // set bonuses and other external systems
+      p()->track_t29_2pc_ele();
+      p()->buff.t29_2pc_ele->expire();
+      p()->buff.t29_4pc_ele->trigger();
+    }
+
+    // Magma Chamber is consumed by PWave and Normal, but not FoE
+    if ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::PRIMORDIAL_WAVE )
+    {
+      p()->track_magma_chamber();
+      p()->buff.magma_chamber->expire();
     }
 
     // for some reason, background EBs *can* proc SoP still
