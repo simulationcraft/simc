@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.55959
-static const std::array<spelltext_data_t, 26276> __spelltext_data { {
+static const std::array<spelltext_data_t, 26277> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24152,13 +24152,14 @@ static const std::array<spelltext_data_t, 26276> __spelltext_data { {
   { 446402, "$@spelldesc443736", 0, 0 },
   { 446648, "Occasionally share a drink with allies who assist you in combat, granting them $s2 of their primary stat for $443381d and absorbing $s3 damage. You take a sip as well, granting $s4 $pri and absorbing $s5 damage.\r\n\r\nWhen you fall below $s1% health, you take an emergency sip. This may only occur once every $450610d.$?(a137048|a137028|a137023|a137010|a212613|a137008)[][\r\n\r\n|cnRED_FONT_COLOR:Valid only for tank specializations.|r]", 0, 0 },
   { 446663, "When Truth's Wake critically strikes, its duration is extended by $s1 sec.\r\n\r\nYour other damage over time effects deal $s2% increased damage to targets affected by Truth's Wake. ", 0, 0 },
-  { 446743, 0, "The Darkness builds within you.", 0 },
+  { 446743, "$@spelldesc443760", "The Darkness builds within you.", 0 },
+  { 446753, "$@spelldesc443760", 0, 0 },
   { 446764, "Your melee attacks have a chance to crank the launcher's gears, decreasing its cooldown by $s1 sec and heating up your weapon which causes your next attack to inflict ${$<rolemult>*$s2} additional Fire damage.", 0, 0 },
   { 446787, "Your attacks have a chance to stir the larynx, allowing its dark whispers to influence you. Each whisper flows through your mind for $446822d, granting $s1 Strength.\r\n\r\n", 0, 0 },
   { 446805, "$@spelldesc444264", 0, 0 },
   { 446811, "$@spelldesc443411", 0, 0 },
   { 446835, "Upon entering combat, players gain either $@spellname456648 or $@spellname456651 until combat ends.\r\n\r\n$@spellicon456648 $@spellname456648\r\n$@spelldesc456648\r\n\r\n$@spellicon456651 $@spellname456651\r\n$@spelldesc456651", 0, "Rank 1/4" },
-  { 446836, 0, "Darkness slows you by $w1%.", 0 },
+  { 446836, "$@spelldesc443760", "Darkness slows you by $w1%.", 0 },
   { 446839, "$@spelldesc445260", "Chance to be critically struck increased by $s1%.", 0 },
   { 446886, "$@spelldesc444264", "Maximum health increased by $w1.", 0 },
   { 446887, "$@spelldesc444264", "Absorbing $w1 damage.", 0 },
@@ -26279,7 +26280,10 @@ static const std::array<spelltext_data_t, 26276> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55959
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {  446743,  0, nullptr, "$@spelldesc443760" },
+  {  446753,  0, nullptr, "$@spelldesc443760" },
+  {  446836,  0, nullptr, "$@spelldesc443760" },
   {  461924,  1, "Stamina increased by $w10 and Intellect increased by $w11.", "Stamina increased by $w10 and Agility increased by $w11." },
   {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
