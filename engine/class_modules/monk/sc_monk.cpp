@@ -2034,8 +2034,13 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
           p()->buff.teachings_of_the_monastery->trigger();
       }
 
-      if ( p()->specialization() == MONK_WINDWALKER )
+      if ( p()->talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() &&
+           p()->specialization() == MONK_WINDWALKER )
+      {
         p()->buff.strength_of_the_black_ox->expire();
+        if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
+          p()->buff.inner_compass_ox_stance->trigger();
+      }
 
       if ( p()->buff.blackout_reinforcement->up() )
         p()->buff.blackout_reinforcement->decrement();
@@ -2869,6 +2874,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       return;
     p()->buff.heart_of_the_jade_serpent_cdr->trigger();
     p()->buff.heart_of_the_jade_serpent->expire();
+    if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
+      p()->buff.inner_compass_serpent_stance->trigger();
   }
 };
 
@@ -4157,6 +4164,8 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
       heal( new courage_of_the_white_tiger_heal_t( p ) )
   {
     background = true;
+    // allow for 2 seconds for the summoning animation to happen.
+    time_to_travel = 2000_ms;
 
     // we have to set this up by hand, as Unity Within multiplier is scripted
     if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
@@ -4169,6 +4178,9 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
   void execute() override
   {
     p()->buff.strength_of_the_black_ox->trigger();
+
+    if ( p()->talent.conduit_of_the_celestials.inner_compass->ok() )
+      p()->buff.inner_compass_tiger_stance->trigger();
 
     monk_melee_attack_t::execute();
   }
@@ -8414,16 +8426,48 @@ void monk_t::create_buffs()
           ->set_expire_at_max_stack( true );
 
   buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
-                                                        "crane_stance", find_spell( 443572 ) );
+                                                        "crane_stance", find_spell( 443572 ) )
+                                        ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                          if ( old_ == 0 )
+                                          {
+                                            buff.inner_compass_ox_stance->expire();
+                                            buff.inner_compass_serpent_stance->expire();
+                                            buff.inner_compass_tiger_stance->expire();
+                                          }
+                                        } );
 
   buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
-                                                     "ox_stance", find_spell( 443574 ) );
+                                                     "ox_stance", find_spell( 443574 ) )
+                                     ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                       if ( old_ == 0 )
+                                       {
+                                         buff.inner_compass_crane_stance->expire();
+                                         buff.inner_compass_serpent_stance->expire();
+                                         buff.inner_compass_tiger_stance->expire();
+                                       }
+                                     } );
 
   buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
-                                                          "serpent_stance", find_spell( 443576 ) );
+                                                          "serpent_stance", find_spell( 443576 ) )
+                                          ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                            if ( old_ == 0 )
+                                            {
+                                              buff.inner_compass_crane_stance->expire();
+                                              buff.inner_compass_ox_stance->expire();
+                                              buff.inner_compass_tiger_stance->expire();
+                                            }
+                                          } );
 
   buff.inner_compass_tiger_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
-                                                        "tiger_stance", find_spell( 443575 ) );
+                                                        "tiger_stance", find_spell( 443575 ) )
+                                        ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                          if ( old_ == 0 )
+                                          {
+                                            buff.inner_compass_crane_stance->expire();
+                                            buff.inner_compass_ox_stance->expire();
+                                            buff.inner_compass_serpent_stance->expire();
+                                          }
+                                        } );
 
   buff.jade_sanctuary = make_buff_fallback( talent.conduit_of_the_celestials.jade_sanctuary->ok(), this,
                                             "jade_sanctuary", find_spell( 448508 ) );
@@ -8994,6 +9038,8 @@ void monk_t::init_special_effects()
           {
             active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
           }
+          if ( talent.conduit_of_the_celestials.inner_compass->ok() )
+            buff.inner_compass_crane_stance->trigger();
         } );
   }
 
