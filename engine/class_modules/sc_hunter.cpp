@@ -1834,6 +1834,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
   {
     action_t* basic_attack = nullptr;
     action_t* brutal_companion_ba = nullptr;
+    action_t* pack_coordination_ba = nullptr;
     action_t* kill_command = nullptr;
     action_t* kill_cleave = nullptr;
     action_t* bestial_wrath = nullptr;
@@ -2925,32 +2926,14 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
 
 // Pet Claw/Bite/Smack ======================================================
 
-struct basic_attack_t : public hunter_main_pet_attack_t
+struct basic_attack_base_t : public hunter_main_pet_attack_t
 {
-  struct {
-    double cost_pct = 0;
-    double multiplier = 1;
-    benefit_t* benefit = nullptr;
-  } wild_hunt;
-
-  basic_attack_t( hunter_main_pet_t* p, util::string_view n, util::string_view options_str ):
-    hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) )
+  basic_attack_base_t( hunter_main_pet_t* p, util::string_view n, util::string_view suffix, util::string_view options_str ):
+    hunter_main_pet_attack_t( fmt::format("{}{}", n, suffix), p, p -> find_pet_spell( n ) )
   {
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-
-    auto wild_hunt_spell = p -> find_spell( 62762 );
-    wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
-    wild_hunt.multiplier = 1 + wild_hunt_spell -> effectN( 1 ).percent();
-    wild_hunt.benefit = p -> get_benefit( "wild_hunt" );
-
-    p -> active.basic_attack = this;
-  }
-
-  bool use_wild_hunt() const
-  {
-    return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
   void execute() override
@@ -2987,18 +2970,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = hunter_main_pet_attack_t::action_multiplier();
-
-    const bool used_wild_hunt = use_wild_hunt();
-    if ( used_wild_hunt )
-      am *= wild_hunt.multiplier;
-    wild_hunt.benefit -> update( used_wild_hunt );
-
-    return am;
-  }
-
   double composite_crit_chance() const override
   {
     double cc = hunter_main_pet_attack_t::composite_crit_chance();
@@ -3022,10 +2993,47 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     return cm;
   }
+};
+
+struct basic_attack_main_t final : public basic_attack_base_t
+{
+  struct {
+    double cost_pct = 0;
+    double multiplier = 1;
+    benefit_t* benefit = nullptr;
+  } wild_hunt;
+
+  basic_attack_main_t( hunter_main_pet_t* p, util::string_view n, util::string_view options_str ) :
+    basic_attack_base_t( p, n, "", options_str )
+  {
+    auto wild_hunt_spell = p -> find_spell( 62762 );
+    wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
+    wild_hunt.multiplier = 1 + wild_hunt_spell -> effectN( 1 ).percent();
+    wild_hunt.benefit = p -> get_benefit( "wild_hunt" );
+
+    p -> active.basic_attack = this;
+  }
+
+  bool use_wild_hunt() const
+  {
+    return p() -> resources.current[RESOURCE_FOCUS] > 50;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = basic_attack_base_t::action_multiplier();
+
+    const bool used_wild_hunt = use_wild_hunt();
+    if ( used_wild_hunt )
+      am *= wild_hunt.multiplier;
+    wild_hunt.benefit -> update( used_wild_hunt );
+
+    return am;
+  }
 
   double cost_pct_multiplier() const override
   {
-    double c = hunter_main_pet_attack_t::cost_pct_multiplier();
+    double c = basic_attack_base_t::cost_pct_multiplier();
 
     if ( use_wild_hunt() )
       c *= wild_hunt.cost_pct;
@@ -3034,12 +3042,26 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   }
 };
 
-struct brutal_companion_ba_t : public basic_attack_t
+struct pack_coordination_ba_t : public basic_attack_base_t
+{
+  pack_coordination_ba_t( hunter_main_pet_t* p, util::string_view n )
+    : basic_attack_base_t( p, n, "_pack_coordination", "" )
+  {
+    background = true;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
+struct brutal_companion_ba_t : public basic_attack_base_t
 {
   brutal_companion_ba_t( hunter_main_pet_t* p, util::string_view n ):
-    basic_attack_t( p, n, "" )
+    basic_attack_base_t( p, n, "_brutal_companion", "" )
   {
-    background = dual = true;
+    background = true;
   }
 
   double action_multiplier() const override
@@ -3206,9 +3228,9 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 action_t* hunter_main_pet_t::create_action( util::string_view name,
                                             util::string_view options_str )
 {
-  if ( name == "claw" ) return new        actions::basic_attack_t( this, "Claw", options_str );
-  if ( name == "bite" ) return new        actions::basic_attack_t( this, "Bite", options_str );
-  if ( name == "smack" ) return new       actions::basic_attack_t( this, "Smack", options_str );
+  if ( name == "claw" ) return new        actions::basic_attack_main_t( this, "Claw", options_str );
+  if ( name == "bite" ) return new        actions::basic_attack_main_t( this, "Bite", options_str );
+  if ( name == "smack" ) return new       actions::basic_attack_main_t( this, "Smack", options_str );
 
   return hunter_main_pet_base_t::create_action( name, options_str );
 }
@@ -3278,6 +3300,9 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> talents.brutal_companion.ok() )
     active.brutal_companion_ba = new actions::brutal_companion_ba_t( this, "Claw" );
+
+  if ( o() -> talents.pack_coordination.ok())
+    active.pack_coordination_ba = new actions::pack_coordination_ba_t( this, "Claw" );
 }
 
 void dire_critter_t::init_spells()
@@ -4631,7 +4656,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
     {
-      p()->pets.main->active.basic_attack->execute_on_target( target );
+      p()->pets.main->active.pack_coordination_ba->execute_on_target( target );
       if( !p()->talents.pack_assault.ok() || !p()->buffs.call_of_the_wild->check() )
         p()->pets.main->buffs.pack_coordination->decrement();
     }
@@ -5591,7 +5616,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
     {
-      p()->pets.main->active.basic_attack->execute_on_target( target );
+      p()->pets.main->active.pack_coordination_ba->execute_on_target( target );
       if( !p()->talents.pack_assault.ok() || !p()->buffs.coordinated_assault->check() )
         p()->pets.main->buffs.pack_coordination->decrement();
     }
