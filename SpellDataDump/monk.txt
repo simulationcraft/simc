@@ -22643,7 +22643,8 @@ Effects          :
 #1 (id=1150629)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1151332)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (400 -> 300)
 #3 (id=1167368)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1167369)  : Apply Aura (6) | Dummy (4)
@@ -22674,7 +22675,8 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1150633)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.5 -> 0.65)
 Description      : Deals $s1 Physical damage.
 
 Name             : Swift Art (id=450622) [Spell Family (53), Passive] 
@@ -23307,13 +23309,15 @@ Effects          :
 #1 (id=1151270)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1151622)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
+Hotfixed         : Base Value (10 -> 15)
 #3 (id=1151623)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Keg Smash (121253)
                    Family Flags: 57
+Hotfixed         : Base Value (30 -> 35)
 Description      : Damage dealt by Fists of Fury and Keg Smash counts as double towards Flurry Charge generation.
 
 Fists of Fury damage increased by $s2%.
@@ -23341,21 +23345,24 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1151271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Expel Harm (115129), Crackling Jade Lightning (117952), Keg Smash (121253), Tiger Palm (331433)
                    Family Flags: 10, 32, 57, 74
+Hotfixed         : Base Value (15 -> 20)
 #2 (id=1151635)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Expel Harm (115129), Crackling Jade Lightning (117952), Keg Smash (121253), Tiger Palm (331433)
                    Family Flags: 10, 32, 57, 74
+Hotfixed         : Base Value (15 -> 20)
 #3 (id=1151637)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1151638)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1151757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
                    Family Flags: 8, 63
+Hotfixed         : Base Value (15 -> 20)
 Description      : Energy spenders deal an additional $s1% damage.
 Every $s3 Energy spent reduces the cooldown of $?c1[Weapons of Order][Storm, Earth, and Fire] by ${$s4/1000} sec.
 
@@ -23378,7 +23385,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1151272)  : Apply Aura (6) | Unknown(280)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 12)
 Description      : Your attacks penetrate $s1% armor.
 
 Name             : Whirling Steel (id=450991) [Spell Family (53), Passive] 
@@ -23625,7 +23633,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 9 yards
-Duration         : 5 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -23996,7 +24004,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1151723)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1 -> 1.6)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
@@ -25190,7 +25199,7 @@ Name             : Wisdom of the Wall (id=452688) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 40 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
