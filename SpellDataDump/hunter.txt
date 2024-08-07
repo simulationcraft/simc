@@ -11952,7 +11952,8 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3838: Venomous Bite (459667 effect#1), Shower of Blood (459729 effect#1)
+                 : 3838: Shower of Blood (459729 effect#1)
+                 : 4047: Venomous Bite (459667 effect#1)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effect#1)
 Family Flags     : 1, 2, 106
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -14054,6 +14055,7 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
+                 : 4047: Venomous Bite (459667 effect#1)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effect#1)
 Family Flags     : 1, 2, 106
 Attributes       : ....x..x ........ x....... ........   ........ .x...... ........ ........ 
@@ -14071,6 +14073,9 @@ Effects          :
 #2 (id=872933)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+#3 (id=1179024)  : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 459668 | Target: Enemy (6)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc321530
 Tooltip          : Bleeding for $w1 Physical damage every $t1 sec.
 Taking $s2% increased damage from the Hunter's pet.
@@ -21792,8 +21797,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1166641)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3838 (Label) | Target: Self (1)
-                   Affected Spells (Label): Bloodshed (321538)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4047 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bloodshed (321538), Bloodshed (346396)
+Hotfixed         : Misc Value 2 (3838 -> 4047)
 Description      : Bloodshed increases all damage taken from your pet by an additional $321538s2%, and Kill Command deals $459668s1% increased damage to the target.
 
 Name             : Venomous Bite (id=459668) [Spell Family (9)] 
@@ -21805,7 +21811,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Triggered by     : Bloodshed (321538)
+Triggered by     : Bloodshed (321538), Bloodshed (346396)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
