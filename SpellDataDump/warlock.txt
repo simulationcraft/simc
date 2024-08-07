@@ -18782,9 +18782,10 @@ Effects          :
                    Affected Spells: Howl of Terror (5484)
                    Family Flags: 35
 #2 (id=1124551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.40000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Howl of Terror (5484)
                    Family Flags: 35
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Howl of Terror cooldown is reduced by ${$s1/-1000} sec and range is increased by $s2 yds.
 
 Name             : Infernal Vitality (id=429115) [Spell Family (5), Passive, Hidden] 
@@ -20519,8 +20520,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1148946)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3537 (Label) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.20000 | Misc Value: 12 | Misc Value 2: 3537 (Label) | Target: Self (1)
                    Affected Spells (Label): Nightfall (264571)
+Hotfixed         : PvP Coefficient (1 -> 0.2)
 #2 (id=1150565)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Drain Soul (198590), Infernal Bolt (434506)
@@ -20579,7 +20581,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1148960)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your demonic soul deals $s1% increased damage to $?s137043[targets affected by your Unstable Affliction.][the main target of Hand of Gul'dan.]
 
 Name             : Wicked Reaping (id=449631) [Spell Family (5), Passive, Hidden] 
@@ -20739,7 +20742,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1149136)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Dark Pact now shields you for an additional $s1% of the sacrificed health.
 
 Name             : Shared Fate (id=449704) [Spell Family (5), Passive, Hidden] 
@@ -20813,9 +20817,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1149142)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -90000 | Scaled Value: -90000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -90000 | Scaled Value: -90000 | PvP Coefficient: 0.33333 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Fel Domination (333889)
                    Family Flags: 123
+Hotfixed         : PvP Coefficient (1 -> 0.333334)
 Description      : Fel Domination cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Succulent Soul (id=449793) [Spell Family (5)] 

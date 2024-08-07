@@ -20782,9 +20782,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1142521)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33334 | Target: Enemy (6)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600)
                    Family Flags: 29, 115, 116
+Hotfixed         : PvP Coefficient (1 -> 0.33334)
 #2 (id=1142883)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600)
@@ -21050,9 +21051,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1144608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Mortal Strike (12294), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Mortal Strike (339385)
                    Family Flags: 25, 108
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc446085
 Tooltip          : $?c1[Mortal Strike][Rampage] damage increased by $w1%.
 
