@@ -6746,6 +6746,19 @@ struct soul_rupture_t final : public death_knight_spell_t
     cooldown->duration = 0_ms;
     aoe                = -1;
   }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
 };
 
 struct reapers_mark_t final : public death_knight_spell_t
