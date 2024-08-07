@@ -5,7 +5,7 @@ class WowVersion:
     def __init__(self, *args):
         # Presume a string
         if len(args) == 1:
-            mobj = re.match('^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$', args[0])
+            mobj = re.match(r'^([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+)$', args[0])
             if not mobj:
                 raise ValueError('Invalid World of Warcraft version string {}, expected format <expansion>.<patch>.<minor>.<build>'.format(args[0]))
 
