@@ -24164,7 +24164,7 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
   { 446886, "$@spelldesc444264", "Maximum health increased by $w1.", 0 },
   { 446887, "$@spelldesc444264", "Absorbing $w1 damage.", 0 },
   { 446918, "$@spelldesc446085", "$?c1[Mortal Strike][Rampage] damage increased by $w1%.", 0 },
-  { 447005, 0, "Your blessed weapon increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][highest secondary stat] rating $?e0[by ${$w1}]?e1[by ${$w2}]?e2[by ${$w3}]?e3[by ${$w4}][].", 0 },
+  { 447005, "$@spelldesc443743", "Your blessed weapon increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][highest secondary stat] rating $?e0[by ${$w1}]?e1[by ${$w2}]?e2[by ${$w3}]?e3[by ${$w4}][].", 0 },
   { 447093, "$@spelldesc444292", 0, 0 },
   { 447131, "Rejuvenation instantly heals your target for $s1% of its total periodic effect and Regrowth's duration is increased by ${$s2/1000} sec.", 0, 0 },
   { 447132, "$@spelldesc447131", 0, 0 },
@@ -26280,10 +26280,11 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55959
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
   {  446743,  0, nullptr, "$@spelldesc443760" },
   {  446753,  0, nullptr, "$@spelldesc443760" },
   {  446836,  0, nullptr, "$@spelldesc443760" },
+  {  447005,  0, nullptr, "$@spelldesc443743" },
   {  461924,  1, "Stamina increased by $w10 and Intellect increased by $w11.", "Stamina increased by $w10 and Agility increased by $w11." },
   {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
