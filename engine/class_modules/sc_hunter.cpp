@@ -502,6 +502,7 @@ public:
     cooldown_t* flanking_strike;
     cooldown_t* fury_of_the_eagle;
     cooldown_t* ruthless_marauder;
+    cooldown_t* coordinated_assault;
 
     cooldown_t* black_arrow;
     cooldown_t* shadow_surge;
@@ -866,6 +867,7 @@ public:
     event_t* current_volley = nullptr;
     // Focus used for T31 MM 4pc buff Rapid Reload (431156)
     double focus_used_rapid_reload = 0;
+    timespan_t sentinel_watch_reduction = 0_s;
   } state;
 
   struct options_t {
@@ -900,6 +902,7 @@ public:
     cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
     cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
     cooldowns.ruthless_marauder     = get_cooldown( "ruthless_marauder" );
+    cooldowns.coordinated_assault   = get_cooldown( "coordinated_assault" );
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.shadow_surge = get_cooldown( "shadow_surge" );
@@ -4483,9 +4486,38 @@ struct cull_the_herd_t : residual_bleed_base_t
 
 struct sentinel_t : hunter_ranged_attack_t
 {
-  sentinel_t( hunter_t* p ) : hunter_ranged_attack_t( "sentinel", p, p->talents.sentinel_tick )
+  struct {
+    double chance = 0.0;
+    double gain = 0.0;
+  } invigorating_pulse;
+
+  struct {
+    timespan_t reduction = 0_s;
+    timespan_t limit = 0_s;
+    cooldown_t* cooldown = nullptr;
+  } sentinel_watch;
+
+  sentinel_t( hunter_t* p )
+    : hunter_ranged_attack_t( "sentinel", p, p->talents.sentinel_tick )
   {
     background = dual = true;
+
+    if ( p->talents.invigorating_pulse.ok() )
+    {
+      invigorating_pulse.chance = p->talents.invigorating_pulse->effectN( 2 ).percent();
+      invigorating_pulse.gain   = p->talents.invigorating_pulse->effectN( 1 ).base_value();
+    }
+
+    if ( p->talents.sentinel_watch.ok() )
+    {
+      sentinel_watch.reduction = timespan_t::from_seconds( p->talents.sentinel_watch->effectN( 1 ).base_value() );
+      sentinel_watch.limit     = timespan_t::from_seconds( p->talents.sentinel_watch->effectN( 2 ).base_value() );
+
+      if ( p->specialization() == HUNTER_SURVIVAL )
+        sentinel_watch.cooldown = p->cooldowns.coordinated_assault;
+      else if ( p->specialization() == HUNTER_MARKSMANSHIP )
+        sentinel_watch.cooldown = p->cooldowns.trueshot;
+    }
   }
 
   void execute() override
@@ -4500,8 +4532,14 @@ struct sentinel_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     // TODO test for lower chance when multiple implosions are active
-    if ( rng().roll( p()->talents.invigorating_pulse->effectN( 2 ).percent() ) )
-      p()->resource_gain( RESOURCE_FOCUS, p()->talents.invigorating_pulse->effectN( 1 ).base_value(), p()->gains.invigorating_pulse, this );
+    if ( rng().roll( invigorating_pulse.chance ) )
+      p()->resource_gain( RESOURCE_FOCUS, invigorating_pulse.gain, p()->gains.invigorating_pulse, this );
+
+    if ( sentinel_watch.cooldown && p()->state.sentinel_watch_reduction < sentinel_watch.limit )
+    {
+      p()->state.sentinel_watch_reduction += sentinel_watch.reduction;
+      sentinel_watch.cooldown->adjust( -sentinel_watch.reduction, true );
+    }
   }
 };
 
@@ -6125,6 +6163,8 @@ struct coordinated_assault_t: public hunter_melee_attack_t
 
     hunter_melee_attack_t::execute();
 
+    p()->state.sentinel_watch_reduction = 0_s;
+
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
 
@@ -6866,6 +6906,8 @@ struct trueshot_t: public hunter_spell_t
   void execute() override
   {
     hunter_spell_t::execute();
+
+    p()->state.sentinel_watch_reduction = 0_s;
 
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
     p() -> buffs.trueshot -> expire();
