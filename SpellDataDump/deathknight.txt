@@ -23787,25 +23787,29 @@ Effects          :
 Description      : While Pillar of Frost is active your auto-attack critical strikes increase its duration by $s1 sec, up to a maximum of $s2 sec.
 
 Name             : Cryogenic Chamber (id=456370) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+Stacks           : 20 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1160530)  : Apply Aura (6) | Dummy (4)
+#1 (id=1160530)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc456237
 Tooltip          : Remorseless Winter has accumulated $w1 damage.
 
