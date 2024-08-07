@@ -1009,6 +1009,7 @@ public:
   void trigger_calling_the_shots( action_t* action, double cost );
   void consume_trick_shots();
   void trigger_rapid_reload( action_t* action, double cost );
+  void trigger_sentinel( player_t* target );
   void trigger_sentinel_implosion( player_t* target );
 };
 
@@ -2747,6 +2748,9 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
         o()->buffs.furious_assault->trigger();
       }
     }
+
+    if ( o()->talents.sentinel.ok() )
+      o()->trigger_sentinel( s->target );
   }
   
   void trigger_dot( action_state_t* s ) override
@@ -3613,6 +3617,21 @@ void hunter_t::trigger_rapid_reload( action_t* action, double cost )
       buffs.rapid_reload -> trigger();
       cooldowns.rapid_fire -> reset( true );
     }
+  }
+}
+
+void hunter_t::trigger_sentinel( player_t* target )
+{
+  if ( rng().roll( 0.22 ) )
+  {
+    buff_t* sentinel = get_target_data( target )->debuffs.sentinel;
+    if ( !sentinel->check() )
+      sentinel->trigger( 1 + as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
+    else
+      sentinel->trigger();
+
+    if ( sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
+      trigger_sentinel_implosion( target );
   }
 }
 
@@ -8593,10 +8612,9 @@ void hunter_t::init_special_effects()
     struct sentinel_cb_t : public dbc_proc_callback_t
     {
       hunter_t* player;
-      const int implosion_stacks;
 
       sentinel_cb_t( const special_effect_t& e, hunter_t* p )
-        : dbc_proc_callback_t( p, e ), player( p ), implosion_stacks( as<int>( p->talents.sentinel->effectN( 1 ).base_value() ) )
+        : dbc_proc_callback_t( p, e ), player( p )
       {
       }
 
@@ -8604,21 +8622,14 @@ void hunter_t::init_special_effects()
       {
         dbc_proc_callback_t::execute( a, s );
 
-        buff_t* sentinel = player->get_target_data( s->target )->debuffs.sentinel;
-        if ( !sentinel->check() )
-          sentinel->trigger( 1 + as<int>( player->talents.extrapolated_shots->effectN( 1 ).base_value() ) );
-        else
-          sentinel->trigger();
-
-        if ( sentinel->check() > implosion_stacks && rng().roll( 0.32 ) )
-          player->trigger_sentinel_implosion( s->target );
+        player->trigger_sentinel( s->target );
       }
     };
 
     auto const effect    = new special_effect_t( this );
     effect->name_str     = "sentinel";
     effect->spell_id     = talents.sentinel->id();
-    effect->proc_chance_ = 0.22;
+    effect->proc_flags2_ = PF2_ALL_HIT;
     special_effects.push_back( effect );
 
     auto cb = new sentinel_cb_t( *effect, this );
