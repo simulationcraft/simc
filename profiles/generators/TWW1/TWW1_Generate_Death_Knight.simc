@@ -58,7 +58,7 @@ level=80
 race=troll
 role=attack
 position=back
-talents=CwPAAAAAAAAAAAAAAAAAAAAAAAgZGzMjHYYYmZMzMNMmZGzYAAAAAAAAAMzMzwYwMAgZzMMbzYmZmxMDwCzihhMwsxQjFGAzAA
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbzYmZmxMDwiZxwQGY2YoxCAMDA
 
 flask=flask_of_alchemical_chaos_3
 
@@ -86,7 +86,7 @@ level=80
 race=troll
 role=attack
 position=back
-talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMzMjZYYGjZmphxMzYGDAAAAAAAAgZmZGGjxMAgZzMMLGzMzMmZYADMjRjlNQ2mYjBwMA
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYMmBAMbmhZxYmZmxMDDMwMGNW2AsNxGAMDA
 
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213482
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213743/213482
