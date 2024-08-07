@@ -1482,6 +1482,11 @@ void player_t::init()
   {
     collected_data.fight_length.change_mode( false );  // Not simple
   }
+
+  if ( world_lag.stddev < 0_ms )
+    world_lag.stddev = world_lag.mean * 0.1;
+  if ( brain_lag.stddev < 0_ms )
+    brain_lag.stddev = brain_lag.mean * 0.1;
 }
 
 /**
@@ -1681,11 +1686,6 @@ void player_t::init_base_stats()
   {
     resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
   }
-
-  if ( world_lag.stddev < 0_ms )
-    world_lag.stddev = world_lag.mean * 0.1;
-  if ( brain_lag.stddev < 0_ms )
-    brain_lag.stddev = brain_lag.mean * 0.1;
 
   if ( primary_role() == ROLE_TANK )
   {
