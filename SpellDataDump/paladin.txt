@@ -13303,13 +13303,14 @@ Tooltip          : Your next $U casts of Judgment generate $s1 additional Holy P
 
 Name             : Strength of Conviction (id=379008) [Spell Family (10), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=mul, values=(1, 2)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 4037: Holy Paladin (428076 effect#14)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -22219,6 +22220,10 @@ Effects          :
 #13 (id=1177921)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 4022 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessed Assurance (433019)
+#14 (id=1178378)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 4037 (Label) | Target: Self (1)
+                   Affected Spells (Label): Strength of Conviction (379008)
+Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
@@ -23201,11 +23206,14 @@ Effects          :
 #3 (id=1170607)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1171027)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 10)
 #5 (id=1171028)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 5)
 #6 (id=1171029)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 Description      : $?a137028[Eye of Tyr][Wake of Ashes] surrounds you with a Holy barrier for $?a137028[$s1][$s4]% of your maximum health.
 
 Hammer of Light heals you for $?a137028[$s2][$s5]% of your maximum health, increased by $?a137028[$s3][$s6]% for each additional target hit. Any overhealing done with this effect gets converted into a Holy barrier instead.

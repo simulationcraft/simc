@@ -450,7 +450,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 7.23855 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (7.23855 -> 8.68626)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -4218,17 +4219,19 @@ Effects          :
                    Affected Spells: Renew (139)
                    Family Flags: 6
 #15 (id=1040387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (11 -> 33)
 #16 (id=1040388)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
 #17 (id=1074585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 34 | Scaled Value: 34 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 61 | Scaled Value: 61 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+Hotfixed         : Base Value (34 -> 61)
 #18 (id=1079592)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 192 | Scaled Value: 192 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
@@ -4265,9 +4268,10 @@ Effects          :
                    Base Value: 57 | Scaled Value: 57 | PvP Coefficient: 1.00000 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
 #29 (id=1125911)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (15 -> -4)
 #30 (id=1176319)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3985 (Label) | Target: Self (1)
                    Affected Spells (Label): Preemptive Care (440671)
@@ -13739,13 +13743,15 @@ Effects          :
 #1 (id=1002578)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1002579)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (400 -> 750)
 #3 (id=1002580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1002581)  : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 375902 | Target: Self (1)
 #5 (id=1002582)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (400 -> 750)
 #6 (id=1002583)  : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 #7 (id=1002584)  : Trigger Spell (64): Mindgames
@@ -18649,9 +18655,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1123525)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061)
                    Family Flags: 10, 11, 12
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $?a137032[Your Flash Heal and Power Word: Shield are $s1%][Your Flash Heal, Heal, and Holy Word: Serenity are $s1%] more effective when cast on yourself.
 
 Name             : Blessing of the Forge (id=434255) [Spell Family (10), Hidden] 
@@ -20765,7 +20772,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1155946)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your Power Infusion effect grants you an additional $s1% haste.
 
 Name             : Resonant Energy (id=453845) [Spell Family (6), Passive, Hidden] 
