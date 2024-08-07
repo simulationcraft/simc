@@ -12419,7 +12419,7 @@ void death_knight_t::create_actions()
           main_hand_weapon.group() == WEAPON_2H ? spell.frost_strike_2h : spell.frost_strike_mh;
       active_spells.frost_strike_main =
           get_action<frost_strike_strike_t>( "frost_strike", this, &( main_hand_weapon ), mh_data, false );
-      if ( main_hand_weapon.group() != WEAPON_2H )
+      if ( off_hand_weapon.type != WEAPON_NONE )
       {
         active_spells.frost_strike_offhand = get_action<frost_strike_strike_t>(
             "frost_strike_offhand", this, &( off_hand_weapon ), spell.frost_strike_oh, false );
