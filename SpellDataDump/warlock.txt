@@ -18677,7 +18677,7 @@ $@spellicon434635 $@spellname434635
 $@spelldesc434635
 
 Name             : Demonic Art: Overlord (id=428524) [Spell Family (5)] 
-Hotfixed         : Proc Flags 1 (331776 -> 0), Proc Flags 2 (0 -> 4)
+Hotfixed         : Max stacks (0 -> 1)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19243,7 +19243,7 @@ Hotfixed         : SP Coefficient (0.604089 -> 0.362453)
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
-Hotfixed         : Proc Flags 1 (2446336 -> 0), Proc Flags 2 (0 -> 4)
+Hotfixed         : Max stacks (0 -> 1)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19276,7 +19276,7 @@ Description      : Your next Soul Shard spent summons a Mother of Chaos that unl
 Tooltip          : Your next Soul Shard spent summons a Mother of Chaos that unleashes a devastating attack.
 
 Name             : Demonic Art: Pit Lord (id=432795) [Spell Family (5)] 
-Hotfixed         : Proc Flags 1 (2446336 -> 0), Proc Flags 2 (0 -> 4)
+Hotfixed         : Max stacks (0 -> 1)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
