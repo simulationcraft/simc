@@ -684,7 +684,7 @@ void duskthread_lining( special_effect_t& effect )
   bool first = !buff->manual_stats_added;
   // In some cases, the buff values from separate items don't stack. This seems to fix itself
   // when the player loses and regains the buff, so we just assume they stack properly.
-  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * 3.69 );
 
   // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( first && effect.player->thewarwithin_opts.duskthread_lining_uptime > 0.0 )
@@ -3043,6 +3043,120 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
   }
 }
 
+// 454859 rppm data
+// 454857 driver/values
+// 454862 physical/fire?
+// 454975 shadow
+// 454976 nature
+// 454977 frost
+// 454978 holy
+// 454979 arcane
+// 454980 Physical Multischool
+// 454982 Magical Multischool
+void darkmoon_deck_vivacity( special_effect_t& effect )
+{
+  struct vivacity_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* impact;
+    buff_t* shadow;
+    buff_t* nature;
+    buff_t* frost;
+    buff_t* holy;
+    buff_t* arcane;
+    buff_t* physical_multi;
+    buff_t* magical_multi;
+
+    vivacity_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        impact( nullptr ),
+        shadow( nullptr ),
+        nature( nullptr ),
+        frost( nullptr ),
+        holy( nullptr ),
+        arcane( nullptr ),
+        physical_multi( nullptr ),
+        magical_multi( nullptr )
+    {
+      auto values = e.player->find_spell( 454857 );
+      
+      impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      shadow = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454975 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      nature = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454976 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      frost = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454977 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      holy = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454978 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      arcane = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454979 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      physical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+
+      magical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454982 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->is_enemy() || ( s->target != listener && s->target->is_player() ) )
+        return dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      switch ( s->action->get_school() )
+      {
+        case SCHOOL_FIRE:
+          impact->trigger();
+          break;
+        case SCHOOL_SHADOW:
+          shadow->trigger();
+          break;
+        case SCHOOL_NATURE:
+          nature->trigger();
+          break;
+        case SCHOOL_FROST:
+          frost->trigger();
+          break;
+        case SCHOOL_HOLY:
+          holy->trigger();
+          break;
+        case SCHOOL_ARCANE:
+          arcane->trigger();
+          break;
+        case SCHOOL_PHYSICAL: // Pure Physical currently doesnt trigger anything
+          break;
+        default:
+          if ( dbc::get_school_mask( s->action->get_school() ) & SCHOOL_MASK_PHYSICAL )
+            physical_multi->trigger();
+          else
+            magical_multi->trigger();
+          break;
+      }
+    }
+  };
+
+  effect.spell_id = 454859;
+
+  new vivacity_cb_t( effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -3582,6 +3696,7 @@ void register_special_effects()
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   register_special_effect( 455534, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
+  register_special_effect( 454857, items::darkmoon_deck_vivacity );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
