@@ -26246,8 +26246,9 @@ Attributes       : ....x... ........ ........ x.......   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Allow While Mounted (24), No Cast Log (128), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1137860)  : Energize Power (30)
+#1 (id=1137860)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc441701
 
 Name             : Elune's Grace (id=443046) [Spell Family (7), Passive, Hidden] 
