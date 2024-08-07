@@ -6572,7 +6572,7 @@ public:
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && s->result_amount && !proc && rng().roll( smolder_pct ) )
+    if ( p()->active.astral_smolder && s->result_amount && rng().roll( smolder_pct ) )
     {
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
