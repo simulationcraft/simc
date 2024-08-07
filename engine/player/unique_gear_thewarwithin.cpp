@@ -684,7 +684,7 @@ void duskthread_lining( special_effect_t& effect )
   bool first = !buff->manual_stats_added;
   // In some cases, the buff values from separate items don't stack. This seems to fix itself
   // when the player loses and regains the buff, so we just assume they stack properly.
-  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * 3.69 );
+  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( first && effect.player->thewarwithin_opts.duskthread_lining_uptime > 0.0 )
