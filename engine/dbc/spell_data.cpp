@@ -110,7 +110,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
 
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
-    m_scale = item_database::apply_combat_rating_multiplier( *item, m_scale );
+    m_scale = item_database::apply_combat_rating_multiplier( *item, m_scale, _spell->max_scaling_level() );
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
@@ -198,7 +198,7 @@ double spelleffect_data_t::average( const item_t* item ) const
   auto budget = item_database::item_budget( item, _spell->max_scaling_level() );
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
-    budget = item_database::apply_combat_rating_multiplier( *item, budget );
+    budget = item_database::apply_combat_rating_multiplier( *item, budget, _spell->max_scaling_level() );
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
