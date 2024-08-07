@@ -4721,8 +4721,8 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
       tear->execute_on_target( s->target );
     }
 
-    // rip is scripted to consume implant
-    if ( p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
+    // hard-cast rip is scripted to consume implant
+    if ( !background && p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
     {
       p()->active.bloodseeker_vines_implant->execute_on_target( s->target );
       p()->buff.implant->expire();
