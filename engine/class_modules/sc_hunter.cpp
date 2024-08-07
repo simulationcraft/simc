@@ -303,6 +303,7 @@ struct tar_trap_aoe_t;
 struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
+  bool sentinel_imploding = false;
 
   struct debuffs_t
   {
@@ -478,6 +479,9 @@ public:
     buff_t* scattered_prey;
     buff_t* furious_assault;
     buff_t* beast_of_opportunity;
+
+    // Sentinel
+    buff_t* eyes_closed;
 
   } buffs;
 
@@ -3627,9 +3631,10 @@ void hunter_t::trigger_rapid_reload( action_t* action, double cost )
 
 void hunter_t::trigger_sentinel( player_t* target )
 {
-  if ( rng().roll( 0.22 ) )
+  if ( buffs.eyes_closed->check() || rng().roll( 0.22 ) )
   {
-    buff_t* sentinel = get_target_data( target )->debuffs.sentinel;
+    hunter_td_t* td = get_target_data( target );
+    buff_t* sentinel = td->debuffs.sentinel;
     if ( !sentinel->check() )
       sentinel->trigger( 1 + as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
     else
@@ -3638,17 +3643,28 @@ void hunter_t::trigger_sentinel( player_t* target )
     if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
       sentinel->trigger();
 
-    if ( sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
+    // TODO seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly overwriting or ticking in parallel,
+    // but for now model as just allowing one to tick at a time
+    if ( !td->sentinel_imploding && sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
       trigger_sentinel_implosion( target );
   }
 }
 
 void hunter_t::trigger_sentinel_implosion( player_t* target )
 {
-  if ( get_target_data( target )->debuffs.sentinel->check() )
+  hunter_td_t* td = get_target_data( target );
+  if ( td->debuffs.sentinel->check() )
   {
+    td->sentinel_imploding = true;
     actions.sentinel->execute_on_target( target );
-    make_event( sim, 2_s, [ this, target ]() { trigger_sentinel_implosion( target ); } );
+    make_event( sim, 2_s, [ this, target ]() {
+      if ( get_target_data( target )->sentinel_imploding )
+        trigger_sentinel_implosion( target );
+    } );
+  }
+  else
+  {
+    td->sentinel_imploding = false;
   }
 }
 
@@ -6164,6 +6180,7 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p()->state.sentinel_watch_reduction = 0_s;
+    p()->buffs.eyes_closed->trigger();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
@@ -6908,6 +6925,7 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p()->state.sentinel_watch_reduction = 0_s;
+    p()->buffs.eyes_closed->trigger();
 
     // Applying Trueshot directly does not extend an existing Trueshot and resets Unerring Vision stacks.
     p() -> buffs.trueshot -> expire();
@@ -7380,6 +7398,7 @@ void hunter_td_t::target_demise()
   }
 
   damaged = false;
+  sentinel_imploding = false;
 }
 
 /**
@@ -8429,6 +8448,8 @@ void hunter_t::create_buffs()
   buffs.beast_of_opportunity
     = make_buff( this, "beast_of_opportunity", find_spell( 450143 ) )
       -> set_default_value_from_effect( 1 );
+
+  buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
 }
 
 // hunter_t::init_gains =====================================================
