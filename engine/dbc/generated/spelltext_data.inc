@@ -25222,8 +25222,8 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
   { 455162, "$@spelldesc443124", 0, 0 },
   { 455179, "$@spelldesc455139", "Absorbing $w1 damage.", 0 },
   { 455180, "$@spelldesc455139", 0, 0 },
-  { 455211, "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, your next ability will release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.", 0, 0 },
-  { 455212, "$@spelldesc455211", "Storing the Might of Arathor.", 0 },
+  { 455211, "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.", 0, 0 },
+  { 455212, "$@spelldesc455211", "Granting $w2 speed.", 0 },
   { 455213, "$@spelldesc408392", 0, 0 },
   { 455214, "$@spelldesc455211", 0, 0 },
   { 455227, "$@spelldesc455147", 0, 0 },
@@ -25625,9 +25625,9 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
   { 457626, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
   { 457629, "Warming sunrise spellthreads alter the effects of Woven Duskweave to become Woven Dawnweave.", 0, 0 },
   { 457665, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\nYour gear cools similarly to Woven Duskthread, gaining $s1 Versatility when over $457667s1% health.]\r\n[Your gear warms with Woven Dawnthread and gains $s1 Critical Strike when over $457667s1% health.]", 0, 0 },
-  { 457666, "$@spelldesc457665", "Critical Strike increased by $w1.", 0 },
+  { 457666, "$@spelldesc457665", "Critical Strike increased by $w2.", 0 },
   { 457667, "$@spelldesc457665", 0, 0 },
-  { 457674, "$@spelldesc457665", "Versatility increased by $w1.", 0 },
+  { 457674, "$@spelldesc457665", "Versatility increased by $w2.", 0 },
   { 457677, "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\nYour gear warms similarly to Woven Dawnthread, gaining $s1 Critical Strike when over $457667s1% health.]\r\n[Your gear cools with Woven Duskthread and gains $s1 Versatility when over $457667s1% health.]", 0, 0 },
   { 457681, "$@spelldesc457665", 0, 0 },
   { 457683, "Receiving healing from allies has a high chance to restore $s2 mana to your ally and grant you both $s1 Versatility for $457684d.", 0, 0 },
@@ -26280,11 +26280,15 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.55959
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
   {  446743,  0, nullptr, "$@spelldesc443760" },
   {  446753,  0, nullptr, "$@spelldesc443760" },
   {  446836,  0, nullptr, "$@spelldesc443760" },
   {  447005,  0, nullptr, "$@spelldesc443743" },
+  {  455211,  0, "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, your next ability will release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.", "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards." },
+  {  455212,  1, "Storing the Might of Arathor.", "Granting $w2 speed." },
+  {  457666,  1, "Critical Strike increased by $w1.", "Critical Strike increased by $w2." },
+  {  457674,  1, "Versatility increased by $w1.", "Versatility increased by $w2." },
   {  461924,  1, "Stamina increased by $w10 and Intellect increased by $w11.", "Stamina increased by $w10 and Agility increased by $w11." },
   {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
