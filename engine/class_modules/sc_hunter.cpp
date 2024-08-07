@@ -518,6 +518,7 @@ public:
     gain_t* terms_of_engagement;
 
     gain_t* dark_empowerment;
+    gain_t* invigorating_pulse;
   } gains;
 
   // Procs
@@ -4493,6 +4494,15 @@ struct sentinel_t : hunter_ranged_attack_t
 
     td( target )->debuffs.sentinel->decrement();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    // TODO test for lower chance when multiple implosions are active
+    if ( rng().roll( p()->talents.invigorating_pulse->effectN( 2 ).percent() ) )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.invigorating_pulse->effectN( 1 ).base_value(), p()->gains.invigorating_pulse, this );
+  }
 };
 
 //==============================
@@ -8393,6 +8403,7 @@ void hunter_t::init_gains()
   gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
 
   gains.dark_empowerment          = get_gain( "Dark Empowerment" );
+  gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
 }
 
 // hunter_t::init_position ==================================================
