@@ -8605,7 +8605,10 @@ void hunter_t::init_special_effects()
         dbc_proc_callback_t::execute( a, s );
 
         buff_t* sentinel = player->get_target_data( s->target )->debuffs.sentinel;
-        sentinel->trigger();
+        if ( !sentinel->check() )
+          sentinel->trigger( 1 + as<int>( player->talents.extrapolated_shots->effectN( 1 ).base_value() ) );
+        else
+          sentinel->trigger();
 
         if ( sentinel->check() > implosion_stacks && rng().roll( 0.32 ) )
           player->trigger_sentinel_implosion( s->target );
