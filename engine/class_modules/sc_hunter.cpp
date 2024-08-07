@@ -311,6 +311,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* basilisk_collar;
     buff_t* outland_venom;
     buff_t* kill_zone;
+    buff_t* sentinel;
   } debuffs;
 
   struct dots_t
@@ -477,6 +478,7 @@ public:
     buff_t* scattered_prey;
     buff_t* furious_assault;
     buff_t* beast_of_opportunity;
+
   } buffs;
 
   // Cooldowns
@@ -787,6 +789,8 @@ public:
 
     // TODO: Sentinel
     spell_data_ptr_t sentinel;
+    spell_data_ptr_t sentinel_debuff;
+    spell_data_ptr_t sentinel_tick;
 
     spell_data_ptr_t dont_look_back;
     spell_data_ptr_t extrapolated_shots;
@@ -842,6 +846,7 @@ public:
     action_t* a_murder_of_crows = nullptr;
     action_t* vicious_hunt = nullptr;
     action_t* cull_the_herd = nullptr;
+    action_t* sentinel = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1004,6 +1009,7 @@ public:
   void trigger_calling_the_shots( action_t* action, double cost );
   void consume_trick_shots();
   void trigger_rapid_reload( action_t* action, double cost );
+  void trigger_sentinel_implosion( player_t* target );
 };
 
 // Template for common hunter action code.
@@ -3610,6 +3616,15 @@ void hunter_t::trigger_rapid_reload( action_t* action, double cost )
   }
 }
 
+void hunter_t::trigger_sentinel_implosion( player_t* target )
+{
+  if ( get_target_data( target )->debuffs.sentinel->check() )
+  {
+    actions.sentinel->execute_on_target( target );
+    make_event( sim, 2_s, [ this, target ]() { trigger_sentinel_implosion( target ); } );
+  }
+}
+
 namespace attacks
 {
 
@@ -4440,6 +4455,21 @@ struct cull_the_herd_t : residual_bleed_base_t
   cull_the_herd_t( hunter_t* p ):
     residual_bleed_base_t( "cull_the_herd", p, p -> find_spell( 449233 ) )
   { }
+};
+
+struct sentinel_t : hunter_ranged_attack_t
+{
+  sentinel_t( hunter_t* p ) : hunter_ranged_attack_t( "sentinel", p, p->talents.sentinel_tick )
+  {
+    background = dual = true;
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    td( target )->debuffs.sentinel->decrement();
+  }
 };
 
 //==============================
@@ -7243,6 +7273,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 
   debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff );
 
+  debuffs.sentinel = make_buff( *this, "sentinel", p->talents.sentinel_debuff );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.wildfire_bomb = target -> get_dot( "wildfire_bomb_dot", p );
@@ -7729,6 +7761,8 @@ void hunter_t::init_spells()
   {
   // Sentinel
   talents.sentinel = find_talent_spell( talent_tree::HERO, "Sentinel" );
+  talents.sentinel_debuff = find_spell( 450387 );
+  talents.sentinel_tick = find_spell( 450412 );
 
   talents.dont_look_back     = find_talent_spell( talent_tree::HERO, "Don't Look Back" );
   talents.extrapolated_shots = find_talent_spell( talent_tree::HERO, "Extrapolated Shots" );
@@ -7896,6 +7930,9 @@ void hunter_t::create_actions()
 
   if( talents.cull_the_herd.ok() )
     actions.cull_the_herd = new attacks::cull_the_herd_t( this );
+
+  if ( talents.sentinel.ok() )
+    actions.sentinel = new attacks::sentinel_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -8549,6 +8586,40 @@ void hunter_t::init_special_effects()
 
     auto cb = new master_marksman_cb_t( *effect, talents.master_marksman -> effectN( 1 ).percent(), actions.master_marksman);
     cb -> initialize();
+  }
+
+  if ( talents.sentinel.ok() )
+  {
+    struct sentinel_cb_t : public dbc_proc_callback_t
+    {
+      hunter_t* player;
+      const int implosion_stacks;
+
+      sentinel_cb_t( const special_effect_t& e, hunter_t* p )
+        : dbc_proc_callback_t( p, e ), player( p ), implosion_stacks( as<int>( p->talents.sentinel->effectN( 1 ).base_value() ) )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        dbc_proc_callback_t::execute( a, s );
+
+        buff_t* sentinel = player->get_target_data( s->target )->debuffs.sentinel;
+        sentinel->trigger();
+
+        if ( sentinel->check() > implosion_stacks && rng().roll( 0.32 ) )
+          player->trigger_sentinel_implosion( s->target );
+      }
+    };
+
+    auto const effect    = new special_effect_t( this );
+    effect->name_str     = "sentinel";
+    effect->spell_id     = talents.sentinel->id();
+    effect->proc_chance_ = 0.22;
+    special_effects.push_back( effect );
+
+    auto cb = new sentinel_cb_t( *effect, this );
+    cb->initialize();
   }
 }
 
