@@ -38,6 +38,7 @@ Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Dama
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
+Hotfixed         : Cooldown (20000 -> 30000), Category Cooldown (20000 -> 30000)
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -46,14 +47,14 @@ Resource         : 1 - 5 Combo Points (4) (id=10591)
 Spell Level      : 13
 Range            : 5 yards
 GCD              : 1 seconds
-Duration         : 1 seconds
+Duration         : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Cooldown         : 20 seconds
+Cooldown         : 30 seconds
 Category         : 270
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Category Cooldown: 20 seconds
+Category Cooldown: 30 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Rushed Setup (341534 effect#1), Rushed Setup (378803 effect#1), Tight Spender (381621 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2)
