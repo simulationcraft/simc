@@ -3631,6 +3631,9 @@ void hunter_t::trigger_sentinel( player_t* target )
     else
       sentinel->trigger();
 
+    if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
+      sentinel->trigger();
+
     if ( sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
       trigger_sentinel_implosion( target );
   }
