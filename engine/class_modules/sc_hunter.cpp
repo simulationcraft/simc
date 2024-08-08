@@ -810,6 +810,7 @@ public:
     spell_data_ptr_t sentinel_watch;
     spell_data_ptr_t eyes_closed;
     spell_data_ptr_t symphonic_arsenal;
+    spell_data_ptr_t symphonic_arsenal_dmg;
     spell_data_ptr_t overwatch;
     spell_data_ptr_t crescent_steel;
 
@@ -853,6 +854,7 @@ public:
     action_t* vicious_hunt = nullptr;
     action_t* cull_the_herd = nullptr;
     action_t* sentinel = nullptr;
+    action_t* symphonic_arsenal = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1019,6 +1021,7 @@ public:
   void trigger_rapid_reload( action_t* action, double cost );
   void trigger_sentinel( player_t* target );
   void trigger_sentinel_implosion( player_t* target );
+  void trigger_symphonic_arsenal();
 };
 
 // Template for common hunter action code.
@@ -3674,6 +3677,14 @@ void hunter_t::trigger_sentinel_implosion( player_t* target )
   }
 }
 
+void hunter_t::trigger_symphonic_arsenal()
+{
+  if ( actions.symphonic_arsenal )
+    for ( player_t* t : sim->target_non_sleeping_list )
+      if ( t->is_enemy() && get_target_data( t )->debuffs.sentinel->check() )
+        actions.symphonic_arsenal->execute_on_target( t );
+}
+
 namespace attacks
 {
 
@@ -4562,6 +4573,32 @@ struct sentinel_t : hunter_ranged_attack_t
       p()->state.sentinel_watch_reduction += sentinel_watch.reduction;
       sentinel_watch.cooldown->adjust( -sentinel_watch.reduction, true );
     }
+  }
+};
+
+struct symphonic_arsenal_t : hunter_ranged_attack_t
+{
+  symphonic_arsenal_t( hunter_t* p ) : hunter_ranged_attack_t( "symphonic_arsenal", p, p->talents.symphonic_arsenal_dmg )
+  {
+    aoe = as<int>( p->talents.symphonic_arsenal->effectN( 1 ).base_value() );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    // Can still proc Sentinel on original target.
+    p()->trigger_sentinel( target );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    hunter_ranged_attack_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    range::erase_remove( tl, target );
+
+    return tl.size();
   }
 };
 
@@ -5615,6 +5652,8 @@ struct multishot_mm_t : public multishot_mm_base_t
   {
     multishot_mm_base_t::execute();
 
+    p()->trigger_symphonic_arsenal();
+
     if ( multishot_mm_etf && p()->buffs.eagletalons_true_focus->up() )
       multishot_mm_etf->execute_on_target( target );
   }
@@ -5919,6 +5958,8 @@ struct butchery_t : public hunter_melee_attack_t
   void execute() override
   {
     hunter_melee_attack_t::execute();
+
+    p()->trigger_symphonic_arsenal();
 
     if ( p()->talents.frenzy_strikes.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
@@ -7876,6 +7917,7 @@ void hunter_t::init_spells()
   talents.sentinel_watch    = find_talent_spell( talent_tree::HERO, "Sentinel Watch" );
   talents.eyes_closed       = find_talent_spell( talent_tree::HERO, "Eyes Closed" );
   talents.symphonic_arsenal = find_talent_spell( talent_tree::HERO, "Symphonic Arsenal" );
+  talents.symphonic_arsenal_dmg = find_spell( 451194 );
   talents.overwatch         = find_talent_spell( talent_tree::HERO, "Overwatch" );
   talents.crescent_steel    = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
 
@@ -8033,6 +8075,9 @@ void hunter_t::create_actions()
 
   if ( talents.sentinel.ok() )
     actions.sentinel = new attacks::sentinel_t( this );
+
+  if ( talents.symphonic_arsenal.ok() )
+    actions.symphonic_arsenal = new attacks::symphonic_arsenal_t( this );
 }
 
 void hunter_t::create_buffs()
