@@ -9149,12 +9149,24 @@ struct druid_melee_t : public Base
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
     // Feral: 0.286% via community testing (~197k auto attacks)
+    // Guardian: 1.144% via community testing (9921 auto attacks), 4x feral
     // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-    if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
+    if ( p->talent.ravage.ok() )
     {
-      ravage_rng = p->get_accumulated_rng( "ravage", 0.00286 );
+      auto c = 0.0;
+      if ( p->specialization() == DRUID_FERAL )
+      {
+        c = 0.00286;
+        ravage_buff = p->buff.ravage_fb;
+      }
+      else if ( p->specialization() == DRUID_GUARDIAN )
+      {
+        c = 0.01144;
+        ravage_buff = p->buff.ravage_maul;
+      }
+
+      ravage_rng = p->get_accumulated_rng( "ravage", c );
       ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
-      ravage_buff = p->buff.ravage_fb;
     }
   }
 
