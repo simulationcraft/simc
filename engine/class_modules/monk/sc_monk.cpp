@@ -7703,7 +7703,7 @@ void monk_t::init_spells()
 
   // Windwalker
   passives.bok_proc                         = find_spell( 116768 );
-  passives.chi_explosion                    = find_spell( 337342 );
+  passives.chi_explosion                    = find_spell( 393056 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.cyclone_strikes                  = find_spell( 220358 );
