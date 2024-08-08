@@ -88,7 +88,7 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
-      priest().buffs.mind_flay_insanity->expire();
+      priest().buffs.mind_flay_insanity->decrement();
 
       // This rolls its own independent chance to crit for the Shadowy Apparition, since it happens on cast.
       // It is not related to the first tick of MF:I's state
