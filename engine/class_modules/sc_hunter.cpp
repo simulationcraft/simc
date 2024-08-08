@@ -9090,10 +9090,10 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   auto td = get_target_data( target );
 
   if ( td->debuffs.kill_zone->has_common_school( school ) )
-    d += 1 + td->debuffs.kill_zone->check_value();
+    d *= 1 + td->debuffs.kill_zone->check_value();
 
   if ( td->debuffs.lunar_storm->has_common_school( school ) )
-    d += 1 + td->debuffs.lunar_storm->check_value();
+    d *= 1 + td->debuffs.lunar_storm->check_value();
 
   return d;
 }
