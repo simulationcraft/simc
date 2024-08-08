@@ -3989,12 +3989,15 @@ struct disintegrate_t : public essence_spell_t
   int num_ticks;
   double mass_disint_mult;
 
+  std::vector<dot_t*> current_dots;
+
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : essence_spell_t( "disintegrate", p,
                        p->talent.eruption.ok() ? spell_data_t::not_found() : p->find_class_spell( "Disintegrate" ),
                        options_str ),
       num_ticks( as<int>( dot_duration / base_tick_time ) + 1 ),
-      mass_disint_mult( p->talent.scalecommander.mass_disintegrate->effectN( 2 ).percent() )
+      mass_disint_mult( p->talent.scalecommander.mass_disintegrate->effectN( 2 ).percent() ),
+      current_dots()
   {
     channeled = tick_zero = true;
 
@@ -4037,8 +4040,36 @@ struct disintegrate_t : public essence_spell_t
     return std::min( max_targets(), tl_size );
   }
 
+  void cancel() override
+  {
+    for ( auto dot : current_dots )
+    {
+      dot->cancel();
+    }
+
+    current_dots.clear();
+
+    essence_spell_t::cancel();
+  }
+
+  void reset() override
+  {
+    essence_spell_t::reset();
+    current_dots.clear();
+  }
+
   void execute() override
   {
+    current_dots.clear();
+
+    for ( auto enemy : target_list() )
+    {
+      if ( get_dot( enemy )->is_ticking() )
+      {
+        current_dots.push_back( get_dot( enemy ) );
+      }
+    }
+
     action_state_t* state = get_state( pre_execute_state );
 
     snapshot_state( state, result_amount_type::NONE );
@@ -4066,6 +4097,11 @@ struct disintegrate_t : public essence_spell_t
     }
 
     essence_spell_t::execute();
+  }
+
+  int n_targets() const override
+  {
+    return targets();
   }
 
   void impact( action_state_t* s ) override
@@ -4102,6 +4138,11 @@ struct disintegrate_t : public essence_spell_t
     timespan_t tt           = tick_time( s );
     int ticks               = 0;
 
+    if ( !d->is_ticking() )
+    {
+      current_dots.push_back( d );
+    }
+
     essence_spell_t::trigger_dot( s );
 
     // Disint channel duration is a bit fuzzy, it will go above or below the
@@ -4110,6 +4151,15 @@ struct disintegrate_t : public essence_spell_t
     timespan_t new_remains = ticks * tt + tick_remains;
 
     d->adjust_duration( new_remains - d->remains() );
+
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    range::erase_remove( current_dots, d );
+
+    if ( current_dots.size() == 0 )
+      essence_spell_t::last_tick( d );
   }
 
   void tick( dot_t* d ) override
@@ -4143,11 +4193,16 @@ struct disintegrate_t : public essence_spell_t
                                 d->state->result_amount * enkindle_mul );
     }
 
-    if ( p()->talent.causality.ok() )
+    if ( p()->talent.causality.ok() && current_dots[ 0 ] == d )
     {
       auto cdr = p()->talent.causality->effectN( 1 ).time_value();
       p()->cooldown.eternity_surge->adjust( cdr );
       p()->cooldown.fire_breath->adjust( cdr );
+    }
+
+    if ( current_dots[ 0 ] != d )
+    {
+      stats->iteration_total_tick_time -= d->time_to_tick();
     }
   }
 };
@@ -5036,7 +5091,7 @@ struct eruption_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && s->chain_target == 0)
+    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && s->chain_target == 0 )
     {
       auto td = p()->get_target_data( s->target );
       td->debuffs.bombardments->trigger();
