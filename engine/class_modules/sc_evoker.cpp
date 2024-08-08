@@ -4060,6 +4060,16 @@ struct disintegrate_t : public essence_spell_t
 
   void execute() override
   {
+    current_dots.clear();
+
+    for ( auto enemy : target_list() )
+    {
+      if ( get_dot( enemy )->is_ticking() )
+      {
+        current_dots.push_back( get_dot( enemy ) );
+      }
+    }
+
     action_state_t* state = get_state( pre_execute_state );
 
     snapshot_state( state, result_amount_type::NONE );
@@ -4128,7 +4138,7 @@ struct disintegrate_t : public essence_spell_t
     timespan_t tt           = tick_time( s );
     int ticks               = 0;
 
-    if ( d->remains() <= 0_s )
+    if ( !d->is_ticking() )
     {
       current_dots.push_back( d );
     }
@@ -5081,7 +5091,7 @@ struct eruption_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && s->chain_target == 0)
+    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && s->chain_target == 0 )
     {
       auto td = p()->get_target_data( s->target );
       td->debuffs.bombardments->trigger();
