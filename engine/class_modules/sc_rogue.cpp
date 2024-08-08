@@ -5231,7 +5231,7 @@ struct killing_spree_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger();
+      p()->buffs.flawless_form->execute();
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
@@ -5985,7 +5985,7 @@ struct secret_technique_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger(); // TOCHECK ALPHA -- Once or per attack?
+      p()->buffs.flawless_form->execute(); // TOCHECK ALPHA -- Once or per attack?
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
@@ -7567,7 +7567,7 @@ struct unseen_blade_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->trigger();
+      p()->buffs.flawless_form->execute();
     }
   }
 
@@ -7737,9 +7737,10 @@ struct coup_de_grace_t : public rogue_attack_t
     }
 
     // Extra Flawless Form stacks are currently granted prior to the impact, so self-affecting
+    // Use Execute() instead of Trigger() to avoid async stack trigger aura delay
     if ( p()->get_target_data( execute_state->target )->debuffs.fazed->check() )
     {
-      p()->buffs.flawless_form->trigger( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
+      p()->buffs.flawless_form->execute( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
     }
 
     const int trigger_cp = cast_state( execute_state )->get_combo_points() + as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
