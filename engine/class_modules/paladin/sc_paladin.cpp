@@ -1696,12 +1696,6 @@ void judgment_t::impact( action_state_t* s )
     int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );
-
-    if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
-    {
-      p()->active.hammer_and_anvil->set_target( s->target );
-      p()->active.hammer_and_anvil->execute();
-    }
   }
 }
 
@@ -2113,19 +2107,6 @@ struct rite_of_adjuration_t : public weapon_enchant_t
                   name() );
     }
   }
-};
-
-struct hammer_and_anvil_t : public paladin_spell_t
-{
-  // ToDo (Fluttershy): Find out how Hammer and Anvil behaves above 5 targets
-  hammer_and_anvil_t( paladin_t* p )
-    : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
-   {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-    aoe                          = -1;
-   }
-
 };
 
 // Hammer of Light // Light's Guidance =====================================================
@@ -3322,10 +3303,6 @@ void paladin_t::create_actions()
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
     active.sacred_weapon_proc_damage = new sacred_weapon_proc_damage_t( this );
     active.sacred_weapon_proc_heal   = new sacred_weapon_proc_heal_t( this );
-  }
-  if ( talents.lightsmith.hammer_and_anvil->ok() )
-  {
-    active.hammer_and_anvil = new hammer_and_anvil_t( this );
   }
   //Templar
   if (talents.templar.lights_guidance->ok())

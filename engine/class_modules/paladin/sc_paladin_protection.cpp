@@ -721,13 +721,27 @@ struct eye_of_tyr_t : public paladin_spell_t
 
 struct judgment_prot_t : public judgment_t
 {
+  // This should be in the main Paladin file, but that would need much restructuring. Since Holy is not implemented anyways ..
+  struct hammer_and_anvil_t : public paladin_spell_t
+  {
+    // ToDo (Fluttershy): Find out how Hammer and Anvil behaves above 5 targets
+    hammer_and_anvil_t( paladin_t* p ) : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
+    {
+      background = proc = may_crit = true;
+      may_miss                     = false;
+      aoe                          = -1;
+    }
+  };
+
   heartfire_t* heartfire;
   int judge_holy_power, sw_holy_power;
+  hammer_and_anvil_t* hammer_and_anvil;
   judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str )
     : judgment_t( p, name ),
       heartfire( nullptr ),
       judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-      sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
+      sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
+      hammer_and_anvil( nullptr )
   {
     parse_options( options_str );
     if ( p->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) )
@@ -736,6 +750,11 @@ struct judgment_prot_t : public judgment_t
     }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
     triggers_higher_calling = true;
+    if (p->talents.lightsmith.hammer_and_anvil->ok())
+    {
+      hammer_and_anvil = new hammer_and_anvil_t( p );
+      add_child( hammer_and_anvil );
+    }
   }
 
   void execute() override
@@ -776,6 +795,12 @@ struct judgment_prot_t : public judgment_t
       {
         p()->buffs.sanctification->trigger();
       }
+    }
+
+    if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
+    {
+      hammer_and_anvil->set_target( s->target );
+      hammer_and_anvil->execute();
     }
   }
 };

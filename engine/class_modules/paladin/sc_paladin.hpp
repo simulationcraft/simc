@@ -100,7 +100,6 @@ public:
   {
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
-    action_t* hammer_and_anvil;
     action_t* empyrean_hammer;
     action_t* heartfire;
     action_t* judgment_of_light;
