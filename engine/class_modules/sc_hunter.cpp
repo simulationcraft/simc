@@ -487,6 +487,7 @@ public:
     buff_t* eyes_closed;
 
     // Dark Ranger
+    buff_t* black_arrow;
     buff_t* withering_fire;
 
   } buffs;
@@ -762,6 +763,7 @@ public:
 
     // Dark Ranger
     spell_data_ptr_t black_arrow;
+    spell_data_ptr_t black_arrow_buff;
 
     spell_data_ptr_t overshadow;
     spell_data_ptr_t shadow_hounds;
@@ -4528,6 +4530,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( rng().roll( ba_recharge_chance ) )
     {
       ba_recharge_cooldown->reset( true );
+      p()->buffs.black_arrow->trigger();
 
       if ( de_focus_gain )
         p()->resource_gain( RESOURCE_FOCUS, de_focus_gain, p()->gains.dark_empowerment, this );
@@ -5270,6 +5273,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       for ( int i = 0; i < count; i++ )
         lotw.wind_arrow->execute_on_target( target );
     }
+
+    p()->buffs.black_arrow->decrement();
   }
 
   int n_targets() const override
@@ -5291,6 +5296,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( p() -> buffs.trueshot -> check() )
       et *= 1 + p() -> buffs.trueshot -> check_value();
+
+    et *= 1 + p()->buffs.black_arrow->value();
 
     return et;
   }
@@ -7987,6 +7994,7 @@ void hunter_t::init_spells()
   {
     // Dark Ranger
     talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
+    talents.black_arrow_buff = find_spell( 439659 );
 
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
     talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
@@ -8644,6 +8652,11 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
+
+  buffs.black_arrow =
+    make_buff( this, "black_arrow", talents.black_arrow_buff )
+      ->set_default_value_from_effect( 2 )
+      ->set_chance( talents.black_arrow.ok() && specialization() == HUNTER_MARKSMANSHIP );
 
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff )
