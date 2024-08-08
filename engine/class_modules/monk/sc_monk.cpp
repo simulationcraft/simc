@@ -8246,7 +8246,7 @@ void monk_t::create_buffs()
                                     ( 1.0f + talent.windwalker.memory_of_the_monastery->effectN( 1 ).percent() ) );
 
   buff.chi_energy =
-      make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", find_spell( 337571 ) )
+      make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", find_spell( 393057 ) )
           ->set_default_value_from_effect( 1 );
 
   buff.combo_strikes =
