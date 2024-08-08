@@ -1020,7 +1020,7 @@ public:
   void consume_trick_shots();
   void trigger_rapid_reload( action_t* action, double cost );
   void trigger_sentinel( player_t* target );
-  void trigger_sentinel_implosion( player_t* target );
+  void trigger_sentinel_implosion( hunter_td_t* td );
   void trigger_symphonic_arsenal();
 };
 
@@ -3655,20 +3655,19 @@ void hunter_t::trigger_sentinel( player_t* target )
     // TODO seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly overwriting or ticking in parallel,
     // but for now model as just allowing one to tick at a time
     if ( !td->sentinel_imploding && sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
-      trigger_sentinel_implosion( target );
+      trigger_sentinel_implosion( td );
   }
 }
 
-void hunter_t::trigger_sentinel_implosion( player_t* target )
+void hunter_t::trigger_sentinel_implosion( hunter_td_t* td )
 {
-  hunter_td_t* td = get_target_data( target );
   if ( td->debuffs.sentinel->check() )
   {
     td->sentinel_imploding = true;
-    actions.sentinel->execute_on_target( target );
-    make_event( sim, 2_s, [ this, target ]() {
-      if ( get_target_data( target )->sentinel_imploding )
-        trigger_sentinel_implosion( target );
+    actions.sentinel->execute_on_target( td->target );
+    make_event( sim, 2_s, [ this, td ]() {
+      if ( td->sentinel_imploding )
+        trigger_sentinel_implosion( td );
     } );
   }
   else
@@ -8597,6 +8596,29 @@ void hunter_t::init_assessors()
     assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( result_amount_type, action_state_t* s ) {
       if ( s -> result_amount > 0 )
         get_target_data( s -> target ) -> damaged = true;
+      return assessor::CONTINUE;
+    } );
+  }
+
+  if ( talents.overwatch.ok() )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
+      hunter_td_t* target_data = get_target_data( s->target );
+      if ( !target_data->sentinel_imploding && target_data->debuffs.sentinel->check() > 3 && s->target->health_percentage() < talents.overwatch->effectN( 1 ).base_value() )
+      {
+        sim->print_debug( "Damage to {} with {} Sentinel stacks at {}% triggers Overwatch", s->target->name(),
+                          target_data->debuffs.sentinel->check(), s->target->health_percentage() );
+
+        for ( player_t* t : sim->target_non_sleeping_list )
+        {
+          if ( t->is_enemy() )
+          {
+            hunter_td_t* td = get_target_data( t );
+            if ( !td->sentinel_imploding )
+              trigger_sentinel_implosion( td );
+          }
+        }
+      }
       return assessor::CONTINUE;
     } );
   }
