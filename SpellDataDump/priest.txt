@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55959 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56044 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4241,7 +4241,8 @@ Hotfixed         : Base Value (34 -> 61)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
 #19 (id=1081584)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Hotfixed         : Base Value (3 -> -2)
 #20 (id=1081585)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #21 (id=1084907)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4367,7 +4368,8 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #20 (id=1079598)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Hotfixed         : Base Value (3 -> -2)
 #21 (id=1081540)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
@@ -15456,6 +15458,8 @@ Tooltip          : The cast time of your next Heal is reduced by $w2% and its he
 Name             : Voice of Harmony (id=390994) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
+                 : Effect#2 [op=set, values=(2, 4)]
+                 : Effect#3 [op=set, values=(2, 4)]
 Class            : Priest
 School           : Physical
 Spell Type       : None

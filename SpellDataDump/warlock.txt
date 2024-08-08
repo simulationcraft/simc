@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55959 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56044 thewarwithin-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -410,7 +410,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02383 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.017025 -> 0.023835)
+Hotfixed         : SP Coefficient (0.017025 -> 0.023835), PvP Coefficient (1.25 -> 1)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -18678,7 +18678,7 @@ $@spellicon434635 $@spellname434635
 $@spelldesc434635
 
 Name             : Demonic Art: Overlord (id=428524) [Spell Family (5)] 
-Hotfixed         : Max stacks (0 -> 1)
+Hotfixed         : Max stacks (0 -> 1), Proc Flags 1 (331776 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19120,7 +19120,7 @@ Attributes       : ........ ........ ........ ........   ......x. ........ .....
 Effects          :
 #1 (id=1120432)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.25000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (21.6105 -> 10.8053)
+Hotfixed         : AP Coefficient (21.6105 -> 10.8053), PvP Coefficient (1 -> 0.25)
 Description      : $@spelldesc428514
 
 Name             : Wicked Cleave (id=432220) [Spell Family (5), Hidden] 
@@ -19244,7 +19244,7 @@ Hotfixed         : SP Coefficient (0.604089 -> 0.362453)
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
-Hotfixed         : Max stacks (0 -> 1)
+Hotfixed         : Max stacks (0 -> 1), Proc Flags 1 (2446336 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19277,7 +19277,7 @@ Description      : Your next Soul Shard spent summons a Mother of Chaos that unl
 Tooltip          : Your next Soul Shard spent summons a Mother of Chaos that unleashes a devastating attack.
 
 Name             : Demonic Art: Pit Lord (id=432795) [Spell Family (5)] 
-Hotfixed         : Max stacks (0 -> 1)
+Hotfixed         : Max stacks (0 -> 1), Proc Flags 1 (2446336 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19473,7 +19473,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1124374)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.13786 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Channel Target (76) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (3.5631 -> 2.13786)
+Hotfixed         : SP Coefficient (3.5631 -> 2.13786), PvP Coefficient (1 -> 0.75)
 Description      : Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.
 
 Name             : Cloven Soul (id=434424) [Spell Family (5)] 
@@ -19681,7 +19681,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.27960 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (18.799299 -> 11.2796)
+Hotfixed         : SP Coefficient (18.799299 -> 11.2796), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc434635
 
 Name             : Diabolic Imp (id=438822) [Spell Family (5)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.55959 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56044 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -21052,10 +21052,10 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=1135882)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.46880 | PvP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.836 -> 1.4688)
+Hotfixed         : AP Coefficient (1.836 -> 1.4688), PvP Coefficient (1 -> 0.7)
 #2 (id=1174049)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.46880 | PvP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.836 -> 1.4688)
+Hotfixed         : AP Coefficient (1.836 -> 1.4688), PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc441378
 
 Name             : Death's Messenger (id=441511) 
