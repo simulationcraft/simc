@@ -304,6 +304,7 @@ struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
   bool sentinel_imploding = false;
+  bool crescent_steel_damaged = false;
 
   struct debuffs_t
   {
@@ -313,6 +314,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* outland_venom;
     buff_t* kill_zone;
     buff_t* sentinel;
+    buff_t* crescent_steel;
   } debuffs;
 
   struct dots_t
@@ -813,6 +815,7 @@ public:
     spell_data_ptr_t symphonic_arsenal_dmg;
     spell_data_ptr_t overwatch;
     spell_data_ptr_t crescent_steel;
+    spell_data_ptr_t crescent_steel_debuff;
 
     spell_data_ptr_t lunar_storm;
 
@@ -1019,7 +1022,7 @@ public:
   void trigger_calling_the_shots( action_t* action, double cost );
   void consume_trick_shots();
   void trigger_rapid_reload( action_t* action, double cost );
-  void trigger_sentinel( player_t* target );
+  void trigger_sentinel( player_t* target, bool force = false );
   void trigger_sentinel_implosion( hunter_td_t* td );
   void trigger_symphonic_arsenal();
 };
@@ -3632,9 +3635,9 @@ void hunter_t::trigger_rapid_reload( action_t* action, double cost )
   }
 }
 
-void hunter_t::trigger_sentinel( player_t* target )
+void hunter_t::trigger_sentinel( player_t* target, bool force )
 {
-  if ( buffs.eyes_closed->check() || rng().roll( 0.22 ) )
+  if ( force || buffs.eyes_closed->check() || rng().roll( 0.22 ) )
   {
     hunter_td_t* td = get_target_data( target );
     buff_t* sentinel = td->debuffs.sentinel;
@@ -3652,8 +3655,8 @@ void hunter_t::trigger_sentinel( player_t* target )
         sentinel->trigger();
     }
 
-    // TODO seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly overwriting or ticking in parallel,
-    // but for now model as just allowing one to tick at a time
+    // TODO: Seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly 
+    // overwriting or ticking in parallel, but for now model as just allowing one to tick at a time.
     if ( !td->sentinel_imploding && sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
       trigger_sentinel_implosion( td );
   }
@@ -3661,6 +3664,8 @@ void hunter_t::trigger_sentinel( player_t* target )
 
 void hunter_t::trigger_sentinel_implosion( hunter_td_t* td )
 {
+  // Seems to tick one last time after it consumes the last Sentinel stack, resulting in a Sentinel 
+  // re-application shortly after expiration but before the next tick to continue being consumed.
   if ( td->debuffs.sentinel->check() )
   {
     td->sentinel_imploding = true;
@@ -7391,8 +7396,8 @@ struct auto_attack_t: public action_t
 
 } // namespace actions
 
-hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
-  actor_target_data_t( target, p ),
+hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ):
+  actor_target_data_t( t, p ),
   debuffs(),
   dots()
 {
@@ -7415,14 +7420,28 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 
   debuffs.sentinel = make_buff( *this, "sentinel", p->talents.sentinel_debuff );
 
-  dots.serpent_sting = target -> get_dot( "serpent_sting", p );
-  dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
-  dots.wildfire_bomb = target -> get_dot( "wildfire_bomb_dot", p );
-  dots.black_arrow = target -> get_dot( "black_arrow", p );
-  dots.barbed_shot = target -> get_dot( "barbed_shot", p );
-  dots.cull_the_herd = target -> get_dot( "cull_the_herd", p ); 
+  debuffs.crescent_steel = make_buff( *this, "crescent_steel", p->talents.crescent_steel_debuff )
+    -> set_tick_callback(
+      [ this, p ]( buff_t* b, int, const timespan_t& ) {
+        if ( crescent_steel_damaged )
+        {
+          crescent_steel_damaged = false;
+          p->trigger_sentinel( target, true );
+        }
+        else
+        {
+          b->expire();
+        }
+      } );
 
-  target -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
+  dots.serpent_sting = t -> get_dot( "serpent_sting", p );
+  dots.a_murder_of_crows = t -> get_dot( "a_murder_of_crows", p );
+  dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
+  dots.black_arrow = t -> get_dot( "black_arrow", p );
+  dots.barbed_shot = t -> get_dot( "barbed_shot", p );
+  dots.cull_the_herd = t -> get_dot( "cull_the_herd", p ); 
+
+  t -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
 
 void hunter_td_t::target_demise()
@@ -7446,6 +7465,7 @@ void hunter_td_t::target_demise()
 
   damaged = false;
   sentinel_imploding = false;
+  crescent_steel_damaged = false;
 }
 
 /**
@@ -7920,6 +7940,7 @@ void hunter_t::init_spells()
   talents.symphonic_arsenal_dmg = find_spell( 451194 );
   talents.overwatch         = find_talent_spell( talent_tree::HERO, "Overwatch" );
   talents.crescent_steel    = find_talent_spell( talent_tree::HERO, "Crescent Steel" );
+  talents.crescent_steel_debuff = find_spell( 451531 );
 
   talents.lunar_storm = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
   }
@@ -8619,6 +8640,23 @@ void hunter_t::init_assessors()
               trigger_sentinel_implosion( td );
           }
         }
+      }
+      return assessor::CONTINUE;
+    } );
+  }
+
+  if ( talents.crescent_steel.ok() )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
+      hunter_td_t* target_data = get_target_data( s->target );
+      if ( target_data->debuffs.crescent_steel->check() )
+      {
+        target_data->crescent_steel_damaged = true;
+      }
+      else if ( target_data->debuffs.sentinel->check() && s->target->health_percentage() < talents.crescent_steel->effectN( 1 ).base_value() )
+      {
+        target_data->crescent_steel_damaged = true;
+        target_data->debuffs.crescent_steel->trigger();
       }
       return assessor::CONTINUE;
     } );
