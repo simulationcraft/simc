@@ -21432,7 +21432,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1087832)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Self (18) -> At Friendly in Area (31)
+Hotfixed         : SP Coefficient (0.2 -> 0.3)
 Description      : $@spelldesc416770
 Tooltip          : $@spellaura416770
 
@@ -24897,9 +24898,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1142014)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #2 (id=1142482)  : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
