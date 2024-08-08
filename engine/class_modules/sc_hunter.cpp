@@ -7564,6 +7564,10 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ):
 
 void hunter_td_t::target_demise()
 {
+  damaged = false;
+  sentinel_imploding = false;
+  crescent_steel_damaged = false;
+
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source -> sim -> event_mgr.canceled )
     return;
@@ -7580,10 +7584,6 @@ void hunter_td_t::target_demise()
     p->sim->print_debug( "{} black_arrow cooldown reduces on target death.", p->name() );
     p->cooldowns.black_arrow->adjust( -timespan_t::from_seconds( p->talents.grave_reaper->effectN( 1 ).base_value() ) );
   }
-
-  damaged = false;
-  sentinel_imploding = false;
-  crescent_steel_damaged = false;
 }
 
 /**
@@ -8773,7 +8773,7 @@ void hunter_t::init_assessors()
 
         for ( player_t* t : sim->target_non_sleeping_list )
         {
-          if ( t->is_enemy() )
+          if ( t->is_enemy() && !t->demise_event )
           {
             hunter_td_t* td = get_target_data( t );
             if ( !td->sentinel_imploding )
