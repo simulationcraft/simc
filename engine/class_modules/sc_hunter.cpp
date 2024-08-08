@@ -315,6 +315,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* kill_zone;
     buff_t* sentinel;
     buff_t* crescent_steel;
+    buff_t* lunar_storm;
   } debuffs;
 
   struct dots_t
@@ -512,6 +513,7 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* shadow_surge;
+    cooldown_t* lunar_storm;
   } cooldowns;
 
   // Gains
@@ -818,7 +820,8 @@ public:
     spell_data_ptr_t crescent_steel_debuff;
 
     spell_data_ptr_t lunar_storm;
-
+    spell_data_ptr_t lunar_storm_ground;
+    spell_data_ptr_t lunar_storm_dmg;
   } talents;
 
   // Specialization Spells
@@ -858,6 +861,7 @@ public:
     action_t* cull_the_herd = nullptr;
     action_t* sentinel = nullptr;
     action_t* symphonic_arsenal = nullptr;
+    action_t* lunar_storm = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -915,6 +919,7 @@ public:
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.shadow_surge = get_cooldown( "shadow_surge" );
+    cooldowns.lunar_storm = get_cooldown( "lunar_storm_icd" );
 
     base_gcd = 1.5_s;
 
@@ -1025,6 +1030,7 @@ public:
   void trigger_sentinel( player_t* target, bool force = false );
   void trigger_sentinel_implosion( hunter_td_t* td );
   void trigger_symphonic_arsenal();
+  void trigger_lunar_storm( player_t* target );
 };
 
 // Template for common hunter action code.
@@ -1695,9 +1701,13 @@ struct hunter_pet_t: public pet_t
       m *= 1 + ( bonus * stacks );
     }
 
-    // TODO should this go in composite_player_target_pet_damage_multiplier (non-hunter pets)
+    // TODO should these go in composite_player_target_pet_damage_multiplier (non-hunter pets)
+
     if ( td->debuffs.kill_zone->check() )
       m *= 1 + o()->talents.kill_zone_debuff->effectN( guardian ? 4 : 3 ).percent();
+
+    if ( td->debuffs.lunar_storm->check() )
+      m *= 1 + o()->talents.lunar_storm_dmg->effectN( 2 ).trigger()->effectN( guardian ? 3 : 2 ).percent();
     
     return m;
   }
@@ -3689,6 +3699,25 @@ void hunter_t::trigger_symphonic_arsenal()
         actions.symphonic_arsenal->execute_on_target( t );
 }
 
+void hunter_t::trigger_lunar_storm( player_t* target )
+{
+  if ( actions.lunar_storm )
+  {
+    cooldowns.lunar_storm->start();
+    make_repeating_event(
+        sim, talents.lunar_storm_ground->effectN( 2 ).period(),
+        [ this ] {
+          auto& tl = actions.lunar_storm->target_list();
+          if ( tl.size() )
+          {
+            rng().shuffle( tl.begin(), tl.end() );
+            actions.lunar_storm->execute_on_target( tl.front() );
+          }
+        },
+        as<int>( talents.lunar_storm_ground->duration() / talents.lunar_storm_ground->effectN( 2 ).period() ) );
+  }
+}
+
 namespace attacks
 {
 
@@ -4585,6 +4614,7 @@ struct symphonic_arsenal_t : hunter_ranged_attack_t
 {
   symphonic_arsenal_t( hunter_t* p ) : hunter_ranged_attack_t( "symphonic_arsenal", p, p->talents.symphonic_arsenal_dmg )
   {
+    background = dual = true;
     aoe = as<int>( p->talents.symphonic_arsenal->effectN( 1 ).base_value() );
   }
 
@@ -4602,6 +4632,36 @@ struct symphonic_arsenal_t : hunter_ranged_attack_t
 
     // Cannot hit the original target.
     range::erase_remove( tl, target );
+
+    return tl.size();
+  }
+};
+
+struct lunar_storm_t : hunter_ranged_attack_t
+{
+  lunar_storm_t( hunter_t* p ) : hunter_ranged_attack_t( "lunar_storm", p, p->talents.lunar_storm_dmg )
+  {
+    background = dual = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    td( s->target )->debuffs.lunar_storm->trigger();
+  }
+
+  std::vector<player_t*>& target_list() const
+  {
+    target_cache.is_valid = false;
+    return hunter_ranged_attack_t::target_list();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    hunter_ranged_attack_t::available_targets( tl );
+
+    range::erase_remove( tl, [ this ]( player_t* t ) { return !td( t )->debuffs.sentinel->check(); } );
 
     return tl.size();
   }
@@ -5434,6 +5494,9 @@ struct rapid_fire_t: public hunter_spell_t
        */
       if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
         p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
+
+      if ( p()->cooldowns.lunar_storm->up() )
+        p()->trigger_lunar_storm( target );
     }
 
     void impact( action_state_t* state ) override
@@ -7243,6 +7306,9 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         p() -> buffs.exposed_wound -> trigger();
       }
+
+      if ( p()->cooldowns.lunar_storm->up() )
+        p()->trigger_lunar_storm( target );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -7416,7 +7482,10 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ):
     -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
     -> set_period( 0_s );
 
-  debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff );
+  debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff )
+    -> set_default_value_from_effect( 2 )
+    -> set_schools_from_effect( 2 )
+    -> set_chance( p->talents.kill_zone.ok() );
 
   debuffs.sentinel = make_buff( *this, "sentinel", p->talents.sentinel_debuff );
 
@@ -7433,6 +7502,11 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ):
           b->expire();
         }
       } );
+
+  debuffs.lunar_storm = make_buff( *this, "lunar_storm", p->talents.lunar_storm_dmg->effectN( 2 ).trigger() )
+    -> set_default_value_from_effect( 1 )
+    -> set_schools_from_effect( 1 )
+    -> set_chance( p->talents.lunar_storm.ok() );
 
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = t -> get_dot( "a_murder_of_crows", p );
@@ -7943,6 +8017,8 @@ void hunter_t::init_spells()
   talents.crescent_steel_debuff = find_spell( 451531 );
 
   talents.lunar_storm = find_talent_spell( talent_tree::HERO, "Lunar Storm" );
+  talents.lunar_storm_ground = find_spell( 450978 );
+  talents.lunar_storm_dmg = find_spell( 450883 );
   }
 
   // Mastery
@@ -8002,6 +8078,7 @@ void hunter_t::init_spells()
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
   cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
   cooldowns.legacy_of_the_windrunners->duration = talents.legacy_of_the_windrunners->internal_cooldown();
+  cooldowns.lunar_storm->duration = talents.lunar_storm->internal_cooldown();
 }
 
 // hunter_t::init_items =====================================================
@@ -8099,6 +8176,9 @@ void hunter_t::create_actions()
 
   if ( talents.symphonic_arsenal.ok() )
     actions.symphonic_arsenal = new attacks::symphonic_arsenal_t( this );
+
+  if ( talents.lunar_storm.ok() )
+    actions.lunar_storm = new attacks::lunar_storm_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -9008,8 +9088,12 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   double d = player_t::composite_player_target_multiplier( target, school );
 
   auto td = get_target_data( target );
-  if ( td->debuffs.kill_zone->check() && talents.kill_zone_debuff->effectN( 2 ).has_common_school( school ) )
-    d *= 1 + talents.kill_zone_debuff->effectN( 2 ).percent();
+
+  if ( td->debuffs.kill_zone->has_common_school( school ) )
+    d += 1 + td->debuffs.kill_zone->check_value();
+
+  if ( td->debuffs.lunar_storm->has_common_school( school ) )
+    d += 1 + td->debuffs.lunar_storm->check_value();
 
   return d;
 }
