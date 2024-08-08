@@ -3635,13 +3635,19 @@ void hunter_t::trigger_sentinel( player_t* target )
   {
     hunter_td_t* td = get_target_data( target );
     buff_t* sentinel = td->debuffs.sentinel;
-    if ( !sentinel->check() )
-      sentinel->trigger( 1 + as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
-    else
-      sentinel->trigger();
 
+    int stacks = sentinel->check();
+
+    sentinel->trigger();
     if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
       sentinel->trigger();
+
+    if ( !stacks && talents.extrapolated_shots.ok() )
+    {
+      sentinel->trigger( as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
+      if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
+        sentinel->trigger();
+    }
 
     // TODO seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly overwriting or ticking in parallel,
     // but for now model as just allowing one to tick at a time
