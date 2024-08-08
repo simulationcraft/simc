@@ -7652,6 +7652,9 @@ struct coup_de_grace_t : public rogue_attack_t
 
     void impact( action_state_t* state ) override
     {
+      // 2024-08-08 -- Due to the animation, Danse Macabre is triggered prior to the impact and is self-affecting
+      trigger_danse_macabre( state );
+
       rogue_attack_t::impact( state );
 
       if ( bonus_attack && td( state->target )->debuffs.find_weakness->up() && result_is_hit( state->result ) )
