@@ -841,18 +841,12 @@ struct player_t : public actor_t
     timespan_t signet_of_the_priory_party_use_stddev = 6_s;
     // harvester's edict chance to intercept
     double harvesters_edict_intercept_chance = 0.5;
-    // Dawnthread Lining
-    double dawnthread_lining_uptime = 0.4;
+    // Dawn/Duskthread Lining
+    double dawn_dusk_thread_lining_uptime = 0.6;
     // Interval between checking blue_silken_lining_uptime
-    timespan_t dawnthread_lining_update_interval = 10_s;
+    timespan_t dawn_dusk_thread_lining_update_interval = 10_s;
     // Standard Deviation of interval
-    timespan_t dawnthread_lining_update_interval_stddev = 2.5_s;
-    // Duskthread Lining
-    double duskthread_lining_uptime = 0.4;
-    // Interval between checking blue_silken_lining_uptime
-    timespan_t duskthread_lining_update_interval = 10_s;
-    // Standard Deviation of interval
-    timespan_t duskthread_lining_update_interval_stddev = 2.5_s;
+    timespan_t dawn_dusk_thread_lining_update_interval_stddev = 2.5_s;
   } thewarwithin_opts;
 
 private:

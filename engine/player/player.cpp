@@ -13174,10 +13174,8 @@ void player_t::create_options()
   add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown", thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
   add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev", thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
   add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance", thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
-  add_option( opt_timespan( "thewarwithin.dawnthread_lining_update_interval", thewarwithin_opts.dawnthread_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.dawnthread_lining_update_interval_stddev", thewarwithin_opts.dawnthread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.duskthread_lining_update_interval", thewarwithin_opts.duskthread_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.duskthread_lining_update_interval_stddev", thewarwithin_opts.duskthread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval", thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

@@ -609,23 +609,30 @@ void elemental_focusing_lens( special_effect_t& effect )
 
 }
 
-// 457665 driver
-// 457666 buff
-void dawnthread_lining( special_effect_t& effect )
+// 457665 dawnthread driver
+// 457666 dawnthread buff
+// 457677 duskthread driver
+// 457674 duskthread buff
+void dawn_dusk_thread_lining( special_effect_t& effect )
 {
-  struct dawnthread_lining_t : public stat_buff_t
+  struct dawn_dusk_thread_lining_t : public stat_buff_t
   {
     rng::truncated_gauss_t interval;
 
-    dawnthread_lining_t( player_t* p, std::string_view n, const spell_data_t* s )
+    dawn_dusk_thread_lining_t( player_t* p, std::string_view n, const spell_data_t* s )
       : stat_buff_t( p, n, s ),
-        interval( p->thewarwithin_opts.dawnthread_lining_update_interval,
-                  p->thewarwithin_opts.dawnthread_lining_update_interval_stddev )
+        interval( p->thewarwithin_opts.dawn_dusk_thread_lining_update_interval,
+                  p->thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev )
     {
     }
   };
 
-  auto buff = create_buff<dawnthread_lining_t>( effect.player, effect.player->find_spell( 457666 ) );
+  const spell_data_t* buff_spell = effect.player->find_spell( 457674 );
+
+  if( effect.spell_id == 457665 )
+    buff_spell = effect.player->find_spell( 457666 );
+
+  auto buff = create_buff<dawn_dusk_thread_lining_t>( effect.player, buff_spell );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   bool first = !buff->manual_stats_added;
   // In some cases, the buff values from separate items don't stack. This seems to fix itself
@@ -633,9 +640,9 @@ void dawnthread_lining( special_effect_t& effect )
   buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // In case the player has two copies of this embellishment, set up the buff events only once.
-  if ( first && effect.player->thewarwithin_opts.dawnthread_lining_uptime > 0.0 )
+  if ( first && effect.player->thewarwithin_opts.dawn_dusk_thread_lining_uptime > 0.0 )
   {
-    auto up = effect.player->get_uptime( "Dawnthread Lining" )
+    auto up = effect.player->get_uptime( buff_spell->_name )
                   ->collect_duration( *effect.player->sim )
                   ->collect_uptime( *effect.player->sim );
 
@@ -643,61 +650,7 @@ void dawnthread_lining( special_effect_t& effect )
       buff->trigger();
       up->update( true, p->sim->current_time() );
 
-      auto pct = p->thewarwithin_opts.dawnthread_lining_uptime;
-
-      make_repeating_event(
-          *p->sim, [ p, buff ] { return p->rng().gauss( buff->interval ); },
-          [ buff, p, up, pct ] {
-            if ( p->rng().roll( pct ) )
-            {
-              buff->trigger();
-              up->update( true, p->sim->current_time() );
-            }
-            else
-            {
-              buff->expire();
-              up->update( false, p->sim->current_time() );
-            }
-          } );
-    } );
-  }
-}
-
-// 457677 driver
-// 457674 buff
-void duskthread_lining( special_effect_t& effect )
-{
-  struct duskthread_lining_t : public stat_buff_t
-  {
-    rng::truncated_gauss_t interval;
-
-    duskthread_lining_t( player_t* p, std::string_view n, const spell_data_t* s )
-      : stat_buff_t( p, n, s ),
-        interval( p->thewarwithin_opts.duskthread_lining_update_interval,
-                  p->thewarwithin_opts.duskthread_lining_update_interval_stddev )
-    {
-    }
-  };
-
-  auto buff = create_buff<duskthread_lining_t>( effect.player, effect.player->find_spell( 457674 ) );
-  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  bool first = !buff->manual_stats_added;
-  // In some cases, the buff values from separate items don't stack. This seems to fix itself
-  // when the player loses and regains the buff, so we just assume they stack properly.
-  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
-
-  // In case the player has two copies of this embellishment, set up the buff events only once.
-  if ( first && effect.player->thewarwithin_opts.duskthread_lining_uptime > 0.0 )
-  {
-    auto up = effect.player->get_uptime( "Duskthread Lining" )
-                  ->collect_duration( *effect.player->sim )
-                  ->collect_uptime( *effect.player->sim );
-
-    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
-      buff->trigger();
-      up->update( true, p->sim->current_time() );
-
-      auto pct = p->thewarwithin_opts.duskthread_lining_uptime;
+      auto pct = p->thewarwithin_opts.dawn_dusk_thread_lining_uptime;
 
       make_repeating_event(
           *p->sim, [ p, buff ] { return p->rng().gauss( buff->interval ); },
@@ -3648,8 +3601,7 @@ void register_special_effects()
   register_special_effect( 453503, embellishments::pouch_of_pocket_grenades );
   register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
   register_special_effect( 461177, embellishments::elemental_focusing_lens );
-  register_special_effect( 457665, embellishments::dawnthread_lining );
-  register_special_effect( 457677, embellishments::duskthread_lining );
+  register_special_effect( { 457665, 457677 }, embellishments::dawn_dusk_thread_lining );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
