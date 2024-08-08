@@ -2713,8 +2713,8 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
   {
     double am = kill_command_base_t::composite_target_multiplier( t );
 
-    auto pet = o() -> pets.main;
-    if ( pet == p() )
+    auto pet = o()->pets.main;
+    if ( p() == pet || p() == o()->pets.animal_companion )
     {
       const hunter_main_pet_td_t* td = pet -> find_target_data( target );
       if ( td && td -> debuffs.venomous_bite -> check() )
