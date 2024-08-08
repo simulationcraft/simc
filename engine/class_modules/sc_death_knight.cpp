@@ -14221,8 +14221,7 @@ void death_knight_t::create_buffs()
 
   buffs.sudden_doom = make_fallback( talent.unholy.sudden_doom.ok(), this, "sudden_doom",
                                      talent.unholy.sudden_doom->effectN( 1 ).trigger() )
-                          ->set_trigger_spell( talent.unholy.sudden_doom )
-                          ->set_cooldown( talent.unholy.sudden_doom->effectN( 1 ).trigger()->internal_cooldown() );
+                          ->set_trigger_spell( talent.unholy.sudden_doom );
 
   buffs.unholy_assault =
       make_fallback( talent.unholy.unholy_assault.ok(), this, "unholy_assault", talent.unholy.unholy_assault )
