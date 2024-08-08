@@ -4166,8 +4166,8 @@ struct firestorm_t : public evoker_spell_t
   {
     firestorm_tick_t( evoker_t* p, std::string_view n ) : evoker_spell_t( n, p, p->find_spell( 369374 ) )
     {
-      dual = ground_aoe = true;
-      aoe               = -1;
+      dual = ground_aoe = background = true;
+      aoe                            = -1;
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -4186,6 +4186,8 @@ struct firestorm_t : public evoker_spell_t
   action_t* damage;
   timespan_t tick_period;
   timespan_t duration;
+  cooldown_t* dummy_cooldown;
+  bool is_ftf;
 
   firestorm_t( evoker_t* p, std::string_view options_str ) : firestorm_t( p, "firestorm", false, options_str )
   {
@@ -4207,16 +4209,37 @@ struct firestorm_t : public evoker_spell_t
     
     tick_period = find_effect( p->find_spell( 456657 ), A_PERIODIC_DAMAGE ).period();
     duration    = data().effectN( 1 ).trigger()->duration();
+
+    dummy_cooldown = p->get_cooldown( "firestorm_snapfire_dummy", this );
+    dummy_cooldown->add_execute_type( execute_type::FOREGROUND );
   }
 
-  void impact( action_state_t* s ) override
+  void queue_execute( execute_type type )
   {
-    evoker_spell_t::impact( s );
+    cooldown_t* original_cd = cooldown;
+    if ( p()->buff.snapfire->up() )
+    {
+      cooldown = dummy_cooldown;
+    }
+    evoker_spell_t::queue_execute( type );
+    cooldown = original_cd;
+  }
+
+  void execute() override
+  {
+    cooldown_t* original_cd = cooldown;
+
+    if ( p()->buff.snapfire->up() )
+    {
+      cooldown = dummy_cooldown;
+    }
+
+    evoker_spell_t::execute();
 
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t()
-            .target( s->target )
+            .target( execute_state->target )
             .pulse_time( tick_period )
             .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
             .duration( duration )
@@ -4244,6 +4267,7 @@ struct firestorm_t : public evoker_spell_t
     if ( !proc )
       p()->buff.snapfire->expire();
 
+    cooldown = original_cd;
   }
 
   // Brutal implementation of Ignore Spell Cooldown.
