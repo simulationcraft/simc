@@ -108,10 +108,24 @@ struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_
 // Specific interactions with Selfcast, Divine Resonance and Divine Toll should be put under the other structs.
 struct avengers_shield_base_t : public paladin_spell_t
 {
+  struct tyrs_enforcer_t : public paladin_spell_t
+  {
+    tyrs_enforcer_t( util::string_view n, paladin_t* p )
+      : paladin_spell_t( n, p,
+                         p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
+    {
+      background = may_crit = true;
+      may_miss              = false;
+      base_multiplier *= 1.0 + p->talents.tyrs_enforcer->effectN( 2 ).percent();
+    }
+  };
+
   heartfire_t* heartfire;
+  tyrs_enforcer_t* tyrs_enforcer;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
-      heartfire( nullptr )
+      heartfire( nullptr ),
+      tyrs_enforcer( nullptr )
   {
     parse_options( options_str );
     {
@@ -132,6 +146,12 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
     }
+
+    if ( p->talents.tyrs_enforcer->ok() )
+    {
+      tyrs_enforcer = new tyrs_enforcer_t( "tyrs_enforcer" + std::string( n ), p );
+      add_child( tyrs_enforcer );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -139,7 +159,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     paladin_spell_t::impact( s );
     if ( p()->talents.tyrs_enforcer->ok() )
     {
-      p()->trigger_tyrs_enforcer(s);
+      tyrs_enforcer->execute_on_target( s->target );
     }
     if (p()->tier_sets.heartfire_sentinels_authority_2pc->ok())
     {
@@ -227,7 +247,7 @@ double recharge_multiplier( const cooldown_t& cd ) const override
 struct avengers_shield_dt_t : public avengers_shield_base_t
 {
   avengers_shield_dt_t( paladin_t* p ) :
-    avengers_shield_base_t( "avengers_shield_divine_toll", p, "" )
+    avengers_shield_base_t( "avengers_shield_dt", p, "" )
   {
     background = true;
   }
@@ -245,7 +265,7 @@ struct avengers_shield_dt_t : public avengers_shield_base_t
 struct avengers_shield_dr_t : public avengers_shield_base_t
 {
   avengers_shield_dr_t( paladin_t* p ):
-    avengers_shield_base_t( "avengers_shield_divine_resonance", p, "" )
+    avengers_shield_base_t( "avengers_shield_dr", p, "" )
   {
     background = true;
   }
@@ -313,20 +333,6 @@ struct moment_of_glory_t : public paladin_spell_t
   }
 
 };
-
-// Tyrs Enforcer damage proc =================================================
-struct tyrs_enforcer_damage_t : public paladin_spell_t
-{
-  tyrs_enforcer_damage_t( paladin_t* p )
-    : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
-  {
-    background = proc = may_crit = true;
-    may_miss = false;
-    // 20222-11-11 Rank 2 Tyr's Enforcer doesn't increase it's damage, but sets the dummy effect to 100
-    base_multiplier *= 1.0 + p->talents.tyrs_enforcer->effectN( 2 ).percent();
-  }
-};
-
 
 struct blessed_hammer_data_t
 {
@@ -1129,17 +1135,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage->schedule_execute();
 }
 
-void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
-{
-  // escape if we don't have Tyrs Enforcer
-  if ( !talents.tyrs_enforcer->ok() )
-    return;
-
-  active.tyrs_enforcer_damage->set_target( s->target);
-  active.tyrs_enforcer_damage->execute();
-
-}
-
 void paladin_t::t29_4p_prot()
 {
   buffs.deflecting_light->trigger();
@@ -1195,10 +1190,6 @@ void paladin_t::create_prot_actions()
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance = new avengers_shield_dr_t( this );
 
-  if ( specialization() == PALADIN_PROTECTION )
-  {
-    active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
-  }
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
   {
     active.cleansing_flame = new cleansing_flame_damage_t( this );
