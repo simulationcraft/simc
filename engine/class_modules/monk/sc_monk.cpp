@@ -8191,7 +8191,8 @@ void monk_t::create_buffs()
 
   buff.weapons_of_order = make_buff_fallback( talent.brewmaster.weapons_of_order->ok(), this, "weapons_of_order",
                                               talent.brewmaster.weapons_of_order )
-                              ->set_trigger_spell( talent.brewmaster.weapons_of_order );
+                              ->set_trigger_spell( talent.brewmaster.weapons_of_order )
+                              ->set_cooldown( timespan_t::zero() );
 
   buff.recent_purifies = make_buff_fallback<buffs::purifying_buff_t>(
       talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
