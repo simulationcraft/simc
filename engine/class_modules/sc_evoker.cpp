@@ -4091,7 +4091,7 @@ struct disintegrate_t : public essence_spell_t
 
     action_state_t::release( state );
 
-    int targets_     = targets();
+    int targets_            = targets();
     int virtual_buff_stacks = num_ticks * targets();
 
     // trigger the buffs first so tick-zero can get buffed
@@ -4105,7 +4105,7 @@ struct disintegrate_t : public essence_spell_t
     {
       int max_targets_ = max_targets();
       auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
-      p()->buff.mass_disintegrate_ticks->trigger( virtual_buff_stacks, buff_size, -1, buff_duration );
+      p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
 
     essence_spell_t::execute();
@@ -4163,7 +4163,6 @@ struct disintegrate_t : public essence_spell_t
     timespan_t new_remains = ticks * tt + tick_remains;
 
     d->adjust_duration( new_remains - d->remains() );
-
   }
 
   void last_tick( dot_t* d ) override
@@ -4171,18 +4170,31 @@ struct disintegrate_t : public essence_spell_t
     range::erase_remove( current_dots, d );
 
     if ( current_dots.size() == 0 )
+    {
+      p()->buff.mass_disintegrate_ticks->expire();
       essence_spell_t::last_tick( d );
+    }
     else
+    {
       target = current_dots[ 0 ]->target;
+    }
   }
 
   void tick( dot_t* d ) override
   {
     essence_spell_t::tick( d );
 
+    if ( current_dots[ 0 ] == d )
+    {
+      p()->buff.mass_disintegrate_ticks->decrement();
+    }
+    else
+    {
+      stats->iteration_total_tick_time -= d->time_to_tick();
+    }
+
     p()->buff.essence_burst_titanic_wrath_disintegrate->decrement();
     p()->buff.iridescence_blue_disintegrate->decrement();
-    p()->buff.mass_disintegrate_ticks->decrement();
 
     if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
@@ -4212,11 +4224,6 @@ struct disintegrate_t : public essence_spell_t
       auto cdr = p()->talent.causality->effectN( 1 ).time_value();
       p()->cooldown.eternity_surge->adjust( cdr );
       p()->cooldown.fire_breath->adjust( cdr );
-    }
-
-    if ( current_dots[ 0 ] != d )
-    {
-      stats->iteration_total_tick_time -= d->time_to_tick();
     }
   }
 };
