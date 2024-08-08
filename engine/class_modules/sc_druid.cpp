@@ -13665,6 +13665,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 void druid_t::apply_affecting_auras( buff_t& buff )
 {
   // Class
+  buff.apply_affecting_aura( spec_spell );
   buff.apply_affecting_aura( talent.forestwalk );
   buff.apply_affecting_aura( talent.improved_barkskin );
   buff.apply_affecting_aura( talent.oakskin );
