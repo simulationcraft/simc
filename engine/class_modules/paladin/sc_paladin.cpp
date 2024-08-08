@@ -1468,14 +1468,29 @@ struct sacrosanct_crusade_heal_t : public paladin_heal_t
 
 struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
+  struct sacred_word_t : public paladin_heal_t
+  {
+    sacred_word_t( paladin_t* p ) : paladin_heal_t( "sacred_word", p, p->spells.lightsmith.sacred_word )
+    {
+      background = true;
+    }
+  };
+
+  sacred_word_t* sacred_word;
   light_of_the_titans_t* light_of_the_titans;
   word_of_glory_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
-      light_of_the_titans( new light_of_the_titans_t( p, "" ) )
+      light_of_the_titans( new light_of_the_titans_t( p, "" ) ),
+      sacred_word( nullptr )
   {
     parse_options( options_str );
     target = p;
     is_wog = true;
+    if ( p->talents.lightsmith.blessing_of_the_forge->ok() )
+    {
+      sacred_word = new sacred_word_t( p );
+      add_child( sacred_word );
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1544,7 +1559,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     }
     if (p()->buffs.lightsmith.blessing_of_the_forge->up())
     {
-      p()->active.sacred_word->execute_on_target( execute_state->target );
+      sacred_word->execute_on_target( execute_state->target );
     }
   }
 
@@ -2887,8 +2902,18 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  struct forges_reckoning_t : public paladin_spell_t
+  {
+    forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
+    {
+      background = proc = may_crit = true;
+      may_miss                     = false;
+    }
+  };
+
+  forges_reckoning_t* forges_reckoning;
   shield_of_the_righteous_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous )
+    : holy_power_consumer_t( "shield_of_the_righteous", p, p->spec.shield_of_the_righteous ), forges_reckoning( nullptr )
   {
     parse_options( options_str );
 
@@ -2906,6 +2931,12 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p->sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B2 ) )
     {
       apply_affecting_aura( p->sets->set( PALADIN_PROTECTION, TWW1, B2 ) );
+    }
+
+    if ( p->talents.lightsmith.blessing_of_the_forge->ok() )
+    {
+      forges_reckoning = new forges_reckoning_t( p );
+      add_child( forges_reckoning );
     }
   }
 
@@ -2947,7 +2978,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     if ( p()->buffs.lightsmith.blessing_of_the_forge->up() )
     {
-      p()->active.forges_reckoning->execute_on_target( target );
+      forges_reckoning->execute_on_target( target );
     }
   }
 
@@ -2973,23 +3004,6 @@ struct incandescence_t : public paladin_spell_t
   {
     background = true;
     aoe = 5;
-  }
-};
-
-struct forges_reckoning_t : public paladin_spell_t
-{
-  forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
-  {
-    background = proc = may_crit = true;
-    may_miss                     = false;
-  }
-};
-
-struct sacred_word_t : public paladin_heal_t
-{
-  sacred_word_t( paladin_t* p ) : paladin_heal_t( "sacred_word", p, p->spells.lightsmith.sacred_word )
-  {
-    background = true;
   }
 };
 
@@ -3312,11 +3326,6 @@ void paladin_t::create_actions()
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
-  }
-  if ( talents.lightsmith.blessing_of_the_forge->ok() )
-  {
-    active.forges_reckoning = new forges_reckoning_t( this );
-    active.sacred_word      = new sacred_word_t( this );
   }
   //Templar
   if (talents.templar.lights_guidance->ok())
