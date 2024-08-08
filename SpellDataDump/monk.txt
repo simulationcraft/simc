@@ -19800,9 +19800,10 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1099439)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friendly (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Friendly (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
+Hotfixed         : PvP Coefficient (0.3 -> 0.5)
 Description      : $@spelldesc422889
 Tooltip          : Healing taken increased by $s1%.
 
@@ -25980,9 +25981,10 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
 Effects          :
 #1 (id=1161636)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.30000 | Target: Friendly (21)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Friendly (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
+Hotfixed         : PvP Coefficient (0.3 -> 0.5)
 Description      : $@spelldesc448392
 Tooltip          : $@spelldesc448392
 
@@ -26204,9 +26206,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1164425)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.34000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
+Hotfixed         : PvP Coefficient (0.34 -> 0.5)
 #2 (id=1164426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
