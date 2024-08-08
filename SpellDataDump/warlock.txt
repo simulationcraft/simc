@@ -8083,6 +8083,7 @@ Description      : $@spelldesc264364
 Tooltip          : Generates $s1 Soul Shard Fragment.
 
 Name             : Nightfall (id=264571) [Spell Family (5)] 
+Hotfixed         : Proc Stacks (1 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -8091,7 +8092,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 3537: Necrolyte Teachings (449620 effect#1)
-Stacks           : 1 initial, 2 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
