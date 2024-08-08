@@ -778,7 +778,7 @@ void dot_t::last_tick()
 
   // If channeled, bring player back to life
   if ( current_action->channeled && !current_action->background &&
-       current_action->player->arise_time > timespan_t::min() )
+       current_action->player->arise_time > timespan_t::min() && !current_action->player->get_active_dots( this ) )
   {
     assert( !current_action->player->readying &&
             "Danger Will Robinson! Channeled foreground dot action is trying "
