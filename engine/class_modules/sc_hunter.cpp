@@ -1851,7 +1851,7 @@ struct stable_pet_t : public hunter_pet_t
 
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
-    m *= 1 + o()->buffs.harmonize->data().effectN( 1 ).percent();
+    m *= 1 + o()->buffs.harmonize->check_value();
 
     return m;
   }
