@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.55959
-static const std::array<spelltext_data_t, 26277> __spelltext_data { {
+// Spell text, wow build 11.0.2.56044
+static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26277,9 +26277,15 @@ static const std::array<spelltext_data_t, 26277> __spelltext_data { {
   { 465402, "$@spelldesc53563", "The paladin's healing spells cast on you also heal the Beacon of Light.", 0 },
   { 465521, "$@spelldesc205385", 0, 0 },
   { 465522, "$@spelldesc205385", 0, 0 },
+  { 466873, "Add the Xal'atath's Bargain: Ascendant affix to a Mythic Keystone.", 0, 0 },
+  { 466874, "Add the Xal'atath's Bargain: Voidbound affix to a Mythic Keystone.", 0, 0 },
+  { 466875, "Add the Xal'atath's Bargain: Oblivion affix to a Mythic Keystone.", 0, 0 },
+  { 466876, "Add the Xal'atath's Bargain: Devour affix to a Mythic Keystone.", 0, 0 },
+  { 466877, "Add the Xal'atath's Guile affix to a Mythic Keystone.", 0, 0 },
+  { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.55959
+// spelltext hotfix entries, wow build 11.0.2.56044
 static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
   {  446743,  0, nullptr, "$@spelldesc443760" },
   {  446753,  0, nullptr, "$@spelldesc443760" },
@@ -26293,7 +26299,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfi
   {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
 
-// Spell description variables, wow build 11.0.2.55959
+// Spell description variables, wow build 11.0.2.56044
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26881,7 +26887,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.55959
+// spelldesc_vars hotfix entries, wow build 11.0.2.56044
 static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelldesc_vars_hotfix_data { {
   {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
   {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4569*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4661*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
