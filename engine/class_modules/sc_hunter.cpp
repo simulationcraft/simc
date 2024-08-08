@@ -290,7 +290,7 @@ struct beast_of_opportunity_pet_t;
 struct hunter_main_pet_t;
 struct animal_companion_t;
 struct dire_critter_t;
-struct shadow_hound_t;
+struct dark_hound_t;
 struct fenryr_t;
 struct hati_t;
 }
@@ -344,7 +344,7 @@ public:
     spawner::pet_spawner_t<pets::dire_critter_t, hunter_t> dire_beast;
     spawner::pet_spawner_t<pets::call_of_the_wild_pet_t, hunter_t> cotw_stable_pet;
     spawner::pet_spawner_t<pets::beast_of_opportunity_pet_t, hunter_t> boo_stable_pet;
-    spawner::pet_spawner_t<pets::shadow_hound_t, hunter_t> dark_hound;
+    spawner::pet_spawner_t<pets::dark_hound_t, hunter_t> dark_hound;
     spawner::pet_spawner_t<pets::fenryr_t, hunter_t> fenryr;
     spawner::pet_spawner_t<pets::hati_t, hunter_t> hati;
 
@@ -2373,12 +2373,13 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
 // Shadow Hounds
 // ==========================================================================
 
-struct shadow_hound_t final : public hunter_pet_t
+struct dark_hound_t final : public hunter_pet_t
 {
-  shadow_hound_t( hunter_t* owner, util::string_view n = "shadow_hound" )
+  dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" )
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     resource_regeneration = regen_type::DISABLED;
+    owner_coeff.ap_from_ap = 3;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -2388,6 +2389,8 @@ struct shadow_hound_t final : public hunter_pet_t
     if ( main_hand_attack )
       main_hand_attack->execute();
   }
+
+  void init_spells() override;
 };
 
 // =========================================================================
@@ -3351,6 +3354,13 @@ void dire_critter_t::init_spells()
     if ( o() -> talents.kill_cleave.ok() )
       active.kill_cleave = new actions::kill_cleave_t( this );
   }
+}
+
+void dark_hound_t::init_spells()
+{
+  hunter_pet_t::init_spells();
+
+  main_hand_attack->school = SCHOOL_SHADOW;
 }
 
 void fenryr_t::init_spells()
