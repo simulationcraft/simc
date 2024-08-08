@@ -6019,7 +6019,7 @@ protected:
 public:
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
-      diverted_power_chance( 0.15 ),  // Guess TODO: Test ingame.
+      diverted_power_chance( 0.085 ),  // Reasonable guess. TODO: Get more accurate
       cooldown_objects{ false }
   {
     may_dodge = may_parry = may_block = false;
