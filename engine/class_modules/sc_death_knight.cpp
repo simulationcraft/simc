@@ -8219,6 +8219,7 @@ struct death_strike_heal_t final : public death_knight_heal_t
   death_strike_heal_t( util::string_view name, death_knight_t* p )
     : death_knight_heal_t( name, p, p->spell.death_strike_heal ),
       interval( timespan_t::from_seconds( p->talent.death_strike->effectN( 4 ).base_value() ) ),
+      last_buff_consumption( timespan_t::zero() ),
       min_heal_multiplier( p->talent.death_strike->effectN( 3 ).percent() ),
       max_heal_multiplier( p->talent.death_strike->effectN( 2 ).percent() )
   {
@@ -8252,19 +8253,17 @@ struct death_strike_heal_t final : public death_knight_heal_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    printf("DEBUGME Death Strike cur  time: %ld\n", sim->current_time().total_millis() );
-    printf("DEBUGME Death Strike last used: %ld\n", last_used.total_millis() );
-    printf("DEBUGME Death Strike interval : %ld\n", sim->current_time().total_millis() - last_used.total_millis() );
-
     auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
-    auto cur_heal = player->compute_incoming_damage( interval ) * max_heal_multiplier;
+    auto cur_heal = player->compute_incoming_damage( std::min(interval, ( sim->current_time() - last_buff_consumption ) ) ) * max_heal_multiplier;
+
     return std::max( min_heal, cur_heal );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
     auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
-    auto cur_heal = player->compute_incoming_damage( interval ) * max_heal_multiplier;
+    auto cur_heal = player->compute_incoming_damage( std::min( interval, ( sim->current_time() - last_buff_consumption ) ) ) * max_heal_multiplier;
+
     return std::max( min_heal, cur_heal );
   }
 
@@ -8281,11 +8280,19 @@ struct death_strike_heal_t final : public death_knight_heal_t
   {
     death_knight_heal_t::impact( state );
 
+    auto min_heal = player->resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier;
+    auto cur_heal = player->compute_incoming_damage( interval ) * max_heal_multiplier;
+
+    // Reset timer if we healed for more than a min heal
+    if ( min_heal < cur_heal )
+      last_buff_consumption = sim->current_time();
+
     trigger_blood_shield( state );
   }
 
 private:
   timespan_t interval;
+  timespan_t last_buff_consumption;
   double min_heal_multiplier;
   double max_heal_multiplier;
 };
