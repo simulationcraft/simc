@@ -72,7 +72,7 @@ actions.cds+=/deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)
 actions.cds+=/call_action_list,name=shiv
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15
 # Avoid overcapped energy, use with shiv, or dump charges at the end of a fight
-actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(((energy.deficit>=100+energy.regen_combined|charges>=3)&debuff.shiv.remains>=4))|fight_remains<charges*6
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(((energy.deficit>=100+energy.regen_combined|charges>=3)&debuff.shiv.remains>=4)|spell_targets.fan_of_knives>=4&debuff.shiv.remains>=6)|fight_remains<charges*6
 # Potion/Racials/Other misc cooldowns
 actions.cds+=/call_action_list,name=misc_cds
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
@@ -126,13 +126,18 @@ actions.misc_cds+=/berserking,if=debuff.deathmark.up
 actions.misc_cds+=/fireblood,if=debuff.deathmark.up
 actions.misc_cds+=/ancestral_call,if=(!talent.kingsbane&debuff.deathmark.up&debuff.shiv.up)|(talent.kingsbane&debuff.deathmark.up&dot.kingsbane.ticking&dot.kingsbane.remains<8)
 
-# Shiv Handling Shiv if talented into Kingsbane; Always sync, or prioritize the last 8 seconds
-actions.shiv=shiv,if=talent.kingsbane&!talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
-actions.shiv+=/shiv,if=talent.kingsbane&talent.lightweight_shiv.enabled&buff.envenom.up&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
-# Shiv cases for Arterial in special circumstances
-actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up|fight_remains<=charges*8
+# Shiv conditions
+actions.shiv=variable,name=shiv_condition,value=!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking
+actions.shiv+=/variable,name=shiv_kingsbane_condition,value=talent.kingsbane&buff.envenom.up&variable.shiv_condition
+# Shiv for aoe with Arterial Precision
+actions.shiv+=/shiv,if=talent.arterial_precision&variable.shiv_condition&spell_targets.fan_of_knives>=4&dot.crimson_tempest.ticking|fight_remains<=charges*8
+# Shiv cases for Kingsbane
+actions.shiv+=/shiv,if=!talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains>=24)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
+actions.shiv+=/shiv,if=talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)|fight_remains<=charges*8
+# Fallback shiv for arterial during deathmark
+actions.shiv+=/shiv,if=talent.arterial_precision&variable.shiv_condition&debuff.deathmark.up|fight_remains<=charges*8
 # Fallback if no special cases apply
-actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
+actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&variable.shiv_condition&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)|fight_remains<=charges*8
 
 # Stealthed Actions
 actions.stealthed=pool_resource,for_next=1
@@ -159,8 +164,6 @@ actions.vanish+=/vanish,if=!talent.master_assassin&!talent.indiscriminate_carnag
 actions.vanish+=/pool_resource,for_next=1,extra_amount=45
 # Vanish for cleaving Garrotes with Indiscriminate Carnage
 actions.vanish+=/vanish,if=!talent.master_assassin&talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&spell_targets.fan_of_knives>2&(target.time_to_die-remains>15|raid_event.adds.in>20)
-# Vanish for Master Assassin during Kingsbane
-actions.vanish+=/vanish,if=talent.master_assassin&talent.kingsbane&dot.kingsbane.remains<=3&dot.kingsbane.ticking&debuff.deathmark.remains<=3&dot.deathmark.ticking
 # Vanish fallback for Master Assassin
 actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4)
 # Vanish fallback for Improved Garrote during Deathmark if no add waves are expected
