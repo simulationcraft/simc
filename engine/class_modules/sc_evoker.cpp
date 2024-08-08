@@ -4052,6 +4052,18 @@ struct disintegrate_t : public essence_spell_t
     essence_spell_t::cancel();
   }
 
+  void interrupt_action() override
+  {
+    bool was_channeling = ( player->channeling == this );
+
+    essence_spell_t::interrupt_action();
+
+    for ( auto dot : current_dots )
+    {
+      dot->cancel();
+    }
+  }
+
   void reset() override
   {
     essence_spell_t::reset();
@@ -4160,6 +4172,8 @@ struct disintegrate_t : public essence_spell_t
 
     if ( current_dots.size() == 0 )
       essence_spell_t::last_tick( d );
+    else
+      target = current_dots[ 0 ]->target;
   }
 
   void tick( dot_t* d ) override
