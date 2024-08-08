@@ -16230,7 +16230,8 @@ Attributes       : ........ ...x.... x....... ........   ........ ........ .....
                  : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362)
 Effects          :
 #1 (id=1023420)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 2.00000 | Target: Friendly (21)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.50000 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (2 -> 1.5)
 #2 (id=1023421)  : Trigger Spell (64): Blessing of the Seasons
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388014 | Target: Self (1)
 #3 (id=1023422)  : Apply Aura (6) | Modify Rating (189)
