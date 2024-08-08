@@ -486,6 +486,9 @@ public:
     // Sentinel
     buff_t* eyes_closed;
 
+    // Dark Ranger
+    buff_t* withering_fire;
+
   } buffs;
 
   // Cooldowns
@@ -761,7 +764,7 @@ public:
     spell_data_ptr_t black_arrow;
 
     spell_data_ptr_t overshadow;
-    spell_data_ptr_t shadow_hounds; // TODO still nyi completely in game
+    spell_data_ptr_t shadow_hounds;
     spell_data_ptr_t death_shade;
 
     spell_data_ptr_t dark_empowerment;
@@ -775,7 +778,10 @@ public:
     spell_data_ptr_t darkness_calls;
     spell_data_ptr_t shadow_erasure;
 
-    spell_data_ptr_t withering_fire;  // TODO nyi in game
+    spell_data_ptr_t withering_fire;
+    spell_data_ptr_t withering_fire_dmg;
+    spell_data_ptr_t withering_fire_buff;
+
 
     // Pack Leader
     spell_data_ptr_t vicious_hunt;
@@ -855,13 +861,14 @@ public:
     action_t* windrunners_guidance_background = nullptr;
     action_t* volley_t31 = nullptr;
     action_t* wildfire_bomb_t31 = nullptr;
-    action_t* shadow_surge = nullptr;
     action_t* a_murder_of_crows = nullptr;
     action_t* vicious_hunt = nullptr;
     action_t* cull_the_herd = nullptr;
     action_t* sentinel = nullptr;
     action_t* symphonic_arsenal = nullptr;
     action_t* lunar_storm = nullptr;
+    action_t* shadow_surge = nullptr;
+    action_t* withering_fire = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1079,6 +1086,7 @@ public:
     bool t31_sv_2pc_crit_damage = false;
 
     damage_affected_by tww_s1_mm_4pc;
+    damage_affected_by withering_fire;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1121,6 +1129,7 @@ public:
     affected_by.t31_sv_2pc_crit_damage = check_affected_by( this, p -> tier_set.t31_sv_2pc_buff -> effectN( 1 ) );
 
     affected_by.tww_s1_mm_4pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s1_mm_4pc_buff );
+    affected_by.withering_fire = parse_damage_affecting_aura( this, p->talents.withering_fire_buff );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
@@ -1356,7 +1365,10 @@ public:
     if ( affected_by.tww_s1_mm_4pc.direct && p()->buffs.moving_target->check() )
     {
       am *= 1 + p()->buffs.moving_target->value();
-    } 
+    }
+
+    if ( affected_by.withering_fire.direct )
+      am *= 1 + p()->buffs.withering_fire->check_value();
 
     return am;
   }
@@ -4519,6 +4531,13 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
       if ( de_focus_gain )
         p()->resource_gain( RESOURCE_FOCUS, de_focus_gain, p()->gains.dark_empowerment, this );
+
+      if ( p()->actions.withering_fire )
+      {
+        p()->buffs.withering_fire->trigger();
+        for ( int i = 0; i < 4; i++ )
+          p()->actions.withering_fire->execute_on_target( d->target );
+      }
     }
 
     if ( rng().roll( sh_chance ) )
@@ -4531,6 +4550,14 @@ struct shadow_surge_t final : hunter_ranged_attack_t
   shadow_surge_t( hunter_t* p ) : hunter_ranged_attack_t( "shadow_surge", p, p->find_spell( 444269 ) )
   {
     aoe = -1;
+    background = dual = true;
+  }
+};
+
+struct withering_fire_t final : hunter_ranged_attack_t
+{
+  withering_fire_t(hunter_t* p) : hunter_ranged_attack_t( "withering_fire", p, p->talents.withering_fire_dmg )
+  {
     background = dual = true;
   }
 };
@@ -7977,6 +8004,8 @@ void hunter_t::init_spells()
     talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
 
     talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+    talents.withering_fire_dmg = find_spell( 461490 );
+    talents.withering_fire_buff = find_spell( 461762 );
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
@@ -8171,6 +8200,9 @@ void hunter_t::create_actions()
 
   if ( talents.shadow_surge.ok() )
     actions.shadow_surge = new attacks::shadow_surge_t( this );
+
+  if ( talents.withering_fire.ok() )
+    actions.withering_fire = new attacks::withering_fire_t( this );
   
   if ( talents.a_murder_of_crows.ok() )
     actions.a_murder_of_crows = new attacks::a_murder_of_crows_t( this );
@@ -8612,6 +8644,11 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
+
+  buffs.withering_fire =
+    make_buff( this, "withering_fire", talents.withering_fire_buff )
+      ->set_default_value_from_effect( 1 )
+      ->set_chance( talents.withering_fire.ok() );
 }
 
 // hunter_t::init_gains =====================================================
@@ -9120,6 +9157,8 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
+
+  m *= 1 + buffs.withering_fire->check_value();
 
   if ( !guardian )
   {
