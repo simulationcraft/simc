@@ -182,6 +182,7 @@ public:
     buff_t* crippling_poison;
     damage_buff_t* deathmark;
     buff_t* deathstalkers_mark;
+    buff_t* fatal_intent;
     damage_buff_t* fazed;
     buff_t* find_weakness;
     buff_t* flagellation;
@@ -350,6 +351,7 @@ public:
       actions::rogue_attack_t* clear_the_witnesses = nullptr;
       actions::rogue_attack_t* corrupt_the_blood = nullptr;
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
+      actions::rogue_attack_t* fatal_intent = nullptr;
       actions::rogue_attack_t* hunt_them_down = nullptr;
       actions::rogue_attack_t* singular_focus = nullptr;
     } deathstalker;
@@ -649,6 +651,8 @@ public:
     const spell_data_t* deathstalkers_mark_damage;
     const spell_data_t* deathstalkers_mark_debuff;
     const spell_data_t* escalating_blade_buff;
+    const spell_data_t* fatal_intent_damage;
+    const spell_data_t* fatal_intent_debuff;
     const spell_data_t* fatebound_coin_heads_buff;
     const spell_data_t* fatebound_coin_heads_stacking_buff;
     const spell_data_t* fatebound_coin_tails_buff;
@@ -1065,7 +1069,7 @@ public:
       player_talent_t hunt_them_down;
       player_talent_t singular_focus;
 
-      player_talent_t fatal_intent;         // NYI -- Spell data is a bit wonky
+      player_talent_t fatal_intent;
       player_talent_t corrupt_the_blood;
       player_talent_t lingering_darkness;
       player_talent_t symbolic_victory;
@@ -1730,6 +1734,7 @@ public:
     bool lethal_dose = false;
     bool maim_mangle = false;           // Renamed Systemic Failure for DF talent
     bool master_assassin = false;
+    bool momentum_of_despair = false;   // Crit Damage Multiplier
     bool relentless_strikes = false;    // Trigger
     bool ruthlessness = false;          // Trigger
     bool sepsis = false;                // Stance Mask
@@ -1781,7 +1786,7 @@ public:
     // Even for rogue abilities that can be considered spells, hasted GCDs seem to be an exception rather than rule.
     // Those should be set explicitly. (see Vendetta, Shadow Blades, Detection)
     ab::gcd_type = gcd_haste_type::NONE;
-    
+
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
 
@@ -1843,6 +1848,11 @@ public:
     affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
 
     // Hero Talents
+    if ( p->talent.deathstalker.momentum_of_despair->ok() )
+    {
+      affected_by.momentum_of_despair = ab::data().affected_by( p->spell.momentum_of_despair_buff->effectN( 2 ) );
+    }
+
     if ( p->talent.trickster.unseen_blade->ok() )
     {
       affected_by.fazed_damage = ab::data().affected_by( p->spell.fazed_debuff->effectN( 1 ) );
@@ -1879,7 +1889,7 @@ public:
       // Not in spell data. Using the mastery whitelist as a baseline, most seem to apply (including VV)
       affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
                                      ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) ) ||
-                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 3 ) );
+                                     ab::data().affected_by_label( p->mastery.potent_assassin->effectN( 3 ) );
     }
 
     if ( p->talent.assassination.lethal_dose->ok() )
@@ -2691,6 +2701,11 @@ public:
   double composite_crit_damage_bonus_multiplier() const override
   {
     double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.momentum_of_despair && p()->buffs.momentum_of_despair->check() )
+    {
+      cm *= 1.0 + p()->spell.momentum_of_despair_buff->effectN( 2 ).percent();
+    }
 
     if ( affected_by.t30_subtlety_4pc && p()->buffs.symbols_of_death->check() )
     {
@@ -3591,9 +3606,10 @@ struct melee_t : public rogue_attack_t
       m *= damage_buff->is_stacking ? damage_buff->stack_value_auto_attack() : damage_buff->value_auto_attack();
 
     // Class Passives
-    m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
     m *= 1.0 + p()->spec.assassination_rogue->effectN( 22 ).percent();
     m *= 1.0 + p()->spec.assassination_rogue->effectN( 23 ).percent();
+    m *= 1.0 + p()->spec.outlaw_rogue->effectN( 18 ).percent();
+    m *= 1.0 + p()->spec.subtlety_rogue->effectN( 11 ).percent();
 
     return m;
   }
@@ -7404,6 +7420,34 @@ struct deathstalkers_mark_t : public rogue_attack_t
   }
 };
 
+struct fatal_intent_t : public rogue_attack_t
+{
+  fatal_intent_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->spell.fatal_intent_damage )
+  {
+    attack_power_mod.direct = p->talent.deathstalker.fatal_intent->effectN( 1 ).ap_coeff();
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= td( target )->debuffs.fatal_intent->stack();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    td( execute_state->target )->debuffs.fatal_intent->expire();
+  }
+
+  // ALPHA TOCHECK -- Just setting this to false for now
+  bool procs_shadow_blades_damage() const override
+  { return false; }
+};
+
 struct hunt_them_down_t : public rogue_attack_t
 {
   hunt_them_down_t( util::string_view name, rogue_t* p ) :
@@ -10010,6 +10054,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.corrupt_the_blood = make_buff( *this, "corrupt_the_blood", source->spell.corrupt_the_blood_damage )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
+  debuffs.fatal_intent = make_buff( *this, "fatal_intent", source->spell.fatal_intent_debuff )
+    ->set_default_value( source->talent.deathstalker.fatal_intent->effectN( 1 ).ap_coeff() );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff )
     ->apply_affecting_aura( source->talent.trickster.no_scruples ); // Crit Chance
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
@@ -11398,6 +11444,7 @@ void rogue_t::init_spells()
   talent.deathstalker.hunt_them_down = find_talent_spell( talent_tree::HERO, "Hunt Them Down" );
   talent.deathstalker.singular_focus = find_talent_spell( talent_tree::HERO, "Singular Focus" );
 
+  talent.deathstalker.fatal_intent = find_talent_spell( talent_tree::HERO, "Fatal Intent" );
   talent.deathstalker.corrupt_the_blood = find_talent_spell( talent_tree::HERO, "Corrupt the Blood" );
   talent.deathstalker.lingering_darkness = find_talent_spell( talent_tree::HERO, "Lingering Darkness" );
   talent.deathstalker.symbolic_victory = find_talent_spell( talent_tree::HERO, "Symbolic Victory" );
@@ -11472,6 +11519,8 @@ void rogue_t::init_spells()
   spell.deathstalkers_mark_buff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457160 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_damage = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457157 ) : spell_data_t::not_found();
   spell.deathstalkers_mark_debuff = talent.deathstalker.deathstalkers_mark->ok() ? find_spell( 457129 ) : spell_data_t::not_found();
+  spell.fatal_intent_damage = talent.deathstalker.fatal_intent->ok() ? find_spell( 461984 ) : spell_data_t::not_found();
+  spell.fatal_intent_debuff = talent.deathstalker.fatal_intent->ok() ? find_spell( 461981 ) : spell_data_t::not_found();
   spell.hunt_them_down_damage = talent.deathstalker.hunt_them_down->ok() ? find_spell( 457193 ) : spell_data_t::not_found();
   spell.lingering_darkness_buff = talent.deathstalker.lingering_darkness->ok() ? find_spell( 457273 ) : spell_data_t::not_found();
   spell.momentum_of_despair_buff = talent.deathstalker.momentum_of_despair->effectN( 1 ).trigger();
@@ -11510,7 +11559,7 @@ void rogue_t::init_spells()
   spec.caustic_spatter_buff = talent.assassination.caustic_spatter->ok() ? find_spell( 421976 ) : spell_data_t::not_found();
   spec.caustic_spatter_damage = talent.assassination.caustic_spatter->ok() ? find_spell( 421979 ) : spell_data_t::not_found();
   spec.dashing_scoundrel = talent.assassination.dashing_scoundrel->ok() ? talent.assassination.dashing_scoundrel : spell_data_t::not_found();
-  spec.dashing_scoundrel_gain = spec.dashing_scoundrel->ok() ? find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0;
+  spec.dashing_scoundrel_gain = talent.assassination.dashing_scoundrel->ok() ? talent.assassination.dashing_scoundrel->effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0;
   spec.deadly_poison_instant = talent.assassination.deadly_poison->ok() ? find_spell( 113780 ) : spell_data_t::not_found();
   spec.doomblade_debuff = talent.assassination.doomblade->ok() ? find_spell( 381672 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
@@ -11787,6 +11836,11 @@ void rogue_t::init_spells()
   if ( talent.deathstalker.deathstalkers_mark->ok() )
   {
     active.deathstalker.deathstalkers_mark = get_background_action<actions::deathstalkers_mark_t>( "deathstalkers_mark" );
+  }
+
+  if ( talent.deathstalker.fatal_intent->ok() )
+  {
+    active.deathstalker.fatal_intent = get_background_action<actions::fatal_intent_t>( "fatal_intent" );
   }
 
   if ( talent.deathstalker.hunt_them_down->ok() )
@@ -12835,6 +12889,46 @@ void rogue_t::init_special_effects()
     special_effects.push_back( soulrip_driver );
 
     auto cb = new actions::soulrip_cb_t( this, *soulrip_driver );
+    cb->initialize();
+  }
+
+  if ( talent.deathstalker.fatal_intent->ok() )
+  {
+    auto const fatal_intent_driver = new special_effect_t( this );
+    fatal_intent_driver->name_str = "fatal_intent_driver";
+    fatal_intent_driver->spell_id = talent.deathstalker.fatal_intent->id();
+    fatal_intent_driver->proc_flags_ = talent.deathstalker.fatal_intent->proc_flags();
+    fatal_intent_driver->proc_flags2_ = PF2_ALL_CAST;
+    special_effects.push_back( fatal_intent_driver );
+
+    struct fatal_intent_driver_cb_t : public dbc_proc_callback_t
+    {
+      rogue_t* rogue;
+      double health_threshold;
+
+      fatal_intent_driver_cb_t( rogue_t* p, const special_effect_t& e )
+        : dbc_proc_callback_t( p, e ), rogue( p ), health_threshold( p->talent.deathstalker.fatal_intent->effectN( 3 ).base_value() )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        dbc_proc_callback_t::execute( a, s );
+        if ( s->target && s->target->is_enemy() )
+        {
+          if ( s->target->health_percentage() >= health_threshold )
+          {
+            rogue->get_target_data( s->target )->debuffs.fatal_intent->trigger();
+          }
+          else if ( rogue->get_target_data( s->target )->debuffs.fatal_intent->check() )
+          {
+            rogue->active.deathstalker.fatal_intent->execute_on_target( s->target );
+          }
+        }
+      }
+    };
+
+    auto cb = new fatal_intent_driver_cb_t( this, *fatal_intent_driver );
     cb->initialize();
   }
 
