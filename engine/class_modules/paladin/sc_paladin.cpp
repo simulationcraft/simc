@@ -355,7 +355,8 @@ struct consecration_tick_t : public paladin_spell_t
   golden_path_t* heal_tick;
 
   consecration_tick_t( util::string_view name, paladin_t* p )
-    : paladin_spell_t( name, p, p->find_spell( 81297 ) ), heal_tick( new golden_path_t( p ) )
+    : paladin_spell_t( name, p, p->find_spell( 81297 ) ),
+      heal_tick( new golden_path_t( p ) )
   {
     aoe         = -1;
     dual        = true;
@@ -392,11 +393,51 @@ struct consecration_tick_t : public paladin_spell_t
   }
 };
 
+struct divine_guidance_damage_t : public paladin_spell_t
+{
+  divine_guidance_damage_t( util::string_view n, paladin_t* p ) : paladin_spell_t( n, p, p->find_spell( 433808 ) )
+  {
+    proc = may_crit         = true;
+    may_miss                = false;
+    attack_power_mod.direct = 1;
+    aoe                     = -1;
+    split_aoe_damage        = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    m *= p()->buffs.lightsmith.divine_guidance->stack();
+    return m;
+  }
+};
+
+struct divine_guidance_heal_t : public paladin_heal_t
+{
+  divine_guidance_heal_t( util::string_view n, paladin_t* p ) : paladin_heal_t( n, p, p->find_spell( 433807 ) )
+  {
+    proc = may_crit         = true;
+    may_miss                = false;
+    attack_power_mod.direct = 1;
+    aoe                     = 1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = paladin_heal_t::action_multiplier();
+    m *= p()->buffs.lightsmith.divine_guidance->stack();
+    return m;
+  }
+};
+
 struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
   ground_aoe_params_t cons_params;
   consecration_source source_type;
+
+  divine_guidance_damage_t* dg_damage;
+  divine_guidance_heal_t* dg_heal;
 
   double precombat_time;
 
@@ -404,7 +445,9 @@ struct consecration_t : public paladin_spell_t
     : paladin_spell_t( "consecration", p, p->find_spell( 26573 ) ),
       damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       source_type( HARDCAST ),
-      precombat_time( 2.0 )
+      precombat_time( 2.0 ),
+      dg_damage( nullptr ),
+      dg_heal( nullptr )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
@@ -419,6 +462,13 @@ struct consecration_t : public paladin_spell_t
       background = true;
 
     add_child( damage_tick );
+    if ( p->talents.lightsmith.divine_guidance->ok() )
+    {
+      dg_damage = new divine_guidance_damage_t( "_divine_guidance", p );
+      dg_heal   = new divine_guidance_heal_t( "_divine_guidance_heal", p );
+      add_child( dg_damage );
+      // Maybe later: Heal?
+    }
   }
 
   consecration_t( paladin_t* p, util::string_view source_name, consecration_source source )
@@ -590,15 +640,15 @@ struct consecration_t : public paladin_spell_t
 
       if ( healingAlliesSize > 0 )
       {
-        p()->active.divine_guidance_heal->base_dd_multiplier = 1.0 / totalTargets;
+        dg_heal->base_dd_multiplier = 1.0 / totalTargets;
         // Healing events come before Consecration cast
         for ( auto friendly : healingAllies )
         {
-          p()->active.divine_guidance_heal->set_target( friendly );
-          p()->active.divine_guidance_heal->execute();
+          dg_heal->set_target( friendly );
+          dg_heal->execute();
         }
       }
-      p()->active.divine_guidance_damage->base_dd_multiplier =
+      dg_damage->base_dd_multiplier =
           ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
     }
 
@@ -608,10 +658,10 @@ struct consecration_t : public paladin_spell_t
     if ( p()->buffs.lightsmith.divine_guidance->up() )
     {
       // Only create damage events when we're dealing damage, so not to proc stuff accidentally
-      if ( p()->active.divine_guidance_damage->base_dd_multiplier > 0 )
+      if ( dg_damage->base_dd_multiplier > 0 )
       {
-        p()->active.divine_guidance_damage->set_target( target );
-        p()->active.divine_guidance_damage->execute();
+        dg_damage->set_target( target );
+        dg_damage->execute();
       }
       p()->buffs.lightsmith.divine_guidance->expire();
     }
@@ -2063,43 +2113,6 @@ struct hammer_and_anvil_t : public paladin_spell_t
 
 };
 
-struct divine_guidance_damage_t : public paladin_spell_t
-{
-   divine_guidance_damage_t( paladin_t* p ) : paladin_spell_t( "divine_guidance", p, p->find_spell( 433808 ) )
-   {
-     proc = may_crit         = true;
-     may_miss                = false;
-     attack_power_mod.direct = 1;
-     aoe                     = -1;
-     split_aoe_damage        = true;
-   }
-
-   double action_multiplier() const override
-   {
-     double m = paladin_spell_t::action_multiplier();
-     m *= p()->buffs.lightsmith.divine_guidance->stack();
-     return m;
-   }
-};
-
-struct divine_guidance_heal_t : public paladin_heal_t
-{
-  divine_guidance_heal_t( paladin_t* p ) : paladin_heal_t( "divine_guidance_heal", p, p->find_spell( 433807 ) )
-  {
-    proc = may_crit         = true;
-    may_miss                = false;
-    attack_power_mod.direct = 1;
-    aoe                     = 1;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = paladin_heal_t::action_multiplier();
-    m *= p()->buffs.lightsmith.divine_guidance->stack();
-    return m;
-  }
-};
-
 // Hammer of Light // Light's Guidance =====================================================
 
 struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -3299,11 +3312,6 @@ void paladin_t::create_actions()
   if ( talents.lightsmith.hammer_and_anvil->ok() )
   {
     active.hammer_and_anvil = new hammer_and_anvil_t( this );
-  }
-  if (talents.lightsmith.divine_guidance->ok() )
-  {
-    active.divine_guidance_damage = new divine_guidance_damage_t( this );
-    active.divine_guidance_heal   = new divine_guidance_heal_t( this );
   }
   if ( talents.lightsmith.blessing_of_the_forge->ok() )
   {
