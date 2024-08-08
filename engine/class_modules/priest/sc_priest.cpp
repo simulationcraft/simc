@@ -3162,7 +3162,6 @@ void priest_t::init_resources( bool force )
   if ( ( specialization() == PRIEST_SHADOW ) && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 &&
        options.init_insanity )
   {
-    auto divine_star_insanity  = talents.divine_star->effectN( 3 ).resource( RESOURCE_INSANITY );
     auto halo_insanity         = talents.halo->effectN( 4 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
 
@@ -3174,24 +3173,24 @@ void priest_t::init_resources( bool force )
 
     if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
     {
-      // Two Shadow Crash + Two Divine Star == 24 Insanity
-      if ( talents.divine_star.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 ) + ( divine_star_insanity * 2 );
-      // Two Shadow Crash + One Halo == 22 Insanity
-      else if ( talents.halo.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 ) + halo_insanity;
+      // One Shadow Crash + One Halo == 16 Insanity
+      if ( talents.halo.enabled() )
+      {
+        resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity + halo_insanity;
+      }
       else
-        // Two Shadow Crash == 12 Insanity
-        resources.initial_opt[ RESOURCE_INSANITY ] = ( shadow_crash_insanity * 2 );
+      {
+        // One Shadow Crash == 6 Insanity
+        resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity;
+      }
     }
     else
     {
-      // Four Divine Stars == 24 Insanity
-      if ( talents.divine_star.enabled() )
-        resources.initial_opt[ RESOURCE_INSANITY ] = ( divine_star_insanity * 4 );
       // One Halo == 10 Insanity
       if ( talents.halo.enabled() )
+      {
         resources.initial_opt[ RESOURCE_INSANITY ] = halo_insanity;
+      }
     }
   }
 
