@@ -1404,6 +1404,9 @@ using namespace helpers;
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
 
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 2 ).percent();
+
         return m;
       }
 
@@ -1491,6 +1494,7 @@ using namespace helpers;
 
       p()->buffs.tormented_crescendo->decrement();
       p()->buffs.malign_omen->decrement();
+      p()->buffs.succulent_soul->decrement();
     }
 
     void impact( action_state_t* s ) override
@@ -2230,7 +2234,17 @@ using namespace helpers;
         if ( p()->hero.gloom_of_nathreza.ok() )
           m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
 
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+
         return m;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        p()->buffs.succulent_soul->decrement();
       }
 
       void impact( action_state_t* s ) override
