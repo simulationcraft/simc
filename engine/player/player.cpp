@@ -13161,7 +13161,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
-  add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
+  add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance", thewarwithin_opts.sikrans_endless_arsenal_stance ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
   add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay", thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );

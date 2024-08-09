@@ -1010,7 +1010,7 @@ void aberrant_spellforge( special_effect_t& effect )
 // TODO: confirm decimation damage does not have standard +15% per target up to five
 // TODO: confirm decimation damage on crit to shield only counts the absorbed amount, instead of the full damage
 // TODO: confirm barrage damage isn't split and has no diminishing returns
-void sikrans_shadow_arsenal( special_effect_t& effect )
+void sikrans_endless_arsenal( special_effect_t& effect )
 {
   unsigned equip_id = 445203;
   auto equip = find_special_effect( effect.player, equip_id );
@@ -1018,12 +1018,12 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
 
   auto data = equip->driver();
 
-  struct sikrans_shadow_arsenal_t : public generic_proc_t
+  struct sikrans_endless_arsenal_t : public generic_proc_t
   {
     std::vector<std::pair<action_t*, buff_t*>> stance;
 
-    sikrans_shadow_arsenal_t( const special_effect_t& e, const spell_data_t* data )
-      : generic_proc_t( e, "sikrans_shadow_arsenal", e.driver() )
+    sikrans_endless_arsenal_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "sikrans_endless_arsenal", e.driver() )
     {
       // stances are populated in order: flourish->decimation->barrage
       // TODO: confirm order is flourish->decimation->barrage
@@ -1111,7 +1111,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
       stance.emplace_back( b_dam, b_stance );
 
       // adjust for thewarwithin.sikrans.shadow_arsenal_stance= option
-      const auto& option = e.player->thewarwithin_opts.sikrans_shadow_arsenal_stance;
+      const auto& option = e.player->thewarwithin_opts.sikrans_endless_arsenal_stance;
       if ( !option.is_default() )
       {
         if ( util::str_compare_ci( option, "decimation" ) )
@@ -1144,7 +1144,7 @@ void sikrans_shadow_arsenal( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<sikrans_shadow_arsenal_t>( "sikrans_shadow_arsenal", effect, data );
+  effect.execute_action = create_proc_action<sikrans_endless_arsenal_t>( "sikrans_endless_arsenal", effect, data );
 }
 
 // 444292 equip
@@ -3609,7 +3609,7 @@ void register_special_effects()
   register_special_effect( 444067, items::void_reapers_chime );
   register_special_effect( 445619, items::aberrant_spellforge, true );
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
-  register_special_effect( 447970, items::sikrans_shadow_arsenal );
+  register_special_effect( 447970, items::sikrans_endless_arsenal );
   register_special_effect( 445203, DISABLED_EFFECT );  // sikran's shadow arsenal
   register_special_effect( 444301, items::swarmlords_authority );
   register_special_effect( 444292, DISABLED_EFFECT );  // swarmlord's authority

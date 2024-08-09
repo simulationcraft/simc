@@ -823,7 +823,7 @@ struct player_t : public actor_t
   struct thewarwithin_opt_t
   {
     // Starting stance for Sik'rans Shadow Arsenal
-    player_option_t<std::string> sikrans_shadow_arsenal_stance = "";
+    player_option_t<std::string> sikrans_endless_arsenal_stance = "";
     // starting stacks for Ovinax's Mercurial Egg
     int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
     int ovinaxs_mercurial_egg_initial_secondary_stacks = 0;
