@@ -1364,11 +1364,22 @@ struct overwhelming_force_t : base_action_t
 // Tiger's Ferocity ( Windwalker TWW1 4PC )
 struct tigers_ferocity_t : public monk_melee_attack_t
 {
-  tigers_ferocity_t( monk_t *p ) : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg )
+  std::vector<player_t *> &t_list;
+
+  tigers_ferocity_t( monk_t *p ) : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
   {
     background = dual   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
+  }
+
+  std::vector<player_t *> &target_list() const override
+  {
+    t_list = base_t::target_list();
+
+    t_list.erase( std::remove( t_list.begin(), t_list.end(), player->target ), t_list.end() );
+
+    return t_list;
   }
 };
 
@@ -1498,7 +1509,21 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
     {
-      double damage                = s->result_amount * p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
+      double damage = s->result_amount;
+
+      if ( p()->buff.storm_earth_and_fire->up() )
+      {
+        // Damage during SEF is based on the actor's damage before the SEF modifier.
+        damage /= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() );
+
+        // Tested 09/08/2024. Tiger's Ferocity additionally does 20% increased damage during Storm Earth, and Fire
+        // arbitrarily.
+        if ( p()->bugs )
+          damage *= 1.2f;
+      }
+
+      damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
+
       tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
       tigers_ferocity->set_target( s->target );
       tigers_ferocity->execute();
@@ -9832,6 +9857,7 @@ public:
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
+    ReportIssue( "Tiger's Ferocity deals additional damage during SEF", "2024-08-09", true );
 
     // =================================================
 
