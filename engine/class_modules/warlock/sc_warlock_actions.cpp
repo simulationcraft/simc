@@ -1442,6 +1442,13 @@ using namespace helpers;
 
         if ( p()->talents.malefic_touch.ok() )
           touch->execute_on_target( s->target );
+
+        // TOCHECK: Demonic Soul is proc'd based on impact, but this makes redundant decrement() calls in AoE.
+        // Is there a good way around this?
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+        {
+          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+        }
       }
     };
 
@@ -2240,13 +2247,6 @@ using namespace helpers;
         return m;
       }
 
-      void execute() override
-      {
-        warlock_spell_t::execute();
-
-        p()->buffs.succulent_soul->decrement();
-      }
-
       void impact( action_state_t* s ) override
       {
         warlock_spell_t::impact( s );
@@ -2270,6 +2270,12 @@ using namespace helpers;
             blaze->execute_on_target( s->target );
             p()->procs.umbral_blaze->occur();
           }
+        }
+
+        // We need Demonic Soul to proc on every target, but buff is decremented on impact. Fudge this by 1ms to ensure all targets are hit.
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() && s->chain_target == 0 )
+        {
+          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
         }
       }
     };
@@ -4077,6 +4083,16 @@ using namespace helpers;
   };
 
   // Diabolist Actions End
+  // Soul Harvester Actions Begin
+
+  struct demonic_soul_t : public warlock_spell_t
+  {
+    demonic_soul_t( warlock_t* p )
+      : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg )
+    { background = dual = true; }
+  };
+
+  // Soul Harvester Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
