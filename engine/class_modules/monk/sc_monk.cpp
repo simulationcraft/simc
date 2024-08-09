@@ -1366,7 +1366,8 @@ struct tigers_ferocity_t : public monk_melee_attack_t
 {
   std::vector<player_t *> &t_list;
 
-  tigers_ferocity_t( monk_t *p ) : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
+  tigers_ferocity_t( monk_t *p )
+    : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
   {
     background = dual   = true;
     aoe                 = -1;
@@ -1515,10 +1516,8 @@ struct tiger_palm_t : public monk_melee_attack_t
         // Damage during SEF is based on the actor's damage before the SEF modifier.
         damage /= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() );
 
-        // Tested 09/08/2024. Tiger's Ferocity additionally does 20% increased damage during Storm Earth, and Fire
-        // arbitrarily.
-        if ( p()->bugs )
-          damage *= 1.2f;
+        // Tested 09/08/2024. Tiger's Ferocity deals additional damage during SEF.
+        damage *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       }
 
       damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
@@ -9856,7 +9855,6 @@ public:
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
-    ReportIssue( "Tiger's Ferocity deals additional damage during SEF", "2024-08-09", true );
 
     // =================================================
 
