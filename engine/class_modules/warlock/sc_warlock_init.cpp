@@ -556,6 +556,9 @@ namespace warlock
 
   void warlock_t::init_spells_soul_harvester()
   {
+    hero.demonic_soul = find_talent_spell( talent_tree::HERO, "Demonic Soul" ); // Should be ID 449614
+    hero.succulent_soul = find_spell( 449793 );
+    hero.demonic_soul_dmg = find_spell( 449801 );
   }
 
   void warlock_t::init_base_stats()
@@ -813,6 +816,7 @@ namespace warlock
 
   void warlock_t::create_buffs_soul_harvester()
   {
+    buffs.succulent_soul = make_buff( this, "succulent_soul", hero.succulent_soul );
   }
 
   void warlock_t::create_pets()

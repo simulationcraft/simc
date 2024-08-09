@@ -885,6 +885,18 @@ void warlock_t::apply_affecting_auras( action_t& action )
   }
 }
 
+double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource_type, amount, source, action );
+
+  if ( resource_type == RESOURCE_SOUL_SHARD && actual_amount > 0.0 && hero.demonic_soul.ok() )
+  {
+    buffs.succulent_soul->trigger();
+  }
+
+  return actual_amount;
+}
+
 struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK )

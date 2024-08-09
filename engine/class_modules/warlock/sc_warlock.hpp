@@ -529,6 +529,8 @@ public:
 
     // Soul Harvester
     player_talent_t demonic_soul;
+    const spell_data_t* succulent_soul; // Buff triggered by Demonic Soul proc
+    const spell_data_t* demonic_soul_dmg;
     
     player_talent_t necrolyte_teachings;
     player_talent_t soul_anathema;
@@ -630,6 +632,9 @@ public:
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;
+
+    // Soul Harvester Buffs
+    propagate_const<buff_t*> succulent_soul;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -800,6 +805,7 @@ public:
   std::string default_rune() const override { return warlock_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
   void apply_affecting_auras( action_t& action ) override;
+  double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
 
   target_specific_t<warlock_td_t> target_data;
 
