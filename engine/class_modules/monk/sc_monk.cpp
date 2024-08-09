@@ -1958,7 +1958,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
-      base_costs[ RESOURCE_CHI ] +=
+      base_costs[ RESOURCE_CHI ].base +=
           p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
