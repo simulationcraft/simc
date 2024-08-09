@@ -775,6 +775,7 @@ public:
     propagate_const<buff_t*> mograines_might;
 
     // San'layn
+    propagate_const<buff_t*> bloodsoaked_ground;
     propagate_const<buff_t*> essence_of_the_blood_queen;
     propagate_const<buff_t*> essence_of_the_blood_queen_damage;
     buff_t* gift_of_the_sanlayn;
@@ -1453,6 +1454,7 @@ public:
     const spell_data_t* vampiric_strike_clawing_shadows;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
+    const spell_data_t* bloodsoaked_ground_buff;
 
     // Deathbringer spells
     const spell_data_t* reapers_mark_debuff;
@@ -5600,6 +5602,9 @@ struct death_and_decay_buff_t : public death_knight_buff_t
 
     if ( p()->talent.blood.sanguine_ground.ok() && !p()->buffs.sanguine_ground->check() )
       p()->buffs.sanguine_ground->trigger();
+
+    if ( p()->talent.sanlayn.bloodsoaked_ground.ok() && !p()->buffs.bloodsoaked_ground->check() )
+      p()->buffs.bloodsoaked_ground->trigger();
   }
 
   void expire_buffs()
@@ -5612,6 +5617,9 @@ struct death_and_decay_buff_t : public death_knight_buff_t
 
     if ( p()->talent.blood.sanguine_ground.ok() && p()->buffs.sanguine_ground->check() )
       p()->buffs.sanguine_ground->expire();
+
+    if ( p()->talent.sanlayn.bloodsoaked_ground.ok() && p()->buffs.bloodsoaked_ground->check() )
+      p()->buffs.bloodsoaked_ground->expire();
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -13473,6 +13481,7 @@ void death_knight_t::init_spells()
   spell.incite_terror_debuff   = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
+  spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
 
   // Deathbringer Spells
   spell.reapers_mark_debuff            = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
@@ -13948,6 +13957,9 @@ void death_knight_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
           ->add_invalidate( CACHE_STRENGTH);
           // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+
+  buffs.bloodsoaked_ground = make_fallback( talent.sanlayn.bloodsoaked_ground.ok(), this, "bloodsoaked_ground",
+                                            spell.bloodsoaked_ground_buff );
 
   // Blood
   if ( this->specialization() == DEATH_KNIGHT_BLOOD )
@@ -14659,6 +14671,9 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
 
   if ( buffs.icebound_fortitude->up() )
     state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
+
+  if ( buffs.bloodsoaked_ground->up() )
+    state->result_amount *= 1.0 + buffs.bloodsoaked_ground->data().effectN( 1 ).percent();
 
   const death_knight_td_t* td = get_target_data( state->action->player );
   if ( td && runeforge.rune_of_apocalypse )
