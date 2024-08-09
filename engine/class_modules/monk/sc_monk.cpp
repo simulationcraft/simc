@@ -5945,13 +5945,12 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
 
   bool trigger( int, double, double, timespan_t ) override
   {
-    bool rsk_unknown_or_on_cd = !p().talent.monk.rising_sun_kick->ok() || p().cooldown.rising_sun_kick->down();
-    bool wdp_unknown_or_on_cd =
-        !p().talent.windwalker.whirling_dragon_punch->ok() || p().cooldown.rising_sun_kick->down();
-    if ( rsk_unknown_or_on_cd && wdp_unknown_or_on_cd )
-      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
-                                   base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
-                                                                  p().cooldown.fists_of_fury->remains() ) );
+    timespan_t buff_duration =
+        std::min( p().cooldown.rising_sun_kick->remains(), p().cooldown.fists_of_fury->remains() );
+
+    if ( buff_duration > 0_ms )
+      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0, base_buff_duration + buff_duration );
+
     return false;
   }
 };
@@ -6361,7 +6360,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -8265,10 +8264,9 @@ void monk_t::create_buffs()
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true );
 
-  buff.darting_hurricane =
-      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
-                          talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
-          ->set_default_value_from_effect( 1 );
+  buff.darting_hurricane = make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
+                                               talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
+                               ->set_default_value_from_effect( 1 );
 
   buff.dual_threat =
       make_buff_fallback( talent.windwalker.dual_threat->ok(), this, "dual_threat", find_spell( 451833 ) )
