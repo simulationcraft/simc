@@ -582,6 +582,9 @@ public:
     const spell_data_t* empowered_legion_strike;
 
     // Destruction
+    const spell_data_t* hexflame_destro_2pc;
+    const spell_data_t* hexflame_destro_4pc;
+    const spell_data_t* echo_of_the_azjaqir;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets

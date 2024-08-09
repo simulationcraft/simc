@@ -3306,6 +3306,16 @@ using namespace helpers;
 
         return c;
       }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+        return m;
+      }
     };
 
     double energize_mult;
@@ -3386,6 +3396,16 @@ using namespace helpers;
         c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+      return m;
     }
   };
 
@@ -3653,6 +3673,16 @@ using namespace helpers;
       c += p()->buffs.conflagration_of_chaos_cf->check_value();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 2 ).percent();
+
+      return m;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -4227,6 +4257,16 @@ using namespace helpers;
         c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( destruction() && active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+      return m;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
