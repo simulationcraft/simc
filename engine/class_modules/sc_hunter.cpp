@@ -5193,10 +5193,14 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
       if ( is_aoe() && tl.size() > 1 )
       {
-        // 22-07-24: same targeting as before; first hit is always on the cast target regardless of ticking state
+        // Prefer targets without Serpent Sting ticking.
         auto start = tl.begin();
         std::partition( *start == target ? std::next( start ) : start, tl.end(),
                         [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
+
+        // Remove the first target if it is already ticking, otherwise it remains as the first target.
+        if ( p()->get_target_data( target )->dots.serpent_sting->is_ticking() )
+          range::erase_remove( tl, target );
       }
 
       return tl.size();
@@ -5401,7 +5405,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
         p() -> buffs.find_the_mark -> expire();
       }
 
-      if ( hydras_bite && p()->get_target_data( s->target )->dots.serpent_sting->is_ticking() )
+      if ( hydras_bite )
         hydras_bite->execute_on_target( s->target );
     }
   }
