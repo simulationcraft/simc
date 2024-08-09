@@ -177,7 +177,6 @@ void warlock_td_t::target_demise()
 
       warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on {}.", target->name(), warlock.name(), t->name() );
 
-      // TOCHECK: Does Shared Fate avoid targets that already have the debuff?
       tdata->debuffs_shared_fate->trigger();
 
       break;
