@@ -1143,7 +1143,6 @@ struct high_impact_t : public monk_spell_t
   {
     aoe        = -1;
     background = dual = true;
-    split_aoe_damage  = true;
   }
 };
 
@@ -1154,7 +1153,6 @@ struct flurry_strike_wisdom_t : public monk_spell_t
   {
     aoe        = -1;
     background = dual = true;
-    split_aoe_damage  = true;
 
     name_str_reporting = "flurry_strike_wisdom_of_the_wall";
   }
@@ -1224,12 +1222,6 @@ struct flurry_strike_t : public monk_melee_attack_t
 
         if ( deck.empty() )
           reset_deck();
-
-        // When a new card is drawn, expire any existing buff
-        p()->buff.wisdom_of_the_wall_crit->expire();
-        p()->buff.wisdom_of_the_wall_dodge->expire();
-        p()->buff.wisdom_of_the_wall_flurry->expire();
-        p()->buff.wisdom_of_the_wall_mastery->expire();
 
         // Draw new card
         auto card = deck[ rng().range( deck.size() ) ];
@@ -1369,22 +1361,28 @@ struct overwhelming_force_t : base_action_t
 // Tiger Palm
 // ==========================================================================
 
+// Tiger's Ferocity ( Windwalker TWW1 4PC )
+struct tigers_ferocity_t : public monk_melee_attack_t
+{
+  tigers_ferocity_t( monk_t *p ) : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg )
+  {
+    background = dual   = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
+  }
+};
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t : public monk_melee_attack_t
 {
   bool face_palm;
 
+  tigers_ferocity_t *tigers_ferocity;
+
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
-
-    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-    {
-      aoe                 = -1;
-      full_amount_targets = 1;
-      reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
-    }
 
     // allow Darting Hurricane to reduce GCD all the way down to 500ms
     min_gcd          = 500_ms;
@@ -1412,16 +1410,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
-  }
 
-  double composite_target_multiplier( player_t *target ) const override
-  {
-    double m = monk_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
-      m *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
-
-    return m;
+    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      tigers_ferocity = new tigers_ferocity_t( p );
+      add_child( tigers_ferocity );
+    }
   }
 
   bool ready() override
@@ -1501,6 +1495,14 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->trigger_mark_of_the_crane( s );
 
     p()->buff.brewmasters_rhythm->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      double damage                = s->result_amount * p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
+      tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
+      tigers_ferocity->set_target( s->target );
+      tigers_ferocity->execute();
+    }
   }
 };
 
@@ -1958,7 +1960,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     }
 
     if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
-      base_costs[ RESOURCE_CHI ] +=
+      base_costs[ RESOURCE_CHI ].base +=
           p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
@@ -2868,11 +2870,12 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
-    if ( !p()->buff.heart_of_the_jade_serpent->check() )
-      return;
-    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
-    p()->buff.heart_of_the_jade_serpent->expire();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->buff.heart_of_the_jade_serpent->up() )
+    {
+      p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+      p()->buff.inner_compass_serpent_stance->trigger();
+      p()->buff.heart_of_the_jade_serpent->decrement();
+    }
   }
 };
 
@@ -5443,8 +5446,13 @@ struct chi_burst_t : monk_spell_t
   {
     p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     monk_spell_t::execute();
+
     if ( buff )
-      buff->expire();
+      if ( p()->bugs )
+        buff->expire();
+      else
+        buff->decrement();
+
     damage->execute();
     heal->execute();
   }
@@ -5945,13 +5953,12 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
 
   bool trigger( int, double, double, timespan_t ) override
   {
-    bool rsk_unknown_or_on_cd = !p().talent.monk.rising_sun_kick->ok() || p().cooldown.rising_sun_kick->down();
-    bool wdp_unknown_or_on_cd =
-        !p().talent.windwalker.whirling_dragon_punch->ok() || p().cooldown.rising_sun_kick->down();
-    if ( rsk_unknown_or_on_cd && wdp_unknown_or_on_cd )
-      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0,
-                                   base_buff_duration + std::min( p().cooldown.rising_sun_kick->remains(),
-                                                                  p().cooldown.fists_of_fury->remains() ) );
+    timespan_t buff_duration =
+        std::min( p().cooldown.rising_sun_kick->remains(), p().cooldown.fists_of_fury->remains() );
+
+    if ( buff_duration > 0_ms )
+      return monk_buff_t::trigger( -1, DEFAULT_VALUE(), -1.0, base_buff_duration + buff_duration );
+
     return false;
   }
 };
@@ -6361,7 +6368,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -7692,6 +7699,7 @@ void monk_t::init_spells()
     tier.t31.t31_celestial_brew  = find_spell( 425965 );
 
     tier.tww1.ww_4pc                      = find_spell( 454505 );
+    tier.tww1.ww_4pc_dmg                  = find_spell( 454508 );
     tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
     tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
   }
@@ -8265,10 +8273,9 @@ void monk_t::create_buffs()
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true );
 
-  buff.darting_hurricane =
-      make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
-                          talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
-          ->set_default_value_from_effect( 1 );
+  buff.darting_hurricane = make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
+                                               talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
+                               ->set_default_value_from_effect( 1 );
 
   buff.dual_threat =
       make_buff_fallback( talent.windwalker.dual_threat->ok(), this, "dual_threat", find_spell( 451833 ) )
@@ -9824,6 +9831,7 @@ public:
                  true );
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
+    ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
 
     // =================================================
 
