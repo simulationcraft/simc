@@ -3852,6 +3852,172 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 // Shared attacks
 //==============================
 
+struct residual_bleed_base_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+{
+  residual_bleed_base_t( util::string_view n, hunter_t* p, const spell_data_t* s )
+    : residual_periodic_action_t( n, p, s )
+  {
+  }
+};
+
+// Hit the Mark =========================================================================
+
+struct hit_the_mark_t : residual_bleed_base_t
+{
+  double result_mod;
+
+  hit_the_mark_t( util::string_view n, hunter_t* p ) : residual_bleed_base_t( n, p, p->find_spell( 394371 ) )
+  {
+    result_mod = p->tier_set.t29_mm_2pc->effectN( 1 ).trigger()->effectN( 1 ).percent();
+  }
+};
+
+// Wind Arrow =========================================================================
+
+struct wind_arrow_t final : public hunter_ranged_attack_t
+{
+  struct
+  {
+    double multiplier = 0;
+    double high, low;
+  } careful_aim;
+  hit_the_mark_t* hit_the_mark;
+
+  wind_arrow_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 191043 ) )
+  {
+    dual = true;
+    // LotW arrows behave more like AiS re cast time/speed
+    // TODO: RETEST for DL & test its behavior on lnl AiSes
+    base_execute_time = p->talents.aimed_shot->cast_time();
+    travel_speed      = p->talents.aimed_shot->missile_speed();
+
+    if ( p->talents.careful_aim.ok() )
+    {
+      careful_aim.high       = p->talents.careful_aim->effectN( 1 ).base_value();
+      careful_aim.low        = p->talents.careful_aim->effectN( 2 ).base_value();
+      careful_aim.multiplier = p->talents.careful_aim->effectN( 3 ).percent();
+    }
+
+    if ( p->tier_set.t29_mm_2pc.ok() )
+    {
+      hit_the_mark = p->get_background_action<hit_the_mark_t>( "hit_the_mark" );
+    }
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p()->talents.wailing_arrow.ok() )
+    {
+      p()->buffs.wailing_arrow_counter->trigger();
+      if ( p()->buffs.wailing_arrow_counter->at_max_stacks() )
+      {
+        p()->buffs.wailing_arrow_override->trigger();
+        p()->buffs.wailing_arrow_counter->expire();
+      }
+    }
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    if ( careful_aim.multiplier )
+    {
+      const double target_health_pct = t->health_percentage();
+      if ( target_health_pct > careful_aim.high || target_health_pct < careful_aim.low )
+        m *= 1 + careful_aim.multiplier;
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    // 16-10-22 TODO: Wind Arrows are consuming MM 2pc buff
+    if ( hit_the_mark )
+    {
+      double amount = s->result_amount * p()->buffs.find_the_mark->check_value();
+      if ( amount > 0 )
+        residual_action::trigger( hit_the_mark, s->target, amount );
+      p()->buffs.find_the_mark->expire();
+    }
+  }
+};
+
+struct rapid_fire_tick_t final : public hunter_ranged_attack_t
+{
+  const int trick_shots_targets;
+
+  struct
+  {
+    double chance            = 0;
+    wind_arrow_t* wind_arrow = nullptr;
+  } lotw;
+
+  rapid_fire_tick_t( util::string_view n, hunter_t* p )
+    : hunter_ranged_attack_t( n, p, p->talents.rapid_fire_tick ),
+      trick_shots_targets( as<int>( p->find_spell( 257621 )->effectN( 3 ).base_value() +
+                                    p->talents.light_ammo->effectN( 2 ).base_value() +
+                                    p->talents.heavy_ammo->effectN( 2 ).base_value() ) )
+  {
+    background = dual = true;
+    direct_tick       = true;
+    radius            = 8;
+    base_aoe_multiplier =
+        p->find_spell( 257621 )->effectN( 5 ).percent() + p->talents.heavy_ammo->effectN( 4 ).percent();
+
+    // energize
+    parse_effect_data( p->find_spell( 263585 )->effectN( 1 ) );
+
+    if ( p->talents.legacy_of_the_windrunners.ok() )
+    {
+      lotw.chance     = p->talents.legacy_of_the_windrunners->proc_chance();
+      lotw.wind_arrow = p->get_background_action<wind_arrow_t>( "wind_arrow" );
+    }
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buffs.trick_shots->check() )
+      return 1 + trick_shots_targets;
+    return hunter_ranged_attack_t::n_targets();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p()->buffs.trick_shots->up();  // benefit tracking
+
+    /* This is not mentioned anywhere but testing shows that Rapid Fire inside
+     * Trueshot has a 50% chance of energizing twice. Presumably to account for the
+     * fact that focus is integral and 1 * 1.5 = 1. It's still affected by the
+     * generic focus gen increase from Trueshot as each energize gives 3 focus when
+     * combined with Nesingwary's Trapping Apparatus buff.
+     */
+    if ( p()->buffs.trueshot->check() && rng().roll( .5 ) )
+      p()->resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p()->gains.trueshot, this );
+
+    if ( p()->cooldowns.lunar_storm->up() )
+      p()->trigger_lunar_storm( target );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    hunter_ranged_attack_t::impact( state );
+
+    if ( lotw.wind_arrow && p()->cooldowns.legacy_of_the_windrunners->up() && rng().roll( lotw.chance ) )
+    {
+      lotw.wind_arrow->execute_on_target( state->target );
+      p()->cooldowns.legacy_of_the_windrunners->start();
+    }
+  }
+};
+
 // Barrage ==================================================================
 
 struct barrage_t: public hunter_spell_t
@@ -3866,15 +4032,27 @@ struct barrage_t: public hunter_spell_t
     }
   };
 
-  struct rapid_fire_barrage_damage_t final : public hunter_ranged_attack_t
+  struct rapid_fire_barrage_tick_t final : public hunter_ranged_attack_t
   {
-    rapid_fire_barrage_damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p->talents.rapid_fire_tick )
+    rapid_fire_tick_t* tick;
+
+    rapid_fire_barrage_tick_t( util::string_view n, hunter_t* p )
+      : hunter_ranged_attack_t( n, p, p->talents.rapid_fire_barrage )
     {
       aoe = 1 + as<int>( p->talents.rapid_fire_barrage_override->effectN( 3 ).base_value() );
-      base_multiplier *= p->talents.rapid_fire_barrage->effectN( 4 ).percent();
+      tick = p->get_background_action<rapid_fire_tick_t>( "rapid_fire_barrage_tick" );
+      tick->base_multiplier *= p->talents.rapid_fire_barrage->effectN( 4 ).percent();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      hunter_ranged_attack_t::impact( state );
+
+      tick->execute_on_target( state->target );
     }
   };
+
+  action_t* barrage_tick = nullptr;
 
   barrage_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "barrage", p, p->talents.rapid_fire_barrage.ok() ? p -> talents.rapid_fire_barrage_override : p -> talents.barrage )
@@ -3889,11 +4067,25 @@ struct barrage_t: public hunter_spell_t
     triggers_rapid_reload = false;
 
     if ( p->talents.rapid_fire_barrage.ok() )
-      tick_action = p->get_background_action<rapid_fire_barrage_damage_t>( "rapid_fire_barrage_damage" );
+    {
+      rapid_fire_barrage_tick_t* rapid_fire_tick = p->get_background_action<rapid_fire_barrage_tick_t>( "rapid_fire_barrage" );
+      tick_action = rapid_fire_tick;
+      add_child( rapid_fire_tick->tick );
+    }
     else
       tick_action = p->get_background_action<barrage_damage_t>( "barrage_damage" );
 
     starved_proc = p -> get_proc( "starved: barrage" );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    hunter_spell_t::tick( d );
+
+    if ( p()->talents.rapid_fire_barrage.ok() && p()->talents.bulletstorm->ok() && d->current_tick == 1 && 
+      tick_action->execute_state && tick_action->execute_state->chain_target > 0 )
+
+      p()->buffs.bulletstorm->increment( tick_action->execute_state->chain_target );
   }
 
   void execute() override
@@ -3909,15 +4101,6 @@ struct barrage_t: public hunter_spell_t
     }
   }
 };
-
-struct residual_bleed_base_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
-{
-  residual_bleed_base_t( util::string_view n, hunter_t* p, const spell_data_t* s )
-    : residual_periodic_action_t( n, p, s )
-  {
-  }
-};
-
 
 // Arcane Shot ========================================================================
 
@@ -3997,95 +4180,6 @@ struct arcane_shot_t : public arcane_shot_base_t
 
     if ( arcane_shot_etf && p()->buffs.eagletalons_true_focus->up() )
       arcane_shot_etf->execute_on_target( target );
-  }
-};
-
-// Hit the Mark =========================================================================
-
-struct hit_the_mark_t : residual_bleed_base_t
-{
-  double result_mod;
-
-  hit_the_mark_t( util::string_view n, hunter_t* p)
-    : residual_bleed_base_t( n, p, p -> find_spell( 394371 ) )
-  {
-    result_mod = p -> tier_set.t29_mm_2pc -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
-  }
-};
-
-// Wind Arrow =========================================================================
-
-struct wind_arrow_t final : public hunter_ranged_attack_t
-{
-  struct {
-    double multiplier = 0;
-    double high, low;
-  } careful_aim;
-  hit_the_mark_t* hit_the_mark;
-
-  wind_arrow_t( util::string_view n, hunter_t* p ):
-    hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
-  {
-    dual = true;
-    // LotW arrows behave more like AiS re cast time/speed
-    // TODO: RETEST for DL & test its behavior on lnl AiSes
-    base_execute_time = p -> talents.aimed_shot -> cast_time();
-    travel_speed = p -> talents.aimed_shot -> missile_speed();
-
-    if ( p -> talents.careful_aim.ok() )
-    {
-      careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
-      careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
-      careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
-    }
-
-    if ( p -> tier_set.t29_mm_2pc.ok() )
-    {
-      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
-    }
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( p()->talents.wailing_arrow.ok() )
-    {
-      p()->buffs.wailing_arrow_counter->trigger();
-      if ( p()->buffs.wailing_arrow_counter->at_max_stacks() )
-      {
-        p()->buffs.wailing_arrow_override->trigger();
-        p()->buffs.wailing_arrow_counter->expire();
-      }
-    }
-  }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    if ( careful_aim.multiplier )
-    {
-      const double target_health_pct = t -> health_percentage();
-      if ( target_health_pct > careful_aim.high || target_health_pct < careful_aim.low )
-        m *= 1 + careful_aim.multiplier;
-    }
-
-    return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    // 16-10-22 TODO: Wind Arrows are consuming MM 2pc buff
-    if ( hit_the_mark )
-    {
-      double amount = s -> result_amount * p() -> buffs.find_the_mark -> check_value();
-      if ( amount > 0 )
-        residual_action::trigger( hit_the_mark, s -> target, amount );
-      p() -> buffs.find_the_mark -> expire();
-    }
   }
 };
 
@@ -5485,82 +5579,12 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
 struct rapid_fire_t: public hunter_spell_t
 {
-  struct damage_t final : public hunter_ranged_attack_t
-  {
-    const int trick_shots_targets;
-
-    struct
-    {
-      double chance = 0;
-      wind_arrow_t* wind_arrow = nullptr;
-    } lotw;    
-
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> talents.rapid_fire_tick ),
-      trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 3 ).base_value()
-        + p -> talents.light_ammo -> effectN( 2 ).base_value()
-        + p -> talents.heavy_ammo -> effectN( 2 ).base_value() ) )
-    {
-      dual = true;
-      direct_tick = true;
-      radius = 8;
-      base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 5 ).percent()
-        + p -> talents.heavy_ammo -> effectN( 4 ).percent();
-
-      // energize
-      parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
-
-      if ( p->talents.legacy_of_the_windrunners.ok() )
-      {
-        lotw.chance = p->talents.legacy_of_the_windrunners->proc_chance();
-        lotw.wind_arrow = p->get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
-      }
-    }
-
-    int n_targets() const override
-    {
-      if ( p() -> buffs.trick_shots -> check() )
-        return 1 + trick_shots_targets;
-      return hunter_ranged_attack_t::n_targets();
-    }
-
-    void execute() override
-    {
-      hunter_ranged_attack_t::execute();
-
-      p() -> buffs.trick_shots -> up(); // benefit tracking
-
-      /* This is not mentioned anywhere but testing shows that Rapid Fire inside
-       * Trueshot has a 50% chance of energizing twice. Presumably to account for the
-       * fact that focus is integral and 1 * 1.5 = 1. It's still affected by the
-       * generic focus gen increase from Trueshot as each energize gives 3 focus when
-       * combined with Nesingwary's Trapping Apparatus buff.
-       */
-      if ( p() -> buffs.trueshot -> check() && rng().roll( .5 ) )
-        p() -> resource_gain( RESOURCE_FOCUS, composite_energize_amount( execute_state ), p() -> gains.trueshot, this );
-
-      if ( p()->cooldowns.lunar_storm->up() )
-        p()->trigger_lunar_storm( target );
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      hunter_ranged_attack_t::impact( state );
-
-      if ( lotw.wind_arrow && p()->cooldowns.legacy_of_the_windrunners->up() && rng().roll( lotw.chance ) )
-      {
-        lotw.wind_arrow->execute_on_target( state->target );
-        p()->cooldowns.legacy_of_the_windrunners->start();
-      }
-    }
-  };
-
-  damage_t* damage;
+  rapid_fire_tick_t* damage;
   int base_num_ticks;
 
   rapid_fire_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "rapid_fire", p, p -> talents.rapid_fire ),
-    damage( p -> get_background_action<damage_t>( "rapid_fire_damage" ) ),
+    damage( p -> get_background_action<rapid_fire_tick_t>( "rapid_fire_damage" ) ),
     base_num_ticks( as<int>( data().effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -7215,6 +7239,7 @@ struct volley_background_t : public volley_t
     tick_duration = timespan_t::from_seconds( p -> tier_set.t31_mm_2pc -> effectN( 2 ).base_value() );
   }
 };
+
 
 struct salvo_t: public hunter_spell_t
 {
