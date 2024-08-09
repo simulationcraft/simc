@@ -5443,8 +5443,13 @@ struct chi_burst_t : monk_spell_t
   {
     p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
     monk_spell_t::execute();
+
     if ( buff )
-      buff->expire();
+      if ( p()->bugs )
+        buff->expire();
+      else
+        buff->decrement();
+
     damage->execute();
     heal->execute();
   }
@@ -9822,6 +9827,7 @@ public:
                  true );
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
+    ReportIssue( "Chi Burst consumes both stacks of the buff on consume", "2024-08-09", true );
 
     // =================================================
 
