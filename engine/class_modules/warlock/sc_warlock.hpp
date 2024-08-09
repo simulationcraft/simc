@@ -773,6 +773,7 @@ public:
   void create_destruction_proc_actions();
   void create_diabolist_proc_actions();
   void create_hellcaller_proc_actions();
+  void create_soul_harvester_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -851,6 +852,13 @@ public:
   void init_gains_hellcaller();
   void init_rng_hellcaller();
   void init_procs_hellcaller();
+
+  action_t* create_action_soul_harvester( util::string_view, util::string_view );
+  void create_buffs_soul_harvester();
+  void init_spells_soul_harvester();
+  void init_gains_soul_harvester();
+  void init_rng_soul_harvester();
+  void init_procs_soul_harvester();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );

@@ -114,6 +114,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                ->set_freeze_stacks( true );
 
+  // Soul Harvester
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 

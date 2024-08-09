@@ -628,6 +628,9 @@ using namespace helpers;
 
     bool hellcaller() const
     { return p()->hero.wither.ok(); }
+
+    bool soul_harvester() const
+    { return p()->hero.demonic_soul.ok(); }
   };
 
   // Shared Class Actions Begin
@@ -4241,6 +4244,9 @@ using namespace helpers;
     if ( action_t* hellcaller_action = create_action_hellcaller( action_name, options_str ) )
       return hellcaller_action;
 
+    if ( action_t* soul_harvester_action = create_action_soul_harvester( action_name, options_str ) )
+      return soul_harvester_action;
+
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
 
@@ -4403,6 +4409,11 @@ using namespace helpers;
     return nullptr;
   }
 
+  action_t* warlock_t::create_action_soul_harvester( util::string_view action_name, util::string_view options_str )
+  {
+    return nullptr;
+  }
+
   void warlock_t::create_actions()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -4417,6 +4428,8 @@ using namespace helpers;
     create_diabolist_proc_actions();
 
     create_hellcaller_proc_actions();
+
+    create_soul_harvester_proc_actions();
 
     player_t::create_actions();
   }
@@ -4441,6 +4454,9 @@ using namespace helpers;
     proc_actions.blackened_soul = new blackened_soul_t( this );
     proc_actions.malevolence = new malevolence_damage_t( this );
   }
+
+  void warlock_t::create_soul_harvester_proc_actions()
+  { }
 
   void warlock_t::init_special_effects()
   {
