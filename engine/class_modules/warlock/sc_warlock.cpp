@@ -117,6 +117,12 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Soul Harvester
   dots_soul_anathema = target->get_dot( "soul_anathema", &p );
 
+  debuffs_shared_fate = make_buff( *this, "shared_fate", p.hero.shared_fate_debuff )
+                            ->set_tick_zero( false )
+                            ->set_period( p.hero.shared_fate_debuff->effectN( 1 ).period() )
+                            ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
+                              { warlock.proc_actions.shared_fate->execute_on_target( target ); } );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -155,6 +161,27 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
+  }
+
+  if ( warlock.hero.demonic_soul.ok() && warlock.hero.shared_fate.ok() )
+  {
+    for ( player_t* t : warlock.sim->target_non_sleeping_list )
+    {
+      auto tdata = warlock.get_target_data( t );
+
+      if ( !tdata )
+        continue;
+
+      if ( tdata == this )
+        continue;
+
+      warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on {}.", target->name(), warlock.name(), t->name() );
+
+      // TOCHECK: Does Shared Fate avoid targets that already have the debuff?
+      tdata->debuffs_shared_fate->trigger();
+
+      break;
+    }
   }
 }
 

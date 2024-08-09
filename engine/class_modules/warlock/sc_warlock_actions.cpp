@@ -1396,6 +1396,17 @@ using namespace helpers;
     }
   };
 
+  struct shared_fate_t : public warlock_spell_t
+  {
+    shared_fate_t( warlock_t* p )
+      : warlock_spell_t( "Shared Fate", p, p->hero.shared_fate_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = p->hero.shared_fate->effectN( 1 ).base_value();
+    }
+  };
+
   // Soul Harvester Actions End
   // Affliction Actions Begin
 
@@ -4538,6 +4549,7 @@ using namespace helpers;
   void warlock_t::create_soul_harvester_proc_actions()
   {
     proc_actions.demonic_soul = new demonic_soul_t( this );
+    proc_actions.shared_fate = new shared_fate_t( this );
   }
 
   void warlock_t::init_special_effects()

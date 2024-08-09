@@ -566,6 +566,10 @@ namespace warlock
     hero.soul_anathema_dot = find_spell( 450538 );
 
     hero.demoniacs_fervor = find_talent_spell( talent_tree::HERO, "Demoniac's Fervor" ); // Should be ID 449629
+
+    hero.shared_fate = find_talent_spell( talent_tree::HERO, "Shared Fate" ); // Should be ID 449704
+    hero.shared_fate_debuff = find_spell( 450591 );
+    hero.shared_fate_dmg = find_spell( 450593 );
   }
 
   void warlock_t::init_base_stats()
