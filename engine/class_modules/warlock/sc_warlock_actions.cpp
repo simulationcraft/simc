@@ -982,7 +982,10 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-        m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
+        m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent();
+
+      if ( soul_harvester() && p()->hero.necrolyte_teachings.ok() )
+        m *= 1.0 + p()->hero.necrolyte_teachings->effectN( 2 ).percent();
 
       return m;
     }
@@ -1870,7 +1873,7 @@ using namespace helpers;
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
       debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0 );
-      debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 2 ).percent() : 0 );
+      debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent() : 0 );
       warlock_spell_t::snapshot_state( s, rt );
     }
 
@@ -1944,6 +1947,9 @@ using namespace helpers;
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
       m *= debug_cast<const drain_soul_state_t*>( s )->td_multiplier;
+
+      if ( soul_harvester() && p()->hero.necrolyte_teachings.ok() )
+        m *= 1.0 + p()->hero.necrolyte_teachings->effectN( 4 ).percent();
 
       return m;
     }

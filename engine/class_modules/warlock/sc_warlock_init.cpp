@@ -559,6 +559,8 @@ namespace warlock
     hero.demonic_soul = find_talent_spell( talent_tree::HERO, "Demonic Soul" ); // Should be ID 449614
     hero.succulent_soul = find_spell( 449793 );
     hero.demonic_soul_dmg = find_spell( 449801 );
+
+    hero.necrolyte_teachings = find_talent_spell( talent_tree::HERO, "Necrolyte Teachings" ); // Should be ID 449620
   }
 
   void warlock_t::init_base_stats()
@@ -641,7 +643,7 @@ namespace warlock
     buffs.demonic_core = make_buff( this, "demonic_core", talents.demonic_core_buff );
 
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
-                             ->set_default_value( talents.power_siphon_buff->effectN( 1 ).percent() + talents.blood_invocation->effectN( 2 ).percent() );
+                             ->set_default_value( talents.power_siphon_buff->effectN( 1 ).percent() + talents.blood_invocation->effectN( 2 ).percent() + hero.necrolyte_teachings->effectN( 3 ).percent() );
 
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
