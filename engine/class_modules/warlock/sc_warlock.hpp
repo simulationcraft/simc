@@ -606,6 +606,7 @@ public:
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
+    propagate_const<buff_t*> umbral_lattice; // TWW1 4pc
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -700,6 +701,7 @@ public:
     proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
     proc_t* ravenous_afflictions;
+    proc_t* umbral_lattice;
 
     // Demonology
     proc_t* demonic_calling;
@@ -751,6 +753,7 @@ public:
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
     rng_setting_t agony = { 0.368, 0.368 };
     rng_setting_t nightfall = { 0.13, 0.13 };
+    rng_setting_t umbral_lattice = { 0.30, 0.30 };
 
     // Demonology
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };

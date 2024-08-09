@@ -24,6 +24,8 @@ using namespace helpers;
       bool malediction = false;
       bool contagion = false;
       bool deaths_embrace = false;
+      bool umbral_lattice_dd = false;
+      bool umbral_lattice_td = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -93,6 +95,8 @@ using namespace helpers;
       affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
       affected_by.malediction = data().affected_by( p->talents.malediction->effectN( 1 ) );
       affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
+      affected_by.umbral_lattice_dd = data().affected_by( p->tier.umbral_lattice->effectN( 1 ) );
+      affected_by.umbral_lattice_td = data().affected_by( p->tier.umbral_lattice->effectN( 2 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
@@ -450,6 +454,9 @@ using namespace helpers;
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
+      if ( affliction() && affected_by.umbral_lattice_dd && p()->buffs.umbral_lattice->check() )
+        m *= 1.0 + p()->tier.umbral_lattice->effectN( 2 ).percent();
+
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
@@ -480,6 +487,9 @@ using namespace helpers;
 
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
+
+      if ( affliction() && affected_by.umbral_lattice_td && p()->buffs.umbral_lattice->check() )
+        m *= 1.0 + p()->tier.umbral_lattice->effectN( 1 ).percent();
 
       if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
         m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
@@ -1630,6 +1640,14 @@ using namespace helpers;
 
       if ( p()->talents.malign_omen.ok() && p()->buffs.malign_omen->check() )
         p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
+
+      if ( active_4pc( TWW1 ) )
+      {
+        bool success = p()->buffs.umbral_lattice->trigger();
+
+        if ( success )
+          p()->procs.umbral_lattice->occur();
+      }
 
       p()->buffs.tormented_crescendo->decrement();
       p()->buffs.malign_omen->decrement();

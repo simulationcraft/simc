@@ -634,6 +634,8 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "rng_succulent_soul=" + util::to_string( rng_settings.succulent_soul.setting_value ) + "\n";
     if ( rng_settings.feast_of_souls.setting_value != rng_settings.feast_of_souls.default_value )
       profile_str += "rng_feast_of_souls=" + util::to_string( rng_settings.feast_of_souls.setting_value ) + "\n";
+    if ( rng_settings.umbral_lattice.setting_value != rng_settings.umbral_lattice.default_value )
+      profile_str += "rng_umbral_lattice=" + util::to_string( rng_settings.umbral_lattice.setting_value ) + "\n";
   }
 
   return profile_str;
@@ -665,6 +667,7 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
   rng_settings.succulent_soul = p->rng_settings.succulent_soul;
   rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
+  rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const

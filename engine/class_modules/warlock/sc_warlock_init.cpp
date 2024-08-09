@@ -183,9 +183,9 @@ namespace warlock
     // Additional Tier Set spell data
 
     // Nerub-ar Palace
-    tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 );
-    tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 );
-    tier.umbral_lattice = find_spell( 453643 );
+    tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 ); // Should be ID 453643
+    tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 ); // Should be ID 453642
+    tier.umbral_lattice = find_spell( 455679 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -662,6 +662,9 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
+
+    buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
+                               ->set_chance( rng_settings.umbral_lattice.setting_value );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -956,6 +959,7 @@ namespace warlock
     procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
+    procs.umbral_lattice = get_proc( "umbral_lattice" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -1107,6 +1111,7 @@ namespace warlock
     add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
     add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
     add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
+    add_option( opt_float( "rng_umbral_lattice", rng_settings.umbral_lattice.setting_value ) );
   }
 
   void warlock_t::combat_begin()
