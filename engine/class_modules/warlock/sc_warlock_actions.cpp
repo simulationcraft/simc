@@ -24,6 +24,8 @@ using namespace helpers;
       bool malediction = false;
       bool contagion = false;
       bool deaths_embrace = false;
+      bool umbral_lattice_dd = false;
+      bool umbral_lattice_td = false;
 
       // Demonology
       bool master_demonologist_dd = false;
@@ -43,6 +45,8 @@ using namespace helpers;
       bool devastation = false;
       bool ruin = false;
       bool chaos_incarnate = false;
+      bool echo_of_the_azjaqir_dd = false;
+      bool echo_of_the_azjaqir_td = false;
 
       // Diabolist
       bool touch_of_rancora = false;
@@ -93,6 +97,8 @@ using namespace helpers;
       affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
       affected_by.malediction = data().affected_by( p->talents.malediction->effectN( 1 ) );
       affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
+      affected_by.umbral_lattice_dd = data().affected_by( p->tier.umbral_lattice->effectN( 1 ) );
+      affected_by.umbral_lattice_td = data().affected_by( p->tier.umbral_lattice->effectN( 2 ) );
 
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
@@ -105,6 +111,8 @@ using namespace helpers;
       affected_by.emberstorm_td = data().affected_by( p->talents.emberstorm->effectN( 3 ) );
       affected_by.devastation = data().affected_by( p->talents.devastation->effectN( 1 ) );
       affected_by.ruin = data().affected_by( p->talents.ruin->effectN( 1 ) );
+      affected_by.echo_of_the_azjaqir_dd = data().affected_by( p->tier.echo_of_the_azjaqir->effectN( 1 ) );
+      affected_by.echo_of_the_azjaqir_td = data().affected_by( p->tier.echo_of_the_azjaqir->effectN( 2 ) );
 
       affected_by.flames_of_xoroth_dd = data().affected_by( p->hero.flames_of_xoroth->effectN( 1 ) );
       affected_by.flames_of_xoroth_td = data().affected_by( p->hero.flames_of_xoroth->effectN( 2 ) );
@@ -450,11 +458,17 @@ using namespace helpers;
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
+      if ( affliction() && affected_by.umbral_lattice_dd && p()->buffs.umbral_lattice->check() )
+        m *= 1.0 + p()->tier.umbral_lattice->effectN( 2 ).percent();
+
       if ( demonology() && affected_by.sacrificed_souls && p()->talents.sacrificed_souls.ok() )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count();
 
       if ( destruction() && affected_by.emberstorm_dd && p()->talents.emberstorm.ok() )
         m *= 1.0 + p()->talents.emberstorm->effectN( 1 ).percent();
+
+      if ( destruction() && affected_by.echo_of_the_azjaqir_dd && p()->buffs.echo_of_the_azjaqir->check() )
+        m *= 1.0 + p()->tier.echo_of_the_azjaqir->effectN( 1 ).percent();
 
       if ( diabolist() && affected_by.flames_of_xoroth_dd && p()->hero.flames_of_xoroth.ok() )
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 1 ).percent();
@@ -481,8 +495,14 @@ using namespace helpers;
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < p()->talents.deaths_embrace->effectN( 4 ).base_value() )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 3 ).percent();
 
+      if ( affliction() && affected_by.umbral_lattice_td && p()->buffs.umbral_lattice->check() )
+        m *= 1.0 + p()->tier.umbral_lattice->effectN( 1 ).percent();
+
       if ( destruction() && affected_by.emberstorm_td && p()->talents.emberstorm.ok() )
         m *= 1.0 + p()->talents.emberstorm->effectN( 3 ).percent();
+
+      if ( destruction() && affected_by.echo_of_the_azjaqir_td && p()->buffs.echo_of_the_azjaqir->check() )
+        m *= 1.0 + p()->tier.echo_of_the_azjaqir->effectN( 2 ).percent();
 
       if ( diabolist() && affected_by.flames_of_xoroth_td && p()->hero.flames_of_xoroth.ok() )
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 2 ).percent();
@@ -631,6 +651,12 @@ using namespace helpers;
 
     bool soul_harvester() const
     { return p()->hero.demonic_soul.ok(); }
+
+    bool active_2pc( set_bonus_type_e tier ) const
+    { return p()->sets->has_set_bonus( p()->specialization(), tier, B2 ); }
+
+    bool active_4pc( set_bonus_type_e tier ) const
+    { return p()->sets->has_set_bonus( p()->specialization(), tier, B4 ); }
   };
 
   // Shared Class Actions Begin
@@ -912,6 +938,9 @@ using namespace helpers;
         energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1.0;
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_demo_2pc->effectN( 2 ).percent();
       }
 
       if ( p->talents.cunning_cruelty.ok() )
@@ -964,6 +993,17 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
+
+      if ( demonology() && active_4pc( TWW1 ) && rng().roll( p()->rng_settings.empowered_legion_strike.setting_value ) )
+      {
+        auto active_pet = p()->warlock_pet_list.active;
+
+        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+        {
+          active_pet->buffs.empowered_legion_strike->trigger();
+          p()->procs.empowered_legion_strike->occur();
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -1458,6 +1498,19 @@ using namespace helpers;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_aff_2pc->effectN( 1 ).percent();
+      }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_aff_2pc->effectN( 2 ).percent();
+
+        return m;
       }
     };
 
@@ -1475,6 +1528,9 @@ using namespace helpers;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_aff_2pc->effectN( 1 ).percent();
 
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
@@ -1550,6 +1606,16 @@ using namespace helpers;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_aff_2pc->effectN( 2 ).percent();
+
+        return m;
+      }
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
@@ -1598,6 +1664,14 @@ using namespace helpers;
 
       if ( p()->talents.malign_omen.ok() && p()->buffs.malign_omen->check() )
         p()->buffs.soul_rot->extend_duration( p(), timespan_t::from_seconds( p()->talents.malign_omen_buff->effectN( 2 ).base_value() ) );
+
+      if ( active_4pc( TWW1 ) )
+      {
+        bool success = p()->buffs.umbral_lattice->trigger();
+
+        if ( success )
+          p()->procs.umbral_lattice->occur();
+      }
 
       p()->buffs.tormented_crescendo->decrement();
       p()->buffs.malign_omen->decrement();
@@ -3242,6 +3316,16 @@ using namespace helpers;
 
         return c;
       }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+        return m;
+      }
     };
 
     double energize_mult;
@@ -3322,6 +3406,16 @@ using namespace helpers;
         c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+      return m;
     }
   };
 
@@ -3564,6 +3658,12 @@ using namespace helpers;
 
       if ( p()->talents.roaring_blaze.ok() && result_is_hit( s->result ) )
         td( s->target )->debuffs_conflagrate->trigger();
+
+      if ( active_4pc( TWW1 ) && s->result == RESULT_CRIT )
+      {
+        p()->buffs.echo_of_the_azjaqir->trigger();
+        p()->procs.echo_of_the_azjaqir->occur();
+      }
     }
 
     void execute() override
@@ -3589,6 +3689,16 @@ using namespace helpers;
       c += p()->buffs.conflagration_of_chaos_cf->check_value();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 2 ).percent();
+
+      return m;
     }
 
     double calculate_direct_amount( action_state_t* s ) const override
@@ -4116,6 +4226,9 @@ using namespace helpers;
       {
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_demo_2pc->effectN( 2 ).percent();
       }
 
       if ( destruction() )
@@ -4160,6 +4273,16 @@ using namespace helpers;
         c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
 
       return c;
+    }
+
+    double composite_crit_chance_multiplier() const override
+    {
+      double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+      if ( destruction() && active_2pc( TWW1 ) )
+        m *= 1.0 + p()->tier.hexflame_destro_2pc->effectN( 1 ).percent();
+
+      return m;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override

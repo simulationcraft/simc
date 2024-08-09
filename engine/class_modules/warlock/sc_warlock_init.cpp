@@ -181,6 +181,11 @@ namespace warlock
     talents.malefic_touch_proc = find_spell( 458131 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 ); // Should be ID 453643
+    tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 ); // Should be ID 453642
+    tier.umbral_lattice = find_spell( 455679 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -317,6 +322,11 @@ namespace warlock
     talents.fel_explosion = find_spell( 386609 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B2 ); // Should be ID 453644
+    tier.hexflame_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B4 ); // Should be ID 453645
+    tier.empowered_legion_strike = find_spell( 455647 );
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -466,6 +476,11 @@ namespace warlock
     talents.dimensional_cinder = find_spell( 460805 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_destro_2pc = sets->set( WARLOCK_DESTRUCTION, TWW1, B2 ); // Should be ID 453647
+    tier.hexflame_destro_4pc = sets->set( WARLOCK_DESTRUCTION, TWW1, B4 ); // Should be ID 453646
+    tier.echo_of_the_azjaqir = find_spell( 455674 );
 
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
@@ -657,6 +672,9 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
+
+    buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
+                               ->set_chance( rng_settings.umbral_lattice.setting_value );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -754,6 +772,8 @@ namespace warlock
                                  ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
                                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
+
+    buffs.echo_of_the_azjaqir = make_buff( this, "echo_of_the_azjaqir", tier.echo_of_the_azjaqir );
   }
 
   void warlock_t::create_buffs_diabolist()
@@ -951,6 +971,7 @@ namespace warlock
     procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
+    procs.umbral_lattice = get_proc( "umbral_lattice" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -969,6 +990,7 @@ namespace warlock
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
+    procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {
@@ -982,6 +1004,7 @@ namespace warlock
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.decimation = get_proc( "decimation" );
     procs.dimension_ripper = get_proc( "dimension_ripper" );
+    procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );
   }
 
   void warlock_t::init_procs_diabolist()
@@ -1102,6 +1125,8 @@ namespace warlock
     add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
     add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
     add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
+    add_option( opt_float( "rng_umbral_lattice", rng_settings.umbral_lattice.setting_value ) );
+    add_option( opt_float( "rng_empowered_legion_strike", rng_settings.empowered_legion_strike.setting_value ) );
   }
 
   void warlock_t::combat_begin()

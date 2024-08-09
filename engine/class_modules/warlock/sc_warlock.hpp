@@ -572,10 +572,19 @@ public:
   struct tier_sets_t
   {
     // Affliction
+    const spell_data_t* hexflame_aff_2pc;
+    const spell_data_t* hexflame_aff_4pc;
+    const spell_data_t* umbral_lattice;
 
     // Demonology
+    const spell_data_t* hexflame_demo_2pc;
+    const spell_data_t* hexflame_demo_4pc;
+    const spell_data_t* empowered_legion_strike;
 
     // Destruction
+    const spell_data_t* hexflame_destro_2pc;
+    const spell_data_t* hexflame_destro_4pc;
+    const spell_data_t* echo_of_the_azjaqir;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -603,6 +612,7 @@ public:
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
+    propagate_const<buff_t*> umbral_lattice; // TWW1 4pc
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -631,6 +641,7 @@ public:
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
+    propagate_const<buff_t*> echo_of_the_azjaqir;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;
@@ -697,6 +708,7 @@ public:
     proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
     proc_t* ravenous_afflictions;
+    proc_t* umbral_lattice;
 
     // Demonology
     proc_t* demonic_calling;
@@ -710,6 +722,7 @@ public:
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
     proc_t* pact_of_the_eredruin;
+    proc_t* empowered_legion_strike; // TWW1 4pc buff
 
     // Destruction
     proc_t* reverse_entropy;
@@ -721,6 +734,7 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
     proc_t* dimension_ripper;
+    proc_t* echo_of_the_azjaqir;
 
     // Diabolist
 
@@ -748,11 +762,13 @@ public:
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
     rng_setting_t agony = { 0.368, 0.368 };
     rng_setting_t nightfall = { 0.13, 0.13 };
+    rng_setting_t umbral_lattice = { 0.30, 0.30 };
 
     // Demonology
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
     rng_setting_t shadow_invocation = { 0.20, 0.20 };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
+    rng_setting_t empowered_legion_strike = { 0.05, 0.05 };
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10 };

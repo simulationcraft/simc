@@ -43,6 +43,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> demonic_power;
+    propagate_const<buff_t*> empowered_legion_strike; // TWW1 Demonology 4pc buff
   } buffs;
 
   bool is_main_pet = false;
