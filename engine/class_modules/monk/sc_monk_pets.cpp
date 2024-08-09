@@ -942,8 +942,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      // Currently Chi Explosion is not copied by SEF in game
-      if ( player->o()->talent.windwalker.jade_ignition->ok() && !player->o()->bugs )
+      if ( player->o()->talent.windwalker.jade_ignition->ok() )
         chi_explosion = new sef_chi_explosion_t( player );
     }
 
