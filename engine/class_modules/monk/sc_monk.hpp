@@ -1343,6 +1343,7 @@ public:
     struct
     {
       const spell_data_t *ww_4pc;
+      const spell_data_t *ww_4pc_dmg;
       const spell_data_t *brm_4pc_damage_buff;
       const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;

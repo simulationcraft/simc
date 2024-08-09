@@ -1369,22 +1369,28 @@ struct overwhelming_force_t : base_action_t
 // Tiger Palm
 // ==========================================================================
 
+// Tiger's Ferocity ( Windwalker TWW1 4PC )
+struct tigers_ferocity_t : public monk_melee_attack_t
+{
+  tigers_ferocity_t( monk_t *p ) : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg )
+  {
+    background = dual   = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
+  }
+};
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t : public monk_melee_attack_t
 {
   bool face_palm;
 
+  tigers_ferocity_t *tigers_ferocity;
+
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
-
-    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-    {
-      aoe                 = -1;
-      full_amount_targets = 1;
-      reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
-    }
 
     // allow Darting Hurricane to reduce GCD all the way down to 500ms
     min_gcd          = 500_ms;
@@ -1412,16 +1418,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
     parse_effects( p->buff.darting_hurricane );
-  }
 
-  double composite_target_multiplier( player_t *target ) const override
-  {
-    double m = monk_melee_attack_t::composite_target_multiplier( target );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) && target != p()->target )
-      m *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
-
-    return m;
+    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      tigers_ferocity = new tigers_ferocity_t( p );
+      add_child( tigers_ferocity );
+    }
   }
 
   bool ready() override
@@ -1501,6 +1503,14 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->trigger_mark_of_the_crane( s );
 
     p()->buff.brewmasters_rhythm->trigger();
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      double damage                = s->result_amount * p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
+      tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
+      tigers_ferocity->set_target( s->target );
+      tigers_ferocity->execute();
+    }
   }
 };
 
@@ -7696,6 +7706,7 @@ void monk_t::init_spells()
     tier.t31.t31_celestial_brew  = find_spell( 425965 );
 
     tier.tww1.ww_4pc                      = find_spell( 454505 );
+    tier.tww1.ww_4pc_dmg                  = find_spell( 454508 );
     tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
     tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
   }
