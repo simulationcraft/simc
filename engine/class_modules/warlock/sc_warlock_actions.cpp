@@ -2268,6 +2268,12 @@ using namespace helpers;
 
       if ( p()->talents.malign_omen.ok() )
         p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );
+
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
+      {
+        p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
+        p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -3062,6 +3068,12 @@ using namespace helpers;
         p()->buffs.ritual_overlord->extend_duration( p(), reduction );
         p()->buffs.ritual_mother->extend_duration( p(), reduction );
         p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+      }
+
+      if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
+      {
+        p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
+        p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
       }
     }
   };

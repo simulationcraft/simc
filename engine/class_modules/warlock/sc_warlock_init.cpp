@@ -579,6 +579,9 @@ namespace warlock
     hero.quietus = find_talent_spell( talent_tree::HERO, "Quietus" ); // Should be ID 449634
 
     hero.sataiels_volition = find_talent_spell( talent_tree::HERO, "Sataiel's Volition" ); // Should be ID 449637
+
+    hero.shadow_of_death = find_talent_spell( talent_tree::HERO, "Shadow of Death" ); // Should be ID 449638
+    hero.shadow_of_death_energize = find_spell( 449858 );
   }
 
   void warlock_t::init_base_stats()
@@ -913,6 +916,7 @@ namespace warlock
   void warlock_t::init_gains_soul_harvester()
   {
     gains.feast_of_souls = get_gain( "feast_of_souls" );
+    gains.shadow_of_death = get_gain( "shadow_of_death" );
   }
 
   void warlock_t::init_procs()

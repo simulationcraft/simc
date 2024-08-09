@@ -553,6 +553,7 @@ public:
     player_talent_t sataiels_volition;
 
     player_talent_t shadow_of_death;
+    const spell_data_t* shadow_of_death_energize;
   } hero;
 
   struct proc_actions_t
@@ -679,6 +680,7 @@ public:
 
     // Soul Harvester
     gain_t* feast_of_souls;
+    gain_t* shadow_of_death;
   } gains;
 
   // Procs
