@@ -323,6 +323,11 @@ namespace warlock
 
     // Additional Tier Set spell data
 
+    // Nerub-ar Palace
+    tier.hexflame_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B2 ); // Should be ID 453644
+    tier.hexflame_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B4 ); // Should be ID 453645
+    tier.empowered_legion_strike = find_spell( 455647 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 

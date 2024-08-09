@@ -928,6 +928,9 @@ using namespace helpers;
         energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1.0;
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_demo_2pc->effectN( 2 ).percent();
       }
 
       if ( p->talents.cunning_cruelty.ok() )
@@ -4166,6 +4169,9 @@ using namespace helpers;
       {
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_demo_2pc->effectN( 2 ).percent();
       }
 
       if ( destruction() )

@@ -577,6 +577,9 @@ public:
     const spell_data_t* umbral_lattice;
 
     // Demonology
+    const spell_data_t* hexflame_demo_2pc;
+    const spell_data_t* hexflame_demo_4pc;
+    const spell_data_t* empowered_legion_strike;
 
     // Destruction
   } tier;

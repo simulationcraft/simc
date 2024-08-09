@@ -349,6 +349,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( !guardian && talents.rune_of_shadows.ok() )
       m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
+
+    if ( !guardian && sets->has_set_bonus( WARLOCK_DEMONOLOGY, TWW1, B2 ) )
+      m *= 1.0 + tier.hexflame_demo_2pc->effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
