@@ -577,6 +577,8 @@ namespace warlock
     hero.wicked_reaping_dmg = find_spell( 449826 );
 
     hero.quietus = find_talent_spell( talent_tree::HERO, "Quietus" ); // Should be ID 449634
+
+    hero.sataiels_volition = find_talent_spell( talent_tree::HERO, "Sataiel's Volition" ); // Should be ID 449637
   }
 
   void warlock_t::init_base_stats()

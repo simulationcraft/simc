@@ -1123,6 +1123,16 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
+
+    if ( p()->o()->hero.sataiels_volition.ok() )
+      m *= 1.0 + p()->o()->hero.sataiels_volition->effectN( 2 ).percent();
+
+    return m;
+  }
 };
 
 void wild_imp_pet_t::create_actions()
@@ -1198,6 +1208,9 @@ void wild_imp_pet_t::demise()
     if ( !power_siphon )
     {
       double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
+
+      if ( imploded )
+        core_chance += o()->hero.sataiels_volition->effectN( 3 ).percent();
 
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
