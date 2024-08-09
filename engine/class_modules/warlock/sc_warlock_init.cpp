@@ -564,6 +564,8 @@ namespace warlock
 
     hero.soul_anathema = find_talent_spell( talent_tree::HERO, "Soul Anathema" ); // Should be ID 449624
     hero.soul_anathema_dot = find_spell( 450538 );
+
+    hero.demoniacs_fervor = find_talent_spell( talent_tree::HERO, "Demoniac's Fervor" ); // Should be ID 449629
   }
 
   void warlock_t::init_base_stats()
