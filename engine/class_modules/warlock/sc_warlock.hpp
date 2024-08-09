@@ -548,6 +548,7 @@ public:
     player_talent_t feast_of_souls;
 
     player_talent_t wicked_reaping;
+    const spell_data_t* wicked_reaping_dmg;
     player_talent_t quietus;
     player_talent_t sataiels_volition;
 
@@ -564,6 +565,7 @@ public:
     action_t* malevolence;
     action_t* demonic_soul;
     action_t* shared_fate;
+    action_t* wicked_reaping;
   } proc_actions;
 
   struct tier_sets_t

@@ -944,6 +944,9 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
+      if ( time_to_execute == 0_ms && soul_harvester() && p()->buffs.nightfall->check() && p()->hero.wicked_reaping.ok() )
+        p()->proc_actions.wicked_reaping->execute_on_target( target );
+
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
 
@@ -1354,20 +1357,20 @@ using namespace helpers;
   // Hellcaller Actions End
   // Soul Harvester Actions Begin
 
+  struct soul_anathema_t : public warlock_spell_t
+  {
+    soul_anathema_t( warlock_t* p )
+      : warlock_spell_t( "Soul Anathema", p, p->hero.soul_anathema_dot )
+    {
+      background = dual = true;
+
+      affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
+      affected_by.master_demonologist_dd = demonology();
+    }
+  };
+
   struct demonic_soul_t : public warlock_spell_t
   {
-    struct soul_anathema_t : public warlock_spell_t
-    {
-      soul_anathema_t( warlock_t* p )
-        : warlock_spell_t( "Soul Anathema", p, p->hero.soul_anathema_dot )
-      {
-        background = dual = true;
-
-        affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
-        affected_by.master_demonologist_dd = demonology();
-      }
-    };
-
     bool demoniacs_fervor;
 
     demonic_soul_t( warlock_t* p )
@@ -1378,11 +1381,10 @@ using namespace helpers;
 
       affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
 
+      base_dd_multiplier *= 1.0 + p->hero.wicked_reaping->effectN( 1 ).percent();
+
       if ( p->hero.soul_anathema.ok() )
-      {
         impact_action = new soul_anathema_t( p );
-        add_child( impact_action );
-      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -1404,6 +1406,25 @@ using namespace helpers;
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->hero.shared_fate->effectN( 1 ).base_value();
+    }
+  };
+
+  struct wicked_reaping_t : public warlock_spell_t
+  {
+    wicked_reaping_t( warlock_t* p )
+      : warlock_spell_t( "Wicked Reaping", p, p->hero.wicked_reaping_dmg )
+    {
+      background = dual = true;
+
+      affected_by.master_demonologist_dd = demonology();
+
+      base_dd_multiplier *= 1.0 + p->hero.wicked_reaping->effectN( 1 ).percent();
+
+      if ( demonology() )
+        base_dd_multiplier *= p->hero.wicked_reaping->effectN( 2 ).percent();
+
+      if ( p->hero.soul_anathema.ok() )
+        impact_action = new soul_anathema_t( p );
     }
   };
 
@@ -1958,6 +1979,9 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
+
+      if ( soul_harvester() && p()->hero.wicked_reaping.ok() && p()->buffs.nightfall->check() )
+        p()->proc_actions.wicked_reaping->execute_on_target( target );
 
       p()->buffs.nightfall->decrement();
     }
@@ -2515,6 +2539,9 @@ using namespace helpers;
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
       }
+
+      if ( soul_harvester() && p()->hero.wicked_reaping.ok() && p()->buffs.demonic_core->check() )
+        p()->proc_actions.wicked_reaping->execute_on_target( target );
 
       p()->buffs.demonic_core->decrement();
 
@@ -4550,6 +4577,7 @@ using namespace helpers;
   {
     proc_actions.demonic_soul = new demonic_soul_t( this );
     proc_actions.shared_fate = new shared_fate_t( this );
+    proc_actions.wicked_reaping = new wicked_reaping_t( this );
   }
 
   void warlock_t::init_special_effects()
