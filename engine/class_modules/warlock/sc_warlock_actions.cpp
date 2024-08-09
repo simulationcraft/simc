@@ -1352,6 +1352,51 @@ using namespace helpers;
   };
 
   // Hellcaller Actions End
+  // Soul Harvester Actions Begin
+
+  struct demonic_soul_t : public warlock_spell_t
+  {
+    struct soul_anathema_t : public warlock_spell_t
+    {
+      soul_anathema_t( warlock_t* p )
+        : warlock_spell_t( "Soul Anathema", p, p->hero.soul_anathema_dot )
+      {
+        background = dual = true;
+
+        affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
+        affected_by.master_demonologist_dd = demonology();
+      }
+    };
+
+    bool demoniacs_fervor;
+
+    demonic_soul_t( warlock_t* p )
+      : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg ),
+      demoniacs_fervor( false )
+    {
+      background = dual = true;
+
+      affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
+
+      if ( p->hero.soul_anathema.ok() )
+      {
+        impact_action = new soul_anathema_t( p );
+        add_child( impact_action );
+      }
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( demoniacs_fervor )
+        m *= 1.0 + p()->hero.demoniacs_fervor->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  // Soul Harvester Actions End
   // Affliction Actions Begin
 
   struct malefic_rapture_t : public warlock_spell_t
@@ -1451,6 +1496,9 @@ using namespace helpers;
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
           make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+
+          bool fervor = td( s->target )->dots_unstable_affliction->is_ticking();
+          debug_cast<demonic_soul_t*>( p()->proc_actions.demonic_soul )->demoniacs_fervor = fervor;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
@@ -2281,9 +2329,12 @@ using namespace helpers;
         // We need Demonic Soul to proc on every target, but buff is decremented on impact. Fudge this by 1ms to ensure all targets are hit.
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
-          if ( s->chain_target == 0 )
+          bool primary = ( s->chain_target == 0 );
+
+          if ( primary )
             make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
 
+          debug_cast<demonic_soul_t*>(p()->proc_actions.demonic_soul)->demoniacs_fervor = primary;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
@@ -4092,38 +4143,6 @@ using namespace helpers;
   };
 
   // Diabolist Actions End
-  // Soul Harvester Actions Begin
-
-  struct demonic_soul_t : public warlock_spell_t
-  {
-    struct soul_anathema_t : public warlock_spell_t
-    {
-      soul_anathema_t( warlock_t* p )
-        : warlock_spell_t( "Soul Anathema", p, p->hero.soul_anathema_dot )
-      {
-        background = dual = true;
-
-        affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
-        affected_by.master_demonologist_dd = demonology();
-      }
-    };
-
-    demonic_soul_t( warlock_t* p )
-      : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg )
-    {
-      background = dual = true;
-
-      affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
-
-      if ( p->hero.soul_anathema.ok() )
-      {
-        impact_action = new soul_anathema_t( p );
-        add_child( impact_action );
-      }
-    }
-  };
-
-  // Soul Harvester Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
