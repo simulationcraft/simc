@@ -243,6 +243,14 @@ using namespace helpers;
 
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
         p()->buffs.rolling_havoc->trigger();
+
+      if ( diabolist() && triggers.demonic_art )
+      {
+        // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
+        make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -311,14 +319,6 @@ using namespace helpers;
         }
 
         p()->procs.dimension_ripper->occur();
-      }
-
-      if ( diabolist() && triggers.demonic_art && s->chain_target == 0 )
-      {
-        // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
-        make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
-        make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
-        make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
       }
     }
 
