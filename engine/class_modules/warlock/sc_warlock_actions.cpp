@@ -628,6 +628,9 @@ using namespace helpers;
 
     bool hellcaller() const
     { return p()->hero.wither.ok(); }
+
+    bool soul_harvester() const
+    { return p()->hero.demonic_soul.ok(); }
   };
 
   // Shared Class Actions Begin
@@ -1401,6 +1404,9 @@ using namespace helpers;
         if ( p()->talents.malign_omen.ok() )
           m *= 1.0 + p()->buffs.malign_omen->check_value();
 
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 2 ).percent();
+
         return m;
       }
 
@@ -1436,6 +1442,14 @@ using namespace helpers;
 
         if ( p()->talents.malefic_touch.ok() )
           touch->execute_on_target( s->target );
+
+        // TOCHECK: Demonic Soul is proc'd based on impact, but this makes redundant decrement() calls in AoE.
+        // Is there a good way around this?
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+        {
+          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+          p()->proc_actions.demonic_soul->execute_on_target( s->target );
+        }
       }
     };
 
@@ -2227,6 +2241,9 @@ using namespace helpers;
         if ( p()->hero.gloom_of_nathreza.ok() )
           m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
 
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+
         return m;
       }
 
@@ -2253,6 +2270,15 @@ using namespace helpers;
             blaze->execute_on_target( s->target );
             p()->procs.umbral_blaze->occur();
           }
+        }
+
+        // We need Demonic Soul to proc on every target, but buff is decremented on impact. Fudge this by 1ms to ensure all targets are hit.
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+        {
+          if ( s->chain_target == 0 )
+            make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+
+          p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
     };
@@ -4060,6 +4086,20 @@ using namespace helpers;
   };
 
   // Diabolist Actions End
+  // Soul Harvester Actions Begin
+
+  struct demonic_soul_t : public warlock_spell_t
+  {
+    demonic_soul_t( warlock_t* p )
+      : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg )
+    {
+      background = dual = true;
+
+      affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
+    }
+  };
+
+  // Soul Harvester Actions End
   // Helper Functions Begin
 
   // Event for triggering delayed refunds from Soul Conduit
@@ -4241,6 +4281,9 @@ using namespace helpers;
     if ( action_t* hellcaller_action = create_action_hellcaller( action_name, options_str ) )
       return hellcaller_action;
 
+    if ( action_t* soul_harvester_action = create_action_soul_harvester( action_name, options_str ) )
+      return soul_harvester_action;
+
     if ( action_t* generic_action = create_action_warlock( action_name, options_str ) )
       return generic_action;
 
@@ -4403,6 +4446,11 @@ using namespace helpers;
     return nullptr;
   }
 
+  action_t* warlock_t::create_action_soul_harvester( util::string_view action_name, util::string_view options_str )
+  {
+    return nullptr;
+  }
+
   void warlock_t::create_actions()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -4417,6 +4465,8 @@ using namespace helpers;
     create_diabolist_proc_actions();
 
     create_hellcaller_proc_actions();
+
+    create_soul_harvester_proc_actions();
 
     player_t::create_actions();
   }
@@ -4440,6 +4490,11 @@ using namespace helpers;
   {
     proc_actions.blackened_soul = new blackened_soul_t( this );
     proc_actions.malevolence = new malevolence_damage_t( this );
+  }
+
+  void warlock_t::create_soul_harvester_proc_actions()
+  {
+    proc_actions.demonic_soul = new demonic_soul_t( this );
   }
 
   void warlock_t::init_special_effects()

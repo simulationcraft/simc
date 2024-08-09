@@ -529,6 +529,8 @@ public:
 
     // Soul Harvester
     player_talent_t demonic_soul;
+    const spell_data_t* succulent_soul; // Buff triggered by Demonic Soul proc
+    const spell_data_t* demonic_soul_dmg;
     
     player_talent_t necrolyte_teachings;
     player_talent_t soul_anathema;
@@ -552,6 +554,7 @@ public:
     action_t* rain_of_fire_tick;
     action_t* blackened_soul;
     action_t* malevolence;
+    action_t* demonic_soul;
   } proc_actions;
 
   struct tier_sets_t
@@ -630,6 +633,9 @@ public:
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;
+
+    // Soul Harvester Buffs
+    propagate_const<buff_t*> succulent_soul;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -707,6 +713,9 @@ public:
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
     proc_t* mark_of_perotharn;
+
+    // Soul Harvester
+    proc_t* succulent_soul;
   } procs;
 
   struct rng_settings_t
@@ -739,6 +748,9 @@ public:
     rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
     rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
     rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+
+    // Soul Harvester
+    rng_setting_t succulent_soul = { 0.20, 0.20 };
   } rng_settings;
 
   int initial_soul_shards;
@@ -773,6 +785,7 @@ public:
   void create_destruction_proc_actions();
   void create_diabolist_proc_actions();
   void create_hellcaller_proc_actions();
+  void create_soul_harvester_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -799,6 +812,7 @@ public:
   std::string default_rune() const override { return warlock_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
   void apply_affecting_auras( action_t& action ) override;
+  double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
 
   target_specific_t<warlock_td_t> target_data;
 
@@ -851,6 +865,13 @@ public:
   void init_gains_hellcaller();
   void init_rng_hellcaller();
   void init_procs_hellcaller();
+
+  action_t* create_action_soul_harvester( util::string_view, util::string_view );
+  void create_buffs_soul_harvester();
+  void init_spells_soul_harvester();
+  void init_gains_soul_harvester();
+  void init_rng_soul_harvester();
+  void init_procs_soul_harvester();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
