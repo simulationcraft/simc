@@ -115,6 +115,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_freeze_stacks( true );
 
   // Soul Harvester
+  dots_soul_anathema = target->get_dot( "soul_anathema", &p );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
