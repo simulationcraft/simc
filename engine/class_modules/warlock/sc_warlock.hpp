@@ -73,6 +73,9 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_blackened_soul; // Dummy/Hidden debuff that triggers stack collapse
 
+  // Soul Harvester
+  propagate_const<dot_t*> dots_soul_anathema;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -534,6 +537,7 @@ public:
     
     player_talent_t necrolyte_teachings;
     player_talent_t soul_anathema;
+    const spell_data_t* soul_anathema_dot;
     player_talent_t demoniacs_fervor;
 
     player_talent_t shared_fate;

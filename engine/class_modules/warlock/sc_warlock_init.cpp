@@ -561,6 +561,9 @@ namespace warlock
     hero.demonic_soul_dmg = find_spell( 449801 );
 
     hero.necrolyte_teachings = find_talent_spell( talent_tree::HERO, "Necrolyte Teachings" ); // Should be ID 449620
+
+    hero.soul_anathema = find_talent_spell( talent_tree::HERO, "Soul Anathema" ); // Should be ID 449624
+    hero.soul_anathema_dot = find_spell( 450538 );
   }
 
   void warlock_t::init_base_stats()

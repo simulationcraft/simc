@@ -4096,12 +4096,30 @@ using namespace helpers;
 
   struct demonic_soul_t : public warlock_spell_t
   {
+    struct soul_anathema_t : public warlock_spell_t
+    {
+      soul_anathema_t( warlock_t* p )
+        : warlock_spell_t( "Soul Anathema", p, p->hero.soul_anathema_dot )
+      {
+        background = dual = true;
+
+        affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
+        affected_by.master_demonologist_dd = demonology();
+      }
+    };
+
     demonic_soul_t( warlock_t* p )
       : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg )
     {
       background = dual = true;
 
       affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
+
+      if ( p->hero.soul_anathema.ok() )
+      {
+        impact_action = new soul_anathema_t( p );
+        add_child( impact_action );
+      }
     }
   };
 
