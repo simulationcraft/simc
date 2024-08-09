@@ -2640,18 +2640,6 @@ public:
 
     return am;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    if ( ab::o() -> talents.master_marksman.ok() && s -> result == RESULT_CRIT )
-    {
-      double amount = s -> result_amount * ab::o() -> talents.master_marksman -> effectN( 1 ).percent();
-      if ( amount > 0 )
-        residual_action::trigger( ab::o() -> actions.master_marksman, s -> target, amount );
-    }
-  }
 };
 
 struct kill_command_db_t: public kill_command_base_t<dire_critter_t>
