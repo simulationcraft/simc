@@ -76,6 +76,8 @@ struct warlock_td_t : public actor_target_data_t
   // Soul Harvester
   propagate_const<dot_t*> dots_soul_anathema;
 
+  propagate_const<buff_t*> debuffs_shared_fate;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -541,6 +543,8 @@ public:
     player_talent_t demoniacs_fervor;
 
     player_talent_t shared_fate;
+    const spell_data_t* shared_fate_debuff;
+    const spell_data_t* shared_fate_dmg;
     player_talent_t feast_of_souls;
 
     player_talent_t wicked_reaping;
@@ -559,6 +563,7 @@ public:
     action_t* blackened_soul;
     action_t* malevolence;
     action_t* demonic_soul;
+    action_t* shared_fate;
   } proc_actions;
 
   struct tier_sets_t
