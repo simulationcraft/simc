@@ -2878,11 +2878,12 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
-    if ( !p()->buff.heart_of_the_jade_serpent->check() )
-      return;
-    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
-    p()->buff.heart_of_the_jade_serpent->expire();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->buff.heart_of_the_jade_serpent->up() )
+    {
+      p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+      p()->buff.inner_compass_serpent_stance->trigger();
+      p()->buff.heart_of_the_jade_serpent->decrement();
+    }
   }
 };
 
