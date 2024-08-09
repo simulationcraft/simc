@@ -772,6 +772,8 @@ namespace warlock
                                  ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
                                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
+
+    buffs.echo_of_the_azjaqir = make_buff( this, "echo_of_the_azjaqir", tier.echo_of_the_azjaqir );
   }
 
   void warlock_t::create_buffs_diabolist()
@@ -1002,6 +1004,7 @@ namespace warlock
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.decimation = get_proc( "decimation" );
     procs.dimension_ripper = get_proc( "dimension_ripper" );
+    procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );
   }
 
   void warlock_t::init_procs_diabolist()

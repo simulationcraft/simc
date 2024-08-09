@@ -641,6 +641,7 @@ public:
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
+    propagate_const<buff_t*> echo_of_the_azjaqir;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;
@@ -733,6 +734,7 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
     proc_t* dimension_ripper;
+    proc_t* echo_of_the_azjaqir;
 
     // Diabolist
 
