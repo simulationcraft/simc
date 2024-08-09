@@ -1375,10 +1375,9 @@ struct tigers_ferocity_t : public monk_melee_attack_t
 
   std::vector<player_t *> &target_list() const override
   {
+    // The player's target is not hit by this ability so we need to modify the target list.
     t_list = base_t::target_list();
-
     t_list.erase( std::remove( t_list.begin(), t_list.end(), player->target ), t_list.end() );
-
     return t_list;
   }
 };
