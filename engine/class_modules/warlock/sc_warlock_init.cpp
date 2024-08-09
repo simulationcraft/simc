@@ -570,6 +570,8 @@ namespace warlock
     hero.shared_fate = find_talent_spell( talent_tree::HERO, "Shared Fate" ); // Should be ID 449704
     hero.shared_fate_debuff = find_spell( 450591 );
     hero.shared_fate_dmg = find_spell( 450593 );
+
+    hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
   }
 
   void warlock_t::init_base_stats()
@@ -903,6 +905,7 @@ namespace warlock
 
   void warlock_t::init_gains_soul_harvester()
   {
+    gains.feast_of_souls = get_gain( "feast_of_souls" );
   }
 
   void warlock_t::init_procs()
@@ -985,6 +988,7 @@ namespace warlock
   void warlock_t::init_procs_soul_harvester()
   {
     procs.succulent_soul = get_proc( "succulent_soul" );
+    procs.feast_of_souls = get_proc( "feast_of_souls" );
   }
 
   void warlock_t::init_rng()
@@ -1086,6 +1090,7 @@ namespace warlock
     add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
     add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
     add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
+    add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
   }
 
   void warlock_t::combat_begin()

@@ -674,6 +674,9 @@ public:
     // Hellcaller
     gain_t* wither;
     gain_t* wither_crits;
+
+    // Soul Harvester
+    gain_t* feast_of_souls;
   } gains;
 
   // Procs
@@ -725,6 +728,7 @@ public:
 
     // Soul Harvester
     proc_t* succulent_soul;
+    proc_t* feast_of_souls;
   } procs;
 
   struct rng_settings_t
@@ -760,6 +764,7 @@ public:
 
     // Soul Harvester
     rng_setting_t succulent_soul = { 0.20, 0.20 };
+    rng_setting_t feast_of_souls = { 0.125, 0.125 };
   } rng_settings;
 
   int initial_soul_shards;
@@ -822,6 +827,7 @@ public:
   std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
   void apply_affecting_auras( action_t& action ) override;
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
+  void feast_of_souls_gain();
 
   target_specific_t<warlock_td_t> target_data;
 
