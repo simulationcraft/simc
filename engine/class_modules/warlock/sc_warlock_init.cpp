@@ -983,6 +983,7 @@ namespace warlock
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
+    procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {
@@ -1117,6 +1118,7 @@ namespace warlock
     add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
     add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
     add_option( opt_float( "rng_umbral_lattice", rng_settings.umbral_lattice.setting_value ) );
+    add_option( opt_float( "rng_empowered_legion_strike", rng_settings.empowered_legion_strike.setting_value ) );
   }
 
   void warlock_t::combat_begin()

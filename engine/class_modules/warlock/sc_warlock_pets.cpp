@@ -62,6 +62,8 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value_from_effect( 5 );
 
+  buffs.empowered_legion_strike = make_buff( this, "empowered_legion_strike", o()->tier.empowered_legion_strike );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", o()->talents.embers )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -569,6 +571,23 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   legion_strike_t( warlock_pet_t* p, util::string_view options_str, bool is_main_pet )
     : legion_strike_t( p, options_str )
   { main_pet = is_main_pet; }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    p()->buffs.empowered_legion_strike->decrement();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_melee_attack_t::action_multiplier();
+
+    if ( p()->buffs.empowered_legion_strike->check() )
+      m *= p()->o()->tier.empowered_legion_strike->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t

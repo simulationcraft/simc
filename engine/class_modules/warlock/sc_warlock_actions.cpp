@@ -983,6 +983,17 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
+
+      if ( demonology() && active_4pc( TWW1 ) && rng().roll( p()->rng_settings.empowered_legion_strike.setting_value ) )
+      {
+        auto active_pet = p()->warlock_pet_list.active;
+
+        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+        {
+          active_pet->buffs.empowered_legion_strike->trigger();
+          p()->procs.empowered_legion_strike->occur();
+        }
+      }
     }
 
     void impact( action_state_t* s ) override

@@ -718,6 +718,7 @@ public:
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
     proc_t* pact_of_the_eredruin;
+    proc_t* empowered_legion_strike; // TWW1 4pc buff
 
     // Destruction
     proc_t* reverse_entropy;
@@ -762,6 +763,7 @@ public:
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
     rng_setting_t shadow_invocation = { 0.20, 0.20 };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
+    rng_setting_t empowered_legion_strike = { 0.05, 0.05 };
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10 };

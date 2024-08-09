@@ -639,6 +639,8 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "rng_feast_of_souls=" + util::to_string( rng_settings.feast_of_souls.setting_value ) + "\n";
     if ( rng_settings.umbral_lattice.setting_value != rng_settings.umbral_lattice.default_value )
       profile_str += "rng_umbral_lattice=" + util::to_string( rng_settings.umbral_lattice.setting_value ) + "\n";
+    if ( rng_settings.empowered_legion_strike.setting_value != rng_settings.empowered_legion_strike.default_value )
+      profile_str += "rng_empowered_legion_strike=" + util::to_string( rng_settings.empowered_legion_strike.setting_value ) + "\n";
   }
 
   return profile_str;
@@ -671,6 +673,7 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.succulent_soul = p->rng_settings.succulent_soul;
   rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
   rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
+  rng_settings.empowered_legion_strike = p->rng_settings.empowered_legion_strike;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
