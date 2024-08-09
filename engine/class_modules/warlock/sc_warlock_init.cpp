@@ -973,6 +973,7 @@ namespace warlock
 
   void warlock_t::init_procs_soul_harvester()
   {
+    procs.succulent_soul = get_proc( "succulent_soul" );
   }
 
   void warlock_t::init_rng()
@@ -1073,6 +1074,7 @@ namespace warlock
     add_option( opt_float( "rng_bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value ) );
     add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
     add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
+    add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
   }
 
   void warlock_t::combat_begin()

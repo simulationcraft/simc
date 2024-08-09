@@ -595,7 +595,9 @@ std::string warlock_t::create_profile( save_e stype )
     if ( rng_settings.seeds_of_their_demise.setting_value != rng_settings.seeds_of_their_demise.default_value )
       profile_str += "rng_seeds_of_their_demise=" + util::to_string( rng_settings.seeds_of_their_demise.setting_value ) + "\n";
     if ( rng_settings.mark_of_perotharn.setting_value != rng_settings.mark_of_perotharn.default_value )
-      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value) + "\n";
+      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value ) + "\n";
+    if ( rng_settings.succulent_soul.setting_value != rng_settings.succulent_soul.default_value )
+      profile_str += "rng_succulent_soul=" + util::to_string( rng_settings.succulent_soul.setting_value ) + "\n";
   }
 
   return profile_str;
@@ -625,6 +627,7 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
+  rng_settings.succulent_soul = p->rng_settings.succulent_soul;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -891,7 +894,14 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   if ( resource_type == RESOURCE_SOUL_SHARD && actual_amount > 0.0 && hero.demonic_soul.ok() )
   {
-    buffs.succulent_soul->trigger();
+    for ( int i = 0; i < as<int>( actual_amount ); i++ )
+    {
+      if ( rng().roll( rng_settings.succulent_soul.setting_value ) )
+      {
+        buffs.succulent_soul->trigger();
+        procs.succulent_soul->occur();
+      }
+    }
   }
 
   return actual_amount;

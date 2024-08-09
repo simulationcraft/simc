@@ -712,6 +712,9 @@ public:
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
     proc_t* mark_of_perotharn;
+
+    // Soul Harvester
+    proc_t* succulent_soul;
   } procs;
 
   struct rng_settings_t
@@ -744,6 +747,9 @@ public:
     rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
     rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
     rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+
+    // Soul Harvester
+    rng_setting_t succulent_soul = { 0.20, 0.20 };
   } rng_settings;
 
   int initial_soul_shards;
