@@ -836,6 +836,9 @@ using namespace helpers;
         base_td_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 3 ).percent();
         base_td_multiplier *= 1.0 + p->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
+        if ( soul_harvester() && p->hero.sataiels_volition.ok() )
+          base_tick_time *= 1.0 + p->hero.sataiels_volition->effectN( 1 ).percent();
+
         triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
@@ -2166,6 +2169,14 @@ using namespace helpers;
         m *= 1.0 + p()->talents.improved_haunt->effectN( 2 ).percent();
 
       return m;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      if ( soul_harvester() && p()->hero.sataiels_volition.ok() )
+        p()->buffs.nightfall->trigger();
     }
 
     void impact( action_state_t* s ) override
