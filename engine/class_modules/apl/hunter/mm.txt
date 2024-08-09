@@ -1,4 +1,4 @@
-# Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
@@ -8,7 +8,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
 actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger
 actions.precombat+=/salvo,precast_time=10
-actions.precombat+=/use_item,name=algethar_puzzle_box
 # Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
 # Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets.
@@ -24,7 +23,7 @@ actions+=/call_action_list,name=st,if=active_enemies<3|!talent.trick_shots
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 # Call for Power Infusion when Trueshot is up.
-actions.cds=/invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12
 actions.cds+=/berserking,if=buff.trueshot.up|fight_remains<13
 actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
@@ -35,40 +34,40 @@ actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
 
 actions.st=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
 actions.st+=/kill_shot,if=buff.razor_fragments.up
-actions.st+=/rapid_fire,if=talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time
-actions.st+=/volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12
+actions.st+=/black_arrow
 actions.st+=/explosive_shot,if=active_enemies>1
+actions.st+=/volley
+actions.st+=/rapid_fire
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
 # Don't overwrite Precise Shots unless Trueshot is active or it can cleave.
-actions.st+=/wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up|active_enemies>1
-# With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Overwrite freely if it can cleave.
-actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)|(buff.trick_shots.remains>execute_time&active_enemies>1)
-actions.st+=/kill_shot
-actions.st+=/explosive_shot
+actions.st+=/wailing_arrow
+# With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Don't overwrite when using Chimaera Shot on two targets. Overwrite freely if it can cleave.
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(active_enemies<2|!talent.chimaera_shot)|(buff.trick_shots.remains>execute_time&active_enemies>1)
+actions.st+=/steady_shot,if=buff.steady_focus.down&buff.trueshot.down
 actions.st+=/chimaera_shot,if=buff.precise_shots.up
 actions.st+=/arcane_shot,if=buff.precise_shots.up
+actions.st+=/kill_shot
 actions.st+=/barrage,if=talent.rapid_fire_barrage
+actions.st+=/explosive_shot
 actions.st+=/arcane_shot,if=focus>cost+action.aimed_shot.cost
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
 actions.st+=/steady_shot
 
 actions.trickshots=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
-actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/volley
-actions.trickshots+=/barrage,if=talent.rapid_fire_barrage
+actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots
-actions.trickshots+=/wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up
+actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
+actions.trickshots+=/black_arrow
+actions.trickshots+=/wailing_arrow,if=buff.precise_shots.down
 actions.trickshots+=/trueshot,if=variable.trueshot_ready
-# For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise.
-actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))
+# For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots.
+actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&buff.precise_shots.down
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
-actions.trickshots+=/chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4
-actions.trickshots+=/multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost
-actions.trickshots+=/kill_shot,if=focus>cost+action.aimed_shot.cost
-actions.trickshots+=/multishot,if=focus>cost+action.aimed_shot.cost
+actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down
 actions.trickshots+=/steady_shot
 
