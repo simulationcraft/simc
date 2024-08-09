@@ -9827,7 +9827,7 @@ public:
                  true );
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
-    ReportIssue( "Chi Burst consumes both stacks of the buff on consume", "2024-08-09", true );
+    ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
 
     // =================================================
 
