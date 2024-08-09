@@ -944,8 +944,17 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( time_to_execute == 0_ms && soul_harvester() && p()->buffs.nightfall->check() && p()->hero.wicked_reaping.ok() )
-        p()->proc_actions.wicked_reaping->execute_on_target( target );
+      if ( time_to_execute == 0_ms && soul_harvester() && p()->buffs.nightfall->check() )
+      {
+        if ( p()->hero.wicked_reaping.ok() )
+          p()->proc_actions.wicked_reaping->execute_on_target( target );
+
+        if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
+          td( target )->debuffs_shared_fate->trigger();
+
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
+          p()->feast_of_souls_gain();;
+      }
 
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
@@ -1366,6 +1375,10 @@ using namespace helpers;
 
       affected_by.potent_afflictions_td = affliction(); // Note: Technically Soul Anathema is on a separate effect from the others.
       affected_by.master_demonologist_dd = demonology();
+
+      base_td_multiplier *= 1.0 + p->hero.quietus->effectN( 1 ).percent();
+      base_tick_time *= 1.0 + p->hero.quietus->effectN( 2 ).percent();
+      dot_duration *= 1.0 + p->hero.quietus->effectN( 3 ).percent();
     }
   };
 
@@ -1933,7 +1946,7 @@ using namespace helpers;
     shadow_bolt_volley_t* volley;
 
     drain_soul_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul_dot->ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
+      : warlock_spell_t( "Drain Soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::not_found(), options_str )
     {
       channeled = true;
 
@@ -1980,9 +1993,17 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( soul_harvester() && p()->hero.wicked_reaping.ok() && p()->buffs.nightfall->check() )
-        p()->proc_actions.wicked_reaping->execute_on_target( target );
+      if ( soul_harvester() && p()->buffs.nightfall->check() )
+      {
+        if ( p()->hero.wicked_reaping.ok() )
+          p()->proc_actions.wicked_reaping->execute_on_target( target );
 
+        if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
+          td( target )->debuffs_shared_fate->trigger();
+
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
+          p()->feast_of_souls_gain();
+      }
       p()->buffs.nightfall->decrement();
     }
 
@@ -2540,8 +2561,17 @@ using namespace helpers;
         }
       }
 
-      if ( soul_harvester() && p()->hero.wicked_reaping.ok() && p()->buffs.demonic_core->check() )
-        p()->proc_actions.wicked_reaping->execute_on_target( target );
+      if ( soul_harvester() && p()->buffs.demonic_core->check() )
+      {
+        if ( p()->hero.wicked_reaping.ok() )
+          p()->proc_actions.wicked_reaping->execute_on_target( target );
+
+        if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
+          td( target )->debuffs_shared_fate->trigger();
+
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
+          p()->feast_of_souls_gain();
+      }
 
       p()->buffs.demonic_core->decrement();
 
