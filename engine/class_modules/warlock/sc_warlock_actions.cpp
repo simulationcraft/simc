@@ -1464,6 +1464,19 @@ using namespace helpers;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_aff_2pc->effectN( 1 ).percent();
+      }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_aff_2pc->effectN( 2 ).percent();
+
+        return m;
       }
     };
 
@@ -1481,6 +1494,9 @@ using namespace helpers;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();
+
+        if ( active_2pc( TWW1 ) )
+          base_dd_multiplier *= 1.0 + p->tier.hexflame_aff_2pc->effectN( 1 ).percent();
 
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
@@ -1555,6 +1571,16 @@ using namespace helpers;
           debug_cast<demonic_soul_t*>( p()->proc_actions.demonic_soul )->demoniacs_fervor = fervor;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
+      }
+
+      double composite_crit_chance_multiplier() const override
+      {
+        double m = warlock_spell_t::composite_crit_chance_multiplier();
+
+        if ( active_2pc( TWW1 ) )
+          m *= 1.0 + p()->tier.hexflame_aff_2pc->effectN( 2 ).percent();
+
+        return m;
       }
     };
 
