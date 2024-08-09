@@ -183,6 +183,13 @@ void warlock_td_t::target_demise()
       break;
     }
   }
+
+  if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() && warlock.rng().roll( warlock.rng_settings.feast_of_souls.setting_value ) )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
+
+    warlock.feast_of_souls_gain();
+  }
 }
 
 int warlock_td_t::count_affliction_dots() const
@@ -626,6 +633,8 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value ) + "\n";
     if ( rng_settings.succulent_soul.setting_value != rng_settings.succulent_soul.default_value )
       profile_str += "rng_succulent_soul=" + util::to_string( rng_settings.succulent_soul.setting_value ) + "\n";
+    if ( rng_settings.feast_of_souls.setting_value != rng_settings.feast_of_souls.default_value )
+      profile_str += "rng_feast_of_souls=" + util::to_string( rng_settings.feast_of_souls.setting_value ) + "\n";
   }
 
   return profile_str;
@@ -656,6 +665,7 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
   rng_settings.succulent_soul = p->rng_settings.succulent_soul;
+  rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -933,6 +943,15 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   }
 
   return actual_amount;
+}
+
+void warlock_t::feast_of_souls_gain()
+{
+  player_t::resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
+
+  buffs.succulent_soul->trigger();
+  procs.succulent_soul->occur();
+  procs.feast_of_souls->occur();
 }
 
 struct warlock_module_t : public module_t
