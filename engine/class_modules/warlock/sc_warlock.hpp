@@ -572,6 +572,9 @@ public:
   struct tier_sets_t
   {
     // Affliction
+    const spell_data_t* hexflame_aff_2pc;
+    const spell_data_t* hexflame_aff_4pc;
+    const spell_data_t* umbral_lattice;
 
     // Demonology
 

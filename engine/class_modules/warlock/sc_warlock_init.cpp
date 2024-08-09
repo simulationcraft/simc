@@ -181,6 +181,11 @@ namespace warlock
     talents.malefic_touch_proc = find_spell( 458131 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 );
+    tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 );
+    tier.umbral_lattice = find_spell( 453643 );
   }
 
   void warlock_t::init_spells_demonology()

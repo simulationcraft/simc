@@ -631,6 +631,12 @@ using namespace helpers;
 
     bool soul_harvester() const
     { return p()->hero.demonic_soul.ok(); }
+
+    bool active_2pc( set_bonus_type_e tier ) const
+    { return p()->sets->has_set_bonus( p()->specialization(), tier, B2 ); }
+
+    bool active_4pc( set_bonus_type_e tier ) const
+    { return p()->sets->has_set_bonus( p()->specialization(), tier, B4 ); }
   };
 
   // Shared Class Actions Begin
