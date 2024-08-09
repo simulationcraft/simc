@@ -572,6 +572,9 @@ namespace warlock
     hero.shared_fate_dmg = find_spell( 450593 );
 
     hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
+
+    hero.wicked_reaping = find_talent_spell( talent_tree::HERO, "Wicked Reaping" ); // Should be ID 449631
+    hero.wicked_reaping_dmg = find_spell( 449826 );
   }
 
   void warlock_t::init_base_stats()
