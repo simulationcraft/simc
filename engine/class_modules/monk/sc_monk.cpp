@@ -1143,7 +1143,7 @@ struct high_impact_t : public monk_spell_t
   {
     aoe        = -1;
     background = dual = true;
-    split_aoe_damage  = true;
+    split_aoe_damage  = false;
   }
 };
 
@@ -1154,7 +1154,7 @@ struct flurry_strike_wisdom_t : public monk_spell_t
   {
     aoe        = -1;
     background = dual = true;
-    split_aoe_damage  = true;
+    split_aoe_damage  = false;
 
     name_str_reporting = "flurry_strike_wisdom_of_the_wall";
   }
