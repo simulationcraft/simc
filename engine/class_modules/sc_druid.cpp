@@ -1698,12 +1698,10 @@ public:
         ret = true;
       }
       // allow if the action is from convoke and the buff procs from cast successful
-      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ) )
+      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a );
+                tmp && tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
       {
-        if ( tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
-        {
-          ret = true;
-        }
+        ret = true;
       }
       else
       {
