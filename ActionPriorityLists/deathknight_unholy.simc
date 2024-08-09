@@ -75,7 +75,7 @@ actions.cds+=/abomination_limb,if=variable.st_planning&!buff.sudden_doom.react&b
 
 # Non-San'layn AoE Cooldowns
 actions.cds_aoe=vile_contagion,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&(raid_event.adds.remains>4|!raid_event.adds.exists&fight_remains>4)&(raid_event.adds.exists&raid_event.adds.remains<=11|cooldown.any_dnd.remains<3|buff.death_and_decay.up&debuff.festering_wound.stack>=4)|variable.adds_remain&debuff.festering_wound.stack=6
-actions.cds_aoe+=/unholy_assault,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&(debuff.festering_wound.stack>=2&cooldown.vile_contagions.remains<3|!talent.vile_contagion)
+actions.cds_aoe+=/unholy_assault,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&(debuff.festering_wound.stack>=2&cooldown.vile_contagion.remains<3|!talent.vile_contagion)
 actions.cds_aoe+=/dark_transformation,if=variable.adds_remain&(cooldown.vile_contagion.remains>5|!talent.vile_contagion|death_and_decay.ticking|cooldown.death_and_decay.remains<3)
 actions.cds_aoe+=/outbreak,if=(dot.virulent_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>15%((2*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((2*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))
 actions.cds_aoe+=/apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&rune<=3
@@ -84,7 +84,7 @@ actions.cds_aoe+=/abomination_limb,if=variable.adds_remain
 # San'layn AoE Cooldowns
 actions.cds_aoe_san=dark_transformation,if=variable.adds_remain&buff.death_and_decay.up
 actions.cds_aoe_san+=/vile_contagion,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&(raid_event.adds.remains>4|!raid_event.adds.exists&fight_remains>4)&(raid_event.adds.exists&raid_event.adds.remains<=11|cooldown.any_dnd.remains<3|buff.death_and_decay.up&debuff.festering_wound.stack>=4)|variable.adds_remain&debuff.festering_wound.stack=6
-actions.cds_aoe_san+=/unholy_assault,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&(debuff.festering_wound.stack>=2&cooldown.vile_contagions.remains<6|!talent.vile_contagion)
+actions.cds_aoe_san+=/unholy_assault,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&(debuff.festering_wound.stack>=2&cooldown.vile_contagion.remains<6|!talent.vile_contagion)
 actions.cds_aoe_san+=/outbreak,if=(dot.virulent_plague.refreshable|talent.morbidity&!buff.gift_of_the_sanlayn.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>15%((2*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>15%((2*talent.superstrain)+(2*talent.ebon_fever)+(2*talent.plaguebringer)))
 actions.cds_aoe_san+=/apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&rune<=3
 actions.cds_aoe_san+=/abomination_limb,if=variable.adds_remain
