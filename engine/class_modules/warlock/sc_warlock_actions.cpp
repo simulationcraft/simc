@@ -917,7 +917,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+      if ( diabolist() && p()->executing != this && p()->buffs.infernal_bolt->check() )
         return false;
 
       return warlock_spell_t::ready();
@@ -2275,7 +2275,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( diabolist() && p()->buffs.ruination->check() )
+      if ( diabolist() && p()->executing != this && p()->buffs.ruination->check() )
         return false;
 
       if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
@@ -3097,7 +3097,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( diabolist() && p()->buffs.infernal_bolt->check() )
+      if ( diabolist() && p()->executing != this && p()->buffs.infernal_bolt->check() )
         return false;
 
       return warlock_spell_t::ready();
@@ -3302,7 +3302,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->hero.ruination.ok() && p()->buffs.ruination->check() )
+      if ( p()->hero.ruination.ok() && p()->executing != this && p()->buffs.ruination->check() )
         return false;
 
       return warlock_spell_t::ready();
@@ -3950,7 +3950,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( !p()->buffs.infernal_bolt->check() )
+      if ( !p()->buffs.infernal_bolt->check() && p()->executing != this )
         return false;
 
       return warlock_spell_t::ready();
@@ -4045,7 +4045,7 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( !p()->buffs.ruination->check() )
+      if ( !p()->buffs.ruination->check() && p()->executing != this )
         return false;
 
       return warlock_spell_t::ready();
