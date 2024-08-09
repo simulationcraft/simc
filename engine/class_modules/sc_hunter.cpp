@@ -5342,8 +5342,10 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> proc_chance() );
 
-    p() -> buffs.trick_shots -> up(); // benefit tracking
-    p() -> consume_trick_shots();
+    // TODO: Wailing Arrow consumes Trick Shots despite gaining nothing from it,
+    // but check for it here if that's ever fixed.
+    p()->buffs.trick_shots->up();  // benefit tracking
+    p()->consume_trick_shots();
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
     if ( ! p() -> buffs.lock_and_load -> check() )
@@ -5462,16 +5464,6 @@ struct wailing_arrow_t : public aimed_shot_base_t
       attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
       dual = true;
     }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      hunter_ranged_attack_t::available_targets( tl );
-
-      // Cannot hit the original target.
-      range::erase_remove( tl, target );
-
-      return tl.size();
-    }
   };
 
   struct primary_damage_t final : hunter_ranged_attack_t
@@ -5492,6 +5484,8 @@ struct wailing_arrow_t : public aimed_shot_base_t
     : aimed_shot_base_t( "wailing_arrow", p, p->talents.wailing_arrow_override )
   {
     parse_options( options_str );
+
+    aoe = 1;
 
     primary_damage = p->get_background_action<primary_damage_t>( "wailing_arrow_primary" );
     primary_damage->stats = stats;
@@ -5520,12 +5514,13 @@ struct wailing_arrow_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( state );
 
-    if ( state->chain_target == 0 )
-    {
-      primary_damage->aoe = state->n_targets;
-      primary_damage->execute_on_target( state->target );
-      splash_damage->execute_on_target( state->target );
-    }
+    primary_damage->execute_on_target( state->target );
+    splash_damage->execute_on_target( state->target );
+  }
+
+  int n_targets() const override
+  {
+    return hunter_ranged_attack_t::n_targets();
   }
 
   bool ready() override
