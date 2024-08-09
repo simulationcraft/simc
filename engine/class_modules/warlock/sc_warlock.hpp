@@ -554,6 +554,7 @@ public:
     action_t* rain_of_fire_tick;
     action_t* blackened_soul;
     action_t* malevolence;
+    action_t* demonic_soul;
   } proc_actions;
 
   struct tier_sets_t

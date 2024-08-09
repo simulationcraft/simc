@@ -1448,6 +1448,7 @@ using namespace helpers;
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
           make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+          p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
     };
@@ -1501,7 +1502,6 @@ using namespace helpers;
 
       p()->buffs.tormented_crescendo->decrement();
       p()->buffs.malign_omen->decrement();
-      p()->buffs.succulent_soul->decrement();
     }
 
     void impact( action_state_t* s ) override
@@ -2273,9 +2273,12 @@ using namespace helpers;
         }
 
         // We need Demonic Soul to proc on every target, but buff is decremented on impact. Fudge this by 1ms to ensure all targets are hit.
-        if ( soul_harvester() && p()->buffs.succulent_soul->check() && s->chain_target == 0 )
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
-          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+          if ( s->chain_target == 0 )
+            make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+
+          p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
       }
     };
@@ -4089,7 +4092,11 @@ using namespace helpers;
   {
     demonic_soul_t( warlock_t* p )
       : warlock_spell_t( "Demonic Soul", p, p->hero.demonic_soul_dmg )
-    { background = dual = true; }
+    {
+      background = dual = true;
+
+      affected_by.master_demonologist_dd = demonology(); // Note: Technically Demonic Soul is on a separate effect from the others.
+    }
   };
 
   // Soul Harvester Actions End
@@ -4486,7 +4493,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_soul_harvester_proc_actions()
-  { }
+  {
+    proc_actions.demonic_soul = new demonic_soul_t( this );
+  }
 
   void warlock_t::init_special_effects()
   {
