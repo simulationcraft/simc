@@ -8078,7 +8078,7 @@ public:
     double active_flame_shocks = p()->get_active_dots( d );
     p()->lava_surge_attempts_normalized += 1 / active_flame_shocks;
     double proc_chance =
-        std::max( 0.0, 0.5 / ( 1 + std::exp( 10 - p()->lava_surge_attempts_normalized ) ) );
+        std::max( 0.0, 0.5 / ( 1 + std::exp( 11 - p()->lava_surge_attempts_normalized ) ) );
 
     if ( p()->spec.lava_surge->ok() && p()->spec.restoration_shaman->ok() )
     {
