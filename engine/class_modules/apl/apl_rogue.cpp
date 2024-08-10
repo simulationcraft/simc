@@ -82,10 +82,10 @@ void assassination( player_t* p )
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2", "Conditional to check if there is only one enemy" );
   default_->add_action( "variable,name=regen_saturated,value=energy.regen_combined>35", "Combined Energy Regen needed to saturate" );
-  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up)|(buff.envenom.up&buff.envenom.remains<=1&energy.pct>=40)|energy.pct>=50|fight_remains<=20", "Check if we should be using our energy" );
+  default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up)|(buff.envenom.up&buff.envenom.remains<=1)|energy.pct>=(40+30*talent.hand_of_fate-15*talent.vicious_venoms)|fight_remains<=20", "Check if we should be using our energy" );
   default_->add_action( "call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=1&!buff.indiscriminate_carnage.up", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
+  default_->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=1&(!buff.indiscriminate_carnage.up|variable.single_target)", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
   default_->add_action( "envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=5" );
   default_->add_action( "call_action_list,name=core_dot" );
   default_->add_action( "call_action_list,name=aoe_dot,if=!variable.single_target" );
@@ -126,7 +126,7 @@ void assassination( player_t* p )
 
   aoe_dot->add_action( "variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20", "AoE Damage over time abilities Check what the maximum Scent of Blood stacks is currently" );
   aoe_dot->add_action( "variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks", "We are Scent Saturated when our stack count is hitting the maximum" );
-  aoe_dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&pmultiplier<=1&effective_combo_points>=variable.effective_spend_cp&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 3+ Targets if we have enough energy regen" );
+  aoe_dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&pmultiplier<=1&effective_combo_points>=variable.effective_spend_cp&energy.regen_combined>25&target.time_to_die-remains>6", "Crimson Tempest on 3+ Targets if we have enough energy regen" );
   aoe_dot->add_action( "garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&spell_targets.fan_of_knives>=2&target.time_to_die-remains>12", "Garrote upkeep, also uses it in AoE to reach energy saturation" );
   aoe_dot->add_action( "rupture,cycle_targets=1,if=effective_combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&(!variable.regen_saturated&(talent.scent_of_blood.rank=2|talent.scent_of_blood.rank<=1&(buff.indiscriminate_carnage.up|target.time_to_die-remains>15)))&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&!buff.darkest_night.up", "Rupture upkeep, also uses it in AoE to reach energy saturation" );
   aoe_dot->add_action( "garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0", "Garrote as a special generator for the last CP before a finisher for edge case handling" );
