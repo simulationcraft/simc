@@ -1283,8 +1283,10 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
       auto td = p->get_target_data( t );
       if ( td && td->debuff.high_impact->remains() >= 0_ms )
+      {
         high_impact->set_target( t );
-      high_impact->execute();
+        high_impact->execute();
+      }
     } );
   }
 
@@ -4371,6 +4373,8 @@ struct strength_of_the_black_ox_t : public monk_spell_t
     : monk_spell_t( p, "strength_of_the_black_ox", p->talent.conduit_of_the_celestials.strength_of_the_black_ox_damage )
   {
     background = true;
+
+    reduced_aoe_targets = p->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
 
     // we have to set this up by hand, as Unity Within multiplier is scripted
     if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
