@@ -427,7 +427,11 @@ public:
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
   extended_sample_data_t dre_uptime_samples;
+
+  extended_sample_data_t lvs_samples;
+
   unsigned dre_attempts;
+  double lava_surge_attempts_normalized;
 
   // Elemental Shamans can extend Ascendance by x sec via Further Beyond (talent)
   // what if there was an overall cap on Ascendance duration extension per Ascendance proc?
@@ -1077,8 +1081,10 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
+      lvs_samples( "lvs_tracker", false ),
       dre_uptime_samples( "dre_uptime_tracker", false ),
       dre_attempts( 0U ),
+      lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
       ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
       tempest_counter( 0U ),
@@ -1134,6 +1140,8 @@ public:
 
     dre_samples.reserve( 8192 );
     dre_uptime_samples.reserve( 8192 );
+
+    lvs_samples.reserve( 8192 );
   }
 
   ~shaman_t() override = default;
@@ -8066,7 +8074,11 @@ public:
 
     // proc chance suddenly became 100% and the actual chance became effectN 1
     // TODO: TWW proc chance
-    double proc_chance = p()->spec.lava_surge->effectN( 1 ).percent();
+
+    double active_flame_shocks = p()->get_active_dots( d );
+    p()->lava_surge_attempts_normalized += 1 / active_flame_shocks;
+    double proc_chance =
+        std::max( 0.0, 0.5 / ( 1 + std::exp( 10 - p()->lava_surge_attempts_normalized ) ) );
 
     if ( p()->spec.lava_surge->ok() && p()->spec.restoration_shaman->ok() )
     {
@@ -8076,6 +8088,8 @@ public:
     if ( rng().roll( proc_chance ) )
     {
       p()->trigger_lava_surge();
+      p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
+      p()->lava_surge_attempts_normalized = 0.0;
     }
 
     if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
@@ -10586,6 +10600,9 @@ void shaman_t::analyze( sim_t& sim )
     dre_uptime_samples.analyze();
     dre_uptime_samples.create_histogram( static_cast<unsigned>( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 ) );
   }
+
+  lvs_samples.analyze();
+  lvs_samples.create_histogram( static_cast<unsigned>( lvs_samples.max() - lvs_samples.min() + 1 ) );
 }
 
 // shaman_t::datacollection_end ============================================
@@ -13529,6 +13546,7 @@ void shaman_t::reset()
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
+  lava_surge_attempts_normalized         = 0.0;
   action.ti_trigger = nullptr;
   action.totemic_recall_totem = nullptr;
 
@@ -13590,6 +13608,8 @@ void shaman_t::merge( player_t& other )
     dre_samples.merge( s.dre_samples );
     dre_uptime_samples.merge( s.dre_uptime_samples );
   }
+
+  lvs_samples.merge( s.lvs_samples );
 }
 
 // shaman_t::primary_role ===================================================
@@ -14035,6 +14055,30 @@ public:
     p.sim->add_chart_data( chart );
   }
 
+  void lvs_proc_distribution_contents(report::sc_html_stream& os)
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( p, "lvs" ), *p.sim );
+
+    chart.set( "plotOptions.column.color", color::RED.str() );
+    chart.set( "plotOptions.column.pointStart", 0 );
+    chart.set_title( fmt::format( "LVS Attempts (min={} median={} max={})", p.lvs_samples.min(),
+                                  p.lvs_samples.percentile( 0.5 ), p.lvs_samples.max() ) );
+    chart.set( "yAxis.title.text", "# of Triggered Procs" );
+    chart.set( "xAxis.title.text", "Proc on Attempt #" );
+    chart.set( "series.0.name", "Triggered Procs" );
+
+    range::for_each( p.lvs_samples.distribution, [ &chart ]( size_t n ) {
+      js::sc_js_t e;
+
+      e.set( "y", static_cast<double>( n ) );
+
+      chart.add( "series.0.data", e );
+    } );
+
+    os << chart.to_target_div();
+    p.sim->add_chart_data( chart );
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
@@ -14085,6 +14129,8 @@ public:
 
       os << "\t\t\t\t\t</div>\n";
     }
+
+    lvs_proc_distribution_contents( os );
   }
 };
 
