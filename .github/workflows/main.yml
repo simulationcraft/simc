@@ -223,6 +223,7 @@ jobs:
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             monk_brewmaster, monk_windwalker,
             mage_arcane, mage_fire, mage_frost,
+            paladin_protection,
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
