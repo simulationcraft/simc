@@ -1,5 +1,5 @@
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=apply_poison
+actions.precombat=apply_poison,nonlethal=none,lethal=instant
 actions.precombat+=/flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
