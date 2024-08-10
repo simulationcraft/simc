@@ -5070,14 +5070,24 @@ struct eruption_t : public essence_spell_t
       extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
       upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() ),
       mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
-      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) )
+      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
+      t31_4pc_eruption( nullptr ),
+      mass_eruption(nullptr)
   {
     aoe              = -1;
     split_aoe_damage = true;
-    t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
 
-    if ( t31_4pc_eruption )
+    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    {
+      t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
       add_child( t31_4pc_eruption );
+    }
+
+    if ( p->talent.scalecommander.mass_eruption.enabled() )
+    {
+      mass_eruption = p->get_secondary_action<eruption_mass_eruption_t>( "mass_" + name_str, "mass_" + name_str );
+      add_child( mass_eruption );
+    }
   }
 
   int mass_eruption_targets() const
@@ -5150,6 +5160,21 @@ struct eruption_t : public essence_spell_t
     {
       p()->get_target_data( p()->last_scales_target )
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
+    }
+
+    if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() && execute_state )
+    {
+      int eruptions = 1;
+      for ( auto potential_target : target_list() )
+      {
+        if ( potential_target == execute_state->target )
+          continue;
+
+        mass_eruption->execute_on_target( potential_target );
+
+        if ( ++eruptions >= mass_eruption_max_targets )
+          break;
+      }
     }
 
     p()->buff.volcanic_upsurge->decrement();
