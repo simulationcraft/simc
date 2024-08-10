@@ -1622,8 +1622,8 @@ public:
 
     // Festering Wound applied by
     propagate_const<proc_t*> fw_festering_strike;
+    propagate_const<proc_t*> fw_festering_scythe;
     propagate_const<proc_t*> fw_infected_claws;
-    propagate_const<proc_t*> fw_necroblast;
     propagate_const<proc_t*> fw_pestilence;
     propagate_const<proc_t*> fw_unholy_assault;
     propagate_const<proc_t*> fw_vile_contagion;
@@ -8722,7 +8722,7 @@ struct festering_base_t : public death_knight_melee_attack_t
       size_t n          = rng().range( size_t(), fw_proc_stacks.size() );
       unsigned n_stacks = fw_proc_stacks[ n ];
 
-      p()->trigger_festering_wound( s, n_stacks, p()->procs.fw_festering_strike );
+      p()->trigger_festering_wound( s, n_stacks, this->data().id() == p()->spell.festering_scythe->id() ? p()->procs.fw_festering_scythe : p()->procs.fw_festering_strike);
     }
   }
 
@@ -14326,10 +14326,10 @@ void death_knight_t::init_procs()
   procs.carnage    = get_proc( "Carnage" );
 
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
+  procs.fw_festering_scythe = get_proc( "Festering Wound from Festering Scythe" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
-  procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
   procs.fw_abomination      = get_proc( "Festering Wound from Abomination" );

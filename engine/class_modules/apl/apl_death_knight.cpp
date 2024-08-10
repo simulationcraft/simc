@@ -525,7 +525,7 @@ void unholy( player_t* p )
   st->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5", "Single Taget Non-San'layn" );
   st->add_action( "any_dnd,if=talent.unholy_ground&!buff.death_and_decay.up&(pet.apoc_ghoul.active|pet.abomination.active|pet.gargoyle.active)" );
   st->add_action( "death_coil,if=!variable.pooling_runic_power&variable.spend_rp|fight_remains<10" );
-  st->add_action( "festering_strike,if=!variable.pop_wounds&debuff.festering_wound.stack<4" );
+  st->add_action( "festering_strike,if=debuff.festering_wound.stack<4&(!variable.pop_wounds|buff.festering_scythe.react)" );
   st->add_action( "wound_spender,if=variable.pop_wounds" );
   st->add_action( "death_coil,if=!variable.pooling_runic_power" );
   st->add_action( "wound_spender,if=!variable.pop_wounds&debuff.festering_wound.stack>=4" );
