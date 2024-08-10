@@ -9311,6 +9311,11 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       auto td = get_td( state->target );
       td->debuff.incite_terror->trigger();
     }
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_of_sorrow( state->target, this->data().id() == p()->spell.vampiric_strike->id() );
+    }
   }
 
 private:
@@ -9361,16 +9366,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
       {
         p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
       }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    heart_strike_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -9448,15 +9443,6 @@ struct heart_strike_t : public heart_strike_base_t
     {
       p()->buffs.vampiric_strength->extend_duration(
           p(), p()->sets->set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    heart_strike_base_t::impact( s );
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
     }
   }
 
@@ -10448,6 +10434,11 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     {
       td->debuff.incite_terror->trigger();
     }
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_of_sorrow( state->target, this->data().id() == p()->spell.vampiric_strike->id() );
+    }
   }
 
   void execute() override
@@ -10479,16 +10470,6 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
       p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -10530,16 +10511,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
       return;
     }
     wound_spender_base_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
-    }
   }
 
 private:
@@ -10615,16 +10586,6 @@ struct scourge_strike_t final : public wound_spender_base_t
     }
     wound_spender_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
-    }
   }
 
 private:
@@ -12126,6 +12087,9 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
 
 void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vampiric )
 {
+  if( !is_vampiric && !buffs.infliction_of_sorrow->check() )
+    return;
+
   auto base_td    = get_target_data( target );
   auto disease_td = specialization() == DEATH_KNIGHT_BLOOD ? base_td->dot.blood_plague : base_td->dot.virulent_plague;
   double disease_remaining_damage = 0;
