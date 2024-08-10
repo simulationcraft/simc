@@ -2158,6 +2158,7 @@ template <specialization_e S, typename BASE>
 struct trigger_claw_rampage_t : public BASE
 {
 private:
+  cooldown_t* icd = nullptr;
   double proc_pct = 0.0;
 
 public:
@@ -2167,19 +2168,25 @@ public:
     : BASE( n, p, s, f )
   {
     if ( p->specialization() == S && p->talent.claw_rampage.ok() )
+    {
       proc_pct = p->talent.claw_rampage->effectN( 1 ).percent();
+      icd = p->get_cooldown( "claw_rampage_icd" );
+      icd->duration = p->talent.claw_rampage->internal_cooldown();
+    }
   }
 
   void execute() override
   {
     BASE::execute();
 
-    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
+    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && icd->up() && BASE::rng().roll( proc_pct ) )
     {
       if constexpr ( S == DRUID_FERAL )
         BASE::p()->buff.ravage_fb->trigger();
       else if constexpr ( S == DRUID_GUARDIAN )
         BASE::p()->buff.ravage_maul->trigger();
+
+      icd->start();
     }
   }
 };
