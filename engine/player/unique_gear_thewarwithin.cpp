@@ -1537,12 +1537,14 @@ void treacherous_transmitter( special_effect_t& effect )
       }
       else
       {
-        make_event( *sim, rng().range( 0_s, player->find_spell( 449947 )->duration() ),
+        make_event( *sim, rng().range( 500_ms, player->find_spell( 449947 )->duration() - 250_ms ),
                     [ this ] { stat_buff->trigger(); } );
       }
     }
   };
 
+  effect.disable_buff();
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
 }
 
