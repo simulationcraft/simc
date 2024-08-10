@@ -115,18 +115,18 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
-  standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)" );
-  standard->add_action( "hammer_of_light,if=buff.redoubt.stack=3&buff.blessing_of_dawn.stack>=1" );
+  standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)&talent.of_dusk_and_dawn.enabled" );
+  standard->add_action( "hammer_of_light,if=buff.redoubt.stack=3&(buff.blessing_of_dawn.stack>=1|!talent.of_dusk_and_dawn.enabled)" );
   standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&!((buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up))" );
   standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
-  standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3" );
+  standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3", "The following line has been edited for your own sanity, it is technically a dps gain to only use AS to refresh barricade of faith and strength in adversary as templar in large aoe However, it is very cursed, and nobody should actually do this, but if you REALLY wanted to, uncomment this line and comment out the next avenger's shield line. actions.standard+=/avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3&!((talent.lights_guidance.enabled&spell_targets.shield_of_the_righteous>=10)|!buff.barricade_of_faith.up)" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max" );
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
-  standard->add_action( "avengers_shield,if=!talent.lights_guidance.enabled" );
+  standard->add_action( "avengers_shield,if=!talent.lights_guidance.enabled", "In single target, Templar should prioritize maintaining Shake the Heavens by casting spells listed in Higher Calling." );
   standard->add_action( "consecration,if=!consecration.up" );
   standard->add_action( "eye_of_tyr,if=(talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3)&!talent.lights_deliverance.enabled" );
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark" );
