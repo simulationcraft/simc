@@ -4372,6 +4372,8 @@ struct strength_of_the_black_ox_t : public monk_spell_t
   {
     background = true;
 
+    reduced_aoe_targets = p->talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 2 ).base_value();
+
     // we have to set this up by hand, as Unity Within multiplier is scripted
     if ( const auto &effect = p->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
