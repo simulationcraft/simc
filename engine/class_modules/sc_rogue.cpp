@@ -3361,7 +3361,10 @@ struct apply_poison_t : public action_t
         }
         
         p->active.lethal_poison = get_poison( p, lethal_str );
-        sim->print_log( "{} applies lethal poison {}", *p, *p->active.lethal_poison );
+        if ( p->active.lethal_poison )
+        {
+          sim->print_log( "{} applies lethal poison {}", *p, *p->active.lethal_poison );
+        }
       }
 
       if ( !p->active.nonlethal_poison )
@@ -3372,7 +3375,10 @@ struct apply_poison_t : public action_t
         }
 
         p->active.nonlethal_poison = get_poison( p, nonlethal_str );
-        sim->print_log( "{} applies non-lethal poison {}", *p, *p->active.nonlethal_poison );
+        if ( p->active.nonlethal_poison )
+        {
+          sim->print_log( "{} applies non-lethal poison {}", *p, *p->active.nonlethal_poison );
+        }
       }
 
       if ( p->talent.assassination.dragon_tempered_blades->ok() )
@@ -3385,7 +3391,10 @@ struct apply_poison_t : public action_t
           }
 
           p->active.lethal_poison_dtb = get_poison( p, lethal_dtb_str );
-          sim->print_log( "{} applies second lethal poison {}", *p, *p->active.lethal_poison_dtb );
+          if ( p->active.lethal_poison_dtb )
+          {
+            sim->print_log( "{} applies second lethal poison {}", *p, *p->active.lethal_poison_dtb );
+          }
 
           if ( nonlethal_dtb_str.empty() || get_poison( p, nonlethal_dtb_str ) == p->active.nonlethal_poison )
           {
@@ -3393,7 +3402,10 @@ struct apply_poison_t : public action_t
           }
 
           p->active.nonlethal_poison_dtb = get_poison( p, nonlethal_dtb_str );
-          sim->print_log( "{} applies second non-lethal poison {}", *p, *p->active.nonlethal_poison_dtb );
+          if ( p->active.nonlethal_poison_dtb )
+          {
+            sim->print_log( "{} applies second non-lethal poison {}", *p, *p->active.nonlethal_poison_dtb );
+          }
         }
       }
     }
@@ -11866,6 +11878,12 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
     active.fatebound.lucky_coin =
       get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
+
+    // Stats wrapper to group these for reporting purposes
+    stats_t* stats = get_stats( "Hand of Fate", nullptr );
+    stats->add_child( active.fatebound.fatebound_coin_tails->stats );
+    stats->add_child( active.fatebound.fatebound_coin_tails_delivered->stats );
+    stats->add_child( active.fatebound.lucky_coin->stats );
   }
 
   if ( talent.fatebound.fate_intertwined->ok() )
@@ -11876,7 +11894,7 @@ void rogue_t::init_spells()
   // Trickster
   if ( talent.trickster.unseen_blade->ok() )
   {
-    cooldowns.unseen_blade_icd->base_duration = talent.trickster.unseen_blade->internal_cooldown();
+    cooldowns.unseen_blade_icd->duration = talent.trickster.unseen_blade->internal_cooldown();
     active.trickster.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
   }
 
