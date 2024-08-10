@@ -28,58 +28,72 @@ actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<3|var
 actions+=/call_action_list,name=aoe,if=active_enemies>2
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
-actions+=/oblivion,if=soul_shard>1&fight_remains<10
-actions+=/malefic_rapture,if=fight_remains<4
+#End of fight dump
+actions+=/oblivion,if=soul_shard>1&fight_remains<(soul_shard+buff.tormented_crescendo.stack*gcd.max)+execute_time
+actions+=/malefic_rapture,if=fight_remains<soul_shard*execute_time+(buff.tormented_crescendo.stack)*gcd.max
+#Maintain dots
 actions+=/agony,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&(remains<5|(cooldown.soul_rot.remains<5&remains<8))&fight_remains>10
 actions+=/unstable_affliction,if=remains<5|(cooldown.soul_rot.remains<5&remains<8)&fight_remains>10
-actions+=/haunt,if=(debuff.haunt.remains<5|(cooldown.soul_rot.remains<5&debuff.haunt.remains<8)|(talent.demonic_soul&buff.nightfall.stack<2))
+actions+=/haunt,if=(debuff.haunt.remains<5|(cooldown.soul_rot.remains<5&debuff.haunt.remains<8))&fight_remains>10|talent.demonic_soul&buff.nightfall.stack<2
 actions+=/corruption,if=refreshable&fight_remains>15
 actions+=/wither,if=refreshable&fight_remains>15
-actions+=/drain_soul,if=talent.shadow_embrace&talent.drain_soul.enabled&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&active_enemies<=4&fight_remains>15
+#SE maintenance
+actions+=/drain_soul,interrupt=1,if=talent.shadow_embrace&talent.drain_soul&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&active_enemies<=4&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack
 actions+=/shadow_bolt,if=talent.shadow_embrace&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3&!action.shadow_bolt.in_flight_to_target)&active_enemies<=4&fight_remains>10
-actions+=/drain_soul,if=talent.demonic_soul&buff.nightfall.react
-actions+=/shadow_bolt,if=talent.demonic_soul&buff.nightfall.react
-actions+=/vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|(cooldown.soul_rot.remains<=execute_time+gcd.max|!talent.soul_rot|fight_remains<cooldown.soul_rot.remains))&dot.agony.ticking&(dot.corruption.ticking|dot.wither.ticking)&debuff.haunt.remains>5
-actions+=/phantom_singularity,if=((cooldown.soul_rot.remains<=execute_time)|!talent.soul_rot|fight_remains<cooldown.soul_rot.remains)&dot.agony.ticking&(dot.corruption.ticking|dot.wither.ticking)&debuff.haunt.remains>5&(!buff.succulent_soul.up|buff.succulent_soul.stack<=1)
-actions+=/soul_rot,if=(variable.vt_up&variable.ps_up)&dot.agony.ticking
+#Soul Harvester, use nightfalls if they are about to expire, you have max stacks, or if you can fit all potential Malefic Raptures in CDs
+actions+=/drain_soul,if=talent.demonic_soul&buff.nightfall.react&(buff.nightfall.stack>1|buff.nightfall.remains<execute_time*2|((variable.ps_up>?variable.vt_up)>?variable.sr_up>gcd.max*soul_shard+buff.tormented_crescendo.stack+execute_time*buff.nightfall.stack)&variable.cds_active)
+actions+=/shadow_bolt,if=talent.demonic_soul&buff.nightfall.react&(buff.nightfall.stack>1|buff.nightfall.remains<execute_time*2|((variable.ps_up>?variable.vt_up)>?variable.sr_up>gcd.max*soul_shard+buff.tormented_crescendo.stack+gcd.max*buff.nightfall.stack)&variable.cds_active)
+#CD dots
+actions+=/vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|(cooldown.soul_rot.remains<=execute_time+gcd.max|!talent.soul_rot|fight_remains<cooldown.soul_rot.remains))&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&debuff.haunt.remains>5
+actions+=/phantom_singularity,if=((cooldown.soul_rot.remains<=execute_time)|!talent.soul_rot|fight_remains<cooldown.soul_rot.remains)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&debuff.haunt.remains>5&(!buff.succulent_soul.up|buff.succulent_soul.stack<=1)
+actions+=/soul_rot,if=(variable.vt_up&variable.ps_up)&dot.agony.remains
+#Hellcaller Malevolence
 actions+=/malevolence,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
-actions+=/oblivion,if=soul_shard>1&dot.agony.ticking&(dot.corruption.ticking|dot.wither.ticking)&debuff.haunt.remains>5&(cooldown.soul_rot.remains>7|dot.soul_rot.ticking|!talent.soul_rot)&(!buff.succulent_soul.up|buff.succulent_soul.stack<=1)
-actions+=/malefic_rapture,if=(soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3))|buff.succulent_soul.remains<execute_time*buff.succulent_soul.stack|buff.succulent_soul.stack>0
-actions+=/malefic_rapture,if=talent.demonic_soul&(soul_shard>2|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>1))
-actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react
+#Cast Oblivion if dots are up, Soul Rot is not coming in 7s, or you have 0 or 1 Soul Harvester Succulent Soul stacks
+actions+=/oblivion,if=soul_shard>1&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&debuff.haunt.remains>5&(cooldown.soul_rot.remains>7|dot.soul_rot.remains|!talent.soul_rot)&(!buff.succulent_soul.up|buff.succulent_soul.stack<=1)
+#Malefic Rapture if you have max soul shards, max Tormented Crescendo, or Soul Harvester Succulent Soul buffs are about to fall off
+actions+=/malefic_rapture,if=(soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack>1))|talent.demonic_soul&buff.succulent_soul.remains<execute_time*buff.succulent_soul.stack
+#actions+=/malefic_rapture,if=talent.demonic_soul&(!talent.oblivion|soul_shard>2|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>1))
+#Dump all shards as Soul Harvester, or use Tormented Crescendo otherwise
+actions+=/malefic_rapture,if=talent.demonic_soul|!talent.demonic_soul&talent.tormented_crescendo&buff.tormented_crescendo.react
+#Malefic Rapture if Tormented Crescendos are about to fall off
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&buff.tormented_crescendo.remains<gcd.max*2
+#Malefic Rapture if max Tormented Crescendo stacks
 actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+#Malefic Rapture if CD dots are up, or save 2 shards if you have Oblivion
 actions+=/malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)
+#Malefic Rapture if you have both Tormented Crescendo and Nightfall
 actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
-#actions+=/drain_soul,if=buff.nightfall.react,if=talent.drain_soul.enabled
-actions+=/drain_soul,if=talent.drain_soul.enabled&buff.nightfall.react
+#Use Nightfall
+actions+=/drain_soul,if=talent.drain_soul&buff.nightfall.react
 actions+=/shadow_bolt,if=buff.nightfall.react
-actions+=/drain_soul,interrupt=1,if=talent.drain_soul.enabled
+actions+=/drain_soul,interrupt=1,if=talent.drain_soul
 actions+=/shadow_bolt
 
 actions.aoe=call_action_list,name=ogcd
 actions.aoe+=/call_action_list,name=items
-actions.aoe+=/cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.ticking)
-actions.aoe+=/cycling_variable,name=min_vt,op=min,default=10,value=dot.vile_taint.remains+(99*!dot.vile_taint.ticking)
-actions.aoe+=/cycling_variable,name=min_ps,op=min,default=16,value=dot.phantom_singularity.remains+(99*!dot.phantom_singularity.ticking)
+actions.aoe+=/cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.remains)
+actions.aoe+=/cycling_variable,name=min_vt,op=min,default=10,value=dot.vile_taint.remains+(99*!dot.vile_taint.remains)
+actions.aoe+=/cycling_variable,name=min_ps,op=min,default=16,value=dot.phantom_singularity.remains+(99*!dot.phantom_singularity.remains)
 actions.aoe+=/variable,name=min_ps1,op=set,value=(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)
 actions.aoe+=/haunt,if=debuff.haunt.remains<3
 actions.aoe+=/vile_taint,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)
-actions.aoe+=/phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)&dot.agony.ticking
+actions.aoe+=/phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)&dot.agony.remains
 actions.aoe+=/unstable_affliction,if=remains<5
 actions.aoe+=/agony,target_if=min:remains,if=active_dot.agony<8&(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&gcd.max+action.soul_rot.cast_time+gcd.max<(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)&remains<10
-actions.aoe+=/soul_rot,if=variable.vt_up&(variable.ps_up|variable.vt_up)&dot.agony.ticking
+actions.aoe+=/soul_rot,if=variable.vt_up&(variable.ps_up|variable.vt_up)&dot.agony.remains
 actions.aoe+=/malevolence,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions.aoe+=/seed_of_corruption,if=((!talent.wither&dot.corruption.remains<5)|(talent.wither&dot.wither.remains<5))&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)
 actions.aoe+=/corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption
 actions.aoe+=/wither,target_if=min:remains,if=remains<5&!talent.seed_of_corruption
 actions.aoe+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions.aoe+=/malefic_rapture,if=(cooldown.summon_darkglare.remains>15|soul_shard>3)&buff.tormented_crescendo.up
-actions+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
-actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react
-actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
-actions+=/malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)
-actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
+actions.aoe+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
+actions.aoe+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react
+actions.aoe+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+actions.aoe+=/malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)
+actions.aoe+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
 actions.aoe+=/drain_soul,cycle_targets=1,if=talent.drain_soul&buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
 actions.aoe+=/drain_soul,cycle_targets=1,interrupt_global=1,if=talent.drain_soul&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace
 actions.aoe+=/shadow_bolt,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
@@ -96,10 +110,10 @@ actions.cleave+=/wither,target_if=min:remains,if=remains<5&!(action.seed_of_corr
 actions.cleave+=/corruption,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5
 actions.cleave+=/summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions.cleave+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3
-actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react
-actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
-actions+=/malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)
-actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
+actions.cleave+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react
+actions.cleave+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+actions.cleave+=/malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)
+actions.cleave+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
 actions.cleave+=/drain_soul,interrupt=1,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
 actions.cleave+=/drain_soul,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)
 actions.cleave+=/shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)
@@ -129,12 +143,12 @@ actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active&(
 actions.ogcd+=/fireblood,if=variable.cds_active
 actions.ogcd+=/ancestral_call,if=variable.cds_active
 
-actions.variables=variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity
-actions.variables+=/variable,name=vt_up,op=set,value=dot.vile_taint_dot.ticking|!talent.vile_taint
-actions.variables+=/variable,name=vt_ps_up,op=set,value=dot.vile_taint_dot.ticking|dot.phantom_singularity.ticking|(!talent.vile_taint&!talent.phantom_singularity)
-actions.variables+=/variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot
+actions.variables=variable,name=ps_up,op=set,value=dot.phantom_singularity.remains|!talent.phantom_singularity
+actions.variables+=/variable,name=vt_up,op=set,value=dot.vile_taint_dot.remains|!talent.vile_taint
+actions.variables+=/variable,name=vt_ps_up,op=set,value=dot.vile_taint_dot.remains|dot.phantom_singularity.remains|(!talent.vile_taint&!talent.phantom_singularity)
+actions.variables+=/variable,name=sr_up,op=set,value=dot.soul_rot.remains|!talent.soul_rot
 actions.variables+=/variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up
 actions.variables+=/variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare
-actions.variables+=/variable,name=cds_active,op=set,value=!variable.has_cds|(variable.cd_dots_up&(cooldown.summon_darkglare.remains>20|!talent.summon_darkglare))
+actions.variables+=/variable,name=cds_active,op=set,value=!variable.has_cds|(variable.cd_dots_up&(cooldown.summon_darkglare.remains>20|pet.darkglare.remains|!talent.summon_darkglare))
 actions.variables+=/variable,name=min_vt,op=reset,if=variable.min_vt
 actions.variables+=/variable,name=min_ps,op=reset,if=variable.min_ps
