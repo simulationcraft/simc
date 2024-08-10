@@ -1283,8 +1283,10 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
       auto td = p->get_target_data( t );
       if ( td && td->debuff.high_impact->remains() >= 0_ms )
+      {
         high_impact->set_target( t );
-      high_impact->execute();
+        high_impact->execute();
+      }
     } );
   }
 
