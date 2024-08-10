@@ -5,7 +5,7 @@ level=80
 race=orc
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAYwwYAAAAAAAAAAAAAmZmtxYmZWGMzMGzgBzCzMjxsxAjxwsY2mamBLwMzMAYCwsNbLBzGb
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAAMmZAAAAAAAAAAAAAGmFPwYmZ2GjZmZGzMzygZjZmZGzGDMGDziZbqZGsADgZ2sMaWMAkxYB
 
 # Default consumables
 potion=tempered_potion_3
@@ -54,7 +54,7 @@ actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=0,default=1
 actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
 # TODO: Revamp to fix undesired behaviour with unstacked fights
 actions.aoe_variables+=/variable,name=dots_up,op=set,value=(active_dot.vampiric_touch+8*(action.shadow_crash.in_flight&talent.whispering_shadows))>=variable.max_vts|!variable.is_vt_possible
-actions.aoe_variables+=/variable,name=holding_crash,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_crash&talent.whispering_shadows
+actions.aoe_variables+=/variable,name=holding_crash,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4&raid_event.adds.in>15|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_crash&talent.whispering_shadows&raid_event.adds.exists
 actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+8*!variable.holding_crash)>=variable.max_vts|!variable.is_vt_possible
 
 # TODO: Check VE/DA enter conditions based on dots
@@ -120,10 +120,12 @@ actions.heal_for_tof+=/holy_nova,if=buff.rhapsody.stack=20&talent.rhapsody
 
 actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies|action.shadow_crash.in_flight&talent.whispering_shadows,if=active_enemies<3
 # Are we pooling mindblasts? Currently only used for Voidweaver.
-actions.main+=/variable,name=pooling_mindblasts,op=setif,value=1,value_else=0,condition=(cooldown.void_torrent.remains<?(variable.holding_crash*raid_event.adds.in))<=gcd.max*4,if=talent.void_blast
+actions.main+=/variable,name=pooling_mindblasts,op=setif,value=1,value_else=0,condition=(cooldown.void_torrent.remains<?(variable.holding_crash*raid_event.adds.in))<=gcd.max*(1+talent.mind_melt*3),if=talent.void_blast
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension
 actions.main+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
+# High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter
+actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.devouring_plague.ticking,if=priest.force_devour_matter&talent.devour_matter
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=(dot.devouring_plague.remains>=execute_time|buff.entropic_rift.remains<=gcd.max|action.void_torrent.channeling&talent.void_empowerment)&(insanity.deficit>=16|cooldown.mind_blast.full_recharge_time<=gcd.max)&(!talent.mind_devourer|!buff.mind_devourer.up|buff.entropic_rift.remains<=gcd.max)
 actions.main+=/wait,sec=cooldown.mind_blast.recharge_time,if=cooldown.mind_blast.recharge_time<buff.entropic_rift.remains&buff.entropic_rift.up&buff.entropic_rift.remains<gcd.max&cooldown.mind_blast.charges<1
@@ -144,7 +146,7 @@ actions.main+=/shadow_word_death,target_if=max:dot.devouring_plague.remains,if=p
 # Use Voidbolt on the enemy with the largest time to die. Force a cooldown check here to make sure SimC doesn't wait too long (i.e. weird MF:I desync with GCD)
 actions.main+=/void_bolt,target_if=max:target.time_to_die,if=cooldown.void_bolt.remains<=0.1
 # Do not overcap MSI or MFI during Empowered Surges (Archon).
-actions.main+=/call_action_list,name=empowered_filler,if=(buff.mind_spike_insanity.stack=1&talent.mind_spike|buff.mind_flay_insanity.stack=1&!talent.mind_spike|buff.power_surge.up)&talent.empowered_surges&!cooldown.void_eruption.up
+actions.main+=/call_action_list,name=empowered_filler,if=(buff.mind_spike_insanity.stack>2&talent.mind_spike|buff.mind_flay_insanity.stack>2&!talent.mind_spike)&talent.empowered_surges&!cooldown.void_eruption.up
 # Hyper cringe optimisations that fish for TOF using heals. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used.
 actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&(talent.rhapsody|talent.divine_star|talent.halo)
 # Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s
@@ -154,7 +156,7 @@ actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_
 # Use Void Torrent if it will get near full Mastery Value and you have Cthun and Void Eruption. Prune this action for Entropic Rift Builds.
 actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift,target_if=dot.devouring_plague.remains>=2.5
 # Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range
-actions.main+=/shadow_crash,if=!variable.holding_crash&dot.vampiric_touch.refreshable
+actions.main+=/shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash
 # Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)
 # Spend Deathspeaker Procs
@@ -181,27 +183,27 @@ actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.da
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
 
 head=intertwiners_shadowcowl,id=221187,ilevel=593
-neck=strapped_rescuekeg,id=221060,ilevel=593
+neck=emergency_stop_keychain,id=221077,ilevel=593
 shoulders=moneymaking_businessmantle,id=221072,ilevel=593
 back=anvilhide_cape,id=221088,ilevel=593
 chest=arachnofrost_vest,id=221176,ilevel=593,enchant=crystalline_radiance_2
 wrists=vitriolic_veinwoven_wraps,id=221182,ilevel=593
 hands=punctured_apiary_gloves,id=221067,ilevel=593
 waist=honorbound_retainers_sash,id=221121,ilevel=593
-legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=daybreak_spellthread_2
-feet=tainted_earthshard_walkers,id=221082,ilevel=593
-finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=cursed_mastery_2
-finger2=85_years_tenure_ring,id=221198,ilevel=593,enchant=cursed_mastery_2
+legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=sunset_spellthread_2
+feet=membranous_slippers,id=221149,ilevel=593
+finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=radiant_mastery_2
+finger2=85year_tenure_ring,id=221198,ilevel=593,enchant=radiant_mastery_2
 trinket1=arakara_sacbrood,id=219314,ilevel=593
-trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
-main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_radiant_power_2
+trinket2=signet_of_the_priory,id=219308,ilevel=593
+main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_the_depths_2
 
 # Gear Summary
 # gear_ilvl=593.00
-# gear_stamina=123474
+# gear_stamina=123685
 # gear_intellect=32251
-# gear_crit_rating=5039
-# gear_haste_rating=11518
-# gear_mastery_rating=8986
-# gear_versatility_rating=1938
+# gear_crit_rating=5737
+# gear_haste_rating=9330
+# gear_mastery_rating=10982
+# gear_versatility_rating=1492
 # gear_armor=12400
