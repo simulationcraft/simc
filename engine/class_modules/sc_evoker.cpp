@@ -326,16 +326,16 @@ struct simplified_player_t : public player_t
 
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 7,    true, 1.5_s, 0.40,  -1, 8, 1, 14100.0, 0.0011, {} } }, // 250.9k
-      { "tank",    { ROLE_TANK,  4.16, true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, 0.0011, {} } },      // 157.4k
-      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25,  -1, 5, 1, 14100.0, 0.0011, {} } },      // 78k
-      { "shadow",  { ROLE_SPELL, 5,    true, 1.5_s, 0.45,  -1, 8, 1, 14100.0, 0.0011, {       // 244.8k
-          { "two_mins_cds", 0.6, 20_s, 120_s, 3_s },
-          { "one_mins_cds", 0.5, 20_s,  60_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 5.6,  true, 1.5_s, 0.4,  -1, 8, 1, 8400.0, 0.0011, {              // 243.5k
+      { "default", { ROLE_SPELL, 11.2, true, 1.5_s, 0.40, -1, 8, 1, 20000.0, 0.0011, {} } }, // 250.9k
+      { "tank",    { ROLE_TANK,  6.2,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {} } },      // 157.4k
+      { "healer",  { ROLE_HEAL,  2.5,  true, 1.5_s, 0.25, -1, 5, 1, 20000.0, 0.0011, {} } },      // 78k
+      { "shadow",  { ROLE_SPELL, 7,    true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {       // 244.8k
+          { "two_mins_cds", 0.3, 15_s, 120_s, 3_s },
+          { "two_mins_cds_two", 0.3, 45_s,  120_s, 3_s } } } },
+      { "bm",      { ROLE_SPELL, 9,    true, 1.5_s, 0.4,  -1, 8, 1, 14000.0, 0.0011, {              // 243.5k
           { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
           { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 2.33, false, 1_s, 0.5,  -1, 8, 1, 11100.0, 0.0011, {              // 234.6k
+      { "assa",    { ROLE_SPELL, 3,   false, 1_s,   0.5,  -1, 8, 1, 11100.0, 0.0011, {              // 234.6k
           { "ten_mins_cds", 0.2,  40_s, 600_s, 0_s },
           { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
           { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
