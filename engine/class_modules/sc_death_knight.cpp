@@ -8698,19 +8698,6 @@ struct festering_wound_t final : public death_knight_spell_t
         RESOURCE_RUNIC_POWER,
         p()->spec.festering_wound->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p()->gains.festering_wound, this );
-
-    if ( p()->talent.unholy.festering_scythe.ok() )
-    {
-      if ( p()->buffs.festering_scythe_stacks->at_max_stacks() )
-      {
-        // Doesnt expire until the wound popped after reaching max
-        p()->buffs.festering_scythe_stacks->expire();
-      }
-      else
-      {
-        p()->buffs.festering_scythe_stacks->trigger();
-      }
-    }
   }
 
 private:
@@ -11544,6 +11531,14 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
       pets.ghoul_pet.active_pet()->vile_infusion->trigger();
     }
   }
+
+  if ( talent.unholy.festering_scythe.ok() )
+  {
+    if ( !buffs.festering_scythe->check() )
+    {
+      buffs.festering_scythe_stacks->trigger( n_wounds );
+    }
+  }
 }
 
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
@@ -11858,6 +11853,14 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
         if ( p()->pets.ghoul_pet.active_pet() != nullptr )
         {
           p()->pets.ghoul_pet.active_pet()->vile_infusion->trigger( n_executes );
+        }
+      }
+
+      if ( p()->talent.unholy.festering_scythe.ok() )
+      {
+        if( !p()->buffs.festering_scythe->check() )
+        {
+          p()->buffs.festering_scythe_stacks->trigger( n_executes );
         }
       }
 
@@ -14229,6 +14232,7 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe_stacks = make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_stacks",
                                                  spell.festering_scythe_stacking_buff )
+                                      ->set_expire_at_max_stack( true )
                                       ->set_expire_callback( [ this ]( buff_t*, int, timespan_t remains ) {
                                         if ( remains > 0_ms )
                                           buffs.festering_scythe->trigger();
