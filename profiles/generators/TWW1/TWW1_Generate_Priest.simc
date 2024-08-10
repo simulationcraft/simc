@@ -1,8 +1,9 @@
 priest="TWW1_Priest_Shadow"
 level=80
-role=spell
-position=back
+race=orc
 spec=shadow
+role=spell
+position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAAMmZAAAAAAAAAAAAAGmFPwYmZ2GjZmZGzMzygZjZmZGzGDMGDziZbqZGsADgZ2sMaWMAkxYB
 
 head=living_lusters_semblance,id=212083,ilevel=639,gem_id=213743
