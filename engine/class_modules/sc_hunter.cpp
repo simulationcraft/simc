@@ -4544,7 +4544,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
   double sh_chance = 0.0;
   timespan_t sh_duration = 0_s;
 
-  buff_t* ds_impact_buff = nullptr;
+  buff_t* ds_cast_buff = nullptr;
 
   double de_focus_gain = 0.0;
 
@@ -4561,14 +4561,14 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
     {
       ba_recharge_cooldown = p->cooldowns.aimed_shot;
-      ds_impact_buff       = p->buffs.deathblow;
+      ds_cast_buff       = p->buffs.deathblow;
       sl_cooldown_buff     = p->buffs.trueshot;
     }
 
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       ba_recharge_cooldown = p->cooldowns.barbed_shot;
-      ds_impact_buff       = p->buffs.hunters_prey;
+      ds_cast_buff       = p->buffs.hunters_prey;
       sl_cooldown_buff     = p->buffs.call_of_the_wild;
     }
 
@@ -4597,12 +4597,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
     return mul;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    hunter_ranged_attack_t::impact( s );
+    hunter_ranged_attack_t::execute();
 
     if ( p()->talents.death_shade.ok() )
-      ds_impact_buff->trigger();
+      ds_cast_buff->trigger();
   }
 
   void tick( dot_t* d ) override
