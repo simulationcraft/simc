@@ -379,7 +379,7 @@ jobs:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
     needs: [ tww-test, tww-spelldata-dump ]
-    if: github.event_name == 'push' && ( success() || failure() )
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
 
     strategy:
       fail-fast: false
