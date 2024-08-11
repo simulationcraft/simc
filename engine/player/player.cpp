@@ -9967,6 +9967,55 @@ struct cancel_action_t : public action_t
   }
 };
 
+struct dismiss_pet_t final : public action_t
+{
+  std::string pet_name;
+  pet_t* pet;
+
+  dismiss_pet_t( player_t* player, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "dismiss_pet", player ),
+    pet_name(),
+    pet()
+  {
+    add_option( opt_string( "name", pet_name ) );
+    parse_options( options_str );
+    harmful = false;
+    usable_while_casting = use_while_casting = ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+
+    if ( pet_name.empty() )
+      throw std::invalid_argument( fmt::format( "{} must specify the name of the pet", name() ) );
+  }
+
+  void init() override
+  {
+    pet = player->find_pet( pet_name );
+    if ( !pet && sim->debug )
+      sim->error( "Player {}: Could not find pet with name '{}' for Action '{}'", player->name(), pet_name, name() );
+
+    if ( pet && !pet->can_dismiss )
+      throw std::invalid_argument( fmt::format( "{} cannot be dismissed", pet->name() ) );
+
+    action_t::init();
+  }
+
+  void execute() override
+  {
+    assert( pet );
+    assert( !pet->is_sleeping() );
+    sim->print_log( "{} performs {} on {}", player->name(), name(), pet->name() );
+    pet->dismiss( false );
+  }
+
+  bool ready() override
+  {
+    if ( !pet || pet->is_sleeping() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 /**
  * Pool Resource
  *
@@ -10339,6 +10388,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new cancel_action_t( this, options_str );
   if ( name == "cancel_buff" )
     return new cancel_buff_t( this, options_str );
+  if ( name == "dismiss_pet" )
+    return new dismiss_pet_t( this, options_str );
   if ( name == "invoke_external_buff" )
     return new invoke_external_buff_t( this, options_str );
   if ( name == "swap_action_list" )
