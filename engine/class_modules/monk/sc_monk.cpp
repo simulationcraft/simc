@@ -3359,7 +3359,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
     if ( target->name_str == "Target Dummy" )
       return false;
 
-    return monk_melee_attack_t::ready();
+    return monk_melee_attack_t::target_ready( target );
   }
 
   void execute() override
