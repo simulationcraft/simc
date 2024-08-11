@@ -3137,6 +3137,16 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double bonus = hunter_main_pet_attack_t::bonus_da( s );
+
+    // Adding player ap (* effect 1 from talent spell?).
+    bonus += o()->composite_total_attack_power_by_type( p()->default_ap_type() ) * o()->talents.flanking_strike->effectN( 1 ).percent();
+
+    return bonus;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double am = hunter_main_pet_attack_t::composite_da_multiplier( s );
