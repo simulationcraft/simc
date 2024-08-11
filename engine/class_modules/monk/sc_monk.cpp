@@ -1758,8 +1758,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     attack_power_mod.direct = 0;
 
-    execute_action = new overwhelming_force_t<press_the_advantage_t<rising_sun_kick_dmg_t>>( p, options_str );
-    stats          = execute_action->stats;
+    execute_action        = new overwhelming_force_t<press_the_advantage_t<rising_sun_kick_dmg_t>>( p, options_str );
+    execute_action->stats = stats;
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
