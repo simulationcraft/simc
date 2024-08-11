@@ -3136,6 +3136,20 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
       base_aoe_multiplier = o()->talents.exposed_flank->effectN( 1 ).percent();
     }
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_main_pet_attack_t::composite_da_multiplier( s );
+
+    // Flanking Strike is getting mastery applied twice.
+    double bonus = o() -> cache.mastery() * o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+    // TODO implement range
+    bonus *= 1 + o()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+
+    am *= 1 + bonus;
+
+    return am;
+  }
 };
 
 // Coordinated Assault ====================================================
@@ -6010,9 +6024,15 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = hunter_melee_attack_t::composite_da_multiplier( s );
+      double am = hunter_melee_attack_t::composite_da_multiplier( s );
 
-      return m;
+      double bonus = p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+      // TODO implement range
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+      
+      am *= 1 + bonus;
+
+      return am;
     }
   };
 
