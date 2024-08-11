@@ -2311,7 +2311,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
           return;
 
         if ( auto target_data = p->get_target_data( target );
-             target_data && target_data->debuff.mark_of_the_crane->remains() > 0_ms )
+             target_data && target_data->debuff.mark_of_the_crane->up() )
         {
           make_event( p->sim, target_data->debuff.mark_of_the_crane->remains(), [ p, target_data ]() {
             p->sim->print_debug( "mark of the crane fell off dead target: {} ", target_data->target->name_str );
