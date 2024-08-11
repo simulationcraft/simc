@@ -3146,8 +3146,6 @@ struct coordinated_assault_t: public hunter_main_pet_attack_t
     hunter_main_pet_attack_t( "coordinated_assault", p, p -> find_spell( 360969 ) )
   {
     background = true;
-    // Not affected despite player damage with same spell id being affected.
-    affected_by.tip_of_the_spear.direct = 0;
   }
 };
 
@@ -6000,7 +5998,7 @@ struct flanking_strike_t: hunter_melee_attack_t
       background = true;
       dual = true;
 
-      // Does not decrement despite damage being affected.
+      // Decrement after player and pet damage.
       decrements_tip_of_the_spear = false;
 
       if ( p->talents.exposed_flank.ok() )
@@ -6008,6 +6006,13 @@ struct flanking_strike_t: hunter_melee_attack_t
         aoe = as<int>( p->talents.exposed_flank->effectN( 3 ).base_value() );
         base_aoe_multiplier = p->talents.exposed_flank->effectN( 1 ).percent();
       }
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_melee_attack_t::composite_da_multiplier( s );
+
+      return m;
     }
   };
 
@@ -6024,6 +6029,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     add_child( damage );
 
+    // Decrement after player and pet damage.
     decrements_tip_of_the_spear = false;
   }
 
@@ -6037,8 +6043,6 @@ struct flanking_strike_t: hunter_melee_attack_t
 
   void execute() override
   {
-    p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.flanking_strike->effectN( 2 ).base_value() ) );
-
     hunter_melee_attack_t::execute();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
@@ -6046,6 +6050,10 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( auto pet = p() -> pets.main )
       pet -> active.flanking_strike -> execute_on_target( target );
+
+    p()->buffs.tip_of_the_spear->decrement();
+
+    p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.flanking_strike->effectN( 2 ).base_value() ) );
 
     p()->buffs.exposed_flank->trigger();
   }
