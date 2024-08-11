@@ -2661,7 +2661,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::execute();
 
-    if ( affected_by_master_of_the_elements && p()->buff.master_of_the_elements->check() )
+    if ( affected_by_master_of_the_elements && (!background || id == 188389) && p()->buff.master_of_the_elements->check() )
     {
       p()->buff.master_of_the_elements->decrement();
       proc_moe->occur();
