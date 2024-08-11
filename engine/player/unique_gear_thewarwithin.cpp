@@ -700,7 +700,7 @@ struct pickup_cinderbee_orb_t : public action_t
   {
     if ( !rng().roll( player->thewarwithin_opts.embrace_of_the_cinderbee_miss_chance ) )
     {
-      orb->expire();
+      orb->decrement();
     }
   }
 };
@@ -724,8 +724,10 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
       orb = create_buff<buff_t>( e.player, "embrace_of_the_cinderbee_orb", e.player->find_spell( 451698 ) )
-                ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
-                  if ( d > 0_ms )
+                ->set_max_stack( 10 )
+                ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                ->set_stack_change_callback( [ & ]( buff_t*, int old_, int new_ ) {
+                  if ( old_ > new_ )
                   {
                     buffs.at( util::highest_stat( e.player, secondary_ratings ) )->trigger();
                   }
