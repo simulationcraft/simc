@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56044
-static const std::array<spelltext_data_t, 26283> __spelltext_data { {
+// Spell text, wow build 11.0.2.56071
+static const std::array<spelltext_data_t, 26287> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23849,6 +23849,7 @@ static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   { 443760, "Dealing damage has a chance to grant you a stack of Deepening Darkness. The Darkness erupts at 5 stacks, dealing ${$<rolemult>*$s2} Shadow damage split among all nearby enemies. Damage increases per target, up to 5. Afterwards, the shadows weigh you down and lower your movement speed by $s3% for $446836d.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 443762, "Taking damage has a chance to grant you an Adrenal Surge, causing you to gain $446108s1 $pri and lose $455571s1 Mastery for $446108d.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 443763, "Conjure raw Arcane magic into a sharp projectile that deals $s1 Arcane damage.\r\n\r\n$@spellname443763s embed themselves into their target, dealing $444735o1 Arcane damage over $444735d. This effect stacks.", 0, 0 },
+  { 443764, "Your spells and abilities have a chance to create a floating orb of Fire Pollen nearby. Stepping into the orb will gather it, increasing your highest secondary stat by $451699s5 for $451699d. Up to 2 allies who step near you during this time will also receive $451980s4 of a random secondary stat for $451980d.", 0, 0 },
   { 443770, "Your movement speed is increased by $s2% and you have immunity to falling damage. Your abilities have a chance to increase your party's Haste by $s1 for $443771d.", 0, 0 },
   { 443771, "$@spelldesc443471", "Haste increased by $w1.", 0 },
   { 443772, "Casting your major class cooldown causes you to overload, inflicting $s1 Nature damage and stunning enemies within $443796A1 yards for $443796d. ($proccooldown Sec Cooldown)", 0, 0 },
@@ -24663,6 +24664,7 @@ static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   { 451580, "Targets hit by Strike of the Windlord have a $451582h% chance to be struck for $451582s1% additional Nature damage from your spells and abilities for $451582d.", 0, 0 },
   { 451582, "$@spelldesc451580", "$@auracaster's abilities to have a $h% chance to strike for $s1% additional Nature damage.", 0 },
   { 451585, "$@spelldesc451580", 0, 0 },
+  { 451699, "$@spelldesc443764", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
   { 451740, "$@spelldesc204197", "$w1 Radiant damage every $t1 seconds.", 0 },
   { 451742, "Your abilities have a chance to increase your Haste by $451750s1 for $451748d.", 0, 0 },
   { 451748, "$@spelldesc451742", "Haste increased by $451750s1", 0 },
@@ -24720,6 +24722,7 @@ static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   { 451963, "$@spelldesc451311", 0, 0 },
   { 451964, "$@spelldesc451311", 0, 0 },
   { 451968, "Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[\r\n\r\nDraws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[\r\n\r\n|cFFFFFFFFGenerates ${$s3+$342928s2} Chi.][]", 0, 0 },
+  { 451980, "$@spelldesc443764", "Coated in magical pollen that increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] by $w5.", 0 },
   { 451991, "$@spelldesc451055", 0, 0 },
   { 452030, "$@spelldesc445593", 0, 0 },
   { 452032, "$@spelldesc443530", 0, 0 },
@@ -26232,6 +26235,7 @@ static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   { 463678, "$@spelldesc445337", "Shoulders imbued with a shadowy illusion.", 0 },
   { 463679, "$@spelldesc445327", "Shoulders imbued with a crystalline illusion.", 0 },
   { 463680, "$@spelldesc445401", "Shoulders imbued with a radiant illusion.", 0 },
+  { 463730, "${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", "${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", 0 },
   { 463781, "$@spelldesc51690", 0, 0 },
   { 463865, "$@spelldesc200071", 0, 0 },
   { 464202, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
@@ -26285,7 +26289,7 @@ static const std::array<spelltext_data_t, 26283> __spelltext_data { {
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56044
+// spelltext hotfix entries, wow build 11.0.2.56071
 static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
   {  446743,  0, nullptr, "$@spelldesc443760" },
   {  446753,  0, nullptr, "$@spelldesc443760" },
@@ -26299,7 +26303,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfi
   {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
 } };
 
-// Spell description variables, wow build 11.0.2.56044
+// Spell description variables, wow build 11.0.2.56071
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26887,7 +26891,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56044
+// spelldesc_vars hotfix entries, wow build 11.0.2.56071
 static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelldesc_vars_hotfix_data { {
   {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
   {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4569*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4661*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },

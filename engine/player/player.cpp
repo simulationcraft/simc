@@ -13228,6 +13228,8 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.dawn_dusk_thread_lining_uptime", thewarwithin_opts.dawn_dusk_thread_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval", thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing", thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
+  add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

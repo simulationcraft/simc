@@ -847,6 +847,10 @@ struct player_t : public actor_t
     timespan_t dawn_dusk_thread_lining_update_interval = 10_s;
     // Standard Deviation of interval
     timespan_t dawn_dusk_thread_lining_update_interval_stddev = 2.5_s;
+    // Embrace of the Cinderbee timing
+    timespan_t embrace_of_the_cinderbee_timing = 0_ms;
+    // Embrace of the Cinderbee miss chance
+    double embrace_of_the_cinderbee_miss_chance = 0;
   } thewarwithin_opts;
 
 private:

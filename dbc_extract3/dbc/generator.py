@@ -1509,6 +1509,7 @@ class SpellDataGenerator(DataGenerator):
          450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
          450204, # twin fang instruments
          457284, # TWW Primary Stat Food
+         443764, 451698, 451699, # Embrace of the Cinderbee Set
         ),
 
         # Warrior:
@@ -3998,6 +3999,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'dragonflight_season_4',
             'bonuses': [ 1594, 1595, 1596, 1597, 1598, 1599, 1600, 1601, 1602, 1603, 1604, 1605, 1606 ],
             'tier'   : 'DF4'
+        },
+        {
+            'name'   : 'embrace_of_the_cinderbee',
+            'bonuses': [ 1611 ],
+            'tier'   : 'TWW_ECB'
         },
         {
             'name'   : 'fury_of_the_storm_rook',

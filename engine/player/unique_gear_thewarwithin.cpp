@@ -670,6 +670,108 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
   }
 }
 
+// Embrace of the Cinderbee
+// 443764 Driver
+// 451698 Orb Available Buff
+// 451699 Stat Buff
+struct pickup_cinderbee_orb_t : public action_t
+{
+  buff_t* orb = nullptr;
+
+  pickup_cinderbee_orb_t( player_t* p, std::string_view opt )
+    : action_t( ACTION_OTHER, "pickup_cinderbee_orb", p, spell_data_t::nil() )
+  {
+    parse_options( opt );
+
+    s_data_reporting   = p->find_spell( 451698 );
+    name_str_reporting = "Cinderbee Orb Collected";
+
+    callbacks = harmful = false;
+    trigger_gcd         = 0_ms;
+  }
+
+  bool ready() override
+  {
+    return orb->check();
+  }
+
+  void execute() override
+  {
+    if ( !rng().roll( player->thewarwithin_opts.embrace_of_the_cinderbee_miss_chance ) )
+    {
+      orb->expire();
+    }
+  }
+};
+
+void embrace_of_the_cinderbee( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "embrace_of_the_cinderbee_orb" } ) )
+    return;
+
+  struct embrace_of_the_cinderbee_t : public dbc_proc_callback_t
+  {
+    buff_t* orb;
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::vector<action_t*> apl_actions;
+    player_t* player;
+
+    embrace_of_the_cinderbee_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), player( e.player )
+    {
+      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.player );
+      create_all_stat_buffs( e, e.player->find_spell( 451699 ), value,
+                             [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+
+      orb = create_buff<buff_t>( e.player, "embrace_of_the_cinderbee_orb", e.player->find_spell( 451698 ) )
+                ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
+                  if ( d > 0_ms )
+                  {
+                    buffs.at( util::highest_stat( e.player, secondary_ratings ) )->trigger();
+                  }
+                } );
+
+      for ( auto& a : e.player->action_list )
+      {
+        if ( a->name_str == "pickup_cinderbee_orb" )
+        {
+          apl_actions.push_back( a );
+        }
+      }
+
+      if ( apl_actions.size() > 0 )
+      {
+        // Set a default task for the actions ready() function, will be overwritten later
+        for ( auto& a : apl_actions )
+        {
+          debug_cast<pickup_cinderbee_orb_t*>( a )->orb = orb;
+        }
+      }
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( apl_actions.size() > 0 )
+      {
+        orb->trigger();
+      }
+      else
+      {
+        timespan_t timing  = player->thewarwithin_opts.embrace_of_the_cinderbee_timing;
+        double miss_chance = player->thewarwithin_opts.embrace_of_the_cinderbee_miss_chance;
+        make_event( *player->sim, timing > 0_ms ? timing : rng().range( 100_ms, orb->data().duration() ),
+                    [ this, miss_chance ] {
+                      if ( !rng().roll( miss_chance ) )
+                      {
+                        buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
+                      }
+                    } );
+      }
+    }
+  };
+
+  new embrace_of_the_cinderbee_t( effect );
+}
+
 }  // namespace embellishments
 
 namespace items
@@ -3628,6 +3730,7 @@ void register_special_effects()
   register_special_effect( 435992, DISABLED_EFFECT );  // prismatic null stone
   register_special_effect( 461177, embellishments::elemental_focusing_lens );
   register_special_effect( { 457665, 457677 }, embellishments::dawn_dusk_thread_lining );
+  register_special_effect( 443764, embellishments::embrace_of_the_cinderbee, true );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -3704,6 +3807,7 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
 {
   if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
   if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
+  if ( n == "pickup_cinderbee_orb" ) return new embellishments::pickup_cinderbee_orb_t( p, options );
 
   return nullptr;
 }

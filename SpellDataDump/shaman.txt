@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56044 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56071 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
