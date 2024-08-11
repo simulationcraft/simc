@@ -1356,6 +1356,7 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     exceptional_spells_used(),
     exceptional_meteor_used()
   {
+    can_dismiss = true;
     owner_coeff.sp_from_sp = 1.0;
   }
 
