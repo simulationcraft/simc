@@ -6680,7 +6680,8 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                  } )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->baseline.windwalker.touch_of_karma )
                               // set the percent of the max hp as the default value.
