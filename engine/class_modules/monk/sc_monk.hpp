@@ -669,6 +669,7 @@ public:
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> jadefire_brand;
+    propagate_const<buff_t *> mark_of_the_crane;
     propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
