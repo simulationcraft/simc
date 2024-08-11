@@ -5475,10 +5475,12 @@ struct chi_burst_t : monk_spell_t
     monk_spell_t::execute();
 
     if ( buff )
+    {
       if ( p()->bugs )
         buff->expire();
       else
         buff->decrement();
+    }
 
     damage->execute();
     heal->execute();
@@ -6395,7 +6397,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -8458,7 +8460,7 @@ void monk_t::create_buffs()
 
   buff.inner_compass_crane_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                         "crane_stance", find_spell( 443572 ) )
-                                        ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                        ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
                                           if ( old_ == 0 )
                                           {
                                             buff.inner_compass_ox_stance->expire();
@@ -8469,7 +8471,7 @@ void monk_t::create_buffs()
 
   buff.inner_compass_ox_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                      "ox_stance", find_spell( 443574 ) )
-                                     ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                     ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
                                        if ( old_ == 0 )
                                        {
                                          buff.inner_compass_crane_stance->expire();
@@ -8480,7 +8482,7 @@ void monk_t::create_buffs()
 
   buff.inner_compass_serpent_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                           "serpent_stance", find_spell( 443576 ) )
-                                          ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                          ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
                                             if ( old_ == 0 )
                                             {
                                               buff.inner_compass_crane_stance->expire();
@@ -8491,7 +8493,7 @@ void monk_t::create_buffs()
 
   buff.inner_compass_tiger_stance = make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this,
                                                         "tiger_stance", find_spell( 443575 ) )
-                                        ->set_stack_change_callback( [ this ]( buff_t *buff_, int old_, int ) {
+                                        ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
                                           if ( old_ == 0 )
                                           {
                                             buff.inner_compass_crane_stance->expire();
