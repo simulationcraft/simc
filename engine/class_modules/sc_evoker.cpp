@@ -90,6 +90,14 @@ enum spell_color_e
   SPELL_RED
 };
 
+ enum mote_buffs_e : unsigned
+{
+  INFERNOS_BLESSING = 0,
+  SHIFTING_SANDS,
+  SYMBIOTIC_BLOOM,
+  MAX
+};
+
 enum proc_spell_type_e : unsigned
 {
   NONE          = 0x0,
@@ -1214,6 +1222,7 @@ struct evoker_t : public player_t
   void bounce_naszuro( player_t*, timespan_t );
 
   // Augmentation Helpers
+  void spawn_mote_of_possibility( player_t* = nullptr, timespan_t = timespan_t::zero() );
   void extend_ebon( timespan_t );
 
   // Utility functions
@@ -5060,6 +5069,7 @@ struct eruption_t : public essence_spell_t
   action_t* mass_eruption;
   double mass_eruption_mult;
   int mass_eruption_max_targets;
+  double motes_chance;
 
   eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
   {
@@ -5072,7 +5082,8 @@ struct eruption_t : public essence_spell_t
       mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
       mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
       t31_4pc_eruption( nullptr ),
-      mass_eruption(nullptr)
+      mass_eruption( nullptr ),
+      motes_chance( p->talent.motes_of_possibility->proc_chance() )
   {
     aoe              = -1;
     split_aoe_damage = true;
@@ -5149,11 +5160,10 @@ struct eruption_t : public essence_spell_t
       p()->cooldown.upheaval->adjust( upheaval_cdr );
     }
 
-    /* if ( p()->talent.motes_of_possibility.ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
+    if ( p()->talent.motes_of_possibility.ok() && rng().roll( motes_chance ) )
     {
-      p()->cooldown.breath_of_eons->adjust(
-          -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
-    }*/
+      p()->spawn_mote_of_possibility();
+    }
 
     if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
          p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
@@ -5610,7 +5620,7 @@ public:
 struct breath_of_eons_t : public evoker_spell_t
 {
   action_t* ebon;
-  action_t* eruption;
+  eruption_t* eruption;
   timespan_t plot_duration;
   action_t* melt_armor_dot;
 
@@ -5634,8 +5644,9 @@ struct breath_of_eons_t : public evoker_spell_t
 
     if ( p->talent.overlord.ok() )
     {
-      eruption = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
-      eruption->proc = true;
+      eruption               = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+      eruption->proc         = true;
+      eruption->motes_chance = p->talent.overlord->effectN( 2 ).percent();
       add_child( eruption );
     }
 
@@ -8706,6 +8717,45 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
     return;
 
   get_target_data( p )->buffs.unbound_surge->trigger( remains );
+}
+
+void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, timespan_t delay )
+{
+  player_t* target = prospective_player;
+
+  if ( target && target->is_sleeping() )
+    target = nullptr;
+
+  if ( !target && allies_with_my_ebon.size() > 0 )
+  {
+    target = allies_with_my_ebon[ rng().range<size_t>( allies_with_my_ebon.size() ) ];
+  }
+
+  if ( !target )
+  {
+    // Use loose Exponential Backoff to delay the event until Ebon Might becomes active.
+    timespan_t new_delay = rng().range( 0_s, 1_s ) + delay * 1.1;
+    make_event( sim, new_delay, [ this, new_delay ] { spawn_mote_of_possibility( nullptr, new_delay ); } );
+    return;
+  }
+
+  auto td = get_target_data( target );
+
+  mote_buffs_e mote_buff = mote_buffs_e( rng().range<unsigned>( mote_buffs_e::MAX ) );
+
+  switch ( mote_buff )
+  {
+    case mote_buffs_e::INFERNOS_BLESSING:
+      td->buffs.infernos_blessing->trigger();
+      break;
+    case mote_buffs_e::SHIFTING_SANDS:
+      td->buffs.shifting_sands->current_value = cache.mastery_value();
+      td->buffs.shifting_sands->trigger();
+      break;
+    case mote_buffs_e::SYMBIOTIC_BLOOM:
+    default:
+      break;
+  }
 }
 
 void evoker_t::extend_ebon( timespan_t extend )
