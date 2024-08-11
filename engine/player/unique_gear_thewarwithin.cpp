@@ -3112,6 +3112,30 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
   new vivacity_cb_t( effect );
 }
 
+void algari_alchemist_stone( special_effect_t& e )
+{
+  auto stat = e.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  const spell_data_t* buff_spell;
+  switch ( stat )
+  {
+    case STAT_STRENGTH:
+      buff_spell = e.player->find_spell( 299788 );
+      break;
+    case STAT_AGILITY:
+      buff_spell = e.player->find_spell( 299789 );
+      break;
+    default:
+      buff_spell = e.player->find_spell( 299790 );
+      break;
+  }
+
+  auto buff = create_buff<stat_buff_t>( e.player, buff_spell )
+    ->add_stat_from_effect( 1, e.driver()->effectN( 1 ).average( e.item ) );
+
+  e.custom_buff = buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -3651,6 +3675,7 @@ void register_special_effects()
   register_special_effect( 455534, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
+  register_special_effect( 432421, items::algari_alchemist_stone );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
