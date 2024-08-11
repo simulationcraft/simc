@@ -8356,6 +8356,14 @@ void monk_t::create_buffs()
   buff.invoke_xuen = make_buff<buffs::invoke_xuen_the_white_tiger_buff_t>(
       this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
+  // Fake buff to display the number of targets debuffed in the sample sequence of the html report
+  buff.mark_of_the_crane =
+      make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "motc_counter", passives.cyclone_strikes )
+          ->set_tick_callback(
+              [ this ]( buff_t *self, int, timespan_t ) { self->current_stack = mark_of_the_crane_counter(); } )
+          ->set_period( 1_s )
+          ->set_tick_behavior( buff_tick_behavior::CLIP );
+
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
                              ->set_trigger_spell( talent.windwalker.martial_mixture );
