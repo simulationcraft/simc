@@ -2306,7 +2306,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
     {
-      p->register_on_kill_callback( [ this, p ]( player_t *target ) {
+      p->register_on_kill_callback( [ p ]( player_t *target ) {
         if ( p->sim->event_mgr.canceled )
           return;
 
@@ -6656,9 +6656,11 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                    {
                                      if ( new_ )
                                        p->buff.cyclone_strikes->trigger();
-                                     else
-                                       p->buff.cyclone_strikes->decrement();
                                    }
+                                 } )
+                                 ->set_expire_callback( [ p ]( buff_t *, int, timespan_t remaining_duration ) {
+                                   if ( remaining_duration == 0_s && p->user_options.motc_override == 0 )
+                                     p->buff.cyclone_strikes->decrement();
                                  } )
                                  ->set_max_stack( 1 )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
@@ -8328,12 +8330,15 @@ void monk_t::create_buffs()
 
   buff.cyclone_strikes = make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "cyclone_strikes",
                                              passives.cyclone_strikes )
-                             ->set_initial_stack( user_options.motc_override )
-                             ->set_freeze_stacks( user_options.motc_override > 0 )
                              ->set_period( 0_ms )
                              ->set_duration( timespan_t::zero() )
                              ->set_default_value_from_effect( 1 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  if ( user_options.motc_override > 0 )
+  {
+    buff.cyclone_strikes->set_initial_stack( user_options.motc_override )->set_freeze_stacks( true );
+  }
 
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
