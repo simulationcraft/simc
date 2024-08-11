@@ -159,6 +159,29 @@ bool shuffled_rng_t::trigger()
   return result;
 }
 
+shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* player, std::initializer_list<std::pair<unsigned, unsigned>> data )
+  : proc_rng_t( n, p, rng_type_e::RNG_SHUFFLE_MULTIPLE )
+{
+  for ( const auto &[ key, count ] : data )
+    entries.emplace_back( entry_t( key, count ) );
+}
+
+void shuffled_rng_multiple_t::reset()
+{
+  for ( entry_t &entry : entries )
+    entry.reset();
+}
+
+unsigned shuffled_rng_multiple_t::trigger()
+{
+  if ( std::none_of( entries.begin(), entries.end(), []( entry_t &e ) { return e.can_trigger(); } ) )
+    reset();
+
+  auto entry = entry[ player->rng().range<size_t>( 0, entries.size() ) ];
+  while ( !entry.can_trigger() ) { entry = entry[ player->rng().range<size_t>( 0, entries.size() ) ] };
+  return entry.trigger() ? entry.key : std::numeric_limits<unsigned>::max();
+}
+
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
                                       std::function<double( double, unsigned )> fn, unsigned initial_count )
   : proc_rng_t( n, p, rng_type_e::RNG_ACCUMULATE ),

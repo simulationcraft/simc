@@ -156,6 +156,31 @@ public:
   { return static_cast<double>( success_entries_remaining ) / static_cast<double>( total_entries_remaining ); }
 };
 
+// Extended "Deck of Cards" to support multiple success/failure types
+struct shuffled_rng_multiple_t final : public proc_rng_t
+{
+private:
+  struct entry_t
+  {
+    unsigned key;
+    unsigned entries;
+    unsigned remaining;
+
+    entry_t( unsigned key, unsigned count ) : key( key ), entries( count ), remaining( count ) {}
+    void reset() { remaining = entries; }
+    bool can_trigger() { return remaining > 0; }
+    bool trigger() { return remaining > 0 ? remaining-- : false; }
+  };
+
+  std::vector<entry_t> entries;
+
+public:
+  shuffled_rng_multiple_t( std::string_view n, player_t *p, std::initializer_list<std::pair<unsigned, unsigned>> data );
+
+  void reset() override;
+  unsigned trigger() override; // well that's a problem
+};
+
 // Accumulated back luck protection rng helper class ==========================
 //
 // This class of rng will increase the chance of success with each failed trigger. By default, the chance of success is
