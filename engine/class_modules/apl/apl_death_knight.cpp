@@ -30,7 +30,7 @@ std::string flask( const player_t* p )
 {
   std::string frost_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
 
-  std::string unholy_flask = ( p->true_level >= 71 ) ? "flask_of_tempered_mastery_3" : "iced_phial_of_corrupting_rage_3";
+  std::string unholy_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
 
   std::string blood_flask = ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
 
@@ -84,14 +84,14 @@ std::string rune( const player_t* p )
 std::string temporary_enchant( const player_t* p )
 {
   std::string frost_temporary_enchant = ( p->true_level >= 71 )
-                                            ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
+                                            ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3"
                                             : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
+      ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:howling_rune_3";
 
   std::string blood_temporary_enchant =
-      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
+      ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:howling_rune_3";
 
   switch ( p->specialization() )
   {
