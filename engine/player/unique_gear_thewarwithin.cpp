@@ -772,6 +772,28 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
   new embrace_of_the_cinderbee_t( effect );
 }
 
+// Deepening Darkness
+// 443760 Driver
+// 446753 Damage
+// 446743 Buff
+void deepening_darkness( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "deepening_darkness", effect, effect.player->find_spell( 446753 ), true );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item ) * role_mult( effect );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 446743 ) )
+                  ->set_expire_callback( [ damage ]( buff_t*, int, timespan_t d ) {
+                    if ( d > 0_ms )
+                    {
+                      damage->execute();
+                    }
+                  } )
+                  ->set_expire_at_max_stack( true );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace embellishments
 
 namespace items
@@ -3731,6 +3753,7 @@ void register_special_effects()
   register_special_effect( 461177, embellishments::elemental_focusing_lens );
   register_special_effect( { 457665, 457677 }, embellishments::dawn_dusk_thread_lining );
   register_special_effect( 443764, embellishments::embrace_of_the_cinderbee, true );
+  register_special_effect( 443760, embellishments::deepening_darkness );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
