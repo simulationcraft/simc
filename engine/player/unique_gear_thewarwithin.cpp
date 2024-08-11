@@ -2332,7 +2332,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( s );
 
-      m *= dot->get_dot( target )->current_stack();
+      m *= dot->get_dot( s->target )->current_stack();
 
       return m;
     }
