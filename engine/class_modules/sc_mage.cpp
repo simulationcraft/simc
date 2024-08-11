@@ -3422,15 +3422,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    if ( p()->buffs.glorious_incandescence->check() )
-    {
-      p()->buffs.glorious_incandescence->decrement();
-      p()->trigger_arcane_charge( glorious_incandescence_charges );
-      p()->state.trigger_glorious_incandescence = true;
-    }
-
-    p()->consume_burden_of_power();
-
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
@@ -3460,6 +3451,15 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->buffs.leydrinker->decrement();
       p()->state.trigger_leydrinker = true;
     }
+
+    if ( p()->buffs.glorious_incandescence->check() )
+    {
+      p()->buffs.glorious_incandescence->decrement();
+      p()->trigger_arcane_charge( glorious_incandescence_charges );
+      p()->state.trigger_glorious_incandescence = true;
+    }
+
+    p()->consume_burden_of_power();
 
     if ( p()->buffs.intuition->check() )
     {
