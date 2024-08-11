@@ -1510,6 +1510,7 @@ class SpellDataGenerator(DataGenerator):
          450204, # twin fang instruments
          457284, # TWW Primary Stat Food
          443764, 451698, 451699, # Embrace of the Cinderbee Set
+         446234, # Spark of Beledar
         ),
 
         # Warrior:

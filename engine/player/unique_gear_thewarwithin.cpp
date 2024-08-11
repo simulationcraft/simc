@@ -796,6 +796,59 @@ void deepening_darkness( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Spark of Beledar
+// 443736 Driver
+// 446224 Damage
+// 446402 Damage with Debuff
+// 446234 Debuff
+void spark_of_beledar( special_effect_t& effect )
+{
+  struct spark_of_beledar_damage_t : public generic_proc_t
+  {
+    action_t* bonus_damage;
+    const spell_data_t* debuff_spell;
+
+    spark_of_beledar_damage_t( const special_effect_t& e, const spell_data_t* data )
+      : generic_proc_t( e, "spark_of_beledar", data ),
+        bonus_damage( nullptr ),
+        debuff_spell( e.player->find_spell( 446234 ) )
+    {
+      bonus_damage =
+          create_proc_action<generic_proc_t>( "blazing_spark_of_beledar", e, e.player->find_spell( 446402 ) );
+      bonus_damage->base_dd_min = bonus_damage->base_dd_max = e.driver()->effectN( 3 ).average( e.item );
+
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+
+      add_child( bonus_damage );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return make_buff( actor_pair_t( t, player ), "spark_of_beledar_debuff", debuff_spell );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      auto debuff = get_debuff( s->target );
+      if ( debuff->check() )
+      {
+        debuff->expire();
+        bonus_damage->execute_on_target( s->target );
+      }
+      else
+      {
+        debuff->trigger();
+      }
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<spark_of_beledar_damage_t>( "spark_of_beledar", effect, effect.player->find_spell( 446224 ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace embellishments
 
 namespace items
@@ -3756,6 +3809,7 @@ void register_special_effects()
   register_special_effect( { 457665, 457677 }, embellishments::dawn_dusk_thread_lining );
   register_special_effect( 443764, embellishments::embrace_of_the_cinderbee, true );
   register_special_effect( 443760, embellishments::deepening_darkness );
+  register_special_effect( 443736, embellishments::spark_of_beledar );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );

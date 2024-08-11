@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56071
-static const std::array<spelltext_data_t, 26287> __spelltext_data { {
+static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24143,6 +24143,7 @@ static const std::array<spelltext_data_t, 26287> __spelltext_data { {
   { 446085, "Your next $?c1[Mortal Strike][Rampage] after Bladestorm ends deals $446918s1% additional damage.", 0, 0 },
   { 446108, "$@spelldesc443762", "$pri increased by $w1 at the cost of $w2 Mastery.", 0 },
   { 446224, "$@spelldesc443736", "Marked by the Spark of Beledar.", 0 },
+  { 446234, 0, "Marked by the Spark of Beledar.", 0 },
   { 446260, "Rising Sun Kick now kicks up a Gust of Mist to heal $s1 $Lally:allies; within $446264A2 yds for $191894s1. \r\n\r\nSpinning Crane Kick and Blackout Kick have a chance to kick up a Gust of Mist to heal $s2 $Lally:allies; within $446264A2 yds for $191894s1. ", 0, 0 },
   { 446264, "$@spelldesc446260", 0, 0 },
   { 446285, "$@spelldesc430014", 0, 0 },
