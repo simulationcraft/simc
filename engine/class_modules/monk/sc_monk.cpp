@@ -7100,6 +7100,9 @@ bool monk_t::mark_of_the_crane_max()
   if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return true;
 
+  if ( user_options.motc_override > 0 )
+    return true;
+
   int count   = buff.cyclone_strikes->current_stack;
   int targets = as<int>( sim->target_non_sleeping_list.data().size() );
 
