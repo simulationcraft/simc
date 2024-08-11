@@ -9795,8 +9795,8 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   if ( mode == 0 )
     return;
 
-  double xuen_contribution = s->result_amount;
-  double fox_contribution  = s->result_amount;
+  double xuen_contribution = mode != 2 ? s->result_amount : 0;
+  double fox_contribution  = mode > 1 ? s->result_amount : 0;
 
   // No damage done by SEF spirits contributes to FoX ETL
   if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
