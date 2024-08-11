@@ -10309,7 +10309,9 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
   if ( util::str_compare_ci( splits[ 0 ], "windfury_chance" ) )
   {
-    return make_mem_fn_expr( splits[ 0 ], *this, &shaman_t::windfury_proc_chance );
+    return make_fn_expr( splits[ 0 ], [ this ]() {
+      return std::min( 1.0, windfury_proc_chance() );
+    } );
   }
 
   return player_t::create_expression( name );
