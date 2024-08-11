@@ -9575,7 +9575,16 @@ void mage_t::consume_burden_of_power()
   } );
 
   buffs.glorious_incandescence->trigger();
-  state.trigger_glorious_incandescence = false;
+
+  // Sometimes when Glorious Incandescence is already up and Arcane Barrage
+  // consumes Burden of Power, Glorious Incandescence will not actually be
+  // consumed. Because we have already consumed it in simc, we can unset the
+  // state flag here to prevent it from working.
+  // TODO: Test the probability that this occurs. For now, assume that this
+  // is due to two randomly ordered events and has a 50% chance of happening.
+  // TODO: Double check this later
+  if ( bugs && rng().roll( 0.5 ) )
+    state.trigger_glorious_incandescence = false;
 }
 
 // If the target isn't specified, picks a random target.
