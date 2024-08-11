@@ -2240,49 +2240,12 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
           .set_value( effect.percent() )
           .set_eff( &effect );
 
-    // TODO: Mark of the Crane parsing
+    parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
   }
 
   result_amount_type report_amount_type( const action_state_t * ) const override
   {
     return result_amount_type::DMG_DIRECT;
-  }
-
-  int motc_counter() const
-  {
-    if ( p()->specialization() != MONK_WINDWALKER )
-      return 0;
-
-    if ( !p()->baseline.windwalker.mark_of_the_crane->ok() )
-      return 0;
-
-    if ( p()->user_options.motc_override > 0 )
-      return p()->user_options.motc_override;
-
-    int count = 0;
-
-    for ( player_t *target : target_list() )
-    {
-      if ( this->find_td( target ) && this->find_td( target )->debuff.mark_of_the_crane->check() )
-        count++;
-
-      if ( count == (int)p()->passives.cyclone_strikes->max_stacks() )
-        break;
-    }
-
-    return count;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    int motc_stacks = motc_counter();
-
-    if ( motc_stacks > 0 )
-      am *= 1 + ( motc_stacks * p()->passives.cyclone_strikes->effectN( 1 ).percent() );
-
-    return am;
   }
 
   void execute() override
@@ -2339,6 +2302,24 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       chi_x = new chi_explosion_t( p );
       add_child( chi_x );
+    }
+
+    if ( p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
+    {
+      p->register_on_kill_callback( [ this, p ]( player_t *target ) {
+        if ( p->sim->event_mgr.canceled )
+          return;
+
+        if ( auto target_data = p->get_target_data( target );
+             target_data && target_data->debuff.mark_of_the_crane->remains() > 0_ms )
+        {
+          make_event( p->sim, target_data->debuff.mark_of_the_crane->remains(), [ p, target_data ]() {
+            p->sim->print_debug( "mark of the crane fell off dead target: {} ", target_data->target->name_str );
+            p->buff.cyclone_strikes->decrement();
+          } );
+          target_data->debuff.mark_of_the_crane->expire();
+        }
+      } );
     }
   }
 
@@ -6668,20 +6649,19 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
       make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                 ->set_stack_change_callback( [ p ]( buff_t *, int old_, int new_ ) {
-                                   int stacks = p->mark_of_the_crane_counter();
-                                   if ( stacks > 0 )
+                                 ->set_stack_change_callback( [ p ]( buff_t *debuff, int old_, int new_ ) {
+                                   if ( p->user_options.motc_override == 0 )
                                    {
-                                     p->buff.mark_of_the_crane->set_max_stack( stacks );
-                                     p->buff.mark_of_the_crane->extend_duration_or_trigger();
+                                     if ( new_ )
+                                       p->buff.cyclone_strikes->trigger();
+                                     else
+                                       p->buff.cyclone_strikes->decrement();
                                    }
-                                   else
-                                     p->buff.mark_of_the_crane->expire();
                                  } )
+                                 ->set_max_stack( 1 )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->baseline.windwalker.touch_of_karma )
                               // set the percent of the max hp as the default value.
@@ -7055,8 +7035,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
   if ( !action_t::result_is_hit( s->result ) )
     return;
 
-  if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
-       mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
+  if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() || !buff.cyclone_strikes->at_max_stacks() )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
 }
 
@@ -7115,41 +7094,16 @@ player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
   return targets.front();
 }
 
-int monk_t::mark_of_the_crane_counter()
-{
-  if ( specialization() != MONK_WINDWALKER )
-    return 0;
-
-  if ( !baseline.windwalker.mark_of_the_crane->ok() )
-    return 0;
-
-  if ( user_options.motc_override > 0 )
-    return user_options.motc_override;
-
-  int count = 0;
-
-  for ( player_t *target : sim->target_non_sleeping_list.data() )
-  {
-    if ( target_data[ target ] && target_data[ target ]->debuff.mark_of_the_crane->check() )
-      count++;
-
-    if ( count == (int)passives.cyclone_strikes->max_stacks() )
-      break;
-  }
-
-  return count;
-}
-
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
   if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return true;
 
-  int count   = mark_of_the_crane_counter();
-  int targets = (int)sim->target_non_sleeping_list.data().size();
+  int count   = buff.cyclone_strikes->current_stack;
+  int targets = as<int>( sim->target_non_sleeping_list.data().size() );
 
-  if ( count == 0 || ( ( targets - count ) > 0 && count < (int)passives.cyclone_strikes->max_stacks() ) )
+  if ( count == 0 || ( ( targets - count ) > 0 && !buff.cyclone_strikes->at_max_stacks() ) )
     return false;
 
   return true;
@@ -8367,10 +8321,14 @@ void monk_t::create_buffs()
   buff.invoke_xuen = make_buff<buffs::invoke_xuen_the_white_tiger_buff_t>(
       this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
-  // Fake buff to display the number of targets debuffed in the sample sequence of the html report
-  buff.mark_of_the_crane = make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "cyclone_strikes",
-                                               passives.cyclone_strikes )
-                               ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.cyclone_strikes = make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "cyclone_strikes",
+                                             passives.cyclone_strikes )
+                             ->set_initial_stack( user_options.motc_override )
+                             ->set_freeze_stacks( user_options.motc_override > 0 )
+                             ->set_period( 0_ms )
+                             ->set_duration( timespan_t::zero() )
+                             ->set_default_value_from_effect( 1 )
+                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
@@ -9473,6 +9431,10 @@ void monk_t::combat_begin()
   if ( talent.windwalker.ferociousness->ok() )
     buff.ferociousness->trigger();
 
+  // Mark of the Crane Override
+  if ( user_options.motc_override > 0 )
+    buff.cyclone_strikes->trigger();
+
   base_t::combat_begin();
 
   if ( talent.monk.windwalking->ok() )
@@ -9825,7 +9787,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
     if ( splits[ 1 ] == "count" )
-      return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
+      return make_fn_expr( name_str, [ this ] { return buff.cyclone_strikes->current_stack; } );
     else if ( splits[ 1 ] == "max" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
