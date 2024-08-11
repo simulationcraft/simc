@@ -673,7 +673,8 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
 // Embrace of the Cinderbee
 // 443764 Driver
 // 451698 Orb Available Buff
-// 451699 Stat Buff
+// 451699 Player Stat Buff
+// 451980 Ally stat buff ( NYI )
 struct pickup_cinderbee_orb_t : public action_t
 {
   buff_t* orb = nullptr;
@@ -740,7 +741,6 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
 
       if ( apl_actions.size() > 0 )
       {
-        // Set a default task for the actions ready() function, will be overwritten later
         for ( auto& a : apl_actions )
         {
           debug_cast<pickup_cinderbee_orb_t*>( a )->orb = orb;
