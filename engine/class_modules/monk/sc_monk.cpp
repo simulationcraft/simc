@@ -6668,6 +6668,16 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
       make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
+                                 ->set_stack_change_callback( [ p ]( buff_t *, int old_, int new_ ) {
+                                   int stacks = p->mark_of_the_crane_counter();
+                                   if ( stacks > 0 )
+                                   {
+                                     p->buff.mark_of_the_crane->set_max_stack( stacks );
+                                     p->buff.mark_of_the_crane->extend_duration_or_trigger();
+                                   }
+                                   else
+                                     p->buff.mark_of_the_crane->expire();
+                                 } )
                                  ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
                                  ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -8357,12 +8367,9 @@ void monk_t::create_buffs()
       this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
   // Fake buff to display the number of targets debuffed in the sample sequence of the html report
-  buff.mark_of_the_crane =
-      make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "motc_counter", passives.cyclone_strikes )
-          ->set_tick_callback(
-              [ this ]( buff_t *self, int, timespan_t ) { self->current_stack = mark_of_the_crane_counter(); } )
-          ->set_period( 1_s )
-          ->set_tick_behavior( buff_tick_behavior::CLIP );
+  buff.mark_of_the_crane = make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "cyclone_strikes",
+                                               passives.cyclone_strikes )
+                               ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
