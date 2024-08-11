@@ -2661,8 +2661,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     base_t::execute();
 
-    // BfA Elemental talent - Master of the Elements
-    if ( affected_by_master_of_the_elements && !background && p()->buff.master_of_the_elements->check() )
+    if ( affected_by_master_of_the_elements && p()->buff.master_of_the_elements->check() )
     {
       p()->buff.master_of_the_elements->decrement();
       proc_moe->occur();
