@@ -6378,7 +6378,7 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       make_event( *sim, delay, [ this, set ]
       {
         p()->buffs.blessing_of_the_phoenix->trigger();
-        cooldown->adjust( set->effectN( 2 ).percent() * cooldown_t::cooldown_duration( cooldown ), false, false );
+        cooldown->adjust( -set->effectN( 2 ).percent() * cooldown_t::cooldown_duration( cooldown ), false, false );
       } );
     }
   }
