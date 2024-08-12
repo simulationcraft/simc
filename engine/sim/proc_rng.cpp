@@ -22,7 +22,7 @@ simple_proc_t::simple_proc_t( std::string_view n, player_t* p, double c )
   : proc_rng_t( n, p, rng_type_e::RNG_SIMPLE ), chance( c )
 {}
 
-bool simple_proc_t::trigger()
+int simple_proc_t::trigger()
 {
   return player->rng().roll( chance );
 }
@@ -97,7 +97,7 @@ void real_ppm_t::reset()
   accumulated_blp = 0_ms;
 }
 
-bool real_ppm_t::trigger()
+int real_ppm_t::trigger()
 {
   if ( freq <= 0 )
     return false;
@@ -133,7 +133,7 @@ void shuffled_rng_t::reset()
   total_entries_remaining = total_entries;
 }
 
-bool shuffled_rng_t::trigger()
+int shuffled_rng_t::trigger()
 {
   if ( total_entries <= 0 || success_entries <= 0 )
     return false;
@@ -159,7 +159,7 @@ bool shuffled_rng_t::trigger()
   return result;
 }
 
-shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* player, std::initializer_list<std::pair<unsigned, unsigned>> data )
+shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* p, std::initializer_list<std::pair<unsigned, unsigned>> data )
   : proc_rng_t( n, p, rng_type_e::RNG_SHUFFLE_MULTIPLE )
 {
   for ( const auto &[ key, count ] : data )
@@ -172,14 +172,14 @@ void shuffled_rng_multiple_t::reset()
     entry.reset();
 }
 
-unsigned shuffled_rng_multiple_t::trigger()
+int shuffled_rng_multiple_t::trigger()
 {
   if ( std::none_of( entries.begin(), entries.end(), []( entry_t &e ) { return e.can_trigger(); } ) )
     reset();
 
-  auto entry = entry[ player->rng().range<size_t>( 0, entries.size() ) ];
-  while ( !entry.can_trigger() ) { entry = entry[ player->rng().range<size_t>( 0, entries.size() ) ] };
-  return entry.trigger() ? entry.key : std::numeric_limits<unsigned>::max();
+  auto entry = entries[ player->rng().range<size_t>( 0, entries.size() ) ];
+  while ( !entry.can_trigger() ) { entry = entries[ player->rng().range<size_t>( 0, entries.size() ) ]; };
+  return entry.trigger() ? entry.key : -1;
 }
 
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
@@ -196,7 +196,7 @@ void accumulated_rng_t::reset()
   trigger_count = initial_count;
 }
 
-bool accumulated_rng_t::trigger()
+int accumulated_rng_t::trigger()
 {
   if ( proc_chance <= 0 )
     return false;

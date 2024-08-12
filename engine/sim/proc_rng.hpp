@@ -33,7 +33,7 @@ public:
   proc_rng_t( std::string_view n, player_t* p, rng_type_e type );
   virtual ~proc_rng_t() = default;
 
-  virtual bool trigger() = 0;
+  virtual int trigger() = 0;
   virtual void reset() = 0;
 
   std::string_view name() const
@@ -52,7 +52,7 @@ public:
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
   void reset() override {}
-  bool trigger() override;
+  int trigger() override;
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
@@ -85,7 +85,7 @@ public:
   double proc_chance();
 
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
 
   void set_scaling( unsigned s )
   { scales_with = s; }
@@ -138,7 +138,7 @@ public:
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
 
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
 
   int get_success_entries() const
   { return success_entries; }
@@ -178,7 +178,7 @@ public:
   shuffled_rng_multiple_t( std::string_view n, player_t *p, std::initializer_list<std::pair<unsigned, unsigned>> data );
 
   void reset() override;
-  unsigned trigger() override; // well that's a problem
+  int trigger() override;
 };
 
 // Accumulated back luck protection rng helper class ==========================
@@ -209,5 +209,5 @@ public:
                      unsigned initial_count = 0 );
 
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
 };
