@@ -1777,7 +1777,7 @@ void items::balefire_branch( special_effect_t& effect )
 
       if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "rppm" )
       {
-        auto _rppm = p->get_rng<real_ppm_t>( "balefire_branch_loss", p->dragonflight_opts.balefire_branch_loss_rppm );
+        auto _rppm = p->get_rppm( "balefire_branch_loss", p->dragonflight_opts.balefire_branch_loss_rppm );
 
         set_tick_callback( [ _rppm ]( buff_t* b, int, timespan_t ) {
           if ( _rppm->trigger() )
@@ -4033,7 +4033,7 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
             reset_debuff();  // buff also gets applied on demise, so reset the pointer in case this happens
         } );
 
-      // Special secondary tracking buff to track the somewhat odd in-game stacking behavior
+      // Special secondary tracking buff to track the somewhat odd in-game stacking behavior 
       // Currently the in-game system uses the buff "stack" on refreshes, while the Crit value is encoded in the dynamic buff value
       // As SimC uses the stack for tracking the base crit * stack multiplier instead of a dyanmic value, we use this instead
       // Reuse the existing buff spell data, but don't create as stat_buff_t since we don't want it to do anything

@@ -128,7 +128,7 @@ struct fn_const_buff_expr_t final : public buff_expr_t
   {
     return coerce( fn( buff() ) );
   }
-
+  
   bool is_constant() override
   {
     return is_const_fn( buff() );
@@ -345,7 +345,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
     using Fn = decltype(fn);
     return std::make_unique<fn_buff_expr_t<std::decay_t<Fn>>>(
             n, buff_name, action, static_buff, std::forward<Fn>( fn ) );
-  };
+  };  
   auto make_const_buff_expr = [buff_name, action, static_buff]( util::string_view n, auto&& fn, auto&& is_const_fn ) {
     using Fn = decltype(fn);
     using Fn_const = decltype(is_const_fn);
@@ -485,7 +485,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return buff()->stack_react(); }
-
+      
       bool is_constant() override
       {
         return buff()->default_chance == 0;
@@ -514,7 +514,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 
       double evaluate() override
       { return 100.0 * buff()->stack_react() / buff()->max_stack(); }
-
+      
       bool is_constant() override
       {
         return buff()->default_chance == 0;
@@ -754,7 +754,7 @@ void buff_t::update_trigger_calculations()
       {
         if ( trigger_data->real_ppm() > 0 )
         {
-          rppm = player->get_rng<real_ppm_t>( "buff_" + name_str + "_rppm", trigger_data, item );
+          rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
         }
         else if ( trigger_data->proc_chance() != 0 )
         {
@@ -1338,19 +1338,19 @@ buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
 
   if ( freq > -1 )
   {
-    rppm = player->get_rng<real_ppm_t>( "buff_" + name_str + "_rppm", trigger_data, item );
+    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
     rppm->set_frequency( freq );
   }
 
   if ( mod > -1 )
   {
-    rppm = player->get_rng<real_ppm_t>( "buff_" + name_str + "_rppm", trigger_data, item );
+    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
     rppm->set_modifier( mod );
   }
 
   if ( scale != RPPM_NONE )
   {
-    rppm = player->get_rng<real_ppm_t>( "buff_" + name_str + "_rppm", trigger_data, item );
+    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
     rppm->set_scaling( scale );
   }
   return this;
@@ -2229,7 +2229,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
   if ( value == DEFAULT_VALUE() )
     value = default_value;
-
+  
 #ifndef NDEBUG
   if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS && current_stack != 0 )
   {
@@ -3381,7 +3381,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( old_stack != current_stack )
     {
       if ( sim->buff_stack_uptime_timeline )
-        update_stack_uptime_array( sim->current_time(), old_stack );
+        update_stack_uptime_array( sim->current_time(), old_stack ); 
 
       last_stack_change = sim->current_time();
 
@@ -3773,7 +3773,7 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
         if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
           set_direct_mod( spell, idx, multiplier );
 
-        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
+        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
                 && "Additional label modifiers do not match the existing direct effect value" );
 
         direct_mod.labels.push_back( e.misc_value2() );

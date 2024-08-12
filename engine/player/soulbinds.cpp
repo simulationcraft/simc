@@ -2229,7 +2229,7 @@ struct trial_of_doubt_t : public buff_t
 
       // The values of 1 and 30 below are not present in the game data.
       int success_entries = 1;
-      shuffled_rng = p->get_rng<shuffled_rng_t>( "newfound_resolve", success_entries, 30 );
+      shuffled_rng = p->get_shuffled_rng( "newfound_resolve", success_entries, 30 );
       // In simc, we model failing to face the Area Trigger by not triggering the debuff at all.
       set_chance( sim->shadowlands_opts.newfound_resolve_success_chance );
       // This only needs enough stacks to cover any possible overlap based on the
@@ -2350,7 +2350,7 @@ void newfound_resolve( special_effect_t& effect )
 void hold_your_ground( special_effect_t& effect )
 {
   if ( !effect.player->buffs.hold_your_ground )
-    effect.player->buffs.hold_your_ground =
+    effect.player->buffs.hold_your_ground = 
         make_buff( effect.player, "hold_your_ground", effect.player->find_spell( 333089 ) )
             ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
             ->set_default_value_from_effect( 1 )
@@ -2411,7 +2411,7 @@ void pustule_eruption( special_effect_t& effect )
       return std::max( proc_spell_t::composite_total_spell_power(), proc_spell_t::composite_total_attack_power() );
     }
   };
-
+  
   action_t* damage = effect.player->find_action( "pustule_eruption" );
   if ( !damage )
     damage = new pustule_eruption_damage_t( effect.player );
@@ -2441,7 +2441,7 @@ void pustule_eruption( special_effect_t& effect )
 void waking_bone_breastplate( special_effect_t& effect )
 {
   if ( !effect.player->buffs.waking_bone_breastplate )
-    effect.player->buffs.waking_bone_breastplate =
+    effect.player->buffs.waking_bone_breastplate = 
         make_buff( effect.player, "waking_bone_breastplate", effect.driver() )
             ->set_duration( 0_ms )
             ->set_default_value( 0.05 )
