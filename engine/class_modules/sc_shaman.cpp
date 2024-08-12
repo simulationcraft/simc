@@ -5776,11 +5776,6 @@ struct chain_lightning_t : public chained_base_t
       p()->buff.wind_gust->trigger();
     }
 
-    if ( p()->buff.lesser_storm_elemental->check() )
-    {
-      p()->buff.wind_gust->trigger();
-    }
-
     if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->buff.cl_crash_lightning->trigger( num_targets_hit );
