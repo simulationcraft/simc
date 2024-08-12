@@ -15,7 +15,7 @@ namespace
 // Warrior
 // To Do: Clean up green text
 // Fury - Gathering Storm tick behavior - Fury needs 2 more
-// Arms - 
+// Arms -
 // ==========================================================================
 
 struct warrior_t;
@@ -1526,8 +1526,8 @@ public:
         if ( ab::id == 190456 )  // Ignore pain can not trigger anger management for arms
           return;
 
-        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();  
-                                                                                                                                                                       
+        cd_time_reduction /= p()->talents.arms.anger_management->effectN( 1 ).base_value();
+
         p()->cooldown.colossus_smash->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.warbreaker->adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p()->cooldown.bladestorm->adjust( timespan_t::from_seconds( cd_time_reduction ) );
@@ -1617,7 +1617,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
 
-    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() ) 
+    if ( ( p()->talents.arms.sudden_death->ok() || p()->talents.fury.sudden_death->ok() || p()->talents.protection.sudden_death->ok() )
            && p()->cooldown.sudden_death_icd->up() && p()->rppm.sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -5640,7 +5640,7 @@ struct odyns_fury_t : warrior_attack_t
     if ( p()->talents.fury.dancing_blades->ok() )
     {
       p()->buff.dancing_blades->trigger();
-    } 
+    }
 
     if ( p()->talents.fury.titanic_rage->ok() )
     {
@@ -6559,7 +6559,7 @@ struct shield_slam_t : public warrior_attack_t
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
     }
 
-    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) ) 
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
     {
       p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
       // Value is doubled with last stand up, so we apply the same effect twice.
@@ -7355,7 +7355,7 @@ struct torment_avatar_t : public warrior_spell_t
     if ( p()->talents.warrior.titans_torment->ok() )
     {
       const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
-      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
+      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
     }
   }
 };
@@ -8137,7 +8137,7 @@ void warrior_t::init_spells()
   spell.victory_rush            = find_class_spell( "Victory Rush" );
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
-  spell.concussive_blows_debuff = find_spell( 383116 ); 
+  spell.concussive_blows_debuff = find_spell( 383116 );
   spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
 
   // Class Passives
@@ -8551,7 +8551,7 @@ void warrior_t::init_spells()
   {
   auto_attack_multiplier *= 1.0 + talents.warrior.dual_wield_specialization->effectN( 3 ).percent();
   }
-  if ( specialization() == WARRIOR_ARMS && talents.warrior.two_handed_weapon_specialization->ok() ) 
+  if ( specialization() == WARRIOR_ARMS && talents.warrior.two_handed_weapon_specialization->ok() )
   {
     auto_attack_multiplier *= 1.0 + talents.warrior.two_handed_weapon_specialization->effectN( 3 ).percent();
   }
@@ -8598,8 +8598,8 @@ void warrior_t::init_spells()
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.sudden_death_icd                 = get_cooldown( "sudden_death" );
   cooldown.sudden_death_icd->duration =
-      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown(): 
-      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() : 
+      specialization() == WARRIOR_FURY   ? talents.fury.sudden_death->internal_cooldown():
+      specialization() == WARRIOR_ARMS ? talents.arms.sudden_death->internal_cooldown() :
       talents.protection.sudden_death->internal_cooldown();
   cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
@@ -8981,7 +8981,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_executioners_precision = make_buff( *this, "executioners_precision", p.talents.arms.executioners_precision->effectN( 1 ).trigger() );
 
-  debuffs_fatal_mark = make_buff( *this, "fatal_mark" ) 
+  debuffs_fatal_mark = make_buff( *this, "fatal_mark" )
           ->set_duration( p.spell.fatal_mark_debuff->duration() )
           ->set_max_stack( p.spell.fatal_mark_debuff->max_stacks() );
 
@@ -9211,7 +9211,7 @@ void warrior_t::create_buffs()
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
-  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() + talents.arms.spiteful_serenity->effectN( 8 ).time_value() 
+  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() + talents.arms.spiteful_serenity->effectN( 8 ).time_value()
                                             + talents.arms.blunt_instruments->effectN( 2 ).time_value() );
   buff.test_of_might = make_buff( this, "test_of_might", find_spell( 385013 ) )
                               ->set_default_value( talents.arms.test_of_might->effectN( 1 ).percent() )
@@ -9290,7 +9290,7 @@ void warrior_t::create_buffs()
                                find_spell( 410138 ) : spell_data_t::not_found() )
                           ->set_default_value( find_spell( 410138 )->effectN( 1 ).percent() );
 
-  buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
+  buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ?
                                 find_spell( 409983 ) : spell_data_t::not_found() )
                            ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                            ->set_duration( find_spell( 409983 )->duration() );
@@ -9349,13 +9349,13 @@ void warrior_t::init_finished()
 void warrior_t::init_rng()
 {
   parse_player_effects_t::init_rng();
-  rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
-  rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
-  rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
-                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
+  rppm.fatal_mark       = get_rng<real_ppm_t>( "fatal_mark", talents.arms.fatality );
+  rppm.revenge          = get_rng<real_ppm_t>( "revenge_trigger", spec.revenge_trigger );
+  rppm.sudden_death     = get_rng<real_ppm_t>( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death :
+                                                    specialization() == WARRIOR_ARMS ? talents.arms.sudden_death :
                                                     talents.protection.sudden_death );
-  rppm.t31_sudden_death = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
-  rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
+  rppm.t31_sudden_death = get_rng<real_ppm_t>( "t31_sudden_death", find_spell( 422923 ) );
+  rppm.slayers_dominance = get_rng<real_ppm_t>( "slayers_dominance", talents.slayer.slayers_dominance );
 }
 
 // warrior_t::validate_fight_style ==========================================
@@ -9932,7 +9932,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    // Arma 2022 Nov 13 Note that unless we handle str manually in the armor calcs Attt for prot ends up looping here.  
+    // Arma 2022 Nov 13 Note that unless we handle str manually in the armor calcs Attt for prot ends up looping here.
     // As Str and armor are both looping in the stat cache
     // As we have it implemented properly in the armor calcs, this can be globally enabled.
     // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
@@ -10028,7 +10028,7 @@ double warrior_t::composite_bonus_armor() const
 
   if ( specialization() == WARRIOR_PROTECTION )
   {
-    // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from 
+    // Pulls strength using the base player_t functions.  We call these directly to avoid using the warrior_t versions, as armor contribution from
     // attt is calculated during composite_armor_multiplier
     auto current_str = util::floor( parse_player_effects_t::composite_attribute( ATTR_STRENGTH ) * parse_player_effects_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
     // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
@@ -10232,7 +10232,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     bool do_not_double_rage = false;
 
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage ||
                                   g == gain.frothing_berserker || g == gain.thorims_might );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage

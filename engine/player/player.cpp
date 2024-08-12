@@ -8274,28 +8274,6 @@ real_ppm_t* player_t::find_rppm( std::string_view name )
   }
 }
 
-real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* data, const item_t* item )
-{
-  if ( auto rppm = find_rppm( name ) )
-    return rppm;
-
-  auto new_rppm = new real_ppm_t( name, this, data, item );
-  proc_rng_list.push_back( new_rppm );
-
-  return new_rppm;
-}
-
-real_ppm_t* player_t::get_rppm( std::string_view name, double freq, double mod, unsigned s )
-{
-  if ( auto rppm = find_rppm( name ) )
-    return rppm;
-
-  auto new_rppm = new real_ppm_t( name, this, freq, mod, s );
-  proc_rng_list.push_back( new_rppm );
-
-  return new_rppm;
-}
-
 shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries, int total_entries )
 {
   auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {

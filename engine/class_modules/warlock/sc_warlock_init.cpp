@@ -86,7 +86,7 @@ namespace warlock
     talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" ); // Should be ID 316099
     talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
     talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
-    
+
     talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
 
     talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" ); // Should be ID 27243
@@ -732,7 +732,7 @@ namespace warlock
                                  {
                                    if ( cur == b->max_stack() )
                                    {
-                                     make_event( sim, 0_ms, [ this, b ] { 
+                                     make_event( sim, 0_ms, [ this, b ] {
                                        buffs.ritual_of_ruin->trigger();
                                        b->expire();
                                        });
@@ -1043,7 +1043,7 @@ namespace warlock
 
   void warlock_t::init_rng_affliction()
   {
-    ravenous_afflictions_rng = get_rppm( "ravenous_afflictions", talents.ravenous_afflictions );
+    ravenous_afflictions_rng = get_rng<real_ppm_t>( "ravenous_afflictions", talents.ravenous_afflictions );
   }
 
   void warlock_t::init_rng_demonology()

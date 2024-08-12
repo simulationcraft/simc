@@ -336,7 +336,7 @@ void dbc_proc_callback_t::initialize()
   // prioritizes RPPM > PPM > proc chance.
   if ( effect.rppm() > 0 && effect.rppm_scale() != RPPM_DISABLE )
   {
-    rppm = listener->get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
+    rppm = listener->get_rng<real_ppm_t>( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
     rppm->set_blp_state( static_cast<real_ppm_t::blp>( effect.rppm_blp_ ) );
   }
   else if ( effect.ppm() > 0 )

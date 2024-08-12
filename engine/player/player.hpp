@@ -1009,19 +1009,17 @@ public:
   RNG* get_rng( std::string_view name, Args &&...args )
   {
     auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t *rng ) {
-      return rng->type() == RNG::type && util::str_compare_ci( rng->name(), name );
+      return rng->type() == RNG::rng_type && util::str_compare_ci( rng->name(), name );
     } );
 
     if ( it != proc_rng_list.end() )
       return debug_cast<RNG*>( *it );
 
-    RNG* rng = new RNG( name, std::forward<Args>( args )... );
+    RNG* rng = new RNG( name, this, std::forward<Args>( args )... );
     proc_rng_list.push_back( rng );
     return rng;
   }
 
-  real_ppm_t* get_rppm( std::string_view, const spell_data_t* data, const item_t* item = nullptr );
-  real_ppm_t* get_rppm( std::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
   accumulated_rng_t* get_accumulated_rng( std::string_view name, double proc_chance,
                                           std::function<double( double, unsigned )> accumulator_fn = nullptr,

@@ -430,7 +430,7 @@ static const spelleffect_data_t& find_effect( T val, U type, Ts&&... args )
   else
   {
     const spell_data_t* affected = resolve_spell_data<U>( type );
- 
+
     if constexpr( sizeof...( Ts ) == 0 )
       return spell_data_t::find_spelleffect( *data, *affected, E_APPLY_AURA );
     else if constexpr( std::is_same_v<std::tuple_element_t<0, std::tuple<Ts...>>, effect_subtype_t> )
@@ -4396,7 +4396,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
     double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
     excess_energy = std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cost() ) );
-    
+
     cat_finisher_t::execute();
   }
 
@@ -4658,7 +4658,7 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
       } );
     }
 
-    return tl;    
+    return tl;
   }
 
   void execute() override
@@ -5177,7 +5177,7 @@ struct growl_t final : public bear_attack_t
 // Incapacitating Roar ======================================================
 struct incapacitating_roar_t final : public bear_attack_t
 {
-  DRUID_ABILITY( incapacitating_roar_t, bear_attack_t, "incapacitating_roar", p->talent.incapacitating_roar )  
+  DRUID_ABILITY( incapacitating_roar_t, bear_attack_t, "incapacitating_roar", p->talent.incapacitating_roar )
   {
     harmful = false;
 
@@ -6608,7 +6608,7 @@ public:
     {
       p()->active.dream_burst->execute_on_target( s->target );
       p()->buff.dream_burst->decrement();
-    }  
+    }
   }
 
   void reset() override { druid_spell_t::reset(); dreamstate = false; }
@@ -7372,7 +7372,7 @@ struct moon_proxy_t : public druid_spell_t
     {
       case NEW_MOON:  new_moon->schedule_execute( s ); return;
       case HALF_MOON: half_moon->schedule_execute( s ); return;
-      case FULL_MOON: 
+      case FULL_MOON:
       case MAX_MOON:  full_moon->schedule_execute( s ); return;
       default: break;
     }
@@ -11522,7 +11522,7 @@ void druid_t::init_rng()
   player_t::init_rng();
 
   if ( talent.the_light_of_elune.ok() )
-    rppm.the_light_of_elune = get_rppm( "The Light of Elune", talent.the_light_of_elune );
+    rppm.the_light_of_elune = get_rng<real_ppm_t>( "The Light of Elune", talent.the_light_of_elune );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -13629,7 +13629,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, TWW1, B2 ) );
 
-  // Feral 
+  // Feral
   action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.berserk_heart_of_the_lion );
   action.apply_affecting_aura( talent.circle_of_life_and_death_cat );

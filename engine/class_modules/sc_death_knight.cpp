@@ -6403,8 +6403,8 @@ struct undeath_dot_t final : public death_knight_spell_t
   {
     double m     = death_knight_spell_t::composite_ta_multiplier( state );
     /*
-    * TWW-TODO: Believe this is what effect2's value is for, but, havent been able to confirm yet. 
-    * Leaving this here for if its confirmed. 
+    * TWW-TODO: Believe this is what effect2's value is for, but, havent been able to confirm yet.
+    * Leaving this here for if its confirmed.
     auto counter = p()->get_active_dots( p()->active_spells.undeath_dot->get_dot( nullptr ) );
 
     if ( counter > sqrt_targets )
@@ -6629,7 +6629,7 @@ struct exterminate_t final : public death_knight_spell_t
         rm->trigger();
         p()->procs.exterminate_reapers_mark->occur();
       }
-    
+
     death_knight_spell_t::execute();
     make_event( *sim, 500_ms, [ this ]() { second_hit->execute_on_target( this->target ); } );
   }
@@ -6769,7 +6769,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     parse_options( options_str );
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 4 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
-    
+
     if ( p->talent.deathbringer.reapers_mark.ok() )
     {
       add_child( p->active_spells.reapers_mark_explosion );
@@ -12881,11 +12881,11 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.bloodworms        = get_rppm( "bloodworms", talent.blood.bloodworms );
-  rppm.carnage           = get_rppm( "carnage", talent.blood.carnage );
-  rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-  rppm.blood_beast       = get_rppm( "blood_beast", talent.sanlayn.the_blood_is_life );
-  rppm.tww1_fdk_4pc      = get_rppm( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
+  rppm.bloodworms        = get_rng<real_ppm_t>( "bloodworms", talent.blood.bloodworms );
+  rppm.carnage           = get_rng<real_ppm_t>( "carnage", talent.blood.carnage );
+  rppm.runic_attenuation = get_rng<real_ppm_t>( "runic_attenuation", talent.runic_attenuation );
+  rppm.blood_beast       = get_rng<real_ppm_t>( "blood_beast", talent.sanlayn.the_blood_is_life );
+  rppm.tww1_fdk_4pc      = get_rng<real_ppm_t>( "tww1_fdk_4pc", sets->set( DEATH_KNIGHT_FROST, TWW1, B4 ) );
 }
 
 // death_knight_t::init_items ===============================================
