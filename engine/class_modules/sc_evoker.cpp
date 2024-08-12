@@ -334,9 +334,9 @@ struct simplified_player_t : public player_t
 
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL, 11, true, 1.5_s, 0.40, -1, 8, 1, 20000.0, 0.0011, {} } }, // 250.9k
+      { "default", { ROLE_SPELL,  11,  true, 1.5_s, 0.40, -1, 8, 1, 20000.0, 0.0011, {} } }, // 250.9k
       { "tank",    { ROLE_TANK,  6.1,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {} } },      // 157.4k
-      { "healer",  { ROLE_HEAL,  1.8, true, 1.5_s, 0.25, -1, 5, 1, 20000.0, 0.0011, {} } },      // 78k
+      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25, -1, 5, 1, 20000.0, 0.0011, {} } },      // 78k
       { "shadow",  { ROLE_SPELL, 6.3,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {       // 244.8k
           { "two_mins_cds",      0.4, 15_s, 120_s, 3_s },
           { "one_mins_cds",      0.4, 15_s,  60_s, 3_s },
@@ -3047,7 +3047,8 @@ public:
   {
     sim->print_debug( "{} ebon might current int: {}, base percent: {}, crit_mod: {}, aug_4pc_value: {}",
                       player->name_str, p()->cache.intellect(), p()->spec.ebon_might->effectN( 1 ).percent(),
-                      p()->buff.ebon_might_self_buff->check_value(), p()->buff.tww1_4pc_aug->check_stack_value() );
+                      p()->buff.ebon_might_self_buff->check_value(),
+                      p()->buff.tww1_4pc_aug->check_stack_value() );
 
     if ( p()->allied_ebons_on_me.empty() )
       return p()->cache.intellect() * ebon_value();
@@ -8123,6 +8124,12 @@ void evoker_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
           ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
             static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->update_stats();
+          } )
+          ->set_stack_change_callback( [ this ]( buff_t*, int _old, int ) {
+            if ( _old )
+            {
+              buff.tww1_4pc_aug->expire();
+            }
           } )
           ->set_default_value( 0 )
           ->set_freeze_stacks( true );
