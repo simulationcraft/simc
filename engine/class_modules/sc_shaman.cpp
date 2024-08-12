@@ -11122,6 +11122,7 @@ void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_dura
       elemental_buff = buff.lesser_storm_elemental;
       spawner_ptr = &( pet.lesser_storm_elemental );
 
+      buff.wind_gust->expire();
       pet.lesser_fire_elemental.despawn();
       buff.lesser_fire_elemental->expire();
       break;
