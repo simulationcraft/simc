@@ -1657,7 +1657,6 @@ public:
     bool split_obliterate_schools = true;
     double ams_absorb_percent     = 0;
     bool individual_pet_reporting = false;
-    std::vector<timespan_t> amz_use_time;
     bool amz_specified                 = false;
     double average_cs_travel_time      = 0.4;
     timespan_t first_ams_cast          = 20_s;
@@ -11966,7 +11965,7 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
   std::vector<action_t*> random_rider_spells = active_spells.rider_summon_spells;
   // Can not randomly summon the same rider twice in a row
-  if ( random && active_spells.last_rider_summoned != nullptr )
+  if ( random && active_spells.last_rider_summoned != nullptr && active_spells.last_rider_summoned == random_rider_spells[ 0 ] )
   {
     auto it = std::find( random_rider_spells.begin(), random_rider_spells.end(), active_spells.last_rider_summoned );
     random_rider_spells.erase( it );
