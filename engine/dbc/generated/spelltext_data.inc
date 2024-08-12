@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56071
-static const std::array<spelltext_data_t, 26288> __spelltext_data { {
+static const std::array<spelltext_data_t, 26287> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21867,7 +21867,6 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 414196, "$@spelldesc414195", "Upon reaching $414195w1 stacks, your next Judgment deals $414193s1% increased damage and will critically strike. In addition, it activates Avenging Wrath for $414195s2 sec.", 0 },
   { 414203, "After casting Daybreak, your next $414204u Holy Shocks cast $414204s1 additional times.", 0, 0 },
   { 414204, "$@spelldesc414203", "Holy Shock casts $s1 additional times.", 0 },
-  { 414214, "Crusader Strike generates $s1 additional Holy Power and deals $s2% more damage.", 0, 0 },
   { 414253, "$@spelldesc358385", 0, "Black" },
   { 414255, "$@spelldesc414253", 0, "Black" },
   { 414257, "$@spelldesc414253", "Rooted.", 0 },
