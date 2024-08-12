@@ -126,8 +126,6 @@ shuffled_rng_base_t::shuffled_rng_base_t( rng_type_e rng_type, std::string_view 
   for ( const auto& [ key, count ] : data )
     for ( unsigned i = 0; i < count; ++i )
       entries.emplace_back( key );
-  // shuffle vector and initialize position
-  reset();
 }
 
 void shuffled_rng_base_t::reset()
