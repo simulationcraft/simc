@@ -570,6 +570,7 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     int embedded_splinters;
+    int magis_spark_spells;
   } state;
 
   struct expression_support_t
@@ -2488,7 +2489,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         trigger_echo = true;
         debuff->decrement();
 
-        if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
+        if ( ++p()->state.magis_spark_spells == 3 )
           p()->action.magis_spark->execute_on_target( s->target );
       }
 
@@ -6806,6 +6807,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
       if ( p()->talents.magis_spark.ok() )
       {
+        p()->state.magis_spark_spells = 0;
         td.magis_spark->trigger();
         td.magis_spark_ab->trigger();
         td.magis_spark_abar->trigger();
