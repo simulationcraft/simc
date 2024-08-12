@@ -7702,12 +7702,12 @@ void demon_hunter_t::init_rng()
   // General
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    rppm.felblade         = get_rng<real_ppm_t>( "felblade", spell.felblade_reset_havoc );
-    rppm.demonic_appetite = get_rng<real_ppm_t>( "demonic_appetite", spec.demonic_appetite );
+    rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
+    rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
   }
   else  // DEMON_HUNTER_VENGEANCE
   {
-    rppm.felblade = get_rng<real_ppm_t>( "felblade", spell.felblade_reset_vengeance );
+    rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
   }
 
   player_t::init_rng();
