@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56071
-static const std::array<spelltext_data_t, 26289> __spelltext_data { {
+static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25178,7 +25178,7 @@ static const std::array<spelltext_data_t, 26289> __spelltext_data { {
   { 454851, "Casting Anti-Magic Shell grants $454863i nearby allies a Lesser Anti-Magic Shell that Absorbs up to $454863s1 magic damage and reduces the duration of harmful Magic effects against them by $454863s2%. ", 0, 0 },
   { 454857, "Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.", 0, 0 },
   { 454859, "$@spelldesc454558", 0, 0 },
-  { 454862, "$@spelldesc454857", "Granted $w1 Haste and $w2 Speed.", 0 },
+  { 454862, "$@spelldesc454857", "The physical damage dealt has blossomed into an absorb shield for $w1 and $w2 Speed.", 0 },
   { 454863, "$@spelldesc454851", "Absorbing up to $w1 magic damage.\r\nDuration of harmful magic effects reduced by $s2%.", 0 },
   { 454871, "$@spelldesc374598", "Damage taken reduced by $w1% and Death Strike cost reduced by ${$s2/-10}.", 0 },
   { 454886, "$@spelldesc374049", "Damage taken from area of effect attacks reduced by an additional $w1%.", 0 },
@@ -25187,7 +25187,7 @@ static const std::array<spelltext_data_t, 26289> __spelltext_data { {
   { 454957, "$@spelldesc454839", "Direct damage of your next Ferocious Bite or Primal Wrath increased by $w1%", 0 },
   { 454969, "Tiger Palm's chance to activate Blackout Kick! is increased by $s1% and consuming Teachings of the Monastery grants you ${$454970s1}.1% haste for $454970d equal to the amount of stacks consumed.", 0, 0 },
   { 454970, "$@spelldesc454969", "Haste increased by ${$w1}.1%.", 0 },
-  { 454975, "$@spelldesc454857", "Granted $w1 Haste and $w2 Avoidance.", 0 },
+  { 454975, "$@spelldesc454857", "Granted $w1 Haste and $w2 Speed.", 0 },
   { 454976, "$@spelldesc454857", "Granted $w1 Critical Strike and $w2 Speed.", 0 },
   { 454977, "$@spelldesc454857", "Granted $w1 Critical Strike and $w2 Avoidance.", 0 },
   { 454978, "$@spelldesc454857", "Granted $w1 Mastery and $w2 Speed.", 0 },
@@ -26232,7 +26232,6 @@ static const std::array<spelltext_data_t, 26289> __spelltext_data { {
   { 463514, "Reveal the location of all currently active Rumors in Azj-Kahet.", 0, 0 },
   { 463516, "Reveal the location of all currently active Pact Treasures in Azj-Kahet.", 0, 0 },
   { 463517, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
-  { 463611, "Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.", 0, 0 },
   { 463677, "$@spelldesc445360", "Shoulders imbued with a runic illusion.", 0 },
   { 463678, "$@spelldesc445337", "Shoulders imbued with a shadowy illusion.", 0 },
   { 463679, "$@spelldesc445327", "Shoulders imbued with a crystalline illusion.", 0 },
@@ -26292,14 +26291,12 @@ static const std::array<spelltext_data_t, 26289> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56071
-static constexpr std::array<hotfix::client_hotfix_entry_t, 15> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 13> __spelltext_hotfix_data { {
   {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
   {  446743,  0, nullptr, "$@spelldesc443760" },
   {  446753,  0, nullptr, "$@spelldesc443760" },
   {  446836,  0, nullptr, "$@spelldesc443760" },
   {  447005,  0, nullptr, "$@spelldesc443743" },
-  {  454862,  1, "The physical damage dealt has blossomed into an absorb shield for $w1 and $w2 Speed.", "Granted $w1 Haste and $w2 Speed." },
-  {  454975,  1, "Granted $w1 Haste and $w2 Speed.", "Granted $w1 Haste and $w2 Avoidance." },
   {  455211,  0, "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, your next ability will release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.", "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards." },
   {  455212,  1, "Storing the Might of Arathor.", "Granting $w2 speed." },
   {  457666,  1, "Critical Strike increased by $w1.", "Critical Strike increased by $w2." },
