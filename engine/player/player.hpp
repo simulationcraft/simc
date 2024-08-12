@@ -1023,11 +1023,14 @@ public:
     return rng;
   }
   simple_proc_t* get_simple_proc_rng( std::string_view name, double chance = 0.0 );
-  real_ppm_t* get_rppm( std::string_view name, double frequency = 0.0, double modifier = 1.0, unsigned scales_with = RPPM_NONE, real_ppm_t::blp blp_state = real_ppm_t::blp::BLP_ENABLED );
+  real_ppm_t* get_rppm( std::string_view name, double frequency = 0.0, double modifier = 1.0,
+                        unsigned scales_with = RPPM_NONE, real_ppm_t::blp blp_state = real_ppm_t::blp::BLP_ENABLED );
   real_ppm_t* get_rppm( std::string_view name, const spell_data_t* spell_data = nullptr, const item_t* item = nullptr );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
-  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0, std::function<double(double, unsigned)> accumulator_fn = nullptr, unsigned initial_count = 0 );
+  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
+                                          std::function<double( double, unsigned )> accumulator_fn = nullptr,
+                                          unsigned initial_count                                   = 0 );
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );

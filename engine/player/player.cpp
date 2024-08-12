@@ -8261,7 +8261,8 @@ simple_proc_t* player_t::get_simple_proc_rng( std::string_view name, double chan
   return get_rng<simple_proc_t>( name, chance );
 }
 
-real_ppm_t* player_t::get_rppm( std::string_view name, double frequency, double modifier, unsigned scales_with, real_ppm_t::blp blp_state )
+real_ppm_t* player_t::get_rppm( std::string_view name, double frequency, double modifier, unsigned scales_with,
+                                real_ppm_t::blp blp_state )
 {
   return get_rng<real_ppm_t>( name, frequency, modifier, scales_with, blp_state );
 }
@@ -8276,12 +8277,14 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, shuffled_rng_
   return get_rng<shuffled_rng_t>( name, data );
 }
 
-shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries , int total_entries )
+shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries, int total_entries )
 {
   return get_rng<shuffled_rng_t>( name, success_entries, total_entries );
 }
 
-accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance, std::function<double(double, unsigned)> accumulator_fn , unsigned initial_count )
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
+                                                  std::function<double( double, unsigned )> accumulator_fn,
+                                                  unsigned initial_count )
 {
   return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
