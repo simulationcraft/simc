@@ -1403,8 +1403,10 @@ enum ready_e
 // proc rng type
 enum rng_type_e
 {
-  RNG_SIMPLE = 0,
+  RNG_NONE = 0,
+  RNG_SIMPLE,
   RNG_RPPM,
+  RNG_SHUFFLE_BASE,
   RNG_SHUFFLE,
   RNG_SHUFFLE_MULTIPLE,
   RNG_ACCUMULATE

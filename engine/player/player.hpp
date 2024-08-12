@@ -21,6 +21,8 @@
 #include "talent.hpp"
 #include "util/cache.hpp"
 #include "util/rng.hpp"
+#include "sim/proc_rng.hpp"
+#include "util/util.hpp"
 #include "weapon.hpp"
 
 #include <map>
@@ -60,10 +62,6 @@ struct player_report_extension_t;
 struct player_scaling_t;
 struct plot_data_t;
 struct proc_t;
-struct proc_rng_t;
-struct real_ppm_t;
-struct shuffled_rng_t;
-struct accumulated_rng_t;
 struct scaling_metric_data_t;
 struct set_bonus_t;
 struct special_effect_t;
@@ -1006,6 +1004,22 @@ public:
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
   target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
   real_ppm_t* find_rppm( std::string_view );
+
+  template <typename RNG, typename... Args>
+  RNG* get_rng( std::string_view name, Args &&...args )
+  {
+    auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t *rng ) {
+      return rng->type() == RNG::type && util::str_compare_ci( rng->name(), name );
+    } );
+
+    if ( it != proc_rng_list.end() )
+      return debug_cast<RNG*>( *it );
+
+    RNG* rng = new RNG( name, std::forward<Args>( args )... );
+    proc_rng_list.push_back( rng );
+    return rng;
+  }
+
   real_ppm_t* get_rppm( std::string_view, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm( std::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );

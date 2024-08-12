@@ -26,11 +26,11 @@ struct proc_rng_t
 protected:
   std::string name_str;
   player_t* player;
-  rng_type_e rng_type;
+  const static rng_type_e rng_type = RNG_NONE;
 
 public:
   proc_rng_t();
-  proc_rng_t( std::string_view n, player_t* p, rng_type_e type );
+  proc_rng_t( std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
 
   virtual int trigger() = 0;
@@ -45,6 +45,8 @@ public:
 
 struct simple_proc_t final : public proc_rng_t
 {
+protected:
+  const static rng_type_e rng_type = RNG_SIMPLE;
 private:
   double chance;
 
@@ -64,6 +66,8 @@ struct real_ppm_t final : public proc_rng_t
     BLP_ENABLED
   };
 
+protected:
+  const static rng_type_e rng_type = RNG_RPPM;
 private:
   double freq;
   double modifier;
@@ -130,12 +134,14 @@ struct shuffled_rng_base_t : public proc_rng_t
 {
   using initializer = std::initializer_list<std::pair<int, unsigned>>;
 
+protected:
+  const static rng_type_e rng_type = RNG_SHUFFLE_BASE;
 private:
   std::vector<int> entries;
   std::vector<int>::iterator position;
 
 protected:
-  shuffled_rng_base_t( rng_type_e rng_type, std::string_view n, player_t* p, initializer data );
+  shuffled_rng_base_t( std::string_view n, player_t* p, initializer data );
 
 public:
   void reset() override;
@@ -147,6 +153,9 @@ public:
 
 struct shuffled_rng_multiple_t final : public shuffled_rng_base_t
 {
+protected:
+  const static rng_type_e rng_type = RNG_SHUFFLE_MULTIPLE;
+public:
   shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data );
 };
 
@@ -159,6 +168,9 @@ enum shuffled_rng_e : int
 
 struct shuffled_rng_t final : public shuffled_rng_base_t
 {
+protected:
+  const static rng_type_e rng_type = RNG_SHUFFLE;
+public:
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
 
   int success_remains();
@@ -182,6 +194,8 @@ struct shuffled_rng_t final : public shuffled_rng_base_t
 // trigger after a successful proc will have a trigger count of initial_count + 1.
 struct accumulated_rng_t final : public proc_rng_t
 {
+protected:
+  const static rng_type_e rng_type = RNG_ACCUMULATE;
 private:
   std::function<double( double, unsigned )> accumulator_fn;
   double proc_chance;
