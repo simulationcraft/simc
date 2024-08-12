@@ -6719,7 +6719,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   {
     buff_period = 0_s;
 
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
     set_tick_behavior( buff_tick_behavior::REFRESH );
 
     set_cooldown( 0_s );
