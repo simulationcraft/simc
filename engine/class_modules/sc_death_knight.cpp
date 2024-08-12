@@ -4306,10 +4306,7 @@ struct trollbane_pet_t final : public horseman_pet_t
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
-      if ( !a->target->is_boss() || !dk()->bugs )
-      {
-        dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
-      }
+      dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
     }
   };
 
