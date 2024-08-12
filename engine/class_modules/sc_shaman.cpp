@@ -6780,11 +6780,6 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.wind_gust->trigger();
     }
 
-    if ( p()->buff.lesser_storm_elemental->check() )
-    {
-      p()->buff.wind_gust->trigger();
-    }
-
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
