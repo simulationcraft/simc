@@ -1006,10 +1006,10 @@ public:
   real_ppm_t* find_rppm( std::string_view );
 
   template <typename RNG, typename... Args>
-  RNG* get_rng( std::string_view name, Args &&...args )
+  RNG* get_rng( std::string_view name, Args&&... args )
   {
     static_assert( std::is_base_of_v<proc_rng_t, RNG> );
-    auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t *rng ) {
+    auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
       return rng->type() == RNG::rng_type && util::str_compare_ci( rng->name(), name );
     } );
 
