@@ -1111,6 +1111,7 @@ struct evoker_t : public player_t
     propagate_const<cooldown_t*> firestorm;
     propagate_const<cooldown_t*> upheaval;
     propagate_const<cooldown_t*> breath_of_eons;
+    propagate_const<cooldown_t*> tip_the_scales;
   } cooldown;
 
   // Gains
@@ -1148,6 +1149,7 @@ struct evoker_t : public player_t
   struct background_actions_t
   {
     propagate_const<action_t*> ebon_might;
+    propagate_const<action_t*> tip_the_scales;
   } background_actions;
 
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
@@ -4064,8 +4066,6 @@ struct disintegrate_t : public essence_spell_t
 
   void interrupt_action() override
   {
-    bool was_channeling = ( player->channeling == this );
-
     essence_spell_t::interrupt_action();
 
     for ( auto dot : current_dots )
@@ -4300,7 +4300,7 @@ struct firestorm_t : public evoker_spell_t
     dummy_cooldown->add_execute_type( execute_type::FOREGROUND );
   }
 
-  void queue_execute( execute_type type )
+  void queue_execute( execute_type type ) override
   {
     cooldown_t* original_cd = cooldown;
     if ( p()->buff.snapfire->up() )
@@ -4751,9 +4751,19 @@ struct tip_the_scales_t : public evoker_spell_t
   {
   }
 
+  bool ready() override
+  {
+    if ( p()->buff.tip_the_scales->check() )
+      return false;
+
+    return evoker_spell_t::ready();
+  }
+
   void execute() override
   {
     evoker_spell_t::execute();
+
+    cooldown->reset( false, 1 );
 
     p()->buff.tip_the_scales->trigger();
 
@@ -5080,10 +5090,10 @@ struct eruption_t : public essence_spell_t
     : essence_spell_t( name, p, p->talent.eruption, options_str ),
       extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
       upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() ),
-      mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
-      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
       t31_4pc_eruption( nullptr ),
       mass_eruption( nullptr ),
+      mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
+      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
       motes_chance( p->talent.motes_of_possibility->proc_chance() )
   {
     aoe              = -1;
@@ -7070,6 +7080,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   cooldown.firestorm      = get_cooldown( "firestorm" );
   cooldown.upheaval       = get_cooldown( "upheaval" );
   cooldown.breath_of_eons = get_cooldown( "breath_of_eons" );
+  cooldown.tip_the_scales = get_cooldown( "tip_the_scales" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -7583,6 +7594,11 @@ void evoker_t::init_background_actions()
     background_actions.ebon_might =
         get_secondary_action<spells::ebon_might_t>( "ebon_might_helper", timespan_t::min(), "ebon_might_helper" );
   }
+
+  if ( talent.tip_the_scales.ok() )
+  {
+    background_actions.tip_the_scales = get_secondary_action<spells::tip_the_scales_t>( "tip_the_scales", "" );
+  }
 }
 
 void evoker_t::init_items()
@@ -8013,7 +8029,9 @@ void evoker_t::create_buffs()
                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.tip_the_scales =
-      MBF( talent.tip_the_scales.ok(), this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
+      MBF( talent.tip_the_scales.ok(), this, "tip_the_scales", talent.tip_the_scales )
+          ->set_cooldown( 0_ms )
+          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) { cooldown.tip_the_scales->start( background_actions.tip_the_scales ); } );
 
   // Devastation
   buff.blazing_shards =
