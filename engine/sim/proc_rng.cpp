@@ -119,67 +119,60 @@ int real_ppm_t::trigger()
   return success;
 }
 
-shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
-  : proc_rng_t( n, p, rng_type_e::RNG_SHUFFLE ),
-    success_entries( success_entries ),
-    total_entries( total_entries ),
-    success_entries_remaining( success_entries ),
-    total_entries_remaining( total_entries )
-{}
-
-void shuffled_rng_t::reset()
+shuffled_rng_base_t::shuffled_rng_base_t( rng_type_e rng_type, std::string_view n, player_t* p, initializer data )
+  : proc_rng_t( n, p, rng_type )
 {
-  success_entries_remaining = success_entries;
-  total_entries_remaining = total_entries;
+  // CXX23: use append_range instead of nested loops
+  for ( const auto& [ key, count ] : data )
+    for ( unsigned i = 0; i < count; ++i )
+      entries.emplace_back( key );
+  // shuffle vector and initialize position
+  reset();
 }
 
-int shuffled_rng_t::trigger()
+void shuffled_rng_base_t::reset()
 {
-  if ( total_entries <= 0 || success_entries <= 0 )
-    return false;
-
-  if ( total_entries_remaining <= 0 )
-    reset();  // Re-Shuffle the "Deck"
-
-  bool result = false;
-
-  if ( success_entries_remaining > 0 )
-  {
-    result = player->rng().roll( get_remaining_success_chance() );
-
-    if ( result )
-      success_entries_remaining--;
-  }
-
-  total_entries_remaining--;
-
-  if ( total_entries_remaining <= 0 )
-    reset();  // Re-Shuffle the "Deck"
-
-  return result;
+  player->rng().shuffle( entries.begin(), entries.end() );
+  position = entries.begin();
 }
 
-shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* p, std::initializer_list<std::pair<unsigned, unsigned>> data )
-  : proc_rng_t( n, p, rng_type_e::RNG_SHUFFLE_MULTIPLE )
+int shuffled_rng_base_t::trigger()
 {
-  for ( const auto &[ key, count ] : data )
-    entries.emplace_back( entry_t( key, count ) );
-}
-
-void shuffled_rng_multiple_t::reset()
-{
-  for ( entry_t &entry : entries )
-    entry.reset();
-}
-
-int shuffled_rng_multiple_t::trigger()
-{
-  if ( std::none_of( entries.begin(), entries.end(), []( entry_t &e ) { return e.can_trigger(); } ) )
+  if ( position == entries.end() )
     reset();
 
-  auto entry = entries[ player->rng().range<size_t>( 0, entries.size() ) ];
-  while ( !entry.can_trigger() ) { entry = entries[ player->rng().range<size_t>( 0, entries.size() ) ]; };
-  return entry.trigger() ? entry.key : -1;
+  return *position++;
+}
+
+int shuffled_rng_base_t::count_remains( int key )
+{
+  return as<int>( std::count( position, entries.end(), key ) );
+}
+
+int shuffled_rng_base_t::entry_remains()
+{
+  return as<int>( std::distance( position, entries.end() ) );
+}
+
+shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data )
+  : shuffled_rng_base_t( rng_type_e::RNG_SHUFFLE_MULTIPLE, n, p, data )
+{
+}
+
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
+  : shuffled_rng_base_t( rng_type_e::RNG_SHUFFLE, n, p,
+                         { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } )
+{
+}
+
+int shuffled_rng_t::success_remains()
+{
+  return as<int>( count_remains( shuffled_rng_e::SUCCESS ) );
+}
+
+int shuffled_rng_t::fail_remains()
+{
+  return as<int>( count_remains( shuffled_rng_e::FAIL ) );
 }
 
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,

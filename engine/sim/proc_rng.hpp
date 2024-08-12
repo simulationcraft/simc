@@ -124,61 +124,45 @@ public:
   { accumulated_blp = ts; }
 };
 
-// "Deck of Cards" randomizer helper class ====================================
+// Extended "Deck of Cards" to support multiple success/failure types
 // Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
-struct shuffled_rng_t final : public proc_rng_t
+struct shuffled_rng_base_t : public proc_rng_t
 {
+  using initializer = std::initializer_list<std::pair<int, unsigned>>;
+
 private:
-  int success_entries;
-  int total_entries;
-  int success_entries_remaining;
-  int total_entries_remaining;
+  std::vector<int> entries;
+  std::vector<int>::iterator position;
+
+protected:
+  shuffled_rng_base_t( rng_type_e rng_type, std::string_view n, player_t* p, initializer data );
 
 public:
-  shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
-
   void reset() override;
   int trigger() override;
 
-  int get_success_entries() const
-  { return success_entries; }
-
-  int get_success_entries_remaining() const
-  { return success_entries_remaining; }
-
-  int get_total_entries() const
-  { return total_entries; }
-
-  int get_total_entries_remaining() const
-  { return total_entries_remaining; }
-
-  double get_remaining_success_chance() const
-  { return static_cast<double>( success_entries_remaining ) / static_cast<double>( total_entries_remaining ); }
+  int count_remains( int key );
+  int entry_remains();
 };
 
-// Extended "Deck of Cards" to support multiple success/failure types
-struct shuffled_rng_multiple_t final : public proc_rng_t
+struct shuffled_rng_multiple_t final : public shuffled_rng_base_t
 {
-private:
-  struct entry_t
-  {
-    unsigned key;
-    unsigned entries;
-    unsigned remaining;
+  shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data );
+};
 
-    entry_t( unsigned key, unsigned count ) : key( key ), entries( count ), remaining( count ) {}
-    void reset() { remaining = entries; }
-    bool can_trigger() { return remaining > 0; }
-    bool trigger() { return remaining > 0 ? remaining-- : false; }
-  };
+// "Deck of Cards" basic case containing a success/fail type pair.
+enum shuffled_rng_e : int
+{
+  FAIL = 0,
+  SUCCESS = 1
+};
 
-  std::vector<entry_t> entries;
+struct shuffled_rng_t final : public shuffled_rng_base_t
+{
+  shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
 
-public:
-  shuffled_rng_multiple_t( std::string_view n, player_t *p, std::initializer_list<std::pair<unsigned, unsigned>> data );
-
-  void reset() override;
-  int trigger() override;
+  int success_remains();
+  int fail_remains();
 };
 
 // Accumulated back luck protection rng helper class ==========================
