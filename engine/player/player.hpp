@@ -1003,7 +1003,6 @@ public:
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
   target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
-  real_ppm_t* find_rppm( std::string_view );
 
   template <typename RNG, typename... Args>
   RNG* get_rng( std::string_view name, Args&&... args )
@@ -1016,10 +1015,19 @@ public:
     if ( it != proc_rng_list.end() )
       return debug_cast<RNG*>( *it );
 
+    if constexpr ( !std::is_constructible_v<RNG, Args...> )
+      return nullptr;
+
     RNG* rng = new RNG( name, this, std::forward<Args>( args )... );
     proc_rng_list.push_back( rng );
     return rng;
   }
+  simple_proc_t* get_simple_proc_rng( std::string_view name, double chance = 0.0 );
+  real_ppm_t* get_rppm( std::string_view name, double frequency = 0.0, double modifier = 1.0, unsigned scales_with = RPPM_NONE, real_ppm_t::blp blp_state = real_ppm_t::blp::BLP_ENABLED );
+  real_ppm_t* get_rppm( std::string_view name, const spell_data_t* spell_data = nullptr, const item_t* item = nullptr );
+  shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
+  shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
+  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0, std::function<double(double, unsigned)> accumulator_fn = nullptr, unsigned initial_count = 0 );
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );

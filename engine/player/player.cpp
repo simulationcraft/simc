@@ -8256,22 +8256,34 @@ target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& 
   return tcd;
 }
 
-real_ppm_t* player_t::find_rppm( std::string_view name )
+simple_proc_t* player_t::get_simple_proc_rng( std::string_view name, double chance )
 {
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_RPPM && util::str_compare_ci( rng->name(), name );
-  } );
+  return get_rng<simple_proc_t>( name, chance );
+}
 
-  if ( it != proc_rng_list.end() )
-  {
-    auto rppm = dynamic_cast<real_ppm_t*>( *it );
-    assert( rppm );
-    return rppm;
-  }
-  else
-  {
-    return nullptr;
-  }
+real_ppm_t* player_t::get_rppm( std::string_view name, double frequency, double modifier, unsigned scales_with, real_ppm_t::blp blp_state )
+{
+  return get_rng<real_ppm_t>( name, frequency, modifier, scales_with, blp_state );
+}
+
+real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* spell_data, const item_t* item )
+{
+  return get_rng<real_ppm_t>( name, spell_data, item );
+}
+
+shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data )
+{
+  return get_rng<shuffled_rng_t>( name, data );
+}
+
+shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries , int total_entries )
+{
+  return get_rng<shuffled_rng_t>( name, success_entries, total_entries );
+}
+
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance, std::function<double(double, unsigned)> accumulator_fn , unsigned initial_count )
+{
+  return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
 
 dot_t* player_t::get_dot( util::string_view name, player_t* source )

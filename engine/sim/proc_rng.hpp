@@ -128,47 +128,29 @@ public:
 
 // Extended "Deck of Cards" to support multiple success/failure types
 // Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
-struct shuffled_rng_base_t : public proc_rng_t
-{
-  using initializer = std::initializer_list<std::pair<int, unsigned>>;
-private:
-  std::vector<int> entries;
-  std::vector<int>::iterator position;
-
-protected:
-  const static rng_type_e rng_type = RNG_SHUFFLE_BASE;
-  shuffled_rng_base_t( std::string_view n, player_t* p, initializer data );
-
-public:
-  void reset() override;
-  int trigger() override;
-
-  int count_remains( int key );
-  int entry_remains();
-};
-
-struct shuffled_rng_multiple_t final : public shuffled_rng_base_t
-{
-public:
-  const static rng_type_e rng_type = RNG_SHUFFLE_MULTIPLE;
-  shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data );
-};
-
-// "Deck of Cards" basic case containing a success/fail type pair.
 enum shuffled_rng_e : int
 {
   FAIL = 0,
   SUCCESS = 1
 };
 
-struct shuffled_rng_t final : public shuffled_rng_base_t
+struct shuffled_rng_t final : public proc_rng_t
 {
+  using initializer = std::initializer_list<std::pair<int, int>>;
+private:
+  std::vector<int> entries;
+  std::vector<int>::iterator position;
+  void init( initializer data );
+
 public:
   const static rng_type_e rng_type = RNG_SHUFFLE;
+  shuffled_rng_t( std::string_view n, player_t* p, initializer data );
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
+  void reset() override;
+  int trigger() override;
 
-  int success_remains();
-  int fail_remains();
+  int count_remains( int key );
+  int entry_remains();
 };
 
 // Accumulated back luck protection rng helper class ==========================

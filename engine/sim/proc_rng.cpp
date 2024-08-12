@@ -119,22 +119,40 @@ int real_ppm_t::trigger()
   return success;
 }
 
-shuffled_rng_base_t::shuffled_rng_base_t( std::string_view n, player_t* p, initializer data )
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, initializer data )
   : proc_rng_t( n, p )
+{
+  init( data );
+}
+
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
+  : proc_rng_t( n, p)
+{
+  assert( total_entries >= success_entries );
+  init( { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } );
+}
+
+void shuffled_rng_t::init( initializer data )
 {
   // CXX23: use append_range instead of nested loops
   for ( const auto& [ key, count ] : data )
-    for ( unsigned i = 0; i < count; ++i )
+  {
+    assert( count >= 0 );
+    for ( int i = 0; i < count; ++i )
       entries.emplace_back( key );
+  }
+
+  if ( entries.empty() )
+    entries.emplace_back( shuffled_rng_e::FAIL );
 }
 
-void shuffled_rng_base_t::reset()
+void shuffled_rng_t::reset()
 {
   player->rng().shuffle( entries.begin(), entries.end() );
   position = entries.begin();
 }
 
-int shuffled_rng_base_t::trigger()
+int shuffled_rng_t::trigger()
 {
   if ( position == entries.end() )
     reset();
@@ -142,34 +160,14 @@ int shuffled_rng_base_t::trigger()
   return *position++;
 }
 
-int shuffled_rng_base_t::count_remains( int key )
+int shuffled_rng_t::count_remains( int key )
 {
   return as<int>( std::count( position, entries.end(), key ) );
 }
 
-int shuffled_rng_base_t::entry_remains()
+int shuffled_rng_t::entry_remains()
 {
   return as<int>( std::distance( position, entries.end() ) );
-}
-
-shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data )
-  : shuffled_rng_base_t( n, p, data )
-{
-}
-
-shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
-  : shuffled_rng_base_t( n, p, { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } )
-{
-}
-
-int shuffled_rng_t::success_remains()
-{
-  return as<int>( count_remains( shuffled_rng_e::SUCCESS ) );
-}
-
-int shuffled_rng_t::fail_remains()
-{
-  return as<int>( count_remains( shuffled_rng_e::FAIL ) );
 }
 
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
