@@ -747,8 +747,8 @@ struct evoker_t : public player_t
     bool remove_precombat_ancient_flame                        = true;
     int simplified_actor_ilevel                                = -1;
     bool simulate_bombardments                                 = true;
-    timespan_t simulate_bombardments_time_between_procs_mean   = 2.1_s;
-    timespan_t simulate_bombardments_time_between_procs_stddev = 0.2_s;
+    timespan_t simulate_bombardments_time_between_procs_mean   = 2.0_s;
+    timespan_t simulate_bombardments_time_between_procs_stddev = 0.15_s;
   } option;
 
   // Action pointers
@@ -6716,7 +6716,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s, const spell_data_t* driver_spell )
     : e_buff_t( td, name, s ),
       gauss( p()->option.simulate_bombardments_time_between_procs_mean,
-             p()->option.simulate_bombardments_time_between_procs_stddev, data().internal_cooldown() + 1_ms )
+             p()->option.simulate_bombardments_time_between_procs_stddev, driver_spell->internal_cooldown() + 1_ms )
   {
     buff_period = 0_s;
 
