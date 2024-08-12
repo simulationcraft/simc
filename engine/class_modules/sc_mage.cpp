@@ -8756,7 +8756,7 @@ void mage_t::init_rng()
 
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
-  shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
+  shuffled_rng.time_anomaly = get_rng<shuffled_rng_t>( "time_anomaly", 1, 16 );
   rppm.energy_reconstitution = get_rng<real_ppm_t>( "energy_reconstitution", talents.energy_reconstitution );
   rppm.frostfire_infusion = get_rng<real_ppm_t>( "frostfire_infusion", talents.frostfire_infusion );
   // Accumulated RNG is also not present in the game data.

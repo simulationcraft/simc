@@ -8274,25 +8274,6 @@ real_ppm_t* player_t::find_rppm( std::string_view name )
   }
 }
 
-shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries, int total_entries )
-{
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_SHUFFLE && util::str_compare_ci( rng->name(), name );
-  } );
-
-  if ( it != proc_rng_list.end() )
-  {
-    auto s_rng = dynamic_cast<shuffled_rng_t*>( *it );
-    assert( s_rng );
-    return s_rng;
-  }
-
-  auto new_rng = new shuffled_rng_t( name, this, success_entries, total_entries );
-  proc_rng_list.push_back( new_rng );
-
-  return new_rng;
-}
-
 accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double proc_chance,
                                                   std::function<double( double, unsigned )> accumulator_fn,
                                                   unsigned initial_count )

@@ -1020,7 +1020,6 @@ public:
     return rng;
   }
 
-  shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
   accumulated_rng_t* get_accumulated_rng( std::string_view name, double proc_chance,
                                           std::function<double( double, unsigned )> accumulator_fn = nullptr,
                                           unsigned initial_count = 0 );

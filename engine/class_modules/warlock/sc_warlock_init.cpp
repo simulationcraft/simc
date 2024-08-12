@@ -1052,7 +1052,7 @@ namespace warlock
   void warlock_t::init_rng_destruction()
   {
     // TOCHECK: Presumed to use deck of cards at 3 out of 20. Long sample test needed to reconfirm in TWW
-    rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+    rain_of_chaos_rng = get_rng<shuffled_rng_t>( "rain_of_chaos", 3, 20 );
   }
 
   void warlock_t::init_rng_diabolist()

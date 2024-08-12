@@ -8717,7 +8717,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
 
     // create deck for exceptional spell cast
-    deck = p->get_shuffled_rng( "convoke_the_spirits", 1, guidance ? 2 : p->options.convoke_the_spirits_deck );
+    deck = p->get_rng<shuffled_rng_t>( "convoke_the_spirits", 1, guidance ? 2 : p->options.convoke_the_spirits_deck );
   }
 
   void init() override
