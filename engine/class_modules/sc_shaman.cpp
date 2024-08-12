@@ -3761,10 +3761,12 @@ struct ancestor_t : public shaman_pet_t
     }
 
     shaman_pet_t::dismiss( expiration );
-
-    if ( expiration && o()->talent.ancient_fellowship.ok() && o()->rng_obj.ancient_fellowship->trigger() )
+    if ( o()->talent.ancient_fellowship.ok() )
     {
-      o()->summon_ancestor();
+      if ( expiration && o()->rng_obj.ancient_fellowship->trigger() )
+      {
+        o()->summon_ancestor();
+      }
     }
   }
 };
@@ -6577,10 +6579,12 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     p()->buff.t29_2pc_ele->trigger();
-
-    if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
+    if ( p()->talent.icefury.ok() )
     {
-      p()->buff.icefury_cast->trigger();
+      if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
+      {
+        p()->buff.icefury_cast->trigger();
+      }
     }
 
     if ( p()->talent.routine_communication.ok() && exec_type == spell_variant::NORMAL )
@@ -12520,9 +12524,11 @@ void shaman_t::init_rng()
   if ( options.ancient_fellowship_total == 0 ) {
     options.ancient_fellowship_total = talent.ancient_fellowship->effectN( 2 ).base_value();
   }
-
-  rng_obj.ancient_fellowship = get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
-
+  if ( talent.ancient_fellowship.ok() )
+  {
+    rng_obj.ancient_fellowship =
+        get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
+  }
   if ( options.icefury_positive == 0 ) {
     options.icefury_positive = talent.icefury->effectN( 1 ).base_value();
   }
@@ -12530,8 +12536,10 @@ void shaman_t::init_rng()
   if ( options.icefury_total == 0 ) {
     options.icefury_total = talent.icefury->effectN( 2 ).base_value();
   }
-
-  rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
+  if ( talent.icefury.ok() )
+  {
+    rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
+  }
 }
 
 // shaman_t::init_items =====================================================
