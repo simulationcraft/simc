@@ -3604,6 +3604,8 @@ struct storm_elemental_t : public primal_elemental_t
     {
       tempest_cd->reset( false );
     }
+
+    o()->buff.wind_gust->reset();
   }
 
   void dismiss( bool expired ) override
@@ -3613,6 +3615,11 @@ struct storm_elemental_t : public primal_elemental_t
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
       o()->summon_lesser_elemental( type );
+    }
+
+    if ( o()->pet.storm_elemental.n_active_pets() + o()->pet.lesser_storm_elemental.n_active_pets() == 0 )
+    {
+      o()->buff.wind_gust->expire();
     }
   }
 };
