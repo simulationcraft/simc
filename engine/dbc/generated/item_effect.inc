@@ -9592,7 +9592,7 @@ static const std::array<item_effect_t, 9805> __item_effect_data { {
   { 184688, 447567, 221977,   0,   1,    0,      -1,      -1 }, // Funeral Pyre
   { 184817, 447594, 221982,   0,   1,    0,      -1,      -1 }, // Bulwark of the Black Ox
   { 186428, 455211, 222458,   0,   1,    0,      -1,      -1 }, // Sanctified Steps
-  { 186430, 453572, 222459,   0,   1,    0,      -1,      -1 }, // Beledar's Blessing
+  { 186430, 466607, 222459,   0,   1,    0,      -1,      -1 }, // Beledar's Blessing
   { 186431, 453573, 222463,   0,   1,    0,      -1,      -1 }, // Siphoning Stilleto
   { 187077, 455757, 222480,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 188086, 395185, 222480,   1,   1,    0,      -1,      -1 }, // Herbalism Tool Equipped (DNT)

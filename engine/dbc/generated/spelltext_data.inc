@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56071
-static const std::array<spelltext_data_t, 26287> __spelltext_data { {
+static const std::array<spelltext_data_t, 26290> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26281,6 +26281,9 @@ static const std::array<spelltext_data_t, 26287> __spelltext_data { {
   { 465402, "$@spelldesc53563", "The paladin's healing spells cast on you also heal the Beacon of Light.", 0 },
   { 465521, "$@spelldesc205385", 0, 0 },
   { 465522, "$@spelldesc205385", 0, 0 },
+  { 466607, "Taking damage has the chance to grant $@spellname466608 granting $s1 Versatility for $466608d. \r\n\r\nMoving within $M2 yards of a party or raid member grants them a portion of $@spellname466612, sharing the effect for the remaining duration.", 0, 0 },
+  { 466608, "$@spelldesc466607", "Versatility increased by $w1.", 0 },
+  { 466612, "$@spelldesc466607", "Versatility increased by $w1.", 0 },
   { 466873, "Add the Xal'atath's Bargain: Ascendant affix to a Mythic Keystone.", 0, 0 },
   { 466874, "Add the Xal'atath's Bargain: Voidbound affix to a Mythic Keystone.", 0, 0 },
   { 466875, "Add the Xal'atath's Bargain: Oblivion affix to a Mythic Keystone.", 0, 0 },
