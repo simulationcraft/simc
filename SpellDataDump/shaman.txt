@@ -2011,7 +2011,7 @@ Effects          :
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 28, 30, 31, 34, 44, 45, 50, 60, 79, 83, 98, 107, 119, 121
 #2 (id=830842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Damage (15)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 3924 (Label) | Target: Self (1)
-                   Affected Spells (Label): Primordial Wave (375984), Awakening Storms (455130)
+                   Affected Spells (Label): Earthen Rage (170374), Earthen Rage (170379), Primordial Wave (375984), Awakening Storms (455130)
 Description      : Your damaging $?a343190[and healing ][]critical strikes deal ${$m1+200}% damage $?a343190[or healing ][]instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -5016,6 +5016,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 117
                  : 292
+                 : 3924: Elemental Fury (60188 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
@@ -5069,6 +5070,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 117
                  : 292
+                 : 3924: Elemental Fury (60188 effect#2)
                  : 3983
                  : 4013: Stormcaller (454021 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
