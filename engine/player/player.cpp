@@ -8274,27 +8274,6 @@ real_ppm_t* player_t::find_rppm( std::string_view name )
   }
 }
 
-accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double proc_chance,
-                                                  std::function<double( double, unsigned )> accumulator_fn,
-                                                  unsigned initial_count )
-{
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_ACCUMULATE && util::str_compare_ci( rng->name(), name );
-  } );
-
-  if ( it != proc_rng_list.end() )
-  {
-    auto a_rng = dynamic_cast<accumulated_rng_t*>( *it );
-    assert( a_rng );
-    return a_rng;
-  }
-
-  auto new_rng = new accumulated_rng_t( name, this, proc_chance, std::move( accumulator_fn ), initial_count );
-  proc_rng_list.push_back( new_rng );
-
-  return new_rng;
-}
-
 dot_t* player_t::get_dot( util::string_view name, player_t* source )
 {
   dot_t* d = find_dot( name, source );

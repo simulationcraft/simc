@@ -2346,7 +2346,7 @@ public:
       double scale = p->talent.thriving_growth->effectN( IDX ).percent();
       double shift = 3 - BASE::base_tick_time.total_seconds();
 
-      vine_rng = p->get_accumulated_rng( fmt::format( "{}_vines", n ), scale, [ shift ]( double scale, unsigned c ) {
+      vine_rng = p->get_rng<accumulated_rng_t>( fmt::format( "{}_vines", n ), scale, [ shift ]( double scale, unsigned c ) {
         return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
       } );
     }
@@ -9192,7 +9192,7 @@ struct druid_melee_t : public Base
         ravage_buff = p->buff.ravage_maul;
       }
 
-      ravage_rng = p->get_accumulated_rng( "ravage", c );
+      ravage_rng = p->get_rng<accumulated_rng_t>( "ravage", c );
       ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
     }
   }

@@ -1020,9 +1020,6 @@ public:
     return rng;
   }
 
-  accumulated_rng_t* get_accumulated_rng( std::string_view name, double proc_chance,
-                                          std::function<double( double, unsigned )> accumulator_fn = nullptr,
-                                          unsigned initial_count = 0 );
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
   proc_t*     get_proc    ( util::string_view name );
