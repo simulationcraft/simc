@@ -1015,7 +1015,7 @@ public:
     if ( it != proc_rng_list.end() )
       return debug_cast<RNG*>( *it );
 
-    if constexpr ( !std::is_constructible_v<RNG, Args...> )
+    if constexpr ( !std::is_constructible_v<RNG, std::string_view, player_t*, Args...> )
       return nullptr;
 
     RNG* rng = new RNG( name, this, std::forward<Args>( args )... );
