@@ -12194,7 +12194,8 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.whirling_elements );
   buff.whirling_earth = make_buff( this, "whirling_earth", find_spell( 453406 ) )
     ->set_trigger_spell( talent.whirling_elements );
-  buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) );
+  buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) )
+      ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
 
   buff.awakening_storms = make_buff( this, "awakening_storms", find_spell( 462131 ) )
     ->set_chance( talent.awakening_storms.ok() ? 1.0 : 0.0 );
