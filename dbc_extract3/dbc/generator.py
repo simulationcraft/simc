@@ -3322,7 +3322,7 @@ class SpellDataGenerator(DataGenerator):
         # with spell ###### and should be included.
         for spell_id, spell_data in self.db('Spell').items():
             if spell_data.desc:
-                r = re.match("\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
+                r = re.match(r"\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
                 if r and (id := int(r.group(1))) in ids:
                     self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
@@ -4712,7 +4712,7 @@ class PetRaceEnumGenerator(DataGenerator):
         self._out.write('{\n')
         self._out.write('  {:25s} = {},\n'.format('NONE', 0))
 
-        name_re = re.compile('^(?:Pet[\s]+\-[\s]+|)(.+)', re.I)
+        name_re = re.compile(r'^(?:Pet[\s]+\-[\s]+|)(.+)', re.I)
         for id in sorted(skill_ids):
             skill = self.db('SkillLine').get(id)
             mobj = name_re.match(skill.name)
