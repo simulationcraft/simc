@@ -1023,6 +1023,7 @@ public:
       return dynamic_cast<T*>( *it );
 
     auto action = new T( n, this, std::forward<Ts>( args )... );
+    assert( action->name_str == n && "Created background action does not match requested name" );
     action -> background = true;
     background_actions.push_back( action );
     return action;
@@ -4161,7 +4162,7 @@ struct arcane_shot_t : public arcane_shot_base_t
 {
   struct arcane_shot_etf_t : public arcane_shot_base_t
   {
-    arcane_shot_etf_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( p )
+    arcane_shot_etf_t( hunter_t* p ) : arcane_shot_base_t( p )
     {
       background = dual = true;
       base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
@@ -4177,7 +4178,7 @@ struct arcane_shot_t : public arcane_shot_base_t
 
     if ( p->talents.eagletalons_true_focus.ok() )
     {
-      arcane_shot_etf = p->get_background_action<arcane_shot_etf_t>( "arcane_shot_etf" );
+      arcane_shot_etf = new arcane_shot_etf_t( p );
       add_child( arcane_shot_etf );
     }
   }
@@ -4214,10 +4215,10 @@ struct serpent_sting_base_t: public hunter_ranged_attack_t
 // Explosive Venom (Talent)
 struct serpent_sting_explosive_venom_t final : public serpent_sting_base_t
 {
-  serpent_sting_explosive_venom_t( util::string_view /*name*/, hunter_t* p ):
+  serpent_sting_explosive_venom_t( hunter_t* p ):
     serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
   {
-    dual = true;
+    background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
@@ -4245,7 +4246,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       aoe = -1;
       background = dual = true;
 
-      serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
+      serpent_sting = new serpent_sting_explosive_venom_t( p );
     }
 
     void impact( action_state_t* s ) override
@@ -4350,9 +4351,9 @@ struct explosive_shot_background_t : public explosive_shot_t
 {
   size_t targets = 0;
 
-  explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
+  explosive_shot_background_t( hunter_t* p ) : explosive_shot_t( p, "" )
   {
-    dual = true;
+    background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
@@ -4374,10 +4375,10 @@ struct kill_shot_t : hunter_ranged_attack_t
   // Venoms Bite (Talent)
   struct serpent_sting_venoms_bite_t final : public serpent_sting_base_t
   {
-    serpent_sting_venoms_bite_t( util::string_view /*name*/, hunter_t* p ):
+    serpent_sting_venoms_bite_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
@@ -4419,7 +4420,7 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
       se_recharge_cooldown = p->cooldowns.barbed_shot;
 
-    serpent_sting = p -> get_background_action<serpent_sting_venoms_bite_t>( "serpent_sting_venoms_bite" );
+    serpent_sting = new serpent_sting_venoms_bite_t( p );
   }
 
   void execute() override
@@ -4837,7 +4838,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 1 ).base_value();
 
-    serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
+    serpent_sting = new serpent_sting_explosive_venom_t( p );
   }
 
   void execute() override
@@ -5139,7 +5140,7 @@ struct chimaera_shot_t : public chimaera_shot_base_t
 {
   struct chimaera_shot_etf_t : public chimaera_shot_base_t
   {
-    chimaera_shot_etf_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( p )
+    chimaera_shot_etf_t( hunter_t* p ) : chimaera_shot_base_t( p )
     {
       background = dual = true;
       base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
@@ -5155,7 +5156,7 @@ struct chimaera_shot_t : public chimaera_shot_base_t
 
     if ( p->talents.eagletalons_true_focus.ok() )
     {
-      chimaera_shot_etf = p->get_background_action<chimaera_shot_etf_t>( "chimaera_shot_etf" );
+      chimaera_shot_etf = new chimaera_shot_etf_t( p );
       add_child( chimaera_shot_etf );
     }
   }
@@ -5186,19 +5187,19 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 {
   struct serpent_sting_sst_t final : public serpent_sting_base_t
   {
-    serpent_sting_sst_t( util::string_view /*name*/, hunter_t* p ):
+    serpent_sting_sst_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
     }
   };
 
   struct serpent_sting_hb_t final : public serpent_sting_base_t
   {
-    serpent_sting_hb_t( util::string_view /*name*/, hunter_t* p ):
+    serpent_sting_hb_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 271788 ) )
     {
-      dual = true;
+      background = dual = true;
       aoe = as<int>( p->talents.hydras_bite->effectN( 3 ).base_value() );
     }
 
@@ -5271,7 +5272,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
 
     if ( p -> talents.serpentstalkers_trickery.ok() )
-      serpentstalkers_trickery = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting_sst" );
+      serpentstalkers_trickery = new serpent_sting_sst_t( p );
 
     if ( p -> talents.surging_shots.ok() )
     {
@@ -5291,7 +5292,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
 
     if ( p->talents.hydras_bite.ok() )
-      hydras_bite = p->get_background_action<serpent_sting_hb_t>( "serpent_sting_hb" );
+      hydras_bite = new serpent_sting_hb_t( p );
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -5703,7 +5704,7 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
 
     if ( p -> talents.salvo.ok() )
     {
-      explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+      explosive = new attacks::explosive_shot_background_t( p );
       explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
     }
   }
@@ -5770,7 +5771,7 @@ struct multishot_mm_t : public multishot_mm_base_t
 {
   struct multishot_mm_etf_t : public multishot_mm_base_t
   {
-    multishot_mm_etf_t( util::string_view n, hunter_t* p ) : multishot_mm_base_t( p )
+    multishot_mm_etf_t( hunter_t* p ) : multishot_mm_base_t( p )
     {
       background = dual = true;
       base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
@@ -5786,7 +5787,7 @@ struct multishot_mm_t : public multishot_mm_base_t
 
     if ( p->talents.eagletalons_true_focus.ok() )
     {
-      multishot_mm_etf = p->get_background_action<multishot_mm_etf_t>( "multishot_etf" );
+      multishot_mm_etf = new multishot_mm_etf_t( p );
       add_child( multishot_mm_etf );
     }
   }
@@ -5834,10 +5835,10 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 {
   struct serpent_sting_vv_t final : public serpent_sting_base_t
   {
-    serpent_sting_vv_t( util::string_view /*name*/, hunter_t* p ):
+    serpent_sting_vv_t( hunter_t* p ):
       serpent_sting_base_t( p, "", p -> find_spell( 259491 ) )
     {
-      dual = true;
+      background = dual = true;
     }
 
     timespan_t travel_time() const override
@@ -5867,7 +5868,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     hunter_melee_attack_t( n, p, s )
   {
     if ( p -> talents.vipers_venom.ok() )
-      vipers_venom_serpent_sting = p->get_background_action<serpent_sting_vv_t>( "serpent_sting_vv" );
+      vipers_venom_serpent_sting = new serpent_sting_vv_t( p );
 
     wildfire_infusion_chance = p->talents.wildfire_infusion->effectN( 1 ).percent();
   }
@@ -6608,10 +6609,10 @@ struct kill_command_t: public hunter_spell_t
 {
   struct arcane_shot_qs_t final : public attacks::arcane_shot_t
   {
-    arcane_shot_qs_t( util::string_view /*name*/, hunter_t* p ):
+    arcane_shot_qs_t( hunter_t* p ):
       arcane_shot_t( p, "" )
     {
-      dual = true;
+      background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.quick_shot->effectN( 2 ).percent();
 
@@ -6623,7 +6624,7 @@ struct kill_command_t: public hunter_spell_t
 
   struct explosive_shot_qs_t final : public attacks::explosive_shot_background_t
   {
-    explosive_shot_qs_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
+    explosive_shot_qs_t( hunter_t* p ) : explosive_shot_background_t( p )
     {
       base_dd_multiplier *= p->talents.sulfur_lined_pockets->effectN( 2 ).percent();
     }
@@ -6671,12 +6672,12 @@ struct kill_command_t: public hunter_spell_t
       if ( p -> talents.quick_shot.ok() )
       {
         quick_shot.chance = p -> talents.quick_shot -> effectN( 1 ).percent();
-        quick_shot.arcane = p->get_background_action<arcane_shot_qs_t>( "arcane_shot_qs" );
+        quick_shot.arcane = new arcane_shot_qs_t( p );
         add_child( quick_shot.arcane );
 
         if ( p->talents.sulfur_lined_pockets.ok() )
         {
-          quick_shot.explosive = p->get_background_action<explosive_shot_qs_t>( "explosive_shot_quick_shot" );
+          quick_shot.explosive = new explosive_shot_qs_t( p );
           add_child( quick_shot.explosive );
         }
       }
@@ -7157,7 +7158,7 @@ struct volley_t : public hunter_spell_t
       background = dual = ground_aoe = true;
 
       if ( p -> talents.salvo.ok() ) {
-        explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
+        explosive = new attacks::explosive_shot_background_t( p );
         explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
       }
     }
@@ -7320,7 +7321,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 {
   struct explosive_shot_grenade_juggler_t final : public attacks::explosive_shot_background_t
   {
-    explosive_shot_grenade_juggler_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
+    explosive_shot_grenade_juggler_t( hunter_t* p ) : explosive_shot_background_t( p )
     {
       base_dd_multiplier *= p->talents.grenade_juggler->effectN( 5 ).percent();
     }
@@ -7442,7 +7443,7 @@ struct wildfire_bomb_t: public hunter_spell_t
     if ( p->talents.grenade_juggler.ok() )
     {
       grenade_juggler.chance = p->talents.grenade_juggler->effectN( 2 ).percent();
-      grenade_juggler.explosive = p->get_background_action<explosive_shot_grenade_juggler_t>( "explosive_shot_grenade_juggler" );
+      grenade_juggler.explosive = new explosive_shot_grenade_juggler_t( p );
     }
   }
 
