@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56071
-static const std::array<spelltext_data_t, 26288> __spelltext_data { {
+// Spell text, wow build 11.0.2.56110
+static const std::array<spelltext_data_t, 26291> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23,7 +23,7 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   {    355, "Taunts the target to attack you.", "Taunted.", 0 },
   {    370, "Purges the enemy target, removing $m1 beneficial Magic $leffect:effects;.$?(s147762&s51530)\r\n[ Successfully purging a target grants a stack of Maelstrom Weapon.][]", 0, 0 },
   {    379, "$@spelldesc974", 0, 0 },
-  {    408, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Stunned.", 0 },
+  {    408, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds", "Stunned.", 0 },
   {    453, "Soothes enemies in the target area, reducing the range at which they will attack you by $s1 yards. Only affects Humanoid and Dragonkin targets. Does not cause threat. Lasts $d.", "Reduced distance at which target will attack.", 0 },
   {    465, "Party and raid members within $a1 yds are bolstered by their devotion, reducing damage taken by $s1%.", "Damage taken reduced by $w1%.", 0 },
   {    475, "Removes all Curses from a friendly target. $?s115700[If any Curses are successfully removed, you deal $115701s1% additional damage for $115701d.][]", 0, 0 },
@@ -21867,7 +21867,6 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 414196, "$@spelldesc414195", "Upon reaching $414195w1 stacks, your next Judgment deals $414193s1% increased damage and will critically strike. In addition, it activates Avenging Wrath for $414195s2 sec.", 0 },
   { 414203, "After casting Daybreak, your next $414204u Holy Shocks cast $414204s1 additional times.", 0, 0 },
   { 414204, "$@spelldesc414203", "Holy Shock casts $s1 additional times.", 0 },
-  { 414214, "Crusader Strike generates $s1 additional Holy Power and deals $s2% more damage.", 0, 0 },
   { 414253, "$@spelldesc358385", 0, "Black" },
   { 414255, "$@spelldesc414253", 0, "Black" },
   { 414257, "$@spelldesc414253", "Rooted.", 0 },
@@ -25127,7 +25126,7 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 454429, "Fate Intertwined duplicates $s1% of $?a137037[Envenom][Dispatch] critical strike damage as Cosmic to $s2 additional nearby enemies. If there are no additional nearby targets, duplicate $s1% to the primary target instead.", 0, 0 },
   { 454430, "Your first Fatebound Coin flip after breaking Stealth flips two coins that are guaranteed to match the same face.", 0, 0 },
   { 454432, "You cannot be slowed below $s1% of normal movement speed while your Fatebound Coin flips have an active streak of at least $s2 flips matching the same face.", 0, 0 },
-  { 454433, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", 0, 0 },
+  { 454433, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec.", 0, 0 },
   { 454434, "Cold Blood now benefits the next two abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.", 0, 0 },
   { 454435, "$?a137037[Weapon poisons have $s1% increased application chance][Sinister Strike has $s2% increased chance to strike an additional time] and your Fatebound Coins flipped have an additional $s3% chance to match the same face as the last flip. ", 0, 0 },
   { 454450, "When the tinker slotted within this device malfunctions, there is a high chance to redirect the consequences to the nearest enemy player.", 0, 0 },
@@ -25923,6 +25922,7 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 459222, "Your harmful attacks and abilities have a high chance to build momentum, granting $459224s1% bonus movement speed per stack.\r\n\r\nAt 5 stacks you reach full momentum increasing your movement speed bonus to $459228s1% for $459228d. While at full momentum, your attacks hit the target at high velocity dealing an additional ${$<rolemult>*$s1} Nature damage scaling up with your current movement speed.", 0, 0 },
   { 459224, 0, "Movement speed increased by $w1%.", 0 },
   { 459228, 0, "Movement speed increased by $w1%. Deal bonus nature damage scaling with movement speed.", 0 },
+  { 459231, "$@spelldesc459222", 0, 0 },
   { 459238, "$@spelldesc455397", "Empowering Festering Strike.", 0 },
   { 459264, "Causes all nearby enemies to move towards the caster.", "Being pulled by a magnetic force.", 0 },
   { 459267, "$@spelldesc439669", "Taunted by the $@auracaster.", 0 },
@@ -26122,8 +26122,8 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 461940, "Increases Mastery by $s1 for $d.", "Mastery increased by $w9.", 0 },
   { 461945, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
   { 461960, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
-  { 461980, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", 0, 0 },
-  { 461981, "$@spelldesc461980", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", 0 },
+  { 461980, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack.", 0, 0 },
+  { 461981, "$@spelldesc461980", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage.", 0 },
   { 461982, "$@spelldesc461980", 0, 0 },
   { 461984, "$@spelldesc461980", 0, 0 },
   { 462030, "$@spelldesc204596", "Suffering $w2 $@spelldesc395020 damage every $t2 sec.$?$w4>0[ $@auracaster has $w4% increased chance to parry your attacks.][]", 0 },
@@ -26282,6 +26282,9 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 465402, "$@spelldesc53563", "The paladin's healing spells cast on you also heal the Beacon of Light.", 0 },
   { 465521, "$@spelldesc205385", 0, 0 },
   { 465522, "$@spelldesc205385", 0, 0 },
+  { 466607, "Taking damage has the chance to grant $@spellname466608 granting $s1 Versatility for $466608d. \r\n\r\nMoving within $M2 yards of a party or raid member grants them a portion of $@spellname466612, sharing the effect for the remaining duration.", 0, 0 },
+  { 466608, "$@spelldesc466607", "Versatility increased by $w1.", 0 },
+  { 466612, "$@spelldesc466607", "Versatility increased by $w1.", 0 },
   { 466873, "Add the Xal'atath's Bargain: Ascendant affix to a Mythic Keystone.", 0, 0 },
   { 466874, "Add the Xal'atath's Bargain: Voidbound affix to a Mythic Keystone.", 0, 0 },
   { 466875, "Add the Xal'atath's Bargain: Oblivion affix to a Mythic Keystone.", 0, 0 },
@@ -26290,21 +26293,16 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56071
-static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
-  {  446743,  0, nullptr, "$@spelldesc443760" },
-  {  446753,  0, nullptr, "$@spelldesc443760" },
-  {  446836,  0, nullptr, "$@spelldesc443760" },
-  {  447005,  0, nullptr, "$@spelldesc443743" },
-  {  455211,  0, "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, your next ability will release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.", "Taking damage has a chance to imbue you with Sanctified Swiftness, granting $s2 Speed stacking up to $s1 times.\r\n\r\nAfter receiving $s1 stacks, release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards." },
-  {  455212,  1, "Storing the Might of Arathor.", "Granting $w2 speed." },
-  {  457666,  1, "Critical Strike increased by $w1.", "Critical Strike increased by $w2." },
-  {  457674,  1, "Versatility increased by $w1.", "Versatility increased by $w2." },
-  {  461924,  1, "Stamina increased by $w10 and Intellect increased by $w11.", "Stamina increased by $w10 and Agility increased by $w11." },
-  {  462177,  1, "Restores ${$m1/5} health per second.", "Restores ${$m1/5} health and ${$m3/5*$d} mana per second." },
+// spelltext hotfix entries, wow build 11.0.2.56110
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
+  {  454433,  0, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec." },
+  {  459231,  0, nullptr, "$@spelldesc459222" },
+  {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
+  {  461981,  1, "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage." },
 } };
 
-// Spell description variables, wow build 11.0.2.56071
+// Spell description variables, wow build 11.0.2.56110
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26892,13 +26890,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56071
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelldesc_vars_hotfix_data { {
-  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
-  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4569*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.4661*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
-  {  329801,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
-  {  336740,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
-  {  434300,  0, "$dmg=${$INT*1.3*(1+$@versadmg)*$pctD}", "$dmg=${$INT*3.8*(1+$@versadmg)*$pctD}" },
-  {  462620,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.3884*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
+// spelldesc_vars hotfix entries, wow build 11.0.2.56110
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
