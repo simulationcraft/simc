@@ -6120,7 +6120,7 @@ bonus_id={ 11069 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
 bonus_id={ 11070 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
 bonus_id={ 11071 }, ilevel={ 5 @plvl 1 - 584 @plvl 80 }
 bonus_id={ 11072 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 541 @plvl 80 }
-bonus_id={ 11073 }, ilevel={ 14 @plvl 1 - 467 @plvl 70 }
+bonus_id={ 11073 }, ilevel={ 1 @plvl 1 - 467 @plvl 70 }
 bonus_id={ 11074 }, ilevel={ 5 @plvl 1 - 571 @plvl 80 }
 bonus_id={ 11075 }, quality={ common }, effects={ Lightning Bulwark (id=442371, index=0, type=equip) }
 bonus_id={ 11076 }, quality={ uncommon }, effects={ Lightning Bulwark (id=442404, index=0, type=equip) }

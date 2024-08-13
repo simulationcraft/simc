@@ -1811,7 +1811,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129554)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.72500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (1.5 -> 1.725)
 Description      : Your abilities deal ${$s1}.1% more damage when they are not a repeat of the previous ability.
 
 Name             : Mortal Wounds (id=115804) 
@@ -16249,7 +16250,7 @@ Description      : Spinning Crane Kick damage increased by $s1% and its radius i
 
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=2, max_rank=1, req_points=20]
-                 : Effect#1 [op=set, values=(10, 12)]
+                 : Effect#1 [op=set, values=(15, 12)]
                  : Effect#2 [op=set, values=(12, 16)]
 Class            : Monk
 School           : Physical

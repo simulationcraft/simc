@@ -3208,6 +3208,12 @@ Effects          :
                    Base Value: 31 | Scaled Value: 31 | PvP Coefficient: 1.00000 | Target: At Self (18)
 #4 (id=1175919)  : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 34678 | Target: At Self (18)
+#5 (id=1179920)  : Create Area Trigger (179)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 34993 | Target: At Self (18)
+Hotfixed         : NEW EFFECT
+#6 (id=1179921)  : Create Area Trigger (179)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 34992 | Target: At Self (18)
+Hotfixed         : NEW EFFECT
 Description      : Throw a Divine Star forward $s2 yds, healing allies in its path for $110745s1 and dealing $<holydstardamage> Holy damage to enemies. After reaching its destination, the Divine Star returns to you, healing allies and damaging enemies in its path again. Healing reduced beyond $s1 targets.
 Variables        : $twilightshadowtoholy=$?a390706[${(1+$390706s1/100)}][${1}]
 $holydstardamage=${$122128s1*$<twilightshadowtoholy>}
