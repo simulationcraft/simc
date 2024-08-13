@@ -6785,6 +6785,8 @@ struct storm_bolt_t : public warrior_attack_t
     may_dodge = may_parry = may_block = false;
     if ( p->talents.mountain_thane.storm_bolts->ok() )
       aoe = 1 + as<int>( p->talents.mountain_thane.storm_bolts->effectN( 1 ).base_value() );
+    if ( p->talents.slayer.unrelenting_onslaught->ok() )
+      usable_while_channeling = true;
   }
 
   bool ready() override
