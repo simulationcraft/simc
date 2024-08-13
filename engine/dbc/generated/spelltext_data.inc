@@ -25126,7 +25126,7 @@ static const std::array<spelltext_data_t, 26291> __spelltext_data { {
   { 454429, "Fate Intertwined duplicates $s1% of $?a137037[Envenom][Dispatch] critical strike damage as Cosmic to $s2 additional nearby enemies. If there are no additional nearby targets, duplicate $s1% to the primary target instead.", 0, 0 },
   { 454430, "Your first Fatebound Coin flip after breaking Stealth flips two coins that are guaranteed to match the same face.", 0, 0 },
   { 454432, "You cannot be slowed below $s1% of normal movement speed while your Fatebound Coin flips have an active streak of at least $s2 flips matching the same face.", 0, 0 },
-  { 454433, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", 0, 0 },
+  { 454433, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec.", 0, 0 },
   { 454434, "Cold Blood now benefits the next two abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.", 0, 0 },
   { 454435, "$?a137037[Weapon poisons have $s1% increased application chance][Sinister Strike has $s2% increased chance to strike an additional time] and your Fatebound Coins flipped have an additional $s3% chance to match the same face as the last flip. ", 0, 0 },
   { 454450, "When the tinker slotted within this device malfunctions, there is a high chance to redirect the consequences to the nearest enemy player.", 0, 0 },
@@ -26294,8 +26294,9 @@ static const std::array<spelltext_data_t, 26291> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56110
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
+  {  454433,  0, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec." },
   {  459231,  0, nullptr, "$@spelldesc459222" },
   {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
   {  461981,  1, "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage." },
