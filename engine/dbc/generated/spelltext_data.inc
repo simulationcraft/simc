@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26290> __spelltext_data { {
+static const std::array<spelltext_data_t, 26291> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25922,6 +25922,7 @@ static const std::array<spelltext_data_t, 26290> __spelltext_data { {
   { 459222, "Your harmful attacks and abilities have a high chance to build momentum, granting $459224s1% bonus movement speed per stack.\r\n\r\nAt 5 stacks you reach full momentum increasing your movement speed bonus to $459228s1% for $459228d. While at full momentum, your attacks hit the target at high velocity dealing an additional ${$<rolemult>*$s1} Nature damage scaling up with your current movement speed.", 0, 0 },
   { 459224, 0, "Movement speed increased by $w1%.", 0 },
   { 459228, 0, "Movement speed increased by $w1%. Deal bonus nature damage scaling with movement speed.", 0 },
+  { 459231, "$@spelldesc459222", 0, 0 },
   { 459238, "$@spelldesc455397", "Empowering Festering Strike.", 0 },
   { 459264, "Causes all nearby enemies to move towards the caster.", "Being pulled by a magnetic force.", 0 },
   { 459267, "$@spelldesc439669", "Taunted by the $@auracaster.", 0 },
@@ -26293,8 +26294,9 @@ static const std::array<spelltext_data_t, 26290> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56110
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
+  {  459231,  0, nullptr, "$@spelldesc459222" },
   {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
   {  461981,  1, "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage." },
 } };
