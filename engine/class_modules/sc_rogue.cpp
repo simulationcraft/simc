@@ -3989,7 +3989,6 @@ struct dispatch_t: public rogue_attack_t
       p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
-    trigger_fate_intertwined( execute_state );
     if ( !is_secondary_action() )
     {
       trigger_restless_blades( execute_state );
@@ -3998,6 +3997,12 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    trigger_fate_intertwined( state );
   }
 
   bool ready() override
@@ -4647,7 +4652,6 @@ struct envenom_t : public rogue_attack_t
     bool inevitable = p()->buffs.cold_blood->check();
     rogue_attack_t::execute();
     trigger_poison_bomb( execute_state );
-    trigger_fate_intertwined( execute_state );
     trigger_hand_of_fate( execute_state, true, inevitable );
 
     // TOCHECK -- If this consumes on execute or impact when parried
@@ -4687,6 +4691,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_cut_to_the_chase( state );
+    trigger_fate_intertwined( state );
   }
 };
 
