@@ -7454,7 +7454,6 @@ struct fatal_intent_t : public rogue_attack_t
   fatal_intent_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.fatal_intent_damage )
   {
-    attack_power_mod.direct = p->talent.deathstalker.fatal_intent->effectN( 1 ).ap_coeff();
   }
 
   double composite_target_multiplier( player_t* target ) const override
