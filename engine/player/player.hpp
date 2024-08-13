@@ -21,6 +21,8 @@
 #include "talent.hpp"
 #include "util/cache.hpp"
 #include "util/rng.hpp"
+#include "sim/proc_rng.hpp"
+#include "util/util.hpp"
 #include "weapon.hpp"
 
 #include <map>
@@ -60,10 +62,6 @@ struct player_report_extension_t;
 struct player_scaling_t;
 struct plot_data_t;
 struct proc_t;
-struct proc_rng_t;
-struct real_ppm_t;
-struct shuffled_rng_t;
-struct accumulated_rng_t;
 struct scaling_metric_data_t;
 struct set_bonus_t;
 struct special_effect_t;
@@ -1005,13 +1003,35 @@ public:
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
   target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
   target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
-  real_ppm_t* find_rppm( std::string_view );
-  real_ppm_t* get_rppm( std::string_view, const spell_data_t* data, const item_t* item = nullptr );
-  real_ppm_t* get_rppm( std::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
+
+  template <typename RNG, typename... Args>
+  RNG* get_rng( std::string_view name, Args&&... args )
+  {
+    static_assert( std::is_base_of_v<proc_rng_t, RNG> );
+    auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
+      return rng->type() == RNG::rng_type && util::str_compare_ci( rng->name(), name );
+    } );
+
+    if ( it != proc_rng_list.end() )
+      return debug_cast<RNG*>( *it );
+
+    if constexpr ( !std::is_constructible_v<RNG, std::string_view, player_t*, Args...> )
+      return nullptr;
+
+    RNG* rng = new RNG( name, this, std::forward<Args>( args )... );
+    proc_rng_list.push_back( rng );
+    return rng;
+  }
+  simple_proc_t* get_simple_proc_rng( std::string_view name, double chance = 0.0 );
+  real_ppm_t* get_rppm( std::string_view name, double frequency = 0.0, double modifier = 1.0,
+                        unsigned scales_with = RPPM_NONE, real_ppm_t::blp blp_state = real_ppm_t::blp::BLP_ENABLED );
+  real_ppm_t* get_rppm( std::string_view name, const spell_data_t* spell_data = nullptr, const item_t* item = nullptr );
+  shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
-  accumulated_rng_t* get_accumulated_rng( std::string_view name, double proc_chance,
+  accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
                                           std::function<double( double, unsigned )> accumulator_fn = nullptr,
-                                          unsigned initial_count = 0 );
+                                          unsigned initial_count                                   = 0 );
+
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
   proc_t*     get_proc    ( util::string_view name );

@@ -26,11 +26,11 @@ struct proc_rng_t
 protected:
   std::string name_str;
   player_t* player;
-  rng_type_e rng_type;
 
 public:
+  const static rng_type_e rng_type = RNG_NONE;
   proc_rng_t();
-  proc_rng_t( std::string_view n, player_t* p, rng_type_e type );
+  proc_rng_t( std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
 
   virtual int trigger() = 0;
@@ -49,6 +49,7 @@ private:
   double chance;
 
 public:
+  const static rng_type_e rng_type = RNG_SIMPLE;
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
   void reset() override {}
@@ -77,6 +78,7 @@ private:
   static constexpr timespan_t max_bad_luck_prot = 1000_s;
 
 public:
+  const static rng_type_e rng_type = RNG_RPPM;
   real_ppm_t( std::string_view n, player_t* p, double f = 0, double mod = 1.0, unsigned s = RPPM_NONE,
               blp b = BLP_ENABLED );
 
@@ -126,43 +128,29 @@ public:
 
 // Extended "Deck of Cards" to support multiple success/failure types
 // Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
-struct shuffled_rng_base_t : public proc_rng_t
-{
-  using initializer = std::initializer_list<std::pair<int, unsigned>>;
-
-private:
-  std::vector<int> entries;
-  std::vector<int>::iterator position;
-
-protected:
-  shuffled_rng_base_t( rng_type_e rng_type, std::string_view n, player_t* p, initializer data );
-
-public:
-  void reset() override;
-  int trigger() override;
-
-  int count_remains( int key );
-  int entry_remains();
-};
-
-struct shuffled_rng_multiple_t final : public shuffled_rng_base_t
-{
-  shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data );
-};
-
-// "Deck of Cards" basic case containing a success/fail type pair.
 enum shuffled_rng_e : int
 {
   FAIL = 0,
   SUCCESS = 1
 };
 
-struct shuffled_rng_t final : public shuffled_rng_base_t
+struct shuffled_rng_t final : public proc_rng_t
 {
-  shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
+  using initializer = std::initializer_list<std::pair<int, int>>;
+private:
+  std::vector<int> entries;
+  std::vector<int>::iterator position;
+  void init( initializer data );
 
-  int success_remains();
-  int fail_remains();
+public:
+  const static rng_type_e rng_type = RNG_SHUFFLE;
+  shuffled_rng_t( std::string_view n, player_t* p, initializer data );
+  shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
+  void reset() override;
+  int trigger() override;
+
+  int count_remains( int key );
+  int entry_remains();
 };
 
 // Accumulated back luck protection rng helper class ==========================
@@ -189,6 +177,7 @@ private:
   unsigned trigger_count;
 
 public:
+  const static rng_type_e rng_type = RNG_ACCUMULATE;
   accumulated_rng_t( std::string_view n, player_t* p, double c, std::function<double( double, unsigned )> fn = nullptr,
                      unsigned initial_count = 0 );
 

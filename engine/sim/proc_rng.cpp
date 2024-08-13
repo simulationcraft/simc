@@ -11,15 +11,15 @@
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
-proc_rng_t::proc_rng_t() : player( nullptr ), rng_type( rng_type_e::RNG_SIMPLE )
+proc_rng_t::proc_rng_t() : player( nullptr )
 {}
 
-proc_rng_t::proc_rng_t( std::string_view n, player_t* p, rng_type_e type )
-  : name_str( n ), player( p ), rng_type( type )
+proc_rng_t::proc_rng_t( std::string_view n, player_t* p )
+  : name_str( n ), player( p )
 {}
 
 simple_proc_t::simple_proc_t( std::string_view n, player_t* p, double c )
-  : proc_rng_t( n, p, rng_type_e::RNG_SIMPLE ), chance( c )
+  : proc_rng_t( n, p ), chance( c )
 {}
 
 int simple_proc_t::trigger()
@@ -28,7 +28,7 @@ int simple_proc_t::trigger()
 }
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, unsigned s, blp b )
-  : proc_rng_t( n, p, rng_type_e::RNG_RPPM ),
+  : proc_rng_t( n, p ),
     freq( f ),
     modifier( mod ),
     rppm( freq * mod ),
@@ -37,7 +37,7 @@ real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, u
 {}
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, const spell_data_t* data, const item_t* item )
-  : proc_rng_t( n, p, rng_type_e::RNG_RPPM ),
+  : proc_rng_t( n, p ),
     freq( data->real_ppm() ),
     modifier( p->dbc->real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
     rppm( freq * modifier ),
@@ -119,22 +119,40 @@ int real_ppm_t::trigger()
   return success;
 }
 
-shuffled_rng_base_t::shuffled_rng_base_t( rng_type_e rng_type, std::string_view n, player_t* p, initializer data )
-  : proc_rng_t( n, p, rng_type )
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, initializer data )
+  : proc_rng_t( n, p )
+{
+  init( data );
+}
+
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
+  : proc_rng_t( n, p)
+{
+  assert( total_entries >= success_entries );
+  init( { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } );
+}
+
+void shuffled_rng_t::init( initializer data )
 {
   // CXX23: use append_range instead of nested loops
   for ( const auto& [ key, count ] : data )
-    for ( unsigned i = 0; i < count; ++i )
+  {
+    assert( count >= 0 );
+    for ( int i = 0; i < count; ++i )
       entries.emplace_back( key );
+  }
+
+  if ( entries.empty() )
+    entries.emplace_back( shuffled_rng_e::FAIL );
 }
 
-void shuffled_rng_base_t::reset()
+void shuffled_rng_t::reset()
 {
   player->rng().shuffle( entries.begin(), entries.end() );
   position = entries.begin();
 }
 
-int shuffled_rng_base_t::trigger()
+int shuffled_rng_t::trigger()
 {
   if ( position == entries.end() )
     reset();
@@ -142,40 +160,19 @@ int shuffled_rng_base_t::trigger()
   return *position++;
 }
 
-int shuffled_rng_base_t::count_remains( int key )
+int shuffled_rng_t::count_remains( int key )
 {
   return as<int>( std::count( position, entries.end(), key ) );
 }
 
-int shuffled_rng_base_t::entry_remains()
+int shuffled_rng_t::entry_remains()
 {
   return as<int>( std::distance( position, entries.end() ) );
 }
 
-shuffled_rng_multiple_t::shuffled_rng_multiple_t( std::string_view n, player_t* p, initializer data )
-  : shuffled_rng_base_t( rng_type_e::RNG_SHUFFLE_MULTIPLE, n, p, data )
-{
-}
-
-shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
-  : shuffled_rng_base_t( rng_type_e::RNG_SHUFFLE, n, p,
-                         { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } )
-{
-}
-
-int shuffled_rng_t::success_remains()
-{
-  return as<int>( count_remains( shuffled_rng_e::SUCCESS ) );
-}
-
-int shuffled_rng_t::fail_remains()
-{
-  return as<int>( count_remains( shuffled_rng_e::FAIL ) );
-}
-
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
                                       std::function<double( double, unsigned )> fn, unsigned initial_count )
-  : proc_rng_t( n, p, rng_type_e::RNG_ACCUMULATE ),
+  : proc_rng_t( n, p ),
     accumulator_fn( std::move( fn ) ),
     proc_chance( c ),
     initial_count( initial_count ),
