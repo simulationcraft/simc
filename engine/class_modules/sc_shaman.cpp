@@ -12523,11 +12523,8 @@ void shaman_t::init_rng()
   if ( options.ancient_fellowship_total == 0 ) {
     options.ancient_fellowship_total = talent.ancient_fellowship->effectN( 2 ).base_value();
   }
-  if ( talent.ancient_fellowship.ok() )
-  {
-    rng_obj.ancient_fellowship =
-        get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
-  }
+  rng_obj.ancient_fellowship =
+    get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
   if ( options.icefury_positive == 0 ) {
     options.icefury_positive = talent.icefury->effectN( 1 ).base_value();
   }
@@ -12535,10 +12532,7 @@ void shaman_t::init_rng()
   if ( options.icefury_total == 0 ) {
     options.icefury_total = talent.icefury->effectN( 2 ).base_value();
   }
-  if ( talent.icefury.ok() )
-  {
-    rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
-  }
+  rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
 }
 
 // shaman_t::init_items =====================================================
