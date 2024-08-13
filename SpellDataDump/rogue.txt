@@ -2683,9 +2683,10 @@ Effects          :
 #1 (id=68026)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
 #2 (id=717709)   : Apply Aura (6) | Add Flat Modifier (107): Spell Power (24)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03600 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05230 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Main Gauche (86392)
                    Family Flags: 65
+Hotfixed         : SP Coefficient (0.036 -> 0.0523)
 Description      : Your main-hand attacks have a $h% chance to trigger an attack with your off-hand that deals $86392s1 Physical damage.
 
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
