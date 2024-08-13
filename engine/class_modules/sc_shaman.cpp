@@ -3768,12 +3768,9 @@ struct ancestor_t : public shaman_pet_t
     }
 
     shaman_pet_t::dismiss( expiration );
-    if ( o()->talent.ancient_fellowship.ok() )
+    if ( expiration && o()->rng_obj.ancient_fellowship->trigger() )
     {
-      if ( expiration && o()->rng_obj.ancient_fellowship->trigger() )
-      {
-        o()->summon_ancestor();
-      }
+      o()->summon_ancestor();
     }
   }
 };
@@ -6581,13 +6578,11 @@ struct lava_burst_t : public shaman_spell_t
     }
 
     p()->buff.t29_2pc_ele->trigger();
-    if ( p()->talent.icefury.ok() )
+    if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
     {
-      if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
-      {
-        p()->buff.icefury_cast->trigger();
-      }
+      p()->buff.icefury_cast->trigger();
     }
+    
 
     if ( p()->talent.routine_communication.ok() && exec_type == spell_variant::NORMAL )
     {
