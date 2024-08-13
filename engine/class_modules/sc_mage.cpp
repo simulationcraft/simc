@@ -3427,7 +3427,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
-    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
@@ -3461,6 +3460,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
 
     p()->consume_burden_of_power();
+    p()->trigger_spellfire_spheres();
 
     if ( p()->buffs.intuition->check() )
     {
