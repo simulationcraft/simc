@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56071 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5498,10 +5498,10 @@ bonus_id={ 10274 }, quality={ epic }
 bonus_id={ 10275 }, quality={ epic }
 bonus_id={ 10276 }, quality={ epic }
 bonus_id={ 10277 }, quality={ epic }
-bonus_id={ 10278 }, quality={ rare }
-bonus_id={ 10279 }, quality={ rare }
-bonus_id={ 10280 }, quality={ rare }
-bonus_id={ 10281 }, quality={ rare }
+bonus_id={ 10278 }, quality={ epic }
+bonus_id={ 10279 }, quality={ epic }
+bonus_id={ 10280 }, quality={ epic }
+bonus_id={ 10281 }, quality={ epic }
 bonus_id={ 10282 }, quality={ rare }
 bonus_id={ 10283 }, quality={ rare }
 bonus_id={ 10284 }, quality={ rare }
@@ -5510,10 +5510,10 @@ bonus_id={ 10286 }, quality={ uncommon }
 bonus_id={ 10287 }, quality={ uncommon }
 bonus_id={ 10288 }, quality={ uncommon }
 bonus_id={ 10289 }, quality={ uncommon }
-bonus_id={ 10290 }, quality={ rare }
-bonus_id={ 10291 }, quality={ rare }
-bonus_id={ 10292 }, quality={ rare }
-bonus_id={ 10293 }, quality={ rare }
+bonus_id={ 10290 }, quality={ epic }
+bonus_id={ 10291 }, quality={ epic }
+bonus_id={ 10292 }, quality={ epic }
+bonus_id={ 10293 }, quality={ epic }
 bonus_id={ 10294 }, quality={ rare }
 bonus_id={ 10295 }, quality={ rare }
 bonus_id={ 10296 }, quality={ rare }
