@@ -3316,13 +3316,13 @@ void algari_alchemist_stone( special_effect_t& e )
 }
 
 // Darkmoon Deck Ascension
-// 463095 Driver
+// 463095 Trinket Driver
+// 458573 Embelishment Driver
 // 457594 Periodic Trigger Buff
 // 458502 Crit Buff
 // 458503 Haste Buff
 // 458525 Mastery Buff
 // 458524 Vers Buff
-// Implementation as of 8/14/2024 is based off a single log with many unanswered questions. Making this a speculative implementation.
 void darkmoon_deck_ascension( special_effect_t& effect )
 {
   struct ascension_tick_t : public buff_t
@@ -3330,9 +3330,10 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     std::vector<buff_t*> buff_list;
     buff_t* last_buff;
     unsigned stack;
+    bool in_combat;
 
     ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s )
-      : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 )
+      : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 ), in_combat( false )
     {
       auto crit_spell    = e.player->find_spell( 458502 );
       auto crit_name     = util::tokenize_fn( crit_spell->name_cstr() );
@@ -3366,39 +3367,45 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       last_buff = buff_list[ 0 ];
 
       set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
-        // TODO: Test if changing buffs resets the stacks or if they keep stacking.
-        // Tuning wise, makes the most sense for it to continue stacking even if changing buffs. 
-        // Otherwise, it only really gives 145 passive stats which is very low by comparison. 
-        if ( stack < as<unsigned>( data().effectN( 1 ).base_value() ) )
-        {
-          if ( last_buff->check() && stack > 0 )
-          {
-            stack = last_buff->check() + 1;
-          }
-          else
-          {
-            ++stack;
-          }
-        }
-
-        rng().shuffle( buff_list.begin(), buff_list.end() );
-
-        if ( buff_list[ 0 ] == last_buff )
-        {
-          buff_list[ 0 ]->trigger();
-        }
+        // Checks on tick if player is in combat, if not, expire the buff
+        if ( !in_combat )
+          make_event( *e.player->sim, 0_ms, [ & ] { expire(); } );
         else
-        {
-          if ( last_buff->check() )
-          {
-            last_buff->expire();
-          }
-          buff_list[ 0 ]->trigger( stack );
-          last_buff = buff_list[ 0 ];
-        }
+          trigger_ascension();
       } );
 
       set_quiet( true );
+    }
+
+    void trigger_ascension()
+    {
+      if ( stack < as<unsigned>( data().effectN( 1 ).base_value() ) )
+      {
+        if ( last_buff->check() && stack > 0 )
+        {
+          stack = last_buff->check() + 1;
+        }
+        else
+        {
+          ++stack;
+        }
+      }
+
+      rng().shuffle( buff_list.begin(), buff_list.end() );
+
+      if ( buff_list[ 0 ] == last_buff )
+      {
+        buff_list[ 0 ]->trigger();
+      }
+      else
+      {
+        if ( last_buff->check() )
+        {
+          last_buff->expire();
+        }
+        buff_list[ 0 ]->trigger( stack );
+        last_buff = buff_list[ 0 ];
+      }
     }
 
     void reset() override
@@ -3410,16 +3417,12 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     void start( int stacks, double value, timespan_t duration ) override
     {
       buff_t::start( stacks, value, duration );
-      // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
-      // For now implementing worst case scenario where they reset when leaving combat.
       stack = 0;
     };
 
     void expire_override( int stacks, timespan_t duration ) override
     {
       buff_t::expire_override( stacks, duration );
-      // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
-      // For now implementing worst case scenario where they reset when leaving combat.
       stack = 0;
     }
   };
@@ -3427,71 +3430,120 @@ void darkmoon_deck_ascension( special_effect_t& effect )
   auto buff = make_buff<ascension_tick_t>( effect, "ascendance", effect.player->find_spell( 457594 ) );
 
   effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
-    if ( c )
+    if ( c && !buff->check() )
     {
       buff->trigger();
+      debug_cast<ascension_tick_t*>( buff )->in_combat = true;
     }
     else
     {
-      buff->expire();
+      debug_cast<ascension_tick_t*>( buff )->in_combat = false;
     }
   } );
-
-  effect.player->sim->errorf( "Darkmoon Deck: Ascension is currently a speculative implementation, take results with a grain of salt." );
 }
 
 // Darkmoon Deck Radiance
-// 463108 Driver
+// 463108 Trinket Driver
+// 454558 Embelishment Driver
 // 454560 Debuff/Accumulator
 // 454785 Buff
 // 454559 RPPM data
 void darkmoon_deck_radiance( special_effect_t& effect )
 {
+  struct radiant_focus_stat_buff_t : public stat_buff_t
+  {
+    double trigger_value;
+    const special_effect_t& effect;
+    stat_e buffed_stat;
+
+    radiant_focus_stat_buff_t( player_t* p, util::string_view n, const spell_data_t* s, const special_effect_t& e )
+      : stat_buff_t( p, n, s ), trigger_value( 0 ), effect( e ), buffed_stat( STAT_NONE )
+    {
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      auto it = range::find( stats, buffed_stat, &buff_stat_t::stat );
+      if ( it != stats.end() )
+      {
+        it->amount = trigger_value;
+      }
+
+      stat_buff_t::start( stacks, value, duration );
+    }
+  };
+
   struct radiant_focus_debuff_t : public buff_t
   {
     double accumulated_damage;
     double max_damage;
-    double max_buff_value;
     std::unordered_map<stat_e, buff_t*> buffs;
 
-    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, const spell_data_t* s )
-      : buff_t( td, "radiant_focus_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buffs()
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, const spell_data_t* s, bool embelish )
+      : buff_t( td, "radiant_focus_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
     {
       max_damage = data().effectN( 1 ).average( e.player );
 
       set_default_value( max_damage );
 
-      max_buff_value = e.player->find_spell( 463108 )->effectN( 1 ).average( e.player );
-
       auto buff_spell = e.player->find_spell( 454785 );
-      create_all_stat_buffs( e, buff_spell, max_buff_value, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
-      auto radiant_focus      = new special_effect_t( e.player );
-      radiant_focus->name_str = "radiant_focus";
-      radiant_focus->spell_id = data().id();
-      e.player->special_effects.push_back( radiant_focus );
-
-      auto radiant_focus_proc = new dbc_proc_callback_t( e.player, *radiant_focus );
-      radiant_focus_proc->activate_with_buff( this );
-
-      e.player->callbacks.register_callback_execute_function(
-          s->id(), [ & ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
-            auto target_debuff = e.player->get_target_data( s->target )->debuff.radiant_focus;
-            if ( s->result_amount > 0 && target_debuff->check() )
-            {
-              accumulated_damage += s->result_amount;
-              if ( accumulated_damage >= max_damage )
-              {
-                target_debuff->expire();
-              }
-            }
-          } );
+      create_radint_buffs( e, buff_spell, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
       set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
-        auto buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
-        buffs.at( util::highest_stat( e.player, secondary_ratings ) )->trigger( 1, buff_value, -1 );
+        double buff_value     = 0;
+        double max_buff_value = 0;
+
+        if ( embelish )
+        {
+          max_buff_value = e.player->find_spell( 454558 )->effectN( 2 ).average( e.player );
+        }
+        else
+        {
+          max_buff_value = e.player->find_spell( 463108 )->effectN( 1 ).average( e.player );
+        }
+
+        if ( !e.player->bugs )
+          buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+        else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
+          buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
+
+        auto stat_buff = buffs.at( util::highest_stat( e.player, secondary_ratings ) );
+        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->buffed_stat =
+            util::highest_stat( e.player, secondary_ratings );
+        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->trigger_value = buff_value;
+        stat_buff->trigger();
+
         accumulated_damage = 0;
       } );
+    }
+
+    void create_radint_buffs( const special_effect_t& effect, const spell_data_t* buff_data,
+                              std::function<void( stat_e, buff_t* )> add_fn )
+    {
+      auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
+
+      for ( const auto& eff : buff_data->effects() )
+      {
+        if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
+          continue;
+
+        auto stats = util::translate_all_rating_mod( eff.misc_value1() );
+        if ( stats.size() != 1 )
+        {
+          effect.player->sim->error( "buff data {} effect {} has multiple stats", buff_data->id(), eff.index() );
+          continue;
+        }
+
+        auto stat_str = util::stat_type_abbrev( stats.front() );
+
+        auto buff = create_buff<radiant_focus_stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_str ),
+                                                            buff_data, effect )
+                        ->add_stat( stats.front(), 0 )
+                        ->set_name_reporting( stat_str );
+
+        add_fn( stats.front(), buff );
+      }
     }
 
     void reset() override
@@ -3511,15 +3563,41 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     const spell_data_t* debuff_spell;
     const special_effect_t& effect;
+    bool embelishment;
 
-    radiant_focus_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), debuff_spell( e.player->find_spell( 454560 ) ), effect( e )
+    radiant_focus_cb_t( const special_effect_t& e, bool embelish )
+      : dbc_proc_callback_t( e.player, e ),
+        debuff_spell( e.player->find_spell( 454560 ) ),
+        effect( e ),
+        embelishment( embelish )
     {
+      auto radiant_focus      = new special_effect_t( effect.player );
+      radiant_focus->name_str = "radiant_focus";
+      radiant_focus->spell_id = 454560;
+      effect.player->special_effects.push_back( radiant_focus );
+
+      auto radiant_focus_proc = new dbc_proc_callback_t( effect.player, *radiant_focus );
+      radiant_focus_proc->initialize();
+      radiant_focus_proc->activate();
+
+      effect.player->callbacks.register_callback_execute_function(
+          454560, [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+            auto target_debuff = get_debuff( s->target );
+            if ( s->result_amount > 0 && target_debuff->check() )
+            {
+              auto debuff = debug_cast<radiant_focus_debuff_t*>( target_debuff );
+              debuff->accumulated_damage += s->result_amount;
+              if ( debuff->accumulated_damage >= debuff->max_damage )
+              {
+                target_debuff->expire();
+              }
+            }
+          } );
     }
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell );
+      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell, embelishment );
 
       listener->get_target_data( t )->debuff.radiant_focus = debuff;
 
@@ -3532,9 +3610,11 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     }
   };
 
+  bool embelish = effect.spell_id == 454558;
+
   effect.spell_id = 454559;
 
-  new radiant_focus_cb_t( effect );
+  new radiant_focus_cb_t( effect, embelish );
 }
 
 // Weapons
@@ -4080,8 +4160,8 @@ void register_special_effects()
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
-  register_special_effect( 463095, items::darkmoon_deck_ascension );
-  register_special_effect( 463108, items::darkmoon_deck_radiance );
+  register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
+  register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
