@@ -3315,6 +3315,132 @@ void algari_alchemist_stone( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Darkmoon Deck Ascension
+// 463095 Driver
+// 457594 Periodic Trigger Buff
+// 458502 Crit Buff
+// 458503 Haste Buff
+// 458525 Mastery Buff
+// 458524 Vers Buff
+// Implementation as of 8/14/2024 is based off a single log with many unanswered questions. Making this a speculative implementation.
+void darkmoon_deck_ascension( special_effect_t& effect )
+{
+  struct ascension_tick_t : public buff_t
+  {
+    std::vector<buff_t*> buff_list;
+    buff_t* last_buff;
+    unsigned stack;
+
+    ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s )
+      : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 )
+    {
+      auto crit_spell    = e.player->find_spell( 458502 );
+      auto crit_name     = util::tokenize_fn( crit_spell->name_cstr() );
+      auto haste_spell   = e.player->find_spell( 458503 );
+      auto haste_name    = util::tokenize_fn( haste_spell->name_cstr() );
+      auto mastery_spell = e.player->find_spell( 458525 );
+      auto mastery_name  = util::tokenize_fn( mastery_spell->name_cstr() );
+      auto vers_spell    = e.player->find_spell( 458524 );
+      auto vers_name     = util::tokenize_fn( vers_spell->name_cstr() );
+
+      auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "Crit", crit_spell )
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+
+      buff_list.push_back( crit_buff );
+
+      auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "Haste", haste_spell )
+                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+
+      buff_list.push_back( haste_buff );
+
+      auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "Mastery", mastery_spell )
+                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+
+      buff_list.push_back( mastery_buff );
+
+      auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "Vers", vers_spell )
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+
+      buff_list.push_back( vers_buff );
+
+      set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
+        // TODO: Test if changing buffs resets the stacks or if they keep stacking.
+        // Tuning wise, makes the most sense for it to continue stacking even if changing buffs. 
+        // Otherwise, it only really gives 145 passive stats which is very low by comparison. 
+        if ( stack < as<unsigned>( data().effectN( 1 ).base_value() ) )
+        {
+          if ( last_buff != nullptr )
+          {
+            stack = last_buff->check() + 1;
+          }
+          else
+          {
+            ++stack;
+          }
+        }
+
+        rng().shuffle( buff_list.begin(), buff_list.end() );
+
+        if ( buff_list[ 0 ] == last_buff )
+        {
+          buff_list[ 0 ]->trigger();
+        }
+        else
+        {
+          if ( last_buff != nullptr )
+          {
+            last_buff->expire();
+          }
+          buff_list[ 0 ]->trigger( stack );
+          last_buff = buff_list[ 0 ];
+        }
+      } );
+
+      set_quiet( true );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      stack = 0;
+      last_buff = nullptr;
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::start( stacks, value, duration );
+      // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
+      // For now implementing worst case scenario where they reset when leaving combat.
+      stack = 0;
+      last_buff = nullptr;
+    };
+
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+      // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
+      // For now implementing worst case scenario where they reset when leaving combat.
+      stack = 0;
+      last_buff = nullptr;
+    }
+  };
+
+  auto buff = make_buff<ascension_tick_t>( effect, "ascendance", effect.player->find_spell( 457594 ) );
+
+  effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
+    if ( c )
+    {
+      buff->trigger();
+    }
+    else
+    {
+      buff->expire();
+    }
+  } );
+
+  effect.player->sim->errorf( "Darkmoon Deck: Ascendance is currently a speculative implementation, take results with a grain of salt." );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -3858,6 +3984,7 @@ void register_special_effects()
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
+  register_special_effect( 463095, items::darkmoon_deck_ascension );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
