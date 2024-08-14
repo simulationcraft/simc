@@ -9494,9 +9494,8 @@ void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state
   if ( state->result != RESULT_CRIT )
     return;
 
-  // TOCHECK -- Double-check target modifiers in the future
   const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
-  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier, false );
+  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
