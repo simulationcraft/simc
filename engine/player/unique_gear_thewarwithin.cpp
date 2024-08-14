@@ -3440,6 +3440,103 @@ void darkmoon_deck_ascension( special_effect_t& effect )
   effect.player->sim->errorf( "Darkmoon Deck: Ascension is currently a speculative implementation, take results with a grain of salt." );
 }
 
+// Darkmoon Deck Radiance
+// 463108 Driver
+// 454560 Debuff/Accumulator
+// 454785 Buff
+// 454559 RPPM data
+void darkmoon_deck_radiance( special_effect_t& effect )
+{
+  struct radiant_focus_debuff_t : public buff_t
+  {
+    double accumulated_damage;
+    double max_damage;
+    double max_buff_value;
+    std::unordered_map<stat_e, buff_t*> buffs;
+
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, const spell_data_t* s )
+      : buff_t( td, "radiant_focus_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buffs()
+    {
+      max_damage = data().effectN( 1 ).average( e.player );
+
+      set_default_value( max_damage );
+
+      max_buff_value = e.player->find_spell( 463108 )->effectN( 1 ).average( e.player );
+
+      auto buff_spell = e.player->find_spell( 454785 );
+      create_all_stat_buffs( e, buff_spell, max_buff_value, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
+
+      auto radiant_focus      = new special_effect_t( e.player );
+      radiant_focus->name_str = "radiant_focus";
+      radiant_focus->spell_id = data().id();
+      e.player->special_effects.push_back( radiant_focus );
+
+      auto radiant_focus_proc = new dbc_proc_callback_t( e.player, *radiant_focus );
+      radiant_focus_proc->activate_with_buff( this );
+
+      e.player->callbacks.register_callback_execute_function(
+          s->id(), [ & ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+            auto target_debuff = e.player->get_target_data( s->target )->debuff.radiant_focus;
+            if ( s->result_amount > 0 && target_debuff->check() )
+            {
+              accumulated_damage += s->result_amount;
+              if ( accumulated_damage >= max_damage )
+              {
+                target_debuff->expire();
+              }
+            }
+          } );
+
+      set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
+        auto buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+        buffs.at( util::highest_stat( e.player, secondary_ratings ) )->trigger( 1, buff_value, -1 );
+        accumulated_damage = 0;
+      } );
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      accumulated_damage = 0;
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::start( stacks, value, duration );
+      accumulated_damage = 0;
+    };
+  };
+
+  struct radiant_focus_cb_t : public dbc_proc_callback_t
+  {
+    const spell_data_t* debuff_spell;
+    const special_effect_t& effect;
+
+    radiant_focus_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), debuff_spell( e.player->find_spell( 454560 ) ), effect( e )
+    {
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell );
+
+      listener->get_target_data( t )->debuff.radiant_focus = debuff;
+
+      return debuff;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  effect.spell_id = 454559;
+
+  new radiant_focus_cb_t( effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -3984,6 +4081,7 @@ void register_special_effects()
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
   register_special_effect( 463095, items::darkmoon_deck_ascension );
+  register_special_effect( 463108, items::darkmoon_deck_radiance );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );

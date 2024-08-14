@@ -43,6 +43,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     // Dragonflight
     // The War Within
     buff_t* unwavering_focus;            // potion of unwavering focus
+    buff_t* radiant_focus;               // Darkmoon Deck: Radiance
   } debuff;
 
   struct atd_dot_t
