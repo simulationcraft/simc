@@ -19589,7 +19589,7 @@ Name             : Voidheart (id=449887) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 8.1 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
