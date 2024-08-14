@@ -12847,7 +12847,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( "fire_elemental,if=!buff.fire_elemental.up", "Keep your cooldowns rolling." );
     aoe->add_action( "storm_elemental,if=!buff.storm_elemental.up", "Keep your cooldowns rolling." );
     aoe->add_action( "stormkeeper,if=!buff.stormkeeper.up", "Keep your cooldowns rolling." );
-    aoe->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>45", "Reset LMT CD as early as possible." );
+    aoe->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>25", "Reset LMT CD as early as possible." );
     aoe->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     aoe->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=buff.surge_of_power.up",
