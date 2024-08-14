@@ -3845,6 +3845,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1612 | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=293313)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: none | Target: Self (1)
+#3 (id=1179899)  : Create Area Trigger (179)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 34990 | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : NEW EFFECT
 Description      : Launches an Arcane Orb forward from your position, traveling up to 40 yds, dealing $153640s1 Arcane damage to enemies it passes through.
 
 |cFFFFFFFFGrants 1 Arcane Charge when cast and every time it deals damage.|r
