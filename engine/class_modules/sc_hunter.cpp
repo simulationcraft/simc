@@ -3144,8 +3144,8 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     double bonus = hunter_main_pet_attack_t::bonus_da( s );
 
-    // Adding player ap (* effect 1 from talent spell?).
-    bonus += o()->composite_total_attack_power_by_type( p()->default_ap_type() ) * o()->talents.flanking_strike->effectN( 1 ).percent();
+    // Adding raw player ap (* effect 1 from talent spell tooltip).
+    bonus += o()->cache.attack_power() * o()->composite_attack_power_multiplier() * o()->talents.flanking_strike->effectN( 1 ).percent();
 
     return bonus;
   }
