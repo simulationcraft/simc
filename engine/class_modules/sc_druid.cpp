@@ -6635,32 +6635,43 @@ public:
       const spell_data_t* other_ecl;
       dot_t* druid_td_t::dots_t::*other_dot;
       const spell_data_t* other_dmg;
+      unsigned other_idx = 0;
 
       if constexpr ( E == eclipse_e::LUNAR )
       {
         other_ecl = p->spec.eclipse_solar;
         other_dot = &druid_td_t::dots_t::sunfire;
         other_dmg = p->spec.sunfire_dmg;
+        other_idx = 3;
       }
       else if constexpr ( E == eclipse_e::SOLAR )
       {
         other_ecl = p->spec.eclipse_lunar;
         other_dot = &druid_td_t::dots_t::moonfire;
         other_dmg = p->spec.moonfire_dmg;
+        other_idx = 1;
+      }
+      else
+      {
+        static_assert( static_false<E>, "Invalid eclipse type for _umbral_t." );
       }
 
       // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
-      // NOTE: currently bugged and not affected by opposite passive mastery
       add_parse_entry( BASE::da_multiplier_effects )
         .set_value( find_effect( p->talent.umbral_embrace, p->buff.umbral_embrace ).percent() )
         .set_func( [ this ] { return umbral_embrace_check(); } )
         .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
 
+      // apply bonus from opposite eclipse
       BASE::force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
+      // apply bonus from opposite dot mastery
       BASE::force_target_effect( [ this, other_dot ]( actor_target_data_t* t ) {
         return umbral_embrace_check() && std::invoke( other_dot, static_cast<druid_td_t*>( t )->dots )->is_ticking();
       }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
+
+      // apply bonus from opposite passive mastery
+      BASE::force_effect( p->mastery.astral_invocation, other_idx, [ this ] { return umbral_embrace_check(); } );
     }
 
     bool umbral_embrace_check()
