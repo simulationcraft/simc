@@ -326,6 +326,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* black_arrow;
     dot_t* barbed_shot;
     dot_t* cull_the_herd;
+    dot_t* explosive_shot;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -565,6 +566,8 @@ public:
     spell_data_ptr_t disruptive_rounds; //NYI - When Counter Shot interrupts a cast, gain 10 focus. 
 
     spell_data_ptr_t explosive_shot;
+    spell_data_ptr_t explosive_shot_cast;
+    spell_data_ptr_t explosive_shot_damage;
 
     spell_data_ptr_t bursting_shot; //Verify functionality remains same after move from Marksmanship tree
     spell_data_ptr_t scatter_shot; // NYI - 
@@ -4224,38 +4227,50 @@ struct serpent_sting_explosive_venom_t final : public serpent_sting_base_t
 
 // Explosive Shot  ====================================================================
 
-struct explosive_shot_t : public hunter_ranged_attack_t
+struct explosive_shot_base_t : public hunter_ranged_attack_t
 {
+  static const snapshot_state_e STATE_EXPLOSIVE_VENOM = STATE_USER_1;
+  static const snapshot_state_e STATE_EFFECTIVENESS = STATE_USER_2;
+
+  struct state_data_t
+  {
+    bool explosive_venom_ready = false;
+    double effectiveness = 1.0;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "explosive_venom_ready={}, effectiveness={}", data.explosive_venom_ready, data.effectiveness );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   struct damage_t final : hunter_ranged_attack_t
   {
-    struct state_data_t
-    {
-      bool explosive_venom_ready = false;
-
-      friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-        fmt::format_to( out, "explosive_venom_ready={:d}", data.explosive_venom_ready );
-      }
-    };
-    using state_t = hunter_action_state_t<state_data_t>;
-
     serpent_sting_explosive_venom_t* serpent_sting;
 
-    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
+    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_damage )
     {
-      aoe = -1;
       background = dual = true;
+      reduced_aoe_targets = p->talents.explosive_shot_cast->effectN( 2 ).base_value();
+      aoe = -1;
 
       serpent_sting = p -> get_background_action<serpent_sting_explosive_venom_t>( "serpent_sting_explosive_venom" );
+    }
+
+    void execute() override
+    {
+      if ( pre_execute_state )
+        update_state( pre_execute_state, result_amount_type::DMG_DIRECT );
+
+      hunter_ranged_attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
 
-      if ( p() -> talents.explosive_venom.ok() && debug_cast<state_t*>( s ) -> explosive_venom_ready ) 
-      {
+      if ( p()->talents.explosive_venom.ok() && debug_cast<state_t*>( s )->explosive_venom_ready )
         serpent_sting -> execute_on_target( s -> target );
-      }
     }
 
     action_state_t* new_state() override
@@ -4263,38 +4278,83 @@ struct explosive_shot_t : public hunter_ranged_attack_t
       return new state_t( this, target );
     }
 
-    void snapshot_state( action_state_t* s, result_amount_type type ) override
+    void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
     {
-      hunter_ranged_attack_t::snapshot_state( s, type );
-      debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
+      hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
+
+      if ( flags & STATE_MUL_SPELL_DA )
+        s->da_multiplier *= debug_cast<state_t*>( s )->effectiveness;
     }
   };
 
   timespan_t grenade_juggler_reduction = 0_s;
+  damage_t* explosion = nullptr;
 
-  explosive_shot_t( hunter_t* p, util::string_view options_str )
-    : hunter_ranged_attack_t( "explosive_shot", p, p -> find_spell( 212431 ) )
+  explosive_shot_base_t( util::string_view n, hunter_t* p, const spell_data_t* s )
+    : hunter_ranged_attack_t( n, p, s )
   {
-    parse_options( options_str );
-
-    if ( !p -> talents.explosive_shot -> ok() )
-      background = true;
-
     may_miss = may_crit = false;
 
-    tick_action = p -> get_background_action<damage_t>( "explosive_shot_aoe" );
-    tick_action -> reduced_aoe_targets = data().effectN( 2 ).base_value();
+    explosion = p->get_background_action<damage_t>( "explosive_shot_damage" );
 
     grenade_juggler_reduction = p->talents.grenade_juggler->effectN( 3 ).time_value();
+  }
+
+  void init() override
+  {
+    hunter_ranged_attack_t::init();
+
+    // Don't let dot ticks lose our cast state.
+    snapshot_flags = STATE_EXPLOSIVE_VENOM | STATE_EFFECTIVENESS;
+  }
+
+  // We have a whole lot of Explosive Shot variations that all need to work with the same dot.
+  dot_t* get_dot( player_t* t )
+  {
+    if ( !t )
+      t = target;
+    if ( !t )
+      return nullptr;
+
+    return td( t )->dots.explosive_shot;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    dot_t* dot = td( s->target )->dots.explosive_shot;
+
+    if ( dot->is_ticking() )
+    {
+      if ( !explosion->pre_execute_state )
+        explosion->pre_execute_state = explosion->get_state();
+      
+      // The dot should have the state from the cast that triggered it, so forward it to the explosion.
+      explosion->pre_execute_state->copy_state( dot->state );
+      explosion->execute_on_target( s->target );
+    }
+        
+    hunter_ranged_attack_t::impact( s );
+  }
+
+  void last_tick( dot_t* d )
+  {
+    hunter_ranged_attack_t::last_tick( d );
+
+    if ( !explosion->pre_execute_state )
+      explosion->pre_execute_state = explosion->get_state();
+
+    // The dot should have the state from the cast that triggered it, so forward it to the explosion.
+    explosion->pre_execute_state->copy_state( d->state );
+    explosion->execute_on_target( d->target );
   }
 
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-    
+
     if ( p() -> talents.explosive_venom.ok() ) 
     {
-      p() -> buffs.explosive_venom -> up(); //Benefit tracking
+      p() -> buffs.explosive_venom -> up(); // Benefit tracking
       if( p() -> buffs.explosive_venom -> at_max_stacks() )
       {
         p() -> buffs.explosive_venom -> expire();
@@ -4305,22 +4365,9 @@ struct explosive_shot_t : public hunter_ranged_attack_t
         p() -> buffs.explosive_venom -> increment();
       }
     }
-
-    // Move a tip stack over to the hidden buff to be used by the next explosive shot damage action.
-    // Doesn't seem to happen for background casts (Sulfur-Lined Pockets).
-    if ( !background && p()->buffs.tip_of_the_spear->up() )
-    {
-      p()->buffs.tip_of_the_spear->decrement();
-      p()->buffs.tip_of_the_spear_explosive->trigger();
-    }
-
+    
     p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
     p()->buffs.bombardier->decrement();
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot -> time_to_next_tick() + triggered_duration;
   }
 
   double cost_pct_multiplier() const override
@@ -4344,15 +4391,47 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
     hunter_ranged_attack_t::update_ready( d );
   }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
+
+    if ( flags & STATE_EXPLOSIVE_VENOM )
+      debug_cast<state_t*>( s )->explosive_venom_ready = p()->buffs.explosive_venom->at_max_stacks();
+  }
 };
 
-struct explosive_shot_background_t : public explosive_shot_t
+struct explosive_shot_t : public explosive_shot_base_t
 {
-  size_t targets = 0;
-
-  explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
+  explosive_shot_t( hunter_t* p, util::string_view options_str )
+    : explosive_shot_base_t( "explosive_shot", p, p->talents.explosive_shot )
   {
-    dual = true;
+    parse_options( options_str );
+  }
+  
+  void execute() override
+  {
+    explosive_shot_base_t::execute();
+
+    if ( p()->buffs.tip_of_the_spear->up() )
+    {
+      p()->buffs.tip_of_the_spear->decrement();
+      p()->buffs.tip_of_the_spear_explosive->trigger();
+    }
+  }
+};
+
+struct explosive_shot_background_t : public explosive_shot_base_t
+{
+  explosive_shot_background_t( util::string_view n, hunter_t* p )
+    : explosive_shot_base_t( n, p, p->talents.explosive_shot_cast )
+  {
+    background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
@@ -4822,7 +4901,7 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     bool explosive_venom_ready = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "explosive_venom_ready={:d}", data.explosive_venom_ready );
+      fmt::format_to( out, "explosive_venom_ready={}", data.explosive_venom_ready );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
@@ -5349,7 +5428,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     }
 
     if ( serpentstalkers_trickery )
-      serpentstalkers_trickery -> execute_on_target( target );
+      serpentstalkers_trickery->execute_on_target( target );
 
     p() -> buffs.precise_shots -> trigger();
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> proc_chance() );
@@ -5693,7 +5772,10 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct multishot_mm_base_t: public hunter_ranged_attack_t
 {
-  explosive_shot_background_t* explosive = nullptr;
+  struct salvo {
+    explosive_shot_background_t* explosive = nullptr;
+    int targets = 0;
+  } salvo;
 
   multishot_mm_base_t( hunter_t* p ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_mm )
@@ -5701,10 +5783,10 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
     aoe = -1;
     reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
 
-    if ( p -> talents.salvo.ok() )
+    if ( p->talents.salvo.ok() )
     {
-      explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
-      explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+      salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
+      salvo.explosive = p->get_background_action<attacks::explosive_shot_background_t>( "explosive_shot" );
     }
   }
 
@@ -5723,15 +5805,7 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
       p() -> buffs.trick_shots -> trigger();
 
-    if ( explosive && p() -> buffs.salvo -> check() )
-    {
-      std::vector<player_t*>& tl = target_list();
-      size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
-      for ( size_t t = 0; t < targets; t++ )
-        explosive -> execute_on_target( tl[ t ] );
-
-      p() -> buffs.salvo -> expire();
-    }
+    p()->buffs.salvo->expire();
 
     p() -> buffs.focusing_aim -> expire();
 
@@ -5739,6 +5813,14 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
     {
       p() -> buffs.deathblow -> trigger(); 
     }
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::schedule_travel( s );
+
+    if ( s->chain_target < salvo.targets && p()->buffs.salvo->check() )
+      salvo.explosive->execute_on_target( s->target );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -6621,18 +6703,19 @@ struct kill_command_t: public hunter_spell_t
     }
   };
 
-  struct explosive_shot_qs_t final : public attacks::explosive_shot_background_t
+  struct explosive_shot_qs_t : public attacks::explosive_shot_background_t
   {
-    explosive_shot_qs_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
+    explosive_shot_qs_t( util::string_view n, hunter_t* p )
+      : explosive_shot_background_t( n, p )
     {
-      base_dd_multiplier *= p->talents.sulfur_lined_pockets->effectN( 2 ).percent();
     }
 
-    void execute() override
+    void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
     {
-      explosive_shot_background_t::execute();
+      explosive_shot_background_t::snapshot_internal( s, flags, rt );
 
-      p()->buffs.sulfur_lined_pockets_explosive->expire();
+      if ( flags & STATE_EFFECTIVENESS )
+        debug_cast<state_t*>( s )->effectiveness = p()->talents.sulfur_lined_pockets->effectN( 2 ).percent();
     }
   };
 
@@ -6675,10 +6758,7 @@ struct kill_command_t: public hunter_spell_t
         add_child( quick_shot.arcane );
 
         if ( p->talents.sulfur_lined_pockets.ok() )
-        {
-          quick_shot.explosive = p->get_background_action<explosive_shot_qs_t>( "explosive_shot_quick_shot" );
-          add_child( quick_shot.explosive );
-        }
+          quick_shot.explosive = p->get_background_action<explosive_shot_qs_t>( "explosive_shot_qs" );
       }
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
@@ -6717,7 +6797,10 @@ struct kill_command_t: public hunter_spell_t
     if ( rng().roll( quick_shot.chance ) )
     {
       if ( p()->buffs.sulfur_lined_pockets_explosive->up() )
+      {
+        p()->buffs.sulfur_lined_pockets->expire();
         quick_shot.explosive->execute_on_target( target );
+      }
       else
         quick_shot.arcane->execute_on_target( target );
     }
@@ -7148,7 +7231,10 @@ struct volley_t : public hunter_spell_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
-    attacks::explosive_shot_background_t* explosive = nullptr;
+    struct salvo {
+      attacks::explosive_shot_background_t* explosive = nullptr;
+      int targets = 0;
+    } salvo;
 
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -7156,9 +7242,10 @@ struct volley_t : public hunter_spell_t
       aoe = -1;
       background = dual = ground_aoe = true;
 
-      if ( p -> talents.salvo.ok() ) {
-        explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
-        explosive -> targets = as<size_t>( p -> talents.salvo -> effectN( 1 ).base_value() );
+      if ( p -> talents.salvo.ok() )
+      {
+        salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
+        salvo.explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot" );
       }
     }
 
@@ -7166,20 +7253,15 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( explosive && p() -> buffs.salvo -> check() )
-      {
-        std::vector<player_t*>& tl = target_list();
-        size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
-        for ( size_t t = 0; t < targets; t++ )
-          explosive -> execute_on_target( tl[ t ] );
-        
-        p() -> buffs.salvo -> expire();
-      }
+      p()->buffs.salvo->expire();
     }
 
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
+
+      if ( s->chain_target < salvo.targets && p()->buffs.salvo->check() )
+        salvo.explosive->execute_on_target( s->target );
 
       if ( p()->talents.kill_zone.ok() )
         p()->get_target_data( s->target )->debuffs.kill_zone->trigger();
@@ -7318,14 +7400,6 @@ struct spearhead_t : public hunter_spell_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
-  struct explosive_shot_grenade_juggler_t final : public attacks::explosive_shot_background_t
-  {
-    explosive_shot_grenade_juggler_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_background_t( "", p )
-    {
-      base_dd_multiplier *= p->talents.grenade_juggler->effectN( 5 ).percent();
-    }
-  };
-
   struct bomb_damage_t : public hunter_spell_t
   {
     struct bomb_dot_t final : public hunter_spell_t
@@ -7361,7 +7435,27 @@ struct wildfire_bomb_t: public hunter_spell_t
       }
     };
 
+    struct explosive_shot_gj_t : public attacks::explosive_shot_background_t
+    {
+      explosive_shot_gj_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p )
+      {
+      }
+
+      void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+      {
+        explosive_shot_background_t::snapshot_internal( s, flags, rt );
+
+        if ( flags & STATE_EFFECTIVENESS )
+          debug_cast<state_t*>( s )->effectiveness = p()->talents.grenade_juggler->effectN( 5 ).percent();
+      }
+    };
+
     bomb_dot_t* bomb_dot;
+
+    struct {
+      double chance = 0;
+      explosive_shot_gj_t* explosive = nullptr;
+    } grenade_juggler;
 
     bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ) : 
       hunter_spell_t( n, p, p->find_spell( 265157 ) ),
@@ -7379,6 +7473,12 @@ struct wildfire_bomb_t: public hunter_spell_t
 
       a->add_child( this );
       a->add_child( bomb_dot );
+
+      if ( p->talents.grenade_juggler.ok() )
+      {
+        grenade_juggler.chance = p->talents.grenade_juggler->effectN( 2 ).percent();
+        grenade_juggler.explosive = p->get_background_action<explosive_shot_gj_t>( "explosive_shot_gj" );
+      }
     }
 
     void execute() override
@@ -7394,10 +7494,11 @@ struct wildfire_bomb_t: public hunter_spell_t
         bomb_dot->execute();
       }
 
+      if ( rng().roll( grenade_juggler.chance ) )
+        grenade_juggler.explosive->execute_on_target( target );
+
       if( p() -> tier_set.t30_sv_2pc.ok() )
-      {
         p() -> buffs.exposed_wound -> trigger();
-      }
 
       if ( p()->cooldowns.lunar_storm->up() )
         p()->trigger_lunar_storm( target );
@@ -7423,12 +7524,6 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
-  struct
-  {
-    double chance = 0;
-    explosive_shot_grenade_juggler_t* explosive = nullptr;
-  } grenade_juggler;
-
   wildfire_bomb_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> talents.wildfire_bomb )
   {
@@ -7438,12 +7533,6 @@ struct wildfire_bomb_t: public hunter_spell_t
     school = SCHOOL_FIRE; // for report coloring
 
     impact_action = p->get_background_action<bomb_damage_t>( "wildfire_bomb_damage", this );
-
-    if ( p->talents.grenade_juggler.ok() )
-    {
-      grenade_juggler.chance = p->talents.grenade_juggler->effectN( 2 ).percent();
-      grenade_juggler.explosive = p->get_background_action<explosive_shot_grenade_juggler_t>( "explosive_shot_grenade_juggler" );
-    }
   }
 
   void execute() override
@@ -7455,9 +7544,6 @@ struct wildfire_bomb_t: public hunter_spell_t
       p() -> buffs.light_the_fuse -> expire();
       p() -> cooldowns.wildfire_bomb -> reset( false );
     }
-
-    if ( rng().roll(grenade_juggler.chance) )
-      grenade_juggler.explosive->execute_on_target( target );
 
     if ( p()->talents.covering_fire.ok() )
     {
@@ -7605,7 +7691,8 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ):
   dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
   dots.black_arrow = t -> get_dot( "black_arrow", p );
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
-  dots.cull_the_herd = t -> get_dot( "cull_the_herd", p ); 
+  dots.cull_the_herd = t -> get_dot( "cull_the_herd", p );
+  dots.explosive_shot = t->get_dot( "explosive_shot", p );
 
   t -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -7836,6 +7923,8 @@ void hunter_t::init_spells()
   talents.disruptive_rounds                 = find_talent_spell( talent_tree::CLASS, "Disruptive Rounds" );
 
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
+  talents.explosive_shot_cast               = find_spell( 212431 );
+  talents.explosive_shot_damage             = find_spell( 212680 );
 
   talents.bursting_shot                     = find_talent_spell( talent_tree::CLASS, "Bursting Shot" );
   talents.scatter_shot                      = find_talent_spell( talent_tree::CLASS, "Scatter Shot" );  
@@ -8133,6 +8222,8 @@ void hunter_t::init_spells()
   specs.arcane_shot          = find_class_spell( "Arcane Shot" );
   specs.steady_shot          = find_class_spell( "Steady Shot" );
   specs.flare                = find_class_spell( "Flare" );
+
+
 
   // Tier Sets
   tier_set.t29_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T29, B2 );
