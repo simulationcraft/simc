@@ -3363,13 +3363,15 @@ void darkmoon_deck_ascension( special_effect_t& effect )
 
       buff_list.push_back( vers_buff );
 
+      last_buff = buff_list[ 0 ];
+
       set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
         // TODO: Test if changing buffs resets the stacks or if they keep stacking.
         // Tuning wise, makes the most sense for it to continue stacking even if changing buffs. 
         // Otherwise, it only really gives 145 passive stats which is very low by comparison. 
         if ( stack < as<unsigned>( data().effectN( 1 ).base_value() ) )
         {
-          if ( last_buff != nullptr )
+          if ( last_buff->check() && stack > 0 )
           {
             stack = last_buff->check() + 1;
           }
@@ -3387,7 +3389,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
         }
         else
         {
-          if ( last_buff != nullptr )
+          if ( last_buff->check() )
           {
             last_buff->expire();
           }
@@ -3403,7 +3405,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     {
       buff_t::reset();
       stack = 0;
-      last_buff = nullptr;
     }
 
     void start( int stacks, double value, timespan_t duration ) override
@@ -3412,7 +3413,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
       // For now implementing worst case scenario where they reset when leaving combat.
       stack = 0;
-      last_buff = nullptr;
     };
 
     void expire_override( int stacks, timespan_t duration ) override
@@ -3421,7 +3421,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       // TODO: Test if leaving combat resets the buff values or if they reset when the last stat buff expires.
       // For now implementing worst case scenario where they reset when leaving combat.
       stack = 0;
-      last_buff = nullptr;
     }
   };
 
@@ -3438,7 +3437,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   } );
 
-  effect.player->sim->errorf( "Darkmoon Deck: Ascendance is currently a speculative implementation, take results with a grain of salt." );
+  effect.player->sim->errorf( "Darkmoon Deck: Ascension is currently a speculative implementation, take results with a grain of salt." );
 }
 
 // Weapons
