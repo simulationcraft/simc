@@ -6651,7 +6651,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
       make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
   debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                 ->set_stack_change_callback( [ p ]( buff_t *debuff, int old_, int new_ ) {
+                                 ->set_stack_change_callback( [ p ]( buff_t *, int, int new_ ) {
                                    if ( p->user_options.motc_override == 0 )
                                    {
                                      if ( new_ )
@@ -6819,6 +6819,7 @@ void monk_t::parse_player_effects()
   // windwalker player auras
   parse_effects( baseline.windwalker.aura );
   parse_effects( baseline.windwalker.aura_2 );
+  parse_effects( buff.hit_combo, effect_mask_t( true ).disable( 4 ) );
 
   // class talent auras
   parse_effects( talent.monk.grace_of_the_crane );
@@ -6846,7 +6847,7 @@ void monk_t::parse_player_effects()
 
   // Shadopan
   parse_effects( buff.wisdom_of_the_wall_mastery );
-  // parse_effects( buff.against_all_odds );
+  parse_effects( buff.against_all_odds );
   parse_effects( buff.veterans_eye );
 
   // Conduit of the Celestials
@@ -8313,8 +8314,7 @@ void monk_t::create_buffs()
                                                                  "fury_of_xuen", passives.fury_of_xuen );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
-                       ->set_default_value_from_effect( 1 )
-                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                       ->set_default_value_from_effect( 1 );
 
   buff.flurry_of_xuen = make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
                                             passives.flurry_of_xuen_driver )
@@ -8539,10 +8539,7 @@ void monk_t::create_buffs()
   buff.against_all_odds =
       make_buff_fallback( talent.shado_pan.against_all_odds->ok(), this, "against_all_odds", find_spell( 451061 ) )
           ->set_default_value_from_effect( 1 )
-          //          ->set_default_value_from_effect_type(
-          //              A_MOD_PERCENT_STAT )  // bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
-          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-          ->add_invalidate( CACHE_AGILITY );
+          ->set_trigger_spell( talent.shado_pan.against_all_odds );
 
   buff.flurry_charge =
       make_buff_fallback( talent.shado_pan.flurry_strikes->ok(), this, "flurry_charge", find_spell( 451021 ) )
@@ -9233,19 +9230,6 @@ double monk_t::composite_attack_power_multiplier() const
   ap *= 1.0 + cache.mastery() * baseline.brewmaster.mastery->effectN( 2 ).mastery_value();
 
   return ap;
-}
-
-// monk_t::composite_attribute() ==========================
-
-double monk_t::composite_attribute( attribute_e attr ) const
-{
-  auto a = player_t::composite_attribute( attr );
-
-  // TODO: remove if fixed
-  //  if ( attr == ATTR_AGILITY && buff.against_all_odds->check() )
-  //    a += base.stats.attribute[ attr ] * buff.against_all_odds->check_value();
-
-  return a;
 }
 
 // monk_t::composite_dodge ==============================================

@@ -710,6 +710,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
     }
 
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      if ( p()->o()->buff.tigers_ferocity->check() )
+        am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value();
+
+      return am;
+    }
+
     void impact( action_state_t *state ) override
     {
       sef_melee_attack_t::impact( state );

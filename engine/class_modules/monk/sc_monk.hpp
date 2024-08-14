@@ -1437,7 +1437,6 @@ public:
   std::string default_temporary_enchant() const override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
