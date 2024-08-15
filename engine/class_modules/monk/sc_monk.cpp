@@ -1249,18 +1249,11 @@ struct flurry_strike_t : public monk_melee_attack_t
 
     p()->buff.against_all_odds->trigger();
 
-    if ( p()->talent.shado_pan.high_impact.ok() )
-    {
-      auto td = p()->get_target_data( s->target );
-      if ( td )
-        td->debuff.high_impact->trigger();
-    }
+    if ( auto target_data = p()->get_target_data( s->target ); target_data )
+      target_data->debuff.high_impact->trigger();
 
     if ( p()->buff.wisdom_of_the_wall_flurry->up() )
-    {
-      wisdom_flurry->set_target( s->target );
-      wisdom_flurry->execute();
-    }
+      wisdom_flurry->execute_on_target( s->target );
   }
 };
 
@@ -1271,22 +1264,20 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
   {
-    strike      = new flurry_strike_t( p );
-    high_impact = new high_impact_t( p );
-
+    strike = new flurry_strike_t( p );
     add_child( strike );
-    add_child( high_impact );
 
-    p->register_on_kill_callback( [ this, p ]( player_t *t ) {
+    if ( !p->talent.shado_pan.high_impact->ok() )
+      return;
+
+    high_impact = new high_impact_t( p );
+    add_child( high_impact );
+    p->register_on_kill_callback( [ this, p ]( player_t *target ) {
       if ( p->sim->event_mgr.canceled )
         return;
 
-      auto td = p->get_target_data( t );
-      if ( td && td->debuff.high_impact->remains() >= 0_ms )
-      {
-        high_impact->set_target( t );
-        high_impact->execute();
-      }
+      if ( auto target_data = p->get_target_data( target ); target_data && target_data->debuff.high_impact->up() )
+        high_impact->execute_on_target( target );
     } );
   }
 
@@ -1295,10 +1286,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
     if ( p()->buff.flurry_charge->up() )
     {
       for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
-      {
-        strike->set_target( p()->target );
-        strike->schedule_execute();
-      }
+        strike->execute_on_target( p()->target );
 
       p()->buff.flurry_charge->expire();
     }
@@ -1525,8 +1513,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
 
       tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
-      tigers_ferocity->set_target( s->target );
-      tigers_ferocity->execute();
+      tigers_ferocity->execute_on_target( s->target );
     }
   }
 };
@@ -2087,8 +2074,6 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
     // Used by both Windwalker and Mistweaver
     if ( p()->buff.teachings_of_the_monastery->up() )
     {
-      bok_totm_proc->set_target( s->target );
-
       int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
       if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
@@ -2109,7 +2094,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
             p()->buff.memory_of_the_monastery->trigger();
         }
 
-        bok_totm_proc->execute();
+        bok_totm_proc->execute_on_target( s->target );
       }
 
       // The initial hit along with each individual TotM hits has a chance to reset the cooldown
@@ -6059,10 +6044,9 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
             td->debuff.empowered_tiger_lightning->current_value = 0;
             if ( value > 0 )
             {
-              p->active_actions.empowered_tiger_lightning->set_target( target );
               p->active_actions.empowered_tiger_lightning->base_dd_min = value * empowered_tiger_lightning_multiplier;
               p->active_actions.empowered_tiger_lightning->base_dd_max = value * empowered_tiger_lightning_multiplier;
-              p->active_actions.empowered_tiger_lightning->execute();
+              p->active_actions.empowered_tiger_lightning->execute_on_target( target );
             }
           }
         }
@@ -6125,12 +6109,11 @@ struct fury_of_xuen_t : public monk_buff_t
             td->debuff.fury_of_xuen_empowered_tiger_lightning->current_value = 0;
             if ( value > 0 )
             {
-              p->active_actions.fury_of_xuen_empowered_tiger_lightning->set_target( target );
               p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_min =
                   value * empowered_tiger_lightning_multiplier;
               p->active_actions.fury_of_xuen_empowered_tiger_lightning->base_dd_max =
                   value * empowered_tiger_lightning_multiplier;
-              p->active_actions.fury_of_xuen_empowered_tiger_lightning->execute();
+              p->active_actions.fury_of_xuen_empowered_tiger_lightning->execute_on_target( target );
             }
           }
         }
@@ -6694,7 +6677,8 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
 
   // Shado-Pan
 
-  debuff.high_impact = make_buff( *this, "high_impact", p->talent.shado_pan.high_impact_debuff )
+  debuff.high_impact = make_buff_fallback( p->talent.shado_pan.high_impact->ok(), *this, "high_impact",
+                                           p->talent.shado_pan.high_impact_debuff )
                            ->set_trigger_spell( p->talent.shado_pan.high_impact )
                            ->set_quiet( true );
 
