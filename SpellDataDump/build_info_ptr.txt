@@ -1,1 +1,1 @@
-SimulationCraft 1026-01 for World of Warcraft 10.2.7.54253 PTR (hotfix 2024-04-14/54253)
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA (hotfix 2024-08-14/56110, git build data-update-beta-56110 096d037)
