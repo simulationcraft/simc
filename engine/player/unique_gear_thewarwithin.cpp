@@ -3427,7 +3427,8 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   };
 
-  auto buff = make_buff<ascension_tick_t>( effect, "ascendance", effect.player->find_spell( 457594 ) );
+  auto buff = make_buff<ascension_tick_t>( effect, "ascendance_darkmoon", effect.player->find_spell( 457594 ) );
+  buff->name_str_reporting = "ascendance";
 
   effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
     if ( c && !buff->check() )
