@@ -4211,6 +4211,12 @@ struct xuen_spell_t : public monk_spell_t
       p()->buff.rushing_jade_wind->trigger( p()->pets.xuen.duration() );
 
     p()->buff.courage_of_the_white_tiger->trigger();
+<<<<<<< Updated upstream
+=======
+
+    if ( p()->talent.monk.summon_white_tiger_statue->ok() )
+      p()->pets.white_tiger_statue.spawn( p()->passives.summon_white_tiger_statue->duration(), 1 );
+>>>>>>> Stashed changes
   }
 };
 
@@ -7701,6 +7707,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.improved_touch_of_death          = find_spell( 322113 );
   passives.mark_of_the_crane                = find_spell( 228287 );
+  passives.summon_white_tiger_statue        = find_spell( 388686 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_aoe_tick   = find_spell( 158221 );
