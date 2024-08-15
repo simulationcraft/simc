@@ -298,7 +298,6 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
   precombat->add_action( "salvo,precast_time=10" );
-  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
   precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
 
@@ -320,36 +319,35 @@ void marksmanship_ptr( player_t* p )
 
   st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
   st->add_action( "kill_shot,if=buff.razor_fragments.up" );
-  st->add_action( "rapid_fire,if=talent.surging_shots|action.aimed_shot.full_recharge_time>action.aimed_shot.cast_time+cast_time" );
-  st->add_action( "volley,if=buff.salvo.up|variable.trueshot_ready|cooldown.trueshot.remains>45|fight_remains<12" );
+  st->add_action( "black_arrow" );
   st->add_action( "explosive_shot,if=active_enemies>1" );
+  st->add_action( "volley" );
+  st->add_action( "rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm_icd.remains|cooldown.lunar_storm_icd.remains>5)" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
-  st->add_action( "wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up|active_enemies>1", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );
-  st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)|(buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Overwrite freely if it can cleave." );
-  st->add_action( "kill_shot" );
-  st->add_action( "explosive_shot" );
+  st->add_action( "wailing_arrow", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );
+  st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(active_enemies<2|!talent.chimaera_shot)|(buff.trick_shots.remains>execute_time&active_enemies>1)", "With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Don't overwrite when using Chimaera Shot on two targets. Overwrite freely if it can cleave." );
+  st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.down&buff.trueshot.down" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  st->add_action( "kill_shot" );
   st->add_action( "barrage,if=talent.rapid_fire_barrage" );
+  st->add_action( "explosive_shot" );
   st->add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
-  trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "volley" );
-  trickshots->add_action( "barrage,if=talent.rapid_fire_barrage" );
-  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots" );
-  trickshots->add_action( "wailing_arrow,if=buff.precise_shots.down|buff.trueshot.up" );
-  trickshots->add_action( "trueshot,if=variable.trueshot_ready" );
-  trickshots->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))", "For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise." );
+  trickshots->add_action( "barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time" );
   trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
-  trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
-  trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
-  trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
-  trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
+  trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
+  trickshots->add_action( "black_arrow" );
+  trickshots->add_action( "wailing_arrow,if=buff.precise_shots.down" );
+  trickshots->add_action( "trueshot,if=variable.trueshot_ready" );
+  trickshots->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&buff.precise_shots.down", "For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots." );
+  trickshots->add_action( "multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
   trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
   trickshots->add_action( "steady_shot" );
 
