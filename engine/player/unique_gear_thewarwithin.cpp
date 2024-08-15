@@ -3427,8 +3427,12 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   };
 
-  auto buff = make_buff<ascension_tick_t>( effect, "ascendance_darkmoon", effect.player->find_spell( 457594 ) );
-  buff->name_str_reporting = "ascendance";
+  auto buff = buff_t::find( effect.player, "ascendance_darkmoon" );
+  if ( !buff )
+  {
+    buff = make_buff<ascension_tick_t>( effect, "ascendance_darkmoon", effect.player->find_spell( 457594 ) );
+    buff->name_str_reporting = "ascendance";
+  }
 
   effect.name_str = "ascendance_darkmoon";
 
@@ -3597,8 +3601,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff_found = buff_t::find( effect.player, debuff_spell->name_cstr() );
-      if ( !debuff_found )
+      auto debuff = buff_t::find( t, debuff_spell->name_cstr() );
+      if ( !debuff )
       {
         auto debuff =
             make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell, embelishment );
