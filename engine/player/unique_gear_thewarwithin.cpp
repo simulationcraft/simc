@@ -3490,7 +3490,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
       create_radint_buffs( e, buff_spell, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
-      set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
+      set_expire_callback( [ &, embelish ]( buff_t*, int, timespan_t ) {
         double buff_value     = 0;
         double max_buff_value = 0;
 
@@ -3610,7 +3610,10 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     }
   };
 
-  bool embelish = effect.spell_id == 454558;
+  bool embelish = false;
+
+  if ( effect.spell_id == 454558 )
+    embelish = true;
 
   effect.spell_id = 454559;
 
