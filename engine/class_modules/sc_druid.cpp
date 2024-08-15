@@ -6712,10 +6712,13 @@ public:
   {
     BASE::init();
 
-    // setup umbral for convoke if necessary
+    // copy generator characteristic to umbral version, specifically for convoke as get_convoke_action will set
+    // variables post construction.
+    //
+    // note that init() is not required as player_t::init_actions() does not use range based for loops, thus actions
+    // that are added during initialization (as happens with convoke) will still be init()'d.
     if ( umbral )
     {
-      umbral->init();
       umbral->gain = BASE::gain;
       umbral->proc = BASE::proc;
       umbral->trigger_gcd = BASE::trigger_gcd;
