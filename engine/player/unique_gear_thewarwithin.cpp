@@ -3115,7 +3115,7 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
-// 455534 equip
+// 463232 equip
 //  e1: trigger cycle
 //  e2: buff coeff
 // 455535 cycle
@@ -3374,7 +3374,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
           trigger_ascension();
       } );
 
-      set_quiet( true );
+      // set_quiet( true );
     }
 
     void trigger_ascension()
@@ -3427,11 +3427,16 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   };
 
-  auto buff = buff_t::find( effect.player, "ascendance_darkmoon" );
+  auto name_append = "_embelishment";
+
+  if ( effect.spell_id == 463095 )
+    name_append = "_trinket";
+
+  auto buff = buff_t::find( effect.player, "ascendance" + util::tokenize_fn( name_append ) );
   if ( !buff )
   {
-    buff = make_buff<ascension_tick_t>( effect, "ascendance_darkmoon", effect.player->find_spell( 457594 ) );
-    buff->name_str_reporting = "ascendance";
+    buff = make_buff<ascension_tick_t>( effect, "ascendance" + util::tokenize_fn( name_append ),
+                                        effect.player->find_spell( 457594 ) );
   }
 
   effect.name_str = "ascendance_darkmoon";
@@ -3486,8 +3491,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     double max_damage;
     std::unordered_map<stat_e, buff_t*> buffs;
 
-    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, const spell_data_t* s, bool embelish )
-      : buff_t( td, "radiant_focus_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
     {
       max_damage = data().effectN( 1 ).average( e.player );
 
@@ -3601,19 +3606,27 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff = buff_t::find( t, debuff_spell->name_cstr() );
-      if ( !debuff )
-      {
-        auto debuff =
-            make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell, embelishment );
+      auto name_append = "trinket";
 
-        return debuff;
-      }
+      if ( embelishment )
+        name_append = "embelishment";
+
+      // TODO: Test if these are actually seperate debuffs, if not need to figure out how to handle that
+      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect,
+                                                       "radiant_focus_debuff_" + util::tokenize_fn( name_append ),
+                                                       debuff_spell, embelishment );
+
+      return debuff;
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      get_debuff( s->target )->trigger();
+      auto debuff = get_debuff( s->target );
+      if ( debuff->check() )
+      {
+        debuff->expire();
+      }
+      debuff->trigger();
     }
   };
 
@@ -4175,7 +4188,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
-  register_special_effect( 455534, items::darkmoon_deck_symbiosis );
+  register_special_effect( 463232, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
