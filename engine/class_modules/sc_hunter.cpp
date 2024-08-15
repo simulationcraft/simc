@@ -6919,6 +6919,17 @@ struct kill_command_t: public hunter_spell_t
         } );
     }
 
+    if ( expression_str == "damage" )
+    {
+      auto pet = p()->find_pet( p()->options.summon_pet_str );
+      if ( pet )
+      {
+        auto kc = pet->find_action( "kill_command" );
+        if ( kc )
+          return kc->create_expression( "damage" );
+      }
+    }
+
     return hunter_spell_t::create_expression( expression_str );
   }
 };
