@@ -1166,10 +1166,6 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   struct flurry_strike_t : public monk_melee_attack_t
   {
-    int flurry_strikes_counter;
-
-    flurry_strike_wisdom_t *wisdom_flurry;
-
     enum wisdom_buff_e
     {
       WISDOM_OF_THE_WALL_CRIT,
@@ -1178,51 +1174,42 @@ struct flurry_strikes_t : public monk_melee_attack_t
       WISDOM_OF_THE_WALL_MASTERY
     };
 
-    std::vector<wisdom_buff_e> deck;
-
-    void reset_deck()
-    {
-      deck.clear();
-      deck.push_back( WISDOM_OF_THE_WALL_CRIT );
-      deck.push_back( WISDOM_OF_THE_WALL_DODGE );
-      deck.push_back( WISDOM_OF_THE_WALL_FLURRY );
-      deck.push_back( WISDOM_OF_THE_WALL_MASTERY );
-    }
+    int flurry_strikes_counter;
+    int flurry_strikes_threshold;
+    shuffled_rng_t *deck;
+    flurry_strike_wisdom_t *wisdom_flurry;
 
     flurry_strike_t( monk_t *p )
-      : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ), flurry_strikes_counter( 0 )
+      : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
+        flurry_strikes_counter( 0 ),
+        flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
+        deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
+                                                           { WISDOM_OF_THE_WALL_DODGE, 1 },
+                                                           { WISDOM_OF_THE_WALL_FLURRY, 1 },
+                                                           { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) )
     {
       background = dual = true;
 
       apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
-      parse_effects( p->buff.vigilant_watch );
 
       wisdom_flurry = new flurry_strike_wisdom_t( p );
-
       add_child( wisdom_flurry );
-
-      reset_deck();
     }
 
     void impact( action_state_t *s ) override
     {
       monk_melee_attack_t::impact( s );
 
-      if ( p()->talent.shado_pan.wisdom_of_the_wall.ok() )
+      if ( p()->talent.shado_pan.wisdom_of_the_wall->ok() )
       {
         flurry_strikes_counter++;
 
-        int wisdom_requirement = as<int>( p()->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() );
-
-        if ( flurry_strikes_counter >= wisdom_requirement )
+        if ( flurry_strikes_counter >= flurry_strikes_threshold )
         {
-          flurry_strikes_counter -= wisdom_requirement;
-
-          if ( deck.empty() )
-            reset_deck();
+          flurry_strikes_counter -= flurry_strikes_threshold;
 
           // Draw new card
-          auto card = deck[ rng().range( deck.size() ) ];
+          const auto card = wisdom_buff_e( deck->trigger() );
           switch ( card )
           {
             case WISDOM_OF_THE_WALL_CRIT:
@@ -1240,8 +1227,6 @@ struct flurry_strikes_t : public monk_melee_attack_t
             default:
               break;
           }
-
-          deck.erase( std::remove( deck.begin(), deck.end(), card ), deck.end() );
         }
       }
 
@@ -6304,7 +6289,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
