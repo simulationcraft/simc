@@ -3442,9 +3442,12 @@ void darkmoon_deck_ascension( special_effect_t& effect )
   effect.name_str = "ascendance_darkmoon";
 
   effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
-    if ( c && !buff->check() )
+    if ( c )
     {
-      buff->trigger();
+      if ( !buff->check() )
+      {
+        buff->trigger();
+      }
       debug_cast<ascension_tick_t*>( buff )->in_combat = true;
     }
     else
