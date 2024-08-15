@@ -1540,22 +1540,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.rising_star );
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // 2019-02-14
-    // In 8.1.5, the Glory of the Dawn artifact trait will now deal 35% increased damage while Storm, Earth, and Fire is
-    // active. https://www.wowhead.com/bluetracker?topic=95585&region=us
-    // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
-    // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
-    // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
-    if ( p()->buff.storm_earth_and_fire->check() )
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-
-    return am;
-  }
-
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -1769,10 +1753,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
                        ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 );
 
     if ( rng().roll( gotd_chance ) )
-    {
-      gotd->target = target;
-      gotd->execute();
-    }
+      gotd->execute_on_target( this->target );
+
     p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
@@ -4111,7 +4093,8 @@ struct diffuse_magic_t : public monk_spell_t
 // Invoke Xuen, the White Tiger
 // ==========================================================================
 
-// Courage of the White Tiger ability ===================================================
+// Courage of the White Tiger
+
 struct courage_of_the_white_tiger_t : public monk_melee_attack_t
 {
   struct courage_of_the_white_tiger_heal_t : public monk_heal_t
@@ -4630,30 +4613,6 @@ struct celestial_conduit_t : public monk_spell_t
     monk_spell_t::last_tick( dot );
 
     p()->buff.unity_within->expire();
-  }
-};
-
-// ==========================================================================
-// Summon White Tiger Statue
-// ==========================================================================
-
-struct summon_white_tiger_statue_spell_t : public monk_spell_t
-{
-  summon_white_tiger_statue_spell_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "summon_white_tiger_statue", p->talent.monk.summon_white_tiger_statue )
-  {
-    parse_options( options_str );
-
-    background = true;
-    harmful    = false;
-    gcd_type   = gcd_haste_type::NONE;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->pets.white_tiger_statue.spawn( p()->talent.monk.summon_white_tiger_statue->duration(), 1 );
   }
 };
 
@@ -5324,6 +5283,7 @@ struct chi_wave_t : public monk_spell_t
       count = new_count;
       if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
         return;
+
       TBase::execute();
     }
 
@@ -5342,14 +5302,16 @@ struct chi_wave_t : public monk_spell_t
       heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
       damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
   {
-    sef_ability      = actions::sef_ability_e::SEF_CHI_WAVE;
     background       = true;
     may_combo_strike = false;
 
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
 
+    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
+
     stats = damage->stats;
+
     add_child( heal );
     add_child( damage );
   }
@@ -6871,8 +6833,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new spear_hand_strike_t( this, options_str );
   if ( name == "spinning_crane_kick" )
     return new spinning_crane_kick_t( this, options_str );
-  if ( name == "summon_white_tiger_statue" )
-    return new summon_white_tiger_statue_spell_t( this, options_str );
   if ( name == "vivify" )
     return new vivify_t( this, options_str );
 
