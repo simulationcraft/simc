@@ -26,11 +26,12 @@ struct proc_rng_t
 protected:
   std::string name_str;
   player_t* player;
+  const rng_type_e rng_type_;
 
 public:
   const static rng_type_e rng_type = RNG_NONE;
-  proc_rng_t();
-  proc_rng_t( std::string_view n, player_t* p );
+  proc_rng_t( rng_type_e type_ );
+  proc_rng_t( rng_type_e type_, std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
 
   virtual int trigger() = 0;
@@ -40,7 +41,7 @@ public:
   { return name_str; }
 
   rng_type_e type() const
-  { return rng_type; }
+  { return rng_type_; }
 };
 
 struct simple_proc_t final : public proc_rng_t

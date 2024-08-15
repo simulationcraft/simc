@@ -11,15 +11,15 @@
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
-proc_rng_t::proc_rng_t() : player( nullptr )
+proc_rng_t::proc_rng_t( rng_type_e type_ ) : player( nullptr ), rng_type_( type_ )
 {}
 
-proc_rng_t::proc_rng_t( std::string_view n, player_t* p )
-  : name_str( n ), player( p )
+proc_rng_t::proc_rng_t( rng_type_e type_, std::string_view n, player_t* p )
+  : name_str( n ), player( p ), rng_type_( type_ )
 {}
 
 simple_proc_t::simple_proc_t( std::string_view n, player_t* p, double c )
-  : proc_rng_t( n, p ), chance( c )
+  : proc_rng_t( rng_type, n, p ), chance( c )
 {}
 
 int simple_proc_t::trigger()
@@ -28,7 +28,7 @@ int simple_proc_t::trigger()
 }
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, unsigned s, blp b )
-  : proc_rng_t( n, p ),
+  : proc_rng_t( rng_type, n, p ),
     freq( f ),
     modifier( mod ),
     rppm( freq * mod ),
@@ -37,7 +37,7 @@ real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, u
 {}
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, const spell_data_t* data, const item_t* item )
-  : proc_rng_t( n, p ),
+  : proc_rng_t( rng_type, n, p ),
     freq( data->real_ppm() ),
     modifier( p->dbc->real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
     rppm( freq * modifier ),
@@ -120,13 +120,13 @@ int real_ppm_t::trigger()
 }
 
 shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, initializer data )
-  : proc_rng_t( n, p )
+  : proc_rng_t( rng_type, n, p )
 {
   init( data );
 }
 
 shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
-  : proc_rng_t( n, p)
+  : proc_rng_t( rng_type, n, p)
 {
   assert( total_entries >= success_entries );
   init( { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } );
@@ -172,7 +172,7 @@ int shuffled_rng_t::entry_remains()
 
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
                                       std::function<double( double, unsigned )> fn, unsigned initial_count )
-  : proc_rng_t( n, p ),
+  : proc_rng_t( rng_type, n, p ),
     accumulator_fn( std::move( fn ) ),
     proc_chance( c ),
     initial_count( initial_count ),
