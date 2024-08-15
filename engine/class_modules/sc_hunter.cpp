@@ -280,6 +280,38 @@ struct hunter_action_state_t : public Base, public Data
   }
 };
 
+struct pet_amount_expr_t : public expr_t
+{
+public:
+  action_t& action;
+  action_t& pet_action;
+  action_state_t* state;
+
+  pet_amount_expr_t( util::string_view name, action_t& a, action_t& pet_a )
+    : expr_t( name ), state( pet_a.get_state() ), action( a ), pet_action( pet_a )
+  {
+    state->n_targets = 1;
+    state->chain_target = 0;
+    state->result = RESULT_HIT;
+  }
+
+  double evaluate() override
+  {
+    state->target = action.target;
+    pet_action.snapshot_state( state, result_amount_type::DMG_DIRECT );
+
+    state->result_amount = pet_action.calculate_direct_amount( state );
+    state->target->target_mitigation( action.get_school(), result_amount_type::DMG_DIRECT, state );
+
+    return state->result_amount;
+  }
+
+  ~pet_amount_expr_t() override
+  {
+    delete state;
+  }
+};
+
 struct hunter_t;
 
 namespace pets
@@ -6926,7 +6958,7 @@ struct kill_command_t: public hunter_spell_t
       {
         auto kc = pet->find_action( "kill_command" );
         if ( kc )
-          return kc->create_expression( "damage" );
+          return std::make_unique<pet_amount_expr_t>( expression_str, *this, *kc );
       }
     }
 
