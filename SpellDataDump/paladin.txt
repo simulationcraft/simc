@@ -1220,6 +1220,7 @@ Combines with Avenging Wrath.
 Variables        : $time= $?a385438&a53376[${$389539d}]?a385438[${$389539d*(1+($53376s1/100))}]?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]
 
 Name             : Divine Storm (id=53385) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Retribution [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -1231,8 +1232,8 @@ Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, S
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #4, #9, #31), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Avenging Wrath (339044 effect#1), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Holy Flames (406545 effect#1), Divine Purpose (408458 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Luminosity (431402 effect#2), Vanguard of Justice (453451 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 27, 49, 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #4, #9, #31), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Avenging Wrath (339044 effect#1), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Holy Flames (406545 effect#1), Divine Purpose (408458 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Luminosity (431402 effect#2), Gleaming Rays (431481 effect#1), Vanguard of Justice (453451 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 27, 49, 65, 91
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3436,7 +3437,7 @@ Effects          :
                    Family Flags: 39, 47, 126
 #4 (id=191094)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Execution Sentence (387113), Execution Sentence (387200), Blade of Justice (404358), Crusading Strikes (408385), Divine Storm (423593)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Execution Sentence (387113), Execution Sentence (387200), Blade of Justice (404358), Crusading Strikes (408385)
                    Family Flags: 23, 31, 39, 47, 49, 54, 63, 77, 80, 88, 108, 126
 #5 (id=191095)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
@@ -3565,7 +3566,7 @@ Effects          :
                    Family Flags: 5, 14, 21, 31, 47, 50, 52, 57, 61, 82, 108, 125, 126
 #5 (id=191091)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091), Divine Storm (423593)
+                   Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091)
                    Family Flags: 23, 39, 47, 49, 50, 52, 54, 57, 61, 63, 77, 80, 84, 88, 108, 126
 #6 (id=260917)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
@@ -3653,7 +3654,7 @@ Effects          :
                    Family Flags: 5, 14, 21, 31, 47, 50, 52, 57, 61, 82, 108, 125, 126
 #4 (id=191086)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091), Divine Storm (423593)
+                   Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091)
                    Family Flags: 23, 39, 47, 49, 50, 52, 54, 57, 61, 63, 77, 80, 84, 88, 108, 125, 126
 #5 (id=191087)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
@@ -5131,7 +5132,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (429826)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Hammer of Light (429826)
                    Family Flags: 25, 44, 49, 52, 88, 112
 #2 (id=368486)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
@@ -6191,7 +6192,7 @@ Attributes       : ........ ........ ..x..... .....x..   ........ ........ .....
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309), Divine Storm (423593)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309)
                    Family Flags: 31, 49, 55, 77, 78, 88, 111
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -6944,11 +6945,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (427453), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (427453), Eternal Flame (461432)
                    Family Flags: 29, 49, 52, 55, 77, 78, 82, 88, 89, 111
 #2 (id=739426)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
                    Family Flags: 44, 49, 52, 78, 82, 88, 89, 111
 #3 (id=742537)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
@@ -6968,6 +6969,7 @@ Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -6978,8 +6980,8 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 881
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #4, #9, #31), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Avenging Wrath (339044 effect#1), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Holy Flames (406545 effect#1), Divine Purpose (408458 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Luminosity (431402 effect#2), Vanguard of Justice (453451 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 27, 49, 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (326733 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 27, 65, 91
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -9546,10 +9548,11 @@ Effects          :
 #1 (id=817887)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
-                   Family Flags: 49
+                   Family Flags: 91
+Hotfixed         : Affects Spells
 #2 (id=817888)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
+                   Affected Spells: Divine Storm (53385)
                    Family Flags: 49
 Description      : $@spelldesc326732
 Tooltip          : Your next Divine Storm is free and deals $w1% additional damage.
@@ -10812,7 +10815,7 @@ Attributes       : ........ x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=838020)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
+                   Affected Spells: Divine Storm (53385)
                    Family Flags: 49
 Description      : $@spelldesc31884
 Tooltip          : Your next $?c1[Holy Shock]?c3[Templar's Verdict or Divine Storm][Word of Glory] will critically strike.
@@ -11939,7 +11942,7 @@ Effects          :
                    Family Flags: 44, 88, 111
 #4 (id=1144778)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Divine Storm (224239), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (429826)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091), Hammer of Light (429826)
                    Family Flags: 25, 49, 52, 111, 112
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the area and causing them to take $s3% increased damage from your single target Holy Power abilities, and $s4% increased damage from other Holy Power abilities for $d.
 
@@ -11975,7 +11978,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=845761)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (429826)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Hammer of Light (429826)
                    Family Flags: 44, 49, 52, 88, 112
 Description      : $@spelldesc343721
 Tooltip          : Taking $w2% increased damage from $@auracaster's next Holy Power ability.
@@ -14806,7 +14809,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018181)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (429826), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (429826), Eternal Flame (461432)
                    Family Flags: 44, 49, 52, 78, 82, 88, 89, 112
 Description      : Your next Holy Power spending ability deals $s1% additional increased damage and healing. This effect stacks.
 Tooltip          : Your next Holy Power spending ability deals $s1% additional increased damage and healing.
@@ -18438,7 +18441,8 @@ Effects          :
 #1 (id=1051259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
-                   Family Flags: 49
+                   Family Flags: 91
+Hotfixed         : Affects Spells
 Description      : $@spelldesc403975
 Tooltip          : Your next Divine Storm deals $s1% increased damage.
 
@@ -18873,7 +18877,8 @@ Effects          :
 #1 (id=1053473)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Consecration (26573), Divine Storm (53385), Consecration (81297), Divine Hammer (198137), Divine Storm (224239), Consecration (243597), Consecration (387881), Consecration (419810), Divine Storm (423593)
-                   Family Flags: 5, 25, 49
+                   Family Flags: 5, 25, 91
+Hotfixed         : Affects Spells
 #2 (id=1070972)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
@@ -19556,7 +19561,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1055584)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
+                   Affected Spells: Divine Storm (53385)
                    Family Flags: 49
 #2 (id=1055585)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -20236,11 +20241,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1072593)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Eternal Flame (156322), Divine Hammer (198034), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (427453), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Eternal Flame (156322), Divine Hammer (198034), Justicar's Vengeance (215661), Avenging Crusader (216331), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (427453), Eternal Flame (461432)
                    Family Flags: 29, 49, 52, 55, 77, 78, 82, 88, 89, 102, 108, 111
 #2 (id=1072594)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Hammer of Light (429826), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (429826), Eternal Flame (461432)
                    Family Flags: 44, 49, 52, 78, 82, 88, 89, 111, 112
 #3 (id=1072595)  : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
@@ -21755,6 +21760,7 @@ Description      : $@spelldesc424572
 Tooltip          : Your next Holy Power ability will echo its damage effect at $s1% effectiveness.
 
 Name             : Divine Storm (id=423593) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -21765,8 +21771,8 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 881
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #4, #9, #31), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Scarlet Inquisitor's Expurgation (248289 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (286393 effects: #1, #3), Empyrean Power (326733 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Avenging Wrath (339044 effect#1), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Holy Flames (406545 effect#1), Divine Purpose (408458 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Luminosity (431402 effect#2), Vanguard of Justice (453451 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 27, 49, 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Empyrean Power (326733 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 4pc (393677 effects: #1, #2), Luminous Force (394550 effect#1), Inquisitor's Ire (403976 effect#1), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 27, 65, 91
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -22423,7 +22429,7 @@ Effects          :
                    Family Flags: 21, 48, 82
 #2 (id=1119161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Hammer of Wrath (24275), Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
+                   Affected Spells: Hammer of Wrath (24275), Divine Storm (53385)
                    Family Flags: 39, 49
 Description      : $?c1[Critical Strike chance of Holy Shock and Light of Dawn increased by $s1%.]?c3[Critical Strike chance of Hammer of Wrath and Divine Storm increased by $s2%.][]
 
@@ -22863,7 +22869,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1119290)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Shield of the Righteous (132403), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Shield of the Righteous (132403), Eternal Flame (156322), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Afterimage (391309), Shield of the Righteous (415091), Divine Storm (423593), Eternal Flame (461432)
                    Family Flags: 44, 52, 78, 82, 88, 89, 91, 107
 #2 (id=1160964)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -25333,7 +25339,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=1155331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Chain from Initial Target (7)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
+                   Affected Spells: Divine Storm (53385)
                    Family Flags: 49
 Description      : $@spelldesc406545
 Tooltip          : Taking $w1% increased damage from $@auracaster's next Divine Storm.
