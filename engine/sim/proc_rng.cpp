@@ -254,7 +254,7 @@ int threshold_rng_t::trigger()
 
     if ( player->sim->debug )
     {
-      player->sim->print_debug( "Threshold RNG: {}, triggered. roll_over={}, new_accumulated={:.5f}%}", name(), roll_over,
+      player->sim->print_debug( "Threshold RNG: {}, triggered. roll_over={}, new_accumulated={:.5f}%", name(), roll_over,
                                 accumulated_chance * 100.0 );
     }
 
