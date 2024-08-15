@@ -205,3 +205,61 @@ int accumulated_rng_t::trigger()
 
   return result;
 }
+
+threshold_rng_t::threshold_rng_t( std::string_view n, player_t* p, double increment_max,
+                                      std::function<double( double )> fn, bool random_initial_state, bool roll_over )
+  : proc_rng_t( rng_type, n, p ),
+    accumulator_fn( std::move( fn ) ),
+    increment_max( increment_max ),
+    accumulated_chance( random_initial_state ? player->rng().real() : 0 ),
+    random_initial_state( random_initial_state ),
+    roll_over( roll_over )
+{
+}
+
+void threshold_rng_t::reset()
+{
+  accumulated_chance = random_initial_state ? player->rng().real() : 0;
+}
+
+double threshold_rng_t::get_accumulated_chance()
+{
+  return accumulated_chance;
+}
+
+double threshold_rng_t::get_increment_max()
+{
+  return increment_max;
+}
+
+int threshold_rng_t::trigger()
+{
+  if ( increment_max <= 0 )
+    return false;
+
+  auto result = accumulator_fn ? accumulator_fn( increment_max ) : player->rng().range( increment_max );
+
+  if ( player->sim->debug )
+  {
+    player->sim->print_debug(
+        "Threshold RNG: {}, increment_max={:.3f} accumulated={:.5f}% result={:.5f}%", name(),
+        increment_max, accumulated_chance * 100.0, result * 100.0 );
+  }
+
+  accumulated_chance += result;
+
+  if ( accumulated_chance >= 1 )
+  {
+    accumulated_chance = roll_over ? accumulated_chance - 1 : 0;
+
+    if ( player->sim->debug )
+    {
+      player->sim->print_debug( "Threshold RNG: {}, triggered. roll_over={}, new_accumulated={:.5f}%}", name(),
+                                accumulated_chance * 100.0 );
+    }
+
+    return true;
+  }
+
+  return false;
+}

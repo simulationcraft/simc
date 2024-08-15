@@ -185,3 +185,35 @@ public:
   void reset() override;
   int trigger() override;
 };
+
+// Threshold RNG rng helper class ==========================
+//
+// This accumulates an incremental value, returning a successful trigger when the accumulated value goes over 1.
+//
+// roll_over is an optional parameter, default false. if set the accumulated amount is decremented by 1, else reset to 0
+// for the next trigger.
+//
+// random_initial_state is an optional parameter, default true, that indicates the RNG will start somewhere between [0,1)
+// upon reset();
+//
+// accumulator_fn is an optional functor that takes the increment_max value as a parameter and returns the amount accumulated
+// by that call.
+struct threshold_rng_t final : public proc_rng_t
+{
+private:
+  std::function<double( double )> accumulator_fn;
+  double increment_max;
+  double accumulated_chance;
+  bool random_initial_state;
+  bool roll_over;
+
+public:
+  const static rng_type_e rng_type = RNG_THRESHOLD;
+  threshold_rng_t( std::string_view n, player_t* p, double increment_max, std::function<double( double )> fn = nullptr,
+                            bool random_initial_state = true, bool roll_over = false );
+
+  void reset() override;
+  int trigger() override;
+  double get_accumulated_chance();
+  double get_increment_max();
+};

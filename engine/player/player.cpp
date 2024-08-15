@@ -8289,6 +8289,13 @@ accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double 
   return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
 
+threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
+                                              std::function<double( double )> accumulator_fn, bool random_initial_state,
+                                              bool roll_over )
+{
+  return get_rng<threshold_rng_t>( name, increment_max, accumulator_fn, random_initial_state, roll_over );
+}
+
 dot_t* player_t::get_dot( util::string_view name, player_t* source )
 {
   dot_t* d = find_dot( name, source );

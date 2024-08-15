@@ -1031,6 +1031,9 @@ public:
   accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
                                           std::function<double( double, unsigned )> accumulator_fn = nullptr,
                                           unsigned initial_count                                   = 0 );
+  threshold_rng_t* get_threshold_rng( std::string_view name, double increment_max = 0.0,
+                                      std::function<double( double )> accumulator_fn = nullptr,
+                                      bool random_initial_state = true, bool roll_over = false );
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
