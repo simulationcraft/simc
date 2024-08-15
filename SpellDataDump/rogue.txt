@@ -20805,7 +20805,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Backstab (53), Mutilate (5374), Ambush (8676), Mutilate (27576), Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121), Ambush (385897), Ambush (430023)
                    Family Flags: 2, 9, 33, 34, 104, 109
-Hotfixed         : PvP Coefficient (1 -> 0.6)
+Hotfixed         : Base Value (40 -> 50), PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc457052
 Tooltip          : Your next $?c1[Ambush or Mutilate]?s200758[Gloomblade or Shadowstrike][Backstab or Shadowstrike] deals $w1% additional damage.
 
