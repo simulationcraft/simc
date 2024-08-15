@@ -11783,15 +11783,13 @@ void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
 
       for ( unsigned i = 0; i < n; ++i )
       {
-        if ( p()->talent.unholy.bursting_sores.ok() && !p()->active_spells.bursting_sores->target_list().size() == 0 )
+        if ( p()->talent.unholy.bursting_sores.ok() && p()->active_spells.bursting_sores->target_list().size() != 0 )
         {
           p()->active_spells.bursting_sores->execute_on_target( t );
         }
       }
     }
   };
-
-  const death_knight_td_t* td = get_target_data( target );
 
   // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
   if ( !talent.unholy.bursting_sores.ok() || sim->event_mgr.canceled )
