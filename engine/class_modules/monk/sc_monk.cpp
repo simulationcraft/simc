@@ -1527,81 +1527,6 @@ struct tiger_palm_t : public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
-// ==========================================================================
-// Chi Wave
-// ==========================================================================
-struct chi_wave_t : public monk_spell_t
-{
-  template <class TBase>
-  struct bounce_t : TBase
-  {
-    using TBase::execute;
-    std::function<void( unsigned )> other_cb;
-    std::function<void( unsigned )> this_cb;
-    unsigned count;
-
-    bounce_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, fmt::format( "chi_wave_{}", name ), spell_data ), count( 0 )
-    {
-      TBase::dual         = true;
-      TBase::travel_speed = player->talent.monk.chi_wave_driver->missile_speed();
-      this_cb             = [ this ]( unsigned new_count ) { this->execute( new_count ); };
-    }
-
-    void execute( unsigned new_count )
-    {
-      count = new_count;
-      if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
-        return;
-
-      TBase::execute();
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      TBase::impact( state );
-      other_cb( ++count );
-    }
-  };
-
-  bounce_t<monk_heal_t> *heal;
-  bounce_t<monk_spell_t> *damage;
-
-  chi_wave_t( monk_t *player )
-    : monk_spell_t( player, "chi_wave", player->talent.monk.chi_wave_driver ),
-      heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
-      damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
-  {
-    background       = true;
-    may_combo_strike = false;
-
-    heal->other_cb   = damage->this_cb;
-    damage->other_cb = heal->this_cb;
-
-    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
-
-    stats = damage->stats;
-
-    add_child( heal );
-    add_child( damage );
-  }
-
-  void execute() override
-  {
-    if ( !p()->buff.chi_wave->up() )
-      return;
-    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
-    p()->buff.chi_wave->expire();
-    monk_spell_t::execute();
-
-    if ( player->target->is_enemy() )
-      damage->execute( 0 );
-    else
-      heal->execute( 0 );
-  }
-};
-
-
 // Glory of the Dawn =================================================
 struct glory_of_the_dawn_t : public monk_melee_attack_t
 {
@@ -4243,7 +4168,6 @@ struct courage_of_the_white_tiger_t : public monk_melee_attack_t
 
 struct xuen_spell_t : public monk_spell_t
 {
-
   xuen_spell_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "invoke_xuen_the_white_tiger", p->talent.windwalker.invoke_xuen_the_white_tiger )
   {
@@ -5348,6 +5272,80 @@ struct zen_pulse_t : public monk_spell_t
       echo->execute();
   }
 }; */
+
+// ==========================================================================
+// Chi Wave
+// ==========================================================================
+struct chi_wave_t : public monk_spell_t
+{
+  template <class TBase>
+  struct bounce_t : TBase
+  {
+    using TBase::execute;
+    std::function<void( unsigned )> other_cb;
+    std::function<void( unsigned )> this_cb;
+    unsigned count;
+
+    bounce_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "chi_wave_{}", name ), spell_data ), count( 0 )
+    {
+      TBase::dual         = true;
+      TBase::travel_speed = player->talent.monk.chi_wave_driver->missile_speed();
+      this_cb             = [ this ]( unsigned new_count ) { this->execute( new_count ); };
+    }
+
+    void execute( unsigned new_count )
+    {
+      count = new_count;
+      if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
+        return;
+
+      TBase::execute();
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      TBase::impact( state );
+      other_cb( ++count );
+    }
+  };
+
+  bounce_t<monk_heal_t> *heal;
+  bounce_t<monk_spell_t> *damage;
+
+  chi_wave_t( monk_t *player )
+    : monk_spell_t( player, "chi_wave", player->talent.monk.chi_wave_driver ),
+      heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
+      damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
+  {
+    background       = true;
+    may_combo_strike = false;
+
+    heal->other_cb   = damage->this_cb;
+    damage->other_cb = heal->this_cb;
+
+    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
+
+    stats = damage->stats;
+
+    add_child( heal );
+    add_child( damage );
+  }
+
+  void execute() override
+  {
+    if ( !p()->buff.chi_wave->up() )
+      return;
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
+    p()->buff.chi_wave->expire();
+    monk_spell_t::execute();
+
+    if ( player->target->is_enemy() )
+      damage->execute( 0 );
+    else
+      heal->execute( 0 );
+  }
+};
 
 // ==========================================================================
 // Chi Burst
