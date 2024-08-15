@@ -1420,6 +1420,7 @@ public:
     const spell_data_t *hit_combo;
     const spell_data_t *improved_touch_of_death;
     const spell_data_t *mark_of_the_crane;
+    const spell_data_t *summon_white_tiger_statue;
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
     const spell_data_t *touch_of_karma_tick;
