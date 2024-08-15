@@ -845,6 +845,10 @@ public:
 
     // Rider of the Apocalypse
     propagate_const<target_specific_cooldown_t*> undeath_spread;
+    propagate_const<cooldown_t*> whitemane_ams_cd;
+    propagate_const<cooldown_t*> trollbane_ams_cd;
+    propagate_const<cooldown_t*> nazgrim_ams_cd;
+    propagate_const<cooldown_t*> mograine_ams_cd;
 
   } cooldown;
 
@@ -4039,6 +4043,35 @@ struct horseman_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       trigger_gcd = 1_s;
+    }
+
+    void init_finished() override
+    {
+      horseman_spell_t::init_finished();
+      if ( pet()->npc_id == pet()->dk()->spell.summon_whitemane->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.whitemane_ams_cd           = pet()->dk()->get_cooldown( "whitemane_ams_cd", this );
+        pet()->dk()->cooldown.whitemane_ams_cd->duration = cooldown->duration;
+        cooldown                                         = pet()->dk()->cooldown.whitemane_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_mograine->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.mograine_ams_cd           = pet()->dk()->get_cooldown( "mograine_ams_cd", this );
+        pet()->dk()->cooldown.mograine_ams_cd->duration = cooldown->duration;
+        cooldown                                        = pet()->dk()->cooldown.mograine_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_nazgrim->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.nazgrim_ams_cd           = pet()->dk()->get_cooldown( "nazgrim_ams_cd", this );
+        pet()->dk()->cooldown.nazgrim_ams_cd->duration = cooldown->duration;
+        cooldown                                       = pet()->dk()->cooldown.nazgrim_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_trollbane->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.trollbane_ams_cd           = pet()->dk()->get_cooldown( "trollbane_ams_cd", this );
+        pet()->dk()->cooldown.trollbane_ams_cd->duration = cooldown->duration;
+        cooldown                                         = pet()->dk()->cooldown.trollbane_ams_cd;
+      }
     }
 
     void execute() override
@@ -11779,8 +11812,6 @@ void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
 
     void execute() override
     {
-      death_knight_td_t* td = p()->get_target_data( t );
-
       for ( unsigned i = 0; i < n; ++i )
       {
         if ( p()->talent.unholy.bursting_sores.ok() && p()->active_spells.bursting_sores->target_list().size() != 0 )
