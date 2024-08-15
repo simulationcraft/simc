@@ -3016,15 +3016,6 @@ void priest_t::analyze( sim_t& sim )
     {
       swp->stats->apet = 0;
       swp->stats->ape  = swp->stats->total_amount.mean();
-      if ( vt && talents.shadow.misery.ok() )
-      {
-        vt->add_child( swp );
-
-        vt->stats->ape += swp->stats->ape;
-        swp->stats->ape = 0;
-
-        vt->stats->apet = vt->stats->total_execute_time.mean() >= 2 ? vt->stats->ape / vt->stats->total_execute_time.mean() : 0;
-      }
     }
   }
 }
