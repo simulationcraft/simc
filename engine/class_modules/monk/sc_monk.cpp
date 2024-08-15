@@ -1540,22 +1540,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     apply_affecting_aura( p->talent.windwalker.rising_star );
   }
 
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // 2019-02-14
-    // In 8.1.5, the Glory of the Dawn artifact trait will now deal 35% increased damage while Storm, Earth, and Fire is
-    // active. https://www.wowhead.com/bluetracker?topic=95585&region=us
-    // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
-    // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
-    // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
-    if ( p()->buff.storm_earth_and_fire->check() )
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-
-    return am;
-  }
-
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
