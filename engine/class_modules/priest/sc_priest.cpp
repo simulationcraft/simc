@@ -3008,7 +3008,23 @@ void priest_t::analyze( sim_t& sim )
     if ( vt && vt->stats->total_execute_time.mean() <= 2 )
     {
       vt->stats->apet = 0;
-      vt->stats->ape  = 0;
+      vt->stats->ape  = vt->stats->total_amount.mean();
+    }
+
+    auto swp = find_action( "shadow_word_pain" );
+    if ( swp && swp->stats->total_execute_time.mean() <= 2 )
+    {
+      swp->stats->apet = 0;
+      swp->stats->ape  = swp->stats->total_amount.mean();
+      if ( vt && talents.shadow.misery.ok() )
+      {
+        vt->add_child( swp );
+
+        vt->stats->ape += swp->stats->ape;
+        swp->stats->ape = 0;
+
+        vt->stats->apet = vt->stats->total_execute_time.mean() >= 2 ? vt->stats->ape / vt->stats->total_execute_time.mean() : 0;
+      }
     }
   }
 }
