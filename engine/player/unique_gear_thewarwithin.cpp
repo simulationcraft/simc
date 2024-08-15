@@ -3430,6 +3430,8 @@ void darkmoon_deck_ascension( special_effect_t& effect )
   auto buff = make_buff<ascension_tick_t>( effect, "ascendance_darkmoon", effect.player->find_spell( 457594 ) );
   buff->name_str_reporting = "ascendance";
 
+  effect.name_str = "ascendance_darkmoon";
+
   effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
     if ( c && !buff->check() )
     {
@@ -3481,13 +3483,11 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     std::unordered_map<stat_e, buff_t*> buffs;
 
     radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, const spell_data_t* s, bool embelish )
-      : buff_t( td, "radiant_focus_darkmoon_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
+      : buff_t( td, "radiant_focus_debuff", s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
     {
       max_damage = data().effectN( 1 ).average( e.player );
 
       set_default_value( max_damage );
-
-      name_str_reporting = "radiant_focus_debuff";
 
       auto buff_spell = e.player->find_spell( 454785 );
 
@@ -3567,14 +3567,12 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     const spell_data_t* debuff_spell;
     const special_effect_t& effect;
     bool embelishment;
-    dbc_proc_callback_t* radiant_focus_proc_cb;
 
-    radiant_focus_cb_t( const special_effect_t& e, bool embelish, dbc_proc_callback_t* focus )
+    radiant_focus_cb_t( const special_effect_t& e, bool embelish )
       : dbc_proc_callback_t( e.player, e ),
         debuff_spell( e.player->find_spell( 454560 ) ),
         effect( e ),
-        embelishment( embelish ),
-        radiant_focus_proc_cb( focus )
+        embelishment( embelish )
     {
       effect.player->callbacks.register_callback_execute_function(
           454560, [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
@@ -3589,14 +3587,24 @@ void darkmoon_deck_radiance( special_effect_t& effect )
               }
             }
           } );
+
+      effect.player->callbacks.register_callback_trigger_function(
+          454560, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+            return get_debuff( s->target )->check();
+          } );
     }
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell, embelishment );
-      radiant_focus_proc_cb->activate_with_buff( debuff );
+      auto debuff_found = buff_t::find( effect.player, debuff_spell->name_cstr() );
+      if ( !debuff_found )
+      {
+        auto debuff =
+            make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, debuff_spell, embelishment );
 
-      return debuff;
+        return debuff;
+      }
     }
 
     void execute( action_t*, action_state_t* s ) override
@@ -3612,6 +3620,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
   auto radiant_focus_proc = new dbc_proc_callback_t( effect.player, *radiant_focus );
   radiant_focus_proc->initialize();
+  radiant_focus_proc->activate();
 
   bool embelish = false;
 
@@ -3619,8 +3628,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     embelish = true;
 
   effect.spell_id = 454559;
-
-  new radiant_focus_cb_t( effect, embelish, radiant_focus_proc );
+  effect.name_str = "radiant_focus";
+  new radiant_focus_cb_t( effect, embelish );
 }
 
 // Weapons
