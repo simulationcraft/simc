@@ -2179,8 +2179,11 @@ struct flight_of_the_red_crane_heal_t : public monk_heal_t
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
+  buff_t *buff;
+
   rushing_jade_wind_t( monk_t *player, util::string_view options_str )
-    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind )
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind ),
+      buff( player->buff.rushing_jade_wind )
   {
     parse_options( options_str );
     may_combo_strike = true;
@@ -2189,7 +2192,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-    p()->buff.rushing_jade_wind->trigger();
+
+    buff->trigger();
   }
 };
 
@@ -4244,7 +4248,7 @@ struct xuen_spell_t : public monk_spell_t
       p()->buff.flurry_of_xuen->trigger();
 
     if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
-      p()->buff.rushing_jade_wind->trigger();
+      p()->buff.rushing_jade_wind->trigger( p()->pets.xuen.duration() );
 
     p()->buff.courage_of_the_white_tiger->trigger();
   }
@@ -4287,6 +4291,9 @@ struct fury_of_xuen_summon_t final : monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
+
+    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
+      p()->buff.rushing_jade_wind->trigger( p()->pets.fury_of_xuen_tiger.duration() );
   }
 };
 
@@ -6006,6 +6013,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { rushing_jade_wind_tick->execute(); } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
     apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
     apply_affecting_aura( player->baseline.brewmaster.aura );
@@ -6014,10 +6022,14 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     // RJW snapshots the tick period on cast.
-    if ( duration < timespan_t::zero() )
+    if ( duration == timespan_t::min() )
+    {
       duration = monk_buff_t::buff_duration();
-    duration *= p().cache.spell_cast_speed();
+      duration *= p().cache.spell_cast_speed();
+    }
+
     _period = monk_buff_t::buff_period * p().cache.spell_cast_speed();
+
     return monk_buff_t::trigger( stacks, value, chance, duration );
   }
 };
