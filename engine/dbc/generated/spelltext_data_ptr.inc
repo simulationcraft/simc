@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26291> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24674,8 +24674,6 @@ static const std::array<spelltext_data_t, 26291> __ptr_spelltext_data { {
   { 451760, "Your chance of gaining Lit Fuse when consuming Hot Streak is increased by $s1%.\r\n\r\nLiving Bomb damage increased by $s2%.", 0, 0 },
   { 451767, "$@spelldesc152175", 0, 0 },
   { 451769, "$@spelldesc81749", 0, 0 },
-  { 451797, "Convert this item to its Fishing Accessory equivalent. This item will lose all combat stats and be added to your Appearance collection.", 0, 0 },
-  { 451798, "Convert this item to its Fishing Accessory equivalent. This item will lose all combat stats and be added to your Appearance collection.", 0, 0 },
   { 451803, "$@spelldesc450385", 0, 0 },
   { 451805, "$@spelldesc450385", 0, 0 },
   { 451821, "Apply a Stormbound Armor Kit to your leg armor, causing it to permanently gain $ec2 Agility or Strength. Additionally, the item also gains $ec1 Stamina.", 0, 0 },
