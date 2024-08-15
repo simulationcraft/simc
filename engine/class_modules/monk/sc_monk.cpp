@@ -4211,12 +4211,9 @@ struct xuen_spell_t : public monk_spell_t
       p()->buff.rushing_jade_wind->trigger( p()->pets.xuen.duration() );
 
     p()->buff.courage_of_the_white_tiger->trigger();
-<<<<<<< Updated upstream
-=======
 
     if ( p()->talent.monk.summon_white_tiger_statue->ok() )
       p()->pets.white_tiger_statue.spawn( p()->passives.summon_white_tiger_statue->duration(), 1 );
->>>>>>> Stashed changes
   }
 };
 
