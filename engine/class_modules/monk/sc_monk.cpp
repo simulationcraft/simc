@@ -136,6 +136,8 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->baseline.windwalker.aura );
   apply_affecting_aura( p()->baseline.windwalker.aura_2 );
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
+  apply_affecting_aura( p()->talent.windwalker.hardened_soles );
+  apply_affecting_aura( p()->talent.windwalker.shadowboxing_treads );
 
   // Conduit of the Celestials
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
@@ -147,6 +149,7 @@ void monk_action_t<Base>::apply_buff_effects()
   // Shado-Pan
   apply_affecting_aura( p()->talent.shado_pan.efficient_training );
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
+  apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
   // TWW S1 Set Effects
   apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
@@ -182,8 +185,10 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.pressure_point );
   parse_effects( p()->buff.kicks_of_flowing_momentum,
                  affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
-  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 7, 8 ),
+  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
+  parse_effects( p()->buff.blackout_reinforcement );
+  parse_effects( p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty );
@@ -1810,6 +1815,16 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     }
   }
 
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
+      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
+
+    return m;
+  }
+
   // Force 100 milliseconds for the animation, but not delay the overall GCD
   timespan_t execute_time() const override
   {
@@ -1819,33 +1834,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   double cost() const override
   {
     return 0;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
-
-    m *= 1 + p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->shared.shadowboxing_treads->effectN( 2 ).percent();
-
-    return am;
   }
 
   void impact( action_state_t *s ) override
@@ -1954,13 +1942,7 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
-    apply_affecting_aura( p->talent.windwalker.shadowboxing_treads );
     apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
-    apply_affecting_aura( p->talent.windwalker.hardened_soles );
-    apply_affecting_aura( p->talent.shado_pan.vigilant_watch );
-
-    parse_effects( p->buff.blackout_reinforcement );
-    parse_effects( p->buff.bok_proc, p->talent.windwalker.courageous_impulse );
 
     if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
       keg_smash_cooldown = player->get_cooldown( "keg_smash" );
@@ -2930,21 +2912,14 @@ struct melee_t : public monk_melee_attack_t
     allow_class_ability_procs           = true;
     not_a_proc                          = true;
 
+    monk_melee_attack_t::apply_buff_effects();
+    monk_melee_attack_t::apply_debuff_effects();
+
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
       if ( player->specialization() != MONK_MISTWEAVER )
         base_hit -= 0.19;
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p()->buff.storm_earth_and_fire->check() )
-      am *= 1.0 + p()->talent.windwalker.storm_earth_and_fire->effectN( 3 ).percent();
-
-    return am;
   }
 
   void reset() override
