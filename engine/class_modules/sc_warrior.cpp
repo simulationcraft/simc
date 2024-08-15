@@ -9476,24 +9476,24 @@ void warrior_t::init_resources( bool force )
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   std::string arms_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   std::string protection_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   switch ( specialization() )
@@ -9513,11 +9513,11 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  if ( specialization() == WARRIOR_PROTECTION && true_level > 60 )
-    return "phial_of_corrupting_rage_3";
+  if ( specialization() == WARRIOR_PROTECTION && true_level > 70 )
+    return "flask_of_alchemical_chaos_3";
 
-  return ( true_level > 60 )
-             ? "iced_phial_of_corrupting_rage_3"
+  return ( true_level > 70 )
+             ? "flask_of_alchemical_chaos_3"
              : ( true_level > 50 )
                    ? "spectral_flask_of_power"
                    : "disabled";
@@ -9527,22 +9527,22 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 60 )
-                              ? "thousandbone_tongueslicer"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string fury_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "thousandbone_tongueslicer"
                                     : "disabled";
 
-  std::string arms_food = ( true_level > 60 )
-                              ? "feisty_fish_sticks"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string arms_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "feisty_fish_sticks"
                                     : "disabled";
 
-  std::string protection_food = ( true_level > 60 )
-                              ? "feisty_fish_sticks"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string protection_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "feisty_fish_sticks"
                                     : "disabled";
 
   switch ( specialization() )
@@ -9562,8 +9562,8 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "draconic"
-                               : ( true_level >= 50 ) ? "veiled" : "disabled";
+  return ( true_level >= 70 ) ? "crystallized"
+                               : ( true_level >= 60 ) ? "draconic" : "disabled";
 }
 
 // warrior_t::default_temporary_enchant =====================================
@@ -9571,15 +9571,15 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:hissing_rune_3/off_hand:hissing_rune_3"
+                              ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:buzzing_rune_3"
+                              ? "main_hand:algari_mana_oil_3"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3"
+                              ? "main_hand:algari_mana_oil_3"
                               : "disabled";
   switch ( specialization() )
   {
