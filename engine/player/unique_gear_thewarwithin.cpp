@@ -3344,22 +3344,22 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       auto vers_spell    = e.player->find_spell( 458524 );
       auto vers_name     = util::tokenize_fn( vers_spell->name_cstr() );
 
-      auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "Crit", crit_spell )
+      auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "_crit", crit_spell )
                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
 
       buff_list.push_back( crit_buff );
 
-      auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "Haste", haste_spell )
+      auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "_haste", haste_spell )
                             ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
 
       buff_list.push_back( haste_buff );
 
-      auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "Mastery", mastery_spell )
+      auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "_mastery", mastery_spell )
                               ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
 
       buff_list.push_back( mastery_buff );
 
-      auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "Vers", vers_spell )
+      auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "_vers", vers_spell )
                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
 
       buff_list.push_back( vers_buff );
