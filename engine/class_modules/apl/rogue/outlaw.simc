@@ -7,6 +7,8 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
+# Builds with Keep it Rolling prepull Adrenaline Rush before Roll the Bones to consume Loaded Dice immediately instead of on the next pandemic roll
+actions.precombat+=/adrenaline_rush,precombat_seconds=2,if=talent.improved_adrenaline_rush&talent.keep_it_rolling&talent.loaded_dice
 actions.precombat+=/roll_the_bones,precombat_seconds=2
 actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush
 actions.precombat+=/slice_and_dice,precombat_seconds=1
