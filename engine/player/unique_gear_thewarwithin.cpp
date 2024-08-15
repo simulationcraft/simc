@@ -750,7 +750,7 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
       }
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       if ( apl_actions.size() > 0 )
       {
