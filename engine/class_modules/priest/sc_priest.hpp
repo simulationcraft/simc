@@ -687,6 +687,11 @@ public:
     propagate_const<real_ppm_t*> power_of_the_dark_side;
   } rppm;
 
+  struct threshold_rngs_t
+  {
+    threshold_rng_t* shadowy_insight;
+  } threshold_rng;
+
   // Gains
   struct
   {
