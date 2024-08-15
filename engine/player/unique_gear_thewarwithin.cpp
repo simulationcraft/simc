@@ -3137,7 +3137,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
       // TODO: confirm buff value once scaling is fixed. currently bugged to be -1 with no ilevel scaling
-      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.player ) );
 
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
       // TODO: determine if self damage procs anything
