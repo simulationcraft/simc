@@ -12151,7 +12151,11 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   }
   else if ( buffs.infliction_of_sorrow->check() )
   {
-    mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    // The talent itself references 100% damage done, and it's stored in the below effect
+    // mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
+    // However, the buff that is on the player still has 200% set, and in game testing shows the explosion to be 200%
+    mod = spell.infliction_of_sorrow_buff->effectN( 1 ).percent();
+
     buffs.infliction_of_sorrow->expire();
     if ( disease_td->is_ticking() )
     {
