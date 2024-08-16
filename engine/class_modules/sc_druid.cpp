@@ -6653,7 +6653,7 @@ public:
       }
       else
       {
-        static_assert( static_false<E>, "Invalid eclipse type for _umbral_t." );
+        static_assert( static_false<BASE>, "Invalid eclipse type for _umbral_t." );
       }
 
       // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
