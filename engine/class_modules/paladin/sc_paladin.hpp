@@ -1807,7 +1807,7 @@ public:
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
         {
-          p->buffs.crusade->trigger( timespan_t::from_seconds( 5 ) );
+          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
         }
         else if ( p->talents.avenging_wrath->ok() )
         {

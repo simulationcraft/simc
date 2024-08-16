@@ -9,6 +9,7 @@
 
 #include "simulationcraft.hpp"
 #include "action/parse_effects.hpp"
+#include "item/special_effect.hpp"
 
 // ==========================================================================
 // Paladin
@@ -445,9 +446,9 @@ struct consecration_t : public paladin_spell_t
     : paladin_spell_t( "consecration", p, p->find_spell( 26573 ) ),
       damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       source_type( HARDCAST ),
-      precombat_time( 2.0 ),
       dg_damage( nullptr ),
-      dg_heal( nullptr )
+      dg_heal( nullptr ),
+      precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
@@ -1480,8 +1481,8 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   light_of_the_titans_t* light_of_the_titans;
   word_of_glory_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
-      light_of_the_titans( new light_of_the_titans_t( p, "" ) ),
-      sacred_word( nullptr )
+      sacred_word( nullptr ),
+      light_of_the_titans( new light_of_the_titans_t( p, "" ) )
   {
     parse_options( options_str );
     target = p;
@@ -3220,7 +3221,10 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
 
-  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )->set_default_value_from_effect(1);
+  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
   if (paladin->specialization() == PALADIN_PROTECTION)
   {
     debuff.judgment->apply_affecting_aura( paladin->spec.protection_paladin );
@@ -3984,6 +3988,14 @@ void paladin_t::init_special_effects()
         p->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
       }
     };
+
+    auto const blessing_of_anshe_driver = new special_effect_t( this );
+    blessing_of_anshe_driver->name_str = "blessing_of_anshe_driver";
+    blessing_of_anshe_driver->spell_id = 445200;
+    special_effects.push_back( blessing_of_anshe_driver );
+
+    auto cb = new blessing_of_anshe_cb_t( this, *blessing_of_anshe_driver );
+    cb->initialize();
   }
 
   if ( talents.lightsmith.divine_inspiration->ok() )
@@ -4516,6 +4528,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.crusade->up() )
     h /= 1.0 + buffs.crusade->get_haste_bonus();
+
+  if ( buffs.herald_of_the_sun.solar_grace->up() )
+    h /= 1.0 + buffs.herald_of_the_sun.solar_grace->stack_value();
 
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();

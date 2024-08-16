@@ -1183,7 +1183,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       if ( p()->talents.crusade->ok() )
       {
         // TODO: get this from spell data
-        p()->buffs.crusade->trigger( timespan_t::from_seconds( 10 ) );
+        p()->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 10 ) );
       }
       else if ( p()->talents.avenging_wrath->ok() )
       {
