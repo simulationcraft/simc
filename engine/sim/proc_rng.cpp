@@ -11,24 +11,24 @@
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
 
-proc_rng_t::proc_rng_t() : player( nullptr ), rng_type( rng_type_e::RNG_SIMPLE )
+proc_rng_t::proc_rng_t( rng_type_e type_ ) : player( nullptr ), rng_type_( type_ )
 {}
 
-proc_rng_t::proc_rng_t( std::string_view n, player_t* p, rng_type_e type )
-  : name_str( n ), player( p ), rng_type( type )
+proc_rng_t::proc_rng_t( rng_type_e type_, std::string_view n, player_t* p )
+  : name_str( n ), player( p ), rng_type_( type_ )
 {}
 
 simple_proc_t::simple_proc_t( std::string_view n, player_t* p, double c )
-  : proc_rng_t( n, p, rng_type_e::RNG_SIMPLE ), chance( c )
+  : proc_rng_t( rng_type, n, p ), chance( c )
 {}
 
-bool simple_proc_t::trigger()
+int simple_proc_t::trigger()
 {
   return player->rng().roll( chance );
 }
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, unsigned s, blp b )
-  : proc_rng_t( n, p, rng_type_e::RNG_RPPM ),
+  : proc_rng_t( rng_type, n, p ),
     freq( f ),
     modifier( mod ),
     rppm( freq * mod ),
@@ -37,7 +37,7 @@ real_ppm_t::real_ppm_t( std::string_view n, player_t* p, double f, double mod, u
 {}
 
 real_ppm_t::real_ppm_t( std::string_view n, player_t* p, const spell_data_t* data, const item_t* item )
-  : proc_rng_t( n, p, rng_type_e::RNG_RPPM ),
+  : proc_rng_t( rng_type, n, p ),
     freq( data->real_ppm() ),
     modifier( p->dbc->real_ppm_modifier( data->id(), player, item ? item->item_level() : 0 ) ),
     rppm( freq * modifier ),
@@ -97,7 +97,7 @@ void real_ppm_t::reset()
   accumulated_blp = 0_ms;
 }
 
-bool real_ppm_t::trigger()
+int real_ppm_t::trigger()
 {
   if ( freq <= 0 )
     return false;
@@ -119,49 +119,60 @@ bool real_ppm_t::trigger()
   return success;
 }
 
+shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, initializer data )
+  : proc_rng_t( rng_type, n, p )
+{
+  init( data );
+}
+
 shuffled_rng_t::shuffled_rng_t( std::string_view n, player_t* p, int success_entries, int total_entries )
-  : proc_rng_t( n, p, rng_type_e::RNG_SHUFFLE ),
-    success_entries( success_entries ),
-    total_entries( total_entries ),
-    success_entries_remaining( success_entries ),
-    total_entries_remaining( total_entries )
-{}
+  : proc_rng_t( rng_type, n, p)
+{
+  assert( total_entries >= success_entries );
+  init( { { FAIL, total_entries - success_entries }, { SUCCESS, success_entries } } );
+}
+
+void shuffled_rng_t::init( initializer data )
+{
+  // CXX23: use append_range instead of nested loops
+  for ( const auto& [ key, count ] : data )
+  {
+    assert( count >= 0 );
+    for ( int i = 0; i < count; ++i )
+      entries.emplace_back( key );
+  }
+
+  if ( entries.empty() )
+    entries.emplace_back( shuffled_rng_e::FAIL );
+}
 
 void shuffled_rng_t::reset()
 {
-  success_entries_remaining = success_entries;
-  total_entries_remaining = total_entries;
+  player->rng().shuffle( entries.begin(), entries.end() );
+  position = entries.begin();
 }
 
-bool shuffled_rng_t::trigger()
+int shuffled_rng_t::trigger()
 {
-  if ( total_entries <= 0 || success_entries <= 0 )
-    return false;
+  if ( position == entries.end() )
+    reset();
 
-  if ( total_entries_remaining <= 0 )
-    reset();  // Re-Shuffle the "Deck"
+  return *position++;
+}
 
-  bool result = false;
+int shuffled_rng_t::count_remains( int key )
+{
+  return as<int>( std::count( position, entries.end(), key ) );
+}
 
-  if ( success_entries_remaining > 0 )
-  {
-    result = player->rng().roll( get_remaining_success_chance() );
-
-    if ( result )
-      success_entries_remaining--;
-  }
-
-  total_entries_remaining--;
-
-  if ( total_entries_remaining <= 0 )
-    reset();  // Re-Shuffle the "Deck"
-
-  return result;
+int shuffled_rng_t::entry_remains()
+{
+  return as<int>( std::distance( position, entries.end() ) );
 }
 
 accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
                                       std::function<double( double, unsigned )> fn, unsigned initial_count )
-  : proc_rng_t( n, p, rng_type_e::RNG_ACCUMULATE ),
+  : proc_rng_t( rng_type, n, p ),
     accumulator_fn( std::move( fn ) ),
     proc_chance( c ),
     initial_count( initial_count ),
@@ -173,7 +184,7 @@ void accumulated_rng_t::reset()
   trigger_count = initial_count;
 }
 
-bool accumulated_rng_t::trigger()
+int accumulated_rng_t::trigger()
 {
   if ( proc_chance <= 0 )
     return false;
@@ -193,4 +204,62 @@ bool accumulated_rng_t::trigger()
     reset();
 
   return result;
+}
+
+threshold_rng_t::threshold_rng_t( std::string_view n, player_t* p, double increment_max,
+                                      std::function<double( double )> fn, bool random_initial_state, bool roll_over )
+  : proc_rng_t( rng_type, n, p ),
+    accumulator_fn( std::move( fn ) ),
+    increment_max( increment_max ),
+    accumulated_chance( random_initial_state ? player->rng().real() : 0 ),
+    random_initial_state( random_initial_state ),
+    roll_over( roll_over )
+{
+}
+
+void threshold_rng_t::reset()
+{
+  accumulated_chance = random_initial_state ? player->rng().real() : 0;
+}
+
+double threshold_rng_t::get_accumulated_chance()
+{
+  return accumulated_chance;
+}
+
+double threshold_rng_t::get_increment_max()
+{
+  return increment_max;
+}
+
+int threshold_rng_t::trigger()
+{
+  if ( increment_max <= 0 )
+    return false;
+
+  auto result = accumulator_fn ? accumulator_fn( increment_max ) : player->rng().range( increment_max );
+
+  if ( player->sim->debug )
+  {
+    player->sim->print_debug(
+        "Threshold RNG: {}, increment_max={:.3f} accumulated={:.5f}% result={:.5f}%", name(),
+        increment_max, accumulated_chance * 100.0, result * 100.0 );
+  }
+
+  accumulated_chance += result;
+
+  if ( accumulated_chance >= 1 )
+  {
+    accumulated_chance = roll_over ? accumulated_chance - 1 : 0;
+
+    if ( player->sim->debug )
+    {
+      player->sim->print_debug( "Threshold RNG: {}, triggered. roll_over={}, new_accumulated={:.5f}%", name(), roll_over,
+                                accumulated_chance * 100.0 );
+    }
+
+    return true;
+  }
+
+  return false;
 }

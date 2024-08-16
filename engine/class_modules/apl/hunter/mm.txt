@@ -1,4 +1,3 @@
-
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
@@ -37,7 +36,7 @@ actions.st+=/kill_shot,if=buff.razor_fragments.up
 actions.st+=/black_arrow
 actions.st+=/explosive_shot,if=active_enemies>1
 actions.st+=/volley
-actions.st+=/rapid_fire
+actions.st+=/rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm_icd.remains|cooldown.lunar_storm_icd.remains>5)
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
@@ -45,7 +44,7 @@ actions.st+=/multishot,if=buff.salvo.up&!talent.volley
 actions.st+=/wailing_arrow
 # With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Don't overwrite when using Chimaera Shot on two targets. Overwrite freely if it can cleave.
 actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(active_enemies<2|!talent.chimaera_shot)|(buff.trick_shots.remains>execute_time&active_enemies>1)
-actions.st+=/steady_shot,if=buff.steady_focus.down&buff.trueshot.down
+actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.down&buff.trueshot.down
 actions.st+=/chimaera_shot,if=buff.precise_shots.up
 actions.st+=/arcane_shot,if=buff.precise_shots.up
 actions.st+=/kill_shot
@@ -59,14 +58,13 @@ actions.trickshots=steady_shot,if=talent.steady_focus&steady_focus_count&buff.st
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/volley
 actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
 actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
 actions.trickshots+=/black_arrow
 actions.trickshots+=/wailing_arrow,if=buff.precise_shots.down
 actions.trickshots+=/trueshot,if=variable.trueshot_ready
 # For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots.
 actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&buff.precise_shots.down
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
 actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>cost+action.aimed_shot.cost
 actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down
 actions.trickshots+=/steady_shot

@@ -8256,84 +8256,44 @@ target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& 
   return tcd;
 }
 
-real_ppm_t* player_t::find_rppm( std::string_view name )
+simple_proc_t* player_t::get_simple_proc_rng( std::string_view name, double chance )
 {
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_RPPM && util::str_compare_ci( rng->name(), name );
-  } );
-
-  if ( it != proc_rng_list.end() )
-  {
-    auto rppm = dynamic_cast<real_ppm_t*>( *it );
-    assert( rppm );
-    return rppm;
-  }
-  else
-  {
-    return nullptr;
-  }
+  return get_rng<simple_proc_t>( name, chance );
 }
 
-real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* data, const item_t* item )
+real_ppm_t* player_t::get_rppm( std::string_view name, double frequency, double modifier, unsigned scales_with,
+                                real_ppm_t::blp blp_state )
 {
-  if ( auto rppm = find_rppm( name ) )
-    return rppm;
-
-  auto new_rppm = new real_ppm_t( name, this, data, item );
-  proc_rng_list.push_back( new_rppm );
-
-  return new_rppm;
+  return get_rng<real_ppm_t>( name, frequency, modifier, scales_with, blp_state );
 }
 
-real_ppm_t* player_t::get_rppm( std::string_view name, double freq, double mod, unsigned s )
+real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* spell_data, const item_t* item )
 {
-  if ( auto rppm = find_rppm( name ) )
-    return rppm;
+  return get_rng<real_ppm_t>( name, spell_data, item );
+}
 
-  auto new_rppm = new real_ppm_t( name, this, freq, mod, s );
-  proc_rng_list.push_back( new_rppm );
-
-  return new_rppm;
+shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data )
+{
+  return get_rng<shuffled_rng_t>( name, data );
 }
 
 shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_entries, int total_entries )
 {
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_SHUFFLE && util::str_compare_ci( rng->name(), name );
-  } );
-
-  if ( it != proc_rng_list.end() )
-  {
-    auto s_rng = dynamic_cast<shuffled_rng_t*>( *it );
-    assert( s_rng );
-    return s_rng;
-  }
-
-  auto new_rng = new shuffled_rng_t( name, this, success_entries, total_entries );
-  proc_rng_list.push_back( new_rng );
-
-  return new_rng;
+  return get_rng<shuffled_rng_t>( name, success_entries, total_entries );
 }
 
-accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double proc_chance,
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
                                                   std::function<double( double, unsigned )> accumulator_fn,
                                                   unsigned initial_count )
 {
-  auto it = range::find_if( proc_rng_list, [ &name ]( const proc_rng_t* rng ) {
-    return rng->type() == rng_type_e::RNG_ACCUMULATE && util::str_compare_ci( rng->name(), name );
-  } );
+  return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
+}
 
-  if ( it != proc_rng_list.end() )
-  {
-    auto a_rng = dynamic_cast<accumulated_rng_t*>( *it );
-    assert( a_rng );
-    return a_rng;
-  }
-
-  auto new_rng = new accumulated_rng_t( name, this, proc_chance, std::move( accumulator_fn ), initial_count );
-  proc_rng_list.push_back( new_rng );
-
-  return new_rng;
+threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
+                                              std::function<double( double )> accumulator_fn, bool random_initial_state,
+                                              bool roll_over )
+{
+  return get_rng<threshold_rng_t>( name, increment_max, accumulator_fn, random_initial_state, roll_over );
 }
 
 dot_t* player_t::get_dot( util::string_view name, player_t* source )
@@ -9967,6 +9927,55 @@ struct cancel_action_t : public action_t
   }
 };
 
+struct dismiss_pet_t final : public action_t
+{
+  std::string pet_name;
+  pet_t* pet;
+
+  dismiss_pet_t( player_t* player, util::string_view options_str ) :
+    action_t( ACTION_OTHER, "dismiss_pet", player ),
+    pet_name(),
+    pet()
+  {
+    add_option( opt_string( "name", pet_name ) );
+    parse_options( options_str );
+    harmful = false;
+    usable_while_casting = use_while_casting = ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+
+    if ( pet_name.empty() )
+      throw std::invalid_argument( fmt::format( "{} must specify the name of the pet", name() ) );
+  }
+
+  void init() override
+  {
+    pet = player->find_pet( pet_name );
+    if ( !pet && sim->debug )
+      sim->error( "Player {}: Could not find pet with name '{}' for Action '{}'", player->name(), pet_name, name() );
+
+    if ( pet && !pet->can_dismiss )
+      throw std::invalid_argument( fmt::format( "{} cannot be dismissed", pet->name() ) );
+
+    action_t::init();
+  }
+
+  void execute() override
+  {
+    assert( pet );
+    assert( !pet->is_sleeping() );
+    sim->print_log( "{} performs {} on {}", player->name(), name(), pet->name() );
+    pet->dismiss( false );
+  }
+
+  bool ready() override
+  {
+    if ( !pet || pet->is_sleeping() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
 /**
  * Pool Resource
  *
@@ -10339,6 +10348,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new cancel_action_t( this, options_str );
   if ( name == "cancel_buff" )
     return new cancel_buff_t( this, options_str );
+  if ( name == "dismiss_pet" )
+    return new dismiss_pet_t( this, options_str );
   if ( name == "invoke_external_buff" )
     return new invoke_external_buff_t( this, options_str );
   if ( name == "swap_action_list" )
@@ -13161,7 +13172,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
-  add_option( opt_string( "thewarwithin.sikran_shadow_arsenal_stance", thewarwithin_opts.sikrans_shadow_arsenal_stance ) );
+  add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance", thewarwithin_opts.sikrans_endless_arsenal_stance ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
   add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay", thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
@@ -13177,6 +13188,8 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.dawn_dusk_thread_lining_uptime", thewarwithin_opts.dawn_dusk_thread_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval", thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing", thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
+  add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

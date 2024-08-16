@@ -1143,6 +1143,7 @@ public:
     if ( p()->specialization() == WARRIOR_FURY)
       parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
+    parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
 
     parse_effects( p()->buff.merciless_assault );
 
@@ -3058,6 +3059,9 @@ struct bladestorm_tick_t : public warrior_attack_t
     if ( p->specialization() == WARRIOR_ARMS )
     {
       impact_action = p->active.deep_wounds_ARMS;
+      // Arms does not generate rage when bladestorming
+      energize_amount = 0;
+      energize_resource = RESOURCE_NONE;
     }
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
   }
@@ -5206,10 +5210,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
     }
-    if ( p()->talents.fury.wrath_and_fury->ok() )
-    {
-      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
-    }
 
     return am;
   }
@@ -5366,10 +5366,6 @@ struct crushing_blow_attack_t : public warrior_attack_t
     if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
-    }
-    if ( p()->talents.fury.wrath_and_fury->ok() )
-    {
-      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
     }
 
     return am;
@@ -6785,6 +6781,8 @@ struct storm_bolt_t : public warrior_attack_t
     may_dodge = may_parry = may_block = false;
     if ( p->talents.mountain_thane.storm_bolts->ok() )
       aoe = 1 + as<int>( p->talents.mountain_thane.storm_bolts->effectN( 1 ).base_value() );
+    if ( p->talents.slayer.unrelenting_onslaught->ok() )
+      usable_while_channeling = true;
   }
 
   bool ready() override
@@ -9476,24 +9474,24 @@ void warrior_t::init_resources( bool force )
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   std::string arms_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   std::string protection_pot =
-      ( true_level > 60 )
-          ? "elemental_potion_of_ultimate_power_3"
-          : ( true_level > 50 )
-                ? "spectral_strength"
+      ( true_level > 70 )
+          ? "tempered_potion_3"
+          : ( true_level > 60 )
+                ? "elemental_potion_of_ultimate_power_3"
                 : "disabled";
 
   switch ( specialization() )
@@ -9513,11 +9511,11 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  if ( specialization() == WARRIOR_PROTECTION && true_level > 60 )
-    return "phial_of_corrupting_rage_3";
+  if ( specialization() == WARRIOR_PROTECTION && true_level > 70 )
+    return "flask_of_alchemical_chaos_3";
 
-  return ( true_level > 60 )
-             ? "iced_phial_of_corrupting_rage_3"
+  return ( true_level > 70 )
+             ? "flask_of_alchemical_chaos_3"
              : ( true_level > 50 )
                    ? "spectral_flask_of_power"
                    : "disabled";
@@ -9527,22 +9525,22 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 60 )
-                              ? "thousandbone_tongueslicer"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string fury_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "thousandbone_tongueslicer"
                                     : "disabled";
 
-  std::string arms_food = ( true_level > 60 )
-                              ? "feisty_fish_sticks"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string arms_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "feisty_fish_sticks"
                                     : "disabled";
 
-  std::string protection_food = ( true_level > 60 )
-                              ? "feisty_fish_sticks"
-                              : ( true_level > 50 )
-                                    ? "feast_of_gluttonous_hedonism"
+  std::string protection_food = ( true_level > 70 )
+                              ? "feast_of_the_midnight_masquerade"
+                              : ( true_level > 60 )
+                                    ? "feisty_fish_sticks"
                                     : "disabled";
 
   switch ( specialization() )
@@ -9562,8 +9560,8 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 60 ) ? "draconic"
-                               : ( true_level >= 50 ) ? "veiled" : "disabled";
+  return ( true_level >= 70 ) ? "crystallized"
+                               : ( true_level >= 60 ) ? "draconic" : "disabled";
 }
 
 // warrior_t::default_temporary_enchant =====================================
@@ -9571,15 +9569,15 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:hissing_rune_3/off_hand:hissing_rune_3"
+                              ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:buzzing_rune_3"
+                              ? "main_hand:algari_mana_oil_3"
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3"
+                              ? "main_hand:algari_mana_oil_3"
                               : "disabled";
   switch ( specialization() )
   {

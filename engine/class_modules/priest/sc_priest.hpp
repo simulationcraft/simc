@@ -687,6 +687,11 @@ public:
     propagate_const<real_ppm_t*> power_of_the_dark_side;
   } rppm;
 
+  struct threshold_rngs_t
+  {
+    threshold_rng_t* shadowy_insight;
+  } threshold_rng;
+
   // Gains
   struct
   {
@@ -877,6 +882,7 @@ public:
   double composite_leech() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   void pre_analyze_hook() override;
+  void analyze( sim_t& sim ) override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
@@ -887,6 +893,7 @@ public:
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   std::unique_ptr<expr_t> create_pet_expression( util::string_view expression_str,
                                                  util::span<util::string_view> splits );
+
   void arise() override;
   void demise() override;
   void do_dynamic_regen( bool ) override;

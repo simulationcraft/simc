@@ -349,6 +349,7 @@ public:
     struct
     {
       actions::rogue_attack_t* clear_the_witnesses = nullptr;
+      actions::rogue_attack_t* clear_the_witnesses_tornado = nullptr;
       actions::rogue_attack_t* corrupt_the_blood = nullptr;
       actions::rogue_attack_t* deathstalkers_mark = nullptr;
       actions::rogue_attack_t* fatal_intent = nullptr;
@@ -2098,12 +2099,12 @@ public:
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitability->ok() );
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
-                           nullptr, 1_ms ); // ALPHA TOCHECK -- Assume WM
+                           nullptr, 1_ms ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.perforated_veins, p()->buffs.perforated_veins->is_affecting( &ab::data() ),
                            perforated_veins_consumed_proc, 1_ms ); // TOCHECK -- Ensure this still affects WM procs like it used to
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
-                           nullptr, 1_ms ); // ALPHA TOCHECK -- Shadowy Finishers?
+                           nullptr, p()->bugs ? 0_ms : 1_ms ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms, false, true );
     
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
@@ -2111,7 +2112,7 @@ public:
     register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) &&
                                                         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
     register_consume_buff( p()->buffs.tww1_subtlety_2pc, p()->buffs.tww1_subtlety_2pc->is_affecting( &ab::data() ),
-                           nullptr, 1.31_s ); // ALPHA TOCHECK -- Does this work on clone attacks?
+                           nullptr, 1.31_s ); // Appears to work on Clone Attacks
     register_consume_buff( p()->buffs.tww1_outlaw_4pc, p()->buffs.tww1_outlaw_4pc->is_affecting( &ab::data() ) );
   }
 
@@ -3061,7 +3062,7 @@ struct rogue_poison_t : public rogue_attack_t
   {
     bool result = rng().roll( proc_chance( source_state ) );
 
-    sim->print_debug( "{} attempts to proc {}, target={} source={} proc_chance={}: {}", *player, *this,
+    sim->print_debug( "{} attempts to proc poison {}, target={} source={} proc_chance={}: {}", *player, *this,
                       *source_state->target, *source_state->action, proc_chance( source_state ), result );
 
     if ( !result )
@@ -3361,7 +3362,10 @@ struct apply_poison_t : public action_t
         }
         
         p->active.lethal_poison = get_poison( p, lethal_str );
-        sim->print_log( "{} applies lethal poison {}", *p, *p->active.lethal_poison );
+        if ( p->active.lethal_poison )
+        {
+          sim->print_log( "{} applies lethal poison {}", *p, *p->active.lethal_poison );
+        }
       }
 
       if ( !p->active.nonlethal_poison )
@@ -3372,7 +3376,10 @@ struct apply_poison_t : public action_t
         }
 
         p->active.nonlethal_poison = get_poison( p, nonlethal_str );
-        sim->print_log( "{} applies non-lethal poison {}", *p, *p->active.nonlethal_poison );
+        if ( p->active.nonlethal_poison )
+        {
+          sim->print_log( "{} applies non-lethal poison {}", *p, *p->active.nonlethal_poison );
+        }
       }
 
       if ( p->talent.assassination.dragon_tempered_blades->ok() )
@@ -3385,7 +3392,10 @@ struct apply_poison_t : public action_t
           }
 
           p->active.lethal_poison_dtb = get_poison( p, lethal_dtb_str );
-          sim->print_log( "{} applies second lethal poison {}", *p, *p->active.lethal_poison_dtb );
+          if ( p->active.lethal_poison_dtb )
+          {
+            sim->print_log( "{} applies second lethal poison {}", *p, *p->active.lethal_poison_dtb );
+          }
 
           if ( nonlethal_dtb_str.empty() || get_poison( p, nonlethal_dtb_str ) == p->active.nonlethal_poison )
           {
@@ -3393,7 +3403,10 @@ struct apply_poison_t : public action_t
           }
 
           p->active.nonlethal_poison_dtb = get_poison( p, nonlethal_dtb_str );
-          sim->print_log( "{} applies second non-lethal poison {}", *p, *p->active.nonlethal_poison_dtb );
+          if ( p->active.nonlethal_poison_dtb )
+          {
+            sim->print_log( "{} applies second non-lethal poison {}", *p, *p->active.nonlethal_poison_dtb );
+          }
         }
       }
     }
@@ -3753,7 +3766,6 @@ struct ambush_t : public rogue_attack_t
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-      trigger_unseen_blade( state ); // ALPHA TOCHECK
       trigger_tww1_outlaw_set_bonus( execute_state );
     }
 
@@ -3977,7 +3989,6 @@ struct dispatch_t: public rogue_attack_t
       p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
-    trigger_fate_intertwined( execute_state );
     if ( !is_secondary_action() )
     {
       trigger_restless_blades( execute_state );
@@ -3986,6 +3997,12 @@ struct dispatch_t: public rogue_attack_t
     }
 
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    trigger_fate_intertwined( state );
   }
 
   bool ready() override
@@ -4116,7 +4133,7 @@ struct between_the_eyes_t : public rogue_attack_t
       if ( p()->talent.outlaw.crackshot->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
       {
         p()->cooldowns.between_the_eyes->reset( false );
-        dispatch->trigger_secondary_action( execute_state->target, cp_spend );
+        dispatch->trigger_secondary_action( execute_state->target, cp_spend, 300_ms );
         // ALPHA TODO -- Currently triggers Coup de Grace but with half damage, possibly unintended?
       }
     }
@@ -4353,8 +4370,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
-      // ALPHA TOCHECK -- Periodic or just direct?
-      affected_by.follow_the_blood.direct = affected_by.follow_the_blood.periodic = true;
+      affected_by.follow_the_blood.periodic = true;
     }
   }
 
@@ -4636,7 +4652,6 @@ struct envenom_t : public rogue_attack_t
     bool inevitable = p()->buffs.cold_blood->check();
     rogue_attack_t::execute();
     trigger_poison_bomb( execute_state );
-    trigger_fate_intertwined( execute_state );
     trigger_hand_of_fate( execute_state, true, inevitable );
 
     // TOCHECK -- If this consumes on execute or impact when parried
@@ -4676,6 +4691,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     trigger_cut_to_the_chase( state );
+    trigger_fate_intertwined( state );
   }
 };
 
@@ -4691,7 +4707,7 @@ struct eviscerate_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
       last_eviscerate_cp( 1 )
     {
-      affected_by.darkest_night = !p->bugs; // ALPHA TOCHECK -- Seems to be bugged currently
+      affected_by.darkest_night = !p->bugs; // 2024-08-12 -- Currently does not work
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -4888,7 +4904,6 @@ struct fan_of_knives_t: public rogue_attack_t
     if ( p()->buffs.clear_the_witnesses->check() )
     {
       p()->active.deathstalker.clear_the_witnesses->execute_on_target( execute_state->target );
-      p()->buffs.clear_the_witnesses->expire();
     }
   }
 
@@ -5182,6 +5197,16 @@ struct killing_spree_tick_t : public rogue_attack_t
     direct_tick = true;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( p()->talent.trickster.devious_distraction->ok() && weapon->slot == SLOT_MAIN_HAND )
+    {
+      p()->get_target_data( state->target )->debuffs.fazed->trigger();
+    }
+  }
+
   bool procs_main_gauche() const override
   { return weapon->slot == SLOT_MAIN_HAND; }
 
@@ -5237,11 +5262,6 @@ struct killing_spree_t : public rogue_attack_t
     if ( p()->talent.trickster.disorienting_strikes->ok() )
     {
       p()->buffs.disorienting_strikes->trigger();
-    }
-
-    if ( p()->talent.trickster.devious_distraction->ok() )
-    {
-      p()->get_target_data( execute_state->target )->debuffs.fazed->trigger();
     }
   }
 
@@ -5741,14 +5761,13 @@ struct rupture_t : public rogue_attack_t
                                                                cast_state( state )->get_combo_points() );
     }
 
-    // TOCHECK ALPHA -- Does this have any priority? Does this trigger double from Deathmark?
+    // 2024-08-12 -- Does not trigger from Deathmark Ruptures, currently no smart-targeting logic on cleaves
     if ( p()->buffs.serrated_bone_spike_charges->up() && !is_secondary_action() )
     {
       p()->active.serrated_bone_spike->execute_on_target( state->target );
       p()->buffs.serrated_bone_spike_charges->decrement();
     }
 
-    // TOCHECK -- Double check this interacts as expected for cleaved Ruptures
     // 2023-10-05 -- Currently when triggerd by an ER cast, only uses base combo points
     if ( p()->active.internal_bleeding )
     {
@@ -5918,7 +5937,6 @@ struct secret_technique_t : public rogue_attack_t
     {
       rogue_attack_t::impact( state );
 
-      // ALPHA TOCHECK -- Does this apply on pet attacks?
       if ( p()->talent.trickster.devious_distraction->ok() )
       {
         p()->get_target_data( state->target )->debuffs.fazed->trigger();
@@ -5985,7 +6003,7 @@ struct secret_technique_t : public rogue_attack_t
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
-      p()->buffs.flawless_form->execute(); // TOCHECK ALPHA -- Once or per attack?
+      p()->buffs.flawless_form->execute();
     }
 
     if ( p()->talent.trickster.disorienting_strikes->ok() )
@@ -6225,7 +6243,7 @@ struct black_powder_t: public rogue_attack_t
       rogue_attack_t( name, p, p->spec.black_powder_shadow_attack ),
       last_cp( 1 )
     {
-      callbacks = false; // 2021-07-19-- Does not appear to trigger normal procs
+      callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
 
@@ -6237,8 +6255,7 @@ struct black_powder_t: public rogue_attack_t
 
       if ( p->talent.deathstalker.follow_the_blood->ok() )
       {
-        // ALPHA TOCHECK -- Does this apply to the bonus damage?
-        affected_by.follow_the_blood.direct = true;
+        affected_by.follow_the_blood.direct = !p->bugs; // 2024-08-12 -- Currently does not work
       }
     }
 
@@ -6403,8 +6420,11 @@ struct black_powder_t: public rogue_attack_t
 
 struct shuriken_storm_t: public rogue_attack_t
 {
+  action_t* clear_the_witnesses;
+
   shuriken_storm_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str )
+    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str ),
+    clear_the_witnesses( nullptr )
   {
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -6419,6 +6439,20 @@ struct shuriken_storm_t: public rogue_attack_t
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
       affected_by.follow_the_blood.direct = true;
+    }
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    clear_the_witnesses = secondary_trigger_type == secondary_trigger::SHURIKEN_TORNADO ?
+      p()->active.deathstalker.clear_the_witnesses_tornado :
+      p()->active.deathstalker.clear_the_witnesses;
+
+    if ( clear_the_witnesses )
+    {
+      add_child( clear_the_witnesses );
     }
   }
 
@@ -6442,10 +6476,9 @@ struct shuriken_storm_t: public rogue_attack_t
     
     p()->buffs.silent_storm->expire();
 
-    if ( p()->buffs.clear_the_witnesses->check() )
+    if ( clear_the_witnesses && p()->buffs.clear_the_witnesses->check() )
     {
-      p()->active.deathstalker.clear_the_witnesses->execute_on_target( execute_state->target );
-      p()->buffs.clear_the_witnesses->expire();
+      clear_the_witnesses->execute_on_target( execute_state->target );
     }
   }
 
@@ -6461,7 +6494,6 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( state->result == RESULT_CRIT && p()->talent.deathstalker.momentum_of_despair->ok() )
     {
-      // ALPHA TOCHECK -- Does this trigger from Shiriken Tornado?
       p()->buffs.momentum_of_despair->trigger();
     }
 
@@ -6566,8 +6598,6 @@ struct sinister_strike_t : public rogue_attack_t
     void execute() override
     {
       rogue_attack_t::execute();
-
-      trigger_unseen_blade( execute_state );
 
       // Triple Threat procs do not appear to be able to chain-proc based on testing
       if ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE &&
@@ -7382,7 +7412,12 @@ struct clear_the_witnesses_t : public rogue_attack_t
     aoe = -1;
   }
 
-  // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.clear_the_witnesses->expire();
+  }
+
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7407,7 +7442,6 @@ struct corrupt_the_blood_t : public rogue_attack_t
     td( state->target )->debuffs.corrupt_the_blood->trigger();
   }
 
-  // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7425,7 +7459,6 @@ struct fatal_intent_t : public rogue_attack_t
   fatal_intent_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->spell.fatal_intent_damage )
   {
-    attack_power_mod.direct = p->talent.deathstalker.fatal_intent->effectN( 1 ).ap_coeff();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -7443,7 +7476,6 @@ struct fatal_intent_t : public rogue_attack_t
     td( execute_state->target )->debuffs.fatal_intent->expire();
   }
 
-  // ALPHA TOCHECK -- Just setting this to false for now
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7456,7 +7488,6 @@ struct hunt_them_down_t : public rogue_attack_t
     p->auto_attack->add_child( this );
   }
 
-  // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7469,7 +7500,6 @@ struct singular_focus_t : public rogue_attack_t
     callbacks = false;
   }
 
-  // ALPHA TOCHECK -- Just setting this to false because it'd be dumb if it worked
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7557,7 +7587,7 @@ struct unseen_blade_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.escalating_blade->trigger(); // ALPHA TOCHECK -- On impact or execute?
+    p()->buffs.escalating_blade->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -7590,7 +7620,7 @@ struct nimble_flurry_t : public rogue_attack_t
     return tl.size();
   }
 
-  // ALPHA TOCHECK -- Currently not triggering, but probably should?
+  // Currently does not trigger on either side, which is likely a bug
   bool procs_shadow_blades_damage() const override
   { return false; }
 };
@@ -7754,9 +7784,9 @@ struct coup_de_grace_t : public rogue_attack_t
     if ( !is_secondary_action() )
     {
       trigger_restless_blades( execute_state );
-      if ( !p()->bugs )
+      if ( !p()->bugs ) // Doesn't trigger CttC currently
       {
-        trigger_cut_to_the_chase( execute_state ); // ALPHA TOCHECK -- Doesn't trigger CttC currently
+        trigger_cut_to_the_chase( execute_state );
       }
     }
 
@@ -9178,7 +9208,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     }
   }
 
-  // ALPHA TOCHECK -- Not totally sure what the intended functionality is, but it's not additive right now
+  // 2024-08-12 -- This effect is multiplicative, even though it uses the same tooltip as additive mods
   if ( p()->talent.trickster.nimble_flurry->ok() && p()->buffs.flawless_form->check() )
   {
     multiplier *= 1.0 + p()->talent.trickster.nimble_flurry->effectN( 1 ).percent();
@@ -9464,9 +9494,8 @@ void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state
   if ( state->result != RESULT_CRIT )
     return;
 
-  // ALPHA TOCHECK -- Double-check target modifiers in the future
   const double multiplier = p()->talent.fatebound.fate_intertwined->effectN( 1 ).percent();
-  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier, false );
+  p()->active.fatebound.fate_intertwined->trigger_residual_action( state, multiplier );
 }
 
 template <typename Base>
@@ -9826,9 +9855,9 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  // ALPHA TOCHECK -- Echoing Reprimand support?
+  // 2024-08-12 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() &&
-       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
+       cast_state( state )->get_combo_points( p()->bugs ) >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
   {
     p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.deathstalkers_mark->trigger();
@@ -9847,8 +9876,9 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     }
   }
 
+  // 2024-08-16 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
-       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
+       cast_state( state )->get_combo_points( p()->bugs ) >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
     p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
@@ -9974,7 +10004,7 @@ void actions::rogue_action_t<Base>::trigger_tww1_assassination_set_bonus( const 
   if ( state->result_type != result_amount_type::DMG_OVER_TIME )
     return;
 
-  // ALPHA TOCHECK -- Does this require more specific whitelisting?
+  // TOCHECK -- May require more specific whitelisting in the future but seems to match
   if ( ab::school != SCHOOL_PHYSICAL )
     return;
 
@@ -9991,7 +10021,7 @@ void actions::rogue_action_t<Base>::trigger_tww1_outlaw_set_bonus( const action_
   if ( !p()->rng().roll( p()->set_bonuses.tww1_outlaw_2pc->effectN( 1 ).percent() ) )
     return;
 
-  // ALPHA TOCHECK -- Double-check target modifiers in the future
+  // TOCHECK -- Double-check target modifiers in the future
   p()->active.tww1.ethereal_rampage->trigger_residual_action( state, p()->set_bonuses.tww1_outlaw_2pc->effectN( 2 ).percent() );
 
   if ( p()->set_bonuses.tww1_outlaw_4pc->ok() )
@@ -10131,7 +10161,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( debuffs.deathstalkers_mark->check() )
       {
-        // ALPHA TOCHECK -- Does this give the resource gain as well? Or just the buff?
         source->resource_gain( RESOURCE_ENERGY, source->spell.darkest_night_buff->effectN( 1 ).resource(), source->gains.darkest_night );
         source->buffs.darkest_night->trigger();
       }
@@ -10299,11 +10328,12 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   if ( talent.deathstalker.lingering_darkness->ok() )
   {
-    // ALPHA TOCHECK -- Right now this probably double-dips and is not whitelisted either.
-    // Assume this will change at some point in alpha/beta
-    // Think the intent is for Assassination and Sub to have either Nature or Shadow
-    if ( spell.lingering_darkness_buff->effectN( 1 ).has_common_school( school ) ||
-         spell.lingering_darkness_buff->effectN( 2 ).has_common_school( school ) )
+    // 2024-08-12 -- Handled via hidden conditional aura for specializations
+    auto effect = ( specialization() == ROGUE_ASSASSINATION ?
+                    spell.lingering_darkness_buff->effectN( 1 ) :
+                    spell.lingering_darkness_buff->effectN( 2 ) );
+
+    if ( effect.has_common_school( school ) )
     {
       m *= 1.0 + buffs.lingering_darkness->value();
     }
@@ -11830,6 +11860,10 @@ void rogue_t::init_spells()
   if ( talent.deathstalker.clear_the_witnesses->ok() )
   {
     active.deathstalker.clear_the_witnesses = get_background_action<actions::clear_the_witnesses_t>( "clear_the_witnesses" );
+    if ( talent.subtlety.shuriken_tornado->ok() )
+    {
+      active.deathstalker.clear_the_witnesses_tornado = get_background_action<actions::clear_the_witnesses_t>( "clear_the_witnesses_tornado" );
+    }
   }
 
   if ( talent.deathstalker.corrupt_the_blood->ok() )
@@ -11866,6 +11900,12 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
     active.fatebound.lucky_coin =
       get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
+
+    // Stats wrapper to group these for reporting purposes
+    stats_t* stats = get_stats( "Hand of Fate", nullptr );
+    stats->add_child( active.fatebound.fatebound_coin_tails->stats );
+    stats->add_child( active.fatebound.fatebound_coin_tails_delivered->stats );
+    stats->add_child( active.fatebound.lucky_coin->stats );
   }
 
   if ( talent.fatebound.fate_intertwined->ok() )
@@ -11876,7 +11916,7 @@ void rogue_t::init_spells()
   // Trickster
   if ( talent.trickster.unseen_blade->ok() )
   {
-    cooldowns.unseen_blade_icd->base_duration = talent.trickster.unseen_blade->internal_cooldown();
+    cooldowns.unseen_blade_icd->duration = talent.trickster.unseen_blade->internal_cooldown();
     active.trickster.unseen_blade = get_background_action<actions::unseen_blade_t>( "unseen_blade" );
   }
 
@@ -12342,7 +12382,7 @@ void rogue_t::create_buffs()
 
   buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_distract );
 
-  // ALPHA TOCHECK -- Find the proper buff spell
+  // TOCHECK -- Find the proper buff spell someday? Still doesn't seem to exist...
   buffs.disorienting_strikes = make_buff( this, "disorienting_strikes", talent.trickster.disorienting_strikes );
   if ( talent.trickster.disorienting_strikes->ok() )
   {
@@ -13215,7 +13255,7 @@ void rogue_t::arise()
 
   if ( talent.assassination.serrated_bone_spike->ok() )
   {
-    // ALPHA TOCHECK -- Recharge before prior to pull and out of combat
+    // Does not currently reset the timer on pull
     buffs.serrated_bone_spike_charges->trigger( buffs.serrated_bone_spike_charges->max_stack() );
     timespan_t first = timespan_t::from_millis(
       rng().range( 0, as<int>( talent.assassination.serrated_bone_spike->effectN( 1 ).period().total_millis() ) ) );
@@ -13226,8 +13266,6 @@ void rogue_t::arise()
                             [ this ]() { buffs.serrated_bone_spike_charges->trigger(); } );
     } );
   }
-
- 
 }
 
 // rogue_t::combat_begin ====================================================

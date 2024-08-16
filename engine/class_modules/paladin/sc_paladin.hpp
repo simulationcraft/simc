@@ -745,10 +745,11 @@ public:
   // Paladin options
   struct options_t
   {
-    bool fake_sov                    = true;
-    double proc_chance_ret_aura_sera = 0.10;
-    double min_dg_heal_targets       = 1.0;
-    double max_dg_heal_targets       = 5.0;
+    bool fake_sov                         = true;
+    double proc_chance_ret_aura_sera      = 0.10;
+    double min_dg_heal_targets            = 1.0;
+    double max_dg_heal_targets            = 5.0;
+    bool sacred_weapon_prefer_new_targets = false;
   } options;
   player_t* beacon_target;
 
@@ -1806,7 +1807,7 @@ public:
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
         {
-          p->buffs.crusade->trigger( timespan_t::from_seconds( 5 ) );
+          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
         }
         else if ( p->talents.avenging_wrath->ok() )
         {

@@ -846,6 +846,10 @@ public:
 
     // Rider of the Apocalypse
     propagate_const<target_specific_cooldown_t*> undeath_spread;
+    propagate_const<cooldown_t*> whitemane_ams_cd;
+    propagate_const<cooldown_t*> trollbane_ams_cd;
+    propagate_const<cooldown_t*> nazgrim_ams_cd;
+    propagate_const<cooldown_t*> mograine_ams_cd;
 
   } cooldown;
 
@@ -1624,8 +1628,8 @@ public:
 
     // Festering Wound applied by
     propagate_const<proc_t*> fw_festering_strike;
+    propagate_const<proc_t*> fw_festering_scythe;
     propagate_const<proc_t*> fw_infected_claws;
-    propagate_const<proc_t*> fw_necroblast;
     propagate_const<proc_t*> fw_pestilence;
     propagate_const<proc_t*> fw_unholy_assault;
     propagate_const<proc_t*> fw_vile_contagion;
@@ -1659,7 +1663,6 @@ public:
     bool split_obliterate_schools = true;
     double ams_absorb_percent     = 0;
     bool individual_pet_reporting = false;
-    std::vector<timespan_t> amz_use_time;
     bool amz_specified                 = false;
     double average_cs_travel_time      = 0.4;
     timespan_t first_ams_cast          = 20_s;
@@ -4044,6 +4047,35 @@ struct horseman_pet_t : public death_knight_pet_t
       trigger_gcd = 1_s;
     }
 
+    void init_finished() override
+    {
+      horseman_spell_t::init_finished();
+      if ( pet()->npc_id == pet()->dk()->spell.summon_whitemane->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.whitemane_ams_cd           = pet()->dk()->get_cooldown( "whitemane_ams_cd", this );
+        pet()->dk()->cooldown.whitemane_ams_cd->duration = cooldown->duration;
+        cooldown                                         = pet()->dk()->cooldown.whitemane_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_mograine->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.mograine_ams_cd           = pet()->dk()->get_cooldown( "mograine_ams_cd", this );
+        pet()->dk()->cooldown.mograine_ams_cd->duration = cooldown->duration;
+        cooldown                                        = pet()->dk()->cooldown.mograine_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_nazgrim->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.nazgrim_ams_cd           = pet()->dk()->get_cooldown( "nazgrim_ams_cd", this );
+        pet()->dk()->cooldown.nazgrim_ams_cd->duration = cooldown->duration;
+        cooldown                                       = pet()->dk()->cooldown.nazgrim_ams_cd;
+      }
+      if ( pet()->npc_id == pet()->dk()->spell.summon_trollbane->effectN( 1 ).misc_value1() )
+      {
+        pet()->dk()->cooldown.trollbane_ams_cd           = pet()->dk()->get_cooldown( "trollbane_ams_cd", this );
+        pet()->dk()->cooldown.trollbane_ams_cd->duration = cooldown->duration;
+        cooldown                                         = pet()->dk()->cooldown.trollbane_ams_cd;
+      }
+    }
+
     void execute() override
     {
       horseman_spell_t::execute();
@@ -4309,10 +4341,7 @@ struct trollbane_pet_t final : public horseman_pet_t
       horseman_spell_t::impact( a );
       auto dk_td = dk()->get_target_data( a->target );
       dk_td->debuff.chains_of_ice_trollbane_damage->trigger();
-      if ( !a->target->is_boss() || !dk()->bugs )
-      {
-        dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
-      }
+      dk_td->debuff.chains_of_ice_trollbane_slow->trigger();
     }
   };
 
@@ -8706,19 +8735,6 @@ struct festering_wound_t final : public death_knight_spell_t
         RESOURCE_RUNIC_POWER,
         p()->spec.festering_wound->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p()->gains.festering_wound, this );
-
-    if ( p()->talent.unholy.festering_scythe.ok() )
-    {
-      if ( p()->buffs.festering_scythe_stacks->at_max_stacks() )
-      {
-        // Doesnt expire until the wound popped after reaching max
-        p()->buffs.festering_scythe_stacks->expire();
-      }
-      else
-      {
-        p()->buffs.festering_scythe_stacks->trigger();
-      }
-    }
   }
 
 private:
@@ -8743,7 +8759,7 @@ struct festering_base_t : public death_knight_melee_attack_t
       size_t n          = rng().range( size_t(), fw_proc_stacks.size() );
       unsigned n_stacks = fw_proc_stacks[ n ];
 
-      p()->trigger_festering_wound( s, n_stacks, p()->procs.fw_festering_strike );
+      p()->trigger_festering_wound( s, n_stacks, this->data().id() == p()->spell.festering_scythe->id() ? p()->procs.fw_festering_scythe : p()->procs.fw_festering_strike);
     }
   }
 
@@ -9319,6 +9335,11 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       auto td = get_td( state->target );
       td->debuff.incite_terror->trigger();
     }
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_of_sorrow( state->target, this->data().id() == p()->spell.vampiric_strike->id() );
+    }
   }
 
 private:
@@ -9369,16 +9390,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
       {
         p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
       }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    heart_strike_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -9456,15 +9467,6 @@ struct heart_strike_t : public heart_strike_base_t
     {
       p()->buffs.vampiric_strength->extend_duration(
           p(), p()->sets->set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    heart_strike_base_t::impact( s );
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
     }
   }
 
@@ -10456,6 +10458,11 @@ struct wound_spender_base_t : public death_knight_melee_attack_t
     {
       td->debuff.incite_terror->trigger();
     }
+
+    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
+    {
+      p()->trigger_infliction_of_sorrow( state->target, this->data().id() == p()->spell.vampiric_strike->id() );
+    }
   }
 
   void execute() override
@@ -10487,16 +10494,6 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
       p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, true );
     }
   }
 };
@@ -10538,16 +10535,6 @@ struct clawing_shadows_t final : public wound_spender_base_t
       return;
     }
     wound_spender_base_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
-    }
   }
 
 private:
@@ -10623,16 +10610,6 @@ struct scourge_strike_t final : public wound_spender_base_t
     }
     wound_spender_base_t::execute();
     p()->trigger_sanlayn_execute_talents( false );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    wound_spender_base_t::impact( s );
-
-    if ( p()->talent.sanlayn.infliction_of_sorrow.ok() && p()->buffs.infliction_of_sorrow->check() )
-    {
-      p()->trigger_infliction_of_sorrow( s->target, false );
-    }
   }
 
 private:
@@ -11591,6 +11568,14 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
       pets.ghoul_pet.active_pet()->vile_infusion->trigger();
     }
   }
+
+  if ( talent.unholy.festering_scythe.ok() )
+  {
+    if ( !buffs.festering_scythe->check() )
+    {
+      buffs.festering_scythe_stacks->trigger( n_wounds );
+    }
+  }
 }
 
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
@@ -11835,19 +11820,15 @@ void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
 
     void execute() override
     {
-      death_knight_td_t* td = p()->get_target_data( t );
-
       for ( unsigned i = 0; i < n; ++i )
       {
-        if ( p()->talent.unholy.bursting_sores.ok() && !p()->active_spells.bursting_sores->target_list().size() == 0 )
+        if ( p()->talent.unholy.bursting_sores.ok() && p()->active_spells.bursting_sores->target_list().size() != 0 )
         {
           p()->active_spells.bursting_sores->execute_on_target( t );
         }
       }
     }
   };
-
-  const death_knight_td_t* td = get_target_data( target );
 
   // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
   if ( !talent.unholy.bursting_sores.ok() || sim->event_mgr.canceled )
@@ -11905,6 +11886,14 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
         if ( p()->pets.ghoul_pet.active_pet() != nullptr )
         {
           p()->pets.ghoul_pet.active_pet()->vile_infusion->trigger( n_executes );
+        }
+      }
+
+      if ( p()->talent.unholy.festering_scythe.ok() )
+      {
+        if( !p()->buffs.festering_scythe->check() )
+        {
+          p()->buffs.festering_scythe_stacks->trigger( n_executes );
         }
       }
 
@@ -12010,7 +11999,7 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
   std::vector<action_t*> random_rider_spells = active_spells.rider_summon_spells;
   // Can not randomly summon the same rider twice in a row
-  if ( random && active_spells.last_rider_summoned != nullptr )
+  if ( random && active_spells.last_rider_summoned != nullptr && active_spells.last_rider_summoned == random_rider_spells[ 0 ] )
   {
     auto it = std::find( random_rider_spells.begin(), random_rider_spells.end(), active_spells.last_rider_summoned );
     random_rider_spells.erase( it );
@@ -12134,6 +12123,9 @@ double death_knight_t::tick_damage_over_time( timespan_t duration, const dot_t* 
 
 void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vampiric )
 {
+  if( !is_vampiric && !buffs.infliction_of_sorrow->check() )
+    return;
+
   auto base_td    = get_target_data( target );
   auto disease_td = specialization() == DEATH_KNIGHT_BLOOD ? base_td->dot.blood_plague : base_td->dot.virulent_plague;
   double disease_remaining_damage = 0;
@@ -14277,6 +14269,7 @@ void death_knight_t::create_buffs()
 
   buffs.festering_scythe_stacks = make_fallback( talent.unholy.festering_scythe.ok(), this, "festering_scythe_stacks",
                                                  spell.festering_scythe_stacking_buff )
+                                      ->set_expire_at_max_stack( true )
                                       ->set_expire_callback( [ this ]( buff_t*, int, timespan_t remains ) {
                                         if ( remains > 0_ms )
                                           buffs.festering_scythe->trigger();
@@ -14370,10 +14363,10 @@ void death_knight_t::init_procs()
   procs.carnage    = get_proc( "Carnage" );
 
   procs.fw_festering_strike = get_proc( "Festering Wound from Festering Strike" );
+  procs.fw_festering_scythe = get_proc( "Festering Wound from Festering Scythe" );
   procs.fw_infected_claws   = get_proc( "Festering Wound from Infected Claws" );
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
-  procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
   procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
   procs.fw_abomination      = get_proc( "Festering Wound from Abomination" );

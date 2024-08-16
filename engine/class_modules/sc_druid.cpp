@@ -1698,12 +1698,10 @@ public:
         ret = true;
       }
       // allow if the action is from convoke and the buff procs from cast successful
-      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ) )
+      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a );
+                tmp && tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
       {
-        if ( tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
-        {
-          ret = true;
-        }
+        ret = true;
       }
       else
       {
@@ -2160,6 +2158,7 @@ template <specialization_e S, typename BASE>
 struct trigger_claw_rampage_t : public BASE
 {
 private:
+  cooldown_t* icd = nullptr;
   double proc_pct = 0.0;
 
 public:
@@ -2169,19 +2168,25 @@ public:
     : BASE( n, p, s, f )
   {
     if ( p->specialization() == S && p->talent.claw_rampage.ok() )
+    {
       proc_pct = p->talent.claw_rampage->effectN( 1 ).percent();
+      icd = p->get_cooldown( "claw_rampage_icd" );
+      icd->duration = p->talent.claw_rampage->internal_cooldown();
+    }
   }
 
   void execute() override
   {
     BASE::execute();
 
-    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
+    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && icd->up() && BASE::rng().roll( proc_pct ) )
     {
       if constexpr ( S == DRUID_FERAL )
         BASE::p()->buff.ravage_fb->trigger();
       else if constexpr ( S == DRUID_GUARDIAN )
         BASE::p()->buff.ravage_maul->trigger();
+
+      icd->start();
     }
   }
 };
@@ -2311,25 +2316,47 @@ struct ravage_base_t : public BASE
   }
 };
 
-// TODO: entirely guessing, almost certainly wrong
+// Proc chance after X failures:
+//   0.6 - 1.13 ^ ( -A * ( X - B ) )
+// where:
+//   A = percent value of corresponding effect index on the talent spell data
+//   B = 3 - base_tick_time in seconds
+//
+// via community testing (~257k ticks)
+// https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+//
+// TODO: confirm any AOE diminishing returns
+// TODO: add manual adjustment for early checks with <0 value:
+//   Rake: 3 ticks = 1.25%, 4 ticks = 7%
+//   Rip: 5 ticks = 1.75%
 template <size_t IDX, typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 private:
-  double pct;
+  accumulated_rng_t* vine_rng = nullptr;
 
 public:
   using base_t = trigger_thriving_growth_t<IDX, BASE>;
 
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), pct( p->talent.thriving_growth->effectN( IDX ).base_value() * 0.001 )
-  {}
+    : BASE( n, p, s, f )
+  {
+    if ( p->talent.thriving_growth.ok() )
+    {
+      double scale = p->talent.thriving_growth->effectN( IDX ).percent();
+      double shift = 3 - BASE::base_tick_time.total_seconds();
+
+      vine_rng = p->get_accumulated_rng( fmt::format( "{}_vines", n ), scale, [ shift ]( double scale, unsigned c ) {
+        return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
+      } );
+    }
+  }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( BASE::p()->active.bloodseeker_vines && BASE::rng().roll( pct ) )
+    if ( vine_rng && vine_rng->trigger() )
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };

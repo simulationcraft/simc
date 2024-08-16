@@ -4,30 +4,29 @@ level=80
 race=mechagnome
 role=spell
 position=back
-talents=C4DAAAAAAAAAAAAAAAAAAAAAAMjZxsNLYmxMzCwYGjpZmlZAAAAAAYAAQAzMz2y2MTsAAAAAAwGALzYYMmZYMzMGzMzMzMzMMG
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMbmtZBzwYW8A8AmZYMNzsMDAAAAAADAYmZaZWWmBAiNAAAAAA2AYZGDmZmZGDzMGzMjZmZMMG
 
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=feisty_fish_sticks
+food=salty_dog
 augmentation=crystallized
 temporary_enchant=main_hand:algari_mana_oil_3
 
-head=hood_of_violet_rebirth,id=212092,ilevel=639,gem_id=213743
+head=devotees_discarded_headdress,id=212440,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213497/213485
-shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
+shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7403
-chest=shadowed_orators_tunic,id=221095,ilevel=639,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=11103,ilevel=629,gem_id=213461,crafted_stats=32/40
+chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=11303,ilevel=636,gem_id=213482,crafted_stats=36/49
 hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213467
+waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213467
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-feet=consecrated_slippers,id=222814,bonus_id=11103,ilevel=629,gem_id=213467,crafted_stats=32/40
-finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213467/213467,enchant_id=7334
-finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213467/213467,enchant_id=7334
-trinket1=unbound_changeling,id=178708,ilevel=639
+feet=consecrated_slippers,id=222814,bonus_id=11303,ilevel=636,gem_id=213482,crafted_stats=40/49
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213494/213494,enchant_id=7334
+finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213494/213494,enchant_id=7334
+trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
-main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
-off_hand=broodtwisters_grim_catalyst,id=212387,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant_id=7460
 
 save=TWW1_Mage_Arcane.simc
 

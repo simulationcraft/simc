@@ -9,6 +9,7 @@
 
 #include "simulationcraft.hpp"
 #include "action/parse_effects.hpp"
+#include "item/special_effect.hpp"
 
 // ==========================================================================
 // Paladin
@@ -30,7 +31,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     options( options_t() ),
     beacon_target( nullptr ),
     next_season( SUMMER ),
-    next_armament( HOLY_BULWARK ),
+    next_armament( SACRED_WEAPON ),
     radiant_glory_accumulator( 0.0 ),
     lights_deliverance_triggered_during_ready( false ),
     holy_power_generators_used( 0 ),
@@ -445,9 +446,9 @@ struct consecration_t : public paladin_spell_t
     : paladin_spell_t( "consecration", p, p->find_spell( 26573 ) ),
       damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       source_type( HARDCAST ),
-      precombat_time( 2.0 ),
       dg_damage( nullptr ),
-      dg_heal( nullptr )
+      dg_heal( nullptr ),
+      precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
     parse_options( options_str );
@@ -1480,8 +1481,8 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   light_of_the_titans_t* light_of_the_titans;
   word_of_glory_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
-      light_of_the_titans( new light_of_the_titans_t( p, "" ) ),
-      sacred_word( nullptr )
+      sacred_word( nullptr ),
+      light_of_the_titans( new light_of_the_titans_t( p, "" ) )
   {
     parse_options( options_str );
     target = p;
@@ -2555,47 +2556,59 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
     }
     else if ( sim->player_no_pet_list.size() > 1 )
     {
-
-      // We do not know who to cast Weapon/Bulwark randomly on. Determine it
-      if ( random_weapon_target == nullptr )
+      // We try to do this twice for the new option. In case every target is invalid per options.sacred_weapon_prefer_new_targets, we ignore the option and just take the first target we find.
+      for ( int i = 0; i < 2; i++ )
       {
-        player_t* first_dps = nullptr;
-        player_t* first_healer = nullptr;
-        player_t* first_tank   = nullptr;
-        for ( auto& _p : sim->player_no_pet_list )
+        // We do not know who to cast Weapon/Bulwark randomly on. Determine it
+        if ( random_weapon_target == nullptr || ( options.sacred_weapon_prefer_new_targets && i == 0 ) )
         {
-          if ( _p->is_sleeping() || _p == this )
-            continue;
-
-          switch (_p->role)
+          player_t* first_dps    = nullptr;
+          player_t* first_healer = nullptr;
+          player_t* first_tank   = nullptr;
+          for ( auto& _p : sim->player_no_pet_list )
           {
-            case ROLE_HEAL:
-              if ( first_healer == nullptr )
-                first_healer = _p;
-              break;
-            case ROLE_TANK:
-              if ( first_tank == nullptr )
-                first_tank = _p;
-              break;
-            default:
-              if ( first_dps == nullptr )
-                first_dps = _p;
-              break;
-          }
-        }
-        if ( first_dps != nullptr )
-          random_weapon_target = first_dps;
-        else if ( first_healer != nullptr )
-          random_weapon_target = first_healer;
-        else
-          random_weapon_target = first_tank;
+            if ( _p->is_sleeping() || _p == this )
+              continue;
 
-        if ( first_tank != nullptr )
-          random_bulwark_target = first_tank;
-        else if ( first_healer != nullptr )
-          random_bulwark_target = first_healer;
-        else
-          random_bulwark_target = first_dps;
+            // We prefer our random targets to have no buff, this can be done ingame via hugging them over any other
+            // target, since it prefers to target closeby targets
+            if ( options.sacred_weapon_prefer_new_targets && i == 0 )
+            {
+              if ( ( usedArmament == SACRED_WEAPON && get_target_data( _p )->buffs.sacred_weapon->up() ) ||
+                   ( usedArmament == HOLY_BULWARK && get_target_data( _p )->buffs.holy_bulwark->up() ) )
+                continue;
+            }
+
+            switch ( _p->role )
+            {
+              case ROLE_HEAL:
+                if ( first_healer == nullptr )
+                  first_healer = _p;
+                break;
+              case ROLE_TANK:
+                if ( first_tank == nullptr )
+                  first_tank = _p;
+                break;
+              default:
+                if ( first_dps == nullptr )
+                  first_dps = _p;
+                break;
+            }
+          }
+          if ( first_dps != nullptr )
+            random_weapon_target = first_dps;
+          else if ( first_healer != nullptr )
+            random_weapon_target = first_healer;
+          else
+            random_weapon_target = first_tank;
+
+          if ( first_tank != nullptr )
+            random_bulwark_target = first_tank;
+          else if ( first_healer != nullptr )
+            random_bulwark_target = first_healer;
+          else
+            random_bulwark_target = first_dps;
+        }
       }
       if ( usedArmament == SACRED_WEAPON )
       {
@@ -3208,7 +3221,10 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
 
-  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )->set_default_value_from_effect(1);
+  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
   if (paladin->specialization() == PALADIN_PROTECTION)
   {
     debuff.judgment->apply_affecting_aura( paladin->spec.protection_paladin );
@@ -3496,7 +3512,7 @@ void paladin_t::reset()
   active_aura         = nullptr;
 
   next_season = SUMMER;
-  next_armament = HOLY_BULWARK;
+  next_armament = SACRED_WEAPON;
   radiant_glory_accumulator = 0.0;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
@@ -3972,6 +3988,14 @@ void paladin_t::init_special_effects()
         p->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
       }
     };
+
+    auto const blessing_of_anshe_driver = new special_effect_t( this );
+    blessing_of_anshe_driver->name_str = "blessing_of_anshe_driver";
+    blessing_of_anshe_driver->spell_id = 445200;
+    special_effects.push_back( blessing_of_anshe_driver );
+
+    auto cb = new blessing_of_anshe_cb_t( this, *blessing_of_anshe_driver );
+    cb->initialize();
   }
 
   if ( talents.lightsmith.divine_inspiration->ok() )
@@ -4505,6 +4529,9 @@ double paladin_t::composite_spell_haste() const
   if ( buffs.crusade->up() )
     h /= 1.0 + buffs.crusade->get_haste_bonus();
 
+  if ( buffs.herald_of_the_sun.solar_grace->up() )
+    h /= 1.0 + buffs.herald_of_the_sun.solar_grace->stack_value();
+
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
 
@@ -4848,6 +4875,7 @@ void paladin_t::create_options()
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
   add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
   add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_bool( "sacred_weapon_prefer_new_targets", options.sacred_weapon_prefer_new_targets ) );
 
   player_t::create_options();
 }
@@ -4876,7 +4904,7 @@ void paladin_t::combat_begin()
 
   // evidently it resets to summer on combat start
   next_season = SUMMER;
-  next_armament = HOLY_BULWARK;
+  next_armament = SACRED_WEAPON;
 
   if ( talents.inquisitors_ire->ok() )
   {

@@ -703,8 +703,10 @@ struct shadow_word_pain_t final : public priest_spell_t
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_swp );
 
       int stack = priest().buffs.shadowy_insight->check();
-      if ( priest().buffs.shadowy_insight->trigger() )
+      if ( priest().threshold_rng.shadowy_insight->trigger() )
       {
+        priest().buffs.shadowy_insight->trigger();
+
         if ( priest().buffs.shadowy_insight->check() == stack )
         {
           priest().procs.shadowy_insight_overflow->occur();
@@ -2019,16 +2021,7 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
 {
   shadowy_insight_t( priest_t& p ) : base_t( p, "shadowy_insight", p.find_spell( 375981 ) )
   {
-    // BUG: RPPM value not found in spelldata
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/956
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) )
-    {
-      set_rppm( RPPM_HASTE, 2.4 * ( 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 3 ).percent() ) );
-    }
-    else
-    {
-      set_rppm( RPPM_HASTE, 2.4 );
-    }
+    set_chance( 1.0 );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
@@ -2372,6 +2365,18 @@ void priest_t::init_rng_shadow()
   rppm.idol_of_cthun          = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
   rppm.deathspeaker           = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
   rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
+
+
+  const dot_t* shadow_word_pain = get_dot( "shadow_word_pain", this );
+
+  threshold_rng.shadowy_insight =
+      get_threshold_rng( "shadowy_insight", talents.shadow.shadowy_insight.ok() ? 0.1558 : 0.0,
+                         [ this, shadow_word_pain ]( double increment_max ) {
+                           unsigned active_dots = get_active_dots( shadow_word_pain );
+                           if ( active_dots == 0 )
+                             return 0.0;
+                           return rng().range( increment_max ) / active_dots;
+                         } );
 }
 
 void priest_t::init_spells_shadow()

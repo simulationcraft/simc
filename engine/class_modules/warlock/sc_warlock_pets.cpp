@@ -62,6 +62,8 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_power = make_buff( this, "demonic_power", o()->talents.demonic_power_buff )
                             ->set_default_value_from_effect( 5 );
 
+  buffs.empowered_legion_strike = make_buff( this, "empowered_legion_strike", o()->tier.empowered_legion_strike );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", o()->talents.embers )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -569,6 +571,23 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   legion_strike_t( warlock_pet_t* p, util::string_view options_str, bool is_main_pet )
     : legion_strike_t( p, options_str )
   { main_pet = is_main_pet; }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    p()->buffs.empowered_legion_strike->decrement();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_pet_melee_attack_t::action_multiplier();
+
+    if ( p()->buffs.empowered_legion_strike->check() )
+      m *= p()->o()->tier.empowered_legion_strike->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t
@@ -1123,6 +1142,16 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
+
+    if ( p()->o()->hero.sataiels_volition.ok() )
+      m *= 1.0 + p()->o()->hero.sataiels_volition->effectN( 2 ).percent();
+
+    return m;
+  }
 };
 
 void wild_imp_pet_t::create_actions()
@@ -1198,6 +1227,9 @@ void wild_imp_pet_t::demise()
     if ( !power_siphon )
     {
       double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
+
+      if ( imploded )
+        core_chance += o()->hero.sataiels_volition->effectN( 3 ).percent();
 
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;

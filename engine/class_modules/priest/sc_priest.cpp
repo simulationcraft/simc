@@ -2998,6 +2998,28 @@ void priest_t::pre_analyze_hook()
   player_t::pre_analyze_hook();
 }
 
+void priest_t::analyze( sim_t& sim )
+{
+  player_t::analyze( sim );
+
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    auto vt = find_action( "vampiric_touch" );
+    if ( vt && vt->stats->total_execute_time.mean() <= 2 )
+    {
+      vt->stats->apet = 0;
+      vt->stats->ape  = vt->stats->total_amount.mean();
+    }
+
+    auto swp = find_action( "shadow_word_pain" );
+    if ( swp && swp->stats->total_execute_time.mean() <= 2 )
+    {
+      swp->stats->apet = 0;
+      swp->stats->ape  = swp->stats->total_amount.mean();
+    }
+  }
+}
+
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )

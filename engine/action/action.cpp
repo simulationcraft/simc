@@ -3064,8 +3064,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
     double evaluate() override
     {
-      action.snapshot_state( state, amount_type );
       state->target = action.target;
+      action.snapshot_state( state, amount_type );
       double a;
       if ( amount_type == result_amount_type::DMG_OVER_TIME || amount_type == result_amount_type::HEAL_OVER_TIME )
         a = action.calculate_tick_amount( state, 1.0 /* Assumes full tick & one stack */ );
@@ -3086,7 +3086,6 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         a *= 1.0 + clamp( state->crit_chance + state->target_crit_chance, 0.0, 1.0 ) *
                        action.composite_player_critical_multiplier( state );
       }
-
       return a;
     }
   };
@@ -3239,8 +3238,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
+        action.snapshot_state( state, result_amount_type::NONE );
 
         return action.composite_ta_multiplier( state );
       }
@@ -3260,8 +3259,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
+        action.snapshot_state( state, result_amount_type::NONE );
 
         int num_targets = state->n_targets;
 
@@ -3296,8 +3295,8 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        action.snapshot_state( state, result_amount_type::NONE );
         state->target = action.target;
+        action.snapshot_state( state, result_amount_type::NONE );
 
         return action.composite_persistent_multiplier( state );
       }

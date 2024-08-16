@@ -1303,7 +1303,8 @@ void paladin_t::create_buffs_protection()
                                       ->set_absorb_source( get_stats( "moment_of_glory_absorb" ) );
   buffs.barricade_of_faith = make_buff( this, "barricade_of_faith", find_spell( 385726 ) )
                                  ->set_default_value( talents.barricade_of_faith->effectN( 1 ).percent() )
-                                 ->add_invalidate( CACHE_BLOCK );
+                                 ->add_invalidate( CACHE_BLOCK )
+                                 ->set_duration( find_spell(385724)->duration() );
   buffs.sentinel = new buffs::sentinel_buff_t( this );
   buffs.sentinel_decay = new buffs::sentinel_decay_buff_t( this );
 

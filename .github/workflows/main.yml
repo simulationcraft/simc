@@ -223,6 +223,8 @@ jobs:
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             monk_brewmaster, monk_windwalker,
             mage_arcane, mage_fire, mage_frost,
+            paladin_protection,
+            shaman_elemental
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
@@ -378,7 +380,7 @@ jobs:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
     needs: [ tww-test, tww-spelldata-dump ]
-    if: github.event_name == 'push' && ( success() || failure() )
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
 
     strategy:
       fail-fast: false

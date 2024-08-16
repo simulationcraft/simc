@@ -570,6 +570,7 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     int embedded_splinters;
+    int magis_spark_spells;
   } state;
 
   struct expression_support_t
@@ -1356,6 +1357,7 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     exceptional_spells_used(),
     exceptional_meteor_used()
   {
+    can_dismiss = true;
     owner_coeff.sp_from_sp = 1.0;
   }
 
@@ -2487,7 +2489,7 @@ struct arcane_mage_spell_t : public mage_spell_t
         trigger_echo = true;
         debuff->decrement();
 
-        if ( !td->debuffs.magis_spark_ab->check() && !td->debuffs.magis_spark_abar->check() && !td->debuffs.magis_spark_am->check() )
+        if ( ++p()->state.magis_spark_spells == 3 )
           p()->action.magis_spark->execute_on_target( s->target );
       }
 
@@ -3421,13 +3423,10 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    p()->consume_burden_of_power();
-
     double mana_pct = p()->buffs.arcane_charge->check() * 0.01 * p()->spec.mana_adept->effectN( 1 ).percent();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * mana_pct, p()->gains.arcane_barrage, this );
 
     p()->buffs.arcane_tempo->trigger();
-    p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
     p()->buffs.arcane_charge->expire();
     p()->buffs.arcane_harmony->expire();
@@ -3459,6 +3458,9 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       p()->trigger_arcane_charge( glorious_incandescence_charges );
       p()->state.trigger_glorious_incandescence = true;
     }
+
+    p()->consume_burden_of_power();
+    p()->trigger_spellfire_spheres();
 
     if ( p()->buffs.intuition->check() )
     {
@@ -6376,7 +6378,7 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       make_event( *sim, delay, [ this, set ]
       {
         p()->buffs.blessing_of_the_phoenix->trigger();
-        cooldown->adjust( set->effectN( 2 ).percent() * cooldown_t::cooldown_duration( cooldown ), false, false );
+        cooldown->adjust( -set->effectN( 2 ).percent() * cooldown_t::cooldown_duration( cooldown ), false, false );
       } );
     }
   }
@@ -6805,6 +6807,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
       if ( p()->talents.magis_spark.ok() )
       {
+        p()->state.magis_spark_spells = 0;
         td.magis_spark->trigger();
         td.magis_spark_ab->trigger();
         td.magis_spark_abar->trigger();
@@ -7596,8 +7599,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_default_value( ( mage->bugs ? 2.0 : 1.0 ) * mage->talents.arcane_debilitation->effectN( 2 ).percent() )
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_chance( mage->talents.arcane_debilitation.ok() );
+  // TODO: The 0.5 from the talent is rounded to 1, increasing Ignite damage by 50% at max stacks.
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
-                                     ->set_default_value( mage->talents.controlled_destruction->effectN( 1 ).percent() )
+                                     ->set_default_value( util::round( mage->talents.controlled_destruction->effectN( 1 ).percent(), mage->bugs ? 2 : 3 ) )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
   debuffs.controlled_instincts   = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
                                      ->set_chance( mage->talents.controlled_instincts.ok() );
@@ -9574,6 +9578,16 @@ void mage_t::consume_burden_of_power()
   } );
 
   buffs.glorious_incandescence->trigger();
+
+  // Sometimes when Glorious Incandescence is already up and Arcane Barrage
+  // consumes Burden of Power, Glorious Incandescence will not actually be
+  // consumed. Because we have already consumed it in simc, we can unset the
+  // state flag here to prevent it from working.
+  // TODO: Test the probability that this occurs. For now, assume that this
+  // is due to two randomly ordered events and has a 50% chance of happening.
+  // TODO: Double check this later
+  if ( bugs && rng().roll( 0.5 ) )
+    state.trigger_glorious_incandescence = false;
 }
 
 // If the target isn't specified, picks a random target.
