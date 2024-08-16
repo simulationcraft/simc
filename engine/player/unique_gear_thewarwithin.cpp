@@ -3288,6 +3288,8 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
 
   effect.spell_id = 454859;
 
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+
   new vivacity_cb_t( effect );
 }
 
