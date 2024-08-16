@@ -3325,6 +3325,7 @@ struct sigil_of_flame_base_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( name, p, s, o ), sigil( nullptr )
   {
     may_miss = false;
+    cooldown = p->cooldown.sigil_of_flame;
 
     if ( p->spell.sigil_of_flame_fury->ok() )
     {
