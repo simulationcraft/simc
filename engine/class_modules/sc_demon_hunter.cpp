@@ -4854,7 +4854,7 @@ struct blade_dance_base_t
       {
         // 2023-01-31 -- If Restless Hunter is triggered when the delayed final impact is queued, it does not fade
         //               Seems similar to some other 500ms buff protection in the game
-        if ( !p()->bugs || sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
+        if ( sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
         {
           p()->buff.restless_hunter->expire();
         }
