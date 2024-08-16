@@ -637,7 +637,7 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
   bool first = !buff->manual_stats_added;
   // In some cases, the buff values from separate items don't stack. This seems to fix itself
   // when the player loses and regains the buff, so we just assume they stack properly.
-  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) );
+  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   // In case the player has two copies of this embellishment, set up the buff events only once.
   if ( first && effect.player->thewarwithin_opts.dawn_dusk_thread_lining_uptime > 0.0 )
@@ -719,7 +719,7 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
 
     embrace_of_the_cinderbee_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), player( e.player )
     {
-      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.player );
+      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.item );
       create_all_stat_buffs( e, e.player->find_spell( 451699 ), value,
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
@@ -3136,8 +3136,8 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
-      // TODO: confirm buff value once scaling is fixed. currently bugged to be -1 with no ilevel scaling
-      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.player ) );
+      // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
+      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
 
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
       // TODO: determine if self damage procs anything
@@ -3214,36 +3214,36 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
       auto values = e.player->find_spell( 454857 );
       
       impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       shadow = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454975 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       nature = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454976 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       frost = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454977 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       holy = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454978 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       arcane = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454979 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       physical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       magical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454982 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
     }
 
     void trigger( action_t* a, action_state_t* s ) override
