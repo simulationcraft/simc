@@ -1143,6 +1143,7 @@ public:
     if ( p()->specialization() == WARRIOR_FURY)
       parse_effects( p()->buff.recklessness );
     parse_effects( p()->buff.slaughtering_strikes );
+    parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
 
     parse_effects( p()->buff.merciless_assault );
 
@@ -3058,6 +3059,9 @@ struct bladestorm_tick_t : public warrior_attack_t
     if ( p->specialization() == WARRIOR_ARMS )
     {
       impact_action = p->active.deep_wounds_ARMS;
+      // Arms does not generate rage when bladestorming
+      energize_amount = 0;
+      energize_resource = RESOURCE_NONE;
     }
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel -> effectN( 6 ).resource( RESOURCE_RAGE );
   }
@@ -5206,10 +5210,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
     }
-    if ( p()->talents.fury.wrath_and_fury->ok() )
-    {
-      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
-    }
 
     return am;
   }
@@ -5366,10 +5366,6 @@ struct crushing_blow_attack_t : public warrior_attack_t
     if ( p()->talents.fury.cruelty->ok() && p()->buff.enrage->check() )
     {
       am *= 1.0 + p()->talents.fury.cruelty->effectN( 1 ).percent();
-    }
-    if ( p()->talents.fury.wrath_and_fury->ok() )
-    {
-      am *= 1.0 + p()->find_spell( 386045 )->effectN( 1 ).percent();
     }
 
     return am;
