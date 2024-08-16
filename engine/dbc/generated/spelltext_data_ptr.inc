@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26288> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23837,7 +23837,7 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   { 443663, "Store $s1 Static Charge every $t1 sec. Moving releases the Static Charge healing allies or damaging enemies, $s2 in total, preferring injured allies. Enemies suffer damage equal to the Static Charge and allies are healed for $s3% of the Static Charge.", 0, 0 },
   { 443664, "$@spelldesc443663", 0, 0 },
   { 443722, "Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.\r\n\r\nFrost Splinters embed themselves into their target, dealing $443740o1 Frost damage over $443740d. This effect stacks.", 0, 0 },
-  { 443735, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames and grant $447968s1 of a random secondary stat. Anyone wearing Waders of the Unifying Flame will instead get their highest secondary stat.", 0, 0 },
+  { 443735, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames.\r\n\r\nUnifying Flames grants the wearer $s1 of their highest secondary stat, and others $s2 of a random secondary stat.", 0, 0 },
   { 443736, "Your spells and abilities have a chance to bring the power of the Light to bear against your foes. A Spark of Beledar judges them, dealing $s2 Radiant damage while marking them. Your next Spark against them will consume the mark to deal an additional $s3 Radiant damage.", 0, 0 },
   { 443739, "When you consume $?c1[Nether Precision][Winter's Chill], conjure $?c1[$s2 Arcane][a Frost] Splinter$?c1[s][] that fire$?c1[][s] at your target.\r\n$?c1[\r\n$@spellicon443763$@spellname443763:\r\n$@spelldesc443763\r\n]\r\n[\r\n$@spellicon443722$@spellname443722:\r\n$@spelldesc443722\r\n]", 0, 0 },
   { 443740, "$@spelldesc443722", "Dealing $s1 Frost damage every $t1 sec.", 0 },
@@ -24140,7 +24140,7 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   { 446067, "$@spelldesc443124", "Healing for $w1 per $t1 sec.", 0 },
   { 446077, "$@spelldesc444778", "Auto attack speed increased by $w1%.", 0 },
   { 446085, "Your next $?c1[Mortal Strike][Rampage] after Bladestorm ends deals $446918s1% additional damage.", 0, 0 },
-  { 446108, "$@spelldesc443762", "$pri increased by $w1 at the cost of $w2 Mastery.", 0 },
+  { 446108, "$@spelldesc443762", "$pri increased by $w1.\r\nMastery reduced by $455571w1.", 0 },
   { 446224, "$@spelldesc443736", "Marked by the Spark of Beledar.", 0 },
   { 446234, 0, "Marked by the Spark of Beledar.", 0 },
   { 446260, "Rising Sun Kick now kicks up a Gust of Mist to heal $s1 $Lally:allies; within $446264A2 yds for $191894s1. \r\n\r\nSpinning Crane Kick and Blackout Kick have a chance to kick up a Gust of Mist to heal $s2 $Lally:allies; within $446264A2 yds for $191894s1. ", 0, 0 },
@@ -24203,7 +24203,7 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   { 447876, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 447954, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate] costs 1 Rune and casts Exterminate.", 0 },
   { 447962, "$@spelldesc445434", "Parry increased by $w1. Avoidance increased by $w2.", 0 },
-  { 447968, "$@spelldesc443735", "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
+  { 447968, "$@spelldesc443735", "The Unifying Flame increases your $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
   { 447970, "$?a447962[$@spellname448090\r\n$@spelldesc448090]?a447978[$@spellname445475\r\n$@spelldesc445475]?a448036[$@spellname445434 \r\n$@spelldesc445434][$@spellname445434 \r\n$@spelldesc445434]", 0, 0 },
   { 447978, "$@spelldesc448090", "Your critical strikes deal $445203s5% additional damage to absorb shields.", 0 },
   { 447985, "While above $s1% health, Holy Shock's healing is increased $447988s1%, but creates a heal absorb on you for $s2% of the amount healed that prevents Beacon of Light from healing you until it has dissipated.", 0, 0 },
@@ -24956,7 +24956,7 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   { 453567, "$@spelldesc603", 0, 0 },
   { 453568, "When Doom expires, you have a chance to summon a Doomguard that casts $s1 Doom Bolts before departing. Each Doom Bolt deals $453616s1 Shadow damage.", 0, 0 },
   { 453572, "Taking damage has the chance to grant $@spellname453572 granting $s2 Versatility for $457592d. \r\n\r\nMoving within 3 yards of a friendly party member grants them a portion of $@spellname453572, sharing the effect for the remaining duration.", 0, 0 },
-  { 453573, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3  seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $458624r yards.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
+  { 453573, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3 seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $M4 yards.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 453575, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $458573s2 of a random secondary stat for $457596d, stacking up to $457594s1 times.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 453590, "$@spelldesc453568", 0, 0 },
   { 453598, "Damaging a target with Arcane Missiles increases the damage they take from Arcane Missiles, Arcane Barrage, and Arcane Blast by ${$s1}.1% for $453599d. Multiple instances may overlap.", 0, 0 },
@@ -25316,7 +25316,6 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
   { 455576, "Power Siphon increases the damage of Demonbolt by an additional $s2%.", 0, 0 },
   { 455577, "$@spelldesc453716", "Eviscerate, Rupture, and Black Powder damage increased by $w1%.", 0 },
   { 455580, "$@spelldesc603", 0, 0 },
-  { 455583, "$@spelldesc443735", "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
   { 455585, "Demonic Cores reduce the duration of Doom by an additional ${$s1/1000} sec.", 0, 0 },
   { 455587, "Increases the damage of Doom by $s1% and Doom summons $s2 Wild Imp when it expires.", 0, 0 },
   { 455590, "$?a137041[Casting Sundering within 40 yards of your Surging Totem causes it to create a Tremor at 200% effectiveness at the target area.][Allies affected by your Earthen Wall Totem, Ancestral Protection Totem, and Earthliving effect receive 10% increased healing from you.]", 0, 0 },
@@ -26292,8 +26291,12 @@ static const std::array<spelltext_data_t, 26289> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56110
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
   {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
+  {  443735,  0, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames and grant $447968s1 of a random secondary stat. Anyone wearing Waders of the Unifying Flame will instead get their highest secondary stat.", "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames.\r\n\r\nUnifying Flames grants the wearer $s1 of their highest secondary stat, and others $s2 of a random secondary stat." },
+  {  446108,  1, "$pri increased by $w1 at the cost of $w2 Mastery.", "$pri increased by $w1.\r\nMastery reduced by $455571w1." },
+  {  447968,  1, "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", "The Unifying Flame increases your $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1." },
+  {  453573,  0, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3  seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $458624r yards.\r\n\r\nThis is a Nerubian embellishment.", "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3 seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $M4 yards.\r\n\r\nThis is a Nerubian embellishment." },
   {  454433,  0, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec." },
   {  459231,  0, nullptr, "$@spelldesc459222" },
   {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
