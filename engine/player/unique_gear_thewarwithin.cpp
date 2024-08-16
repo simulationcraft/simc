@@ -3494,10 +3494,11 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     double accumulated_damage;
     double max_damage;
-    std::unordered_map<stat_e, buff_t*> buffs;
+    buff_t* buff;
+    bool embelishment;
 
     radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buff( nullptr ), embelishment( embelish )
     {
       max_damage = data().effectN( 1 ).average( e.player );
 
@@ -3505,62 +3506,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
       auto buff_spell = e.player->find_spell( 454785 );
 
-      create_radint_buffs( e, buff_spell, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
-
-      set_expire_callback( [ &, embelish ]( buff_t*, int, timespan_t ) {
-        double buff_value     = 0;
-        double max_buff_value = 0;
-
-        if ( embelish )
-        {
-          max_buff_value = e.player->find_spell( 454558 )->effectN( 2 ).average( e.player );
-        }
-        else
-        {
-          max_buff_value = e.player->find_spell( 463108 )->effectN( 1 ).average( e.player );
-        }
-
-        if ( !e.player->bugs )
-          buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
-        else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
-          buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
-
-        auto stat_buff = buffs.at( util::highest_stat( e.player, secondary_ratings ) );
-        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->buffed_stat =
-            util::highest_stat( e.player, secondary_ratings );
-        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->trigger_value = buff_value;
-        stat_buff->trigger();
-
-        accumulated_damage = 0;
-      } );
-    }
-
-    void create_radint_buffs( const special_effect_t& effect, const spell_data_t* buff_data,
-                              std::function<void( stat_e, buff_t* )> add_fn )
-    {
-      auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
-
-      for ( const auto& eff : buff_data->effects() )
-      {
-        if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
-          continue;
-
-        auto stats = util::translate_all_rating_mod( eff.misc_value1() );
-        if ( stats.size() != 1 )
-        {
-          effect.player->sim->error( "buff data {} effect {} has multiple stats", buff_data->id(), eff.index() );
-          continue;
-        }
-
-        auto stat_str = util::stat_type_abbrev( stats.front() );
-
-        auto buff = create_buff<radiant_focus_stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_str ),
-                                                            buff_data, effect )
-                        ->add_stat( stats.front(), 0 )
-                        ->set_name_reporting( stat_str );
-
-        add_fn( stats.front(), buff );
-      }
+      buff = create_buff<radiant_focus_stat_buff_t>( e.player, "radiance_crit", buff_spell, e )
+        ->add_stat_from_effect_type( A_MOD_RATING, 0 );
     }
 
     void reset() override
@@ -3574,6 +3521,34 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       buff_t::start( stacks, value, duration );
       accumulated_damage = 0;
     };
+
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+      double buff_value     = 0;
+      double max_buff_value = 0;
+
+      if ( embelishment )
+      {
+        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( player );
+      }
+      else
+      {
+        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( player );
+      }
+
+      if ( !player->bugs )
+        buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+      else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
+        buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
+
+      debug_cast<radiant_focus_stat_buff_t*>( buff )->buffed_stat =
+          util::translate_rating_mod( buff->data().effectN( 1 ).misc_value1() );
+      debug_cast<radiant_focus_stat_buff_t*>( buff )->trigger_value = buff_value;
+      buff->trigger();
+
+      accumulated_damage = 0;
+    }
   };
 
   struct radiant_focus_cb_t : public dbc_proc_callback_t
