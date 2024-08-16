@@ -6297,7 +6297,7 @@ bonus_id={ 11297 }, base_ilevel={ 545 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
 bonus_id={ 11300 }, effects={ Ascendance (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
-bonus_id={ 11302 }, effects={ Symbiosis (id=463232, index=0, type=equip) }
+bonus_id={ 11302 }, effects={ Symbiosis (id=463610, index=0, type=equip) }
 bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
 bonus_id={ 11304 }, effects={ Duskthread Lining (id=457677, index=0, type=equip) }
 bonus_id={ 11306 }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }

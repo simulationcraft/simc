@@ -4555,7 +4555,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 GCD              : 1.5 seconds
-Duration         : Aura (infinite)
+Duration         : 1 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292

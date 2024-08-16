@@ -916,7 +916,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 359
                  : 2835: Spatial Paradox (406789 effect#13)
-                 : 3567: Balanced Stratagem (451514 effect#1)
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -3911,7 +3910,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting spells : Wisdom of the Wall (452684 effect#1)
+Affecting spells : Chi Proficiency (450426 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
@@ -5782,7 +5781,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting spells : Wisdom of the Wall (452684 effect#1)
+Affecting spells : Chi Proficiency (450426 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -5837,6 +5836,7 @@ Range            : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 3567: Balanced Stratagem (451514 effect#1)
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
@@ -21962,8 +21962,9 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=1150318)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
-                   Family Flags: 48
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Gift of the Ox (124507), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gift of the Ox (178173), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
+                   Family Flags: 17, 48, 95, 121
+Hotfixed         : Affects Spells
 #3 (id=1176892)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
@@ -24509,7 +24510,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1152151)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 3567 (Label) | Target: Self (1)
-                   Affected Spells (Label): Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Rushing Jade Wind (116847), Keg Smash (121253), Blackout Kick (205523), Spinning Crane Kick (322729), Ancient Teachings (388024)
+                   Affected Spells (Label): Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rushing Jade Wind (116847), Keg Smash (121253), Rising Sun Kick (185099), Blackout Kick (205523), Spinning Crane Kick (322729), Ancient Teachings (388024)
 Description      : $@spelldesc450889
 Tooltip          : Healing and damage of your next Physical spell or ability is increased by $s1%.
 
