@@ -3115,7 +3115,7 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
-// 463232 equip
+// 463610 equip
 //  e1: trigger cycle
 //  e2: buff coeff
 // 455535 cycle
@@ -4193,7 +4193,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
-  register_special_effect( 463232, items::darkmoon_deck_symbiosis );
+  register_special_effect( 463610, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
