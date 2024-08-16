@@ -3375,7 +3375,6 @@ public:
                        .percent() ),
       chrono_cap( 2.5 )  // TODO: Parse from variable
   {
-    travel_speed = 40;
     may_crit     = false;
   }
 
