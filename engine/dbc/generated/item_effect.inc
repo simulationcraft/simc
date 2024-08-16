@@ -9632,7 +9632,7 @@ static const std::array<item_effect_t, 9803> __item_effect_data { {
   { 187030, 395472, 222577,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
   { 187026, 455772, 222578,   0,   1,    0,      -1,      -1 }, // Prof Gear Skill Bonus (DNT)
   { 187027, 395472, 222578,   1,   1,    0,      -1,      -1 }, // Cooking Gear Equipped (DNT)
-  { 187511, 463232, 222653,   0,   1,    0,      -1,      -1 }, // Symbiosis
+  { 187511, 463610, 222653,   0,   1,    0,      -1,      -1 }, // Symbiosis
   { 187510, 454857, 222671,   0,   1,    0,      -1,      -1 }, // Vivacity
   { 190089, 463095, 222680,   0,   1,    0,      -1,      -1 }, // Ascendance
   { 185951, 454087, 222702,   0,   0,   11,       0,       0 }, // Refreshment
