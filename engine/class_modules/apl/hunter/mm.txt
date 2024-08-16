@@ -36,7 +36,7 @@ actions.st+=/kill_shot,if=buff.razor_fragments.up
 actions.st+=/black_arrow
 actions.st+=/explosive_shot,if=active_enemies>1
 actions.st+=/volley
-actions.st+=/rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm_icd.remains|cooldown.lunar_storm_icd.remains>5)
+actions.st+=/rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5)
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
