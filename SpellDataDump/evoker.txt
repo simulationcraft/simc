@@ -11875,7 +11875,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1467
-Affecting spells : Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#7), Spatial Paradox (406789 effect#7), Arcane Reach (454983 effect#1)
+Affecting spells : Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#7), Spatial Paradox (406789 effect#7), Arcane Reach (454983 effects: #1, #4)
 Family Flags     : 67, 73
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -17292,6 +17292,11 @@ Effects          :
 #3 (id=1169792)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 3885 (Label) | Target: Self (1)
                    Affected Spells (Label): Bestow Weyrnstone (408233), Timelessness (412710)
+#4 (id=1181805)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+                   Affected Spells: Prescience (409311)
+                   Family Flags: 73
+Hotfixed         : NEW EFFECT
 Description      : The range of your helpful magics is increased by $s1 yards.
 
 Name             : Recall (desc=Bronze) (id=455962) [Spell Family (224)] 
