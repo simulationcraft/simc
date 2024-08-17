@@ -5260,6 +5260,9 @@ void paladin_t::apply_affecting_auras( action_t& action )
 
   if ( talents.herald_of_the_sun.luminosity )
     action.apply_affecting_aura( talents.herald_of_the_sun.luminosity );
+
+  if ( sets->has_set_bonus( PALADIN_RETRIBUTION, TWW1, B2 ) )
+    action.apply_affecting_aura( sets->set( PALADIN_RETRIBUTION, TWW1, B2 ) );
 }
 
 /* Report Extension Class

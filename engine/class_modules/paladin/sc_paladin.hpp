@@ -263,6 +263,7 @@ public:
       buff_t* morning_star_driver;
     } herald_of_the_sun;
 
+    buff_t* rise_from_ash; // Ret TWW1 4p
   } buffs;
 
   // Gains
@@ -1147,7 +1148,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p; // Ret
+      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1193,6 +1194,8 @@ public:
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
+      this->affected_by.rise_from_ash =
+          this->data().affected_by( p->find_spell( 454693 )->effectN( 1 ) );
       if ( p->talents.divine_hammer->ok() )
       {
         for ( auto i = 2; i < 5; i++ )
@@ -1427,6 +1430,11 @@ public:
          ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+    }
+
+    if ( affected_by.rise_from_ash && p()->buffs.rise_from_ash->up() )
+    {
+      am *= 1.0 + p()->buffs.rise_from_ash->data().effectN( 1 ).percent();
     }
 
     // TWW1 Prot 4pc

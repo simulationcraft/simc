@@ -1,6 +1,7 @@
 #include <unordered_set>
 
 #include "simulationcraft.hpp"
+#include "dbc/specialization.hpp"
 #include "sc_enums.hpp"
 #include "sc_paladin.hpp"
 #include "class_modules/apl/apl_paladin.hpp"
@@ -1201,6 +1202,11 @@ struct wake_of_ashes_t : public paladin_spell_t
       p()->cooldowns.aurora_icd->start();
       p()->buffs.divine_purpose->trigger();
     }
+
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, TWW1, B4 ) )
+    {
+      p()->buffs.rise_from_ash->trigger();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -1650,6 +1656,8 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
 
   buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
+
+  buffs.rise_from_ash = make_buff( this, "rise_from_ash", find_spell( 454693 ) );
 }
 
 void paladin_t::init_rng_retribution()
