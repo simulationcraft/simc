@@ -2667,7 +2667,7 @@ private:
   hammer_of_wrath_t* echo;
 
   hammer_of_wrath_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
+    : paladin_melee_attack_t( "hammer_of_wrath_echo", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) ),
       echo( nullptr )
   {
     background = true;
