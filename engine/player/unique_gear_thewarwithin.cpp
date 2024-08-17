@@ -719,7 +719,7 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
 
     embrace_of_the_cinderbee_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), player( e.player )
     {
-      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.item );
+      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.player );
       create_all_stat_buffs( e, e.player->find_spell( 451699 ), value,
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
