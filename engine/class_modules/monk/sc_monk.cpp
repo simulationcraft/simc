@@ -472,7 +472,7 @@ void monk_action_t<Base>::consume_resource()
              base_t::id == p()->talent.brewmaster.keg_smash->id() ||
              base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
           // this needs to be rounded to the nearest whole number
-          p()->flurry_strikes_energy += as<int>( std::round( final_cost ) );
+          p()->flurry_strikes_energy += std::lround( final_cost );
 
         // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
@@ -1841,8 +1841,8 @@ struct charred_passions_t : base_action_t
     }
   };
 
-  damage_t *damage;
-  cooldown_t *cooldown;
+  damage_t *chp_damage;
+  cooldown_t *chp_cooldown;
 
   template <typename... Args>
   charred_passions_t( monk_t *player, std::string_view name, Args &&...args )
@@ -1851,9 +1851,12 @@ struct charred_passions_t : base_action_t
     if ( !player->talent.brewmaster.charred_passions->ok() )
       return;
 
-    cooldown = player->get_cooldown( "charred_passions" );
-    damage   = new damage_t( player, name );
-    base_action_t::add_child( damage );
+    chp_cooldown = player->get_cooldown( "charred_passions" );
+    chp_damage   = new damage_t( player, name );
+    // TODO: Have a more resilient way to re-map stats objects.
+    // Issue: When SCK tick stats replace the action stats of SCK channel, adding
+    // a child of SCK tick breaks reporting.
+    // base_action_t::add_child( damage );
   }
 
   void impact( action_state_t *state ) override
@@ -1864,14 +1867,14 @@ struct charred_passions_t : base_action_t
       return;
 
     base_action_t::p()->proc.charred_passions->occur();
-    damage->base_dd_min = damage->base_dd_max = state->result_amount;
-    damage->execute();
+    chp_damage->base_dd_min = chp_damage->base_dd_max = state->result_amount;
+    chp_damage->execute();
 
-    monk_td_t *td = base_action_t::get_td( state->target );
-    if ( td->dot.breath_of_fire->is_ticking() && cooldown->up() )
+    if ( monk_td_t *target_data = base_action_t::get_td( state->target );
+         target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
     {
-      td->dot.breath_of_fire->refresh_duration();
-      cooldown->start( damage->data().effectN( 1 ).trigger()->internal_cooldown() );
+      target_data->dot.breath_of_fire->refresh_duration();
+      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
     }
   }
 };
@@ -1905,6 +1908,9 @@ struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
 
     if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
       keg_smash_cooldown = player->get_cooldown( "keg_smash" );
+
+    if ( p->talent.brewmaster.charred_passions->ok() )
+      add_child( base_t::chp_damage );
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
@@ -2148,6 +2154,7 @@ struct chi_explosion_t : public monk_spell_t
 
 struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 {
+  using base_t = charred_passions_t<monk_melee_attack_t>;
   sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
     : charred_passions_t<monk_melee_attack_t>( p, name, data )
   {
@@ -2162,7 +2169,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
-    // // dance of chiji is scripted
+    // dance of chiji is scripted
     if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
           .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
@@ -2222,6 +2229,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
+
+      if ( p->talent.brewmaster.charred_passions->ok() )
+        add_child( debug_cast<sck_tick_action_t *>( tick_action )->chp_damage );
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
@@ -6297,6 +6307,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   if ( player->specialization() == MONK_MISTWEAVER )
     purified_spirit = new spender_t::purified_spirit_t<monk_heal_t>(
         player, player->talent.master_of_harmony.purified_spirit_heal, this );
+  damage->add_child( purified_spirit );
 }
 
 void aspect_of_harmony_t::trigger( action_state_t *state )
