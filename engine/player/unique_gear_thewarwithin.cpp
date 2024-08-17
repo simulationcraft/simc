@@ -3179,13 +3179,13 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
 // 454859 rppm data
 // 454857 driver/values
-// 454862 physical/fire?
+// 454862 fire
 // 454975 shadow
 // 454976 nature
 // 454977 frost
 // 454978 holy
 // 454979 arcane
-// 454980 Physical Multischool
+// 454980 Physical
 // 454982 Magical Multischool
 void darkmoon_deck_vivacity( special_effect_t& effect )
 {
@@ -3197,7 +3197,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     buff_t* frost;
     buff_t* holy;
     buff_t* arcane;
-    buff_t* physical_multi;
+    buff_t* force;
     buff_t* magical_multi;
 
     vivacity_cb_t( const special_effect_t& e )
@@ -3208,7 +3208,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         frost( nullptr ),
         holy( nullptr ),
         arcane( nullptr ),
-        physical_multi( nullptr ),
+        force( nullptr ),
         magical_multi( nullptr )
     {
       auto values = e.player->find_spell( 454857 );
@@ -3237,7 +3237,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
-      physical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
+      force = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
         ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
@@ -3274,11 +3274,9 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         case SCHOOL_ARCANE:
           arcane->trigger();
           break;
-        case SCHOOL_PHYSICAL: // Pure Physical currently doesnt trigger anything
-          break;
         default:
           if ( dbc::get_school_mask( s->action->get_school() ) & SCHOOL_MASK_PHYSICAL )
-            physical_multi->trigger();
+            force->trigger();
           else
             magical_multi->trigger();
           break;
