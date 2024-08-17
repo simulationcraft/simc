@@ -6777,7 +6777,7 @@ struct kill_command_t: public hunter_spell_t
     {
       if ( p()->buffs.sulfur_lined_pockets_explosive->up() )
       {
-        p()->buffs.sulfur_lined_pockets->expire();
+        p()->buffs.sulfur_lined_pockets_explosive->expire();
         quick_shot.explosive_shot->execute_on_target( target );
       }
       else
