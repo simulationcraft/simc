@@ -9175,8 +9175,8 @@ struct magma_eruption_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
-    auto& tl = target_cache.list;
-    auto it  = std::remove_if( target_list().begin(), target_list().end(), [ this ]( player_t* target ) {
+    std::vector<player_t*> tl( target_cache.list );
+    auto it  = std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) {
       return p()->get_target_data( target )->dot.flame_shock->is_ticking();
     } );
     tl.erase( it, tl.end() );
