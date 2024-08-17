@@ -1284,6 +1284,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 template <class base_action_t>
 struct overwhelming_force_t : base_action_t
 {
+  using base_t = overwhelming_force_t<base_action_t>;
   struct damage_t : monk_spell_t
   {
     damage_t( monk_t *player, std::string_view name )
@@ -1304,8 +1305,9 @@ struct overwhelming_force_t : base_action_t
 
   damage_t *overwhelming_force_damage;
 
-  overwhelming_force_t( monk_t *player, std::string_view options_str )
-    : base_action_t( player, options_str ), overwhelming_force_damage( nullptr )
+  template <typename... Args>
+  overwhelming_force_t( monk_t *player, Args &&...args )
+    : base_action_t( player, std::forward<Args>( args )... ), overwhelming_force_damage( nullptr )
   {
     if ( !player->talent.master_of_harmony.overwhelming_force->ok() )
       return;
@@ -1356,14 +1358,13 @@ struct tigers_ferocity_t : public monk_melee_attack_t
 };
 
 // Tiger Palm base ability ===================================================
-struct tiger_palm_t : public monk_melee_attack_t
+struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 {
   bool face_palm;
-
-  tigers_ferocity_t *tigers_ferocity;
+  action_t *tigers_ferocity;
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
   {
     parse_options( options_str );
 
@@ -1538,6 +1539,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
 template <class base_action_t>
 struct press_the_advantage_t : base_action_t
 {
+  using base_t = press_the_advantage_t<base_action_t>;
   struct damage_t : base_action_t
   {
     const double mod;
@@ -1568,6 +1570,15 @@ struct press_the_advantage_t : base_action_t
             .set_eff( &effect );
     }
 
+    void init_finished() override
+    {
+      base_action_t::init_finished();
+
+      if ( action_t *pta = base_action_t::p()->find_action( "press_the_advantage" );
+           pta && base_action_t::p()->talent.brewmaster.press_the_advantage->ok() )
+        pta->add_child( this );
+    }
+
     void execute() override
     {
       base_action_t::p()->buff.press_the_advantage->expire();
@@ -1595,15 +1606,15 @@ struct press_the_advantage_t : base_action_t
   propagate_const<damage_t *> press_the_advantage_action;
   propagate_const<proc_t *> press_the_advantage_proc;
 
-  press_the_advantage_t( monk_t *player, std::string_view options_str )
-    : base_action_t( player, options_str ), press_the_advantage_action( nullptr )
+  template <typename... Args>
+  press_the_advantage_t( monk_t *player, Args &&...args )
+    : base_action_t( player, std::forward<Args>( args )... ), press_the_advantage_action( nullptr )
   {
     if ( !player->talent.brewmaster.press_the_advantage->ok() )
       return;
 
     press_the_advantage_action =
         new damage_t( player, fmt::format( "{}_press_the_advantage", base_action_t::name_str ) );
-    base_action_t::add_child( press_the_advantage_action );
     press_the_advantage_proc = player->get_proc( fmt::format( "{} - Press The Advantage", base_action_t::name_str ) );
   }
 
@@ -1621,11 +1632,11 @@ struct press_the_advantage_t : base_action_t
   }
 };
 
-struct rising_sun_kick_dmg_t : public monk_melee_attack_t
+struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
 {
   rising_sun_kick_dmg_t( monk_t *p, std::string_view /* options_str */,
                          std::string_view name = "rising_sun_kick_damage" )
-    : monk_melee_attack_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
+    : base_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery = true;
 
@@ -1641,7 +1652,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
   void execute() override
   {
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     if ( p()->buff.thunder_focus_tea->up() )
     {
@@ -1667,7 +1678,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     p()->buff.transfer_the_power->trigger();
 
@@ -1711,7 +1722,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     attack_power_mod.direct = 0;
 
-    execute_action        = new overwhelming_force_t<press_the_advantage_t<rising_sun_kick_dmg_t>>( p, options_str );
+    execute_action        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
     execute_action->stats = stats;
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
@@ -1824,6 +1835,7 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
 template <class base_action_t>
 struct charred_passions_t : base_action_t
 {
+  using base_t = charred_passions_t<base_action_t>;
   struct damage_t : monk_spell_t
   {
     damage_t( monk_t *player, std::string_view name )
@@ -1845,14 +1857,13 @@ struct charred_passions_t : base_action_t
   cooldown_t *chp_cooldown;
 
   template <typename... Args>
-  charred_passions_t( monk_t *player, std::string_view name, Args &&...args )
-    : base_action_t( player, name, std::forward<Args>( args )... )
+  charred_passions_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
   {
     if ( !player->talent.brewmaster.charred_passions->ok() )
       return;
 
     chp_cooldown = player->get_cooldown( "charred_passions" );
-    chp_damage   = new damage_t( player, name );
+    chp_damage   = new damage_t( player, base_action_t::name_str );
     // TODO: Have a more resilient way to re-map stats objects.
     // Issue: When SCK tick stats replace the action stats of SCK channel, adding
     // a child of SCK tick breaks reporting.
@@ -1880,9 +1891,8 @@ struct charred_passions_t : base_action_t
 };
 
 // Blackout Kick Baseline ability =======================================
-struct blackout_kick_t : charred_passions_t<monk_melee_attack_t>
+struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
 {
-  using base_t = charred_passions_t<monk_melee_attack_t>;
   blackout_kick_totm_proc_t *bok_totm_proc;
   cooldown_t *keg_smash_cooldown;
 
@@ -2154,7 +2164,6 @@ struct chi_explosion_t : public monk_spell_t
 
 struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 {
-  using base_t = charred_passions_t<monk_melee_attack_t>;
   sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
     : charred_passions_t<monk_melee_attack_t>( p, name, data )
   {
@@ -2856,8 +2865,7 @@ struct press_the_advantage_melee_t : public monk_spell_t
   {
     background = true;
 
-    if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() &&
-         !p()->sim->enable_all_talents )
+    if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
       add_child( p()->active_actions.chi_surge );
   }
 };
@@ -5299,7 +5307,6 @@ struct chi_wave_t : public monk_spell_t
     stats = damage->stats;
 
     add_child( heal );
-    add_child( damage );
   }
 
   void execute() override
@@ -5353,10 +5360,11 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
-    add_child( damage );
-    add_child( heal );
     may_combo_strike = true;
     gcd_type         = gcd_haste_type::NONE;
+
+    stats = damage->stats;
+    add_child( heal );
   }
 
   bool ready() override
@@ -6803,9 +6811,9 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "crackling_jade_lightning" )
     return new crackling_jade_lightning_t( this, options_str );
   if ( name == "tiger_palm" )
-    return new overwhelming_force_t<tiger_palm_t>( this, options_str );
+    return new tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" )
-    return new overwhelming_force_t<blackout_kick_t>( this, options_str );
+    return new blackout_kick_t( this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
   if ( name == "leg_sweep" )
