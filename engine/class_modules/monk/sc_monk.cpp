@@ -467,14 +467,14 @@ void monk_action_t<Base>::consume_resource()
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        // Tiger Palm counts the full energy base cost
-        if ( base_t::id == p()->baseline.monk.tiger_palm->id() )
-          p()->flurry_strikes_energy += as<int>( base_t::base_cost() );
-        // Crackling Jade Lightning is whatever the current cost
-        else if ( base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
+        // Tiger Palm, Keg Smash, and Crackling Jade Lightning contribute their current cost to the accumulator
+        if ( base_t::id == p()->baseline.monk.tiger_palm->id() ||
+             base_t::id == p()->talent.brewmaster.keg_smash->id() ||
+             base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
           // this needs to be rounded to the nearest whole number
           p()->flurry_strikes_energy += as<int>( std::round( final_cost ) );
-        // Detox, Paralysis and Vivify do not count towards Flurry Strikes
+
+        // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
         {
           p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
