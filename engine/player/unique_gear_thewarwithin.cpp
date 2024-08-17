@@ -3347,22 +3347,22 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       auto vers_name     = util::tokenize_fn( vers_spell->name_cstr() );
 
       auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "_crit", crit_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( crit_buff );
 
       auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "_haste", haste_spell )
-                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( haste_buff );
 
       auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "_mastery", mastery_spell )
-                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( mastery_buff );
 
       auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "_vers", vers_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( vers_buff );
 
@@ -3494,17 +3494,20 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     double accumulated_damage;
     double max_damage;
+    double max_buff_value;
     buff_t* buff;
-    bool embelishment;
 
     radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buff( nullptr ), embelishment( embelish )
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buff(nullptr)
     {
       max_damage = data().effectN( 1 ).average( e.player );
-
       set_default_value( max_damage );
 
       auto buff_spell = e.player->find_spell( 454785 );
+      if( embelish )
+        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( e.item );
+      else
+        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e.item );
 
       buff = create_buff<radiant_focus_stat_buff_t>( e.player, "radiance_crit", buff_spell, e )
         ->add_stat_from_effect_type( A_MOD_RATING, 0 );
@@ -3526,16 +3529,6 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     {
       buff_t::expire_override( stacks, duration );
       double buff_value     = 0;
-      double max_buff_value = 0;
-
-      if ( embelishment )
-      {
-        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( player );
-      }
-      else
-      {
-        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( player );
-      }
 
       if ( !player->bugs )
         buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
