@@ -986,10 +986,14 @@ struct execution_sentence_debuff_t : public buff_t
 
   void accumulate_damage( const action_state_t* s )
   {
-    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), s->result_total,
+    double amount_accumulated = s->result_type == result_amount_type::DMG_DIRECT ?
+      s->result_total / s->composite_da_multiplier() :
+      s->result_total / s->composite_ta_multiplier();
+
+    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), amount_accumulated,
                       accumulated_damage, accumulated_damage + s->result_total );
 
-    accumulated_damage += s->result_total;
+    accumulated_damage += amount_accumulated;
   }
 
   double get_accumulated_damage() const
@@ -1158,6 +1162,7 @@ public:
   bool clears_judgment;
 
   bool triggers_higher_calling;
+  bool skip_es_accum;
 
   paladin_action_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
@@ -1167,7 +1172,8 @@ public:
       searing_light_disabled( false ),
       always_do_capstones(false),
       clears_judgment( false ),
-      triggers_higher_calling( false )
+      triggers_higher_calling( false ),
+      skip_es_accum( true )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1509,11 +1515,14 @@ public:
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
+
     paladin_td_t* td = this->td( s->target );
-    if ( td->debuff.execution_sentence->check() )
+
+    if ( td->debuff.execution_sentence->check() && !skip_es_accum )
     {
       td->debuff.execution_sentence->accumulate_damage( s );
     }
+
     if ( p()->buffs.moment_of_glory->up() )
     {
       double amount = s->result_amount * p()->talents.moment_of_glory->effectN( 3 ).percent();

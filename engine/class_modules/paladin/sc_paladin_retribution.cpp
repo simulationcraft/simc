@@ -1467,6 +1467,7 @@ struct highlords_judgment_t : public paladin_spell_t
   {
     background = true;
     always_do_capstones = true;
+    skip_es_accum = true;
   }
 };
 
