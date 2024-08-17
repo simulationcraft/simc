@@ -9830,6 +9830,13 @@ struct tempest_t : public shaman_spell_t
       p()->action.feral_spirit_rt->set_target( execute_state->target );
       p()->action.feral_spirit_rt->execute();
     }
+
+    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
+           p()->talent.lightning_rod.ok() ) )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -9842,7 +9849,6 @@ struct tempest_t : public shaman_spell_t
          ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
            p()->talent.lightning_rod.ok() ) )
     {
-      td( state->target )->debuff.lightning_rod->trigger();
       p()->trigger_lightning_rod_damage( state );
     }
   }
