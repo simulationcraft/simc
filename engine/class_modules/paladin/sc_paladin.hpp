@@ -1819,7 +1819,7 @@ public:
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
-      num_hopo_spent = 3.0;
+      num_hopo_spent = is_hammer_of_light_driver ? 5.0 : 3.0;
 
     if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
@@ -1834,30 +1834,6 @@ public:
           p->cooldowns.righteous_cause_icd->start();
           break;
         }
-      }
-    }
-
-    // Hammer of Light driver can proc it under all circumstances, but not the damage part
-    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
-    {
-      // This is a bit of a hack. As far as we can tell from logs,
-      // this agony-like accumulator logic matches the distribution
-      // of procs pretty closely, tested on a couple thousand TV casts.
-      // This will need periodic re-verification, but is good enough for beta
-      // purposes.
-      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
-      if ( p->radiant_glory_accumulator >= 1.0 )
-      {
-        // TODO(mserrano): get this from spell data
-        if ( p->talents.crusade->ok() )
-        {
-          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
-        }
-        else if ( p->talents.avenging_wrath->ok() )
-        {
-          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
-        }
-        p->radiant_glory_accumulator -= 1.0;
       }
     }
 
@@ -1883,7 +1859,7 @@ public:
     {
       double crusade_stacks_given = num_hopo_spent;
 
-      if (is_hammer_of_light_driver)
+      if ( is_hammer_of_light_driver )
       {
         // 2024-08-05 The driver doesn't give stacks if it was free
         if ( ( p->buffs.divine_purpose->up() && p->bugs ) ||
@@ -1903,6 +1879,30 @@ public:
       }
       if ( crusade_stacks_given > 0 )
         p->buffs.crusade->trigger( as<int>( crusade_stacks_given ) );
+    }
+
+    // Hammer of Light driver can proc it under all circumstances, but not the damage part
+    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
+    {
+      // This is a bit of a hack. As far as we can tell from logs,
+      // this agony-like accumulator logic matches the distribution
+      // of procs pretty closely, tested on a couple thousand TV casts.
+      // This will need periodic re-verification, but is good enough for beta
+      // purposes.
+      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
+      if ( p->radiant_glory_accumulator >= 1.0 )
+      {
+        // TODO(mserrano): get this from spell data
+        if ( p->talents.crusade->ok() )
+        {
+          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
+        }
+        else if ( p->talents.avenging_wrath->ok() )
+        {
+          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
+        }
+        p->radiant_glory_accumulator -= 1.0;
+      }
     }
 
     // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all
