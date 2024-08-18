@@ -2175,6 +2175,13 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   assert( expiration.size() == 1 );
 
+  // Do not refresh above pandemic buff limit
+  if ( refresh_behavior == buff_refresh_behavior::PANDEMIC )
+  {
+    extra_seconds = std::min( expiration.front()->remains() + extra_seconds, buff_duration() * 1.3 ) -
+                    expiration.front()->remains();
+  }
+
   extra_seconds = extra_seconds * get_time_duration_multiplier();
 
   if ( extra_seconds > timespan_t::zero() )
