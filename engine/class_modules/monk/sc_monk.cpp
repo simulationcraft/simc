@@ -179,6 +179,21 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
 
   // Windwalker
+  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() && true )
+  {
+    add_parse_entry( base_t::da_multiplier_effects )
+        .set_buff( p()->buff.combo_strikes )
+        .set_func( [ & ] { return ww_mastery; } )
+        .set_value( effect.mastery_value() )
+        .set_mastery( true )
+        .set_eff( &effect );
+    add_parse_entry( base_t::ta_multiplier_effects )
+        .set_buff( p()->buff.combo_strikes )
+        .set_func( [ & ] { return ww_mastery; } )
+        .set_value( effect.mastery_value() )
+        .set_mastery( true )
+        .set_eff( &effect );
+  }
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
@@ -582,8 +597,7 @@ void monk_action_t<Base>::execute()
 template <class Base>
 void monk_action_t<Base>::impact( action_state_t *s )
 {
-  if ( s->action->school == SCHOOL_PHYSICAL )
-    trigger_mystic_touch( s );
+  trigger_mystic_touch( s );
 
   base_t::impact( s );
 
@@ -789,7 +803,10 @@ void monk_action_t<Base>::trigger_storm_earth_and_fire( const action_t *a )
 template <class Base>
 void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
 {
-  if ( base_t::sim->overrides.mystic_touch || base_t::result_is_miss( s->result ) || s->result_amount == 0.0 )
+  if ( base_t::sim->overrides.mystic_touch )
+    return;
+
+  if ( base_t::result_is_miss( s->result ) || s->result_amount == 0.0 || s->action->school != SCHOOL_PHYSICAL )
     return;
 
   if ( s->target->debuffs.mystic_touch && p()->baseline.monk.mystic_touch->ok() )
@@ -814,10 +831,6 @@ double monk_spell_t::composite_target_crit_chance( player_t *target ) const
 double monk_spell_t::composite_persistent_multiplier( const action_state_t *state ) const
 {
   double pm = base_t::composite_persistent_multiplier( state );
-
-  // Windwalker Mastery: Combo Strikes
-  if ( ww_mastery && p()->buff.combo_strikes->check() )
-    pm *= 1 + p()->cache.mastery_value();
 
   // Brewmaster Tier Set
   if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
@@ -893,26 +906,6 @@ monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
   track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
-double monk_melee_attack_t::composite_target_crit_chance( player_t *target ) const
-{
-  double c = base_t::composite_target_crit_chance( target );
-
-  return c;
-}
-
-double monk_melee_attack_t::action_multiplier() const
-{
-  double am = base_t::action_multiplier();
-
-  if ( ww_mastery && p()->buff.combo_strikes->check() )
-    am *= 1 + p()->cache.mastery_value();
-
-  if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-    am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
-
-  return am;
-}
-
 // Physical tick_action abilities need amount_type() override, so the
 // tick_action are properly physically mitigated.
 result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state, bool periodic ) const
@@ -924,17 +917,6 @@ result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state
   else
   {
     return base_t::amount_type( state, periodic );
-  }
-}
-
-void monk_melee_attack_t::impact( action_state_t *s )
-{
-  base_t::impact( s );
-
-  if ( !sim->overrides.mystic_touch && s->action->result_is_hit( s->result ) && p()->baseline.monk.mystic_touch->ok() &&
-       s->result_amount > 0.0 )
-  {
-    s->target->debuffs.mystic_touch->trigger();
   }
 }
 
@@ -7158,7 +7140,7 @@ void monk_t::init_spells()
     baseline.monk.blackout_kick            = find_class_spell( "Blackout Kick" );
     baseline.monk.crackling_jade_lightning = find_class_spell( "Crackling Jade Lightning" );
     baseline.monk.leg_sweep                = find_class_spell( "Leg Sweep" );
-    baseline.monk.mystic_touch             = find_class_spell( "Mystic Touch" );
+    baseline.monk.mystic_touch             = find_spell( 113746 );
     baseline.monk.provoke                  = find_class_spell( "Provoke" );
     baseline.monk.roll                     = find_class_spell( "Roll" );
     baseline.monk.spinning_crane_kick      = find_spell( 101546 );
@@ -8192,8 +8174,7 @@ void monk_t::create_buffs()
       make_buff_fallback( baseline.windwalker.mastery->ok(), this, "combo_strikes" )
           ->set_trigger_spell( baseline.windwalker.mastery )
           ->set_duration( timespan_t::from_minutes( 60 ) )
-          ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
-          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+          ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff
 
   // Do not use a fallback buff - it is possible to get a dance of chiji proc without the talent from other sources.
   buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
