@@ -2451,7 +2451,7 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
@@ -2727,7 +2727,7 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
@@ -3003,7 +3003,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.colossus.colossal_might->ok() )
