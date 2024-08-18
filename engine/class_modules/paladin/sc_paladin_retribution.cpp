@@ -66,6 +66,12 @@ struct crusade_t : public paladin_spell_t
       p()->buffs.crusade->expire();
 
     p()->buffs.crusade->trigger();
+
+    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+    {
+      p()->apply_avatar_dawnlights();
+      p()->buffs.herald_of_the_sun.suns_avatar->trigger();
+    }
   }
 };
 
@@ -1588,6 +1594,9 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
+  buffs.crusade->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+    buffs.herald_of_the_sun.suns_avatar->expire();
+  } );
 
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )

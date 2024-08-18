@@ -10,6 +10,7 @@
 #include "simulationcraft.hpp"
 #include "action/parse_effects.hpp"
 #include "item/special_effect.hpp"
+#include <algorithm>
 
 // ==========================================================================
 // Paladin
@@ -187,8 +188,6 @@ struct shield_of_vengeance_buff_t : public absorb_buff_t
     cooldown->duration = 0_ms;
   }
 
-
-
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool res = absorb_buff_t::trigger( stacks, value, chance, duration );
@@ -321,6 +320,11 @@ void avenging_wrath_t::execute()
   if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
     p()->buffs.lightsmith.blessing_of_the_forge->execute();
   p()->tww1_4p_prot();
+  if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+  {
+    p()->apply_avatar_dawnlights();
+    p()->buffs.herald_of_the_sun.suns_avatar->trigger();
+  }
 }
 
 // Holy Avenger
@@ -3054,6 +3058,14 @@ struct dawnlight_t : public paladin_spell_t
 
     if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
       p()->buffs.herald_of_the_sun.gleaming_rays->trigger();
+
+    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+    {
+      if ( ( !p()->buffs.herald_of_the_sun.suns_avatar->up() ) && ( p()->buffs.crusade->up() || p()->buffs.avenging_wrath->up() ) )
+      {
+        p()->buffs.herald_of_the_sun.suns_avatar->trigger();
+      }
+    }
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -3064,6 +3076,21 @@ struct dawnlight_t : public paladin_spell_t
       cpm *= 1.0 + p()->buffs.herald_of_the_sun.morning_star->stack_value();
 
     return cpm;
+  }
+
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
+  {
+    double mul = paladin_spell_t::dot_duration_pct_multiplier( s );
+
+    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+    {
+      if ( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() )
+      {
+        mul *= 1.0 + p()->talents.herald_of_the_sun.suns_avatar->effectN( 5 ).percent();
+      }
+    }
+
+    return mul;
   }
 
   void tick( dot_t* d ) override
@@ -3078,10 +3105,15 @@ struct dawnlight_t : public paladin_spell_t
   {
     paladin_spell_t::last_tick( d );
 
-    if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
+    unsigned num_dawnlights = p()->get_active_dots( d );
+    if ( num_dawnlights == 0 )
     {
-      unsigned num_dawnlights = p()->get_active_dots( d );
-      if ( num_dawnlights == 0 )
+      if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+      {
+        p()->buffs.herald_of_the_sun.suns_avatar->expire();
+      }
+
+      if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
       {
         p()->buffs.herald_of_the_sun.gleaming_rays->expire();
       }
@@ -3092,6 +3124,61 @@ struct dawnlight_t : public paladin_spell_t
       paladin_td_t* target_data = td( d->target );
       target_data->debuff.judgment->trigger();
     }
+  }
+};
+
+void paladin_t::apply_avatar_dawnlights()
+{
+  if ( !talents.herald_of_the_sun.suns_avatar->ok() )
+    return;
+
+  unsigned num_dawnlights = (unsigned) as<int>( talents.herald_of_the_sun.suns_avatar->effectN( 3 ).base_value() );
+  std::vector<player_t*> tl_candidates;
+  std::vector<player_t*> tl_yes_dawnlight;
+  for ( auto* t : sim->target_non_sleeping_list )
+  {
+    if ( t->is_enemy() )
+    {
+      auto* dawnlight = active.dawnlight->get_dot( t );
+      if ( dawnlight->is_ticking() )
+        tl_yes_dawnlight.push_back( t );
+      else
+        tl_candidates.push_back( t );
+    }
+  }
+
+  if ( tl_candidates.size() < num_dawnlights )
+  {
+    auto needed = num_dawnlights - tl_candidates.size();
+
+    std::stable_sort( tl_yes_dawnlight.begin(), tl_yes_dawnlight.end(), [this]( player_t* a, player_t* b ){
+      auto* dla = active.dawnlight->get_dot( a );
+      auto* dlb = active.dawnlight->get_dot( b );
+      return dla->remains() < dlb->remains();
+    } );
+
+    auto have = tl_yes_dawnlight.size();
+    auto num_extra = have < needed ? have : needed;
+
+    for ( auto i = 0u; i < num_extra; i++ )
+      tl_candidates.push_back( tl_yes_dawnlight[ i ] );
+  }
+
+  auto have_total = tl_candidates.size();
+  if ( num_dawnlights < have_total )
+    have_total = num_dawnlights;
+
+  for ( auto i = 0u; i < have_total; i++ )
+    active.dawnlight->execute_on_target( tl_candidates[ i ] );
+}
+
+struct suns_avatar_dmg_t : public paladin_spell_t
+{
+  suns_avatar_dmg_t( paladin_t* p ) : paladin_spell_t( "suns_avatar", p, p->find_spell( 431911 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = p->talents.herald_of_the_sun.suns_avatar->effectN( 6 ).base_value();
   }
 };
 
@@ -3373,6 +3460,10 @@ void paladin_t::create_actions()
   if ( talents.herald_of_the_sun.dawnlight->ok() )
   {
     active.dawnlight = new dawnlight_t( this );
+  }
+  if ( talents.herald_of_the_sun.suns_avatar->ok() )
+  {
+    active.suns_avatar_dmg = new suns_avatar_dmg_t( this );
   }
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
@@ -3662,6 +3753,7 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
     buffs.heightened_wrath->expire();
+    buffs.herald_of_the_sun.suns_avatar->expire();
   } );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
@@ -3830,6 +3922,10 @@ void paladin_t::create_buffs()
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
     -> set_max_stack( 2 );
+  buffs.herald_of_the_sun.suns_avatar = make_buff( this, "suns_avatar", find_spell( 431907 ) )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+        active.suns_avatar_dmg->execute_on_target( target );
+      });
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);

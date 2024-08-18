@@ -145,6 +145,7 @@ public:
     action_t* highlords_judgment;
     action_t* dawnlight;
     action_t* sun_sear;
+    action_t* suns_avatar_dmg;
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
@@ -893,6 +894,7 @@ public:
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
 
+  void apply_avatar_dawnlights();
   void spread_expurgation( action_t* act, player_t* og );
 
   target_specific_t<paladin_td_t> target_data;
