@@ -28,7 +28,7 @@ off_hand=,id=225579,bonus_id=1540/10870
 save=TWW1_Shaman_Elemental.simc
 
 shaman="TWW1_Shaman_Enhancement_Storm²"
-level=70
+level=80
 race=troll
 spec=enhancement
 role=attack
@@ -55,7 +55,7 @@ off_hand=bludgeons_of_blistering_wind,id=212398,ilevel=639,enchant_id=7463
 save=TWW1_Shaman_Enhancement_Storm.simc
 
 shaman="TWW1_Shaman_Enhancement"
-level=70
+level=80
 race=troll
 spec=enhancement
 role=attack
