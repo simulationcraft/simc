@@ -1941,7 +1941,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
 
     p()->buff.flow_of_battle_damage->trigger();
-    if ( keg_smash_cooldown && p()->rng().roll( 0.5 ) )
+    // 08-18-2024: Sampling of a large number of logs strongly suggests a proc rate of 0.33.
+    // Reproducible via running https://github.com/renanthera/crunch/tree/ec850f8b37b922f177d88b0c1626271a382ce771
+    if ( keg_smash_cooldown && p()->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() && p()->rng().roll( 0.33 ) )
     {
       keg_smash_cooldown->reset( false );
       p()->buff.flow_of_battle_free_keg_smash->trigger();
