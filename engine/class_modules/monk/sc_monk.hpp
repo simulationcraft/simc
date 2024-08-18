@@ -1533,4 +1533,32 @@ struct sef_despawn_cb_t
   void operator()( player_t * );
 };
 
+namespace events
+{
+// based on implementation from sc_demon_hunter.cpp
+struct delayed_execute_event_t : event_t
+{
+  action_t *action;
+  player_t *target;
+
+  delayed_execute_event_t( monk_t *player, action_t *action, player_t *target, timespan_t delay )
+    : event_t( *player->sim, delay ), action( action ), target( target )
+  {
+    assert( action->background && "Delayed Execute actions must be background!" );
+  }
+
+  const char *name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if ( target->is_sleeping() )
+      return;
+    action->execute_on_target( target );
+  }
+};
+}  // namespace events
+
 }  // namespace monk
