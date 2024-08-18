@@ -1819,7 +1819,7 @@ public:
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
-      num_hopo_spent = is_hammer_of_light_driver ? 5.0 : 3.0;
+      num_hopo_spent = is_hammer_of_light_driver ? hol_cost : 3.0;
 
     if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
