@@ -2143,16 +2143,7 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
         p()->buffs.templar.shake_the_heavens->execute();
       else
       {
-        // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
-        // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
-        timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
-        timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
-        double extension       = 4.0;
-        if ( maxDur < extendedDur )
-        {
-          extension -= ( extendedDur - maxDur ).total_seconds();
-        }
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( 4 ) );
       }
     }
   }
