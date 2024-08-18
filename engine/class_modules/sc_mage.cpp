@@ -6559,6 +6559,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     p()->buffs.ray_of_frost->expire();
     p()->buffs.cryopathy->expire();
+    // Technically, both of these buffs should also be expired when Ray of Frost is refreshed.
+    // The hidden FoF buff (see above) is expired but not reapplied, breaking the effect.
+    // Currently not relevant as refreshing RoF is only possible through spell data overrides.
   }
 
   double action_multiplier() const override
