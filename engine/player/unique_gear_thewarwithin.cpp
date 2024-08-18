@@ -3465,29 +3465,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
 // 454559 RPPM data
 void darkmoon_deck_radiance( special_effect_t& effect )
 {
-  struct radiant_focus_stat_buff_t : public stat_buff_t
-  {
-    double trigger_value;
-    const special_effect_t& effect;
-    stat_e buffed_stat;
-
-    radiant_focus_stat_buff_t( player_t* p, util::string_view n, const spell_data_t* s, const special_effect_t& e )
-      : stat_buff_t( p, n, s ), trigger_value( 0 ), effect( e ), buffed_stat( STAT_NONE )
-    {
-    }
-
-    void start( int stacks, double value, timespan_t duration ) override
-    {
-      auto it = range::find( stats, buffed_stat, &buff_stat_t::stat );
-      if ( it != stats.end() )
-      {
-        it->amount = trigger_value;
-      }
-
-      stat_buff_t::start( stacks, value, duration );
-    }
-  };
-
   struct radiant_focus_debuff_t : public buff_t
   {
     double accumulated_damage;
@@ -3507,8 +3484,13 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       else
         max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e.item );
 
-      buff = create_buff<radiant_focus_stat_buff_t>( e.player, "radiance_crit", buff_spell, e )
-        ->add_stat_from_effect_type( A_MOD_RATING, 0 );
+      // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
+      // Likely due to the script in effect 2 being incorrect
+      buff = create_buff<stat_buff_t>( e.player, buff_spell )
+        ->add_stat( STAT_CRIT_RATING, 0 )
+        ->add_stat( STAT_MASTERY_RATING, 0 )
+        ->add_stat( STAT_HASTE_RATING, 0 )
+        ->add_stat( STAT_VERSATILITY_RATING, 0 );
     }
 
     void reset() override
@@ -3526,16 +3508,30 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void expire_override( int stacks, timespan_t duration ) override
     {
       buff_t::expire_override( stacks, duration );
-      double buff_value     = 0;
+      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
 
-      if ( !player->bugs )
-        buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
-      else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
-        buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
+      auto stat_buff = debug_cast<stat_buff_t*>( buff );
 
-      debug_cast<radiant_focus_stat_buff_t*>( buff )->buffed_stat =
-          util::translate_rating_mod( buff->data().effectN( 1 ).misc_value1() );
-      debug_cast<radiant_focus_stat_buff_t*>( buff )->trigger_value = buff_value;
+      for ( auto& s : stat_buff->stats )
+      {
+        // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
+        if ( source->bugs )
+        {
+          s.amount = buff_value;
+        }
+        else
+        {
+          if ( s.stat == util::highest_stat( source, secondary_ratings ) )
+          {
+            s.amount = buff_value;
+          }
+          else
+          {
+            s.amount = 0;
+          }
+        }
+      }
+
       buff->trigger();
 
       accumulated_damage = 0;
@@ -3593,11 +3589,11 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void execute( action_t*, action_state_t* s ) override
     {
       auto debuff = get_debuff( s->target );
-      if ( debuff->check() )
+      // as of 8/17/2024, does not refresh or expire the debuff if it triggers again while active
+      if ( !debuff->check() )
       {
-        debuff->expire();
+        debuff->trigger();
       }
-      debuff->trigger();
     }
   };
 
