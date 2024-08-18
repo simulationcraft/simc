@@ -985,11 +985,9 @@ struct execution_sentence_debuff_t : public buff_t
     extended_count     = 0;
   }
 
-  void accumulate_damage( const action_state_t* s )
+  void accumulate_damage( const action_state_t* s, double mult )
   {
-    double amount_accumulated = s->result_type == result_amount_type::DMG_DIRECT ?
-      s->result_total / s->composite_da_multiplier() :
-      s->result_total / s->composite_ta_multiplier();
+    double amount_accumulated = s->result_total * mult;
 
     sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), amount_accumulated,
                       accumulated_damage, accumulated_damage + s->result_total );
@@ -1174,7 +1172,7 @@ public:
       always_do_capstones(false),
       clears_judgment( false ),
       triggers_higher_calling( false ),
-      skip_es_accum( true )
+      skip_es_accum( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1528,7 +1526,32 @@ public:
 
     if ( td->debuff.execution_sentence->check() && !skip_es_accum )
     {
-      td->debuff.execution_sentence->accumulate_damage( s );
+      double mult = 1.0;
+
+      // ES counts damage before wings & mastery, but after most other multipliers,
+      // per bolas test Aug 17 2024
+      if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
+      {
+        mult /= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+      }
+
+      if ( affected_by.crusade && p()->buffs.crusade->up() )
+      {
+        mult /= 1.0 + p()->buffs.crusade->get_damage_mod();
+      }
+
+      if ( affected_by.highlords_judgment )
+      {
+        double mastery_amount = p()->cache.mastery_value();
+        if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
+        {
+          // TODO: this has gotta be wrong. Where's the actual spell data for this?
+          mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
+        }
+        mult /= 1.0 + mastery_amount;
+      }
+
+      td->debuff.execution_sentence->accumulate_damage( s, mult );
     }
 
     if ( p()->buffs.moment_of_glory->up() )

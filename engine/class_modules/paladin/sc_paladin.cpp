@@ -1027,6 +1027,7 @@ struct touch_of_light_dmg_t : public paladin_spell_t
   touch_of_light_dmg_t( paladin_t* p ) : paladin_spell_t( "touch_of_light_dmg", p, p -> find_spell( 385354 ) )
   {
     background = true;
+    skip_es_accum = true; // per bolas test Aug 17 2024
   }
 };
 
