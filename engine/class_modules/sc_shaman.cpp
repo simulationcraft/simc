@@ -400,8 +400,9 @@ public:
   bool sk_during_cast;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
-  player_t* recent_target =
+  player_t* earthen_rage_target =
       nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
+  event_t* earthen_rage_event;
 
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
@@ -1052,6 +1053,7 @@ public:
     const spell_data_t* storm_swell;
     const spell_data_t* lightning_rod;
     const spell_data_t* improved_flametongue_weapon;
+    const spell_data_t* earthen_rage;
   } spell;
 
   struct rng_obj_t
@@ -1081,8 +1083,8 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
-      lvs_samples( "lvs_tracker", false ),
       dre_uptime_samples( "dre_uptime_tracker", false ),
+      lvs_samples( "lvs_tracker", false ),
       dre_attempts( 0U ),
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
@@ -2674,6 +2676,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       p()->trigger_fusion_of_elements( execute_state );
     }
 
+
     p()->trigger_earthen_rage( execute_state );
   }
 
@@ -4247,31 +4250,54 @@ struct thunderstrike_ward_damage_t : public shaman_spell_t
   }
 };
 
-struct earthen_rage_spell_t : public shaman_spell_t
+struct earthen_rage_damage_t : public shaman_spell_t
 {
-  earthen_rage_spell_t( shaman_t* p ) : shaman_spell_t( "earthen_rage_damage", p, p -> find_spell( 170379 ) )
+  earthen_rage_damage_t( shaman_t* p ) : shaman_spell_t( "earthen_rage", p, p -> find_spell( 170379 ) )
   {
     background = proc = true;
     callbacks = false;
   }
 };
 
-struct earthen_rage_driver_t : public spell_t
+struct earthen_rage_event_t : public event_t
 {
-  earthen_rage_driver_t( shaman_t* p ) : spell_t( "earthen_rage", p, p -> find_spell( 170377 ) )
-  {
-    may_miss = may_crit = callbacks = proc = tick_may_crit = tick_zero = false;
-    background = dual = dynamic_tick_action = true;
+  shaman_t* player;
+  timespan_t end_time;
 
-    tick_action = new earthen_rage_spell_t( p );
+  earthen_rage_event_t( shaman_t* p, timespan_t et ) :
+    event_t( *p, next_event( p ) ), player( p ), end_time( et )
+  { }
+
+  timespan_t next_event( shaman_t* p ) const
+  {
+    return p->rng().range(
+      1_ms,
+      2.0 * p->spell.earthen_rage->effectN( 1 ).period() * p->composite_spell_cast_speed()
+    );
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
-  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * state -> haste ) ); }
+  void set_end_time( timespan_t t )
+  { end_time = t; }
 
-  // Maximum duration is extended by max of 6 seconds
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
-  { return data().duration(); }
+  void execute() override
+  {
+    if ( sim().current_time() > end_time )
+    {
+      sim().print_debug( "{} earthen_rage fades", player->name() );
+      player->earthen_rage_event = nullptr;
+      return;
+    }
+
+    sim().print_debug( "{} triggers earthen_rage on target={}", player->name(),
+      player->earthen_rage_target->name() );
+
+    player->action.earthen_rage->execute_on_target( player->earthen_rage_target );
+
+    player->earthen_rage_event = make_event<earthen_rage_event_t>( sim(), player, end_time );
+    sim().print_debug( "{} schedules earthen_rage, next_event={}, tick_time={}",
+      player->name(), player->earthen_rage_event->occurs(),
+      player->earthen_rage_event->occurs() - sim().current_time() );
+  }
 };
 
 // Honestly why even bother with resto heals?
@@ -10410,7 +10436,7 @@ void shaman_t::create_actions()
 
   if ( talent.earthen_rage.ok() )
   {
-    action.earthen_rage = new earthen_rage_driver_t( this );
+    action.earthen_rage = new earthen_rage_damage_t( this );
   }
 
   // Generic Actions
@@ -10920,6 +10946,7 @@ void shaman_t::init_spells()
   spell.storm_swell         = find_spell( 455089 );
   spell.lightning_rod       = find_spell( 210689 );
   spell.improved_flametongue_weapon = find_spell( 382028 );
+  spell.earthen_rage        = find_spell( 170377 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
@@ -12068,8 +12095,7 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   }
 
   // Earthen Rage damage does not trigger itself
-  if ( state->action == action.earthen_rage->tick_action ||
-       state->action == action.earthen_rage )
+  if ( state->action == action.earthen_rage )
   {
     return;
   }
@@ -12079,7 +12105,17 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     sim->out_debug.print( "{} earthen_rage proc by {}", *this, *state->action );
   }
 
-  action.earthen_rage->execute_on_target( state->target );
+  earthen_rage_target = state->target;
+  if ( earthen_rage_event == nullptr )
+  {
+    earthen_rage_event = make_event<earthen_rage_event_t>( *sim, this,
+      sim->current_time() + spell.earthen_rage->duration() );
+  }
+  else
+  {
+    debug_cast<earthen_rage_event_t*>( earthen_rage_event )
+        ->set_end_time( sim->current_time() + spell.earthen_rage->duration() );
+  }
 }
 
 void shaman_t::trigger_totemic_rebound( const action_state_t* state )
@@ -13578,6 +13614,9 @@ void shaman_t::reset()
   action.totemic_recall_totem = nullptr;
 
   pet.all_wolves.clear();
+
+  earthen_rage_target = nullptr;
+  earthen_rage_event = nullptr;
 
   assert( active_flame_shock.empty() );
 }
