@@ -1104,7 +1104,7 @@ void unbound_changeling( special_effect_t& effect )
   {
     int buff_spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
     buff = make_buff<stat_buff_t>( effect.player, "unbound_changeling", effect.player->find_spell( buff_spell_id ) );
-    double amount = effect.player->find_spell( buff_spell_id )->effectN( 1 ).average( effect.item );
+    double amount = effect.player->find_spell( 330747 )->effectN( buff_spell_id != 330764 ? 1 : 2 ).average( effect.item );
 
     for ( auto& s : buff->stats )
       s.amount = amount;
