@@ -261,6 +261,7 @@ public:
       buff_t* gleaming_rays;
       buff_t* solar_grace;
       buff_t* morning_star_driver;
+      buff_t* suns_avatar;
     } herald_of_the_sun;
 
     buff_t* rise_from_ash; // Ret TWW1 4p
@@ -451,6 +452,7 @@ public:
     struct
     {
       const spell_data_t* gleaming_rays;
+      const spell_data_t* dawnlight_aoe_metadata;
     } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;

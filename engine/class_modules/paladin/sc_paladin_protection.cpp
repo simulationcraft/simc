@@ -532,7 +532,7 @@ struct hammer_of_the_righteous_data_t
 
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
-  using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;  
+  using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;
   struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     hammer_of_the_righteous_aoe_t( paladin_t* p )

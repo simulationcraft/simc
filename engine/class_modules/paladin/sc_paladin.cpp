@@ -3004,9 +3004,40 @@ struct incandescence_t : public paladin_spell_t
 
 // TODO: friendly dawnlights
 // TODO(mserrano): dawnlight cleave
+struct dawnlight_aoe_t : public paladin_spell_t
+{
+  dawnlight_aoe_t( paladin_t* p ) : paladin_spell_t( "dawnlight_aoe", p, p->find_spell( 431399 ) )
+  {
+    may_dodge = may_parry = may_miss = false;
+    background                       = true;
+    aoe                              = -1;
+    reduced_aoe_targets              = p->spells.herald_of_the_sun.dawnlight_aoe_metadata->effectN( 1 ).base_value();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    paladin_spell_t::available_targets( tl );
+
+    for ( size_t i = 0; i < tl.size(); i++ )
+    {
+      if ( tl[ i ] == target )
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
+    }
+    return tl.size();
+  }
+};
+
 struct dawnlight_t : public paladin_spell_t
 {
-  dawnlight_t( paladin_t* p ) : paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) )
+  dawnlight_aoe_t* aoe_action;
+
+  dawnlight_t( paladin_t* p ) :
+    paladin_spell_t( "dawnlight", p, p->find_spell( 431380 ) ),
+    aoe_action( new dawnlight_aoe_t( p ) )
+
   {
     background = true;
   }
@@ -3033,6 +3064,14 @@ struct dawnlight_t : public paladin_spell_t
       cpm *= 1.0 + p()->buffs.herald_of_the_sun.morning_star->stack_value();
 
     return cpm;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    paladin_spell_t::tick( d );
+
+    aoe_action->base_dd_min = aoe_action->base_dd_max = d->state->result_amount * p()->spells.herald_of_the_sun.dawnlight_aoe_metadata->effectN( 1 ).percent();
+    aoe_action->execute_on_target( d->target );
   }
 
   void last_tick( dot_t* d ) override
@@ -4189,6 +4228,7 @@ void paladin_t::init_spells()
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
+  spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
