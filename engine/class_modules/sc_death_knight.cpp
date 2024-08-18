@@ -3527,6 +3527,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct vampiric_strike_unholy_t : public drw_action_t<melee_attack_t>
+  {
+    vampiric_strike_unholy_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.vampiric_strike )
+    {
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    }
+  };
+
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
     int stack_gain;
@@ -3627,6 +3636,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* grim_reaper_soul_reaper;
     action_t* consumption;
     action_t* vampiric_strike;
+    action_t* vampiric_strike_unholy;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" )
@@ -3681,6 +3691,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.sanlayn.vampiric_strike.ok() )
     {
       ability.vampiric_strike = get_action<vampiric_strike_t>( "vampiric_strike", this );
+      ability.vampiric_strike_unholy = get_action<vampiric_strike_unholy_t>( "vampiric_strike_unholy", this );
     }
   }
 
@@ -9381,6 +9392,8 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
+      if ( p()->bugs )
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike_unholy->execute_on_target( target );
       p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
     }
 
@@ -9388,6 +9401,8 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
     {
       if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
+        if ( p()->bugs )
+          p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike_unholy->execute_on_target( target );
         p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
       }
     }
@@ -14895,35 +14910,26 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
 {
+  /* NOTE NOTE NOTE NOTE NOTE
+  As of 2024 Aug 18th, while testing for TWW we observed that if the pet applies the debuff, like DRW does for blood plague
+  they are considered the caster, and as such, they get the benefit of the casters amps (aura 271).  If the player applies the debuff
+  the pet does not gain the benefit of the caster debuff, but does gain the benefit for pet/guardian auras (aura 380/381) if they exist.
+  */
   // Shared
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), dk()->spell.virulent_plague,
-                        dk()->talent.unholy.morbidity );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::frost_fever ), dk()->spell.frost_fever,
-                        dk()->talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
                         dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), dk()->spell.unholy_blight_dot,
-                        dk()->talent.unholy.morbidity );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), dk()->spell.apocalypse_war_debuff,
-                        dk()->talent.unholy_bond );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), dk()->spell.razorice_debuff,
-                        dk()->talent.unholy_bond );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), dk()->spell.brittle_debuff );
 
   // Blood
 
   // Frost
 
   // Unholy
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), dk()->spell.death_rot_debuff );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), dk()->spell.rotten_touch_debuff );
 
   // Rider of the Apocalypse
 
   // Deathbringer
 
   // San'layn
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), dk()->spell.incite_terror_debuff );
 }
 
 template <class Base>
