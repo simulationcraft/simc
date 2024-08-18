@@ -905,7 +905,8 @@ public:
     // Row 1
     player_talent_t earth_shock;
     // Row 2
-    player_talent_t earthquake;
+    player_talent_t earthquake_reticle;
+    player_talent_t earthquake_target;
     player_talent_t elemental_fury;
     player_talent_t fire_elemental;
     player_talent_t storm_elemental;
@@ -7579,7 +7580,9 @@ struct earthquake_damage_t : public earthquake_damage_base_t
 struct earthquake_t : public earthquake_base_t
 {
   earthquake_t( shaman_t* player, util::string_view options_str ) :
-    earthquake_base_t( player, "earthquake", player->talent.earthquake )
+    earthquake_base_t( player, "earthquake", player->talent.earthquake_reticle.ok()
+      ? player->talent.earthquake_reticle
+      : player->talent.earthquake_target )
   {
     parse_options( options_str );
 
@@ -10824,7 +10827,9 @@ void shaman_t::init_spells()
   // Row 1
   talent.earth_shock = _ST( "Earth Shock" );
   // Row 2
-  talent.earthquake = _ST( "Earthquake" );
+  talent.earthquake_reticle = find_talent_spell( talent_tree::SPECIALIZATION, 61882 );
+  talent.earthquake_target = find_talent_spell( talent_tree::SPECIALIZATION, 462620 );
+
   talent.elemental_fury = _ST( "Elemental Fury" );
   talent.fire_elemental = _ST( "Fire Elemental" );
   talent.storm_elemental = _ST( "Storm Elemental" );
