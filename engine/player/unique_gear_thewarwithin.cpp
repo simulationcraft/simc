@@ -3115,7 +3115,7 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
-// 463232 equip
+// 463610 equip
 //  e1: trigger cycle
 //  e2: buff coeff
 // 455535 cycle
@@ -3136,8 +3136,8 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
-      // TODO: confirm buff value once scaling is fixed. currently bugged to be -1 with no ilevel scaling
-      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.player ) );
+      // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
+      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
 
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
       // TODO: determine if self damage procs anything
@@ -3179,13 +3179,13 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
 // 454859 rppm data
 // 454857 driver/values
-// 454862 physical/fire?
+// 454862 fire
 // 454975 shadow
 // 454976 nature
 // 454977 frost
 // 454978 holy
 // 454979 arcane
-// 454980 Physical Multischool
+// 454980 Physical
 // 454982 Magical Multischool
 void darkmoon_deck_vivacity( special_effect_t& effect )
 {
@@ -3197,7 +3197,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     buff_t* frost;
     buff_t* holy;
     buff_t* arcane;
-    buff_t* physical_multi;
+    buff_t* force;
     buff_t* magical_multi;
 
     vivacity_cb_t( const special_effect_t& e )
@@ -3208,42 +3208,42 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         frost( nullptr ),
         holy( nullptr ),
         arcane( nullptr ),
-        physical_multi( nullptr ),
+        force( nullptr ),
         magical_multi( nullptr )
     {
       auto values = e.player->find_spell( 454857 );
       
       impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       shadow = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454975 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       nature = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454976 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       frost = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454977 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       holy = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454978 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       arcane = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454979 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
-      physical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+      force = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454980 ) )
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
 
       magical_multi = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454982 ) )
-        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.player ) )
-        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.player ) );
+        ->add_stat_from_effect( 1, values->effectN( 1 ).average( e.item ) )
+        ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
     }
 
     void trigger( action_t* a, action_state_t* s ) override
@@ -3274,11 +3274,9 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         case SCHOOL_ARCANE:
           arcane->trigger();
           break;
-        case SCHOOL_PHYSICAL: // Pure Physical currently doesnt trigger anything
-          break;
         default:
           if ( dbc::get_school_mask( s->action->get_school() ) & SCHOOL_MASK_PHYSICAL )
-            physical_multi->trigger();
+            force->trigger();
           else
             magical_multi->trigger();
           break;
@@ -3347,22 +3345,22 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       auto vers_name     = util::tokenize_fn( vers_spell->name_cstr() );
 
       auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "_crit", crit_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( crit_buff );
 
       auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "_haste", haste_spell )
-                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( haste_buff );
 
       auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "_mastery", mastery_spell )
-                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( mastery_buff );
 
       auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "_vers", vers_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.player ) );
+                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
 
       buff_list.push_back( vers_buff );
 
@@ -3494,73 +3492,23 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     double accumulated_damage;
     double max_damage;
-    std::unordered_map<stat_e, buff_t*> buffs;
+    double max_buff_value;
+    buff_t* buff;
 
     radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buffs()
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buff(nullptr)
     {
       max_damage = data().effectN( 1 ).average( e.player );
-
       set_default_value( max_damage );
 
       auto buff_spell = e.player->find_spell( 454785 );
+      if( embelish )
+        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( e.item );
+      else
+        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e.item );
 
-      create_radint_buffs( e, buff_spell, [ & ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
-
-      set_expire_callback( [ &, embelish ]( buff_t*, int, timespan_t ) {
-        double buff_value     = 0;
-        double max_buff_value = 0;
-
-        if ( embelish )
-        {
-          max_buff_value = e.player->find_spell( 454558 )->effectN( 2 ).average( e.player );
-        }
-        else
-        {
-          max_buff_value = e.player->find_spell( 463108 )->effectN( 1 ).average( e.player );
-        }
-
-        if ( !e.player->bugs )
-          buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
-        else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
-          buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
-
-        auto stat_buff = buffs.at( util::highest_stat( e.player, secondary_ratings ) );
-        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->buffed_stat =
-            util::highest_stat( e.player, secondary_ratings );
-        debug_cast<radiant_focus_stat_buff_t*>( stat_buff )->trigger_value = buff_value;
-        stat_buff->trigger();
-
-        accumulated_damage = 0;
-      } );
-    }
-
-    void create_radint_buffs( const special_effect_t& effect, const spell_data_t* buff_data,
-                              std::function<void( stat_e, buff_t* )> add_fn )
-    {
-      auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
-
-      for ( const auto& eff : buff_data->effects() )
-      {
-        if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
-          continue;
-
-        auto stats = util::translate_all_rating_mod( eff.misc_value1() );
-        if ( stats.size() != 1 )
-        {
-          effect.player->sim->error( "buff data {} effect {} has multiple stats", buff_data->id(), eff.index() );
-          continue;
-        }
-
-        auto stat_str = util::stat_type_abbrev( stats.front() );
-
-        auto buff = create_buff<radiant_focus_stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_str ),
-                                                            buff_data, effect )
-                        ->add_stat( stats.front(), 0 )
-                        ->set_name_reporting( stat_str );
-
-        add_fn( stats.front(), buff );
-      }
+      buff = create_buff<radiant_focus_stat_buff_t>( e.player, "radiance_crit", buff_spell, e )
+        ->add_stat_from_effect_type( A_MOD_RATING, 0 );
     }
 
     void reset() override
@@ -3574,6 +3522,24 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       buff_t::start( stacks, value, duration );
       accumulated_damage = 0;
     };
+
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+      double buff_value     = 0;
+
+      if ( !player->bugs )
+        buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+      else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
+        buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
+
+      debug_cast<radiant_focus_stat_buff_t*>( buff )->buffed_stat =
+          util::translate_rating_mod( buff->data().effectN( 1 ).misc_value1() );
+      debug_cast<radiant_focus_stat_buff_t*>( buff )->trigger_value = buff_value;
+      buff->trigger();
+
+      accumulated_damage = 0;
+    }
   };
 
   struct radiant_focus_cb_t : public dbc_proc_callback_t
@@ -4193,7 +4159,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
-  register_special_effect( 463232, items::darkmoon_deck_symbiosis );
+  register_special_effect( 463610, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );

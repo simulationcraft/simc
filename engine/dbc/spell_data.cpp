@@ -105,6 +105,13 @@ double spelleffect_data_t::delta( const item_t* item ) const
   if ( !item )
     return 0;
 
+  // Spells that do not have Scales with Casting Item's Level (354) attribute will instead return player-scaled value.
+  // If the scaling is -7, despite being tied to an item it seems to get a combat rating multiplier of 1.5. It remains
+  // to be determined whether this is based on the player's level, as all CR multipliers table entries at low values
+  // are 1.5.
+  if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+    return delta( item->player );
+
   if ( _m_delta != 0 )
     m_scale = item_database::item_budget( item, _spell->max_scaling_level() );
 
@@ -194,6 +201,13 @@ double spelleffect_data_t::average( const item_t* item ) const
 {
   if ( !item )
     return 0;
+
+  // Spells that do not have Scales with Casting Item's Level (354) attribute will instead return player-scaled value.
+  // If the scaling is -7, despite being tied to an item it seems to get a combat rating multiplier of 1.5. It remains
+  // to be determined whether this is based on the player's level, as all CR multipliers table entries at low values
+  // are 1.5.
+  if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+    return average( item->player );
 
   auto budget = item_database::item_budget( item, _spell->max_scaling_level() );
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )

@@ -2136,8 +2136,12 @@ struct art_of_the_glaive_trigger_t : public BASE
 {
   using base_t = art_of_the_glaive_trigger_t<ABILITY, BASE>;
 
+  timespan_t thrill_delay;
+
   art_of_the_glaive_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o )
+    : BASE( n, p, s, o ),
+      // 2024-07-16 -- This is seems to be 700ms for everything but Death Sweep
+      thrill_delay( 700_ms )
   {
   }
 
@@ -2157,8 +2161,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.glaive_flurry->expire();
-      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
-      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+      make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
         BASE::p()->buff.art_of_the_glaive_first->expire();
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
@@ -2179,8 +2182,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.rending_strike->expire();
-      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
-      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+      make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
         BASE::p()->buff.art_of_the_glaive_first->expire();
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
@@ -2195,9 +2197,7 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep
-        // slashes.
-        make_event( *BASE::p()->sim, 700_ms, [ this ] {
+        make_event( *BASE::p()->sim, thrill_delay, [ this ] {
           BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
           BASE::p()->buff.thrill_of_the_fight_damage->trigger();
         } );
@@ -5033,6 +5033,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
+    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1);
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep_1", data().effectN( 2 ) ) );
@@ -5538,10 +5540,10 @@ struct felblade_t : public demon_hunter_attack_t
 
   felblade_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
-      max_fragments_consumed( p->specialization() == DEMON_HUNTER_HAVOC &&
-                                      p->talent.aldrachi_reaver.warblades_hunger->ok()
-                                  ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
-                                  : 0 )
+      max_fragments_consumed(
+          p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok()
+              ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
+              : 0 )
   {
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;

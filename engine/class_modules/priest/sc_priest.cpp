@@ -1788,7 +1788,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
   double base_radius;
   entropic_rift_damage_t( priest_t& p )
     : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_damage ),
-      base_radius( p.talents.voidweaver.entropic_rift_aoe->effectN( 2 ).radius_max() / 2 )
+      base_radius( p.talents.voidweaver.entropic_rift_object->effectN( 1 ).radius_max() / 2 )
   {
     aoe        = -1;
     background = dual = true;
@@ -3433,6 +3433,7 @@ void priest_t::init_spells()
   talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );  // Contains AoE radius info
   talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
   talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
+  talents.voidweaver.entropic_rift_object   = find_spell( 447445 ); // Contains spell radius
   talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
   talents.voidweaver.dark_energy            = HT( "Dark Energy" );
   talents.voidweaver.void_blast             = HT( "Void Blast" );

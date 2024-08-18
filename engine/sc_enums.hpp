@@ -855,9 +855,9 @@ enum set_bonus_type_e
   T30_MOTD,
   T31,
   DF4,
+  TWW_ECB,
   TWW_FSR,
   TWW_KCI,
-  TWW_ECB,
   TWW1,
   SET_BONUS_MAX,
 };

@@ -9175,13 +9175,32 @@ struct magma_eruption_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+       
+  }
 
-    // TODO: make more clever if ingame behaviour improves too.
-    for ( size_t i = 0;
-        i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) );
-        ++i )
+  void execute() override
+  {
+    shaman_spell_t::execute();
+    std::vector<player_t*> tl( target_cache.list );
+    auto it = std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ) {
+      return p()->get_target_data( target )->dot.flame_shock->is_ticking();
+    } );
+    tl.erase( it, tl.end() );
+
+    if ( tl.size() < 3 )
     {
-      p()->trigger_secondary_flame_shock( target_list()[ i ] );
+      // TODO: make more clever if ingame behaviour improves too.
+      for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) ); ++i )
+      {
+        p()->trigger_secondary_flame_shock( target_list()[ i ] );
+      }
+    }
+    else
+    {
+      for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) ); ++i )
+      {
+        p()->trigger_secondary_flame_shock( tl[ i ] );
+      }
     }
   }
 };
@@ -9816,6 +9835,13 @@ struct tempest_t : public shaman_spell_t
       p()->action.feral_spirit_rt->set_target( execute_state->target );
       p()->action.feral_spirit_rt->execute();
     }
+
+    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
+           p()->talent.lightning_rod.ok() ) )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -9828,7 +9854,6 @@ struct tempest_t : public shaman_spell_t
          ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
            p()->talent.lightning_rod.ok() ) )
     {
-      td( state->target )->debuff.lightning_rod->trigger();
       p()->trigger_lightning_rod_damage( state );
     }
   }

@@ -4610,6 +4610,11 @@ struct envenom_t : public rogue_attack_t
     {
       add_child( p->active.poison_bomb );
     }
+
+    if ( p->active.fatebound.fate_intertwined )
+    {
+      add_child( p->active.fatebound.fate_intertwined );
+    }
   }
   
   double composite_da_multiplier( const action_state_t* state ) const override
