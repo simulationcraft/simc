@@ -8098,24 +8098,24 @@ public:
   {
     shaman_spell_t::tick( d );
 
-    // proc chance suddenly became 100% and the actual chance became effectN 1
-    // TODO: TWW proc chance
-
-    double active_flame_shocks = p()->get_active_dots( d );
-    p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
-    double proc_chance =
-        std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
-
-    if ( p()->spec.lava_surge->ok() && p()->spec.restoration_shaman->ok() )
+    if ( p()->spec.lava_surge->ok() )
     {
-      proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
-    }
+      double active_flame_shocks = p()->get_active_dots( d );
+      p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
+      double proc_chance =
+          std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
 
-    if ( rng().roll( proc_chance ) )
-    {
-      p()->trigger_lava_surge();
-      p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
-      p()->lava_surge_attempts_normalized = 0.0;
+      if ( p()->spec.restoration_shaman->ok() )
+      {
+        proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
+      }
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p()->trigger_lava_surge();
+        p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
+        p()->lava_surge_attempts_normalized = 0.0;
+      }
     }
 
     if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
@@ -14154,7 +14154,7 @@ public:
     p.sim->add_chart_data( chart );
   }
 
-  void lvs_proc_distribution_contents(report::sc_html_stream& os)
+  void lvs_proc_distribution_contents( report::sc_html_stream& os )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "lvs" ), *p.sim );
 
@@ -14229,7 +14229,10 @@ public:
       os << "\t\t\t\t\t</div>\n";
     }
 
-    lvs_proc_distribution_contents( os );
+    if ( p.spec.lava_surge->ok() )
+    {
+      lvs_proc_distribution_contents( os );
+    }
   }
 };
 
