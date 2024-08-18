@@ -806,7 +806,7 @@ void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
   if ( base_t::sim->overrides.mystic_touch )
     return;
 
-  if ( base_t::result_is_miss( s->result ) || s->result_amount == 0.0 || s->action->school != SCHOOL_PHYSICAL )
+  if ( base_t::result_is_miss( s->result ) || s->result_amount == 0.0 )
     return;
 
   if ( s->target->debuffs.mystic_touch && p()->baseline.monk.mystic_touch->ok() )
