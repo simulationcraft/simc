@@ -1541,7 +1541,8 @@ struct force_of_nature_t final : public treant_base_t
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
-    owner_coeff.ap_from_sp = 0.6;
+    // TODO: confirm this
+    owner_coeff.ap_from_sp = 0.935;
 
     double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
 
