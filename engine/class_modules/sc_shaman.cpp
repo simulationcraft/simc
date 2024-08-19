@@ -3817,7 +3817,8 @@ struct lightning_rod_damage_t : public shaman_spell_t
   lightning_rod_damage_t( shaman_t* p ) :
     shaman_spell_t( "lightning_rod", p, p->find_spell( 197568 ) )
   {
-    background = may_crit = false;
+    background = true;
+    may_crit = false;
   }
 
   void init() override
