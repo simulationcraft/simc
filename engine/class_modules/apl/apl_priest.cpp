@@ -158,7 +158,7 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment", "Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds" );
   trinkets->add_action( "use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller", "Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
   trinkets->add_action( "use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
-  trinkets->add_action( "use_item,name=aberrant_spellforge" );
+  trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
   trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
   trinkets->add_action( "use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex" );
@@ -286,7 +286,7 @@ void shadow_ptr( player_t* p )
   trinkets->add_action( "use_item,name=erupting_spear_fragment,if=(buff.power_infusion.up|raid_event.adds.up|fight_remains<20)&equipped.erupting_spear_fragment", "Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds" );
   trinkets->add_action( "use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller", "Use Belor'relos on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
   trinkets->add_action( "use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond", "Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets" );
-  trinkets->add_action( "use_item,name=aberrant_spellforge" );
+  trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
   trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
   trinkets->add_action( "use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex" );
