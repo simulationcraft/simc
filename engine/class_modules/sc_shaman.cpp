@@ -10356,6 +10356,16 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     } );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "lightning_rod" ) )
+  {
+    return make_fn_expr( splits[ 0 ], [ this ]() {
+      return std::accumulate( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(), 0.0,
+        [ this ]( double v, player_t* target ) {
+          return v + as<double>( get_target_data( target )->debuff.lightning_rod->check() );
+        } );
+    } );
+  }
+
   return player_t::create_expression( name );
 }
 
