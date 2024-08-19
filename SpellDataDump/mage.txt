@@ -2208,6 +2208,9 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=85616)    : Create Area Trigger (179)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 8661 | Target: Unknown(47)
+#2 (id=1179964)  : Create Area Trigger (179)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 34996 | Target: Unknown(47)
+Hotfixed         : NEW EFFECT
 Description      : Launches an orb of swirling ice up to $s1 yds forward which deals up to ${20*$84721s1} Frost damage to all enemies it passes through over $d. Deals reduced damage beyond $84721s2 targets. Grants 1 charge of Fingers of Frost when it first damages an enemy.$?a382103[
 
 While Frozen Orb is active, you gain Fingers of Frost every $382106t1 sec.][]

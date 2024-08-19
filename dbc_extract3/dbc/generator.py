@@ -1511,6 +1511,7 @@ class SpellDataGenerator(DataGenerator):
          457284, # TWW Primary Stat Food
          443764, 451698, 451699, # Embrace of the Cinderbee Set
          446234, # Spark of Beledar
+         461957, 454137, 461939, 461943, 461925, 461924, 461922, 461927, 461947, 461948, 461949, 461946, 461861, 461860, 461859, 461858, 461857, 461856, 461855, 461854, 461853, 461845, # TWW Food Buffs
         ),
 
         # Warrior:

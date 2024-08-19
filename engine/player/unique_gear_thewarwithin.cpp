@@ -207,7 +207,8 @@ struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
     auto stat = highest ? util::highest_stat( player, secondary_ratings )
                         : util::lowest_stat( player, secondary_ratings );
 
-    add_stat( stat, amount );
+    if( !manual_stats_added )
+      add_stat( stat, amount );
 
     consumable_buff_t::start( s, v, d );
   }
@@ -4034,31 +4035,31 @@ void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
-  unique_gear::register_special_effect( 457302, consumables::selector_food( 457284, true ) );  // the sushi special
-  unique_gear::register_special_effect( 455960, consumables::selector_food( 457284, false ) );  // everything stew
-  unique_gear::register_special_effect( 454149, consumables::selector_food( 457169, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
-  unique_gear::register_special_effect( 457282, consumables::selector_food( 457170, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
-  unique_gear::register_special_effect( 454087, consumables::selector_food( 457171, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
+  unique_gear::register_special_effect( 457302, consumables::selector_food( 461957, true ) );  // the sushi special
+  unique_gear::register_special_effect( 455960, consumables::selector_food( 454137 /*Maybe Wrong Spell id, had to guess*/, false));  // everything stew
+  unique_gear::register_special_effect( 454149, consumables::selector_food( 461957, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
+  unique_gear::register_special_effect( 457282, consumables::selector_food( 461939, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
+  unique_gear::register_special_effect( 454087, consumables::selector_food( 461943, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
   unique_gear::register_special_effect( 457283, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the divine day
   unique_gear::register_special_effect( 457285, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the midnight masquerade
-  unique_gear::register_special_effect( 457294, consumables::primary_food( 457124, STAT_STRENGTH ) );  // sizzling honey roast
-  unique_gear::register_special_effect( 457136, consumables::primary_food( 457124, STAT_AGILITY ) );  // mycobloom risotto
-  unique_gear::register_special_effect( 457295, consumables::primary_food( 457124, STAT_INTELLECT ) );  // stuffed cave peppers
-  unique_gear::register_special_effect( 457296, consumables::primary_food( 457124, STAT_STAMINA, 7 ) );  // angler's delight
-  unique_gear::register_special_effect( 457298, consumables::primary_food( 457124, STAT_STRENGTH, 3, false ) );  // meat and potatoes
-  unique_gear::register_special_effect( 457297, consumables::primary_food( 457124, STAT_AGILITY, 3, false ) );  // rib stickers
-  unique_gear::register_special_effect( 457299, consumables::primary_food( 457124, STAT_INTELLECT, 3, false ) );  // sweet and sour meatballs
-  unique_gear::register_special_effect( 457300, consumables::primary_food( 457124, STAT_STAMINA, 7, false ) );  // tender twilight jerky
-  unique_gear::register_special_effect( 457286, consumables::secondary_food( 457049, STAT_HASTE_RATING ) );  // zesty nibblers
-  unique_gear::register_special_effect( 456968, consumables::secondary_food( 457049, STAT_CRIT_RATING ) );  // fiery fish sticks
-  unique_gear::register_special_effect( 457287, consumables::secondary_food( 457049, STAT_VERSATILITY_RATING ) );  // ginger glazed fillet
-  unique_gear::register_special_effect( 457288, consumables::secondary_food( 457049, STAT_MASTERY_RATING ) );  // salty dog
-  unique_gear::register_special_effect( 457289, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_CRIT_RATING ) );  // deepfin patty
-  unique_gear::register_special_effect( 457290, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_VERSATILITY_RATING ) );  // sweet and spicy soup
-  unique_gear::register_special_effect( 457291, consumables::secondary_food( 457049, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) );  // fish and chips
-  unique_gear::register_special_effect( 457292, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_CRIT_RATING ) );  // salt baked seafood
-  unique_gear::register_special_effect( 457293, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
-  unique_gear::register_special_effect( 457301, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
+  unique_gear::register_special_effect( 457294, consumables::primary_food( 461925, STAT_STRENGTH ) );  // sizzling honey roast
+  unique_gear::register_special_effect( 457136, consumables::primary_food( 461924, STAT_AGILITY ) );  // mycobloom risotto
+  unique_gear::register_special_effect( 457295, consumables::primary_food( 461922, STAT_INTELLECT ) );  // stuffed cave peppers
+  unique_gear::register_special_effect( 457296, consumables::primary_food( 461927, STAT_STAMINA, 7 ) );  // angler's delight
+  unique_gear::register_special_effect( 457298, consumables::primary_food( 461947, STAT_STRENGTH, 3, false ) );  // meat and potatoes
+  unique_gear::register_special_effect( 457297, consumables::primary_food( 461948, STAT_AGILITY, 3, false ) );  // rib stickers
+  unique_gear::register_special_effect( 457299, consumables::primary_food( 461949, STAT_INTELLECT, 3, false ) );  // sweet and sour meatballs
+  unique_gear::register_special_effect( 457300, consumables::primary_food( 461946, STAT_STAMINA, 7, false ) );  // tender twilight jerky
+  unique_gear::register_special_effect( 457286, consumables::secondary_food( 461861, STAT_HASTE_RATING ) );  // zesty nibblers
+  unique_gear::register_special_effect( 456968, consumables::secondary_food( 461860, STAT_CRIT_RATING ) );  // fiery fish sticks
+  unique_gear::register_special_effect( 457287, consumables::secondary_food( 461859, STAT_VERSATILITY_RATING ) );  // ginger glazed fillet
+  unique_gear::register_special_effect( 457288, consumables::secondary_food( 461858, STAT_MASTERY_RATING ) );  // salty dog
+  unique_gear::register_special_effect( 457289, consumables::secondary_food( 461857, STAT_HASTE_RATING, STAT_CRIT_RATING ) );  // deepfin patty
+  unique_gear::register_special_effect( 457290, consumables::secondary_food( 461856, STAT_HASTE_RATING, STAT_VERSATILITY_RATING ) );  // sweet and spicy soup
+  unique_gear::register_special_effect( 457291, consumables::secondary_food( 461854, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) );  // fish and chips
+  unique_gear::register_special_effect( 457292, consumables::secondary_food( 461853, STAT_MASTERY_RATING, STAT_CRIT_RATING ) );  // salt baked seafood
+  unique_gear::register_special_effect( 457293, consumables::secondary_food( 461845, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
+  unique_gear::register_special_effect( 457301, consumables::secondary_food( 461855, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
 
   // Flasks
   unique_gear::register_special_effect( 432021, consumables::flask_of_alchemical_chaos, true );
