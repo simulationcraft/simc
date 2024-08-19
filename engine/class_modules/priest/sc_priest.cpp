@@ -2083,6 +2083,36 @@ struct desperate_prayer_t final : public priest_heal_t
 };
 
 // ==========================================================================
+// Crystalline Reflection
+// ==========================================================================
+struct crystalline_reflection_heal_t final : public priest_heal_t
+{
+  crystalline_reflection_heal_t( priest_t& p )
+    : priest_heal_t( "crystalline_reflection_heal", p, p.find_spell( 373462 ) )
+  {
+    spell_power_mod.direct = p.talents.crystalline_reflection->effectN( 3 ).sp_coeff();
+  }
+
+  void impact(action_state_t* s) override
+  {
+    priest_heal_t::impact( s );
+    
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
+    }
+  }
+};
+
+struct crystalline_reflection_damage_t final : public priest_spell_t
+{
+  crystalline_reflection_damage_t( priest_t& p )
+    : priest_spell_t( "crystalline_reflection_damage", p, p.find_spell( 373464 ) )
+  {
+  }
+};
+
+// ==========================================================================
 // Power Word: Shield
 // TODO: add Rapture and Weal and Woe bonuses
 // ==========================================================================
@@ -2090,30 +2120,31 @@ struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
   timespan_t atonement_duration;
+  action_t* crystalline_reflection_heal;
+  action_t* crystalline_reflection_damage;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
       insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
-                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) ),
+      crystalline_reflection_heal( nullptr ),
+      crystalline_reflection_damage( nullptr )
   {
     parse_options( options_str );
 
     gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
-    switch ( p.specialization() )
-    {
-      case PRIEST_DISCIPLINE:
-        base_dd_multiplier *= 1.37;
-        break;
-      case PRIEST_SHADOW:
-        base_dd_multiplier *= 1.25;
-        break;
-      default:
-        break;
-    }
-
     disc_mastery = true;
+
+    if ( p.talents.crystalline_reflection.enabled() )
+    {
+      crystalline_reflection_heal = new crystalline_reflection_heal_t( p );
+      crystalline_reflection_damage = new crystalline_reflection_damage_t( p );
+
+      add_child( crystalline_reflection_heal );
+      add_child( crystalline_reflection_damage );
+    }
   }
 
   // Manually create the buff so we can reference it with Void Shield
@@ -2150,11 +2181,6 @@ struct power_word_shield_t final : public priest_absorb_t
       priest().buffs.borrowed_time->trigger();
     }
 
-    if ( priest().talents.crystalline_reflection.enabled() && priest().buffs.twist_of_fate_heal_ally_fake->check() )
-    {
-      priest().buffs.twist_of_fate->trigger();
-    }
-
     priest_absorb_t::execute();
 
     if ( priest().buffs.void_empowerment->check() )
@@ -2165,11 +2191,43 @@ struct power_word_shield_t final : public priest_absorb_t
 
   void impact( action_state_t* s ) override
   {
+    if ( crystalline_reflection_heal )
+    {
+      crystalline_reflection_heal->execute_on_target( s->target );
+    }
+
     priest_absorb_t::impact( s );
 
     if ( priest().talents.body_and_soul.enabled() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
+    }
+
+    if ( crystalline_reflection_damage )
+    {
+      auto cr_damage = s->result_amount * p().talents.crystalline_reflection->effectN( 1 ).percent() *
+                       p().options.crystalline_reflection_damage_mult;
+
+      make_event( p().sim, rng().gauss( 2_s, 0.5_s ), [ cr_damage, this ] {
+        player_t* target = p().target->is_enemy() && !p().target->is_sleeping() ? p().target : nullptr;
+
+        if ( !target )
+        {
+          for ( auto potential_target : p().sim->target_non_sleeping_list )
+          {
+            if ( potential_target->is_sleeping() || !potential_target->is_enemy() )
+              continue;
+
+            target = potential_target;
+            break;
+          }
+        }
+
+        if ( target )
+        {
+          crystalline_reflection_damage->execute_on_target( target, cr_damage );
+        }
+      } );
     }
 
     if ( priest().talents.discipline.atonement.enabled() )
@@ -3915,6 +3973,7 @@ void priest_t::create_options()
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
+  add_option( opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
