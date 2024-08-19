@@ -7824,10 +7824,11 @@ void mage_t::create_actions()
     action.volatile_magic = get_action<volatile_magic_t>( "volatile_magic", this );
 
   if ( talents.splinterstorm.ok() )
-  {
     action.splinter_recall = get_action<splinter_recall_t>( "splinter_recall", this );
+
+  // Always create the splinterstorm action so that it can be referenced by the APL.
+  if ( specialization() != MAGE_FIRE )
     action.splinterstorm = get_action<splinter_t>( "splinterstorm", this, true );
-  }
 
   // Create Splinters last so that the previous actions can be easily added as children
   if ( talents.splintering_sorcery.ok() )
