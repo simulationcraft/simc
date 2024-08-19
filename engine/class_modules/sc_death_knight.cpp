@@ -3955,7 +3955,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     if ( !sim->event_mgr.canceled )
     {
-      dk()->active_spells.the_blood_is_life->execute_on_target(dk()->target, accumulator * blood_beast_mod );
+      dk()->active_spells.the_blood_is_life->execute_on_target( dk()->target, accumulator * blood_beast_mod );
       accumulator = 0;
     }
 
