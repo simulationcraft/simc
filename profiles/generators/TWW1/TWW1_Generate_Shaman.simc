@@ -9,7 +9,7 @@ position=ranged_back
 talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbz22MjZGmZjxMDmZGAAAAAsZmNYADYWYCZWAA2mmZGmtFzMTMjZmNsMDDGDzyMzMzMGmhB
 
 head=final_meals_horns,id=212428,ilevel=639,gem_id=213479
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299,gem_id=213743/213479
 shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299
 chest=vestments_of_the_forgotten_reservoir,id=212014,ilevel=639,enchant_id=7364
