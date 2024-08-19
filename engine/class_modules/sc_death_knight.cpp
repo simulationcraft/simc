@@ -3927,6 +3927,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       aoe = -1;
+      cooldown->duration = 8_s; // Emulating odd behavior where the pet casts this very infrequently
     }
 
     void impact( action_state_t* state ) override
@@ -3934,7 +3935,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
       pet_melee_attack_t::impact( state );
       if ( state->result_amount > 0 )
       {
-        pet()->accumulator += state->result_amount * pet()->blood_beast_mod;
+        pet()->accumulator += state->result_amount;
       }
     }
   };
