@@ -3820,11 +3820,12 @@ struct lightning_rod_damage_t : public shaman_spell_t
     background = may_crit = false;
   }
 
-  double composite_da_multiplier( const action_state_t* ) const override
-  { return 1.0; }
+  void init() override
+  {
+    shaman_spell_t::init();
 
-  double composite_versatility( const action_state_t* ) const override
-  { return 1.0; }
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+  }
 };
 
 struct tempest_strikes_damage_t : public shaman_spell_t
