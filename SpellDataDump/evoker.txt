@@ -4814,6 +4814,7 @@ Description      : Azure Strike and Living Flame deal $s1% more damage.
 Name             : Renewing Breath (id=371257) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
