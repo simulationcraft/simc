@@ -569,6 +569,7 @@ public:
       const spell_data_t* entropic_rift_aoe;
       const spell_data_t* entropic_rift_damage;
       const spell_data_t* entropic_rift_driver;
+      const spell_data_t* entropic_rift_object;
       player_talent_t no_escape;
       player_talent_t dark_energy;
       player_talent_t void_blast;

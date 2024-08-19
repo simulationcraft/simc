@@ -207,7 +207,8 @@ struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
     auto stat = highest ? util::highest_stat( player, secondary_ratings )
                         : util::lowest_stat( player, secondary_ratings );
 
-    add_stat( stat, amount );
+    if( !manual_stats_added )
+      add_stat( stat, amount );
 
     consumable_buff_t::start( s, v, d );
   }
@@ -719,7 +720,7 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
 
     embrace_of_the_cinderbee_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), player( e.player )
     {
-      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.item );
+      auto value = e.player->find_spell( 451699 )->effectN( 5 ).average( e.player );
       create_all_stat_buffs( e, e.player->find_spell( 451699 ), value,
                              [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
@@ -2288,19 +2289,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
   e.player->special_effects.push_back( damage );
 
   auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );
-  damage_cb->initialize();
-  damage_cb->deactivate();
-
-  overclock_buff->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
-    if ( new_ )
-    {
-      damage_cb->activate();
-    }
-    else
-    {
-      damage_cb->deactivate();
-    }
-  } );
+  damage_cb->activate_with_buff( overclock_buff, true );
 
   auto overclock      = new special_effect_t( e.player );
   overclock->name_str = "overclock";
@@ -2450,7 +2439,9 @@ void arakara_sacbrood( special_effect_t& e )
     }
   };
 
-  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) );
+  // In game this buff seems to stack infinitely, while data suggests 1 max stack.
+  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) )
+                         ->set_max_stack( 99 );  
 
   auto spiderling      = new special_effect_t( e.player );
   spiderling->name_str = "spiderling";
@@ -2459,19 +2450,7 @@ void arakara_sacbrood( special_effect_t& e )
   e.player->special_effects.push_back( spiderling );
 
   auto spiderling_cb = new spiderfling_cb_t( *spiderling, spiderling_buff );
-  spiderling_cb->initialize();
-  spiderling_cb->deactivate();
-
-  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t*, int, int new_ ) {
-    if ( new_ == 1 )
-    {
-      spiderling_cb->activate();
-    }
-    if ( new_ == 0 )
-    {
-      spiderling_cb->deactivate();
-    }
-  } );
+  spiderling_cb->activate_with_buff( spiderling_buff, true );
 
   auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 452146 ) )
                   ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
@@ -3465,29 +3444,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
 // 454559 RPPM data
 void darkmoon_deck_radiance( special_effect_t& effect )
 {
-  struct radiant_focus_stat_buff_t : public stat_buff_t
-  {
-    double trigger_value;
-    const special_effect_t& effect;
-    stat_e buffed_stat;
-
-    radiant_focus_stat_buff_t( player_t* p, util::string_view n, const spell_data_t* s, const special_effect_t& e )
-      : stat_buff_t( p, n, s ), trigger_value( 0 ), effect( e ), buffed_stat( STAT_NONE )
-    {
-    }
-
-    void start( int stacks, double value, timespan_t duration ) override
-    {
-      auto it = range::find( stats, buffed_stat, &buff_stat_t::stat );
-      if ( it != stats.end() )
-      {
-        it->amount = trigger_value;
-      }
-
-      stat_buff_t::start( stacks, value, duration );
-    }
-  };
-
   struct radiant_focus_debuff_t : public buff_t
   {
     double accumulated_damage;
@@ -3507,8 +3463,13 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       else
         max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e.item );
 
-      buff = create_buff<radiant_focus_stat_buff_t>( e.player, "radiance_crit", buff_spell, e )
-        ->add_stat_from_effect_type( A_MOD_RATING, 0 );
+      // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
+      // Likely due to the script in effect 2 being incorrect
+      buff = create_buff<stat_buff_t>( e.player, buff_spell )
+        ->add_stat( STAT_CRIT_RATING, 0 )
+        ->add_stat( STAT_MASTERY_RATING, 0 )
+        ->add_stat( STAT_HASTE_RATING, 0 )
+        ->add_stat( STAT_VERSATILITY_RATING, 0 );
     }
 
     void reset() override
@@ -3526,16 +3487,30 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void expire_override( int stacks, timespan_t duration ) override
     {
       buff_t::expire_override( stacks, duration );
-      double buff_value     = 0;
+      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
 
-      if ( !player->bugs )
-        buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
-      else  // Currently bugged and doesnt respect the tooltips stated floor of 0.5x
-        buff_value = std::min( 1.0, accumulated_damage / max_damage ) * max_buff_value;
+      auto stat_buff = debug_cast<stat_buff_t*>( buff );
 
-      debug_cast<radiant_focus_stat_buff_t*>( buff )->buffed_stat =
-          util::translate_rating_mod( buff->data().effectN( 1 ).misc_value1() );
-      debug_cast<radiant_focus_stat_buff_t*>( buff )->trigger_value = buff_value;
+      for ( auto& s : stat_buff->stats )
+      {
+        // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
+        if ( source->bugs )
+        {
+          s.amount = buff_value;
+        }
+        else
+        {
+          if ( s.stat == util::highest_stat( source, secondary_ratings ) )
+          {
+            s.amount = buff_value;
+          }
+          else
+          {
+            s.amount = 0;
+          }
+        }
+      }
+
       buff->trigger();
 
       accumulated_damage = 0;
@@ -3593,11 +3568,11 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void execute( action_t*, action_state_t* s ) override
     {
       auto debuff = get_debuff( s->target );
-      if ( debuff->check() )
+      // as of 8/17/2024, does not refresh or expire the debuff if it triggers again while active
+      if ( !debuff->check() )
       {
-        debuff->expire();
+        debuff->trigger();
       }
-      debuff->trigger();
     }
   };
 
@@ -4060,31 +4035,31 @@ void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
-  unique_gear::register_special_effect( 457302, consumables::selector_food( 457284, true ) );  // the sushi special
-  unique_gear::register_special_effect( 455960, consumables::selector_food( 457284, false ) );  // everything stew
-  unique_gear::register_special_effect( 454149, consumables::selector_food( 457169, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
-  unique_gear::register_special_effect( 457282, consumables::selector_food( 457170, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
-  unique_gear::register_special_effect( 454087, consumables::selector_food( 457171, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
+  unique_gear::register_special_effect( 457302, consumables::selector_food( 461957, true ) );  // the sushi special
+  unique_gear::register_special_effect( 455960, consumables::selector_food( 454137 /*Maybe Wrong Spell id, had to guess*/, false));  // everything stew
+  unique_gear::register_special_effect( 454149, consumables::selector_food( 461957, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
+  unique_gear::register_special_effect( 457282, consumables::selector_food( 461939, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
+  unique_gear::register_special_effect( 454087, consumables::selector_food( 461943, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
   unique_gear::register_special_effect( 457283, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the divine day
   unique_gear::register_special_effect( 457285, consumables::primary_food( 457284, STAT_STR_AGI_INT, 2 ) );  // feast of the midnight masquerade
-  unique_gear::register_special_effect( 457294, consumables::primary_food( 457124, STAT_STRENGTH ) );  // sizzling honey roast
-  unique_gear::register_special_effect( 457136, consumables::primary_food( 457124, STAT_AGILITY ) );  // mycobloom risotto
-  unique_gear::register_special_effect( 457295, consumables::primary_food( 457124, STAT_INTELLECT ) );  // stuffed cave peppers
-  unique_gear::register_special_effect( 457296, consumables::primary_food( 457124, STAT_STAMINA, 7 ) );  // angler's delight
-  unique_gear::register_special_effect( 457298, consumables::primary_food( 457124, STAT_STRENGTH, 3, false ) );  // meat and potatoes
-  unique_gear::register_special_effect( 457297, consumables::primary_food( 457124, STAT_AGILITY, 3, false ) );  // rib stickers
-  unique_gear::register_special_effect( 457299, consumables::primary_food( 457124, STAT_INTELLECT, 3, false ) );  // sweet and sour meatballs
-  unique_gear::register_special_effect( 457300, consumables::primary_food( 457124, STAT_STAMINA, 7, false ) );  // tender twilight jerky
-  unique_gear::register_special_effect( 457286, consumables::secondary_food( 457049, STAT_HASTE_RATING ) );  // zesty nibblers
-  unique_gear::register_special_effect( 456968, consumables::secondary_food( 457049, STAT_CRIT_RATING ) );  // fiery fish sticks
-  unique_gear::register_special_effect( 457287, consumables::secondary_food( 457049, STAT_VERSATILITY_RATING ) );  // ginger glazed fillet
-  unique_gear::register_special_effect( 457288, consumables::secondary_food( 457049, STAT_MASTERY_RATING ) );  // salty dog
-  unique_gear::register_special_effect( 457289, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_CRIT_RATING ) );  // deepfin patty
-  unique_gear::register_special_effect( 457290, consumables::secondary_food( 457049, STAT_HASTE_RATING, STAT_VERSATILITY_RATING ) );  // sweet and spicy soup
-  unique_gear::register_special_effect( 457291, consumables::secondary_food( 457049, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) );  // fish and chips
-  unique_gear::register_special_effect( 457292, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_CRIT_RATING ) );  // salt baked seafood
-  unique_gear::register_special_effect( 457293, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
-  unique_gear::register_special_effect( 457301, consumables::secondary_food( 457049, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
+  unique_gear::register_special_effect( 457294, consumables::primary_food( 461925, STAT_STRENGTH ) );  // sizzling honey roast
+  unique_gear::register_special_effect( 457136, consumables::primary_food( 461924, STAT_AGILITY ) );  // mycobloom risotto
+  unique_gear::register_special_effect( 457295, consumables::primary_food( 461922, STAT_INTELLECT ) );  // stuffed cave peppers
+  unique_gear::register_special_effect( 457296, consumables::primary_food( 461927, STAT_STAMINA, 7 ) );  // angler's delight
+  unique_gear::register_special_effect( 457298, consumables::primary_food( 461947, STAT_STRENGTH, 3, false ) );  // meat and potatoes
+  unique_gear::register_special_effect( 457297, consumables::primary_food( 461948, STAT_AGILITY, 3, false ) );  // rib stickers
+  unique_gear::register_special_effect( 457299, consumables::primary_food( 461949, STAT_INTELLECT, 3, false ) );  // sweet and sour meatballs
+  unique_gear::register_special_effect( 457300, consumables::primary_food( 461946, STAT_STAMINA, 7, false ) );  // tender twilight jerky
+  unique_gear::register_special_effect( 457286, consumables::secondary_food( 461861, STAT_HASTE_RATING ) );  // zesty nibblers
+  unique_gear::register_special_effect( 456968, consumables::secondary_food( 461860, STAT_CRIT_RATING ) );  // fiery fish sticks
+  unique_gear::register_special_effect( 457287, consumables::secondary_food( 461859, STAT_VERSATILITY_RATING ) );  // ginger glazed fillet
+  unique_gear::register_special_effect( 457288, consumables::secondary_food( 461858, STAT_MASTERY_RATING ) );  // salty dog
+  unique_gear::register_special_effect( 457289, consumables::secondary_food( 461857, STAT_HASTE_RATING, STAT_CRIT_RATING ) );  // deepfin patty
+  unique_gear::register_special_effect( 457290, consumables::secondary_food( 461856, STAT_HASTE_RATING, STAT_VERSATILITY_RATING ) );  // sweet and spicy soup
+  unique_gear::register_special_effect( 457291, consumables::secondary_food( 461854, STAT_CRIT_RATING, STAT_VERSATILITY_RATING ) );  // fish and chips
+  unique_gear::register_special_effect( 457292, consumables::secondary_food( 461853, STAT_MASTERY_RATING, STAT_CRIT_RATING ) );  // salt baked seafood
+  unique_gear::register_special_effect( 457293, consumables::secondary_food( 461845, STAT_MASTERY_RATING, STAT_VERSATILITY_RATING ) );  // marinated tenderloins
+  unique_gear::register_special_effect( 457301, consumables::secondary_food( 461855, STAT_MASTERY_RATING, STAT_HASTE_RATING ) );  // chippy tea
 
   // Flasks
   unique_gear::register_special_effect( 432021, consumables::flask_of_alchemical_chaos, true );

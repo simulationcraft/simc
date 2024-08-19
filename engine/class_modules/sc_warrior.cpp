@@ -2451,7 +2451,7 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
@@ -2462,6 +2462,15 @@ struct bloodthirst_t : public warrior_attack_t
       // Reset CD after everything resolves
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 
@@ -2517,15 +2526,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2727,7 +2727,7 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.mountain_thane.burst_of_power->ok() && p()->buff.burst_of_power->up() && p()->cooldown.burst_of_power_icd->up() )
@@ -2737,6 +2737,15 @@ struct bloodbath_t : public warrior_attack_t
       p()->resource_gain( RESOURCE_RAGE, rage_from_burst_of_power, p()->gain.burst_of_power );
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 
@@ -2785,15 +2794,6 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2965,15 +2965,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.fierce_followthrough->expire();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
-
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B2 ) )
     {
       p()->buff.overpowering_might->trigger();
@@ -3003,7 +2994,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
-    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT )
+    if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
       make_event( sim, [ this ] { p()->buff.fierce_followthrough->trigger(); } );
 
     if ( p()->talents.colossus.colossal_might->ok() )
@@ -3030,6 +3021,15 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.strike_vulnerabilities->trigger();
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 
@@ -3595,6 +3595,15 @@ struct cleave_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   void execute() override
@@ -3621,15 +3630,6 @@ struct cleave_t : public warrior_attack_t
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
@@ -5222,13 +5222,15 @@ struct raging_blow_t : public warrior_attack_t
   action_t* lightning_strike;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
+  bool opportunist_up;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->talents.fury.raging_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
-      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
+      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
+      opportunist_up( false )
   {
     parse_options( options_str );
 
@@ -5259,6 +5261,8 @@ struct raging_blow_t : public warrior_attack_t
 
   void execute() override
   {
+    opportunist_up = p()->buff.opportunist->check();
+
     warrior_attack_t::execute();
 
     if ( result_is_hit( execute_state->result ) )
@@ -5266,13 +5270,18 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack->execute();
       oh_attack->execute();
     }
+
+    p()->buff.opportunist->decrement();
+
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
     {
       if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
       {
         cooldown->reset( true );
-        if ( p()->talents.slayer.opportunist->ok() )
+        // If opportunist was up when we used the skill, in game it refreshes, then fades.  For simc purposes, do not proc if we
+        // cast with opportunist up.
+        if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
 
         if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
@@ -5284,7 +5293,9 @@ struct raging_blow_t : public warrior_attack_t
       if ( rng().roll( cd_reset_chance ) )
       {
         cooldown->reset( true );
-        if ( p()->talents.slayer.opportunist->ok() )
+        // If opportunist was up when we used the skill, in game it refreshes, then fades.  For simc purposes, do not proc if we
+        // cast with opportunist up.
+        if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
 
         if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
@@ -5315,8 +5326,6 @@ struct raging_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
-
-    p()->buff.opportunist->decrement();
   }
 
   bool ready() override
@@ -5378,13 +5387,15 @@ struct crushing_blow_t : public warrior_attack_t
   crushing_blow_attack_t* oh_attack;
   action_t* lightning_strike;
   double cd_reset_chance, wrath_and_fury_reset_chance;
+  bool opportunist_up;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
-      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() )
+      wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
+      opportunist_up( false )
   {
     parse_options( options_str );
 
@@ -5418,6 +5429,8 @@ struct crushing_blow_t : public warrior_attack_t
 
   void execute() override
   {
+    opportunist_up = p()->buff.opportunist->check();
+
     warrior_attack_t::execute();
 
     if ( result_is_hit( execute_state->result ) )
@@ -5425,13 +5438,18 @@ struct crushing_blow_t : public warrior_attack_t
       mh_attack->execute();
       oh_attack->execute();
     }
+
+    p()->buff.opportunist->decrement();
+
     if ( p()->talents.fury.improved_raging_blow->ok() && p()->talents.fury.wrath_and_fury->ok() &&
          p()->buff.enrage->check() )
     {
       if ( rng().roll( cd_reset_chance + wrath_and_fury_reset_chance ) )
       {
         cooldown->reset( true );
-        if ( p()->talents.slayer.opportunist->ok() )
+        // If opportunist was up when we used the skill, in game it refreshes, then fades.  For simc purposes, do not proc if we
+        // cast with opportunist up.
+        if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
           p()->buff.opportunist->trigger();
 
         if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
@@ -5441,7 +5459,9 @@ struct crushing_blow_t : public warrior_attack_t
     else if ( p()->talents.fury.improved_raging_blow->ok() && rng().roll( cd_reset_chance ) )
     {
       cooldown->reset( true );
-      if ( p()->talents.slayer.opportunist->ok() )
+      // If opportunist was up when we used the skill, in game it refreshes, then fades.  For simc purposes, do not proc if we
+      // cast with opportunist up.
+      if ( p()->talents.slayer.opportunist->ok() && !opportunist_up )
         p()->buff.opportunist->trigger();
 
       if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B4 ) )
@@ -5473,8 +5493,6 @@ struct crushing_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
-
-    p()->buff.opportunist->decrement();
   }
 
   bool ready() override

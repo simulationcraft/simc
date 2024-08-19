@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -3742,7 +3742,6 @@ Effects          :
                    Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
-Hotfixed         : Base Value (13 -> 58)
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -26259,17 +26258,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Light (82326), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23, 74
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 #2 (id=1170046)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34) | Scaling Class: -2 | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 #3 (id=1170048)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 3 (39) | Scaling Class: -2 | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 Description      : $@spelldesc461287
 Tooltip          : The mana cost of your next Holy Light, Flash of Light, Crusader Strike, or Judgment is reduced by $w1.
 

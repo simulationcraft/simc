@@ -6559,6 +6559,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     p()->buffs.ray_of_frost->expire();
     p()->buffs.cryopathy->expire();
+    // Technically, both of these buffs should also be expired when Ray of Frost is refreshed.
+    // The hidden FoF buff (see above) is expired but not reapplied, breaking the effect.
+    // Currently not relevant as refreshing RoF is only possible through spell data overrides.
   }
 
   double action_multiplier() const override
@@ -7821,10 +7824,11 @@ void mage_t::create_actions()
     action.volatile_magic = get_action<volatile_magic_t>( "volatile_magic", this );
 
   if ( talents.splinterstorm.ok() )
-  {
     action.splinter_recall = get_action<splinter_recall_t>( "splinter_recall", this );
+
+  // Always create the splinterstorm action so that it can be referenced by the APL.
+  if ( specialization() != MAGE_FIRE )
     action.splinterstorm = get_action<splinter_t>( "splinterstorm", this, true );
-  }
 
   // Create Splinters last so that the previous actions can be easily added as children
   if ( talents.splintering_sorcery.ok() )
@@ -8301,12 +8305,7 @@ void mage_t::init_spells()
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1.0 )
-  {
-    if ( specialization() == MAGE_ARCANE )
-      base.distance = 10.0;
-    else
-      base.distance = 30.0;
-  }
+    base.distance = 10.0;
 
   player_t::init_base_stats();
 
@@ -9467,7 +9466,7 @@ void mage_t::trigger_mana_cascade()
   if ( !talents.mana_cascade.ok() )
     return;
 
-  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) && talents.memory_of_alar.ok() ? 2 : 1;
+  int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
   auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
   {
     buffs.mana_cascade->trigger( s );

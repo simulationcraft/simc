@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26288> __spelltext_data { {
+// Spell text, wow build 11.0.2.56162
+static const std::array<spelltext_data_t, 26309> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25091,6 +25091,7 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 454027, "Targets struck by your Tempest deal $454029s1% less damage to you for $454029d.", 0, 0 },
   { 454029, "$@spelldesc454027", "Dealing $w1% less damage to $@auracaster.", 0 },
   { 454087, "$@spelldesc452276\r\n\r\n$@spellicon457049 $@spellname457049  \r\nIf you spend at least 10 seconds eating you will become $@spellname457049 and gain ${$456961s4*($456961s1/10)} of your lowest secondary stat for $461945d.", 0, 0 },
+  { 454137, "Increases your lowest secondary stat by $s1 for $d.", "The benefit of your recent meal adapts to your current needs as it digests.\r\r\r\n$?$W1>0[Critical strike increased by $w1.\r\r\r\n][]$?$W2>0[Versatility increased by $w2.\r\r\r\n][]$?$W3>0[Haste increased by $w3.\r\r\r\n][]$?$W4>0[Mastery increased by $w4.][]", 0 },
   { 454149, "$@spelldesc462174|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and gain $456961s4 of your highest secondary stat for $461960d.", 0, 0 },
   { 454214, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
   { 454286, "You have a chance equal to your critical strike chance to absorb $s1% of any damage taken, up to a maximum chance of $s2%.", 0, 0 },
@@ -26108,16 +26109,36 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 461578, "$@spelldesc157047", "Absorbs $w1 damage.", 0 },
   { 461762, "$@spelldesc430715", "Damage dealt by you and your pets increased by $s1%.", 0 },
   { 461818, "$@spelldesc452536", 0, 0 },
+  { 461845, "Increases Versatility and Mastery by $s1 for $d.", "Versatility and Mastery increased by $w9.", 0 },
+  { 461853, "Increases Critical Strike and Mastery by $s1 for $d.", "Critical Strike and Mastery increased by $w9.", 0 },
+  { 461854, "Increases Critical Strike and Versatility by $s1 for $d.", "Critical Strike and Versatility increased by $w9.", 0 },
+  { 461855, "Increases Haste and Mastery by $s1 for $d.", "Haste and Mastery increased by $w9.", 0 },
+  { 461856, "Increases Haste and Versatility by $s1 for $d.", "Haste and Versatility increased by $w9.", 0 },
+  { 461857, "Increases Haste and Critical Strike by $s1 for $d.", "Haste and Critical Strike increased by $w9.", 0 },
+  { 461858, "Increases Mastery by $s1 for $d.", "Mastery increased by $w9.", 0 },
+  { 461859, "Increases Versatility by $s1 for $d.", "Versatility increased by $w9.", 0 },
+  { 461860, "Increases Critical Strike by $s1 for $d.", "Critical Strike increased by $w9.", 0 },
+  { 461861, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
   { 461866, "$@spelldesc445768", "Damage of your next $?a137015[Multi-Shot][Butchery] increased by $s1%.", 0 },
   { 461867, "$@spelldesc431730", "Absorbs $w1 damage.", 0 },
   { 461885, "$@spelldesc431730", 0, 0 },
   { 461904, "While in combat, Xala'tath rains down orbs of cosmic energy that attempt to empower nearby creatures increasing their Haste and Movement speed by $s1% for $d. \r\n\r\nIf players disrupt these orbs they claim the power for themselves increasing their Haste and Movement speed by $461910s1% for $461910d.\r\n\r\nThis effect stacks.", "Haste increased by $s1%.\r\nMovement speed increased by $s2%.", 0 },
   { 461910, "$@spelldesc461904", "Haste increased by $s1%.\r\nMovement speed increased by $s2%.", 0 },
+  { 461922, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Intellect increased by $w11.", 0 },
   { 461924, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Agility increased by $w11.", 0 },
+  { 461925, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Strength increased by $w11.", 0 },
   { 461926, "$@spelldesc431730", 0, 0 },
+  { 461927, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10.", 0 },
   { 461937, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
+  { 461939, "Increases Versatility by $s1 for $d.", "Versatility increased by $w9.", 0 },
   { 461940, "Increases Mastery by $s1 for $d.", "Mastery increased by $w9.", 0 },
+  { 461943, "Increases Versatility by $s1 for $d.", "Versatility increased by $w9.", 0 },
   { 461945, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
+  { 461946, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10.", 0 },
+  { 461947, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Strength increased by $w11.", 0 },
+  { 461948, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Agility increased by $w11.", 0 },
+  { 461949, "$@spellicon457049  $@spellname457049  If you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s8 Stamina and $456961s3 Agility for $d.", "Stamina increased by $w10 and Intellect increased by $w11.", 0 },
+  { 461957, "Increases Mastery by $s1 for $d.", "Mastery increased by $w9.", 0 },
   { 461960, "Increases Haste by $s1 for $d.", "Haste increased by $w9.", 0 },
   { 461980, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack.", 0, 0 },
   { 461981, "$@spelldesc461980", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage.", 0 },
@@ -26290,20 +26311,15 @@ static const std::array<spelltext_data_t, 26288> __spelltext_data { {
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56110
-static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __spelltext_hotfix_data { {
-  {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
+// spelltext hotfix entries, wow build 11.0.2.56162
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {  443735,  0, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames and grant $447968s1 of a random secondary stat. Anyone wearing Waders of the Unifying Flame will instead get their highest secondary stat.", "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames.\r\n\r\nUnifying Flames grants the wearer $s1 of their highest secondary stat, and others $s2 of a random secondary stat." },
   {  446108,  1, "$pri increased by $w1 at the cost of $w2 Mastery.", "$pri increased by $w1.\r\nMastery reduced by $455571w1." },
   {  447968,  1, "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", "The Unifying Flame increases your $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1." },
   {  453573,  0, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3  seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $458624r yards.\r\n\r\nThis is a Nerubian embellishment.", "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3 seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $M4 yards.\r\n\r\nThis is a Nerubian embellishment." },
-  {  454433,  0, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec." },
-  {  459231,  0, nullptr, "$@spelldesc459222" },
-  {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
-  {  461981,  1, "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage." },
 } };
 
-// Spell description variables, wow build 11.0.2.56110
+// Spell description variables, wow build 11.0.2.56162
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26891,7 +26907,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56110
+// spelldesc_vars hotfix entries, wow build 11.0.2.56162
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
