@@ -27,59 +27,59 @@ off_hand=,id=225579,bonus_id=1540/10870
 
 save=TWW1_Shaman_Elemental.simc
 
-# shaman="TWW1_Shaman_Enhancement_Ele"
-# level=70
-# race=troll
-# spec=enhancement
-# role=attack
-# position=back
-# talents=BcQAzii1bx6MdXWQl8y/78bs6KJJpEJgkESSSDlEAAAAAAAAAAAAAKRIJkQKiCJtkkGgSkDEEI
+shaman="TWW1_Shaman_Enhancement_Storm²"
+level=80
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDMzYmZmZmBLzMmhBAAAAAAAAAwCsgZZGzMzmmlthlxMz0gFAMLTmBzyiZmZGDzMbYbmZCMWGzMAAzA
 
-# head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
-# neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
-# shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
-# back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
-# chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
-# wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
-# hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
-# waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-# legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
-# feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
-# finger2=woebearers_band,id=133638,bonus_id=1795/3251/657/7977,enchant=devotion_of_mastery_2
-# trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
-# trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
-# main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-# off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213743/213482
+shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+back=anvilhide_cape,id=221088,ilevel=639
+chest=goresplattered_membrane,id=212421,ilevel=639,enchant_id=7364
+wrists=throne_defenders_bangles,id=212415,ilevel=639
+hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+waist=cinch_of_lingering_influence,id=221168,ilevel=639
+legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant_id=7601
+feet=silksteel_striders,id=221152,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
+finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant_id=7346
+trinket1=empowering_crystal_of_anubikkaj,id=219312,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+main_hand=everforged_mace,id=222442,bonus_id=10421/9633/11301/8902/9627/8793/10222/11144,enchant_id=7460,crafted_stats=36/32
+off_hand=everforged_mace,id=222442,bonus_id=10421/9633/11301/8902/9627/8793/10222/11144,enchant_id=7460,crafted_stats=36/32
 
-# save=TWW1_Shaman_Enhancement_Ele.simc
+save=TWW1_Shaman_Enhancement_Storm.simc
 
-# shaman="TWW1_Shaman_Enhancement"
-# level=70
-# race=troll
-# spec=enhancement
-# role=attack
-# position=back
-# talents=BcQAzii1bx6MdXWQl8y/78bs6KJJHAkcARSSSQJJSIAAAAAAAAAAAAgSESCJkioQSLJpBoE5ABpgA
+shaman="TWW1_Shaman_Enhancement"
+level=80
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzyMzMYmZYGmFzsMDAAAAAAAAAAsBLYWmxMzsoZZZYZYmpBLAYWmMDmlFmZmxYmZ2M2mZmsgxCjBAYG
 
-# head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
-# neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
-# shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
-# back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
-# chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
-# wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
-# hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
-# waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-# legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
-# feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_haste_2
-# finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant=devotion_of_haste_2
-# trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
-# trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
-# main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-# off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213743/213482
+shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+back=anvilhide_cape,id=221088,ilevel=639
+chest=goresplattered_membrane,id=212421,ilevel=639,enchant_id=7364
+wrists=throne_defenders_bangles,id=212415,ilevel=639
+hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+waist=cinch_of_lingering_influence,id=221168,ilevel=639
+legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant_id=7601
+feet=silksteel_striders,id=221152,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
+finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant_id=7346
+trinket1=empowering_crystal_of_anubikkaj,id=219312,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+main_hand=everforged_mace,id=222442,bonus_id=10421/9633/11301/8902/9627/8793/10222/11144,enchant_id=7460,crafted_stats=36/32
+off_hand=everforged_mace,id=222442,bonus_id=10421/9633/11301/8902/9627/8793/10222/11144,enchant_id=7460,crafted_stats=36/32
 
-# save=TWW1_Shaman_Enhancement.simc
+save=TWW1_Shaman_Enhancement.simc
 
 # shaman="TWW1_Shaman_Restoration"
 # level=70

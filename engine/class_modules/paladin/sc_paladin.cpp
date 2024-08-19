@@ -2142,18 +2142,8 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
       if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
         p()->buffs.templar.shake_the_heavens->execute();
       else
-      {
-        // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
-        // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
-        timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
-        timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
-        double extension       = 4.0;
-        if ( maxDur < extendedDur )
-        {
-          extension -= ( extendedDur - maxDur ).total_seconds();
-        }
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
-      }
+        // 2024-08-18 If Shake the Heavens is still running, another Hammer of Light will only extend by 4 seconds
+        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( 4 ) );
     }
   }
   void impact( action_state_t* s ) override
@@ -3888,7 +3878,7 @@ void paladin_t::create_buffs()
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
-                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
                                         ->set_partial_tick( true );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );

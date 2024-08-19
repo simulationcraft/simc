@@ -2497,15 +2497,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::last_tick( dot );
 
-    p()->buff.fists_of_flowing_momentum_fof->expire();
-    p()->buff.transfer_the_power->expire();
-    p()->buff.pressure_point->trigger();
-
-    if ( p()->talent.windwalker.momentum_boost->ok() )
-    {
+    // Delay the expiration of the buffs until after the tick action happens.
+    // Otherwise things trigger before the tick action happens; which is not intended.
+    make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
+      p()->buff.fists_of_flowing_momentum_fof->expire();
+      p()->buff.transfer_the_power->expire();
+      p()->buff.pressure_point->trigger();
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
-    }
+    } );
   }
 };
 

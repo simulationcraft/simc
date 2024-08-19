@@ -400,8 +400,9 @@ public:
   bool sk_during_cast;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
-  player_t* recent_target =
+  player_t* earthen_rage_target =
       nullptr;  // required for Earthen Rage, whichs' ticks damage the most recently attacked target
+  event_t* earthen_rage_event;
 
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
@@ -904,7 +905,8 @@ public:
     // Row 1
     player_talent_t earth_shock;
     // Row 2
-    player_talent_t earthquake;
+    player_talent_t earthquake_reticle;
+    player_talent_t earthquake_target;
     player_talent_t elemental_fury;
     player_talent_t fire_elemental;
     player_talent_t storm_elemental;
@@ -1052,6 +1054,7 @@ public:
     const spell_data_t* storm_swell;
     const spell_data_t* lightning_rod;
     const spell_data_t* improved_flametongue_weapon;
+    const spell_data_t* earthen_rage;
   } spell;
 
   struct rng_obj_t
@@ -1081,8 +1084,8 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
-      lvs_samples( "lvs_tracker", false ),
       dre_uptime_samples( "dre_uptime_tracker", false ),
+      lvs_samples( "lvs_tracker", false ),
       dre_attempts( 0U ),
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
@@ -1191,6 +1194,8 @@ public:
   // trackers, big code blocks that shall not be doublicated
   void track_magma_chamber();
   void track_t29_2pc_ele();
+
+  double windfury_proc_chance();
 
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
@@ -2671,6 +2676,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       p()->trigger_fusion_of_elements( execute_state );
     }
+
 
     p()->trigger_earthen_rage( execute_state );
   }
@@ -4245,31 +4251,54 @@ struct thunderstrike_ward_damage_t : public shaman_spell_t
   }
 };
 
-struct earthen_rage_spell_t : public shaman_spell_t
+struct earthen_rage_damage_t : public shaman_spell_t
 {
-  earthen_rage_spell_t( shaman_t* p ) : shaman_spell_t( "earthen_rage_damage", p, p -> find_spell( 170379 ) )
+  earthen_rage_damage_t( shaman_t* p ) : shaman_spell_t( "earthen_rage", p, p -> find_spell( 170379 ) )
   {
     background = proc = true;
     callbacks = false;
   }
 };
 
-struct earthen_rage_driver_t : public spell_t
+struct earthen_rage_event_t : public event_t
 {
-  earthen_rage_driver_t( shaman_t* p ) : spell_t( "earthen_rage", p, p -> find_spell( 170377 ) )
-  {
-    may_miss = may_crit = callbacks = proc = tick_may_crit = tick_zero = false;
-    background = dual = dynamic_tick_action = true;
+  shaman_t* player;
+  timespan_t end_time;
 
-    tick_action = new earthen_rage_spell_t( p );
+  earthen_rage_event_t( shaman_t* p, timespan_t et ) :
+    event_t( *p, next_event( p ) ), player( p ), end_time( et )
+  { }
+
+  timespan_t next_event( shaman_t* p ) const
+  {
+    return p->rng().range(
+      1_ms,
+      2.0 * p->spell.earthen_rage->effectN( 1 ).period() * p->composite_spell_cast_speed()
+    );
   }
 
-  timespan_t tick_time( const action_state_t* state ) const override
-  { return timespan_t::from_seconds( rng().range( 0.001, 2 * base_tick_time.total_seconds() * state -> haste ) ); }
+  void set_end_time( timespan_t t )
+  { end_time = t; }
 
-  // Maximum duration is extended by max of 6 seconds
-  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t ) const override
-  { return data().duration(); }
+  void execute() override
+  {
+    if ( sim().current_time() > end_time )
+    {
+      sim().print_debug( "{} earthen_rage fades", player->name() );
+      player->earthen_rage_event = nullptr;
+      return;
+    }
+
+    sim().print_debug( "{} triggers earthen_rage on target={}", player->name(),
+      player->earthen_rage_target->name() );
+
+    player->action.earthen_rage->execute_on_target( player->earthen_rage_target );
+
+    player->earthen_rage_event = make_event<earthen_rage_event_t>( sim(), player, end_time );
+    sim().print_debug( "{} schedules earthen_rage, next_event={}, tick_time={}",
+      player->name(), player->earthen_rage_event->occurs(),
+      player->earthen_rage_event->occurs() - sim().current_time() );
+  }
 };
 
 // Honestly why even bother with resto heals?
@@ -7551,7 +7580,9 @@ struct earthquake_damage_t : public earthquake_damage_base_t
 struct earthquake_t : public earthquake_base_t
 {
   earthquake_t( shaman_t* player, util::string_view options_str ) :
-    earthquake_base_t( player, "earthquake", player->talent.earthquake )
+    earthquake_base_t( player, "earthquake", player->talent.earthquake_reticle.ok()
+      ? player->talent.earthquake_reticle
+      : player->talent.earthquake_target )
   {
     parse_options( options_str );
 
@@ -8067,24 +8098,24 @@ public:
   {
     shaman_spell_t::tick( d );
 
-    // proc chance suddenly became 100% and the actual chance became effectN 1
-    // TODO: TWW proc chance
-
-    double active_flame_shocks = p()->get_active_dots( d );
-    p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
-    double proc_chance =
-        std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
-
-    if ( p()->spec.lava_surge->ok() && p()->spec.restoration_shaman->ok() )
+    if ( p()->spec.lava_surge->ok() )
     {
-      proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
-    }
+      double active_flame_shocks = p()->get_active_dots( d );
+      p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
+      double proc_chance =
+          std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
 
-    if ( rng().roll( proc_chance ) )
-    {
-      p()->trigger_lava_surge();
-      p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
-      p()->lava_surge_attempts_normalized = 0.0;
+      if ( p()->spec.restoration_shaman->ok() )
+      {
+        proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
+      }
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p()->trigger_lava_surge();
+        p()->lvs_samples.add( p()->lava_surge_attempts_normalized );
+        p()->lava_surge_attempts_normalized = 0.0;
+      }
     }
 
     if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
@@ -9373,10 +9404,12 @@ struct surging_totem_pulse_t : public spell_totem_action_t
   surging_totem_pulse_t( spell_totem_pet_t* totem )
     : spell_totem_action_t( "tremor", totem, totem->find_spell( 455622 ) ), sundered( false )
   {
-    aoe          = 1;
-    full_amount_targets = as<double>( data().effectN( 2 ).base_value() );
+    aoe          = -1;
+    full_amount_targets = 1;
+    // full_amount_targets = as<double>( data().effectN( 2 ).base_value() );
     // TODO: Reduction past N enemies
-    reduced_aoe_targets = as<double>( data().effectN( 2 ).base_value() );
+    // reduced_aoe_targets = as<double>( data().effectN( 2 ).base_value() );
+    reduced_aoe_targets = 5;
     hasted_pulse = true;
   }
 
@@ -10305,6 +10338,23 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( splits[ 0 ], tempest_counter );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "windfury_chance" ) )
+  {
+    return make_fn_expr( splits[ 0 ], [ this ]() {
+      return std::min( 1.0, windfury_proc_chance() );
+    } );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "lashing_flames" ) )
+  {
+    return make_fn_expr( splits[ 0 ], [ this ]() {
+      return std::accumulate( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(), 0.0,
+        [ this ]( double v, player_t* target ) {
+          return v + as<double>( get_target_data( target )->debuff.lashing_flames->check() );
+        } );
+    } );
+  }
+
   return player_t::create_expression( name );
 }
 
@@ -10401,7 +10451,7 @@ void shaman_t::create_actions()
 
   if ( talent.earthen_rage.ok() )
   {
-    action.earthen_rage = new earthen_rage_driver_t( this );
+    action.earthen_rage = new earthen_rage_damage_t( this );
   }
 
   // Generic Actions
@@ -10789,7 +10839,9 @@ void shaman_t::init_spells()
   // Row 1
   talent.earth_shock = _ST( "Earth Shock" );
   // Row 2
-  talent.earthquake = _ST( "Earthquake" );
+  talent.earthquake_reticle = find_talent_spell( talent_tree::SPECIALIZATION, 61882 );
+  talent.earthquake_target = find_talent_spell( talent_tree::SPECIALIZATION, 462620 );
+
   talent.elemental_fury = _ST( "Elemental Fury" );
   talent.fire_elemental = _ST( "Fire Elemental" );
   talent.storm_elemental = _ST( "Storm Elemental" );
@@ -10911,6 +10963,7 @@ void shaman_t::init_spells()
   spell.storm_swell         = find_spell( 455089 );
   spell.lightning_rod       = find_spell( 210689 );
   spell.improved_flametongue_weapon = find_spell( 382028 );
+  spell.earthen_rage        = find_spell( 170377 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
@@ -11563,6 +11616,23 @@ void shaman_t::generate_maelstrom_weapon( const action_state_t* state, int stack
   generate_maelstrom_weapon( state->action, stacks );
 }
 
+double shaman_t::windfury_proc_chance()
+{
+  double proc_chance = spell.windfury_weapon->proc_chance();
+  proc_chance += talent.imbuement_mastery->effectN( 1 ).percent();
+  double proc_mul = mastery.enhanced_elements->effectN( 4 ).mastery_value() *
+    ( 1.0 + talent.storms_wrath->effectN( 2 ).percent() );
+
+  proc_chance += cache.mastery() * proc_mul;
+  if ( buff.doom_winds->up() )
+  {
+    proc_chance *= talent.windfury_weapon.ok() *
+                  talent.doom_winds->effectN( 1 ).base_value();
+  }
+
+  return proc_chance;
+}
+
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -11582,19 +11652,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     return;
   }
 
-  double proc_chance = spell.windfury_weapon->proc_chance();
-  proc_chance += talent.imbuement_mastery->effectN( 1 ).percent();
-  double proc_mul = mastery.enhanced_elements->effectN( 4 ).mastery_value() *
-    ( 1.0 + talent.storms_wrath->effectN( 2 ).percent() );
-
-  proc_chance += cache.mastery() * proc_mul;
-  if ( buff.doom_winds->up() )
-  {
-    proc_chance *= talent.windfury_weapon.ok() *
-                  talent.doom_winds->effectN( 1 ).base_value();
-  }
-
-  if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( proc_chance ) )
+  if ( state->action->weapon->slot == SLOT_MAIN_HAND && rng().roll( windfury_proc_chance() ) )
   {
     action_t* a = windfury_mh;
 
@@ -12054,8 +12112,7 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   }
 
   // Earthen Rage damage does not trigger itself
-  if ( state->action == action.earthen_rage->tick_action ||
-       state->action == action.earthen_rage )
+  if ( state->action == action.earthen_rage )
   {
     return;
   }
@@ -12065,7 +12122,17 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     sim->out_debug.print( "{} earthen_rage proc by {}", *this, *state->action );
   }
 
-  action.earthen_rage->execute_on_target( state->target );
+  earthen_rage_target = state->target;
+  if ( earthen_rage_event == nullptr )
+  {
+    earthen_rage_event = make_event<earthen_rage_event_t>( *sim, this,
+      sim->current_time() + spell.earthen_rage->duration() );
+  }
+  else
+  {
+    debug_cast<earthen_rage_event_t*>( earthen_rage_event )
+        ->set_end_time( sim->current_time() + spell.earthen_rage->duration() );
+  }
 }
 
 void shaman_t::trigger_totemic_rebound( const action_state_t* state )
@@ -12685,7 +12752,8 @@ std::string shaman_t::default_potion() const
                                  ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                  "disabled";
 
-  std::string enhancement_potion = ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
+  std::string enhancement_potion = ( true_level >= 71 ) ? "tempered_potion_3" :
+                                   ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
                                    ( true_level >= 51 ) ? "potion_of_spectral_agility" :
                                    ( true_level >= 45 ) ? "potion_of_unbridled_fury" :
                                    "disabled";
@@ -12716,7 +12784,8 @@ std::string shaman_t::default_flask() const
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
-  std::string enhancement_flask = ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
+  std::string enhancement_flask = ( true_level >= 71 ) ? "alchemical_chaos_3" :
+                                  ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
                                   ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                   ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
                                   "disabled";
@@ -12747,7 +12816,8 @@ std::string shaman_t::default_food() const
                                ( true_level >= 45 ) ? "mechdowels_big_mech" :
                                "disabled";
 
-  std::string enhancement_food = ( true_level >= 61 ) ? "fated_fortune_cookie" :
+  std::string enhancement_food = ( true_level >= 71 ) ? "feast_of_the_divine_day" :
+                                 ( true_level >= 61 ) ? "fated_fortune_cookie" :
                                  ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                  ( true_level >= 45 ) ? "baked_port_tato" :
                                  "disabled";
@@ -12773,7 +12843,8 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  return ( true_level >= 61 ) ? "draconic" :
+  return ( true_level >= 71 ) ? "crystallized" :
+         ( true_level >= 61 ) ? "draconic" :
          ( true_level >= 60 ) ? "veiled" :
          ( true_level >= 50 ) ? "battle_scarred" :
          ( true_level >= 45 ) ? "defiled" :
@@ -13049,7 +13120,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "lightning_shield" );
   precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.algethar_puzzle_box|trinket.1.is.manic_grieftorch|trinket.1.is.elementium_pocket_anvil|trinket.1.is.beacon_to_the_beyond" );
   precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.manic_grieftorch|trinket.2.is.elementium_pocket_anvil|trinket.2.is.beacon_to_the_beyond" );
-  precombat->add_action( "variable,name=min_talented_cd_remains,value=((cooldown.feral_spirit.remains%(1+1.5*talent.witch_doctors_ancestry.rank))+1000*!talent.feral_spirit.enabled)<?(cooldown.doom_winds.remains+1000*!talent.doom_winds.enabled)<?(cooldown.ascendance.remains+1000*!talent.ascendance.enabled)" );
+  precombat->add_action( "variable,name=min_talented_cd_remains,value=((cooldown.feral_spirit.remains%(4*talent.witch_doctors_ancestry.enabled))+1000*!talent.feral_spirit.enabled)>?(cooldown.doom_winds.remains+1000*!talent.doom_winds.enabled)>?(cooldown.ascendance.remains+1000*!talent.ascendance.enabled)" );
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -13086,6 +13157,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>1&(active_enemies=1&ti_lightning_bolt)|(active_enemies>1&ti_chain_lightning)" );
     def->add_action( "primordial_wave,if=set_bonus.tier31_2pc&(raid_event.adds.in>(action.primordial_wave.cooldown%(1+set_bonus.tier31_4pc))|raid_event.adds.in<6)" );
     def->add_action( "feral_spirit" );
+    def->add_action( "surging_totem" );
     def->add_action( "ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=action.ascendance.cooldown%2)|(ti_chain_lightning&active_enemies>1))" );
     def->add_action( "doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown|active_enemies>1" );
 
@@ -13093,14 +13165,18 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "call_action_list,name=aoe,if=active_enemies>1&(rotation.standard|rotation.simple)" );
     def->add_action( "call_action_list,name=funnel,if=active_enemies>1&rotation.funnel" );
 
+    single->add_action( "tempest,if=buff.maelstrom_weapon.stack=10|(buff.maelstrom_weapon.stack>=5&(tempest_mael_count>30|buff.awakening_storms.stack=2))" );
+    single->add_action( "sundering,if=buff.ascendance.up&pet.surging_totem.active&talent.earthsurge.enabled" );
     single->add_action( "primordial_wave,if=!dot.flame_shock.ticking&talent.lashing_flames.enabled&(raid_event.adds.in>(action.primordial_wave.cooldown%(1+set_bonus.tier31_4pc))|raid_event.adds.in<6)" );
     single->add_action( "flame_shock,if=!ticking&talent.lashing_flames.enabled" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4" );
+    single->add_action( "lightning_bolt,if=talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack" );
     single->add_action( "sundering,if=set_bonus.tier30_2pc&raid_event.adds.in>=action.sundering.cooldown" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))" );
     single->add_action( "stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)" );
     single->add_action( "lava_lash,if=buff.hot_hand.up" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges" );
+    single->add_action( "tempest,if=buff.maelstrom_weapon.stack>=8" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=8&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)" );
     single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=8&buff.crackling_thunder.up&talent.elemental_spirits.enabled" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=8&(feral_spirit.active>=2|!talent.elemental_spirits.enabled)" );
@@ -13108,18 +13184,23 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "lightning_bolt,if=((buff.maelstrom_weapon.stack>=8)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down" );
     single->add_action( "crash_lightning,if=talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0" );
     single->add_action( "primordial_wave,if=raid_event.adds.in>(action.primordial_wave.cooldown%(1+set_bonus.tier31_4pc))|raid_event.adds.in<6" );
+    single->add_action( "stormstrike,if=talent.deeply_rooted_elements.enabled&talent.elemental_spirits.enabled" );
     single->add_action( "flame_shock,if=!ticking" );
+    single->add_action( "windstrike,if=(talent.totemic_rebound.enabled&((time-action.stormstrike.last_used)>?(time-action.windstrike.last_used))>=3.5)|(talent.awakening_storms.enabled&((time-action.stormstrike.last_used)>?(time-action.windstrike.last_used)>?(time-action.lightning_bolt.last_used)>?(time-action.chain_lightning.last_used)>?(time-action.tempest.last_used))>=3.5)" );
+    single->add_action( "stormstrike,if=(talent.totemic_rebound.enabled&((time-action.stormstrike.last_used)>?(time-action.windstrike.last_used))>=3.5)|(talent.awakening_storms.enabled&((time-action.stormstrike.last_used)>?(time-action.windstrike.last_used)>?(time-action.lightning_bolt.last_used)>?(time-action.chain_lightning.last_used)>?(time-action.tempest.last_used))>=3.5)" );
+    single->add_action( "lava_lash,if=talent.lively_totems.enabled&(time-action.lava_lash.last_used>=3.5)" );
     single->add_action( "ice_strike,if=talent.elemental_assault.enabled&talent.swirling_maelstrom.enabled" );
     single->add_action( "lava_lash,if=talent.lashing_flames.enabled" );
     single->add_action( "ice_strike,if=!buff.ice_strike.up" );
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
+    single->add_action( "crash_lightning,if=talent.converging_storms.enabled" );
     single->add_action( "lava_lash" );
     single->add_action( "ice_strike" );
     single->add_action( "windstrike" );
     single->add_action( "stormstrike" );
     single->add_action( "sundering,if=raid_event.adds.in>=action.sundering.cooldown" );
     single->add_action( "bag_of_tricks" );
-    single->add_action( "fire_nova,if=talent.swirling_maelstrom.enabled&active_dot.flame_shock&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack" );
+    single->add_action( "tempest,if=buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lightning_bolt,if=talent.hailstorm.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down" );
     single->add_action( "frost_shock" );
     single->add_action( "crash_lightning" );
@@ -13129,10 +13210,12 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up&talent.elemental_spirits.enabled" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down" );
 
+    aoe->add_action( "tempest,if=buff.maelstrom_weapon.stack=10|(buff.maelstrom_weapon.stack>=5&(tempest_mael_count>30|buff.awakening_storms.stack=2))" );
     aoe->add_action( "crash_lightning,if=talent.crashing_storms.enabled&((talent.unruly_winds.enabled&active_enemies>=10)|active_enemies>=15)" );
     aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
     aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
     aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
+    aoe->add_action( "chain_lightning,if=buff.arc_discharge.up&buff.maelstrom_weapon.stack>=5" );
     aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|feral_spirit.active>=2)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!talent.crashing_storms.enabled|active_enemies<=3)" );
     aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack" );
     aoe->add_action( "crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)" );
@@ -13159,10 +13242,12 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "flame_shock,if=!ticking" );
     aoe->add_action( "frost_shock,if=!talent.hailstorm.enabled" );
 
+    funnel->add_action( "tempest,if=buff.maelstrom_weapon.stack=10|(buff.maelstrom_weapon.stack>=5&(tempest_mael_count>30|buff.awakening_storms.stack=2))" );
     funnel->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
     funnel->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)" );
     funnel->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
     funnel->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack" );
+    funnel->add_action( "lightning_bolt,if=talent.supercharge.enabled&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack" );
     funnel->add_action( "windstrike,if=(talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>1)|buff.converging_storms.stack=buff.converging_storms.max_stack" );
     funnel->add_action( "stormstrike,if=buff.converging_storms.stack=buff.converging_storms.max_stack" );
     funnel->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&buff.crackling_thunder.up" );
@@ -13564,6 +13649,9 @@ void shaman_t::reset()
   action.totemic_recall_totem = nullptr;
 
   pet.all_wolves.clear();
+
+  earthen_rage_target = nullptr;
+  earthen_rage_event = nullptr;
 
   assert( active_flame_shock.empty() );
 }
@@ -14068,7 +14156,7 @@ public:
     p.sim->add_chart_data( chart );
   }
 
-  void lvs_proc_distribution_contents(report::sc_html_stream& os)
+  void lvs_proc_distribution_contents( report::sc_html_stream& os )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "lvs" ), *p.sim );
 
@@ -14143,7 +14231,10 @@ public:
       os << "\t\t\t\t\t</div>\n";
     }
 
-    lvs_proc_distribution_contents( os );
+    if ( p.spec.lava_surge->ok() )
+    {
+      lvs_proc_distribution_contents( os );
+    }
   }
 };
 

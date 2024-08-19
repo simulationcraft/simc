@@ -6559,6 +6559,9 @@ struct ray_of_frost_t final : public frost_mage_spell_t
 
     p()->buffs.ray_of_frost->expire();
     p()->buffs.cryopathy->expire();
+    // Technically, both of these buffs should also be expired when Ray of Frost is refreshed.
+    // The hidden FoF buff (see above) is expired but not reapplied, breaking the effect.
+    // Currently not relevant as refreshing RoF is only possible through spell data overrides.
   }
 
   double action_multiplier() const override
@@ -9467,7 +9470,7 @@ void mage_t::trigger_mana_cascade()
   if ( !talents.mana_cascade.ok() )
     return;
 
-  int stacks = ( buffs.arcane_surge->check() || buffs.combustion->check() ) && talents.memory_of_alar.ok() ? 2 : 1;
+  int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
   auto trigger_buff = [ this, s = std::min( buffs.mana_cascade->max_stack() - buffs.mana_cascade->check(), stacks ) ]
   {
     buffs.mana_cascade->trigger( s );
