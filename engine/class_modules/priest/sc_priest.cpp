@@ -1944,7 +1944,7 @@ struct flash_heal_t final : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    if ( priest().talents.crystalline_reflection.enabled() && priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
     {
       priest().buffs.twist_of_fate->trigger();
     }
