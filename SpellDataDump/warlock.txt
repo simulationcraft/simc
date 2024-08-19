@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3504,7 +3504,6 @@ Description      : Sacrifices your demon pet for power, gaining its command demo
 Lasts $196099d or until you summon a demon pet.
 
 Name             : Nightfall (id=108558) [Spell Family (5), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -18658,7 +18657,6 @@ $@spellicon434635 $@spellname434635
 $@spelldesc434635
 
 Name             : Demonic Art: Overlord (id=428524) [Spell Family (5)] 
-Hotfixed         : Proc Stacks (1 -> 0), Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19096,7 +19094,6 @@ Attributes       : ........ ........ ........ ........   ......x. ........ .....
 Effects          :
 #1 (id=1120432)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.25 -> 0.5)
 Description      : $@spelldesc428514
 
 Name             : Wicked Cleave (id=432220) [Spell Family (5), Hidden] 
@@ -19219,7 +19216,6 @@ Effects          :
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
-Hotfixed         : Proc Stacks (1 -> 0), Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19251,7 +19247,6 @@ Description      : Your next Soul Shard spent summons a Mother of Chaos that unl
 Tooltip          : Your next Soul Shard spent summons a Mother of Chaos that unleashes a devastating attack.
 
 Name             : Demonic Art: Pit Lord (id=432795) [Spell Family (5)] 
-Hotfixed         : Proc Stacks (1 -> 0), Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -19446,7 +19441,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=1124374)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.13786 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Channel Target (76) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.75 -> 1)
 Description      : Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.
 
 Name             : Cloven Soul (id=434424) [Spell Family (5)] 
