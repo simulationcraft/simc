@@ -879,6 +879,7 @@ public:
     // Sanlayn
     propagate_const<action_t*> vampiric_strike_heal;
     action_t* infliction_of_sorrow;
+    action_t* the_blood_is_life;
 
     // Blood
     propagate_const<action_t*> mark_of_blood_heal;
@@ -3938,18 +3939,6 @@ struct blood_beast_pet_t : public death_knight_pet_t
     }
   };
 
-  struct the_blood_is_life_t : public pet_spell_t<blood_beast_pet_t>
-  {
-    the_blood_is_life_t( util::string_view n, blood_beast_pet_t* p )
-      : pet_spell_t( p, n, p->dk()->pet_spell.blood_eruption )
-    {
-      background = true;
-      aoe        = -1;
-      may_crit   = false;
-      reduced_aoe_targets = 8;
-    }
-  };
-
   blood_beast_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "blood_beast", true, true ), accumulator( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -3966,8 +3955,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     if ( !sim->event_mgr.canceled )
     {
-      the_blood_is_life->base_dd_min = the_blood_is_life->base_dd_max = accumulator * blood_beast_mod;
-      the_blood_is_life->execute();
+      dk()->active_spells.the_blood_is_life->execute_on_target(dk()->target, accumulator * blood_beast_mod );
       accumulator = 0;
     }
 
@@ -3995,7 +3983,6 @@ struct blood_beast_pet_t : public death_knight_pet_t
   void init_spells() override
   {
     death_knight_pet_t::init_spells();
-    the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
   }
 
   void init_action_list() override
@@ -4024,7 +4011,6 @@ public:
   double accumulator;
 
 private:
-  action_t* the_blood_is_life;
   double blood_beast_mod;
 };
 
@@ -7367,6 +7353,20 @@ private:
   propagate_const<action_t*> heal;
 };
 
+// The Blood is Life ========================================================
+
+struct the_blood_is_life_t : public death_knight_spell_t
+{
+  the_blood_is_life_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->pet_spell.blood_eruption )
+  {
+    background = true;
+    aoe        = -1;
+    may_crit   = false;
+    reduced_aoe_targets = 8;
+  }
+};
+
 // Bonestorm ================================================================
 
 struct bonestorm_heal_t : public death_knight_heal_t
@@ -9382,6 +9382,7 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
       if ( p->talent.sanlayn.the_blood_is_life.ok() )
       {
         p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+        add_child( p->active_spells.the_blood_is_life );
       }
     }
   }
@@ -10509,6 +10510,7 @@ struct vampiric_strike_unholy_t : public wound_spender_base_t
     if ( p->talent.sanlayn.the_blood_is_life.ok() )
     {
       p->pets.blood_beast.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+      add_child( p->active_spells.the_blood_is_life );
     }
   }
 };
@@ -12345,6 +12347,11 @@ void death_knight_t::create_actions()
   if ( talent.sanlayn.infliction_of_sorrow.ok() )
   {
     active_spells.infliction_of_sorrow = get_action<infliction_in_sorrow_t>( "infliction_of_sorrow", this );
+  }
+
+  if ( talent.sanlayn.the_blood_is_life.ok() )
+  {
+    active_spells.the_blood_is_life = get_action<the_blood_is_life_t>( "the_blood_is_life", this );
   }
 
   // Deathbringer
