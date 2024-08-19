@@ -838,7 +838,7 @@ struct player_t : public actor_t
     timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
     timespan_t signet_of_the_priory_party_use_stddev = 6_s;
     // harvester's edict chance to intercept
-    double harvesters_edict_intercept_chance = 0.5;
+    double harvesters_edict_intercept_chance = 0.2;
     // Dawn/Duskthread Lining
     double dawn_dusk_thread_lining_uptime = 0.6;
     // Interval between checking blue_silken_lining_uptime
