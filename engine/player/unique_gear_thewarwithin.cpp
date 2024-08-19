@@ -2450,7 +2450,9 @@ void arakara_sacbrood( special_effect_t& e )
     }
   };
 
-  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) );
+  // In game this buff seems to stack infinitely, while data suggests 1 max stack.
+  auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) )
+                         ->set_max_stack( 99 );  
 
   auto spiderling      = new special_effect_t( e.player );
   spiderling->name_str = "spiderling";
