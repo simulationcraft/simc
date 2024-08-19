@@ -2463,6 +2463,15 @@ struct bloodthirst_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2517,15 +2526,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2738,6 +2738,15 @@ struct bloodbath_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2785,15 +2794,6 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2965,15 +2965,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.fierce_followthrough->expire();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
-
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B2 ) )
     {
       p()->buff.overpowering_might->trigger();
@@ -3030,6 +3021,15 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.strike_vulnerabilities->trigger();
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 
@@ -3595,6 +3595,15 @@ struct cleave_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   void execute() override
@@ -3621,15 +3630,6 @@ struct cleave_t : public warrior_attack_t
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
