@@ -2288,19 +2288,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
   e.player->special_effects.push_back( damage );
 
   auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );
-  damage_cb->initialize();
-  damage_cb->deactivate();
-
-  overclock_buff->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
-    if ( new_ )
-    {
-      damage_cb->activate();
-    }
-    else
-    {
-      damage_cb->deactivate();
-    }
-  } );
+  damage_cb->activate_with_buff( overclock_buff, true );
 
   auto overclock      = new special_effect_t( e.player );
   overclock->name_str = "overclock";
@@ -2461,19 +2449,7 @@ void arakara_sacbrood( special_effect_t& e )
   e.player->special_effects.push_back( spiderling );
 
   auto spiderling_cb = new spiderfling_cb_t( *spiderling, spiderling_buff );
-  spiderling_cb->initialize();
-  spiderling_cb->deactivate();
-
-  spiderling_buff->set_stack_change_callback( [ spiderling_cb ]( buff_t*, int, int new_ ) {
-    if ( new_ == 1 )
-    {
-      spiderling_cb->activate();
-    }
-    if ( new_ == 0 )
-    {
-      spiderling_cb->deactivate();
-    }
-  } );
+  spiderling_cb->activate_with_buff( spiderling_buff, true );
 
   auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 452146 ) )
                   ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e.item ) )
