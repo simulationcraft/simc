@@ -6,24 +6,24 @@ role=spell
 position=ranged_back
 
 # Farseer Lightning Bolt spam
-talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbz22MjZGmZjxMDmZGAAAAAsZmNYADYWYCZWAA2mmZGmtFzMTMjZmNsMDDGDzyMzMzMGmhB
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzy2MjZGmZjxMDmZGAAAAAsYmNYADYWYCZWAAjpZgZbhZmYMzMbDLzYGMLDzyMzMzMGmhB
 
-head=,id=212428,bonus_id=1540/10870/1808,gem_id=213743
-neck=,id=225577,bonus_id=1540/10870/8781,gem_id=213485/213485
-shoulder=,id=212009,bonus_id=1540/10870
-back=,id=225574,bonus_id=1540/10870,enchant_id=7403
-chest=,id=212014,bonus_id=1540/10870,enchant_id=7364
-wrist=,id=219342,bonus_id=10421/9633/8902/1515/1808/10520/8960,enchant_id=7385,gem_id=213485,crafted_stats=36/32
-hands=,id=212012,bonus_id=1540/10870
-waist=,id=159386,bonus_id=10047/10870/1808,gem_id=213485
-legs=,id=212010,bonus_id=1540/10870,enchant_id=7534
-feet=,id=133293,bonus_id=11342/10870,enchant_id=7424
-finger1=,id=225578,bonus_id=1540/10870/8781,enchant_id=7340,gem_id=213485/213485
-finger2=,id=215135,bonus_id=10421/9633/8902/1515/8781/10520/8960,enchant_id=7340,gem_id=213485/213485,crafted_stats=36/40
-trinket1=,id=219314,bonus_id=3131/10870
-trinket2=,id=133304,bonus_id=11342/10870
-main_hand=,id=212404,bonus_id=1540/10299,enchant_id=7460
-off_hand=,id=225579,bonus_id=1540/10870
+head=final_meals_horns,id=212428,ilevel=639,gem_id=213479
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299
+shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299
+chest=vestments_of_the_forgotten_reservoir,id=212014,ilevel=639,enchant_id=7364
+wrists=kyvezas_covert_clasps,id=225581,ilevel=639,gem_id=213479
+hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+waist=lost_watchers_remains,id=212414,ilevel=639,gem_id=213479
+legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant_id=7534
+feet=red_scale_boots,id=133293,ilevel=639
+finger1=stitchfleshs_misplaced_signet,id=178736,ilevel=639,gem_id=213479/213479,enchant_id=7340
+finger2=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213479/213479,enchant_id=7340
+trinket1=spymasters_web,id=220202,ilevel=639
+trinket2=arakara_sacbrood,id=219314,ilevel=639
+main_hand=everforged_dagger,id=222439,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960,enchant_id=7460,crafted_stats=36/40
+off_hand=everforged_defender,id=222432,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960,crafted_stats=36/40
 
 save=TWW1_Shaman_Elemental.simc
 
