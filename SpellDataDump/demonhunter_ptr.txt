@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -6155,6 +6155,7 @@ $vengeFury=${$s3+($258922s3*$d)}
 $havocTalentFury=${$s2+($258922s2*$d)}
 
 Name             : Immolation Aura (id=258921) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -6180,6 +6181,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -11080,6 +11082,7 @@ Effects          :
 #1 (id=1025405)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2308 (Label) | Target: Self (1)
                    Affected Spells (Label): Fiery Brand (207744), Fiery Brand (207771)
+Hotfixed         : Base Value (25 -> 20)
 Description      : Fiery Brand also increases Fire damage you deal to the target by $s1%.
 
 Name             : Chaos Theory (id=389687) [Spell Family (107), Passive] 
@@ -14418,6 +14421,7 @@ Description      : $@spelldesc427776
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Immolation Aura (id=427904) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14443,6 +14447,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427905) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14468,6 +14473,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427906) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14493,6 +14499,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427907) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14518,6 +14525,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427908) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14547,6 +14555,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427910) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14577,6 +14586,7 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=427911) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -14772,6 +14782,7 @@ $vengeFury=${$s3+($258922s3*$d)}
 $havocTalentFury=${$s2+($258922s2*$d)}
 
 Name             : Immolation Aura (id=427916) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
@@ -16426,6 +16437,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1153552)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 35)
 Description      : Your blades burn with Fel energy, causing your $?a212612[Chaos Strike][Soul Cleave], Throw Glaive, and auto-attacks to deal an additional $s1% damage as Fire over $453177d.
 
 Name             : Violent Transformation (id=452409) [Spell Family (107), Passive] 
@@ -16550,6 +16562,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
+Hotfixed         : Base Value (40 -> 25)
 Description      : Immolation Aura has $s1 yd increased radius and $s2% increased critical strike damage bonus.
 
 Name             : Monster Rising (id=452414) [Spell Family (107), Passive] 
@@ -16627,6 +16640,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1153560)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.7 -> 2)
 #2 (id=1153570)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 3594 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonsurge (452416), Demonsurge (453323)

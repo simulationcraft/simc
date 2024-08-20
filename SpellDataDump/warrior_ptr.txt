@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -21149,6 +21149,7 @@ Description      : $@spelldesc446085
 Tooltip          : $?c1[Mortal Strike][Rampage] damage increased by $w1%.
 
 Name             : Wrecked (id=447513) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None

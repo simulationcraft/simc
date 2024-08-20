@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -38,6 +38,7 @@ Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Dama
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
+Hotfixed         : Description
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -72,6 +73,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1179773)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62500
+Hotfixed         : NEW EFFECT
 Description      : Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:
    1 point  : ${$s2-4} seconds
    2 points: ${$s2-3} seconds
@@ -2685,6 +2687,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05230 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Main Gauche (86392)
                    Family Flags: 65
+Hotfixed         : SP Coefficient (0.036 -> 0.0523)
 Description      : Your main-hand attacks have a $h% chance to trigger an attack with your off-hand that deals $86392s1 Physical damage.
 
 Name             : Mastery: Executioner (id=76808) [Spell Family (8), Passive] 
@@ -3288,6 +3291,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=339938)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 400 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (40 -> 0)
 #3 (id=339939)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1158355)  : Apply Aura (6) | Modify Leech% (443)
@@ -3811,6 +3815,7 @@ Effects          :
 #19 (id=1179476)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4049 (Label) | Target: Self (1)
                    Affected Spells (Label): Death's Arrival (454433)
+Hotfixed         : NEW EFFECT
 
 Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
@@ -18807,6 +18812,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Sap (6770)
                    Family Flags: 7, 31
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Blind and Shroud of Concealment have $s1% reduced cooldown.
 
 Pick Pocket and Sap have $s2 yd increased range.
@@ -19910,6 +19916,7 @@ Effects          :
 Description      : You cannot be slowed below $s1% of normal movement speed while your Fatebound Coin flips have an active streak of at least $s2 flips matching the same face.
 
 Name             : Death's Arrival (id=454433) [Spell Family (8), Passive] 
+Hotfixed         : Description
 Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
 Class            : Rogue
 School           : Physical
@@ -19933,9 +19940,11 @@ Effects          :
 #2 (id=1179470)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2.00000 | Misc Value: 1206 | Target: Self (1)
                    Affected Spells (Category): Shadowstep (36554)
+Hotfixed         : NEW EFFECT
 #3 (id=1179471)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2.00000 | Misc Value: 2303 | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)
+Hotfixed         : NEW EFFECT
 Description      : $?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec.
 
 Name             : Inevitability (id=454434) [Spell Family (8), Passive] 
@@ -20651,6 +20660,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1161732)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 #2 (id=1161758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.
@@ -20683,6 +20693,7 @@ Effects          :
                    Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190)
                    Family Flags: 44, 50, 81, 127
+Hotfixed         : Base Value (24 -> 32)
 Description      : $@spelldesc457067
 Tooltip          : Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%.
 
@@ -20739,6 +20750,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
 Effects          :
 #1 (id=1161858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.025 -> 0.03)
 #2 (id=1161859)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc457066
@@ -20793,6 +20805,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Backstab (53), Mutilate (5374), Ambush (8676), Mutilate (27576), Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121), Ambush (385897), Ambush (430023)
                    Family Flags: 2, 9, 33, 34, 104, 109
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc457052
 Tooltip          : Your next $?c1[Ambush or Mutilate]?s200758[Gloomblade or Shadowstrike][Backstab or Shadowstrike] deals $w1% additional damage.
 
@@ -20824,6 +20837,7 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Envenom (32645), Eviscerate (196819), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 35, 44
+Hotfixed         : Base Value (15 -> 18)
 Description      : $@spelldesc457062
 Tooltip          : Damage of your next $?a137037 [Envenom][Eviscerate or Black Powder] is increased by $w1%.
 
@@ -20901,6 +20915,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1162066)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.2 -> 0.25)
 Description      : $@spelldesc457054
 
 Name             : Singular Focus (id=457236) [Spell Family (8)] 
@@ -20949,9 +20964,11 @@ Effects          :
 #1 (id=1162160)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x8 | Target: Self (1)
                    Affected School(s): Nature
+Hotfixed         : Base Value (20 -> 30)
 #2 (id=1162161)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
+Hotfixed         : Base Value (20 -> 30)
 Description      : $@spelldesc457056
 Tooltip          : All $?c1[Nature][Shadow] damage dealt increased by $w1%.
 
@@ -20978,6 +20995,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Resource: energy | Target: Self (1)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.33300 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.333)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1162179)  : Apply Aura (6) | Dummy (4)
@@ -21286,6 +21304,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatal Intent (id=461980) [Spell Family (8), Passive] 
+Hotfixed         : Attributes, Description
 Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=3, col=1, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
@@ -21310,6 +21329,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1171142)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : AP Coefficient (0.15 -> 0)
 #2 (id=1171143)  : Apply Aura (6) | Proc Trigger Spell (42): Fatal Intent
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 461981 | Target: Self (1)
 #3 (id=1171144)  : Dummy (3)
@@ -21317,6 +21337,7 @@ Effects          :
 Description      : Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack.
 
 Name             : Fatal Intent (id=461981) 
+Hotfixed         : Tooltip
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Magic
@@ -21380,6 +21401,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1171151)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | PvP Coefficient: 0.33000 | Target: Any Target (25)
+Hotfixed         : AP Coefficient (0 -> 0.18)
 #2 (id=1171152)  : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 302565 | Target: Any Target (25)
 Description      : $@spelldesc461980
@@ -21495,6 +21517,7 @@ Attributes       : .......x ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1171359)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 441776 | Scaled Value: 441776 | PvP Coefficient: 1.00000 | Misc Value: 2098 | Target: Self (1)
+Hotfixed         : Affects Spells
 Description      : $@spelldesc441423
 Tooltip          : Able to perform a Coup de Grace.
 
@@ -21523,6 +21546,7 @@ Attributes       : .......x ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1171360)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 441776 | Scaled Value: 441776 | PvP Coefficient: 1.00000 | Misc Value: 196819 | Target: Self (1)
+Hotfixed         : Affects Spells
 Description      : $@spelldesc441423
 Tooltip          : Able to perform a Coup de Grace.
 
