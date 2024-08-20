@@ -21520,46 +21520,4 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Triggered by     : Shadow Crash (457042)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1177515)  : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Description      : $@spelldesc205385
-
-Name             : Shadow Crash (id=465522) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 117
-                 : 292
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
-Triggered by     : Shadow Crash (457042)
-Family Flags     : 31, 72
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1177516)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68793 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Description      : $@spelldesc205385
-
-
+Triggered by     : Shadow Crash 

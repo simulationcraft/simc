@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26313> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26315> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25626,9 +25626,11 @@ static const std::array<spelltext_data_t, 26313> __ptr_spelltext_data { {
   { 457624, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
   { 457625, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
   { 457626, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
+  { 457627, "Healing spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2  Mastery for $d.", "Mastery increased by $w1.", 0 },
   { 457628, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\n$@spelldesc455523][$@spelldesc455522]", 0, 0 },
   { 457629, "Warming sunrise spellthreads alter the effects of Woven Duskweave to become Woven Dawnweave.", 0, 0 },
   { 457630, "Damaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2  Haste for $d.", "Haste increased by $w1.", 0 },
+  { 457655, "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\nDamaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2 Mastery for $457627d.][$@spelldesc457630]", 0, 0 },
   { 457665, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\nYour gear cools similarly to Woven Duskthread, gaining $s1 Versatility when over $457667s1% health.]\r\n[Your gear warms with Woven Dawnthread and gains $s1 Critical Strike when over $457667s1% health.]", 0, 0 },
   { 457666, "$@spelldesc457665", "Critical Strike increased by $w2.", 0 },
   { 457667, "$@spelldesc457665", 0, 0 },
@@ -26316,13 +26318,14 @@ static const std::array<spelltext_data_t, 26313> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56110
-static constexpr std::array<hotfix::client_hotfix_entry_t, 9> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __ptr_spelltext_hotfix_data { {
   {     408,  0, "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to 5:\r\n   1 point  : 2 seconds\r\n   2 points: 3 seconds\r\n   3 points: 4 seconds\r\n   4 points: 5 seconds\r\n   5 points: 6 seconds", "Finishing move that stuns the target$?a426588[ and creates shadow clones to stun all other nearby enemies][]. Lasts longer per combo point, up to $s2 sec:\r\n   1 point  : ${$s2-4} seconds\r\n   2 points: ${$s2-3} seconds\r\n   3 points: ${$s2-2} seconds\r\n   4 points: ${$s2-1} seconds\r\n   5 points: $s2 seconds" },
   {  443735,  0, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames and grant $447968s1 of a random secondary stat. Anyone wearing Waders of the Unifying Flame will instead get their highest secondary stat.", "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames.\r\n\r\nUnifying Flames grants the wearer $s1 of their highest secondary stat, and others $s2 of a random secondary stat." },
   {  446108,  1, "$pri increased by $w1 at the cost of $w2 Mastery.", "$pri increased by $w1.\r\nMastery reduced by $455571w1." },
   {  447968,  1, "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", "The Unifying Flame increases your $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1." },
   {  453573,  0, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3  seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $458624r yards.\r\n\r\nThis is a Nerubian embellishment.", "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3 seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $M4 yards.\r\n\r\nThis is a Nerubian embellishment." },
   {  454433,  0, "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d, with no cooldown. ", "$?a137037[Shadowstep][Grappling Hook] may be used a second time within $457333d with no cooldown, but its total cooldown is increased by ${$s3/1000} sec." },
+  {  457655,  0, "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\n$@spelldesc457627][$@spelldesc457630]", "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\nDamaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2 Mastery for $457627d.][$@spelldesc457630]" },
   {  459231,  0, nullptr, "$@spelldesc459222" },
   {  461980,  0, "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$s1*(1+$@versadmg)} Plague damage per stack.", "Your damaging abilities against enemies above $M3% health have a very high chance to apply Fatal Intent. When an enemy falls below $M3% health, Fatal Intent inflicts ${$461984s1*(1+$@versadmg)} Plague damage per stack." },
   {  461981,  1, "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461980s1*(1+$@versadmg)} Plague damage.", "Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage." },

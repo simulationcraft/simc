@@ -859,6 +859,7 @@ enum set_bonus_type_e
   TWW_FSR,
   TWW_KCI,
   TWW1,
+  TWW_WD,
   SET_BONUS_MAX,
 };
 
