@@ -4023,6 +4023,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692, 1693, 1694, 1695, 1696 ],
             'tier'   : 'TWW1'
         },
+        {
+            'name'   : 'woven_dusk',
+            'bonuses': [ 1697 ],
+            'tier'   : 'TWW_WD'
+        },
     ]
 
     @staticmethod
