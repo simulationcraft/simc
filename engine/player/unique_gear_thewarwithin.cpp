@@ -886,8 +886,9 @@ void woven_dusk( special_effect_t& effect )
   if ( unique_gear::create_fallback_buffs( effect, { "woven_dusk" } ) )
     return;
 
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) );
-  buff->set_stat( STAT_HASTE_RATING, effect.driver()->effectN( 2 ).average( effect.player ) );
+  // Forcing player scaling here until effect.item correctly parses it out
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect.player ) );
 
   effect.custom_buff = buff;
 
