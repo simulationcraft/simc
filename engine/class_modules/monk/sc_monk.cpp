@@ -6093,7 +6093,7 @@ struct fury_of_xuen_t : public monk_buff_t
       if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
         p().buff.rushing_jade_wind->trigger( remains() );
 
-        return true;
+      return true;
     }
 
     return false;
@@ -6327,7 +6327,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
