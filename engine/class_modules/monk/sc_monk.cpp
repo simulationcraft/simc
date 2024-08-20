@@ -4184,9 +4184,6 @@ struct xuen_spell_t : public monk_spell_t
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
 
-    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
-      p()->buff.rushing_jade_wind->trigger( p()->pets.xuen.duration() );
-
     p()->buff.courage_of_the_white_tiger->trigger();
 
     if ( p()->talent.monk.summon_white_tiger_statue->ok() )
@@ -4231,9 +4228,6 @@ struct fury_of_xuen_summon_t final : monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
-
-    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
-      p()->buff.rushing_jade_wind->trigger( p()->pets.fury_of_xuen_tiger.duration() );
   }
 };
 
@@ -5998,6 +5992,19 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
     set_tick_callback( invoke_xuen_callback );
   }
 
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( buff_t::trigger( stacks, value, chance, duration ) )
+    {
+      if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
+        p().buff.rushing_jade_wind->trigger( remains() );
+
+      return true;
+    }
+
+    return false;
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     monk_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -6077,6 +6084,19 @@ struct fury_of_xuen_t : public monk_buff_t
     add_invalidate( CACHE_SPELL_HASTE );
 
     add_invalidate( CACHE_MASTERY );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( buff_t::trigger( stacks, value, chance, duration ) )
+    {
+      if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
+        p().buff.rushing_jade_wind->trigger( remains() );
+
+        return true;
+    }
+
+    return false;
   }
 };
 
