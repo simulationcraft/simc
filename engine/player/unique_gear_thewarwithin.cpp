@@ -771,10 +771,6 @@ void adrenal_surge( special_effect_t& effect )
   auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
     ->set_stat_from_effect_type( A_MOD_RATING, mastery_value );
 
-  // TODO: determine if this needs to be overriden or if core proc parse needs to be adjusted
-  effect.proc_flags_  = PF_DAMAGE_TAKEN;
-  effect.proc_flags2_ = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
-
   effect.player->callbacks.register_callback_execute_function(
       effect.spell_id,
       [ primary_stat_buff, mastery_loss_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
