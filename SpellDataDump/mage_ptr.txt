@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -262,7 +262,8 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
                  : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=459)      : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Friendly or Raid (118)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Friendly or Raid (118)
+Hotfixed         : Base Value (5 -> 3)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
 
 If the target is in your party or raid, all party and raid members will be affected.

@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -1220,7 +1220,6 @@ Combines with Avenging Wrath.
 Variables        : $time= $?a385438&a53376[${$389539d}]?a385438[${$389539d*(1+($53376s1/100))}]?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]
 
 Name             : Divine Storm (id=53385) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Retribution [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -6968,7 +6967,6 @@ Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -9548,7 +9546,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
                    Family Flags: 91
-Hotfixed         : Affects Spells
 #2 (id=817888)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Divine Storm (53385)
@@ -18441,7 +18438,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
                    Family Flags: 91
-Hotfixed         : Affects Spells
 Description      : $@spelldesc403975
 Tooltip          : Your next Divine Storm deals $s1% increased damage.
 
@@ -18877,7 +18873,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Consecration (26573), Divine Storm (53385), Consecration (81297), Divine Hammer (198137), Divine Storm (224239), Consecration (243597), Consecration (387881), Consecration (419810), Divine Storm (423593)
                    Family Flags: 5, 25, 91
-Hotfixed         : Affects Spells
 #2 (id=1070972)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
@@ -21759,7 +21754,6 @@ Description      : $@spelldesc424572
 Tooltip          : Your next Holy Power ability will echo its damage effect at $s1% effectiveness.
 
 Name             : Divine Storm (id=423593) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee

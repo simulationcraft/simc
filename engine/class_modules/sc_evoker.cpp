@@ -3828,9 +3828,11 @@ struct azure_strike_t : public evoker_spell_t
     double eb_chance = p()->talent.azure_essence_burst->effectN( 1 ).percent();
 
     // TODO:  Work out how this is rolled.
-    if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) )
+    if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) &&
+         rng().roll( rng().roll( eb_chance ) ) )
     {
-      eb_chance *= ( 1 + p()->talent.flameshaper.titanic_precision->effectN( 1 ).percent() );
+      p()->buff.essence_burst->trigger();
+      p()->proc.azure_essence_burst->occur();
     }
 
     if ( p()->talent.azure_essence_burst.ok() && ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) ) )
@@ -4607,10 +4609,11 @@ struct living_flame_t : public evoker_spell_t
       for ( int i = 0; i < total_hits; i++ )
       {
         // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) )
+        if ( p()->talent.flameshaper.titanic_precision.ok() &&
+             rng().roll( composite_target_crit_chance( target ) && rng().roll( eb_chance ) ) )
         {
-          eb_chance = p()->talent.ruby_essence_burst->effectN( 1 ).percent() *
-                      ( 1 + p()->talent.flameshaper.titanic_precision->effectN( 1 ).percent() );
+          p()->buff.essence_burst->trigger();
+          p()->proc.ruby_essence_burst->occur();
         }
 
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )

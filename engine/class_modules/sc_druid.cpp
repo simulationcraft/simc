@@ -226,7 +226,7 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags >> 3; }  // first 3 bits are not cost related
+  bool is_free() const { return action_flags >> 12; }  // first 12 bits are not cost related
 };
 
 struct eclipse_handler_t
@@ -1541,7 +1541,8 @@ struct force_of_nature_t final : public treant_base_t
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
-    owner_coeff.ap_from_sp = 0.6;
+    // TODO: confirm this
+    owner_coeff.ap_from_sp = 0.935;
 
     double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
 
@@ -4443,7 +4444,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
   virtual double energy_modifier( const action_state_t* ) const
   {
-    return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
+    return is_free() ? 1.0 : ( excess_energy / max_excess_energy * ( 1.0 + saber_jaws_mul ) );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -8011,6 +8012,11 @@ struct starfall_t final : public ap_spender_t
 
     base_t::execute();
 
+    if ( p()->buff.starweaver_starfall->check() )
+      p()->buff.starweaver_starfall->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starfall->expire( this );
+
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       driver->execute();
       p()->eclipse_handler.tick_starfall();
@@ -8261,6 +8267,11 @@ struct starsurge_t final : public ap_spender_t
   void execute() override
   {
     base_t::execute();
+
+    if ( p()->buff.starweaver_starsurge->check() )
+      p()->buff.starweaver_starsurge->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starsurge->expire( this );
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
@@ -13812,10 +13823,10 @@ void druid_action_t<Base>::parse_action_effects()
 
   parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
   parse_effects( p()->buff.owlkin_frenzy );
-  parse_effects( p()->buff.starweaver_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.starweaver_starsurge, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starsurge, CONSUME_BUFF );
+  parse_effects( p()->buff.starweaver_starfall );
+  parse_effects( p()->buff.starweaver_starsurge );
+  parse_effects( p()->buff.touch_the_cosmos_starfall );
+  parse_effects( p()->buff.touch_the_cosmos_starsurge );
   parse_effects( p()->buff.umbral_inspiration );
   parse_effects( p()->buff.warrior_of_elune );
 

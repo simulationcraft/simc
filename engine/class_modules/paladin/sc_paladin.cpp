@@ -3777,7 +3777,7 @@ void paladin_t::create_buffs()
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-      for ( size_t i = 3; i < 9; i++ )
+      for ( size_t i = 3; i < 13; i++ )
       {
         // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
         // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
@@ -3786,6 +3786,10 @@ void paladin_t::create_buffs()
         spelleffect_data_t label = find_spell( 385126 )->effectN( i );
         for ( auto a : action_list )
         {
+          // per bolas (Aug 19 2024) Wake is unaffected on beta in spite of being in the spelldata
+          if ( a->data().id() == 255937 )
+           continue;
+
           if ( a->cooldown->duration != 0_ms &&
                ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
           {

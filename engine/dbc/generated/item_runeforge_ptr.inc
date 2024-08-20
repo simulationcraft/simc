@@ -1,5 +1,5 @@
-// Runeforge legendary bonuses, wow build 11.0.2.56110
-static const std::array<runeforge_legendary_entry_t, 789> __runeforge_legendary_data { {
+// Runeforge legendary bonuses, wow build 11.0.2.56196
+static const std::array<runeforge_legendary_entry_t, 789> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, 0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, 0, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, 0, "Freezing Winds" },

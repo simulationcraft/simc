@@ -1512,6 +1512,7 @@ class SpellDataGenerator(DataGenerator):
          443764, 451698, 451699, # Embrace of the Cinderbee Set
          446234, # Spark of Beledar
          461957, 454137, 461939, 461943, 461925, 461924, 461922, 461927, 461947, 461948, 461949, 461946, 461861, 461860, 461859, 461858, 461857, 461856, 461855, 461854, 461853, 461845, # TWW Food Buffs
+         457630, 455523, 457628, # Woven Dusk Tailoring Set
         ),
 
         # Warrior:
@@ -4022,6 +4023,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692, 1693, 1694, 1695, 1696 ],
             'tier'   : 'TWW1'
         },
+        {
+            'name'   : 'woven_dusk',
+            'bonuses': [ 1697 ],
+            'tier'   : 'TWW_WD'
+        },
     ]
 
     @staticmethod
@@ -5148,7 +5154,9 @@ class CharacterLoadoutGenerator(DataGenerator):
         # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 5 * 13
         _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
         _ilevels.sort(reverse=True)
-        self._out.write('static constexpr int MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(_ilevels[0] + 5 * 13))
+        self._out.write('static constexpr int {}MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            _ilevels[0] + 5 * 13))
 
         self.output_header(
             header = 'Character Loadout data',

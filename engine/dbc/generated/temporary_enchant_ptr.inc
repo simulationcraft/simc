@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 11.0.2.56110
-static const std::array<temporary_enchant_entry_t, 92> __temporary_enchant_data { {
+// Temporary item enchants, wow build 11.0.2.56196
+static const std::array<temporary_enchant_entry_t, 92> __ptr_temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
   {  7493,  1, 451869, "algari_mana_oil"              },

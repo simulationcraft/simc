@@ -1,5 +1,5 @@
-// Item effects, wow build 11.0.2.56110
-static const std::array<item_effect_t, 9803> __item_effect_data { {
+// Item effects, wow build 11.0.2.56196
+static const std::array<item_effect_t, 9803> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9805,7 +9805,7 @@ static const std::array<item_effect_t, 9803> __item_effect_data { {
   { 189711, 462136, 228412,   0,   0,    0,      -1,      -1 }, // Dragon Isles Scouting Map
 } };
 
-static const std::array<uint16_t, 9803> __item_effect_id_index { {
+static const std::array<uint16_t, 9803> __ptr_item_effect_id_index { {
     840,   841,   842,   843,   844,   845,   846,   849,
     850,   851,   852,   853,   854,   855,   856,   857,
     858,   859,   860,   861,   864,   865,   866,   867,

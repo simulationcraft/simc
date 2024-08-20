@@ -1,5 +1,5 @@
-// Set bonus data, wow build 11.0.2.56162
-static const std::array<item_set_bonus_t, 891> __set_bonus_data { {
+// Set bonus data, wow build 11.0.2.56196
+static const std::array<item_set_bonus_t, 904> __set_bonus_data { {
   // SetBonusName                               , OptName                    , Tier      , EnumID, SetID, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion"      , "T19_MOTL",      0,  1293,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion"      , "T19_MOTL",      0,  1293,   2,   2,   -1,  228445, { 134529, 134533,  0 } },
@@ -927,4 +927,18 @@ static const std::array<item_set_bonus_t, 891> __set_bonus_data { {
   { "Destroyer's Scarred Wards"                 , "thewarwithin_season_1"    ,     "TWW1",     26,  1693,   4,  13, 1467,  453675, { 212032, 212030, 212029, 212028, 212027,  0 } },
   { "Destroyer's Scarred Wards"                 , "thewarwithin_season_1"    ,     "TWW1",     26,  1693,   4,  13, 1468,  453674, { 212032, 212030, 212029, 212028, 212027,  0 } },
   { "Destroyer's Scarred Wards"                 , "thewarwithin_season_1"    ,     "TWW1",     26,  1693,   4,  13, 1473,  453671, { 212032, 212030, 212029, 212028, 212027,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   1,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   2,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   3,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   4,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   5,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   6,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   7,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   8,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,   9,   -1,  457655, { 222809, 222810,  0 } },
+  // SetBonusName                               , OptName                    , Tier      , EnumID, SetID, Bns, Cls, Spec, SpellID, ItemIDs
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,  10,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,  11,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,  12,   -1,  457655, { 222809, 222810,  0 } },
+  { "Woven Dusk"                                , "woven_dusk"               ,   "TWW_WD",     27,  1697,   2,  13,   -1,  457655, { 222809, 222810,  0 } },
 } };

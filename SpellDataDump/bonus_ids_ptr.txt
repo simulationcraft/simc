@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5506,8 +5506,8 @@ bonus_id={ 10282 }, quality={ rare }
 bonus_id={ 10283 }, quality={ rare }
 bonus_id={ 10284 }, quality={ rare }
 bonus_id={ 10285 }, quality={ rare }
-bonus_id={ 10286 }, quality={ uncommon }
-bonus_id={ 10287 }, quality={ uncommon }
+bonus_id={ 10286 }, quality={ rare }
+bonus_id={ 10287 }, quality={ rare }
 bonus_id={ 10288 }, quality={ uncommon }
 bonus_id={ 10289 }, quality={ uncommon }
 bonus_id={ 10290 }, quality={ epic }
@@ -6892,4 +6892,46 @@ bonus_id={ 11907 }, ilevel_adjust={ -867 }
 bonus_id={ 11908 }, ilevel_adjust={ -868 }
 bonus_id={ 11909 }, ilevel_adjust={ -869 }
 bonus_id={ 11910 }, ilevel_adjust={ -870 }
-bonus_id={ 11911 }
+bonus_id={ 11911 }, ilevel_adjust={ -871 }
+bonus_id={ 11912 }, ilevel_adjust={ -872 }
+bonus_id={ 11913 }, ilevel_adjust={ -873 }
+bonus_id={ 11914 }, ilevel_adjust={ -874 }
+bonus_id={ 11915 }, ilevel_adjust={ -875 }
+bonus_id={ 11916 }, ilevel_adjust={ -876 }
+bonus_id={ 11917 }, ilevel_adjust={ -877 }
+bonus_id={ 11918 }, ilevel_adjust={ -878 }
+bonus_id={ 11919 }, ilevel_adjust={ -879 }
+bonus_id={ 11920 }, ilevel_adjust={ -880 }
+bonus_id={ 11921 }, ilevel_adjust={ -881 }
+bonus_id={ 11922 }, ilevel_adjust={ -882 }
+bonus_id={ 11923 }, ilevel_adjust={ -883 }
+bonus_id={ 11924 }, ilevel_adjust={ -884 }
+bonus_id={ 11925 }, ilevel_adjust={ -885 }
+bonus_id={ 11926 }, ilevel_adjust={ -886 }
+bonus_id={ 11927 }, ilevel_adjust={ -887 }
+bonus_id={ 11928 }, ilevel_adjust={ -888 }
+bonus_id={ 11929 }, ilevel_adjust={ -889 }
+bonus_id={ 11930 }, ilevel_adjust={ -890 }
+bonus_id={ 11931 }, ilevel_adjust={ -891 }
+bonus_id={ 11932 }, ilevel_adjust={ -892 }
+bonus_id={ 11933 }, ilevel_adjust={ -893 }
+bonus_id={ 11934 }, ilevel_adjust={ -894 }
+bonus_id={ 11935 }, ilevel_adjust={ -895 }
+bonus_id={ 11936 }, ilevel_adjust={ -896 }
+bonus_id={ 11937 }, ilevel_adjust={ -897 }
+bonus_id={ 11938 }, ilevel_adjust={ -898 }
+bonus_id={ 11939 }, ilevel_adjust={ -899 }
+bonus_id={ 11940 }, ilevel_adjust={ -900 }
+bonus_id={ 11941 }, effects={ Griftah's All-Purpose Embellishing Powder (id=463429, index=0, type=equip) }
+bonus_id={ 11999 }, quality={ epic }
+bonus_id={ 12001 }, quality={ epic }
+bonus_id={ 12002 }, quality={ epic }
+bonus_id={ 12003 }, quality={ epic }
+bonus_id={ 12004 }, quality={ epic }
+bonus_id={ 12005 }, quality={ epic }
+bonus_id={ 12006 }, quality={ epic }
+bonus_id={ 12007 }, quality={ epic }
+bonus_id={ 12008 }, desc={ Rank 1/4 }, effects={ Adding (id=464659, index=0, type=use) }
+bonus_id={ 12009 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=464725, index=0, type=use) }
+bonus_id={ 12010 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=464726, index=0, type=use) }
+bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=464727, index=0, type=use) }

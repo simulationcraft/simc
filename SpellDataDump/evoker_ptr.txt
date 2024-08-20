@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56162 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -4814,6 +4814,7 @@ Description      : Azure Strike and Living Flame deal $s1% more damage.
 Name             : Renewing Breath (id=371257) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -17299,7 +17300,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Prescience (409311)
                    Family Flags: 73
-Hotfixed         : NEW EFFECT
 Description      : The range of your helpful magics is increased by $s1 yards.
 
 Name             : Recall (desc=Bronze) (id=455962) [Spell Family (224)] 
