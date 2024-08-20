@@ -675,10 +675,15 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
 // 443760 Driver
 // 446753 Damage
 // 446743 Buff
+// 446836 movement speed debuff
+// TODO: implement movement speed debuff
 void deepening_darkness( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "deepening_darkness", effect, effect.player->find_spell( 446753 ), true );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item ) * role_mult( effect );
+  auto damage =
+    create_proc_action<generic_aoe_proc_t>( "deepening_darkness", effect, effect.player->find_spell( 446753 ), true );
+
+  damage->base_dd_min = damage->base_dd_max =
+    effect.driver()->effectN( 2 ).average( effect.item ) * role_mult( effect ) * writhing_mul( effect.player );
 
   auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 446743 ) )
                   ->set_expire_callback( [ damage ]( buff_t*, int, timespan_t d ) {
@@ -690,6 +695,7 @@ void deepening_darkness( special_effect_t& effect )
                   ->set_expire_at_max_stack( true );
 
   effect.custom_buff = buff;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -751,16 +757,21 @@ void spark_of_beledar( special_effect_t& effect )
 // 446108 Buff
 void adrenal_surge( special_effect_t& effect )
 {
+  // create primary stat buff
   auto primary_stat_trigger = effect.driver()->effectN( 1 ).trigger();
+  auto primary_value = primary_stat_trigger->effectN( 1 ).average( effect.item ) * writhing_mul( effect.player );
+  auto primary_stat_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_primary", primary_stat_trigger )
+    ->set_stat_from_effect_type( A_MOD_STAT, primary_value );
+
+
+  // create mastery loss debuff
+  // TODO: currently this does not scale with item level
   auto mastery_loss_trigger = primary_stat_trigger->effectN( 3 ).trigger();
+  auto mastery_value = mastery_loss_trigger->effectN( 1 ).average( effect.item ) * writhing_mul( effect.player );
+  auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
+    ->set_stat_from_effect_type( A_MOD_RATING, mastery_value );
 
-  auto primary_stat_buff =
-      create_buff<stat_buff_t>( effect.player, "adrenal_surge_primary", primary_stat_trigger )
-          ->set_stat_from_effect_type( A_MOD_STAT, primary_stat_trigger->effectN( 1 ).average( effect.item ) );
-  auto mastery_loss_buff =
-      create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
-          ->set_stat_from_effect_type( A_MOD_RATING, mastery_loss_trigger->effectN( 1 ).average( effect.item ) );
-
+  // TODO: determine if this needs to be overriden or if core proc parse needs to be adjusted
   effect.proc_flags_  = PF_DAMAGE_TAKEN;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
 
@@ -3229,6 +3240,8 @@ void algari_alchemist_stone( special_effect_t& e )
 // 458524 Vers Buff
 void darkmoon_deck_ascension( special_effect_t& effect )
 {
+  bool is_embellishment = effect.spell_id == 458573;
+
   struct ascension_tick_t : public buff_t
   {
     std::vector<buff_t*> buff_list;
@@ -3236,37 +3249,28 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     unsigned stack;
     bool in_combat;
 
-    ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s )
+    ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embellish )
       : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 ), in_combat( false )
     {
-      auto crit_spell    = e.player->find_spell( 458502 );
-      auto crit_name     = util::tokenize_fn( crit_spell->name_cstr() );
-      auto haste_spell   = e.player->find_spell( 458503 );
-      auto haste_name    = util::tokenize_fn( haste_spell->name_cstr() );
-      auto mastery_spell = e.player->find_spell( 458525 );
-      auto mastery_name  = util::tokenize_fn( mastery_spell->name_cstr() );
-      auto vers_spell    = e.player->find_spell( 458524 );
-      auto vers_name     = util::tokenize_fn( vers_spell->name_cstr() );
+      static constexpr std::pair<unsigned, const char*> buff_entries[] = {
+        { 458502, "Crit"    },
+        { 458503, "Haste"   },
+        { 458525, "Mastery" },
+        { 458524, "Vers"    }
+      };
 
-      auto crit_buff = create_buff<stat_buff_t>( e.player, crit_name + "_crit", crit_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
+      for ( const auto& [ id, stat ] : buff_entries )
+      {
+        auto s_data = e.player->find_spell( id );
+        // TODO: confirm that embellishment counts as a nerubian embellishement, but the card does not.
+        auto value = e.driver()->effectN( 1 ).average( e.item ) * ( embellish ? writhing_mul( e.player ) : 1.0 );
 
-      buff_list.push_back( crit_buff );
+        auto buff = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", s_data->name_cstr(), stat ), s_data )
+          ->add_stat_from_effect_type( A_MOD_RATING, value )
+          ->set_name_reporting( stat );
 
-      auto haste_buff = create_buff<stat_buff_t>( e.player, haste_name + "_haste", haste_spell )
-                            ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
-
-      buff_list.push_back( haste_buff );
-
-      auto mastery_buff = create_buff<stat_buff_t>( e.player, mastery_name + "_mastery", mastery_spell )
-                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
-
-      buff_list.push_back( mastery_buff );
-
-      auto vers_buff = create_buff<stat_buff_t>( e.player, vers_name + "_vers", vers_spell )
-                           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e.item ) );
-
-      buff_list.push_back( vers_buff );
+        buff_list.push_back( buff );
+      }
 
       last_buff = buff_list[ 0 ];
 
@@ -3331,16 +3335,11 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   };
 
-  auto name_append = "_embelishment";
-
-  if ( effect.spell_id == 463095 )
-    name_append = "_trinket";
-
-  auto buff = buff_t::find( effect.player, "ascendance" + util::tokenize_fn( name_append ) );
+  auto buff_name = fmt::format( "ascendance_{}", is_embellishment ? "embellishment" : "trinket" );
+  auto buff = buff_t::find( effect.player, buff_name );
   if ( !buff )
   {
-    buff = make_buff<ascension_tick_t>( effect, "ascendance" + util::tokenize_fn( name_append ),
-                                        effect.player->find_spell( 457594 ) );
+    buff = make_buff<ascension_tick_t>( effect, buff_name, effect.player->find_spell( 457594 ), is_embellishment );
   }
 
   effect.name_str = "ascendance_darkmoon";
@@ -3352,6 +3351,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       {
         buff->trigger();
       }
+
       debug_cast<ascension_tick_t*>( buff )->in_combat = true;
     }
     else
@@ -4135,6 +4135,7 @@ void register_special_effects()
   register_special_effect( 443760, embellishments::deepening_darkness );
   register_special_effect( 443736, embellishments::spark_of_beledar );
   register_special_effect( 443762, embellishments::adrenal_surge );
+  register_special_effect( 443902, DISABLED_EFFECT );  // writhing armor banding
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -4218,5 +4219,14 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
   if ( n == "pickup_cinderbee_orb" ) return new sets::pickup_cinderbee_orb_t( p, options );
 
   return nullptr;
+}
+
+// writhing armor banding embellishment, doubles nerubian embellishment values
+double writhing_mul( player_t* p )
+{
+  if ( auto writhing = unique_gear::find_special_effect( p, 443902 ) )
+    return 2.0;  // hardcoded
+  else
+    return 1.0;
 }
 }  // namespace unique_gear::thewarwithin
