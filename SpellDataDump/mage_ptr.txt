@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -3851,7 +3851,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: none | Target: Self (1)
 #3 (id=1179899)  : Create Area Trigger (179)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 34990 | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 Description      : Launches an Arcane Orb forward from your position, traveling up to 40 yds, dealing $153640s1 Arcane damage to enemies it passes through.
 
 |cFFFFFFFFGrants 1 Arcane Charge when cast and every time it deals damage.|r
@@ -17166,10 +17165,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1118573)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=1118721)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $?c2[Blazing Barrier also casts an Ice Barrier at $s1% effectiveness.]?c3[Ice Barrier also casts a Blazing Barrier at $s2% effectiveness.][]
 
 Name             : Elemental Affinity (id=431067) [Spell Family (3), Passive, Hidden] 
@@ -17585,7 +17582,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131310)  : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 125)
 #2 (id=1131311)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reaching maximum stacks of Frost Mastery causes your next $?c2[Phoenix Flames]?c3[Flurry][] to also cast Ice Nova at $s1% effectiveness.
@@ -17616,7 +17612,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131321)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.96010 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1.3 -> 1)
 Description      : $@spelldesc153561
 
 Name             : Meteor (id=438608) [Spell Family (3)] 
@@ -17698,7 +17693,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1131331)  : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 125)
 Description      : $@spelldesc438600
 Tooltip          : Your next $?c2[Phoenix Flames]?c3[Flurry][] also casts Ice Nova at $s1% effectiveness.
 
@@ -18460,7 +18454,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1141448)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your $?c1[Prismatic][Ice] Barrier can absorb up to $s1% more damage based on your missing Health.
 
 Max effectiveness when under $s1% health.

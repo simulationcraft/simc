@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56110 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -1220,7 +1220,6 @@ Combines with Avenging Wrath.
 Variables        : $time= $?a385438&a53376[${$389539d}]?a385438[${$389539d*(1+($53376s1/100))}]?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]
 
 Name             : Divine Storm (id=53385) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Retribution [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -3742,7 +3741,6 @@ Effects          :
                    Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
-Hotfixed         : Base Value (13 -> 58)
 Description      : Holy Paladin core passive
 
 Name             : Glyph of Pillar of Light (id=146959) [Spell Family (10), Passive, Hidden] 
@@ -6969,7 +6967,6 @@ Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -9549,7 +9546,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
                    Family Flags: 91
-Hotfixed         : Affects Spells
 #2 (id=817888)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Divine Storm (53385)
@@ -18442,7 +18438,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Divine Storm (423593)
                    Family Flags: 91
-Hotfixed         : Affects Spells
 Description      : $@spelldesc403975
 Tooltip          : Your next Divine Storm deals $s1% increased damage.
 
@@ -18878,7 +18873,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Consecration (26573), Divine Storm (53385), Consecration (81297), Divine Hammer (198137), Divine Storm (224239), Consecration (243597), Consecration (387881), Consecration (419810), Divine Storm (423593)
                    Family Flags: 5, 25, 91
-Hotfixed         : Affects Spells
 #2 (id=1070972)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
@@ -21760,7 +21754,6 @@ Description      : $@spelldesc424572
 Tooltip          : Your next Holy Power ability will echo its damage effect at $s1% effectiveness.
 
 Name             : Divine Storm (id=423593) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -26259,17 +26252,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Light (82326), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23, 74
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 #2 (id=1170046)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34) | Scaling Class: -2 | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 #3 (id=1170048)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 3 (39) | Scaling Class: -2 | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | PvP Coefficient: 1.00000 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-Hotfixed         : Coefficient (-0.001524 -> -0.002286)
 Description      : $@spelldesc461287
 Tooltip          : The mana cost of your next Holy Light, Flash of Light, Crusader Strike, or Judgment is reduced by $w1.
 
