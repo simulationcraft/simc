@@ -850,6 +850,33 @@ void spark_of_beledar( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Adrenal Surge Clasp
+// 443762 Driver
+// 446108 Buff
+void adrenal_surge( special_effect_t& effect )
+{
+  auto primary_stat_trigger = effect.driver()->effectN( 1 ).trigger();
+  auto mastery_loss_trigger = primary_stat_trigger->effectN( 3 ).trigger();
+
+  auto primary_stat_buff =
+      create_buff<stat_buff_t>( effect.player, "adrenal_surge_primary", primary_stat_trigger )
+          ->set_stat_from_effect_type( A_MOD_STAT, primary_stat_trigger->effectN( 1 ).average( effect.item ) );
+  auto mastery_loss_buff =
+      create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
+          ->set_stat_from_effect_type( A_MOD_RATING, mastery_loss_trigger->effectN( 1 ).average( effect.item ) );
+
+  effect.proc_flags_  = PF_DAMAGE_TAKEN;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id,
+      [ primary_stat_buff, mastery_loss_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        primary_stat_buff->trigger();
+        mastery_loss_buff->trigger();
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -4090,6 +4117,7 @@ void register_special_effects()
   register_special_effect( 443764, embellishments::embrace_of_the_cinderbee, true );
   register_special_effect( 443760, embellishments::deepening_darkness );
   register_special_effect( 443736, embellishments::spark_of_beledar );
+  register_special_effect( 443762, embellishments::adrenal_surge );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
