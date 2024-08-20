@@ -2230,8 +2230,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike = true;
-
-    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    tick_zero        = true;
+    tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
     interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
@@ -2801,6 +2801,9 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     add_child( oh_attack );
     add_child( mh_attack );
+
+    if ( p->talent.windwalker.thunderfist.ok() )
+      add_child( p->passive_actions.thunderfist );
   }
 
   void execute() override
@@ -2879,6 +2882,7 @@ struct melee_t : public monk_melee_attack_t
   bool dual_threat_enabled = true;  // Dual Threat requires one succesful melee inbetween casts
   bool first;
   bool oh;
+
   melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
     : monk_melee_attack_t( player, name ), sync_weapons( sw ), first( true ), oh( is_oh )
   {
@@ -2953,10 +2957,7 @@ struct melee_t : public monk_melee_attack_t
         }
 
         if ( p()->buff.thunderfist->up() )
-        {
-          p()->passive_actions.thunderfist->target = s->target;
-          p()->passive_actions.thunderfist->schedule_execute();
-        }
+          p()->passive_actions.thunderfist->execute_on_target( s->target );
 
         dual_threat_enabled = true;
       }
