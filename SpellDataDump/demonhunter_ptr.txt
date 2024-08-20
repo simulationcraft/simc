@@ -37,8 +37,9 @@ Attributes       : ........ ........ ........ ........   .......x ...x.... .....
                  : No Reflection (39), Aura Unique (43), Ignore Line of Sight (66), Do Not Display Range (126), No Cast Log (128), Aura Points On Client (268), Do Not Log Aura Refresh (291), Aura Always Shown (438)
 Effects          :
 #1 (id=470)      : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : Base Value (5 -> 3)
 Description      : $@spelldesc255260
 Tooltip          : Magic damage taken increased by $s1%.
 
