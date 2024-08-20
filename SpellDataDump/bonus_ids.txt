@@ -5506,8 +5506,8 @@ bonus_id={ 10282 }, quality={ rare }
 bonus_id={ 10283 }, quality={ rare }
 bonus_id={ 10284 }, quality={ rare }
 bonus_id={ 10285 }, quality={ rare }
-bonus_id={ 10286 }, quality={ uncommon }
-bonus_id={ 10287 }, quality={ uncommon }
+bonus_id={ 10286 }, quality={ rare }
+bonus_id={ 10287 }, quality={ rare }
 bonus_id={ 10288 }, quality={ uncommon }
 bonus_id={ 10289 }, quality={ uncommon }
 bonus_id={ 10290 }, quality={ epic }
