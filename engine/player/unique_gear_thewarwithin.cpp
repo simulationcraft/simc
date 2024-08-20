@@ -877,6 +877,22 @@ void adrenal_surge( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Woven Dusk
+// 457655 Driver
+// 457630 Buff
+void woven_dusk( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "woven_dusk" } ) )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) );
+  buff->set_stat( STAT_HASTE_RATING, effect.driver()->effectN( 2 ).average( effect.player ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -4118,6 +4134,7 @@ void register_special_effects()
   register_special_effect( 443760, embellishments::deepening_darkness );
   register_special_effect( 443736, embellishments::spark_of_beledar );
   register_special_effect( 443762, embellishments::adrenal_surge );
+  register_special_effect( 457655, embellishments::woven_dusk, true );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
