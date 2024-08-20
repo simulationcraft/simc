@@ -3716,9 +3716,10 @@ Effects          :
 #9 (id=1032436)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #10 (id=1125753)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 117 | Scaled Value: 117 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
+Hotfixed         : Base Value (50 -> 117)
 #11 (id=1155238)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
@@ -14604,7 +14605,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1018044)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.40500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.27 -> 0.405)
 #2 (id=1018045)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383959
 Description      : $@spelldesc288080
