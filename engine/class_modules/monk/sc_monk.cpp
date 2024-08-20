@@ -2244,7 +2244,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
+    {
+      channeled    = true;
       dot_behavior = DOT_CLIP;
+    }
 
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
@@ -4184,9 +4187,6 @@ struct xuen_spell_t : public monk_spell_t
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
 
-    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
-      p()->buff.rushing_jade_wind->trigger( p()->pets.xuen.duration() );
-
     p()->buff.courage_of_the_white_tiger->trigger();
 
     if ( p()->talent.monk.summon_white_tiger_statue->ok() )
@@ -4231,9 +4231,6 @@ struct fury_of_xuen_summon_t final : monk_spell_t
 
     if ( p()->talent.windwalker.flurry_of_xuen->ok() )
       p()->buff.flurry_of_xuen->trigger();
-
-    if ( p()->talent.conduit_of_the_celestials.restore_balance->ok() )
-      p()->buff.rushing_jade_wind->trigger( p()->pets.fury_of_xuen_tiger.duration() );
   }
 };
 
@@ -5998,6 +5995,19 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
     set_tick_callback( invoke_xuen_callback );
   }
 
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( buff_t::trigger( stacks, value, chance, duration ) )
+    {
+      if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
+        p().buff.rushing_jade_wind->trigger( remains() );
+
+      return true;
+    }
+
+    return false;
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     monk_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -6077,6 +6087,19 @@ struct fury_of_xuen_t : public monk_buff_t
     add_invalidate( CACHE_SPELL_HASTE );
 
     add_invalidate( CACHE_MASTERY );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( buff_t::trigger( stacks, value, chance, duration ) )
+    {
+      if ( p().talent.conduit_of_the_celestials.restore_balance->ok() )
+        p().buff.rushing_jade_wind->trigger( remains() );
+
+      return true;
+    }
+
+    return false;
   }
 };
 
@@ -6307,7 +6330,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
