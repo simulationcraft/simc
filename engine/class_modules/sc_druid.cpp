@@ -2160,6 +2160,8 @@ struct trigger_claw_rampage_t : public BASE
 {
 private:
   cooldown_t* icd = nullptr;
+  buff_t* berserk_buff = nullptr;
+  buff_t* ravage_buff = nullptr;
   double proc_pct = 0.0;
 
 public:
@@ -2170,23 +2172,34 @@ public:
   {
     if ( p->specialization() == S && p->talent.claw_rampage.ok() )
     {
-      proc_pct = p->talent.claw_rampage->effectN( 1 ).percent();
+      proc_pct = p->talent.claw_rampage->proc_chance();
       icd = p->get_cooldown( "claw_rampage_icd" );
       icd->duration = p->talent.claw_rampage->internal_cooldown();
+
+      if constexpr ( S == DRUID_FERAL )
+      {
+        berserk_buff = p->buff.b_inc_cat;
+        ravage_buff = p->buff.ravage_fb;
+      }
+      else if constexpr ( S == DRUID_GUARDIAN )
+      {
+        berserk_buff = p->buff.b_inc_bear;
+        ravage_buff = p->buff.ravage_maul;
+      }
+      else
+      {
+        static_assert( static_false<BASE>, "Invalid specialization for trigger_claw_rampage_t." );
+      }
     }
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    BASE::execute();
+    BASE::impact( s );
 
-    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && icd->up() && BASE::rng().roll( proc_pct ) )
+    if ( proc_pct && berserk_buff->check() && icd->up() && BASE::rng().roll( proc_pct ) )
     {
-      if constexpr ( S == DRUID_FERAL )
-        BASE::p()->buff.ravage_fb->trigger();
-      else if constexpr ( S == DRUID_GUARDIAN )
-        BASE::p()->buff.ravage_maul->trigger();
-
+      ravage_buff->trigger();
       icd->start();
     }
   }
