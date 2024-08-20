@@ -7490,14 +7490,15 @@ struct earthquake_damage_base_t : public shaman_spell_t
   }
 
   double get_spell_power_coefficient_from_options() {
-      auto default_value = (new shaman_t::options_t())->earthquake_spell_power_coefficient;
+      auto default_options = new shaman_t::options_t();
+      auto default_value = default_options->earthquake_spell_power_coefficient;
       auto option_value = p()->options.earthquake_spell_power_coefficient;
+      delete( default_options );
 
       if ( option_value != default_value )
       {
           return option_value;
       }
-
       return 0.0;
   }
 
