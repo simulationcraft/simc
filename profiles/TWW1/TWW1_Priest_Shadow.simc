@@ -177,7 +177,7 @@ actions.trinkets+=/use_item,name=erupting_spear_fragment,if=(buff.power_infusion
 actions.trinkets+=/use_item,name=belorrelos_the_suncaller,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5|fight_remains<20)&equipped.belorrelos_the_suncaller
 # Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets
 actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=(!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20)&equipped.beacon_to_the_beyond
-actions.trinkets+=/use_item,name=aberrant_spellforge
+actions.trinkets+=/use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4
 actions.trinkets+=/use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
 actions.trinkets+=/use_item,name=desperate_invokers_codex,if=equipped.desperate_invokers_codex
@@ -187,7 +187,7 @@ neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213458
 shoulders=living_lusters_dominion,id=212081,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,ilevel=639
 chest=living_lusters_raiment,id=212086,ilevel=639,enchant=crystalline_radiance_3
-wrists=skeinspinners_duplicitous_cuffs,id=225584,ilevel=639,gem_id=213491
+wrists=consecrated_cuffs,id=222815,bonus_id=8793/11304,ilevel=636,gem_id=213491
 hands=gory_surgeons_gloves,id=178748,ilevel=639
 waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213473
 legs=living_lusters_trousers,id=212082,ilevel=639,enchant=sunset_spellthread_3
@@ -196,16 +196,17 @@ finger1=writhing_ringworm,id=225576,ilevel=639,gem_id=213494/213494,enchant=radi
 finger2=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
 trinket1=spymasters_web,id=220202,ilevel=639
 trinket2=arakara_sacbrood,id=219314,ilevel=639
-main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant=authority_of_the_depths_3
+main_hand=scepter_of_radiant_magics,id=224405,bonus_id=11301/8793,ilevel=636,enchant=authority_of_the_depths_3
+off_hand=pail_of_preserved_obscurity,id=221172,ilevel=639
 
 # Gear Summary
-# gear_ilvl=639.00
-# gear_stamina=237716
-# gear_intellect=45576
-# gear_crit_rating=8954
-# gear_haste_rating=14120
-# gear_mastery_rating=16504
+# gear_ilvl=638.63
+# gear_stamina=236689
+# gear_intellect=45214
+# gear_crit_rating=9031
+# gear_haste_rating=14307
+# gear_mastery_rating=16364
 # gear_versatility_rating=652
-# gear_armor=16110
+# gear_armor=16086
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

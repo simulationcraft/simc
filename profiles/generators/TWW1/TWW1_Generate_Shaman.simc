@@ -6,24 +6,24 @@ role=spell
 position=ranged_back
 
 # Farseer Lightning Bolt spam
-talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbz22MjZGmZjxMDmZGAAAAAsZmNYADYWYCZWAA2mmZGmtFzMTMjZmNsMDDGDzyMzMzMGmhB
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzy2MjZGmZjxMDmZGAAAAAsYmNYADYWYCZWAAjpZgZbhZmYMzMbDLzYGMLDzyMzMzMGmhB
 
-head=,id=212428,bonus_id=1540/10870/1808,gem_id=213743
-neck=,id=225577,bonus_id=1540/10870/8781,gem_id=213485/213485
-shoulder=,id=212009,bonus_id=1540/10870
-back=,id=225574,bonus_id=1540/10870,enchant_id=7403
-chest=,id=212014,bonus_id=1540/10870,enchant_id=7364
-wrist=,id=219342,bonus_id=10421/9633/8902/1515/1808/10520/8960,enchant_id=7385,gem_id=213485,crafted_stats=36/32
-hands=,id=212012,bonus_id=1540/10870
-waist=,id=159386,bonus_id=10047/10870/1808,gem_id=213485
-legs=,id=212010,bonus_id=1540/10870,enchant_id=7534
-feet=,id=133293,bonus_id=11342/10870,enchant_id=7424
-finger1=,id=225578,bonus_id=1540/10870/8781,enchant_id=7340,gem_id=213485/213485
-finger2=,id=215135,bonus_id=10421/9633/8902/1515/8781/10520/8960,enchant_id=7340,gem_id=213485/213485,crafted_stats=36/40
-trinket1=,id=219314,bonus_id=3131/10870
-trinket2=,id=133304,bonus_id=11342/10870
-main_hand=,id=212404,bonus_id=1540/10299,enchant_id=7460
-off_hand=,id=225579,bonus_id=1540/10870
+head=,id=212428,gem_id=213479,ilevel=639
+neck=,id=215136,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/8781,gem_id=213743/213455,crafted_stats=36/40
+shoulder=,id=212009,ilevel=639
+back=,id=225574,bonus_id=1540/10299,enchant_id=7403
+chest=,id=212014,enchant_id=7364,ilevel=639
+wrist=,id=225581,enchant_id=7385,gem_id=213479,ilevel=639
+hands=,id=212012,ilevel=639
+waist=,id=212414,gem_id=213479,ilevel=639
+legs=,id=212010,enchant_id=7534,ilevel=639
+feet=,id=133293,enchant_id=7424,ilevel=639
+finger1=,id=178736,enchant_id=7340,gem_id=213479/213479,ilevel=639
+finger2=,id=159461,bonus_id=10047/10299/8781,enchant_id=7340,gem_id=213455/213455
+trinket1=,id=220202,ilevel=639
+trinket2=,id=219314,ilevel=639
+main_hand=,id=222439,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960/8790,enchant_id=7460,crafted_stats=36/40
+off_hand=,id=225579,ilevel=639
 
 save=TWW1_Shaman_Elemental.simc
 
