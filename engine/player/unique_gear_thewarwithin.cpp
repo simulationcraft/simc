@@ -877,23 +877,6 @@ void adrenal_surge( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
-// Woven Dusk
-// 457655 Driver
-// 457630 Buff
-void woven_dusk( special_effect_t& effect )
-{
-  if ( unique_gear::create_fallback_buffs( effect, { "woven_dusk" } ) )
-    return;
-
-  // Forcing player scaling here until effect.item correctly parses it out
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
-                  ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect.player ) );
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
 }  // namespace embellishments
 
 namespace items
@@ -4073,6 +4056,22 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
 
 namespace sets
 {
+// Woven Dusk
+// 457655 Driver
+// 457630 Buff
+void woven_dusk( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "woven_dusk" } ) )
+    return;
+
+  // Need to force player sccaling for equipment set
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect.player ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -4135,7 +4134,6 @@ void register_special_effects()
   register_special_effect( 443760, embellishments::deepening_darkness );
   register_special_effect( 443736, embellishments::spark_of_beledar );
   register_special_effect( 443762, embellishments::adrenal_surge );
-  register_special_effect( 457655, embellishments::woven_dusk, true );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -4200,6 +4198,7 @@ void register_special_effects()
 
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
+  register_special_effect( 457655, sets::woven_dusk, true );
 }
 
 void register_target_data_initializers( sim_t& )
