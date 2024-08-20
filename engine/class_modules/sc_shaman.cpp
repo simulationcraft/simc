@@ -6753,7 +6753,10 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::available_targets( tl );
 
-    p()->regenerate_flame_shock_dependent_target_list( this );
+    if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
+    {
+      p()->regenerate_flame_shock_dependent_target_list( this );
+    }
 
     return tl.size();
   }
