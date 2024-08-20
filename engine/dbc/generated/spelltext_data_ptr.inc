@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56110
-static const std::array<spelltext_data_t, 26309> __spelltext_data { {
+static const std::array<spelltext_data_t, 26313> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25301,6 +25301,8 @@ static const std::array<spelltext_data_t, 26309> __spelltext_data { {
   { 455512, "The idol draws upon unholy energy to prevent fatal damage on players, instead healing them for an amount equal to $455514s1% of their maximum health and turning them Undead.\r\n\r\nWhile Undead, they cannot be healed, lose $456699s1% of their maximum health every $455516t1 sec, and gain $455516s2% damage and healing done.", 0, "Rank 1/4" },
   { 455514, "$@spelldesc455512", 0, 0 },
   { 455516, "$@spelldesc455512", "Turned Undead, preventing all healing, losing $456699s1% maximum health every $t sec, and increasing damage and healing done by $w2%.", 0 },
+  { 455522, "Healing spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2  Mastery for $d.", 0, 0 },
+  { 455523, "Damaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2  Haste for $d.", 0, 0 },
   { 455524, "Cooling sunset spellthreads alter the effects of Woven Dawnweave to become Woven Duskweave.", 0, 0 },
   { 455531, "Fully repair a weapon or piece of plate armor (consumed on use).", 0, 0 },
   { 455532, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
@@ -25624,7 +25626,9 @@ static const std::array<spelltext_data_t, 26309> __spelltext_data { {
   { 457624, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
   { 457625, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
   { 457626, "Apply Weavercloth Spellthread to your leggings, permanently increasing its Intellect by $ec1.", 0, 0 },
+  { 457628, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\n$@spelldesc455523][$@spelldesc455522]", 0, 0 },
   { 457629, "Warming sunrise spellthreads alter the effects of Woven Duskweave to become Woven Dawnweave.", 0, 0 },
+  { 457630, "Damaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2  Haste for $d.", "Haste increased by $w1.", 0 },
   { 457665, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\nYour gear cools similarly to Woven Duskthread, gaining $s1 Versatility when over $457667s1% health.]\r\n[Your gear warms with Woven Dawnthread and gains $s1 Critical Strike when over $457667s1% health.]", 0, 0 },
   { 457666, "$@spelldesc457665", "Critical Strike increased by $w2.", 0 },
   { 457667, "$@spelldesc457665", 0, 0 },
