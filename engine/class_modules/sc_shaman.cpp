@@ -5890,17 +5890,18 @@ struct chain_lightning_t : public chained_base_t
       p()->trigger_awakening_storms( execute_state );
     }
 
-    if ( p()->talent.conductive_energy.ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
-    }
-
     p()->trigger_thunderstrike_ward( execute_state );
   }
 
   void impact( action_state_t* state ) override
   {
     chained_base_t::impact( state );
+
+    if ( state->chain_target == 0 && p()->talent.conductive_energy.ok() &&
+         p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
+    }
 
     p()->trigger_lightning_rod_damage( state );
   }
@@ -9873,18 +9874,19 @@ struct tempest_t : public shaman_spell_t
       p()->action.feral_spirit_rt->set_target( execute_state->target );
       p()->action.feral_spirit_rt->execute();
     }
-
-    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
-         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
-           p()->talent.lightning_rod.ok() ) )
-    {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
-    }
   }
 
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+
+    if ( state->chain_target == 0 &&
+         ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
+           p()->talent.lightning_rod.ok() ) ) )
+    {
+      td( execute_state->target )->debuff.lightning_rod->trigger();
+    }
 
     // TODO: Is Tempest applying Lightning Rod to targets before or after for Tempest lightning rod
     // damage?
