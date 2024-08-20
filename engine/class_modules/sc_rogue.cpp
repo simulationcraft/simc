@@ -7511,6 +7511,19 @@ struct singular_focus_t : public rogue_attack_t
 
 // Fatebound ================================================================
 
+// Note:: Dummy Hand of Fate container spell for reporting purposes, not functional!
+struct hand_of_fate_t : public rogue_attack_t
+{
+  hand_of_fate_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->talent.fatebound.hand_of_fate )
+  {
+    background = true;
+    add_child( p->active.fatebound.fatebound_coin_tails );
+    add_child( p->active.fatebound.fatebound_coin_tails_delivered );
+    add_child( p->active.fatebound.lucky_coin );
+  }
+};
+
 struct fatebound_coin_tails_t : public rogue_attack_t
 {
   fatebound_coin_tails_t( util::string_view name, rogue_t* p ) :
@@ -11907,10 +11920,7 @@ void rogue_t::init_spells()
       get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
 
     // Stats wrapper to group these for reporting purposes
-    stats_t* stats = get_stats( "Hand of Fate", nullptr );
-    stats->add_child( active.fatebound.fatebound_coin_tails->stats );
-    stats->add_child( active.fatebound.fatebound_coin_tails_delivered->stats );
-    stats->add_child( active.fatebound.lucky_coin->stats );
+    get_background_action<actions::hand_of_fate_t>( "hand_of_fate" );
   }
 
   if ( talent.fatebound.fate_intertwined->ok() )
