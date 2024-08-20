@@ -1883,7 +1883,7 @@ void player_t::init_items()
         }
 
         items[ slot ].options_str =
-            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level( is_ptr() ) );
       }
     }
 
@@ -1891,7 +1891,7 @@ void player_t::init_items()
     if ( sim->enable_all_item_effects )
     {
       items[ SLOT_SHIRT ].options_str =
-          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level() );
+          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level( is_ptr() ) );
     }
   }
   // We need to simple-parse the items first, this will set up some base information, and parse out

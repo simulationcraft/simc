@@ -1,5 +1,5 @@
 // Item enchantment data, wow build 11.0.2.56110
-static const std::array<item_enchantment_data_t, 5042> __spell_item_ench_data { {
+static const std::array<item_enchantment_data_t, 5042> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },   2831, "Reinforced (+$k1 Armor)"           },
@@ -5004,9 +5004,9 @@ static const std::array<item_enchantment_data_t, 5042> __spell_item_ench_data { 
   { 7526,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 455832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 455829, "Algari Weaverline"                 },
   { 7527,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "11.0.0 FX Testing - Enchant Visual - Goblin" },
   { 7528,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {  100,    0,    0 }, { 457496,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Tidecaller's Guard"                },
-  { 7529,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457615,      0 }, {  0.1550f,  0.0000f,  0.0000f }, 457618, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7530,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457616,      0 }, {  0.1750f,  0.0000f,  0.0000f }, 457619, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7531,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457617,      0 }, {  0.1950f,  0.0000f,  0.0000f }, 457620, "+$k1 Intellect & +$387302s1% Mana |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7529,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457615,      0 }, {  0.1550f,  0.0000f,  0.0000f }, 457618, "+$k1 Intellect & +$457615s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 7530,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457616,      0 }, {  0.1750f,  0.0000f,  0.0000f }, 457619, "+$k1 Intellect & +$457616s1% Mana |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 7531,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457617,      0 }, {  0.1950f,  0.0000f,  0.0000f }, 457620, "+$k1 Intellect & +$457617s1% Mana |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 7532,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.1550f,  0.0470f,  0.0000f }, 457621, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7533,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.1750f,  0.0550f,  0.0000f }, 457622, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7534,      0, -7,  71,  80, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      5,      7,      0 }, {  0.1950f,  0.0600f,  0.0000f }, 457623, "+$k1 Intellect & +$k2 Stamina |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },

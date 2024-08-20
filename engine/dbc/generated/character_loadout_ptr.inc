@@ -1,7 +1,7 @@
-static constexpr int MYTHIC_TARGET_ITEM_LEVEL = 636;
+static constexpr int ptr_MYTHIC_TARGET_ITEM_LEVEL = 636;
 
 // Character Loadout data, wow build 11.0.2.56110
-static const std::array<character_loadout_data_t, 599> __character_loadout_data { {
+static const std::array<character_loadout_data_t, 599> __ptr_character_loadout_data { {
   { 1809, 1, 0, 154025 },
   { 1809, 1, 0, 154026 },
   { 1809, 1, 0, 154027 },
@@ -604,7 +604,7 @@ static const std::array<character_loadout_data_t, 599> __character_loadout_data 
 } };
 
 // Trait Loadout data, wow build 11.0.2.56110
-static const std::array<trait_loadout_data_t, 2387> __trait_loadout_data { {
+static const std::array<trait_loadout_data_t, 2387> __ptr_trait_loadout_data { {
   { 0, 119137, 1, 0 },
   { 0, 119132, 1, 1 },
   { 0, 119136, 1, 2 },

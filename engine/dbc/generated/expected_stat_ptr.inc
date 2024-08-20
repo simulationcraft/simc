@@ -1,5 +1,5 @@
 // Expected stat for levels 1-133, wow build 11.0.2.56110
-static const std::array<expected_stat_t, 133> __expected_stat_data { {
+static const std::array<expected_stat_t, 133> __ptr_expected_stat_data { {
   {   1,       2.02810f,      29.00000f,      20.00000f,       0.00000f,      68.00000f,     124.68733f },
   {   2,       2.23091f,      32.00000f,      22.00000f,       0.00000f,      74.00000f,     137.15607f },
   {   3,       2.43371f,      35.00000f,      24.00000f,       0.00000f,      81.00000f,     149.62480f },
@@ -136,7 +136,7 @@ static const std::array<expected_stat_t, 133> __expected_stat_data { {
 } };
 
 // Expected stat mods, wow build 11.0.2.56110
-static const std::array<expected_stat_mod_t, 3> __expected_stat_mod_data { {
+static const std::array<expected_stat_mod_t, 3> __ptr_expected_stat_mod_data { {
   { 250, 1.075000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.075000f, 8 },
   { 252, 3.767000f, 1.000000f, 2.586000f, 2.401000f, 2.336000f, 3.767000f, 8 },
   { 280, 2.358090f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 2.358090f, 8 },
