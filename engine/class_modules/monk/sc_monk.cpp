@@ -2244,7 +2244,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     if ( p->specialization() == MONK_WINDWALKER )
+    {
+      channeled    = true;
       dot_behavior = DOT_CLIP;
+    }
 
     if ( p->talent.windwalker.jade_ignition->ok() )
     {
