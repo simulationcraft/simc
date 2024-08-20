@@ -1232,6 +1232,8 @@ void sikrans_endless_arsenal( special_effect_t& effect )
 
     void cycle_stance( bool action = true )
     {
+      stance.back().second->expire();
+
       if ( action && target )
         stance.front().first->execute_on_target( target );
 
