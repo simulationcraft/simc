@@ -2230,8 +2230,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike = true;
-
-    tick_action = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    tick_zero        = true;
+    tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
     interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
@@ -6308,7 +6308,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
