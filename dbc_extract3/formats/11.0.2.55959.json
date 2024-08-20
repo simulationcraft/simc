@@ -564,7 +564,7 @@
   },
   "ItemAppearance": {
     "fields": [
-      { "data_type": "i", "field": "f4"},
+      { "data_type": "b", "field": "f4"},
       { "data_type": "i", "field": "id_display_info"},
       { "data_type": "i", "field": "id_icon", "ref": "ManifestInterfaceData" },
       { "data_type": "i", "field": "f3"},

@@ -21,6 +21,7 @@ struct pet_t : public player_t
   double intellect_per_owner;
   bool summoned;
   bool dynamic;
+  bool can_dismiss;
   bool affects_wod_legendary_ring;
   pet_e pet_type;
   event_t* expiration;

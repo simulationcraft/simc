@@ -655,6 +655,7 @@ public:
     propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
+    propagate_const<buff_t *> cyclone_strikes;
     propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> darting_hurricane;
@@ -1343,6 +1344,7 @@ public:
     struct
     {
       const spell_data_t *ww_4pc;
+      const spell_data_t *ww_4pc_dmg;
       const spell_data_t *brm_4pc_damage_buff;
       const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;
@@ -1418,6 +1420,7 @@ public:
     const spell_data_t *hit_combo;
     const spell_data_t *improved_touch_of_death;
     const spell_data_t *mark_of_the_crane;
+    const spell_data_t *summon_white_tiger_statue;
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
     const spell_data_t *touch_of_karma_tick;
@@ -1435,7 +1438,6 @@ public:
   std::string default_temporary_enchant() const override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
   double composite_attack_power_multiplier() const override;
-  double composite_attribute( attribute_e ) const override;
   double composite_dodge() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
@@ -1530,5 +1532,33 @@ struct sef_despawn_cb_t
 
   void operator()( player_t * );
 };
+
+namespace events
+{
+// based on implementation from sc_demon_hunter.cpp
+struct delayed_execute_event_t : event_t
+{
+  action_t *action;
+  player_t *target;
+
+  delayed_execute_event_t( monk_t *player, action_t *action, player_t *target, timespan_t delay )
+    : event_t( *player->sim, delay ), action( action ), target( target )
+  {
+    assert( action->background && "Delayed Execute actions must be background!" );
+  }
+
+  const char *name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if ( target->is_sleeping() )
+      return;
+    action->execute_on_target( target );
+  }
+};
+}  // namespace events
 
 }  // namespace monk

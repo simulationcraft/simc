@@ -2136,8 +2136,12 @@ struct art_of_the_glaive_trigger_t : public BASE
 {
   using base_t = art_of_the_glaive_trigger_t<ABILITY, BASE>;
 
+  timespan_t thrill_delay;
+
   art_of_the_glaive_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o )
+    : BASE( n, p, s, o ),
+      // 2024-07-16 -- This is seems to be 700ms for everything but Death Sweep
+      thrill_delay( 700_ms )
   {
   }
 
@@ -2157,8 +2161,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.glaive_flurry->expire();
-      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
-      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+      make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
         BASE::p()->buff.art_of_the_glaive_first->expire();
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
@@ -2179,8 +2182,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
 
       BASE::p()->buff.rending_strike->expire();
-      // 2024-07-16 -- This is 700ms to line up with Thrill and because of Death Sweep
-      make_event( *BASE::p()->sim, 700_ms, [ this, second_ability ] {
+      make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
         BASE::p()->buff.art_of_the_glaive_first->expire();
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
@@ -2195,9 +2197,7 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        // 2024-06-18 -- Seems to be roughly 700ms after secondary trigger to not buff Blade Dance or Death Sweep
-        // slashes.
-        make_event( *BASE::p()->sim, 700_ms, [ this ] {
+        make_event( *BASE::p()->sim, thrill_delay, [ this ] {
           BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
           BASE::p()->buff.thrill_of_the_fight_damage->trigger();
         } );
@@ -2692,8 +2692,6 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     channeled           = true;
     tick_on_application = false;
     cooldown            = p->cooldown.eye_beam;
-    // This might need to change if CDs ever get de-synced
-    cooldown->duration  = data().cooldown();
 
     // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
     //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
@@ -3327,6 +3325,7 @@ struct sigil_of_flame_base_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( name, p, s, o ), sigil( nullptr )
   {
     may_miss = false;
+    cooldown = p->cooldown.sigil_of_flame;
 
     if ( p->spell.sigil_of_flame_fury->ok() )
     {
@@ -4855,7 +4854,7 @@ struct blade_dance_base_t
       {
         // 2023-01-31 -- If Restless Hunter is triggered when the delayed final impact is queued, it does not fade
         //               Seems similar to some other 500ms buff protection in the game
-        if ( !p()->bugs || sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
+        if ( sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
         {
           p()->buff.restless_hunter->expire();
         }
@@ -5034,6 +5033,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
+    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1);
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep_1", data().effectN( 2 ) ) );

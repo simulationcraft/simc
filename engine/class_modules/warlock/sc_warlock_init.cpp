@@ -77,6 +77,7 @@ namespace warlock
 
     warlock_t::init_spells_diabolist();
     warlock_t::init_spells_hellcaller();
+    warlock_t::init_spells_soul_harvester();
   }
 
   void warlock_t::init_spells_affliction()
@@ -180,6 +181,11 @@ namespace warlock
     talents.malefic_touch_proc = find_spell( 458131 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 ); // Should be ID 453643
+    tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 ); // Should be ID 453642
+    tier.umbral_lattice = find_spell( 455679 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -316,6 +322,11 @@ namespace warlock
     talents.fel_explosion = find_spell( 386609 );
 
     // Additional Tier Set spell data
+
+    // Nerub-ar Palace
+    tier.hexflame_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B2 ); // Should be ID 453644
+    tier.hexflame_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B4 ); // Should be ID 453645
+    tier.empowered_legion_strike = find_spell( 455647 );
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -466,6 +477,11 @@ namespace warlock
 
     // Additional Tier Set spell data
 
+    // Nerub-ar Palace
+    tier.hexflame_destro_2pc = sets->set( WARLOCK_DESTRUCTION, TWW1, B2 ); // Should be ID 453647
+    tier.hexflame_destro_4pc = sets->set( WARLOCK_DESTRUCTION, TWW1, B4 ); // Should be ID 453646
+    tier.echo_of_the_azjaqir = find_spell( 455674 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
@@ -553,6 +569,36 @@ namespace warlock
     hero.malevolence_dmg = find_spell( 446285 );
   }
 
+  void warlock_t::init_spells_soul_harvester()
+  {
+    hero.demonic_soul = find_talent_spell( talent_tree::HERO, "Demonic Soul" ); // Should be ID 449614
+    hero.succulent_soul = find_spell( 449793 );
+    hero.demonic_soul_dmg = find_spell( 449801 );
+
+    hero.necrolyte_teachings = find_talent_spell( talent_tree::HERO, "Necrolyte Teachings" ); // Should be ID 449620
+
+    hero.soul_anathema = find_talent_spell( talent_tree::HERO, "Soul Anathema" ); // Should be ID 449624
+    hero.soul_anathema_dot = find_spell( 450538 );
+
+    hero.demoniacs_fervor = find_talent_spell( talent_tree::HERO, "Demoniac's Fervor" ); // Should be ID 449629
+
+    hero.shared_fate = find_talent_spell( talent_tree::HERO, "Shared Fate" ); // Should be ID 449704
+    hero.shared_fate_debuff = find_spell( 450591 );
+    hero.shared_fate_dmg = find_spell( 450593 );
+
+    hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
+
+    hero.wicked_reaping = find_talent_spell( talent_tree::HERO, "Wicked Reaping" ); // Should be ID 449631
+    hero.wicked_reaping_dmg = find_spell( 449826 );
+
+    hero.quietus = find_talent_spell( talent_tree::HERO, "Quietus" ); // Should be ID 449634
+
+    hero.sataiels_volition = find_talent_spell( talent_tree::HERO, "Sataiel's Volition" ); // Should be ID 449637
+
+    hero.shadow_of_death = find_talent_spell( talent_tree::HERO, "Shadow of Death" ); // Should be ID 449638
+    hero.shadow_of_death_energize = find_spell( 449858 );
+  }
+
   void warlock_t::init_base_stats()
   {
     if ( base.distance < 1.0 )
@@ -618,6 +664,7 @@ namespace warlock
 
     create_buffs_diabolist();
     create_buffs_hellcaller();
+    create_buffs_soul_harvester();
   }
 
   void warlock_t::create_buffs_affliction()
@@ -625,6 +672,9 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff );
 
     buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
+
+    buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
+                               ->set_chance( rng_settings.umbral_lattice.setting_value );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -632,7 +682,7 @@ namespace warlock
     buffs.demonic_core = make_buff( this, "demonic_core", talents.demonic_core_buff );
 
     buffs.power_siphon = make_buff( this, "power_siphon", talents.power_siphon_buff )
-                             ->set_default_value( talents.power_siphon_buff->effectN( 1 ).percent() + talents.blood_invocation->effectN( 2 ).percent() );
+                             ->set_default_value( talents.power_siphon_buff->effectN( 1 ).percent() + talents.blood_invocation->effectN( 2 ).percent() + hero.necrolyte_teachings->effectN( 3 ).percent() );
 
     buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling_buff )
                                 ->set_chance( talents.demonic_calling->effectN( 3 ).percent() );
@@ -722,6 +772,8 @@ namespace warlock
                                  ->set_period( talents.overfiend_buff->effectN( 1 ).period() )
                                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t )
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
+
+    buffs.echo_of_the_azjaqir = make_buff( this, "echo_of_the_azjaqir", tier.echo_of_the_azjaqir );
   }
 
   void warlock_t::create_buffs_diabolist()
@@ -805,6 +857,11 @@ namespace warlock
                             ->set_default_value_from_effect( 1 );
   }
 
+  void warlock_t::create_buffs_soul_harvester()
+  {
+    buffs.succulent_soul = make_buff( this, "succulent_soul", hero.succulent_soul );
+  }
+
   void warlock_t::create_pets()
   {
     for ( auto& pet : pet_name_list )
@@ -839,6 +896,7 @@ namespace warlock
 
     init_gains_diabolist();
     init_gains_hellcaller();
+    init_gains_soul_harvester();
 
     gains.soul_conduit = get_gain( "soul_conduit" );
   }
@@ -875,6 +933,12 @@ namespace warlock
     gains.wither_crits = get_gain( "wither_crits" );
   }
 
+  void warlock_t::init_gains_soul_harvester()
+  {
+    gains.feast_of_souls = get_gain( "feast_of_souls" );
+    gains.shadow_of_death = get_gain( "shadow_of_death" );
+  }
+
   void warlock_t::init_procs()
   {
     player_t::init_procs();
@@ -888,6 +952,7 @@ namespace warlock
 
     init_procs_diabolist();
     init_procs_hellcaller();
+    init_procs_soul_harvester();
 
     procs.demonic_calling = get_proc( "demonic_calling" );
     procs.soul_conduit = get_proc( "soul_conduit" );
@@ -906,6 +971,7 @@ namespace warlock
     procs.shadow_bolt_volley = get_proc( "shadow_bolt_volley" );
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
+    procs.umbral_lattice = get_proc( "umbral_lattice" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -924,6 +990,7 @@ namespace warlock
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
+    procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {
@@ -937,6 +1004,7 @@ namespace warlock
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
     procs.decimation = get_proc( "decimation" );
     procs.dimension_ripper = get_proc( "dimension_ripper" );
+    procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );
   }
 
   void warlock_t::init_procs_diabolist()
@@ -951,6 +1019,12 @@ namespace warlock
     procs.mark_of_perotharn = get_proc( "mark_of_perotharn" );
   }
 
+  void warlock_t::init_procs_soul_harvester()
+  {
+    procs.succulent_soul = get_proc( "succulent_soul" );
+    procs.feast_of_souls = get_proc( "feast_of_souls" );
+  }
+
   void warlock_t::init_rng()
   {
     if ( specialization() == WARLOCK_AFFLICTION )
@@ -962,6 +1036,7 @@ namespace warlock
 
     init_rng_diabolist();
     init_rng_hellcaller();
+    init_rng_soul_harvester();
 
     player_t::init_rng();
   }
@@ -985,6 +1060,10 @@ namespace warlock
   }
 
   void warlock_t::init_rng_hellcaller()
+  {
+  }
+
+  void warlock_t::init_rng_soul_harvester()
   {
   }
 
@@ -1044,6 +1123,10 @@ namespace warlock
     add_option( opt_float( "rng_bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value ) );
     add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
     add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
+    add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
+    add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
+    add_option( opt_float( "rng_umbral_lattice", rng_settings.umbral_lattice.setting_value ) );
+    add_option( opt_float( "rng_empowered_legion_strike", rng_settings.empowered_legion_strike.setting_value ) );
   }
 
   void warlock_t::combat_begin()

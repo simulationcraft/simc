@@ -25,29 +25,29 @@
 
 # save=TWW1_Demon_Hunter_Havoc.simc
 
-# demonhunter="TWW1_Demon_Hunter_Vengeance"
-# level=70
-# race=blood_elf
-# spec=vengeance
-# role=tank
-# position=front
-# talents=2233221
+demonhunter="TWW1_Demon_Hunter_Vengeance"
+level=80
+race=blood_elf
+spec=vengeance
+role=tank
+position=front
+talents=CUkAAAAAAAAAAAAAAAAAAAAAAAAGjZmZMMjMzMGDjZbmxgtZMzMMzYYWmZmlZmhZwAAAAwsNDGGLbMJDmZGsA
 
-# head=mercurial_punishers_hood,id=188892,bonus_id=1498/7187/6935,gem_id=173129
-# neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
-# shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
-# back=blighted_margraves_cloak,id=178755,bonus_id=1592/6536/6646,enchant=soul_vitality
-# chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=umbrahide_armguards,id=172321,bonus_id=1588/7046/6649/6650/6935,gem_id=173129
-# hands=gloves_of_haunting_fixation,id=178832,bonus_id=1592/6536/6646
-# waist=umbrahide_waistguard,id=172320,bonus_id=1588/8120/6649/6650/6935,gem_id=173129
-# legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
-# feet=moccasins_of_dreadful_absolution,id=189798,bonus_id=1524/7187,enchant=eternal_agility
-# finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# trinket1=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
-# trinket2=ticking_sack_of_terror,id=190652,bonus_id=1595/6536/6646
-# main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=lightless_force
-# off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=sinful_revelation
+head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=8780,ilevel=639,gem_id=213470
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213485/213743
+shoulders=warmantle_of_the_hypogeal_nemesis,id=212063,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+chest=omnivores_venomous_camouflage,id=212433,ilevel=639,enchant_id=7364
+wrists=runebranded_armbands,id=219334,bonus_id=10520,ilevel=636,gem_id=213485,enchant_id=7391,crafted_stats=36/40
+hands=claws_of_the_hypogeal_nemesis,id=212066,ilevel=639
+waist=behemoths_eroded_cinch,id=225583,ilevel=639,gem_id=213485
+legs=pantaloons_of_the_hypogeal_nemesis,id=212064,ilevel=639,enchant_id=7601
+feet=chitinspiked_jackboots,id=212445,bonus_id=1540/10299
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213485/213485,enchant_id=7340
+finger2=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213485/213485,enchant_id=7352
+trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket2=bottled_flayedwing_toxin,id=178742,ilevel=639
+main_hand=void_reapers_warp_blade,id=219877,ilevel=639,enchant_id=7460
+off_hand=everforged_warglaive,id=222441,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960,enchant_id=7460,crafted_stats=36/40
 
-# save=TWW1_Demon_Hunter_Vengeance.simc
+save=TWW1_Demon_Hunter_Vengeance.simc

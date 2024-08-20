@@ -226,7 +226,7 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags >> 3; }  // first 3 bits are not cost related
+  bool is_free() const { return action_flags >> 12; }  // first 12 bits are not cost related
 };
 
 struct eclipse_handler_t
@@ -1541,7 +1541,8 @@ struct force_of_nature_t final : public treant_base_t
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
-    owner_coeff.ap_from_sp = 0.6;
+    // TODO: confirm this
+    owner_coeff.ap_from_sp = 0.935;
 
     double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
 
@@ -1698,12 +1699,10 @@ public:
         ret = true;
       }
       // allow if the action is from convoke and the buff procs from cast successful
-      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ) )
+      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a );
+                tmp && tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
       {
-        if ( tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
-        {
-          ret = true;
-        }
+        ret = true;
       }
       else
       {
@@ -2160,6 +2159,7 @@ template <specialization_e S, typename BASE>
 struct trigger_claw_rampage_t : public BASE
 {
 private:
+  cooldown_t* icd = nullptr;
   double proc_pct = 0.0;
 
 public:
@@ -2169,19 +2169,25 @@ public:
     : BASE( n, p, s, f )
   {
     if ( p->specialization() == S && p->talent.claw_rampage.ok() )
+    {
       proc_pct = p->talent.claw_rampage->effectN( 1 ).percent();
+      icd = p->get_cooldown( "claw_rampage_icd" );
+      icd->duration = p->talent.claw_rampage->internal_cooldown();
+    }
   }
 
   void execute() override
   {
     BASE::execute();
 
-    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && BASE::rng().roll( proc_pct ) )
+    if ( proc_pct && BASE::p()->buff.b_inc_cat->check() && icd->up() && BASE::rng().roll( proc_pct ) )
     {
       if constexpr ( S == DRUID_FERAL )
         BASE::p()->buff.ravage_fb->trigger();
       else if constexpr ( S == DRUID_GUARDIAN )
         BASE::p()->buff.ravage_maul->trigger();
+
+      icd->start();
     }
   }
 };
@@ -2311,25 +2317,47 @@ struct ravage_base_t : public BASE
   }
 };
 
-// TODO: entirely guessing, almost certainly wrong
+// Proc chance after X failures:
+//   0.6 - 1.13 ^ ( -A * ( X - B ) )
+// where:
+//   A = percent value of corresponding effect index on the talent spell data
+//   B = 3 - base_tick_time in seconds
+//
+// via community testing (~257k ticks)
+// https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+//
+// TODO: confirm any AOE diminishing returns
+// TODO: add manual adjustment for early checks with <0 value:
+//   Rake: 3 ticks = 1.25%, 4 ticks = 7%
+//   Rip: 5 ticks = 1.75%
 template <size_t IDX, typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 private:
-  double pct;
+  accumulated_rng_t* vine_rng = nullptr;
 
 public:
   using base_t = trigger_thriving_growth_t<IDX, BASE>;
 
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), pct( p->talent.thriving_growth->effectN( IDX ).base_value() * 0.001 )
-  {}
+    : BASE( n, p, s, f )
+  {
+    if ( p->talent.thriving_growth.ok() )
+    {
+      double scale = p->talent.thriving_growth->effectN( IDX ).percent();
+      double shift = 3 - BASE::base_tick_time.total_seconds();
+
+      vine_rng = p->get_accumulated_rng( fmt::format( "{}_vines", n ), scale, [ shift ]( double scale, unsigned c ) {
+        return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
+      } );
+    }
+  }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( BASE::p()->active.bloodseeker_vines && BASE::rng().roll( pct ) )
+    if ( vine_rng && vine_rng->trigger() )
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
   }
 };
@@ -4391,7 +4419,12 @@ struct ferocious_bite_base_t : public cat_finisher_t
       rampant_ferocity->snapshot_and_execute( s, false, [ this ]( const action_state_t* from, action_state_t* to ) {
         auto state = debug_cast<rampant_ferocity_t*>( rampant_ferocity )->cast_state( to );
         state->combo_points = cp( from );
-        state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
+
+        // TODO: RF from apex/convoke currently does not scale with excess energy, unlike hardcasted FB
+        if ( p()->bugs && is_free() )
+          state->energy_mul = 1.0;
+        else
+          state->energy_mul = 1.0 + ( energy_modifier( from ) * rf_energy_mod_pct );
       } );
     }
   }
@@ -4411,7 +4444,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
   virtual double energy_modifier( const action_state_t* ) const
   {
-    return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
+    return is_free() ? 1.0 : ( excess_energy / max_excess_energy * ( 1.0 + saber_jaws_mul ) );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4716,8 +4749,8 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
       tear->execute_on_target( s->target );
     }
 
-    // rip is scripted to consume implant
-    if ( p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
+    // hard-cast rip is scripted to consume implant
+    if ( !background && p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
     {
       p()->active.bloodseeker_vines_implant->execute_on_target( s->target );
       p()->buff.implant->expire();
@@ -6567,7 +6600,7 @@ public:
   {
     druid_spell_t::impact( s );
 
-    if ( p()->active.astral_smolder && s->result_amount && !proc && rng().roll( smolder_pct ) )
+    if ( p()->active.astral_smolder && s->result_amount && rng().roll( smolder_pct ) )
     {
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
@@ -6603,32 +6636,43 @@ public:
       const spell_data_t* other_ecl;
       dot_t* druid_td_t::dots_t::*other_dot;
       const spell_data_t* other_dmg;
+      unsigned other_idx = 0;
 
       if constexpr ( E == eclipse_e::LUNAR )
       {
         other_ecl = p->spec.eclipse_solar;
         other_dot = &druid_td_t::dots_t::sunfire;
         other_dmg = p->spec.sunfire_dmg;
+        other_idx = 3;
       }
       else if constexpr ( E == eclipse_e::SOLAR )
       {
         other_ecl = p->spec.eclipse_lunar;
         other_dot = &druid_td_t::dots_t::moonfire;
         other_dmg = p->spec.moonfire_dmg;
+        other_idx = 1;
+      }
+      else
+      {
+        static_assert( static_false<BASE>, "Invalid eclipse type for _umbral_t." );
       }
 
       // Umbral embrace is heavily scripted so we do all the auto parsing within the action itself
-      // NOTE: currently bugged and not affected by opposite passive mastery
       add_parse_entry( BASE::da_multiplier_effects )
         .set_value( find_effect( p->talent.umbral_embrace, p->buff.umbral_embrace ).percent() )
         .set_func( [ this ] { return umbral_embrace_check(); } )
         .set_eff( &p->buff.umbral_embrace->data().effectN( 1 ) );
 
+      // apply bonus from opposite eclipse
       BASE::force_effect( other_ecl, 1, [ this ] { return umbral_embrace_check(); } );
 
+      // apply bonus from opposite dot mastery
       BASE::force_target_effect( [ this, other_dot ]( actor_target_data_t* t ) {
         return umbral_embrace_check() && std::invoke( other_dot, static_cast<druid_td_t*>( t )->dots )->is_ticking();
       }, other_dmg, as<unsigned>( other_dmg->effect_count() ), p->mastery.astral_invocation );
+
+      // apply bonus from opposite passive mastery
+      BASE::force_effect( p->mastery.astral_invocation, other_idx, [ this ] { return umbral_embrace_check(); } );
     }
 
     bool umbral_embrace_check()
@@ -6669,10 +6713,13 @@ public:
   {
     BASE::init();
 
-    // setup umbral for convoke if necessary
+    // copy generator characteristic to umbral version, specifically for convoke as get_convoke_action will set
+    // variables post construction.
+    //
+    // note that init() is not required as player_t::init_actions() does not use range based for loops, thus actions
+    // that are added during initialization (as happens with convoke) will still be init()'d.
     if ( umbral )
     {
-      umbral->init();
       umbral->gain = BASE::gain;
       umbral->proc = BASE::proc;
       umbral->trigger_gcd = BASE::trigger_gcd;
@@ -7965,6 +8012,11 @@ struct starfall_t final : public ap_spender_t
 
     base_t::execute();
 
+    if ( p()->buff.starweaver_starfall->check() )
+      p()->buff.starweaver_starfall->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starfall->expire( this );
+
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       driver->execute();
       p()->eclipse_handler.tick_starfall();
@@ -8215,6 +8267,11 @@ struct starsurge_t final : public ap_spender_t
   void execute() override
   {
     base_t::execute();
+
+    if ( p()->buff.starweaver_starsurge->check() )
+      p()->buff.starweaver_starsurge->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starsurge->expire( this );
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
@@ -9144,12 +9201,24 @@ struct druid_melee_t : public Base
       ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
 
     // Feral: 0.286% via community testing (~197k auto attacks)
+    // Guardian: 1.144% via community testing (9921 auto attacks), 4x feral
     // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-    if ( p->talent.ravage.ok() && p->specialization() == DRUID_FERAL )
+    if ( p->talent.ravage.ok() )
     {
-      ravage_rng = p->get_accumulated_rng( "ravage", 0.00286 );
+      auto c = 0.0;
+      if ( p->specialization() == DRUID_FERAL )
+      {
+        c = 0.00286;
+        ravage_buff = p->buff.ravage_fb;
+      }
+      else if ( p->specialization() == DRUID_GUARDIAN )
+      {
+        c = 0.01144;
+        ravage_buff = p->buff.ravage_maul;
+      }
+
+      ravage_rng = p->get_accumulated_rng( "ravage", c );
       ravage_proc = p->get_proc( "Ravage" )->collect_interval()->collect_count();
-      ravage_buff = p->buff.ravage_fb;
     }
   }
 
@@ -13660,6 +13729,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 void druid_t::apply_affecting_auras( buff_t& buff )
 {
   // Class
+  buff.apply_affecting_aura( spec_spell );
   buff.apply_affecting_aura( talent.forestwalk );
   buff.apply_affecting_aura( talent.improved_barkskin );
   buff.apply_affecting_aura( talent.oakskin );
@@ -13753,10 +13823,10 @@ void druid_action_t<Base>::parse_action_effects()
 
   parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
   parse_effects( p()->buff.owlkin_frenzy );
-  parse_effects( p()->buff.starweaver_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.starweaver_starsurge, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starsurge, CONSUME_BUFF );
+  parse_effects( p()->buff.starweaver_starfall );
+  parse_effects( p()->buff.starweaver_starsurge );
+  parse_effects( p()->buff.touch_the_cosmos_starfall );
+  parse_effects( p()->buff.touch_the_cosmos_starsurge );
   parse_effects( p()->buff.umbral_inspiration );
   parse_effects( p()->buff.warrior_of_elune );
 

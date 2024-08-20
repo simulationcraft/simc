@@ -26,21 +26,22 @@ struct proc_rng_t
 protected:
   std::string name_str;
   player_t* player;
-  rng_type_e rng_type;
+  const rng_type_e rng_type_;
 
 public:
-  proc_rng_t();
-  proc_rng_t( std::string_view n, player_t* p, rng_type_e type );
+  const static rng_type_e rng_type = RNG_NONE;
+  proc_rng_t( rng_type_e type_ );
+  proc_rng_t( rng_type_e type_, std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
 
-  virtual bool trigger() = 0;
+  virtual int trigger() = 0;
   virtual void reset() = 0;
 
   std::string_view name() const
   { return name_str; }
 
   rng_type_e type() const
-  { return rng_type; }
+  { return rng_type_; }
 };
 
 struct simple_proc_t final : public proc_rng_t
@@ -49,10 +50,11 @@ private:
   double chance;
 
 public:
+  const static rng_type_e rng_type = RNG_SIMPLE;
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
   void reset() override {}
-  bool trigger() override;
+  int trigger() override;
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
@@ -77,6 +79,7 @@ private:
   static constexpr timespan_t max_bad_luck_prot = 1000_s;
 
 public:
+  const static rng_type_e rng_type = RNG_RPPM;
   real_ppm_t( std::string_view n, player_t* p, double f = 0, double mod = 1.0, unsigned s = RPPM_NONE,
               blp b = BLP_ENABLED );
 
@@ -85,7 +88,7 @@ public:
   double proc_chance();
 
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
 
   void set_scaling( unsigned s )
   { scales_with = s; }
@@ -124,36 +127,31 @@ public:
   { accumulated_blp = ts; }
 };
 
-// "Deck of Cards" randomizer helper class ====================================
+// Extended "Deck of Cards" to support multiple success/failure types
 // Described at https://www.reddit.com/r/wow/comments/6j2wwk/wow_class_design_ama_june_2017/djb8z68/
+enum shuffled_rng_e : int
+{
+  FAIL = 0,
+  SUCCESS = 1
+};
+
 struct shuffled_rng_t final : public proc_rng_t
 {
+  using initializer = std::initializer_list<std::pair<int, int>>;
 private:
-  int success_entries;
-  int total_entries;
-  int success_entries_remaining;
-  int total_entries_remaining;
+  std::vector<int> entries;
+  std::vector<int>::iterator position;
+  void init( initializer data );
 
 public:
+  const static rng_type_e rng_type = RNG_SHUFFLE;
+  shuffled_rng_t( std::string_view n, player_t* p, initializer data );
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
-
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
 
-  int get_success_entries() const
-  { return success_entries; }
-
-  int get_success_entries_remaining() const
-  { return success_entries_remaining; }
-
-  int get_total_entries() const
-  { return total_entries; }
-
-  int get_total_entries_remaining() const
-  { return total_entries_remaining; }
-
-  double get_remaining_success_chance() const
-  { return static_cast<double>( success_entries_remaining ) / static_cast<double>( total_entries_remaining ); }
+  int count_remains( int key );
+  int entry_remains();
 };
 
 // Accumulated back luck protection rng helper class ==========================
@@ -180,9 +178,42 @@ private:
   unsigned trigger_count;
 
 public:
+  const static rng_type_e rng_type = RNG_ACCUMULATE;
   accumulated_rng_t( std::string_view n, player_t* p, double c, std::function<double( double, unsigned )> fn = nullptr,
                      unsigned initial_count = 0 );
 
   void reset() override;
-  bool trigger() override;
+  int trigger() override;
+};
+
+// Threshold RNG rng helper class ==========================
+//
+// This accumulates an incremental value, returning a successful trigger when the accumulated value goes over 1.
+//
+// roll_over is an optional parameter, default false. if set the accumulated amount is decremented by 1, else reset to 0
+// for the next trigger.
+//
+// random_initial_state is an optional parameter, default true, that indicates the RNG will start somewhere between [0,1)
+// upon reset();
+//
+// accumulator_fn is an optional functor that takes the increment_max value as a parameter and returns the amount accumulated
+// by that call.
+struct threshold_rng_t final : public proc_rng_t
+{
+private:
+  std::function<double( double )> accumulator_fn;
+  double increment_max;
+  double accumulated_chance;
+  bool random_initial_state;
+  bool roll_over;
+
+public:
+  const static rng_type_e rng_type = RNG_THRESHOLD;
+  threshold_rng_t( std::string_view n, player_t* p, double increment_max, std::function<double( double )> fn = nullptr,
+                            bool random_initial_state = true, bool roll_over = false );
+
+  void reset() override;
+  int trigger() override;
+  double get_accumulated_chance();
+  double get_increment_max();
 };

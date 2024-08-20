@@ -855,9 +855,11 @@ enum set_bonus_type_e
   T30_MOTD,
   T31,
   DF4,
+  TWW_ECB,
   TWW_FSR,
   TWW_KCI,
   TWW1,
+  TWW_WD,
   SET_BONUS_MAX,
 };
 
@@ -1402,10 +1404,12 @@ enum ready_e
 // proc rng type
 enum rng_type_e
 {
-  RNG_SIMPLE = 0,
+  RNG_NONE = 0,
+  RNG_SIMPLE,
   RNG_RPPM,
   RNG_SHUFFLE,
-  RNG_ACCUMULATE
+  RNG_ACCUMULATE,
+  RNG_THRESHOLD
 };
 
 /// Real PPM scale stats

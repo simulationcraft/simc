@@ -100,12 +100,6 @@ public:
   {
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
-    action_t* tyrs_enforcer_damage;
-    action_t* divine_guidance_damage;
-    heal_t* divine_guidance_heal;
-    action_t* forges_reckoning;
-    action_t* sacred_word;
-    action_t* hammer_and_anvil;
     action_t* empyrean_hammer;
     action_t* heartfire;
     action_t* judgment_of_light;
@@ -151,6 +145,7 @@ public:
     action_t* highlords_judgment;
     action_t* dawnlight;
     action_t* sun_sear;
+    action_t* suns_avatar_dmg;
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
@@ -267,8 +262,10 @@ public:
       buff_t* gleaming_rays;
       buff_t* solar_grace;
       buff_t* morning_star_driver;
+      buff_t* suns_avatar;
     } herald_of_the_sun;
 
+    buff_t* rise_from_ash; // Ret TWW1 4p
   } buffs;
 
   // Gains
@@ -456,6 +453,7 @@ public:
     struct
     {
       const spell_data_t* gleaming_rays;
+      const spell_data_t* dawnlight_aoe_metadata;
     } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;
@@ -751,10 +749,11 @@ public:
   // Paladin options
   struct options_t
   {
-    bool fake_sov                    = true;
-    double proc_chance_ret_aura_sera = 0.10;
-    double min_dg_heal_targets       = 1.0;
-    double max_dg_heal_targets       = 5.0;
+    bool fake_sov                         = true;
+    double proc_chance_ret_aura_sera      = 0.10;
+    double min_dg_heal_targets            = 1.0;
+    double max_dg_heal_targets            = 5.0;
+    bool sacred_weapon_prefer_new_targets = false;
   } options;
   player_t* beacon_target;
 
@@ -834,7 +833,6 @@ public:
 
   void trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void trigger_holy_shield( action_state_t* s );
-  void trigger_tyrs_enforcer( action_state_t* s );
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
   void trigger_lights_deliverance(bool triggered_by_hol = false);
@@ -896,6 +894,7 @@ public:
   void generate_action_prio_list_holy();
   void generate_action_prio_list_holy_dps();
 
+  void apply_avatar_dawnlights();
   void spread_expurgation( action_t* act, player_t* og );
 
   target_specific_t<paladin_td_t> target_data;
@@ -990,12 +989,14 @@ struct execution_sentence_debuff_t : public buff_t
     extended_count     = 0;
   }
 
-  void accumulate_damage( const action_state_t* s )
+  void accumulate_damage( const action_state_t* s, double mult )
   {
-    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), s->result_total,
+    double amount_accumulated = s->result_total * mult;
+
+    sim->print_debug( "{}'s {} accumulates {} additional damage: {} -> {}", player->name(), name(), amount_accumulated,
                       accumulated_damage, accumulated_damage + s->result_total );
 
-    accumulated_damage += s->result_total;
+    accumulated_damage += amount_accumulated;
   }
 
   double get_accumulated_damage() const
@@ -1149,7 +1150,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p; // Ret
+      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1164,6 +1165,7 @@ public:
   bool clears_judgment;
 
   bool triggers_higher_calling;
+  bool skip_es_accum;
 
   paladin_action_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
@@ -1173,7 +1175,8 @@ public:
       searing_light_disabled( false ),
       always_do_capstones(false),
       clears_judgment( false ),
-      triggers_higher_calling( false )
+      triggers_higher_calling( false ),
+      skip_es_accum( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1193,6 +1196,8 @@ public:
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
       this->affected_by.ret_t29_4p =
           this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
+      this->affected_by.rise_from_ash =
+          this->data().affected_by( p->find_spell( 454693 )->effectN( 1 ) );
       if ( p->talents.divine_hammer->ok() )
       {
         for ( auto i = 2; i < 5; i++ )
@@ -1429,6 +1434,11 @@ public:
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
     }
 
+    if ( affected_by.rise_from_ash && p()->buffs.rise_from_ash->up() )
+    {
+      am *= 1.0 + p()->buffs.rise_from_ash->data().effectN( 1 ).percent();
+    }
+
     // TWW1 Prot 4pc
     if ( affected_by.heightened_wrath && p()->buffs.heightened_wrath->up() )
     {
@@ -1515,11 +1525,39 @@ public:
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
+
     paladin_td_t* td = this->td( s->target );
-    if ( td->debuff.execution_sentence->check() )
+
+    if ( td->debuff.execution_sentence->check() && !skip_es_accum )
     {
-      td->debuff.execution_sentence->accumulate_damage( s );
+      double mult = 1.0;
+
+      // ES counts damage before wings & mastery, but after most other multipliers,
+      // per bolas test Aug 17 2024
+      if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
+      {
+        mult /= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+      }
+
+      if ( affected_by.crusade && p()->buffs.crusade->up() )
+      {
+        mult /= 1.0 + p()->buffs.crusade->get_damage_mod();
+      }
+
+      if ( affected_by.highlords_judgment )
+      {
+        double mastery_amount = p()->cache.mastery_value();
+        if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
+        {
+          // TODO: this has gotta be wrong. Where's the actual spell data for this?
+          mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
+        }
+        mult /= 1.0 + mastery_amount;
+      }
+
+      td->debuff.execution_sentence->accumulate_damage( s, mult );
     }
+
     if ( p()->buffs.moment_of_glory->up() )
     {
       double amount = s->result_amount * p()->talents.moment_of_glory->effectN( 3 ).percent();
@@ -1781,7 +1819,7 @@ public:
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
-      num_hopo_spent = 3.0;
+      num_hopo_spent = is_hammer_of_light_driver ? hol_cost : 3.0;
 
     if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
@@ -1796,30 +1834,6 @@ public:
           p->cooldowns.righteous_cause_icd->start();
           break;
         }
-      }
-    }
-
-    // Hammer of Light driver can proc it under all circumstances, but not the damage part
-    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
-    {
-      // This is a bit of a hack. As far as we can tell from logs,
-      // this agony-like accumulator logic matches the distribution
-      // of procs pretty closely, tested on a couple thousand TV casts.
-      // This will need periodic re-verification, but is good enough for beta
-      // purposes.
-      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
-      if ( p->radiant_glory_accumulator >= 1.0 )
-      {
-        // TODO(mserrano): get this from spell data
-        if ( p->talents.crusade->ok() )
-        {
-          p->buffs.crusade->trigger( timespan_t::from_seconds( 5 ) );
-        }
-        else if ( p->talents.avenging_wrath->ok() )
-        {
-          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
-        }
-        p->radiant_glory_accumulator -= 1.0;
       }
     }
 
@@ -1845,7 +1859,7 @@ public:
     {
       double crusade_stacks_given = num_hopo_spent;
 
-      if (is_hammer_of_light_driver)
+      if ( is_hammer_of_light_driver )
       {
         // 2024-08-05 The driver doesn't give stacks if it was free
         if ( ( p->buffs.divine_purpose->up() && p->bugs ) ||
@@ -1865,6 +1879,30 @@ public:
       }
       if ( crusade_stacks_given > 0 )
         p->buffs.crusade->trigger( as<int>( crusade_stacks_given ) );
+    }
+
+    // Hammer of Light driver can proc it under all circumstances, but not the damage part
+    if ( p->talents.radiant_glory->ok() && ( is_hammer_of_light_driver || !is_hammer_of_light ) )
+    {
+      // This is a bit of a hack. As far as we can tell from logs,
+      // this agony-like accumulator logic matches the distribution
+      // of procs pretty closely, tested on a couple thousand TV casts.
+      // This will need periodic re-verification, but is good enough for beta
+      // purposes.
+      p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
+      if ( p->radiant_glory_accumulator >= 1.0 )
+      {
+        // TODO(mserrano): get this from spell data
+        if ( p->talents.crusade->ok() )
+        {
+          p->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 5 ) );
+        }
+        else if ( p->talents.avenging_wrath->ok() )
+        {
+          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
+        }
+        p->radiant_glory_accumulator -= 1.0;
+      }
     }
 
     // 2024-08-04 Currently, Hammer of Light doesn't affect Righteous Protector at all

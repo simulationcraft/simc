@@ -56,6 +56,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     intellect_per_owner( 0.30 ),
     summoned( false ),
     dynamic( dynamic ),
+    can_dismiss( !guardian ),
     affects_wod_legendary_ring( true ),
     pet_type( pet_type ),
     expiration( nullptr ),

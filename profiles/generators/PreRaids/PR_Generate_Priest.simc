@@ -4,22 +4,22 @@ race=orc
 spec=shadow
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAYwwYAAAAAAAAAAAAAmZmtxYmZWGMzMGzMzCMLMzMzY2YgxYYWMbTNzgFYmZGAUAmtZbJY2YD
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAAMmZAAAAAAAAAAAAAGmFPwYmZ2GjZmZGzMzygZjZmZGzGDMGDziZbqZGsADgZ2sMaWMAkxYB
 
 head=intertwiners_shadowcowl,id=221187,ilevel=593
-neck=strapped_rescuekeg,id=221060,ilevel=593
+neck=emergency_stop_keychain,id=221077,ilevel=593
 shoulder=moneymaking_businessmantle,id=221072,ilevel=593
 back=anvilhide_cape,id=221088,ilevel=593
 chest=arachnofrost_vest,id=221176,ilevel=593,enchant=crystalline_radiance_2
 wrists=vitriolic_veinwoven_wraps,id=221182,ilevel=593
 hands=punctured_apiary_gloves,id=221067,ilevel=593
 waist=honorbound_retainers_sash,id=221121,ilevel=593
-legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=daybreak_spellthread_2
-feet=tainted_earthshard_walkers,id=221082,ilevel=593
-finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=cursed_mastery_2
-finger2=85_years_tenure_ring,id=221198,ilevel=593,enchant=cursed_mastery_2
+legs=archaic_venomancers_footwraps,id=221164,ilevel=593,enchant=sunset_spellthread_2
+feet=membranous_slippers,id=221149,ilevel=593
+finger1=wicks_golden_loop,id=221099,ilevel=593,enchant=radiant_mastery_2
+finger2=85year_tenure_ring,id=221198,ilevel=593,enchant=radiant_mastery_2
 trinket1=arakara_sacbrood,id=219314,ilevel=593
-trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
-main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_radiant_power_2
+trinket2=signet_of_the_priory,id=219308,ilevel=593
+main_hand=melodious_iron_songspire,id=221085,ilevel=593,enchant=authority_of_the_depths_2
 
 save=PR_Priest_Shadow.simc

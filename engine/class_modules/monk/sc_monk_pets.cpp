@@ -463,99 +463,80 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       }
     }
 
-    // Map the rest of the relevant state-related stuff into the source
-    // action's methods. In other words, use the owner's data. Note that attack
-    // power is not included here, as we will want to (just in case) snapshot
-    // AP through the pet's own AP system. This allows us to override the
-    // inheritance coefficient if need be in an easy way.
-
-    double composite_target_multiplier( player_t *t ) const override
+    void snapshot_internal( action_state_t *state, unsigned flags, result_amount_type rt ) override
     {
-      return source_action->composite_target_multiplier( t );
+      assert( state );
+      assert( source_action );
+
+      state->result_type = rt;
+
+      // Note that attack power is not included here, as we will want to (just in case) snapshot
+      // AP through the pet's own AP system. This allows us to override the
+      // inheritance coefficient if need be in an easy way.
+
+      if ( flags & STATE_AP )
+        state->attack_power = this->composite_total_attack_power();
+
+      // Map the rest of the relevant state-related stuff into the source
+      // action's methods. In other words, use the owner's data.
+
+      if ( flags & STATE_CRIT )
+        state->crit_chance = source_action->composite_crit_chance() * source_action->composite_crit_chance_multiplier();
+
+      if ( flags & STATE_HASTE )
+        state->haste = source_action->composite_haste();
+
+      if ( flags & STATE_SP )
+        state->spell_power = source_action->composite_total_spell_power();
+
+      if ( flags & STATE_VERSATILITY )
+        state->versatility = source_action->composite_versatility( state );
+
+      if ( flags & STATE_MUL_SPELL_DA )
+        state->da_multiplier = source_action->composite_da_multiplier( state );
+
+      if ( flags & STATE_MUL_SPELL_TA )
+        state->ta_multiplier = source_action->composite_ta_multiplier( state );
+
+      if ( flags & STATE_ROLLING_TA )
+        state->rolling_ta_multiplier = source_action->composite_rolling_ta_multiplier( state );
+
+      if ( flags & STATE_MUL_PLAYER_DAM )
+        state->player_multiplier = source_action->composite_player_multiplier( state );
+
+      if ( flags & STATE_MUL_PERSISTENT )
+        state->persistent_multiplier = source_action->composite_persistent_multiplier( state );
+
+      if ( flags & STATE_TGT_MUL_DA )
+        state->target_da_multiplier = source_action->composite_target_da_multiplier( state->target );
+
+      if ( flags & STATE_TGT_MUL_TA )
+        state->target_ta_multiplier = source_action->composite_target_ta_multiplier( state->target );
+
+      if ( flags & STATE_TGT_CRIT )
+        state->target_crit_chance = source_action->composite_target_crit_chance( state->target ) *
+                                    source_action->composite_crit_chance_multiplier();
+
+      if ( flags & STATE_TGT_MITG_DA )
+        state->target_mitigation_da_multiplier =
+            source_action->composite_target_mitigation( state->target, source_action->get_school() );
+
+      if ( flags & STATE_TGT_MITG_TA )
+        state->target_mitigation_ta_multiplier =
+            source_action->composite_target_mitigation( state->target, source_action->get_school() );
+
+      if ( flags & STATE_TGT_ARMOR )
+        state->target_armor = source_action->composite_target_armor( state->target );
     }
 
-    double attack_direct_power_coefficient( const action_state_t *state ) const override
+    double total_crit_bonus( const action_state_t *state ) const override
     {
-      return source_action->attack_direct_power_coefficient( state );
-    }
-
-    double attack_tick_power_coefficient( const action_state_t *state ) const override
-    {
-      return source_action->attack_tick_power_coefficient( state );
-    }
-
-    timespan_t composite_dot_duration( const action_state_t *s ) const override
-    {
-      return source_action->composite_dot_duration( s );
-    }
-
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      return source_action->tick_time( s );
-    }
-
-    double composite_da_multiplier( const action_state_t *s ) const override
-    {
-      return source_action->composite_da_multiplier( s );
-    }
-
-    double composite_ta_multiplier( const action_state_t *s ) const override
-    {
-      return source_action->composite_ta_multiplier( s );
-    }
-
-    double composite_persistent_multiplier( const action_state_t *s ) const override
-    {
-      return source_action->composite_persistent_multiplier( s );
-    }
-
-    double composite_versatility( const action_state_t *s ) const override
-    {
-      return source_action->composite_versatility( s );
-    }
-
-    double composite_target_crit_chance( player_t *target ) const override
-    {
-      return source_action->composite_target_crit_chance( target );
-    }
-
-    double composite_crit_chance() const override
-    {
-      return source_action->composite_crit_chance();
-    }
-
-    double composite_haste() const override
-    {
-      return source_action->composite_haste();
+      return source_action->total_crit_bonus( state );
     }
 
     timespan_t travel_time() const override
     {
       return source_action->travel_time();
-    }
-
-    int n_targets() const override
-    {
-      return source_action ? source_action->n_targets() : super_t::n_targets();
-    }
-
-    void execute() override
-    {
-      // Target always follows the SEF clone's target, which is assigned during
-      // summon time
-      // this->target = this->player->target;
-
-      super_t::execute();
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      super_t::impact( s );
-    }
-
-    void snapshot_internal( action_state_t *state, uint32_t flags, result_amount_type rt ) override
-    {
-      super_t::snapshot_internal( state, flags, rt );
     }
   };
 
@@ -710,6 +691,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
     }
 
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      if ( p()->o()->buff.tigers_ferocity->check() )
+        am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value();
+
+      return am;
+    }
+
     void impact( action_state_t *state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -825,16 +816,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration = timespan_t::zero();
       school       = SCHOOL_PHYSICAL;
     }
-
-    double action_multiplier() const override
-    {
-      double am = sef_melee_attack_t::action_multiplier();
-
-      // SEF pets benefit from Transfer the Power
-      am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
-
-      return am;
-    }
   };
 
   struct sef_fists_of_fury_tick_t : public sef_tick_action_t
@@ -942,8 +923,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
 
-      // Currently Chi Explosion is not copied by SEF in game
-      if ( player->o()->talent.windwalker.jade_ignition->ok() && !player->o()->bugs )
+      if ( player->o()->talent.windwalker.jade_ignition->ok() )
         chi_explosion = new sef_chi_explosion_t( player );
     }
 
@@ -1106,37 +1086,14 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
+  // SEF Chi Wave skips the healing ticks, delivering damage on every second
+  // tick of the ability for simplicity.
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t *player )
       : sef_spell_t( "chi_wave_damage", player, player->o()->talent.monk.chi_wave_damage )
     {
-      dual = true;
-    }
-  };
-
-  // SEF Chi Wave skips the healing ticks, delivering damage on every second
-  // tick of the ability for simplicity.
-  struct sef_chi_wave_t : public sef_spell_t
-  {
-    sef_chi_wave_damage_t *wave;
-
-    sef_chi_wave_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "chi_wave", player, player->o()->talent.monk.chi_wave ),
-        wave( new sef_chi_wave_damage_t( player ) )
-    {
-      may_crit = may_miss = hasted_ticks = false;
-      tick_zero = tick_may_crit = true;
-    }
-
-    void tick( dot_t *d ) override
-    {
-      if ( d->current_tick % 2 == 0 )
-      {
-        sef_spell_t::tick( d );
-        wave->target = d->target;
-        wave->schedule_execute();
-      }
+      background = dual = true;
     }
   };
 
@@ -1343,7 +1300,7 @@ public:
         new sef_strike_of_the_windlord_oh_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT ) = new sef_celestial_conduit_t( this );
 
-    spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
+    spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_damage_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
         new sef_crackling_jade_lightning_t( this );
 
@@ -1726,7 +1683,7 @@ private:
 public:
   white_tiger_statue_t( monk_t *owner ) : monk_pet_t( owner, "white_tiger_statue", PET_MONK_STATUE, false, true )
   {
-    npc_id                      = (int)o()->find_spell( 388686 )->effectN( 1 ).misc_value1();
+    npc_id                      = owner->talent.monk.summon_white_tiger_statue->effectN( 1 ).misc_value1();
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );

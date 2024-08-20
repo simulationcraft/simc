@@ -114,6 +114,15 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                ->set_freeze_stacks( true );
 
+  // Soul Harvester
+  dots_soul_anathema = target->get_dot( "soul_anathema", &p );
+
+  debuffs_shared_fate = make_buff( *this, "shared_fate", p.hero.shared_fate_debuff )
+                            ->set_tick_zero( false )
+                            ->set_period( p.hero.shared_fate_debuff->effectN( 1 ).period() )
+                            ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
+                              { warlock.proc_actions.shared_fate->execute_on_target( target ); } );
+
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -152,6 +161,33 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
+  }
+
+  if ( warlock.hero.demonic_soul.ok() && warlock.hero.shared_fate.ok() )
+  {
+    for ( player_t* t : warlock.sim->target_non_sleeping_list )
+    {
+      auto tdata = warlock.get_target_data( t );
+
+      if ( !tdata )
+        continue;
+
+      if ( tdata == this )
+        continue;
+
+      warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on {}.", target->name(), warlock.name(), t->name() );
+
+      tdata->debuffs_shared_fate->trigger();
+
+      break;
+    }
+  }
+
+  if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() && warlock.rng().roll( warlock.rng_settings.feast_of_souls.setting_value ) )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
+
+    warlock.feast_of_souls_gain();
   }
 }
 
@@ -313,6 +349,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( !guardian && talents.rune_of_shadows.ok() )
       m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
+
+    if ( !guardian && sets->has_set_bonus( WARLOCK_DEMONOLOGY, TWW1, B2 ) )
+      m *= 1.0 + tier.hexflame_demo_2pc->effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -593,7 +632,15 @@ std::string warlock_t::create_profile( save_e stype )
     if ( rng_settings.seeds_of_their_demise.setting_value != rng_settings.seeds_of_their_demise.default_value )
       profile_str += "rng_seeds_of_their_demise=" + util::to_string( rng_settings.seeds_of_their_demise.setting_value ) + "\n";
     if ( rng_settings.mark_of_perotharn.setting_value != rng_settings.mark_of_perotharn.default_value )
-      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value) + "\n";
+      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value ) + "\n";
+    if ( rng_settings.succulent_soul.setting_value != rng_settings.succulent_soul.default_value )
+      profile_str += "rng_succulent_soul=" + util::to_string( rng_settings.succulent_soul.setting_value ) + "\n";
+    if ( rng_settings.feast_of_souls.setting_value != rng_settings.feast_of_souls.default_value )
+      profile_str += "rng_feast_of_souls=" + util::to_string( rng_settings.feast_of_souls.setting_value ) + "\n";
+    if ( rng_settings.umbral_lattice.setting_value != rng_settings.umbral_lattice.default_value )
+      profile_str += "rng_umbral_lattice=" + util::to_string( rng_settings.umbral_lattice.setting_value ) + "\n";
+    if ( rng_settings.empowered_legion_strike.setting_value != rng_settings.empowered_legion_strike.default_value )
+      profile_str += "rng_empowered_legion_strike=" + util::to_string( rng_settings.empowered_legion_strike.setting_value ) + "\n";
   }
 
   return profile_str;
@@ -623,6 +670,10 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
+  rng_settings.succulent_soul = p->rng_settings.succulent_soul;
+  rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
+  rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
+  rng_settings.empowered_legion_strike = p->rng_settings.empowered_legion_strike;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -881,6 +932,34 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+}
+
+double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource_type, amount, source, action );
+
+  if ( resource_type == RESOURCE_SOUL_SHARD && actual_amount > 0.0 && hero.demonic_soul.ok() )
+  {
+    for ( int i = 0; i < as<int>( actual_amount ); i++ )
+    {
+      if ( rng().roll( rng_settings.succulent_soul.setting_value ) )
+      {
+        buffs.succulent_soul->trigger();
+        procs.succulent_soul->occur();
+      }
+    }
+  }
+
+  return actual_amount;
+}
+
+void warlock_t::feast_of_souls_gain()
+{
+  player_t::resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
+
+  buffs.succulent_soul->trigger();
+  procs.succulent_soul->occur();
+  procs.feast_of_souls->occur();
 }
 
 struct warlock_module_t : public module_t

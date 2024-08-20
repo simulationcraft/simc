@@ -1509,6 +1509,10 @@ class SpellDataGenerator(DataGenerator):
          450416, 450429, 450458, 450459, 450460, # candle conductor's whistle
          450204, # twin fang instruments
          457284, # TWW Primary Stat Food
+         443764, 451698, 451699, # Embrace of the Cinderbee Set
+         446234, # Spark of Beledar
+         461957, 454137, 461939, 461943, 461925, 461924, 461922, 461927, 461947, 461948, 461949, 461946, 461861, 461860, 461859, 461858, 461857, 461856, 461855, 461854, 461853, 461845, # TWW Food Buffs
+         457630, 455523, 457628, # Woven Dusk Tailoring Set
         ),
 
         # Warrior:
@@ -1897,6 +1901,7 @@ class SpellDataGenerator(DataGenerator):
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
+          ( 463730, 0 ), # Coagulating Blood for Death Strike
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -3319,7 +3324,7 @@ class SpellDataGenerator(DataGenerator):
         # with spell ###### and should be included.
         for spell_id, spell_data in self.db('Spell').items():
             if spell_data.desc:
-                r = re.match("\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
+                r = re.match(r"\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
                 if r and (id := int(r.group(1))) in ids:
                     self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
@@ -3999,6 +4004,11 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'DF4'
         },
         {
+            'name'   : 'embrace_of_the_cinderbee',
+            'bonuses': [ 1611 ],
+            'tier'   : 'TWW_ECB'
+        },
+        {
             'name'   : 'fury_of_the_storm_rook',
             'bonuses': [ 1612 ],
             'tier'   : 'TWW_FSR'
@@ -4012,6 +4022,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'thewarwithin_season_1',
             'bonuses': [ 1684, 1685, 1686, 1687, 1688, 1689, 1690, 1691, 1692, 1693, 1694, 1695, 1696 ],
             'tier'   : 'TWW1'
+        },
+        {
+            'name'   : 'woven_dusk',
+            'bonuses': [ 1697 ],
+            'tier'   : 'TWW_WD'
         },
     ]
 
@@ -4704,7 +4719,7 @@ class PetRaceEnumGenerator(DataGenerator):
         self._out.write('{\n')
         self._out.write('  {:25s} = {},\n'.format('NONE', 0))
 
-        name_re = re.compile('^(?:Pet[\s]+\-[\s]+|)(.+)', re.I)
+        name_re = re.compile(r'^(?:Pet[\s]+\-[\s]+|)(.+)', re.I)
         for id in sorted(skill_ids):
             skill = self.db('SkillLine').get(id)
             mobj = name_re.match(skill.name)
@@ -5139,7 +5154,9 @@ class CharacterLoadoutGenerator(DataGenerator):
         # assume target mythic ilevel is highest heroic dungeon find minium ilevel + 5 * 13
         _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
         _ilevels.sort(reverse=True)
-        self._out.write('static constexpr int MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(_ilevels[0] + 5 * 13))
+        self._out.write('static constexpr int {}MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            _ilevels[0] + 5 * 13))
 
         self.output_header(
             header = 'Character Loadout data',

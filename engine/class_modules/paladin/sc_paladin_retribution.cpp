@@ -1,6 +1,7 @@
 #include <unordered_set>
 
 #include "simulationcraft.hpp"
+#include "dbc/specialization.hpp"
 #include "sc_enums.hpp"
 #include "sc_paladin.hpp"
 #include "class_modules/apl/apl_paladin.hpp"
@@ -65,6 +66,12 @@ struct crusade_t : public paladin_spell_t
       p()->buffs.crusade->expire();
 
     p()->buffs.crusade->trigger();
+
+    if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
+    {
+      p()->apply_avatar_dawnlights();
+      p()->buffs.herald_of_the_sun.suns_avatar->trigger();
+    }
   }
 };
 
@@ -1183,7 +1190,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       if ( p()->talents.crusade->ok() )
       {
         // TODO: get this from spell data
-        p()->buffs.crusade->trigger( timespan_t::from_seconds( 10 ) );
+        p()->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 10 ) );
       }
       else if ( p()->talents.avenging_wrath->ok() )
       {
@@ -1200,6 +1207,11 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       p()->cooldowns.aurora_icd->start();
       p()->buffs.divine_purpose->trigger();
+    }
+
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, TWW1, B4 ) )
+    {
+      p()->buffs.rise_from_ash->trigger();
     }
   }
 
@@ -1467,6 +1479,7 @@ struct highlords_judgment_t : public paladin_spell_t
   {
     background = true;
     always_do_capstones = true;
+    skip_es_accum = true;
   }
 };
 
@@ -1581,6 +1594,9 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
 void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
+  buffs.crusade->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+    buffs.herald_of_the_sun.suns_avatar->expire();
+  } );
 
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
     ->add_invalidate( CACHE_HASTE )
@@ -1649,6 +1665,8 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_legacy_cooldown = make_buff( this, "empyrean_legacy_cooldown", find_spell( 387441 ) );
 
   buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
+
+  buffs.rise_from_ash = make_buff( this, "rise_from_ash", find_spell( 454693 ) );
 }
 
 void paladin_t::init_rng_retribution()

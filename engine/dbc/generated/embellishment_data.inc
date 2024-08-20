@@ -1,4 +1,4 @@
-// Embellishment data, wow build 11.0.2.55959
+// Embellishment data, wow build 11.0.2.56196
 static const std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Arathor Armor Patch", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },

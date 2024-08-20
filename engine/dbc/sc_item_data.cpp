@@ -1522,7 +1522,7 @@ double item_database::apply_stamina_multiplier( const player_t*               pl
   return raw_amount;
 }
 
-double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
+double item_database::apply_combat_rating_multiplier( const item_t& item, double amount, unsigned max_scaling_level )
 {
   auto type = item_combat_rating_type( item.parsed.data );
   if ( type == CR_MULTIPLIER_INVALID )
@@ -1530,7 +1530,12 @@ double item_database::apply_combat_rating_multiplier( const item_t& item, double
     return amount;
   }
 
-  return apply_combat_rating_multiplier( item.player, type, item.item_level(), amount );
+  // Max scaling level on the coefficient driver spell also limits ilevel based CR multiplier
+  auto ilevel = item.item_level();
+  if ( max_scaling_level )
+    ilevel = std::min( ilevel, max_scaling_level );
+
+  return apply_combat_rating_multiplier( item.player, type, ilevel, amount );
 }
 
 double item_database::apply_stamina_multiplier( const item_t& item, double amount )

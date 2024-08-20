@@ -73,6 +73,11 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_blackened_soul; // Dummy/Hidden debuff that triggers stack collapse
 
+  // Soul Harvester
+  propagate_const<dot_t*> dots_soul_anathema;
+
+  propagate_const<buff_t*> debuffs_shared_fate;
+
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
   warlock_t& warlock;
@@ -529,19 +534,26 @@ public:
 
     // Soul Harvester
     player_talent_t demonic_soul;
+    const spell_data_t* succulent_soul; // Buff triggered by Demonic Soul proc
+    const spell_data_t* demonic_soul_dmg;
     
     player_talent_t necrolyte_teachings;
     player_talent_t soul_anathema;
+    const spell_data_t* soul_anathema_dot;
     player_talent_t demoniacs_fervor;
 
     player_talent_t shared_fate;
+    const spell_data_t* shared_fate_debuff;
+    const spell_data_t* shared_fate_dmg;
     player_talent_t feast_of_souls;
 
     player_talent_t wicked_reaping;
+    const spell_data_t* wicked_reaping_dmg;
     player_talent_t quietus;
     player_talent_t sataiels_volition;
 
     player_talent_t shadow_of_death;
+    const spell_data_t* shadow_of_death_energize;
   } hero;
 
   struct proc_actions_t
@@ -552,15 +564,27 @@ public:
     action_t* rain_of_fire_tick;
     action_t* blackened_soul;
     action_t* malevolence;
+    action_t* demonic_soul;
+    action_t* shared_fate;
+    action_t* wicked_reaping;
   } proc_actions;
 
   struct tier_sets_t
   {
     // Affliction
+    const spell_data_t* hexflame_aff_2pc;
+    const spell_data_t* hexflame_aff_4pc;
+    const spell_data_t* umbral_lattice;
 
     // Demonology
+    const spell_data_t* hexflame_demo_2pc;
+    const spell_data_t* hexflame_demo_4pc;
+    const spell_data_t* empowered_legion_strike;
 
     // Destruction
+    const spell_data_t* hexflame_destro_2pc;
+    const spell_data_t* hexflame_destro_4pc;
+    const spell_data_t* echo_of_the_azjaqir;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -588,6 +612,7 @@ public:
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
+    propagate_const<buff_t*> umbral_lattice; // TWW1 4pc
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -616,6 +641,7 @@ public:
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
+    propagate_const<buff_t*> echo_of_the_azjaqir;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;
@@ -630,6 +656,9 @@ public:
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;
+
+    // Soul Harvester Buffs
+    propagate_const<buff_t*> succulent_soul;
   } buffs;
 
   // Gains - Many are automatically handled
@@ -659,6 +688,10 @@ public:
     // Hellcaller
     gain_t* wither;
     gain_t* wither_crits;
+
+    // Soul Harvester
+    gain_t* feast_of_souls;
+    gain_t* shadow_of_death;
   } gains;
 
   // Procs
@@ -675,6 +708,7 @@ public:
     proc_t* shadow_bolt_volley;
     proc_t* tormented_crescendo;
     proc_t* ravenous_afflictions;
+    proc_t* umbral_lattice;
 
     // Demonology
     proc_t* demonic_calling;
@@ -688,6 +722,7 @@ public:
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
     proc_t* pact_of_the_eredruin;
+    proc_t* empowered_legion_strike; // TWW1 4pc buff
 
     // Destruction
     proc_t* reverse_entropy;
@@ -699,6 +734,7 @@ public:
     proc_t* conflagration_of_chaos_sb;
     proc_t* decimation;
     proc_t* dimension_ripper;
+    proc_t* echo_of_the_azjaqir;
 
     // Diabolist
 
@@ -707,6 +743,10 @@ public:
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
     proc_t* mark_of_perotharn;
+
+    // Soul Harvester
+    proc_t* succulent_soul;
+    proc_t* feast_of_souls;
   } procs;
 
   struct rng_settings_t
@@ -722,11 +762,13 @@ public:
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
     rng_setting_t agony = { 0.368, 0.368 };
     rng_setting_t nightfall = { 0.13, 0.13 };
+    rng_setting_t umbral_lattice = { 0.30, 0.30 };
 
     // Demonology
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
     rng_setting_t shadow_invocation = { 0.20, 0.20 };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
+    rng_setting_t empowered_legion_strike = { 0.05, 0.05 };
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10 };
@@ -739,6 +781,10 @@ public:
     rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
     rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
     rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+
+    // Soul Harvester
+    rng_setting_t succulent_soul = { 0.20, 0.20 };
+    rng_setting_t feast_of_souls = { 0.125, 0.125 };
   } rng_settings;
 
   int initial_soul_shards;
@@ -773,6 +819,7 @@ public:
   void create_destruction_proc_actions();
   void create_diabolist_proc_actions();
   void create_hellcaller_proc_actions();
+  void create_soul_harvester_proc_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -799,6 +846,8 @@ public:
   std::string default_rune() const override { return warlock_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
   void apply_affecting_auras( action_t& action ) override;
+  double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
+  void feast_of_souls_gain();
 
   target_specific_t<warlock_td_t> target_data;
 
@@ -851,6 +900,13 @@ public:
   void init_gains_hellcaller();
   void init_rng_hellcaller();
   void init_procs_hellcaller();
+
+  action_t* create_action_soul_harvester( util::string_view, util::string_view );
+  void create_buffs_soul_harvester();
+  void init_spells_soul_harvester();
+  void init_gains_soul_harvester();
+  void init_rng_soul_harvester();
+  void init_procs_soul_harvester();
 
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
