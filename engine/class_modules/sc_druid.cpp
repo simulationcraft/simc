@@ -8012,6 +8012,11 @@ struct starfall_t final : public ap_spender_t
 
     base_t::execute();
 
+    if ( p()->buff.starweaver_starfall->check() )
+      p()->buff.starweaver_starfall->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starfall->expire( this );
+
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       driver->execute();
       p()->eclipse_handler.tick_starfall();
@@ -8262,6 +8267,11 @@ struct starsurge_t final : public ap_spender_t
   void execute() override
   {
     base_t::execute();
+
+    if ( p()->buff.starweaver_starsurge->check() )
+      p()->buff.starweaver_starsurge->expire( this );
+    else
+      p()->buff.touch_the_cosmos_starsurge->expire( this );
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
@@ -13813,10 +13823,10 @@ void druid_action_t<Base>::parse_action_effects()
 
   parse_effects( p()->buff.incarnation_moonkin, owl_mask, p()->talent.elunes_guidance );
   parse_effects( p()->buff.owlkin_frenzy );
-  parse_effects( p()->buff.starweaver_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.starweaver_starsurge, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starfall, CONSUME_BUFF );
-  parse_effects( p()->buff.touch_the_cosmos_starsurge, CONSUME_BUFF );
+  parse_effects( p()->buff.starweaver_starfall );
+  parse_effects( p()->buff.starweaver_starsurge );
+  parse_effects( p()->buff.touch_the_cosmos_starfall );
+  parse_effects( p()->buff.touch_the_cosmos_starsurge );
   parse_effects( p()->buff.umbral_inspiration );
   parse_effects( p()->buff.warrior_of_elune );
 
