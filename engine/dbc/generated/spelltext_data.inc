@@ -1,4 +1,4 @@
-// Spell text, wow build 11.0.2.56162
+// Spell text, wow build 11.0.2.56196
 static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -26317,16 +26317,11 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56162
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
-  {  443735,  0, "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames and grant $447968s1 of a random secondary stat. Anyone wearing Waders of the Unifying Flame will instead get their highest secondary stat.", "Healing an ally has a chance to grant you both a Unifying Ember. When two Unifying Embers contact each other, they erupt into Unifying Flames.\r\n\r\nUnifying Flames grants the wearer $s1 of their highest secondary stat, and others $s2 of a random secondary stat." },
-  {  446108,  1, "$pri increased by $w1 at the cost of $w2 Mastery.", "$pri increased by $w1.\r\nMastery reduced by $455571w1." },
-  {  447968,  1, "The Unifying Flame increases your $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", "The Unifying Flame increases your $?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1." },
-  {  453573,  0, "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3  seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $458624r yards.\r\n\r\nThis is a Nerubian embellishment.", "Your damaging spells and abilities have a chance to siphon $s1 Health from yourself and cast it into the void for $s3 seconds. \r\n\r\nUpon its return, deal ${$<rolemult>*$s2} damage to a random enemy within $M4 yards.\r\n\r\nThis is a Nerubian embellishment." },
-  {  457655,  0, "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\n$@spelldesc457627][$@spelldesc457630]", "$?a457629[|cnRED_FONT_COLOR:Modified by Warm Sunrise Bracers.|r\r\n\r\nDamaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2 Mastery for $457627d.][$@spelldesc457630]" },
+// spelltext hotfix entries, wow build 11.0.2.56196
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.2.56162
+// Spell description variables, wow build 11.0.2.56196
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26914,7 +26909,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56162
+// spelldesc_vars hotfix entries, wow build 11.0.2.56196
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
