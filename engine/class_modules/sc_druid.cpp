@@ -226,7 +226,7 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
-  bool is_free() const { return action_flags >> 3; }  // first 3 bits are not cost related
+  bool is_free() const { return action_flags >> 12; }  // first 12 bits are not cost related
 };
 
 struct eclipse_handler_t
@@ -4444,7 +4444,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
   virtual double energy_modifier( const action_state_t* ) const
   {
-    return ( is_free() ? 1.0 : excess_energy / max_excess_energy ) * ( 1.0 + saber_jaws_mul );
+    return is_free() ? 1.0 : ( excess_energy / max_excess_energy * ( 1.0 + saber_jaws_mul ) );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
