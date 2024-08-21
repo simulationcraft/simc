@@ -5128,7 +5128,7 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
 {
   struct impact_t final : public hunter_ranged_attack_t
   {
-    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s, double effectiveness = 1 ) :
       hunter_ranged_attack_t( n, p, s )
     {
       background = dual = true;
@@ -5136,6 +5136,8 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
       // "Secondary" frost damage multiplier
       if ( s -> id() == 344121 )
         base_multiplier *= p -> talents.chimaera_shot -> effectN( 1 ).percent();
+
+      base_multiplier *= effectiveness;
     }
 
     void impact( action_state_t* state ) override
@@ -5147,20 +5149,13 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
     }
   };
 
-  impact_t* nature;
-  impact_t* frost;
+  impact_t* nature = nullptr;
+  impact_t* frost = nullptr;
 
-  chimaera_shot_base_t( util::string_view n, hunter_t* p ) :
-    hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot ),
-    nature( p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> talents.chimaera_shot_nature ) ),
-    frost( p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> talents.chimaera_shot_frost ) )
+  chimaera_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot )
   {
     aoe = 2;
     radius = 5;
-
-    add_child( nature );
-    add_child( frost );
-
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
@@ -5173,7 +5168,7 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
       p()->buffs.moving_target->trigger();
     }
 
-    p() -> buffs.precise_shots -> up(); // benefit tracking
+    p() -> buffs.precise_shots -> up(); // Benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
     p() -> buffs.focusing_aim -> expire();
@@ -5182,7 +5177,6 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
     {
       p() -> buffs.deathblow -> trigger();
     }
-
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -5204,8 +5198,18 @@ struct chimaera_shot_t : public chimaera_shot_base_t
     chimaera_shot_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( n, p )
     {
       background = dual = true;
-      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
       base_costs[ RESOURCE_FOCUS ] = 0;
+
+      nature = p->get_background_action<impact_t>( "chimaera_shot_eagletalons_true_focus_nature",
+                                                   p->talents.chimaera_shot_nature,
+                                                   p->talents.eagletalons_true_focus->effectN( 3 ).percent() );
+
+      frost  = p->get_background_action<impact_t>( "chimaera_shot_eagletalons_true_focus_frost",
+                                                  p->talents.chimaera_shot_frost,
+                                                  p->talents.eagletalons_true_focus->effectN( 3 ).percent() );
+
+      add_child( nature );
+      add_child( frost );
     }
   };
 
@@ -5214,6 +5218,12 @@ struct chimaera_shot_t : public chimaera_shot_base_t
   chimaera_shot_t( hunter_t* p, util::string_view options_str ) : chimaera_shot_base_t( "chimaera_shot", p )
   {
     parse_options( options_str );
+
+    nature = p->get_background_action<impact_t>( "chimaera_shot_nature", p->talents.chimaera_shot_nature );
+    frost = p->get_background_action<impact_t>( "chimaera_shot_frost", p->talents.chimaera_shot_frost );
+
+    add_child( nature );
+    add_child( frost );
 
     if ( p->talents.eagletalons_true_focus.ok() )
     {
