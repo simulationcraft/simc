@@ -10734,6 +10734,8 @@ void druid_t::create_buffs()
   buff.incarnation_bear =
     make_fallback<incarnation_bear_buff_t>( talent.incarnation_bear.ok(), this, "incarnation_guardian_of_ursoc" );
 
+  buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
+
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
       ->set_quiet( true )
