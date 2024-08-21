@@ -1150,7 +1150,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
+      blades_of_light, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1249,25 +1249,18 @@ public:
 
     if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
     {
+      this->affected_by.blades_of_light = true;
       ab::school = SCHOOL_HOLYSTRIKE;
       ab::base_multiplier *= 1.0 + p->talents.blades_of_light->effectN( 2 ).percent();
+    }
+    else
+    {
+      this->affected_by.blades_of_light = false;
     }
 
     if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
     {
       ab::school = SCHOOL_RADIANT;
-    }
-
-    if ( p->talents.divine_arbiter->ok() )
-    {
-      int label                        = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
-      this->affected_by.divine_arbiter = this->data().affected_by_label( label );
-      if ( this->affected_by.divine_arbiter && p->bugs )
-        ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
-    }
-    else
-    {
-      this->affected_by.divine_arbiter = false;
     }
 
     if ( p->talents.herald_of_the_sun.gleaming_rays->ok() )
@@ -1329,7 +1322,7 @@ public:
   {
     ab::execute();
 
-    if ( ( this->affected_by.divine_arbiter || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
+    if ( ( this->affected_by.blades_of_light || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
     {
       p()->buffs.divine_arbiter->trigger( 1 );
     }
