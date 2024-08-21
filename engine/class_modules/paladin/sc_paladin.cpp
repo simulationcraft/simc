@@ -3034,6 +3034,7 @@ struct dawnlight_t : public paladin_spell_t
 
   {
     background = true;
+    dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
   }
 
   void execute() override
@@ -3123,6 +3124,13 @@ void paladin_t::apply_avatar_dawnlights()
     return;
 
   unsigned num_dawnlights = (unsigned) as<int>( talents.herald_of_the_sun.suns_avatar->effectN( 3 ).base_value() );
+
+  // per bolas Aug 21 2024. Can't seem to find this in spelldata
+  if ( !talents.crusade->ok() )
+    num_dawnlights = 2;
+  if ( talents.radiant_glory->ok() )
+    num_dawnlights = 1;
+
   std::vector<player_t*> tl_candidates;
   std::vector<player_t*> tl_yes_dawnlight;
   for ( auto* t : sim->target_non_sleeping_list )

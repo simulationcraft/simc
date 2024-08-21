@@ -1894,7 +1894,7 @@ public:
         }
         else if ( p->talents.avenging_wrath->ok() )
         {
-          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
+          p->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 4 ) );
         }
         p->radiant_glory_accumulator -= 1.0;
 

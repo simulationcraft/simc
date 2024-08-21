@@ -1195,7 +1195,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       }
       else if ( p()->talents.avenging_wrath->ok() )
       {
-        p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
+        p()->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 8 ) );
       }
 
       if ( do_avatar )
