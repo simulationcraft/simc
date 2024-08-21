@@ -53,30 +53,29 @@
 
 # save=TWW1_Warlock_Demonology.simc
 
-# warlock="TWW1_Warlock_Destruction"
-# level=70
-# race=mechagnome
-# spec=destruction
-# role=spell
-# position=ranged_back
-# talents=2103021
-# default_pet=sayaad
+warlock="TWW1_Warlock_Destruction"
+level=80
+race=dwarf
+spec=destruction
+role=spell
+position=ranged_back
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZMMbGGzmZmhZZ2MzYGziZZmtFzMAAAAwMzwyMzMDYMjhFyAbDL0YBDAAAAAAAmZGAA
+default_pet=sayaad
 
-# head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-# shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1498/7187
-# waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=slippers_of_leavened_station,id=178831,bonus_id=1592/6536/6646
-# finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=unbound_changeling,id=178708,bonus_id=1592/6536/6646
-# trinket2=soulletting_ruby,id=178809,bonus_id=7359/6652/7606/1592/6646
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=hexflame_covens_allseeing_eye,id=212074,bonus_id=10256/11086/10375/10837/10832/1514/10255,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/10880,ilevel=639,gem_id=213482/213491
+shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=hexflame_covens_shawl,id=212069,bonus_id=10256/11086/10375/6652/1514/10255,ilevel=639,enchant_id=7409
+chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10520,ilevel=636,gem_id=213458,enchant_id=7385,crafted_stats=36/49
+hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=hexflame_covens_dormant_eye,id=212071,bonus_id=10256/11086/10375/6652/10876/1514/10255,ilevel=639,gem_id=213473
+legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=10520,ilevel=636,enchant_id=7424,crafted_stats=36/49
+finger1=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/10880,ilevel=639,gem_id=213458/213458,enchant_id=7334
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/10880,ilevel=639,gem_id=213458/213458,enchant_id=7334
+trinket1=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
+trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,bonus_id=10256/11086/6652/1514/10255,ilevel=639,enchant_id=7460
 
-# save=TWW1_Warlock_Destruction.simc
+save=TWW1_Warlock_Destruction.simc
