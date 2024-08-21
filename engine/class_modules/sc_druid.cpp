@@ -10942,9 +10942,7 @@ void druid_t::create_buffs()
 
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
     this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
-      // ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE ) TODO: still bugged, missing misc_value2
-      ->set_default_value( 0.0 )
-      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       ->add_invalidate( CACHE_ARMOR );
 
   buff.killing_strikes_combat =
