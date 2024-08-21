@@ -216,7 +216,7 @@ jobs:
         compiler: [ clang++-15 ]
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
-            druid_balance, druid_feral, druid_guardian,
+            druid_balance, druid_feral, druid_guardian, druid_restoration,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
             demonhunter_vengeance, demonhunter_havoc,
             priest_shadow,
