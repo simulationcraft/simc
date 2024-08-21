@@ -1187,6 +1187,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( p()->talents.radiant_glory->ok() )
     {
+      bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() && !( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() );
       if ( p()->talents.crusade->ok() )
       {
         // TODO: get this from spell data
@@ -1195,6 +1196,12 @@ struct wake_of_ashes_t : public paladin_spell_t
       else if ( p()->talents.avenging_wrath->ok() )
       {
         p()->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 8 ) );
+      }
+
+      if ( do_avatar )
+      {
+        p()->apply_avatar_dawnlights();
+        p()->buffs.herald_of_the_sun.suns_avatar->trigger();
       }
     }
 

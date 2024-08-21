@@ -1885,6 +1885,8 @@ public:
       p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
       if ( p->radiant_glory_accumulator >= 1.0 )
       {
+        bool do_avatar = p->talents.herald_of_the_sun.suns_avatar->ok() && !( p->buffs.avenging_wrath->up() || p->buffs.crusade->up() );
+
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
         {
@@ -1895,6 +1897,12 @@ public:
           p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
         }
         p->radiant_glory_accumulator -= 1.0;
+
+        if ( do_avatar )
+        {
+          p->apply_avatar_dawnlights();
+          p->buffs.herald_of_the_sun.suns_avatar->trigger();
+        }
       }
     }
 
