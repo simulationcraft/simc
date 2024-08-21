@@ -1,57 +1,84 @@
-# warlock="TWW1_Warlock_Affliction"
-# level=70
-# spec=affliction
-# race=orc
-# role=spell
-# position=ranged_back
-# talents=3302013
-# default_pet=sayaad
+warlock="TWW1_Warlock_Affliction_Soul_Harvester"
+level=80
+spec=affliction
+race=orc
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZMMbGY2mZmhZbAAAAzMmZxMzYzMzswMzMAgZGLLDMgJYG2CMsNDAAAAAAAAMzMbG
+default_pet=sayaad
 
-# head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
-# shoulders=grimveiled_spaulders,id=173247,bonus_id=6716/7031/6649/6648/1588
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173130,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-# waist=grimveiled_belt,id=173248,bonus_id=6716/8129/6649/6648/1808/1588,gem_id=173128
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-# trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6918
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=hexflame_covens_allseeing_eye,id=212074,bonus_id=10256/11086/10375/10837/10832/1514/10255/1808,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/8781,ilevel=639,gem_id=213482/213491
+shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=1808/11303/8960/8791,ilevel=636,gem_id=213458,enchant_id=7385,crafted_stats=36/49
+hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=hexflame_covens_dormant_eye,id=212071,bonus_id=10256/11086/10375/6652/10876/1514/10255/1808,ilevel=639,gem_id=213473
+legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=11303/8960/8791,ilevel=636,enchant_id=7424,crafted_stats=36/49
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213458/213458,enchant_id=7334
+finger2=devout_zealots_ring,id=221136,bonus_id=3131/10299/8781,ilevel=639,gem_id=213458/213458,enchant_id=7334
+trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,bonus_id=10256/11086/6652/1514/10255,ilevel=639,enchant_id=7460
 
-# save=TWW1_Warlock_Affliction.simc
+save=TWW1_Warlock_Affliction_Soul_Harvester.simc
 
-# warlock="TWW1_Warlock_Demonology"
-# level=70
-# race=troll
-# spec=demonology
-# role=spell
-# position=ranged_back
-# talents=1101032
+warlock="TWW1_Warlock_Affliction_Hellcaller"
+level=80
+spec=affliction
+race=orc
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZMMbGY2mZmhZbAAAAzMmZxMzYZmZmFzMzMAgZsADMLGNmBkZBsMDAAAAAAAAYMbA
+default_pet=sayaad
 
-# head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
-# shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173130,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-# waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935,gem_id=173130
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-# trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=hexflame_covens_allseeing_eye,id=212074,bonus_id=10256/11086/10375/10837/10832/1514/10255/1808,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/8781,ilevel=639,gem_id=213482/213491
+shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=1808/11303/8960/8791,ilevel=636,gem_id=213458,enchant_id=7385,crafted_stats=36/49
+hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=hexflame_covens_dormant_eye,id=212071,bonus_id=10256/11086/10375/6652/10876/1514/10255/1808,ilevel=639,gem_id=213473
+legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=11303/8960/8791,ilevel=636,enchant_id=7424,crafted_stats=36/49
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213458/213458,enchant_id=7334
+finger2=devout_zealots_ring,id=221136,bonus_id=3131/10299/8781,ilevel=639,gem_id=213458/213458,enchant_id=7334
+trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,bonus_id=10256/11086/6652/1514/10255,ilevel=639,enchant_id=7460
 
-# save=TWW1_Warlock_Demonology.simc
+save=TWW1_Warlock_Affliction_Hellcaller.simc
+
+
+warlock="TWW1_Warlock_Demonology_Diabolist"
+level=80
+race=orc
+spec=demonology
+role=spell
+position=ranged_back
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjhZxwY2mZmhZZAAAAAAAAAAMDYMjhFYglRL0wCjZGz2YmNzMzMjxMGMzMzgZmBAAA
+
+head=devotees_discarded_headdress,id=212440,bonus_id=1540/10299/523,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/8781,ilevel=639,gem_id=213491/213461
+shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+wrists=crunchy_intruders_wristband,id=212426,bonus_id=1540/10299/523,ilevel=639,gem_id=213479,enchant_id=7385
+hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=hexflame_covens_dormant_eye,id=212071,bonus_id=10256/11086/10375/6652/10876/1514/10255/1808,ilevel=639,gem_id=213461
+legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=10520/8960/8792,ilevel=636,enchant_id=7424,crafted_stats=36/49
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213461/213461,enchant_id=7340
+finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213461/213467,enchant_id=7340
+trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
+main_hand=charged_hexsword,id=222444,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960/8792,enchant_id=7460,crafted_stats=49/40
+off_hand=pail_of_preserved_obscurity,id=221172,bonus_id=3131/10299
+
+save=TWW1_Warlock_Demonology_Diabolist.simc
 
 # warlock="TWW1_Warlock_Destruction"
 # level=70
