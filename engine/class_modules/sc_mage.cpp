@@ -1380,7 +1380,7 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
       cast_event = make_event( *sim, cast_period, [ this ] { schedule_cast(); } );
   }
 
-  void arise()
+  void arise() override
   {
     mage_pet_t::arise();
 
@@ -1405,7 +1405,7 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     schedule_cast();
   };
 
-  void demise()
+  void demise() override
   {
     mage_pet_t::demise();
 
@@ -1559,7 +1559,7 @@ struct meteorite_t final : public arcane_phoenix_spell_t
       // all subsequent regular meteorites it casts will use the exceptional spell ID.
       // TODO: Check this later
       action_t* a = p()->exceptional_meteor_used ? damage_action_exceptional : damage_action;
-      make_event( *sim, fall_time, [ this, a, t = s->target ] { a->execute_on_target( t ); } );
+      make_event( *sim, fall_time, [ a, t = s->target ] { a->execute_on_target( t ); } );
     }
   }
 };
@@ -7554,7 +7554,7 @@ struct splinterstorm_event_t final : public mage_event_t
     if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy()
       && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
     {
-      int splinters_state = mage->state.embedded_splinters;
+      [[maybe_unused]] int splinters_state = mage->state.embedded_splinters;
       int splinters = 0;
       while ( !mage->embedded_splinters.empty() )
       {

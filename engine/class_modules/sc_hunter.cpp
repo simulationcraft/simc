@@ -290,7 +290,7 @@ public:
   action_state_t* state;
 
   pet_amount_expr_t( util::string_view name, action_t& a, action_t& pet_a )
-    : expr_t( name ), state( pet_a.get_state() ), action( a ), pet_action( pet_a )
+    : expr_t( name ), action( a ), pet_action( pet_a ), state( pet_a.get_state() )
   {
     state->n_targets = 1;
     state->chain_target = 0;
@@ -3766,7 +3766,7 @@ void hunter_t::trigger_symphonic_arsenal()
         actions.symphonic_arsenal->execute_on_target( t );
 }
 
-void hunter_t::trigger_lunar_storm( player_t* target )
+void hunter_t::trigger_lunar_storm( player_t* /* target */ )
 {
   if ( actions.lunar_storm )
   {
@@ -4326,7 +4326,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   }
 
   // We have a whole lot of Explosive Shot variations that all need to work with the same dot.
-  dot_t* get_dot( player_t* t )
+  dot_t* get_dot( player_t* t ) override
   {
     if ( !t )
       t = target;
@@ -4353,7 +4353,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
   }
 
-  void last_tick( dot_t* d )
+  void last_tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::last_tick( d );
 
@@ -4849,7 +4849,7 @@ struct lunar_storm_t : hunter_ranged_attack_t
     td( s->target )->debuffs.lunar_storm->trigger();
   }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     target_cache.is_valid = false;
     return hunter_ranged_attack_t::target_list();

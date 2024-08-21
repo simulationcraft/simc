@@ -7240,7 +7240,7 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury_dmg->trigger( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() );
+    p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
 
     p()->buff.fusion_of_elements_nature->trigger();
     p()->buff.fusion_of_elements_fire->trigger();
@@ -12670,20 +12670,20 @@ void shaman_t::init_rng()
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
 
   if ( options.ancient_fellowship_positive == 0 ) {
-    options.ancient_fellowship_positive = talent.ancient_fellowship->effectN( 3 ).base_value();
+    options.ancient_fellowship_positive = as<unsigned>( talent.ancient_fellowship->effectN( 3 ).base_value() );
   }
 
   if ( options.ancient_fellowship_total == 0 ) {
-    options.ancient_fellowship_total = talent.ancient_fellowship->effectN( 2 ).base_value();
+    options.ancient_fellowship_total = as<unsigned>( talent.ancient_fellowship->effectN( 2 ).base_value() );
   }
   rng_obj.ancient_fellowship =
     get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
   if ( options.icefury_positive == 0 ) {
-    options.icefury_positive = talent.icefury->effectN( 1 ).base_value();
+    options.icefury_positive = as<unsigned>( talent.icefury->effectN( 1 ).base_value() );
   }
 
   if ( options.icefury_total == 0 ) {
-    options.icefury_total = talent.icefury->effectN( 2 ).base_value();
+    options.icefury_total = as<unsigned>( talent.icefury->effectN( 2 ).base_value() );
   }
   rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
 }

@@ -5011,8 +5011,8 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
-  add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
-  add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_int( "min_dg_heal_targets", options.min_dg_heal_targets, 0, 5 ) );
+  add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "sacred_weapon_prefer_new_targets", options.sacred_weapon_prefer_new_targets ) );
 
   player_t::create_options();

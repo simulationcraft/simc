@@ -5605,7 +5605,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   void execute() override
   {
     // sqrt is snapshot on execute for the number of targets hit
-    num_targets = sim->target_non_sleeping_list.size();
+    num_targets = as<int>( sim->target_non_sleeping_list.size() );
 
     warrior_attack_t::execute();
   }

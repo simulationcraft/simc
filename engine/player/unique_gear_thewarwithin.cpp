@@ -3046,7 +3046,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     timespan_t period;
     double self_damage_pct;
 
-    symbiosis_buff_t( const special_effect_t& e, bool embellish )
+    symbiosis_buff_t( const special_effect_t& e, bool /* embellish */ )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
@@ -4228,7 +4228,7 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
 // writhing armor banding embellishment, doubles nerubian embellishment values
 double writhing_mul( player_t* p )
 {
-  if ( auto writhing = unique_gear::find_special_effect( p, 443902 ) )
+  if ( unique_gear::find_special_effect( p, 443902 ) )
     return 2.0;  // hardcoded
   else
     return 1.0;
