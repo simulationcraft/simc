@@ -2218,6 +2218,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
   damage->name_str = "overclocked_strike_proc";
   damage->item     = e.item;
   damage->spell_id = damage_buff_spell->id();
+  damage->proc_flags2_ = PF2_ALL_HIT;
   e.player->special_effects.push_back( damage );
 
   auto damage_cb = new overclocked_strike_cb_t( *damage, overclock_buff, overclock_strike );

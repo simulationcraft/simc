@@ -6430,8 +6430,13 @@ struct unholy_blight_t final : public death_knight_spell_t
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
-    vp->execute_on_target( d->state->target );
     dot->execute_on_target( d->state->target );
+    // While in game this triggers on every enemy hit, doing so in sims creates a ton of unnecessary events.
+    // Triggering only once per tick creates the same result.
+    if( d->state->target == p()->target )
+    {
+      vp->execute();
+    }
   }
 
 private:
