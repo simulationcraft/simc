@@ -6333,9 +6333,7 @@ struct virulent_eruption_t final : public death_knight_disease_t
 struct virulent_plague_t final : public death_knight_disease_t
 {
   virulent_plague_t( util::string_view name, death_knight_t* p )
-    : death_knight_disease_t( name, p, p->spell.virulent_plague ),
-      ff( get_action<frost_fever_t>( "frost_fever", p ) ),
-      bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
+    : death_knight_disease_t( name, p, p->spell.virulent_plague )
   {
   }
 
@@ -6353,21 +6351,56 @@ struct virulent_plague_t final : public death_knight_disease_t
   void impact( action_state_t* s ) override
   {
     death_knight_disease_t::impact( s );
-    if ( p()->talent.unholy.superstrain.ok() )
-    {
-      ff->execute_on_target( s->target );
-      bp->execute_on_target( s->target );
-    }
+
     if ( p()->talent.unholy.decomposition.ok() )
     {
       auto td = get_td( s->target );
       td->debuff.decomposition->trigger( td->dot.virulent_plague->duration() );
     }
   }
+};
+
+struct outbreak_aoe_t final : public death_knight_spell_t
+{
+  outbreak_aoe_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.outbreak_aoe ),
+    vp( get_action<virulent_plague_t>( "virulent_plague", p ) ),
+    ff( get_action<frost_fever_t>( "frost_fever", p ) ),
+    bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
+    diseases()
+  {
+    aoe = -1;
+    radius = data().effectN( 1 ).radius_max();
+    background = true;
+    diseases.push_back( vp );
+    diseases.push_back( ff );
+    diseases.push_back( bp );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    if ( p()->talent.unholy.superstrain )
+    {
+      // Randomize the order the diseases are applied to emulate the random tick order in game.
+      // Only really matters for RPPM effects.
+      rng().shuffle( diseases.begin(), diseases.end() );
+      for ( auto& d : diseases )
+      {
+        d->execute_on_target( s->target );
+      }
+    }
+    else
+    {
+      vp->execute_on_target( s->target );
+    }
+  }
 
 private:
+  propagate_const<action_t*> vp;
   propagate_const<action_t*> ff;
   propagate_const<action_t*> bp;
+  std::vector<action_t*> diseases;
 };
 
 // Unholy Blight DoT ====================================================
@@ -6385,7 +6418,7 @@ struct unholy_blight_t final : public death_knight_spell_t
   unholy_blight_t( util::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.unholy_blight ),
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
-      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
+      vp( get_action<outbreak_aoe_t>( "outbreak_aoe", p ) )
   {
     may_dodge = may_parry = harmful = false;
     tick_zero = background = true;
@@ -10041,22 +10074,6 @@ private:
 };
 
 // Outbreak ================================================================
-struct outbreak_aoe_t final : public death_knight_spell_t
-{
-  outbreak_aoe_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.outbreak_aoe ),
-      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
-  {
-    impact_action = vp;
-    aoe           = -1;
-    radius        = data().effectN( 1 ).radius_max();
-    background    = true;
-  }
-
-private:
-  propagate_const<action_t*> vp;
-};
-
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str )

@@ -3174,12 +3174,6 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e.item ) );
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
-    {
-      if ( s->target->is_enemy() || ( s->target != listener && s->target->is_player() ) )
-        return dbc_proc_callback_t::trigger( a, s );
-    }
-
     void execute( action_t*, action_state_t* s ) override
     {
       switch ( s->action->get_school() )
