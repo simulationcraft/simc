@@ -11486,13 +11486,10 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
-  if ( true_level <= 70 )
+  if ( specialization() == DRUID_RESTORATION )
   {
-    if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-      sim->error( "Dragonflight Tier Sets are no longer supported for Druids." );
-
-    sim->error( "{} does not yet have a complete Action Prioirty List (APL).",
-                util::specialization_string( specialization() ) );
+    sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
+    return false;
   }
 
   if ( specialization() == DRUID_BALANCE )
@@ -11506,21 +11503,6 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
         return true;
       default:
         return false;
-    }
-  }
-
-  if ( specialization() == DRUID_GUARDIAN )
-  {
-    switch ( style )
-    {
-    case FIGHT_STYLE_DUNGEON_ROUTE:
-    case FIGHT_STYLE_DUNGEON_SLICE:
-      sim->error(
-        "Dungeon Slice and Dungeon Route fight styles do not account for reflected damage, such as Rage of the "
-        "Sleeper, Brambles, Dragonflight Season 3 set bonus, and some trinkets." );
-      return false;
-    default:
-      return true;
     }
   }
 
