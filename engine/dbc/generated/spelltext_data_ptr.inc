@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56196
-static const std::array<spelltext_data_t, 26315> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26317> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24358,7 +24358,7 @@ static const std::array<spelltext_data_t, 26315> __ptr_spelltext_data { {
   { 449596, "Spellfire Spheres can now stack up to $s2 times.", 0, 0 },
   { 449609, "$@spelldesc449582", "You may jump twice to dash forward a short distance.", 0 },
   { 449614, "A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. \r\n\r\nA Succulent Soul empowers your next $?s137043[Malefic Rapture, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, increasing its damage by $449793s3%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]", 0, 0 },
-  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
+  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
   { 449620, "$?s137043[Shadow Bolt and Drain Soul damage increased by $s2%. Nightfall increases the damage of Shadow Bolt and Drain Soul by an additional $s1%.][Shadow Bolt damage increased by $s2%. Power Siphon increases the damage of Demonbolt by an additional $s3%.]", 0, 0 },
   { 449624, "Unleashing your demonic soul bestows a fiendish entity unto the soul of its targets, dealing $450538o1 Shadow damage over $450538d.\r\n\r\nIf this effect is reapplied, any remaining damage will be added to the new Soul Anathema.", 0, 0 },
   { 449627, "Your Arcane Phoenix will Spellsteal when it is summoned and when it expires.", 0, 0 },
@@ -26240,12 +26240,14 @@ static const std::array<spelltext_data_t, 26315> __ptr_spelltext_data { {
   { 462992, "$@spelldesc198067", "Flame Shock deals damage $s2% faster. $?$w3!>0[Newly applied Flame Shocks have $w3% increased duration.][]", 0 },
   { 462993, "$@spelldesc192249", 0, 0 },
   { 463003, "$@spelldesc453575", 0, 0 },
+  { 463059, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.\r\n\r\n$?a#[][]", 0, 0 },
   { 463073, "$@spelldesc431425", "Linked with a Dawnlight, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.", 0 },
   { 463074, "$@spelldesc431425", 0, 0 },
   { 463075, "$@spelldesc431425", 0, 0 },
   { 463095, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.", 0, 0 },
   { 463108, "Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for  $454560d. \r\n\r\nAfter dealing up to $454560s1 damage to the target the focused energies ignite you with Radiance, granting between ${$s1*.5} to $s1 of your highest Secondary stat based on damage dealt for $454560d. \r\n", 0, 0 },
   { 463192, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
+  { 463232, "Every $455535t seconds in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d  stacking up to 5 times.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 463301, "Summons a Vanquished Tentacle to your aid for $d.", 0, 0 },
   { 463323, "$@spelldesc453812", "$@spelldesc453812", 0 },
   { 463351, "Deal $s1 Nature damage to your target, and ${$m1*$m2/100} Nature damage to other enemy targets within $A1 yds of your target.", 0, 0 },
@@ -26318,7 +26320,8 @@ static const std::array<spelltext_data_t, 26315> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56196
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  449619,  0, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]" },
 } };
 
 // Spell description variables, wow build 11.0.2.56196
