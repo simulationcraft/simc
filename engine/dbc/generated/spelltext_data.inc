@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56196
-static const std::array<spelltext_data_t, 26315> __spelltext_data { {
+static const std::array<spelltext_data_t, 26317> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26240,12 +26240,14 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 462992, "$@spelldesc198067", "Flame Shock deals damage $s2% faster. $?$w3!>0[Newly applied Flame Shocks have $w3% increased duration.][]", 0 },
   { 462993, "$@spelldesc192249", 0, 0 },
   { 463003, "$@spelldesc453575", 0, 0 },
+  { 463059, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.\r\n\r\n$?a#[][]", 0, 0 },
   { 463073, "$@spelldesc431425", "Linked with a Dawnlight, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.", 0 },
   { 463074, "$@spelldesc431425", 0, 0 },
   { 463075, "$@spelldesc431425", 0, 0 },
   { 463095, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.", 0, 0 },
   { 463108, "Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for  $454560d. \r\n\r\nAfter dealing up to $454560s1 damage to the target the focused energies ignite you with Radiance, granting between ${$s1*.5} to $s1 of your highest Secondary stat based on damage dealt for $454560d. \r\n", 0, 0 },
   { 463192, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
+  { 463232, "Every $455535t seconds in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d  stacking up to 5 times.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 463301, "Summons a Vanquished Tentacle to your aid for $d.", 0, 0 },
   { 463323, "$@spelldesc453812", "$@spelldesc453812", 0 },
   { 463351, "Deal $s1 Nature damage to your target, and ${$m1*$m2/100} Nature damage to other enemy targets within $A1 yds of your target.", 0, 0 },

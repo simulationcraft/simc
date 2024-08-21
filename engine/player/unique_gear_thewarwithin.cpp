@@ -3036,6 +3036,8 @@ void twin_fang_instruments( special_effect_t& effect )
 // TODO: confirm buff value once scaling is fixed
 void darkmoon_deck_symbiosis( special_effect_t& effect )
 {
+  bool is_embellishment = effect.item->dbc_inventory_type() != INVTYPE_TRINKET;
+
   struct symbiosis_buff_t : public stat_buff_t
   {
     event_t* ev = nullptr;
@@ -3043,13 +3045,10 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     timespan_t period;
     double self_damage_pct;
 
-    symbiosis_buff_t( const special_effect_t& e )
+    symbiosis_buff_t( const special_effect_t& e, bool embellish )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
-      // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
-      add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e.item ) );
-
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
       // TODO: determine if self damage procs anything
       self_damage->callbacks = false;
@@ -3076,16 +3075,34 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     }
   };
 
-  if ( !buff_t::find( effect.player, "symbiosis" ) )
+  auto buff = buff_t::find( effect.player, "symbiosis" );
+  symbiosis_buff_t* symbiosis = nullptr;
+
+  if ( !buff )
   {
-    auto buff = make_buff<symbiosis_buff_t>( effect );
-    effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
+    buff      = make_buff<symbiosis_buff_t>( effect, is_embellishment );
+    symbiosis = debug_cast<symbiosis_buff_t*>( buff );
+    effect.player->register_on_combat_state_callback( [ symbiosis ]( player_t*, bool c ) {
       if ( c )
-        buff->start_symbiosis();
+        symbiosis->start_symbiosis();
       else
-        buff->cancel_symbiosis();
+        symbiosis->cancel_symbiosis();
     } );
   }
+  else
+  {
+    symbiosis = debug_cast<symbiosis_buff_t*>( buff );
+  }
+
+  double value = 0;
+  if ( is_embellishment )
+    value = effect.player->find_spell( 463232 )->effectN( 2 ).average( effect.item );
+  else
+    value = effect.driver()->effectN( 2 ).average( effect.item ) * writhing_mul( effect.player );
+
+  // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
+  // Assuming here since the embellishment and trinket use the same driver and buff that the effects are just added.
+  symbiosis->add_stat_from_effect_type( A_MOD_RATING, value );
 }
 
 // 454859 rppm data
@@ -3258,8 +3275,12 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       for ( const auto& [ id, stat ] : buff_entries )
       {
         auto s_data = e.player->find_spell( id );
+        double value = 0;
         // TODO: confirm that embellishment counts as a nerubian embellishement, but the card does not.
-        auto value = e.driver()->effectN( 1 ).average( e.item ) * ( embellish ? writhing_mul( e.player ) : 1.0 );
+        if ( embellish )
+          value = e.driver()->effectN( 1 ).average( e.item ) * writhing_mul( e.player );
+        else
+          value = e.player->find_spell( 463059 )->effectN( 1 ).average( e.item );
 
         auto buff = create_buff<stat_buff_t>( e.player, fmt::format( "{}_{}", s_data->name_cstr(), stat ), s_data )
           ->add_stat_from_effect_type( A_MOD_RATING, value )
@@ -3384,8 +3405,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
       else
         max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e.item );
 
-      // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
-      // Likely due to the script in effect 2 being incorrect
+      // Very oddly setup buff, scripted to provide the highest secondary stat of the player
+      // Data doesnt contain the other stats like usual, manually setting things up here.
       buff = create_buff<stat_buff_t>( e.player, buff_spell )
         ->add_stat( STAT_CRIT_RATING, 0 )
         ->add_stat( STAT_MASTERY_RATING, 0 )
@@ -3414,21 +3435,13 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
       for ( auto& s : stat_buff->stats )
       {
-        // Bugged as of 8/17/2024, provides all 4 secondary stats instead of highest
-        if ( source->bugs )
+        if ( s.stat == util::highest_stat( source, secondary_ratings ) )
         {
           s.amount = buff_value;
         }
         else
         {
-          if ( s.stat == util::highest_stat( source, secondary_ratings ) )
-          {
-            s.amount = buff_value;
-          }
-          else
-          {
-            s.amount = 0;
-          }
+          s.amount = 0;
         }
       }
 
