@@ -2240,8 +2240,7 @@ private:
 public:
   using base_t = trigger_gore_t<BASE>;
 
-  trigger_gore_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), gore_proc( p->get_proc( "Gore" )->collect_interval() )
+  trigger_gore_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE ) : BASE( n, p, s, f )
   {
     if ( p->talent.gore.ok() )
     {
