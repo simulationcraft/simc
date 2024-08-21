@@ -1901,7 +1901,6 @@ public:
         if ( do_avatar )
         {
           p->apply_avatar_dawnlights();
-          p->buffs.herald_of_the_sun.suns_avatar->trigger();
         }
       }
     }

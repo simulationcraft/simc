@@ -70,7 +70,6 @@ struct crusade_t : public paladin_spell_t
     if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
     {
       p()->apply_avatar_dawnlights();
-      p()->buffs.herald_of_the_sun.suns_avatar->trigger();
     }
   }
 };
@@ -1201,7 +1200,6 @@ struct wake_of_ashes_t : public paladin_spell_t
       if ( do_avatar )
       {
         p()->apply_avatar_dawnlights();
-        p()->buffs.herald_of_the_sun.suns_avatar->trigger();
       }
     }
 
