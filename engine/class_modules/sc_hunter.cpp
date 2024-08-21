@@ -5150,8 +5150,8 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
   impact_t* nature;
   impact_t* frost;
 
-  chimaera_shot_base_t( hunter_t* p ) :
-    hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
+  chimaera_shot_base_t( util::string_view n, hunter_t* p ) :
+    hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot ),
     nature( p -> get_background_action<impact_t>( "chimaera_shot_nature", p -> talents.chimaera_shot_nature ) ),
     frost( p -> get_background_action<impact_t>( "chimaera_shot_frost", p -> talents.chimaera_shot_frost ) )
   {
@@ -5201,7 +5201,7 @@ struct chimaera_shot_t : public chimaera_shot_base_t
 {
   struct chimaera_shot_eagletalons_true_focus_t : public chimaera_shot_base_t
   {
-    chimaera_shot_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( p )
+    chimaera_shot_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( n, p )
     {
       background = dual = true;
       base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
@@ -5211,7 +5211,7 @@ struct chimaera_shot_t : public chimaera_shot_base_t
 
   chimaera_shot_eagletalons_true_focus_t* eagletalons_true_focus = nullptr;
 
-  chimaera_shot_t( hunter_t* p, util::string_view options_str ) : chimaera_shot_base_t( p )
+  chimaera_shot_t( hunter_t* p, util::string_view options_str ) : chimaera_shot_base_t( "chimaera_shot", p )
   {
     parse_options( options_str );
 
