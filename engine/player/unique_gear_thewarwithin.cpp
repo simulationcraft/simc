@@ -3202,11 +3202,11 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         case SCHOOL_ARCANE:
           arcane->trigger();
           break;
+        case SCHOOL_PHYSICAL:
+          force->trigger();
+          break;
         default:
-          if ( dbc::get_school_mask( s->action->get_school() ) & SCHOOL_MASK_PHYSICAL )
-            force->trigger();
-          else
-            magical_multi->trigger();
+          magical_multi->trigger();
           break;
       }
     }
