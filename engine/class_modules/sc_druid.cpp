@@ -2235,6 +2235,7 @@ struct trigger_gore_t : public BASE
 {
 private:
   proc_t* gore_proc = nullptr;
+  cooldown_t* icd = nullptr;
 
 public:
   using base_t = trigger_gore_t<BASE>;
@@ -2243,17 +2244,22 @@ public:
     : BASE( n, p, s, f ), gore_proc( p->get_proc( "Gore" )->collect_interval() )
   {
     if ( p->talent.gore.ok() )
+    {
       gore_proc = p->get_proc( "Gore" )->collect_interval();
+      icd = p->get_cooldown( "gore_icd" );
+      icd->duration = p->talent.gore->internal_cooldown();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     BASE::impact( s );
 
-    if ( gore_proc && BASE::p()->buff.gore->trigger( this ) )
+    if ( gore_proc && icd->up() && BASE::p()->buff.gore->trigger( this ) )
     {
       BASE::p()->cooldown.mangle->reset( true );
       gore_proc->occur();
+      icd->start();
     }
   }
 };
