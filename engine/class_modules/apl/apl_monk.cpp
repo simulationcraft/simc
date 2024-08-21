@@ -36,7 +36,7 @@ std::string potion( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "elemental_potion_of_ultimate_power_3";
+        return "tempered_potion_3";
       else if ( p->true_level > 60 )
         return "elemental_potion_of_ultimate_power_3";
       else if ( p->true_level > 50 )
@@ -82,7 +82,7 @@ std::string flask( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "iced_phial_of_corrupting_rage_3";
+        return "flask_of_alchemical_chaos_3";
       else if ( p->true_level > 60 )
         return "iced_phial_of_corrupting_rage_3";
       else if ( p->true_level > 50 )
@@ -104,7 +104,7 @@ std::string food( const player_t *p )
   {
     case MONK_BREWMASTER:
       if ( p->true_level > 70 )
-        return "fated_fortune_cookie";
+        return "feast_of_the_midnight_masquerade";
       else if ( p->true_level > 60 )
         return "fated_fortune_cookie";
       else if ( p->true_level > 50 )
@@ -116,7 +116,7 @@ std::string food( const player_t *p )
       break;
     case MONK_MISTWEAVER:
       if ( p->true_level > 70 )
-        return "roast_duck_delight";
+        return "feast_of_the_midnight_masquerade";
       else if ( p->true_level > 60 )
         return "roast_duck_delight";
       else if ( p->true_level > 50 )
@@ -128,7 +128,7 @@ std::string food( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "aromatic_seafood_platter";
+        return "feast_of_the_midnight_masquerade";
       else if ( p->true_level > 60 )
         return "aromatic_seafood_platter";
       else if ( p->true_level > 50 )
@@ -147,7 +147,7 @@ std::string food( const player_t *p )
 std::string rune( const player_t *p )
 {
   if ( p->true_level > 70 )
-    return "draconic";
+    return "crystallized";
   else if ( p->true_level > 60 )
     return "draconic";
   else if ( p->true_level > 50 )
@@ -185,7 +185,7 @@ std::string temporary_enchant( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "main_hand:howling_rune_3/off_hand:howling_rune_3";
+        return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
       else if ( p->true_level > 60 )
         return "main_hand:howling_rune_3/off_hand:howling_rune_3";
       else if ( p->true_level > 50 )
@@ -422,8 +422,11 @@ void windwalker( player_t *p )
   std::vector<std::string> racial_actions = p->get_racial_actions();
   action_priority_list_t *def             = p->get_action_priority_list( "default" );
   action_priority_list_t *trinkets        = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t *aoe_opener      = p->get_action_priority_list( "aoe_opener" );
+  action_priority_list_t *normal_opener   = p->get_action_priority_list( "normal_opener" );
   action_priority_list_t *cooldowns       = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t *default_aoe     = p->get_action_priority_list( "default_aoe" );
+  action_priority_list_t *default_cleave  = p->get_action_priority_list( "default_cleave" );
   action_priority_list_t *default_st      = p->get_action_priority_list( "default_st" );
 
   def->add_action( "auto_attack" );
@@ -442,15 +445,23 @@ void windwalker( player_t *p )
       def->add_action( "potion,if=buff.storm_earth_and_fire.up|fight_remains<=30", "Potion" );
   }
 
+  // Enable PI if available
+  def->add_action( "variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0", "Enable PI if available" );
+  
   // Use Trinkets
   def->add_action( "call_action_list,name=trinkets", "Use Trinkets" );
+
+  // Openers
+  def->add_action( "call_action_list,name=aoe_opener,if=time<3&active_enemies>2", "Openers" );
+  def->add_action( "call_action_list,name=normal_opener,if=time<4&active_enemies<3" );
 
   // Use Cooldowns
   def->add_action( "call_action_list,name=cooldowns,if=talent.storm_earth_and_fire", "Use Cooldowns" );
 
   // Default priority
-  def->add_action( "call_action_list,name=default_aoe,if=active_enemies>=3", "Default Priority" );
-  def->add_action( "call_action_list,name=default_st,if=active_enemies<3" );
+  def->add_action( "call_action_list,name=default_aoe,if=active_enemies>=5", "Default Priority" );
+  def->add_action( "call_action_list,name=default_cleave,if=active_enemies>1&(time>7|!talent.celestial_conduit)&active_enemies<5" );
+  def->add_action( "call_action_list,name=default_st,if=active_enemies<2" );
 
   // Trinkets
   for ( const auto &item : p->items )
@@ -460,18 +471,10 @@ void windwalker( player_t *p )
   }
 
   // Cooldowns
-  cooldowns->add_action(
-      "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
-      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a "
-      "href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White "
-      "Tiger</a> is active." );
-  cooldowns->add_action(
-      "invoke_xuen_the_white_tiger,if=(active_enemies>2|debuff.acclamation.up)&(prev.tiger_palm|energy<60&!talent."
-      "inner_peace|energy<55&talent.inner_peace|chi>3)" );
-  cooldowns->add_action(
-      "storm_earth_and_fire,if=(buff.invokers_delight.up|target.time_to_die>15&cooldown.storm_earth_and_fire.full_"
-      "recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&cooldown.strike_of_the_windlord.remains<2)|fight_"
-      "remains<=30|buff.bloodlust.up&cooldown.invoke_xuen_the_white_tiger.remains" );
+  cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active&(!buff.bloodlust.up|buff.bloodlust.up&cooldown.strike_of_the_windlord.remains)", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
+  cooldowns->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&!cooldown.invoke_xuen_the_white_tiger.remains&(chi<5&!talent.ordered_elements|chi<3)&(combo_strike|!talent.hit_combo)" );
+  cooldowns->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=cooldown.storm_earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|debuff.acclamation.up)&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1)|fight_remains<30" );
+  cooldowns->add_action( "storm_earth_and_fire,if=(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|cooldown.rising_sun_kick.remains|!talent.ordered_elements)&((buff.invokers_delight.up&!buff.bloodlust.up|buff.bloodlust.up&cooldown.storm_earth_and_fire.full_recharge_time<1)|cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&!buff.bloodlust.up&(active_enemies>1|cooldown.strike_of_the_windlord.remains<2&(talent.flurry_strikes|buff.heart_of_the_jade_serpent.up))&(chi>3|chi>1&talent.ordered_elements)|cooldown.storm_earth_and_fire.full_recharge_time<10&(chi>3|chi>1&talent.ordered_elements))|fight_remains<30|prev.invoke_xuen_the_white_tiger" );
   cooldowns->add_action( "touch_of_karma" );
 
   // Racials
@@ -502,109 +505,130 @@ void windwalker( player_t *p )
     }
   }
 
-  // >=3 Target priority
-  default_aoe->add_action(
-      "tiger_palm,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff."
-      "teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&!buff.ordered_elements.up&(!set_"
-      "bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_"
-      "burst)|buff.storm_earth_and_fire.remains>3&cooldown.fists_of_fury.remains<3&chi<2",
-      ">=3 Targets" );
-  default_aoe->add_action( "touch_of_death" );
-  default_aoe->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.remains<2&buff.storm_"
-      "earth_and_fire.up&talent.ordered_elements" );
-  default_aoe->add_action(
-      "celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord."
-      "remains" );
-  default_aoe->add_action( "chi_burst,if=combo_strike" );
-  default_aoe->add_action(
-      "spinning_crane_kick,if=buff.dance_of_chiji.stack=2|buff.dance_of_chiji.up&combo_strike&buff.storm_earth_and_"
-      "fire.up" );
-  default_aoe->add_action( "whirling_dragon_punch" );
-  default_aoe->add_action( "strike_of_the_windlord" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8&talent."
-      "shadowboxing_treads" );
-  default_aoe->add_action( "fists_of_fury,target_if=max:debuff.acclamation.stack" );
-  default_aoe->add_action(
-      "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.xuens_battlegear|cooldown.whirling_"
-      "dragon_punch.remains<3" );
-  default_aoe->add_action( "spinning_crane_kick,if=combo_strike" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!talent.knowledge_of_the_broken_temple&buff."
-      "teachings_of_the_monastery.stack=4&talent.shadowboxing_treads" );
-  default_aoe->add_action(
-      "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike&talent."
-      "power_of_the_thunder_king" );
-  default_aoe->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&talent.shadowboxing_treads" );
-  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
-  default_aoe->add_action(
-      "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike" );
-  default_aoe->add_action( "jadefire_stomp" );
-  default_aoe->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>="
-      "1" );
+  // AoE Opener
+  aoe_opener->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi<6", "aoe opener");
 
+  //Normal Opener
+  normal_opener->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=chi<6&combo_strike", "normal opener");
+  normal_opener->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack");
+  
+  // >=5 Target priority
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&(talent.energy_burst&!buff.bok_proc.up)&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff.blackout_reinforcement.up&talent.energy_burst)|(talent.energy_burst&!buff.bok_proc.up)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|(prev.strike_of_the_windlord|cooldown.strike_of_the_windlord.remains)&cooldown.celestial_conduit.remains<2&buff.ordered_elements.up&chi<5&combo_strike", ">=5 Targets" );
+  default_aoe->add_action( "touch_of_death" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack=2&combo_strike" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.chi_energy.stack>29&cooldown.fists_of_fury.remains<5" );
+  default_aoe->add_action( "celestial_conduit,target_if=max:debuff.acclamation.stack,if=buff.storm_earth_and_fire.up&cooldown.strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15" );
+  default_aoe->add_action( "rising_sun_kick,,target_if=max:target.time_to_die,if=!talent.xuens_battlegear&!cooldown.whirling_dragon_punch.remains&cooldown.fists_of_fury.remains>1&(!talent.revolving_whirl|talent.revolving_whirl&buff.dance_of_chiji.stack<2&active_enemies>2)" );
+  default_aoe->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=!talent.revolving_whirl|talent.revolving_whirl&buff.dance_of_chiji.stack<2&active_enemies>2" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.bok_proc.up&chi<2&talent.energy_burst&energy<55" );
+  default_aoe->add_action( "strike_of_the_windlord,target_if=max:target.time_to_die,if=time>5&(cooldown.invoke_xuen_the_white_tiger.remains>15|talent.flurry_strikes)" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8&talent.shadowboxing_treads" );
+  default_aoe->add_action( "crackling_jade_lightning,target_if=max:target.time_to_die,if=buff.the_emperors_capacitor.stack>19&combo_strike&talent.power_of_the_thunder_king" );
+  default_aoe->add_action( "fists_of_fury,target_if=max:target.time_to_die" );
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.wisdom_of_the_wall_flurry.up&chi<6" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&chi>5" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up&buff.chi_energy.stack>29&cooldown.fists_of_fury.remains<5" );
+  default_aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up&cooldown.fists_of_fury.remains>2" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up&spinning_crane_kick.max" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.ordered_elements.up&talent.crane_vortex&active_enemies>2&spinning_crane_kick.max" );
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.ordered_elements.up" );
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&(!buff.ordered_elements.up|energy.time_to_max<=gcd.max*3)" );
+  default_aoe->add_action( "jadefire_stomp,target_if=max:target.time_to_die,if=talent.Singularly_Focused_Jade|talent.jadefire_harmony" );
+  default_aoe->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&!buff.ordered_elements.up&talent.crane_vortex&active_enemies>2&chi>4&spinning_crane_kick.max" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&(buff.teachings_of_the_monastery.stack>3|buff.ordered_elements.up)&(talent.shadowboxing_treads|buff.bok_proc.up)" );
+  default_aoe->add_action( "spinning_crane_kick,if=combo_strike&(chi>3|energy>55)" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_proc.up&chi.deficit>=1&talent.energy_burst)&cooldown.fists_of_fury.remains" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&(chi>2|energy>60|buff.bok_proc.up)" );
+  default_aoe->add_action( "jadefire_stomp,target_if=max:debuff.acclamation.stack" );
+  default_aoe->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1" );
+  default_aoe->add_action( "chi_burst,if=!buff.ordered_elements.up" );
+  default_aoe->add_action( "chi_burst" );
+  default_aoe->add_action( "spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo&spinning_crane_kick.max" );
+  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo&cooldown.fists_of_fury.remains" );
+  default_aoe->add_action( "tiger_palm,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
+
+  // 2-4 targets
+  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=buff.pressure_point.up&active_enemies<4&cooldown.fists_of_fury.remains>4", "2-4 targets" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.stack=2&active_enemies>3" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up|(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|(prev.strike_of_the_windlord|cooldown.strike_of_the_windlord.remains)&cooldown.celestial_conduit.remains<2&buff.ordered_elements.up&chi<5&combo_strike|(!buff.heart_of_the_jade_serpent_cdr.up|!buff.heart_of_the_jade_serpent_cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up" );
+  default_cleave->add_action( "touch_of_death" );
+  default_cleave->add_action( "celestial_conduit,target_if=max:debuff.acclamation.stack,if=buff.storm_earth_and_fire.up&cooldown.strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15" );
+  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|buff.heart_of_the_jade_serpent_cdr_celestial.up&buff.pressure_point.up" );
+  default_cleave->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+  default_cleave->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+  default_cleave->add_action( "strike_of_the_windlord,target_if=max:target.time_to_die,if=talent.gale_force&buff.invokers_delight.up&(buff.bloodlust.up|cooldown.celestial_conduit.remains&!buff.heart_of_the_jade_serpent_cdr_celestial.up)" );
+  default_cleave->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=buff.power_infusion.up&buff.bloodlust.up&active_enemies<3" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8&(active_enemies<3|talent.shadowboxing_treads)" );
+  default_cleave->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=!talent.revolving_whirl|talent.revolving_whirl&buff.dance_of_chiji.stack<2&active_enemies>2|active_enemies<3" );
+  default_cleave->add_action( "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=time>5&(cooldown.invoke_xuen_the_white_tiger.remains>15|talent.flurry_strikes)" );
+  default_cleave->add_action( "crackling_jade_lightning,target_if=max:target.time_to_die,if=buff.the_emperors_capacitor.stack>19&combo_strike&talent.power_of_the_thunder_king" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.stack=2" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up&active_enemies<4" );
+  default_cleave->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements.remains<=gcd.max|active_enemies>2" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up&buff.chi_energy.stack>29" );
+  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=chi>4&(active_enemies<3|talent.glory_of_the_dawn)|chi>2&energy>50&(active_enemies<3|talent.glory_of_the_dawn)|cooldown.fists_of_fury.remains>2&(active_enemies<3|talent.glory_of_the_dawn)" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=4&!talent.knowledge_of_the_broken_temple&talent.shadowboxing_treads&active_enemies<3" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.ordered_elements.up&talent.crane_vortex&active_enemies>2" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&active_enemies<5" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&(!buff.ordered_elements.up|energy.time_to_max<=gcd.max*3)" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&buff.teachings_of_the_monastery.stack>3&cooldown.rising_sun_kick.remains" );
+  default_cleave->add_action( "jadefire_stomp,target_if=max:debuff.acclamation.stack,if=talent.Singularly_Focused_Jade|talent.jadefire_harmony" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&(buff.teachings_of_the_monastery.stack>3|buff.ordered_elements.up)&(talent.shadowboxing_treads|buff.bok_proc.up|buff.ordered_elements.up)" );
+  default_cleave->add_action( "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&!buff.ordered_elements.up&talent.crane_vortex&active_enemies>2&chi>4" );
+  default_cleave->add_action( "chi_burst,if=!buff.ordered_elements.up" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_proc.up&chi.deficit>=1&talent.energy_burst)&cooldown.fists_of_fury.remains" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&(chi>2|energy>60|buff.bok_proc.up)" );
+  default_cleave->add_action( "jadefire_stomp,target_if=max:debuff.acclamation.stack" );
+  default_cleave->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1" );
+  default_cleave->add_action( "chi_burst" );
+  default_cleave->add_action( "spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo" );
+  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo&cooldown.fists_of_fury.remains" );
+  default_cleave->add_action( "tiger_palm,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
+  
   // 1 Target priority
-  default_st->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent."
-      "inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery."
-      "max_stack&!buff.ordered_elements.up&(!set_bonus.tier30_2pc|set_bonus.tier30_2pc&buff.dance_of_chiji.up&!buff."
-      "blackout_reinforcement.up&talent.energy_burst)",
-      "<3 Targets" );
+  default_st->add_action( "rising_sun_kick,if=buff.pressure_point.up|buff.ordered_elements.remains<=gcd.max*3&buff.storm_earth_and_fire.up", "1 target" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up|(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|(prev.strike_of_the_windlord|cooldown.strike_of_the_windlord.remains)&cooldown.celestial_conduit.remains<2&buff.ordered_elements.up&chi<5&combo_strike|(!buff.heart_of_the_jade_serpent_cdr.up|!buff.heart_of_the_jade_serpent_cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up" );
   default_st->add_action( "touch_of_death" );
-  default_st->add_action(
-      "celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord."
-      "remains" );
-  default_st->add_action(
-      "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm|buff."
-      "storm_earth_and_fire.up&talent.ordered_elements" );
-  default_st->add_action( "strike_of_the_windlord,if=talent.gale_force&buff.invokers_delight.up" );
-  default_st->add_action(
-      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
-  default_st->add_action(
-      "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
-  default_st->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=8" );
+  default_st->add_action( "celestial_conduit,if=buff.storm_earth_and_fire.up&buff.ordered_elements.up&cooldown.strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|buff.storm_earth_and_fire.up&talent.ordered_elements" );
+  default_st->add_action( "strike_of_the_windlord,if=talent.gale_force&buff.invokers_delight.up&(buff.bloodlust.up|cooldown.celestial_conduit.remains&!buff.heart_of_the_jade_serpent_cdr_celestial.up)" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "fists_of_fury,target_if=max:debuff.acclamation.stack,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>3&buff.ordered_elements.up&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
+  default_st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike&buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "whirling_dragon_punch,if=buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.power_infusion.up&buff.bloodlust.up" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>4&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
+  default_st->add_action( "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2|buff.ordered_elements.up|talent.knowledge_of_the_broken_temple" );
+  default_st->add_action( "strike_of_the_windlord,if=time>5&(cooldown.invoke_xuen_the_white_tiger.remains>15|talent.flurry_strikes)" );
+  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=chi>4|chi>2&energy>50|cooldown.fists_of_fury.remains>2" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.wisdom_of_the_wall_flurry.up" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&energy.time_to_max<=gcd.max*3" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>7&talent.memory_of_the_monastery&!buff.memory_of_the_monastery.up&cooldown.fists_of_fury.remains" );
+  default_st->add_action( "fists_of_fury,if=buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements.remains<=gcd.max" );
+  default_st->add_action( "spinning_crane_kick,if=(buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<2&buff.dance_of_chiji.up)&combo_strike&!buff.ordered_elements.up" );
   default_st->add_action( "whirling_dragon_punch" );
-  default_st->add_action( "strike_of_the_windlord,if=time>5" );
-  default_st->add_action(
-      "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement."
-      "up" );
-  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack" );
-  default_st->add_action(
-      "fists_of_fury,if=buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements."
-      "remains<=gcd.max" );
-  default_st->add_action(
-      "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&set_bonus.tier30_2pc&!buff.blackout_reinforcement.up&"
-      "talent.energy_burst" );
-  default_st->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.deficit>=2&(!buff.ordered_"
-      "elements.up|energy.time_to_max<=gcd.max*3)" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=4&!talent.knowledge_of_the_broken_temple&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
+  default_st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(buff.ordered_elements.up|energy.time_to_max>=gcd.max*3&talent.sequenced_strikes&talent.energy_burst|!talent.sequenced_strikes|!talent.energy_burst|buff.dance_of_chiji.remains<=gcd.max*3)" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes" );
   default_st->add_action( "jadefire_stomp,if=talent.Singularly_Focused_Jade|talent.jadefire_harmony" );
-  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack" );
-  default_st->add_action( "blackout_kick,if=combo_strike&buff.blackout_reinforcement.up" );
   default_st->add_action( "chi_burst,if=!buff.ordered_elements.up" );
-  default_st->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_"
-      "proc.up&chi.deficit>=1&talent.energy_burst)" );
-  default_st->add_action(
-      "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(buff.ordered_elements.up|energy.time_to_max>=gcd."
-      "max*3&talent.sequenced_strikes&talent.energy_burst|!talent.sequenced_strikes|!talent.energy_burst|buff.dance_of_"
-      "chiji.stack=2|buff.dance_of_chiji.remains<=gcd.max*3)" );
-  default_st->add_action(
-      "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike" );
-  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_proc.up&chi.deficit>=1&talent.energy_burst)&cooldown.fists_of_fury.remains" );
+  default_st->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.ordered_elements.up&combo_strike" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&(chi>2|energy>60|buff.bok_proc.up)" );
   default_st->add_action( "jadefire_stomp" );
-  default_st->add_action(
-      "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>="
-      "1" );
+  default_st->add_action( "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&chi.deficit>=1" );
   default_st->add_action( "chi_burst" );
   default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.ordered_elements.up&talent.hit_combo" );
-  default_st->add_action(
-      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo" );
+  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.ordered_elements.up&!talent.hit_combo&cooldown.fists_of_fury.remains" );
+  default_st->add_action( "tiger_palm,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
 }
 
 void no_spec( player_t *p )
