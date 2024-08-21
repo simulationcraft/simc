@@ -22954,10 +22954,10 @@ Effects          :
 Description      : After casting Hammer of Light, you call down an Empyrean Hammer on a nearby target every $431536T sec, for $431536d.
 
 Name             : Shake the Heavens (id=431536) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Range            : 50000 yards
 Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -22969,9 +22969,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1119384)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
