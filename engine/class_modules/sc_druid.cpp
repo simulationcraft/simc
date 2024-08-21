@@ -5392,7 +5392,7 @@ struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
 
     p()->buff.gore->expire( this );
 
-    if ( p()->buff.killing_strikes_combat->check() )
+    if ( p()->specialization() == DRUID_GUARDIAN && p()->buff.killing_strikes_combat->check() )
     {
       p()->buff.killing_strikes_combat->expire( this );
       p()->buff.ravage_maul->trigger();
@@ -9501,6 +9501,14 @@ void druid_t::activate()
     } );
   }
 
+  if ( talent.killing_strikes.ok() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+        buff.killing_strikes_combat->trigger();
+    } );
+  }
+
   player_t::activate();
 }
 
@@ -12197,9 +12205,6 @@ void druid_t::precombat_init()
 
   if ( talent.brambles.ok() )
     buff.brambles->trigger();
-
-  if ( talent.killing_strikes.ok() )
-    buff.killing_strikes_combat->trigger();
 
   if ( talent.orbit_breaker.ok() )
   {
