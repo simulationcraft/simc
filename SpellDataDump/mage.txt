@@ -19257,6 +19257,7 @@ Effects          :
 Description      : Spellfire Spheres can now stack up to $s2 times.
 
 Name             : Memory of Al'ar (id=449619) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Mage
 School           : Physical
@@ -19282,7 +19283,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1170828)  : Dummy (3)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.
+Description      : While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.
 
 When your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.
 
