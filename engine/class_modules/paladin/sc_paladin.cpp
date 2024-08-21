@@ -2138,11 +2138,16 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
         timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
     if ( p()->talents.templar.shake_the_heavens->ok() )
     {
-      if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
-        p()->buffs.templar.shake_the_heavens->execute();
+      if ( p()->buffs.templar.shake_the_heavens->up() )
+      {
+        // While Shake the Heavens is up, 8 seconds are added to the duration, up to 10.4 seconds (Pandemic limit). If
+        // the current duration is above the Pandemic Limit, it's duration does not change.
+        if ( p()->buffs.templar.shake_the_heavens->remains() <
+             p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3 )
+          p()->buffs.templar.shake_the_heavens->refresh();
+      }
       else
-        // 2024-08-18 If Shake the Heavens is still running, another Hammer of Light will only extend by 4 seconds
-        p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buffs.templar.shake_the_heavens->execute();
     }
   }
   void impact( action_state_t* s ) override
@@ -3889,7 +3894,8 @@ void paladin_t::create_buffs()
                                 ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
-                                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+                                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                        ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                         ->set_partial_tick( true );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
