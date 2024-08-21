@@ -24358,7 +24358,7 @@ static const std::array<spelltext_data_t, 26317> __spelltext_data { {
   { 449596, "Spellfire Spheres can now stack up to $s2 times.", 0, 0 },
   { 449609, "$@spelldesc449582", "You may jump twice to dash forward a short distance.", 0 },
   { 449614, "A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. \r\n\r\nA Succulent Soul empowers your next $?s137043[Malefic Rapture, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, increasing its damage by $449793s3%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]", 0, 0 },
-  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
+  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
   { 449620, "$?s137043[Shadow Bolt and Drain Soul damage increased by $s2%. Nightfall increases the damage of Shadow Bolt and Drain Soul by an additional $s1%.][Shadow Bolt damage increased by $s2%. Power Siphon increases the damage of Demonbolt by an additional $s3%.]", 0, 0 },
   { 449624, "Unleashing your demonic soul bestows a fiendish entity unto the soul of its targets, dealing $450538o1 Shadow damage over $450538d.\r\n\r\nIf this effect is reapplied, any remaining damage will be added to the new Soul Anathema.", 0, 0 },
   { 449627, "Your Arcane Phoenix will Spellsteal when it is summoned and when it expires.", 0, 0 },
@@ -26320,7 +26320,8 @@ static const std::array<spelltext_data_t, 26317> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56196
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  449619,  0, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]" },
 } };
 
 // Spell description variables, wow build 11.0.2.56196
