@@ -6380,7 +6380,7 @@ struct outbreak_aoe_t final : public death_knight_spell_t
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
-    if ( p()->talent.unholy.superstrain )
+    if ( p()->talent.unholy.superstrain.ok() )
     {
       // Randomize the order the diseases are applied to emulate the random tick order in game.
       // Only really matters for RPPM effects.
