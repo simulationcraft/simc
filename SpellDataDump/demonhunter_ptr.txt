@@ -15382,6 +15382,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Range            : 40 yards
+GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
