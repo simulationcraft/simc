@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56196
-static const std::array<spelltext_data_t, 26317> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26317,6 +26317,7 @@ static const std::array<spelltext_data_t, 26317> __ptr_spelltext_data { {
   { 466876, "Add the Xal'atath's Bargain: Devour affix to a Mythic Keystone.", 0, 0 },
   { 466877, "Add the Xal'atath's Guile affix to a Mythic Keystone.", 0, 0 },
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
+  { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56196
