@@ -56,12 +56,12 @@ void affliction( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)" "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)" "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge" "Used to Set specific Trinkets in Slot 1 to be used by a manual logic" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.aberrant_spellforge" " Used to Set specific Trinkets in Slot 2 to be used by a manua logic" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge" " Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.aberrant_spellforge" " Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic " );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" "For On Use Trinkets on Slot 2 with on use effects you don't want to use in combat" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" "Used to set the duration of the buff in the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)" "Used to set the duration of the buff in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" " Sets the duration of Trinket 1 in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)" " Sets the duration of the buff in the automatic logic" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)))" "Automatic Logic in case of 2 On Use Buff Trinkets" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
@@ -222,8 +222,8 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.imperfect_ascendancy_serum" "Used to Set specific Trinkets in Slot 1 to be used by a manual logic" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.imperfect_ascendancy_serum" "Used to Set specific Trinkets in Slot 1 to be used by a manual logic" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.imperfect_ascendancy_serum" "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.imperfect_ascendancy_serum" "Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" "Defines the Duration of the buff or an expected time for value of the trinket" );
   precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)" "Defines the Duration of the buff or an expected time for value of the trinket" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)" );
@@ -366,8 +366,8 @@ void destruction( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web" "Used to Set specific Trinkets in Slot 1 to be used by a manual logic" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web" "Used to Set specific Trinkets in Slot 2 to be used by a manual logic" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web" "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web" "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" "Sets the duration of the trinket in the automatic logic" );
