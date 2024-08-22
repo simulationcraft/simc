@@ -3097,9 +3097,9 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
   double value = 0;
   if ( is_embellishment )
-    value = effect.player->find_spell( 463232 )->effectN( 2 ).average( effect.item );
+    value = effect.player->find_spell( 463232 )->effectN( 2 ).average( effect.item ) * writhing_mul( effect.player );
   else
-    value = effect.driver()->effectN( 2 ).average( effect.item ) * writhing_mul( effect.player );
+    value = effect.driver()->effectN( 2 ).average( effect.item );
 
   // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
   // Assuming here since the embellishment and trinket use the same driver and buff that the effects are just added.
