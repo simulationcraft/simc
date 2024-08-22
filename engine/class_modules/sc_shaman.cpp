@@ -5356,13 +5356,6 @@ struct earth_elemental_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->summon_elemental( elemental::GREATER_EARTH );
-
-    // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
-    if ( p()->bugs && p()->main_hand_attack && p()->main_hand_attack->execute_event )
-    {
-      event_t::cancel( p()->main_hand_attack->execute_event );
-      p()->main_hand_attack->schedule_execute();
-    }
   }
 };
 
