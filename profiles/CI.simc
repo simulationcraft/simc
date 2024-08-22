@@ -1,47 +1,162 @@
 optimal_raid=1
 default_actions=1
 
-# PR_Death_Knight_Blood.simc
-# PR_Death_Knight_Frost.simc
-# PR_Death_Knight_Unholy.simc
+deathknight=blood
+spec=blood
+load_default_gear=1
+load_default_talents=1
 
-# PR_Demon_Hunter_Havoc.simc
-# PR_Demon_Hunter_Vengeance.simc
+deathknight=frost_dk
+spec=frost
+load_default_gear=1
+load_default_talents=1
 
-# PR_Druid_Balance.simc
-# PR_Druid_Feral.simc
-# PR_Druid_Guardian.simc
+deathknight=unholy
+spec=unholy
+load_default_gear=1
+load_default_talents=1
 
-# PR_Evoker_Devastation.simc
+demonhunter=havoc
+spec=havoc
+load_default_gear=1
+load_default_talents=1
 
-# PR_Hunter_Beast_Mastery.simc
-# PR_Hunter_Marksmanship.simc
-# PR_Hunter_Survival.simc
+demonhunter=vengeance
+spec=vengeance
+load_default_gear=1
+load_default_talents=1
 
-# PR_Mage_Fire.simc
-# PR_Mage_Frost.simc
-# PR_Mage_Arcane.simc
+druid=balance
+spec=balance
+load_default_gear=1
+load_default_talents=1
 
-# PR_Monk_Brewmaster.simc
-# PR_Monk_Windwalker.simc
-# PR_Monk_Windwalker.simc
+druid=feral
+spec=feral
+load_default_gear=1
+load_default_talents=1
 
-# PR_Paladin_Protection.simc
-# PR_Paladin_Retribution.simc
+druid=guardian
+spec=guardian
+load_default_gear=1
+load_default_talents=1
 
-PR_Priest_Shadow.simc
+#evoker=augmentation
+#spec=augmentation
+#load_default_gear=1
+#load_default_talents=1
 
-# PR_Rogue_Assassination.simc
-# PR_Rogue_Outlaw.simc
-# PR_Rogue_Subtlety.simc
+#evoker=devastation
+#spec=devastation
+#load_default_gear=1
+#load_default_talents=1
 
-# PR_Shaman_Elemental.simc
-# PR_Shaman_Enhancement.simc
+hunter=beast_mastery
+spec=beast_mastery
+load_default_gear=1
+load_default_talents=1
 
-# PR_Warlock_Affliction.simc
-# PR_Warlock_Demonology.simc
-# PR_Warlock_Destruction.simc
+hunter=marksmanship
+spec=marksmanship
+load_default_gear=1
+load_default_talents=1
 
-# PR_Warrior_Arms.simc
-# PR_Warrior_Fury.simc
-# PR_Warrior_Protection.simc
+hunter=survival
+spec=survival
+load_default_gear=1
+load_default_talents=1
+
+mage=arcane
+spec=arcane
+load_default_gear=1
+load_default_talents=1
+
+mage=fire
+spec=fire
+load_default_gear=1
+load_default_talents=1
+
+mage=frost
+spec=frost
+load_default_gear=1
+load_default_talents=1
+
+monk=brewmaster
+spec=brewmaster
+load_default_gear=1
+load_default_talents=1
+
+monk=windwalker
+spec=windwalker
+load_default_gear=1
+load_default_talents=1
+
+paladin=protection
+spec=protection
+load_default_gear=1
+load_default_talents=1
+
+paladin=retribution
+spec=retribution
+load_default_gear=1
+load_default_talents=1
+
+priest=shadow
+spec=shadow
+load_default_gear=1
+load_default_talents=1
+
+rogue=assassination
+spec=assassination
+load_default_gear=1
+load_default_talents=1
+
+rogue=outlaw
+spec=outlaw
+load_default_gear=1
+load_default_talents=1
+
+rogue=subtlety
+spec=subtlety
+load_default_gear=1
+load_default_talents=1
+
+shaman=elemental
+spec=elemental
+load_default_gear=1
+load_default_talents=1
+
+#shaman=enhancement
+#spec=enhancement
+#load_default_gear=1
+#load_default_talents=1
+
+#warlock=affliction
+#spec=affliction
+#load_default_gear=1
+#load_default_talents=1
+
+#warlock=demonology
+#spec=demonology
+#load_default_gear=1
+#load_default_talents=1
+
+#warlock=destruction
+#spec=destruction
+#load_default_gear=1
+#load_default_talents=1
+
+#warrior=arms
+#spec=arms
+#load_default_gear=1
+#load_default_talents=1
+
+#warrior=fury
+#spec=fury
+#load_default_gear=1
+#load_default_talents=1
+
+#warrior=protection_war
+#spec=protection
+#load_default_gear=1
+#load_default_talents=1

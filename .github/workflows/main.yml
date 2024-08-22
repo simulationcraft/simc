@@ -6,6 +6,7 @@ on:
   push:
     branches: [ thewarwithin ]
     paths-ignore:
+      - 'ActionPriorityLists/**'
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
@@ -153,7 +154,7 @@ jobs:
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-  tww-spelldata-dump:
+  spelldata-dump:
     name: Spell Data Dump
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
@@ -163,9 +164,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-15]
+        compiler: [clang++-18]
         include:
-          - compiler: clang++-15
+          - compiler: clang++-18
             os: ubuntu-22.04
 
     steps:
@@ -204,8 +205,8 @@ jobs:
           fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.txt'
 
-  tww-test:
-    name: tww-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
+  spec-test:
+    name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
 
@@ -213,22 +214,22 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [ 17 ]
-        compiler: [ clang++-15 ]
+        compiler: [ clang++-18 ]
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
-            druid_balance, druid_feral, druid_guardian, druid_restoration,
-            rogue_assassination, rogue_outlaw, rogue_subtlety,
             demonhunter_vengeance, demonhunter_havoc,
-            priest_shadow,
+            druid_balance, druid_feral, druid_guardian, druid_restoration,
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
-            monk_brewmaster, monk_windwalker,
             mage_arcane, mage_fire, mage_frost,
+            monk_brewmaster, monk_windwalker,
             paladin_protection,
+            priest_shadow,
+            rogue_assassination, rogue_outlaw, rogue_subtlety,
             shaman_elemental
           ]
         fightstyle: [ singletarget, multitarget, dungeonslice ]
         include:
-          - compiler: clang++-15
+          - compiler: clang++-18
             os: ubuntu-22.04
           - fightstyle: multitarget
             style_arg: desired_targets=10
@@ -376,19 +377,19 @@ jobs:
           path: ${{ matrix.spec }}.simc
           retention-days: 1
 
-  tww-apl-dump:
+  apl-dump:
     name: Action Priority List Dump
     runs-on: ${{ matrix.os }}
-    needs: [ tww-test, tww-spelldata-dump ]
+    needs: [ spec-test, spelldata-dump ]
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
 
     strategy:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-15]
+        compiler: [clang++-18]
         include:
-          - compiler: clang++-15
+          - compiler: clang++-18
             os: ubuntu-22.04
 
     steps:
@@ -405,6 +406,7 @@ jobs:
         run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Commit APLs
+        continue-on-error: true
         uses: EndBug/add-and-commit@v9
         with:
           message: 'Update APL Dump ${{ env.SHORT_SHA }}'
@@ -421,13 +423,12 @@ jobs:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
-    if: false # TODO: re-enable when all TWW APLs are ready && CI.simc has all specs
 
     strategy:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-7, clang++-15, gcc-7, gcc-12]
+        compiler: [clang++-7, clang++-15, clang++-18, gcc-7, gcc-12, gcc-14]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -442,6 +443,10 @@ jobs:
             os: ubuntu-20.04
           - compiler: clang++-15
             os: ubuntu-22.04
+          - compiler: clang++-18
+            os: ubuntu-24.04
+          - compiler: gcc-14
+            os: ubuntu-24.04
           - compiler: gcc-12
             os: ubuntu-22.04
           - compiler: gcc-7
@@ -478,9 +483,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-15]
+        compiler: [clang++-18]
         include:
-          - compiler: clang++-15
+          - compiler: clang++-18
             os: ubuntu-22.04
 
     steps:
@@ -520,7 +525,6 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: false # TODO: re-enable when all TWW APLs are ready
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -532,7 +536,7 @@ jobs:
         arch: [x64, amd64_arm64]
         include:
           - arch: x64
-            runSmokeTest: false # TODO: re-enable when all TWW APLs are ready
+            runSmokeTest: true
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
