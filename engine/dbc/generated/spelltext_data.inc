@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56263
-static const std::array<spelltext_data_t, 26318> __spelltext_data { {
+static const std::array<spelltext_data_t, 26320> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25374,6 +25374,7 @@ static const std::array<spelltext_data_t, 26318> __spelltext_data { {
   { 456142, "$@spelldesc453672", "Eruption damage increased by $w1%.", 0 },
   { 456156, "Throw the fish back into the water to gain $s2 Fishing for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Fishing skill increased by $w2.", 0 },
   { 456157, "Throw this fish back into the water and gain a stack of Bloody Chum attracting Sanguine Dogfish to your location for $d.\r\n\r\nThis effect increases your odds by $s1% and stacks up to 10 times. Movement will cause your scent to be lost and cancel the effect.", "Increasing your chance to find Sanguine Dogfish by $w2%. \r\n\r\nMovement will cause your scent to be lost and cancel this effect.", 0 },
+  { 456158, "Toss the Whispering Stargazer into the waters of Azj-Kahet and awaken the fish that slumber below.", "The whispers grow...", 0 },
   { 456164, "The cooldown of $@spellname423395 is reduced by an additional $M1% when gathering herbs in Khaz Algar.\r\n\r\n$?PC117340[|cnWHITE_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R][|cnRED_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R]\r\n", 0, 0 },
   { 456216, "|cnRED_FONT_COLOR:Curses any Angler unfortunate enough to reel this in.|R", "Cursed by the soul of a Ghoulfish, your Fishing Rod feels foreign, heavy, and incapable of catching anything.\r\n\r\nFinding a way to remove the Cursed Ghoulfish from your inventory will cause the curse to fade.", 0 },
   { 456220, "$@spelldesc453671", 0, 0 },
@@ -25433,6 +25434,7 @@ static const std::array<spelltext_data_t, 26318> __spelltext_data { {
   { 456584, "Smack your enemy with the Hammerfish and stun it for $456585d. Only usable outdoors in Khaz Algar.", 0, 0 },
   { 456585, 0, "Hammerfished.", 0 },
   { 456586, "Throw the fish back into the water to gain $s2 Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Khaz Algar Perception increased by $w2.", 0 },
+  { 456592, "Open the contents of the Huskfish's stomach.", 0, 0 },
   { 456596, 0, "Perception increased by $s1.", 0 },
   { 456620, "$@spelldesc446835", "$@spelldesc446835", 0 },
   { 456640, "$@spelldesc452487", 0, 0 },

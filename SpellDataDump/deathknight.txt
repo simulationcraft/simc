@@ -24376,7 +24376,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Include In Advanced Combat Log (72), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1167345)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 100)
 Description      : $@spelldesc434143
 Tooltip          : $?a137007[Scourge Strike][Heart Strike] consumes your $?a137007[Virulent Plague][Blood Plague] to deal $w1% of their remaining damage to the target.
 

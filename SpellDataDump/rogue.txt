@@ -2647,12 +2647,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Numbing Poison (359078), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (381664), Amplifying Poison (383414), Sepsis (385408), Kingsbane (385627), Sepsis (394026), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
-                   Family Flags: 8, 14, 16, 20, 28, 35, 36, 68, 81, 85, 86, 95, 97, 118, 119
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Numbing Poison (359078), Deathmark (360194), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Amplifying Poison (381664), Amplifying Poison (383414), Sepsis (385408), Kingsbane (385627), Sepsis (394026), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Deathmark (394331), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
+                   Family Flags: 8, 14, 16, 20, 28, 35, 36, 59, 68, 81, 85, 86, 95, 97, 118, 119
+Hotfixed         : Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Dreadblades (343142), Numbing Poison (359078), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Sepsis (385408), Serrated Bone Spike (385424), Kingsbane (385627), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
-                   Family Flags: 8, 14, 16, 20, 28, 36, 81, 95, 97, 115, 118, 119
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Dreadblades (343142), Numbing Poison (359078), Deathmark (360194), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (375938), Internal Bleeding (381628), Sepsis (385408), Serrated Bone Spike (385424), Kingsbane (385627), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Deathmark (394331), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
+                   Family Flags: 8, 14, 16, 20, 28, 36, 59, 81, 95, 97, 115, 118, 119
+Hotfixed         : Affects Spells
 #3 (id=1083878)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value 2: 2694 (Label) | Target: Self (1)
                    Affected Spells (Label): Ambush (385794), Mutilate (385802), Mutilate (385806)
@@ -11479,7 +11481,7 @@ Labels           : 16: Class Spells
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 1077
 Mechanic         : Bleed
-Affecting spells : Nightstalker (130493 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
+Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
 Family Flags     : 59
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13504,7 +13506,6 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Inevitability (454434 effect#1)
 Family Flags     : 38
 Attributes       : ....x... ........ x....... .x.x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -15979,7 +15980,7 @@ Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting spells : Nightstalker (130493 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
+Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3)
 Triggered by     : Deathmark (360194)
 Family Flags     : 59
 Attributes       : .......x x....... x....... .....x.x   .....x.. ..x..... ........ ........ 
@@ -19983,9 +19984,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1156969)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 456330 | Scaled Value: 456330 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cold Blood (382245), Cold Blood (456330)
-                   Family Flags: 38
+                   Base Value: 456330 | Scaled Value: 456330 | PvP Coefficient: 1.00000 | Misc Value: 382245 | Target: Self (1)
+Hotfixed         : Misc Value (0 -> 382245), Affects Spells
 Description      : Cold Blood now benefits the next two abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same face as the last flip.
 
 Name             : Destiny Defined (id=454435) [Spell Family (8), Passive] 
@@ -20276,7 +20276,6 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Inevitability (454434 effect#1)
 Family Flags     : 38
 Attributes       : ....x... ........ x....... .x.x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

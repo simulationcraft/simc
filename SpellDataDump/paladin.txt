@@ -14777,6 +14777,10 @@ Effects          :
 #12 (id=1092976)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 2179 | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
+#13 (id=1183063)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 2284 | Target: Self (1)
+                   Affected Spells (Category): Eye of Tyr (387174)
+Hotfixed         : NEW EFFECT
 Description      : Damage taken reduced by $s1%$?s385129&c2[, armor increased by $s2%, and Holy Power generating abilities cool down $s3% faster]?s385129[ and your Holy Power generating abilities also grant an absorb shield for $s9% of damage or healing dealt.][] For $d.
 Tooltip          : Damage taken reduced by $w1%$?s385129[, armor increased by $w2%, and Holy Power generating abilities cool down $w3% faster.][.]
 
@@ -15597,7 +15601,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2284: Inmost Light (405757 effect#2)
+Category         : 2284: Blessing of Dusk (385126 effect#13), Inmost Light (405757 effect#2)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
