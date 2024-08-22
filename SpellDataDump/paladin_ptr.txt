@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -6954,8 +6954,9 @@ Effects          :
                    Family Flags: 55
 #4 (id=787649)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
-                   Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
-                   Family Flags: 92
+                   Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896), Hammer of Light (427453)
+                   Family Flags: 29, 92
+Hotfixed         : Affects Spells
 #5 (id=1085499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Light of Dawn (225311), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
@@ -18521,7 +18522,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1051771)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (218 -> 4), Misc Value 2 (2580 -> 0)
 #2 (id=1070207)  : Apply Aura (6) | Proc Trigger Spell (42): Divine Arbiter
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406975 | Target: Self (1)
 #3 (id=1070208)  : Dummy (3)
@@ -22079,7 +22079,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3022
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Divine Purpose (223819 effect#1), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Divine Purpose (223819 effects: #1, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 27, 29, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -22954,7 +22954,6 @@ Effects          :
 Description      : After casting Hammer of Light, you call down an Empyrean Hammer on a nearby target every $431536T sec, for $431536d.
 
 Name             : Shake the Heavens (id=431536) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -24399,6 +24398,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Hammer of Light (427453)
                    Family Flags: 29
+#2 (id=1183013)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Affected Spells: Hammer of Light (427453)
+                   Family Flags: 29
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc425518
 
 Name             : Divine Guidance (id=433807) [Spell Family (10)] 
