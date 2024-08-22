@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56263
-static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26320> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23913,7 +23913,7 @@ static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
   { 444269, "$@spelldesc430714", 0, 0 },
   { 444274, "Activate the Lamplighter firearm, setting fire to moth eggs in front of the caster.", 0, 0 },
   { 444276, "Your healing spells have a high chance to cause you to inject yourself with a charge of $@spellname452816. Multiple charges may overlap.\r\n\r\nIf an ally drops below $s3% health, expel a charge to heal them for $s1. If unconsumed after $452816d, charges catalyze to grant you $s2 Intellect for $452565d instead.", 0, 0 },
-  { 444282, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional ${444271s2/$444271s5} Shadow damage, increased based on overhealing done by the Coagulum.", "Redirecting $w1% of healing done until the Coagulum has consumed ${$w2} healing.", 0 },
+  { 444282, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional $444271s2 Shadow damage, increased based on overhealing done by the Coagulum.", "Redirecting $w1% of healing done until the Coagulum has consumed ${$w2} healing.", 0 },
   { 444292, "Your attacks and abilities have a high chance to summon a scarab that retrieves a fortifying chunk of flesh from your target. Scarabs deal $s1 Physical damage and reduce your damage taken by 50% until $s2 damage has been prevented.\r\n\r\n", 0, 0 },
   { 444301, "Send your swarm into a frenzy, summoning $s1 scarabs over $d to ravage your foes. The number of scarabs is increased by your Haste.", "At the heart of the swarm.", 0 },
   { 444318, "Casting Engulf reignites all active Enkindles, increasing their remaining damage or healing over time by $s1%.", 0, "Red" },
@@ -25374,6 +25374,7 @@ static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
   { 456142, "$@spelldesc453672", "Eruption damage increased by $w1%.", 0 },
   { 456156, "Throw the fish back into the water to gain $s2 Fishing for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Fishing skill increased by $w2.", 0 },
   { 456157, "Throw this fish back into the water and gain a stack of Bloody Chum attracting Sanguine Dogfish to your location for $d.\r\n\r\nThis effect increases your odds by $s1% and stacks up to 10 times. Movement will cause your scent to be lost and cancel the effect.", "Increasing your chance to find Sanguine Dogfish by $w2%. \r\n\r\nMovement will cause your scent to be lost and cancel this effect.", 0 },
+  { 456158, "Toss the Whispering Stargazer into the waters of Azj-Kahet and awaken the fish that slumber below.", "The whispers grow...", 0 },
   { 456164, "The cooldown of $@spellname423395 is reduced by an additional $M1% when gathering herbs in Khaz Algar.\r\n\r\n$?PC117340[|cnWHITE_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R][|cnRED_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R]\r\n", 0, 0 },
   { 456216, "|cnRED_FONT_COLOR:Curses any Angler unfortunate enough to reel this in.|R", "Cursed by the soul of a Ghoulfish, your Fishing Rod feels foreign, heavy, and incapable of catching anything.\r\n\r\nFinding a way to remove the Cursed Ghoulfish from your inventory will cause the curse to fade.", 0 },
   { 456220, "$@spelldesc453671", 0, 0 },
@@ -25433,6 +25434,7 @@ static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
   { 456584, "Smack your enemy with the Hammerfish and stun it for $456585d. Only usable outdoors in Khaz Algar.", 0, 0 },
   { 456585, 0, "Hammerfished.", 0 },
   { 456586, "Throw the fish back into the water to gain $s2 Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Khaz Algar Perception increased by $w2.", 0 },
+  { 456592, "Open the contents of the Huskfish's stomach.", 0, 0 },
   { 456596, 0, "Perception increased by $s1.", 0 },
   { 456620, "$@spelldesc446835", "$@spelldesc446835", 0 },
   { 456640, "$@spelldesc452487", 0, 0 },
@@ -26321,7 +26323,8 @@ static const std::array<spelltext_data_t, 26318> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  444282,  0, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional ${444271s2/$444271s5} Shadow damage, increased based on overhealing done by the Coagulum.", "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional $444271s2 Shadow damage, increased based on overhealing done by the Coagulum." },
   {  449619,  0, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]" },
 } };
 
