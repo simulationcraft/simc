@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -715,7 +715,6 @@ Labels           : 16: Class Spells
                  : 292
 Azerite Power Id : 97
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Arrowstorm (263814 effect#1), Lethal Shots (269502 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Night Hunter (378766 effect#1), Focused Aim (378767 effect#1), Spearhead (378957 effects: #2, #3), Eagletalon's True Focus (389450 effect#1), Fury Strikes (425830 effects: #1, #2), Overshadow (430716 effect#1), Black Arrow (439659 effect#2), Sentinel Precision (450375 effects: #1, #2), Moving Target (457116 effect#1), Specialized Arsenal (459542 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effect#1)
-Triggered by     : Lock and Load (194594)
 Family Flags     : 1, 17, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -4508,8 +4507,9 @@ Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Allow Dead Target (64), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=271178)   : Unknown(41)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 4 | PvP Coefficient: 1.00000 | Misc Value: 4 | Misc Value 2: 0x4 | Target: Enemy (6)
+#1 (id=271178)   : Unknown(41) | Attributes: Jump Charge Unit Melee Range (2)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value: 20 | Misc Value 2: 0x14 | Target: Enemy (6)
+Hotfixed         : Misc Value (4 -> 20), Misc Value 2 (4 -> 20), Value Multiplier (4 -> 2), Attribute (0 -> 4)
 Description      : $@spelldesc190925
 Tooltip          : Stunned.
 
@@ -5257,6 +5257,7 @@ Effects          :
 Description      : $@spelldesc257891
 
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5271,13 +5272,13 @@ Triggered by     : Lock and Load (194595)
 Family Flags     : 112
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : .......x .......x ........ ........   ........ ........ ........ ........ 
                  : x.....x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Not In Spellbook (143), No Cooldown On Tooltip (192), Floating Combat Text On Cast (198), Allow Class Ability Procs (416)
+                 : Is Ability (4), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), No Cooldown On Tooltip (192), Floating Combat Text On Cast (198), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285662)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -5291,8 +5292,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
                    Family Flags: 17
-#4 (id=285665)   : Apply Aura (6) | Unknown(408)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 19434 | Target: Self (1)
 Description      : $@spelldesc194595
 Tooltip          : Aimed Shot costs no Focus and is instant.
 

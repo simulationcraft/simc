@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -39,7 +39,6 @@ Effects          :
 #1 (id=470)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Enemy (6)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : Base Value (5 -> 3)
 Description      : $@spelldesc255260
 Tooltip          : Magic damage taken increased by $s1%.
 
@@ -15103,8 +15102,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
                    Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
 #2 (id=1109496)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598), Illuminated Sigils (428595), Sigil of Doom (462030)
+Hotfixed         : Base Value (15 -> 12)
 #3 (id=1109497)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
                    Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
@@ -15840,6 +15840,7 @@ Effects          :
 Description      : Each Soul Fragment you consume shields you for an additional $s1% of the amount healed.
 
 Name             : Incorruptible Spirit (id=442788) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -15851,12 +15852,12 @@ Labels           : 16: Class Spells
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Absorb Modifiers (370)
 Effects          :
 #1 (id=1138226)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
