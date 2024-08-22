@@ -256,7 +256,7 @@ void protection( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "charge,if=time=0" );
   default_->add_action( "use_items" );
-  default_->add_action( "avatar" );
+  default_->add_action( "avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2" );
   default_->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
   default_->add_action( "blood_fury" );
   default_->add_action( "berserking" );
@@ -271,9 +271,9 @@ void protection( player_t* p )
   default_->add_action( "ravager" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_->add_action( "champions_spear" );
+  default_->add_action( "thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.stack=2" );
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
   default_->add_action( "thunderous_roar" );
-  default_->add_action( "shockwave,if=talent.rumbling_earth.enabled&spell_targets.shockwave>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
@@ -289,7 +289,7 @@ void protection( player_t* p )
   aoe->add_action( "thunder_clap" );
   aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
-  generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up&talent.unstoppable_force.enabled)|rage<=70&talent.demolish.enabled" );
+  generic->add_action( "thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up&talent.unstoppable_force.enabled)" );
   generic->add_action( "shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled" );
   generic->add_action( "execute,if=rage>=70|(rage>=40&cooldown.shield_slam.remains&talent.demolish.enabled|rage>=50&cooldown.shield_slam.remains)|buff.sudden_death.up&talent.sudden_death.enabled" );
   generic->add_action( "shield_slam" );
