@@ -13,14 +13,13 @@ back=wings_of_shattered_sorrow,id=225574,ilevel=639
 chest=living_lusters_raiment,id=212086,ilevel=639,enchant=crystalline_radiance_3
 wrists=consecrated_cuffs,id=222815,bonus_id=8793/11304,ilevel=636,gem_id=213491
 hands=gory_surgeons_gloves,id=178748,ilevel=639
-waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213473
+waist=consecrated_cord,id=222816,bonus_id=8793/11304,ilevel=636,gem_id=213473
 legs=living_lusters_trousers,id=212082,ilevel=639,enchant=sunset_spellthread_3
 feet=assimilated_eggshell_slippers,id=225582,ilevel=639
 finger1=writhing_ringworm,id=225576,ilevel=639,enchant=radiant_mastery_3,gem_id=213494/213494
 finger2=seal_of_the_poisoned_pact,id=225578,ilevel=639,enchant=radiant_mastery_3,gem_id=213494/213494
 trinket1=spymasters_web,id=220202,ilevel=639
 trinket2=arakara_sacbrood,id=219314,ilevel=639
-main_hand=scepter_of_radiant_magics,id=224405,bonus_id=11301/8793,ilevel=636,enchant=authority_of_the_depths_3
-off_hand=pail_of_preserved_obscurity,id=221172,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant=authority_of_the_depths_3
 
 save=TWW1_Priest_Shadow.simc
