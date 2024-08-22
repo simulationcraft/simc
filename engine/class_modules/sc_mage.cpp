@@ -4640,9 +4640,7 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      // TODO: the damage buff scales with stacks when it shouldn't,
-      // presumably the crit portion does too, but that doesn't matter
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_stack_value();
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
     }
 
     return m;
@@ -5001,14 +4999,13 @@ struct frostbolt_t final : public frost_mage_spell_t
     // TODO Frostfire
     // This spell is now extremely buggy, not sure if it's worth implementing at this point
     // * doesn't trigger on-hit effects like Overflowing Energy, Frostfire Infusion, Frostfire Empowerment, presumably trinkets as well
-    // * doesn't trigger Pyrotechnics and Firefall (but does trigger Cold Front for some reason)
-    // * doesn't trigger Death's Chill
-    // * doesn't cleave with Fractured Frost (extra projectile appears but deals no damage)
+    // * doesn't trigger or consume Pyrotechnics and Firefall
+    // * doesn't trigger the CDR from Unleashed Inferno, From the Ashes, and Kindling
     // * consumes Frostfire Empowerment on cast and on hit (which completely breaks it because it snapshots on hit)
     // * triggers an additional Fire Mastery stack on hit
-    // * triggers an additional Bone Chilling stack on cast
-    // * never expires severe temperatures, making it basically a permanent 50% buff
-    // * doesn't work with Deep Shatter
+    // * triggers an additional Bone Chilling stack on cast (even on failed casts)
+    // * Fractured Frost makes the first projectile hit 3 nearby targets, doesn't care about where the other projectiles are going
+    // * extra hits from Fractured Frost don't trigger Bone Chilling
 
     // TOCHECK when implementing
     // * rolling DoT
@@ -5016,16 +5013,14 @@ struct frostbolt_t final : public frost_mage_spell_t
     // * snapshot on hit
 
     parse_options( options_str );
-    // TODO: this is most likely a bug since it breaks some core Frost mechanics
+    // 468655 is the new on-impact spell for FFB
     if ( !frostfire )
       enable_calculate_on_impact( 228597 );
     else
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
 
     track_shatter = consumes_winters_chill = true;
-    // TODO: currently bugged and doesn't trigger Bone Chilling
-    triggers.chill = !frostfire || !p->bugs;
-    triggers.overflowing_energy = true;
+    triggers.chill = triggers.overflowing_energy = true;
     triggers.calefaction = TT_MAIN_TARGET;
     base_dd_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
@@ -5087,9 +5082,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      // TODO: the damage buff scales with stacks when it shouldn't,
-      // presumably the crit portion does too, but that doesn't matter
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_stack_value();
+      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
     }
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
@@ -5112,9 +5105,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
-    // TODO: this doesn't work with Frostfire Bolt ingame
-    if ( !frostfire || !p()->bugs )
-      fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
+    fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
   }
@@ -5191,10 +5182,6 @@ struct frostbolt_t final : public frost_mage_spell_t
       trigger_cold_front( s->n_targets );
       consume_cold_front( s->target );
     }
-
-    // TODO: As of 2023-03-19, Frostbolt currently triggers Volatile Flame twice.
-    if ( p()->bugs && tt_applicable( s, triggers.calefaction ) )
-      trigger_calefaction( s->target );
   }
 };
 
