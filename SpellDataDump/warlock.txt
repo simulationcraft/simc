@@ -19140,6 +19140,9 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1121210)  : Apply Party Aura (35) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1182921)  : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc428518
 
 Name             : Chaos Salvo (id=432569) [Spell Family (5)] 
@@ -19731,6 +19734,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1131906)  : Apply Aura (6) | Periodic Trigger Spell (23): Felseeker every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 434404 | Target: Self (1)
+#3 (id=1182874)  : Apply Aura (6) | Root (455)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Unleashes a powerful beam of fel magic that sears the enemy target's soul, dealing $s1 Chaos damage.
 
 Name             : Xalan's Cruelty (id=440040) [Spell Family (5), Passive, Hidden] 
