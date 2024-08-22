@@ -54,7 +54,7 @@ std::string food( const player_t* p )
   if ( p->true_level >= 71 )
   {
     frost_food = "feast_of_the_divine_day";
-    unholy_food = "feast_of_the_divine_day";
+    unholy_food = "chippy_tea";
     blood_food = "feast_of_the_divine_day";
   }
   else
@@ -88,7 +88,7 @@ std::string temporary_enchant( const player_t* p )
                                             : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
 
   std::string unholy_temporary_enchant =
-      ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:howling_rune_3";
+      ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3" : "main_hand:howling_rune_3";
 
   std::string blood_temporary_enchant =
       ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:howling_rune_3";

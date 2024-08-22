@@ -10,9 +10,9 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYMmBAMbmhZx
 # Default consumables
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
+food=chippy_tea
 augmentation=crystallized
-temporary_enchant=main_hand:ironclaw_whetstone_3
+temporary_enchant=main_hand:algari_mana_oil_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -194,30 +194,29 @@ actions.variables+=/variable,name=pop_wounds,op=setif,value=1,value_else=0,condi
 actions.variables+=/variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=talent.vile_contagion&cooldown.vile_contagion.remains<5&runic_power<30
 actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))
 
-head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213494
-neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213743/213494
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213482/213482
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11303/8960
+back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/10222/11303/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11303/8960/523,gem_id=213494,crafted_stats=49/32
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11303/8960/10878,gem_id=213482,crafted_stats=49/32
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-waist=girdle_of_somber_ploys,id=221133,bonus_id=1611/523,ilevel=639
+waist=girdle_of_somber_ploys,id=221133,bonus_id=1611/6935,ilevel=639,gem_id=213482
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
 feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_3
-finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10879,gem_id=213494/213494,enchant=cursed_haste_3
-finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213494/213494,enchant=cursed_haste_3
-trinket1=skarmorak_shard,id=219300,bonus_id=10273/10390/3131
+finger1=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213482/213482,enchant=cursed_haste_3
+finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
+trinket1=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
 trinket2=treacherous_transmitter,id=221023,bonus_id=1540
-main_hand=befoulers_syringe,id=218126,bonus_id=1540,ilevel=639,enchant=rune_of_the_fallen_crusader
+main_hand=wild_hammer,id=56131,ilevel=639,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=638.60
-# gear_strength=32381
+# gear_strength=36175
 # gear_stamina=238188
-# gear_attack_power=469
-# gear_crit_rating=3423
-# gear_haste_rating=20848
-# gear_mastery_rating=14125
+# gear_crit_rating=3655
+# gear_haste_rating=19939
+# gear_mastery_rating=15465
 # gear_armor=56265
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
