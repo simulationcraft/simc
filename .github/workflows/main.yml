@@ -164,9 +164,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-18]
+        compiler: [clang++-15]
         include:
-          - compiler: clang++-18
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:
@@ -213,8 +213,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cppVersion: [ 17 ]
-        compiler: [ clang++-18 ]
+        cppVersion: [17]
+        compiler: [clang++-15]
         spec: [
             deathknight_blood, deathknight_unholy, deathknight_frost,
             demonhunter_vengeance, demonhunter_havoc,
@@ -227,9 +227,9 @@ jobs:
             rogue_assassination, rogue_outlaw, rogue_subtlety,
             shaman_elemental
           ]
-        fightstyle: [ singletarget, multitarget, dungeonslice ]
+        fightstyle: [singletarget, multitarget, dungeonslice]
         include:
-          - compiler: clang++-18
+          - compiler: clang++-15
             os: ubuntu-22.04
           - fightstyle: multitarget
             style_arg: desired_targets=10
@@ -387,9 +387,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-18]
+        compiler: [clang++-15]
         include:
-          - compiler: clang++-18
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:
@@ -483,9 +483,9 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        compiler: [clang++-18]
+        compiler: [clang++-15]
         include:
-          - compiler: clang++-18
+          - compiler: clang++-15
             os: ubuntu-22.04
 
     steps:
