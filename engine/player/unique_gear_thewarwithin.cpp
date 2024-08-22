@@ -3273,7 +3273,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
         double value = 0;
         // TODO: confirm that embellishment counts as a nerubian embellishement, but the card does not.
         if ( embellish )
-          value = e.driver()->effectN( 1 ).average( e.item ) * writhing_mul( e.player );
+          value = e.driver()->effectN( 2 ).average( e.item ) * writhing_mul( e.player );
         else
           value = e.player->find_spell( 463059 )->effectN( 1 ).average( e.item );
 
