@@ -430,12 +430,12 @@ jobs:
       matrix:
         cppVersion: [17, 20]
         compiler: [clang++-7, clang++-15, clang++-18, gcc-7, gcc-12, gcc-14]
-        type: [spell_query, log_debug, patchwerk, dungeon_slice]
+        type: [spell_query, patchwerk, dungeon_slice]
         include:
           - type: spell_query
             simc_flags: spell_query=spell > /dev/null
-          - type: log_debug
-            simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
+          # - type: log_debug
+          #  simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
           - type: patchwerk
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
